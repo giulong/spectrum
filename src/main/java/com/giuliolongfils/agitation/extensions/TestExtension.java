@@ -22,6 +22,8 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.util.Properties;
+
 import static com.aventstack.extentreports.markuputils.ExtentColor.GREEN;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -49,9 +51,11 @@ public class TestExtension implements BeforeAllCallback, BeforeEachCallback, Aft
 
     @SneakyThrows
     public TestExtension() {
-        log.info(fileReader.read("/banner.txt"));
+        Properties agitationProperties = fileReader.readProperties("/agitation.properties");
+        log.info(String.format(fileReader.read("/banner.txt"), agitationProperties.getProperty("version")));
+
         log.debug("Building SystemProperties");
-        systemProperties = yamlParser.readInternal("system-properties.default.yaml", SystemProperties.class);
+        systemProperties = yamlParser.readInternal("yaml/system-properties.default.yaml", SystemProperties.class);
         yamlParser.update(systemProperties, writer.writeValueAsString(System.getProperties()));
 
         log.debug("Building AgitationUtil");
@@ -60,7 +64,7 @@ public class TestExtension implements BeforeAllCallback, BeforeEachCallback, Aft
 
         log.debug("Parsing Configuration");
         String envConfiguration = String.format("configuration-%s.yaml", systemProperties.getEnv());
-        configuration = yamlParser.readInternal("configuration.default.yaml", Configuration.class);
+        configuration = yamlParser.readInternal("yaml/configuration.default.yaml", Configuration.class);
         yamlParser.updateWithFile(configuration, "configuration.yaml");
         yamlParser.updateWithFile(configuration, envConfiguration);
 
