@@ -20,7 +20,7 @@ webDriver:
   defaultEventListenerEnabled: true
 
   grid:
-    url: https://localhost/wd/hub/
+    url: http://127.0.0.1:4444/wd/hub/
     capabilities: { }
 
   # Chrome capabilities. See: https://chromedriver.chromium.org/capabilities
