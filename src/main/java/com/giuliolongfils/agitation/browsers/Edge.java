@@ -40,7 +40,7 @@ public class Edge extends Browser<EdgeOptions> {
     }
 
     @Override
-    public WebDriver buildWebDriverFrom(final Configuration configuration, final SystemProperties systemProperties) {
+    public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties) {
         capabilities = new EdgeOptions();
         final Configuration.WebDriver.Edge edgeConfig = configuration.getWebDriver().getEdge();
         edgeConfig.getCapabilities().forEach(capabilities::setCapability);
@@ -48,12 +48,15 @@ public class Edge extends Browser<EdgeOptions> {
         final LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(BROWSER, configuration.getSeleniumLogs().getBrowser());
         capabilities.setCapability(LOGGING_PREFS, logPrefs);
+    }
 
+    @Override
+    public WebDriver buildWebDriver() {
         return new EdgeDriver(capabilities);
     }
 
     @Override
-    public void mergeGridCapabilities(final Configuration.WebDriver.Grid gridConfiguration) {
+    public void mergeGridCapabilitiesFrom(final Configuration.WebDriver.Grid gridConfiguration) {
         gridConfiguration.getCapabilities().forEach(capabilities::setCapability);
     }
 }

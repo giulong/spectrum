@@ -1,7 +1,8 @@
 package com.giuliolongfils.agitation.pojos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.giuliolongfils.agitation.browsers.Browser;
 import lombok.Getter;
 import org.slf4j.event.Level;
@@ -14,7 +15,7 @@ public final class SystemProperties {
     private String reportName;
     private String env;
 
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Browser<?> browser;
     private String downloadsFolder;
     private String filesFolder;

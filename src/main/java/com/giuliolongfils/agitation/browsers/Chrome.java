@@ -44,7 +44,7 @@ public class Chrome extends Browser<ChromeOptions> {
     }
 
     @Override
-    public WebDriver buildWebDriverFrom(final Configuration configuration, final SystemProperties systemProperties) {
+    public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties) {
         capabilities = new ChromeOptions();
         final Configuration.WebDriver.Chrome chromeConfig = configuration.getWebDriver().getChrome();
 
@@ -63,12 +63,15 @@ public class Chrome extends Browser<ChromeOptions> {
 
         @SuppressWarnings("unchecked") final Map<String, Object> prefs = (Map<String, Object>) experimentalOptions.getOrDefault("prefs", new HashMap<>());
         prefs.put("download.default_directory", systemProperties.getDownloadsFolder());
+    }
 
+    @Override
+    public WebDriver buildWebDriver() {
         return new ChromeDriver(capabilities);
     }
 
     @Override
-    public void mergeGridCapabilities(final Configuration.WebDriver.Grid gridConfiguration) {
+    public void mergeGridCapabilitiesFrom(final Configuration.WebDriver.Grid gridConfiguration) {
         gridConfiguration.getCapabilities().forEach(capabilities::setCapability);
     }
 }

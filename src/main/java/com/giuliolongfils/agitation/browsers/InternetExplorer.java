@@ -37,16 +37,19 @@ public class InternetExplorer extends Browser<InternetExplorerOptions> {
     }
 
     @Override
-    public WebDriver buildWebDriverFrom(final Configuration configuration, final SystemProperties systemProperties) {
+    public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties) {
         capabilities = new InternetExplorerOptions();
         final Configuration.WebDriver.InternetExplorer ieConfig = configuration.getWebDriver().getIe();
         ieConfig.getCapabilities().forEach(capabilities::setCapability);
+    }
 
+    @Override
+    public WebDriver buildWebDriver() {
         return new InternetExplorerDriver(capabilities);
     }
 
     @Override
-    public void mergeGridCapabilities(final Configuration.WebDriver.Grid gridConfiguration) {
+    public void mergeGridCapabilitiesFrom(final Configuration.WebDriver.Grid gridConfiguration) {
         gridConfiguration.getCapabilities().forEach(capabilities::setCapability);
     }
 }

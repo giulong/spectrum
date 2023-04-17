@@ -29,17 +29,19 @@ public abstract class Browser<T extends MutableCapabilities> {
 
     abstract public String getDriverName();
 
-    abstract public WebDriver buildWebDriverFrom(Configuration configuration, SystemProperties systemProperties);
+    abstract public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties);
 
-    abstract public void mergeGridCapabilities(Configuration.WebDriver.Grid gridConfiguration);
+    abstract public WebDriver buildWebDriver();
+
+    abstract public void mergeGridCapabilitiesFrom(Configuration.WebDriver.Grid gridConfiguration);
 
     @SneakyThrows
     public WebDriver build(Configuration configuration, SystemProperties systemProperties) {
-        final WebDriver webDriver = buildWebDriverFrom(configuration, systemProperties);
+        buildCapabilitiesFrom(configuration, systemProperties);
 
         if (systemProperties.isGrid()) {
             Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();
-            mergeGridCapabilities(gridConfiguration);
+            mergeGridCapabilitiesFrom(gridConfiguration);
             return RemoteWebDriver.builder()
                     .oneOf(capabilities)
                     .address(gridConfiguration.getUrl())
@@ -48,27 +50,18 @@ public abstract class Browser<T extends MutableCapabilities> {
 
         final String driversPath = configuration.getApplication().getDriversPath();
         if (systemProperties.isDownloadWebDriver()) {
-            downloadWebDriver(getWebDriverManager(), driversPath, false);
+            getWebDriverManager().avoidOutputTree().cachePath(driversPath).setup();
         } else {
             log.warn("WebDriverManager disabled: using local webDriver");
             System.setProperty(getSystemPropertyName(), Paths.get(driversPath).resolve(getDriverName()).toString());
         }
 
         final Configuration.WebDriver webDriverConf = configuration.getWebDriver();
+        final WebDriver webDriver = buildWebDriver();
         webDriver.manage().timeouts()
                 .implicitlyWait(Duration.ofSeconds(webDriverConf.getWaitTimeout()))
                 .pageLoadTimeout(Duration.ofSeconds(webDriverConf.getPageLoadingWaitTimeout()))
                 .scriptTimeout(Duration.ofSeconds(webDriverConf.getScriptWaitTimeout()));
         return webDriver;
-    }
-
-    public void downloadWebDriver(WebDriverManager webDriverManager, final String driversPath, final boolean arch32) {
-        webDriverManager = webDriverManager.avoidOutputTree().cachePath(driversPath);
-
-        if (arch32) {
-            webDriverManager = webDriverManager.arch32();
-        }
-
-        webDriverManager.setup();
     }
 }

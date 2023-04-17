@@ -37,7 +37,7 @@ public class Firefox extends Browser<FirefoxOptions> {
     }
 
     @Override
-    public WebDriver buildWebDriverFrom(final Configuration configuration, final SystemProperties systemProperties) {
+    public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties) {
         capabilities = new FirefoxOptions();
         final Configuration.WebDriver.Firefox firefoxConfig = configuration.getWebDriver().getFirefox();
 
@@ -52,12 +52,15 @@ public class Firefox extends Browser<FirefoxOptions> {
 
         capabilities.addPreference("browser.download.dir", systemProperties.getDownloadsFolder());
         capabilities.setAcceptInsecureCerts(true);
+    }
 
+    @Override
+    public WebDriver buildWebDriver() {
         return new FirefoxDriver(capabilities);
     }
 
     @Override
-    public void mergeGridCapabilities(final Configuration.WebDriver.Grid gridConfiguration) {
+    public void mergeGridCapabilitiesFrom(final Configuration.WebDriver.Grid gridConfiguration) {
         gridConfiguration.getCapabilities().forEach((k, v) -> setCapability(k, v, this.capabilities));
     }
 
