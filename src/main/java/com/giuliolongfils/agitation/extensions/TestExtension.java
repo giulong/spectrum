@@ -6,6 +6,7 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.giuliolongfils.agitation.client.Data;
+import com.giuliolongfils.agitation.config.FileReader;
 import com.giuliolongfils.agitation.config.YamlParser;
 import com.giuliolongfils.agitation.internal.ContextManager;
 import com.giuliolongfils.agitation.internal.Util;
@@ -21,10 +22,6 @@ import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.io.InputStream;
-import java.util.Objects;
-import java.util.Scanner;
-
 import static com.aventstack.extentreports.markuputils.ExtentColor.GREEN;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -38,10 +35,11 @@ import static com.giuliolongfils.agitation.extensions.resolvers.SystemProperties
 public class TestExtension implements BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
 
     public static final String EXTENT_REPORTS = "extentReports";
-    private static final String USER_REPORT_CSS = "/css/report.css";
+    public static final String USER_REPORT_CSS = "/css/report.css";
 
     private final ObjectWriter writer = new YAMLMapper().configure(FAIL_ON_EMPTY_BEANS, false).writerWithDefaultPrettyPrinter();
-    final YamlParser yamlParser = YamlParser.builder().build();
+    private final YamlParser yamlParser = YamlParser.builder().build();
+    private final FileReader fileReader = FileReader.builder().build();
     private final AgitationUtil agitationUtil;
     private final ExtentReports extentReports;
     private final Configuration configuration;
@@ -51,8 +49,7 @@ public class TestExtension implements BeforeAllCallback, BeforeEachCallback, Aft
 
     @SneakyThrows
     public TestExtension() {
-        logBanner();
-
+        log.info(fileReader.read("/banner.txt"));
         log.debug("Building SystemProperties");
         systemProperties = yamlParser.readInternal("system-properties.default.yaml", SystemProperties.class);
         yamlParser.update(systemProperties, writer.writeValueAsString(System.getProperties()));
@@ -71,7 +68,7 @@ public class TestExtension implements BeforeAllCallback, BeforeEachCallback, Aft
         data = yamlParser.read("data/data.yaml", Data.class);
 
         log.debug("Init extent report");
-        extentReports = initExtentReport(USER_REPORT_CSS);
+        extentReports = initExtentReport();
 
         log.trace("System properties:\n{}", writer.writeValueAsString(systemProperties));
         log.trace("Configuration:\n{}", writer.writeValueAsString(configuration));
@@ -104,12 +101,7 @@ public class TestExtension implements BeforeAllCallback, BeforeEachCallback, Aft
         }
     }
 
-    protected void logBanner() {
-        InputStream inputStream = Objects.requireNonNull(TestExtension.class.getResourceAsStream("/banner.txt"));
-        log.info(new Scanner(inputStream).useDelimiter("\\Z").next());
-    }
-
-    protected ExtentReports initExtentReport(final String userReportCss) {
+    protected ExtentReports initExtentReport() {
         final Configuration.Extent extent = configuration.getExtent();
         final ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(Util.getReportPath(systemProperties));
 
@@ -117,16 +109,11 @@ public class TestExtension implements BeforeAllCallback, BeforeEachCallback, Aft
         htmlReporter.config().setReportName(extent.getReportName());
         htmlReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
         htmlReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
+        htmlReporter.config().setCSS(fileReader.read(USER_REPORT_CSS));
 
-        final InputStream userReportCssIs = TestExtension.class.getResourceAsStream(userReportCss);
-        if (userReportCssIs != null) {
-            log.debug("Found custom user css in '{}'", userReportCss);
-            htmlReporter.config().setCSS(new Scanner(userReportCssIs).useDelimiter("\\Z").next());
-        }
+        final ExtentReports extentReports = new ExtentReports();
+        extentReports.attachReporter(htmlReporter);
 
-        final ExtentReports er = new ExtentReports();
-        er.attachReporter(htmlReporter);
-
-        return er;
+        return extentReports;
     }
 }
