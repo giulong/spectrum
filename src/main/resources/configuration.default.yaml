@@ -1,0 +1,68 @@
+# Application under test configuration
+application:
+  baseUrl: https://www.ggogle.com/
+  driversPath: ~/.m2/repository/webDriver   # Path to drivers executables
+
+# Extent Report configuration
+extent:
+  documentTitle: Selenium Report  # Title of the html page
+  reportName: Selenium Report   # Name shown in the header of the report
+  theme: STANDARD   # Theme used in the report
+  timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test start time and end time
+
+# WebDriver configuration
+webDriver:
+  waitTimeout: 1    # Number of seconds selenium will wait before throwing a TimeoutException when an element isn't found. Injected in webDriverWaits
+  pageLoadingWaitTimeout: 10   # Number of seconds that selenium will wait before throwing a TimeoutException because page wasn't loaded. Injected in webDriverWaits
+  downloadWaitTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download. Injected in webDriverWaits
+  scriptWaitTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException. Injected in webDriverWaits
+  deleteCookies: true
+  defaultEventListenerEnabled: true
+
+  grid:
+    url: https://localhost/wd/hub/
+    capabilities: { }
+
+  # Chrome capabilities. See: https://chromedriver.chromium.org/capabilities
+  chrome:
+    capabilities: { }
+    arguments: [ ]
+    experimentalOptions:
+      useAutomationExtension: false
+      prefs:
+        download.prompt_for_download: false
+        download.directory_upgrade: true
+        safebrowsing.enabled: true
+
+  # Firefox capabilities. See: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
+  firefox:
+    binary: null
+    args: [ ]
+    logLevel: INFO
+    preferences:
+      browser.download.folderList: 2
+      browser.download.useDownloadDir: true
+      browser.helperApps.neverAsk.saveToDisk: application/pdf
+      pdfjs.disabled: true
+
+  # Internet Explorer capabilities. See: https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities#ie-specific
+  ie:
+    capabilities: { }
+
+  # Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options
+  edge:
+    capabilities: { }
+
+# Selenium internal logging levels
+seleniumLogs:
+  browser: SEVERE
+  client: OFF
+  driver: OFF
+  performance: OFF
+  profiler: OFF
+  server: OFF
+
+# Events fired by the webDriver and automatically logged and added to the report. Specify a level among OFF, DEBUG, INFO, WARN.
+events:
+  beforeAnyWebElementCall: OFF
+  afterAnyWebElementCall: OFF

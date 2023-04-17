@@ -1,0 +1,14 @@
+reportsFolder: target/selenium/reports
+reportName: agitation-report-%s.html
+env: local
+browser: chrome
+downloadsFolder: target/downloads
+filesFolder: src/test/resources/files
+grid: false
+logFilePath: ''
+logLevel: INFO
+parallel: false
+parallelMode: same_thread
+parallelModeClasses: same_thread
+downloadWebDriver: true
+logColors: true
