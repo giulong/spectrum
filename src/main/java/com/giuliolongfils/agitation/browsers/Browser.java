@@ -38,15 +38,12 @@ public abstract class Browser<T extends MutableCapabilities> {
     @SneakyThrows
     public WebDriver build(Configuration configuration, SystemProperties systemProperties) {
         buildCapabilitiesFrom(configuration, systemProperties);
-        log.info(capabilities.toString());
+        log.info("Capabilities: {}", capabilities.toJson());
 
         if (systemProperties.isGrid()) {
             Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();
             mergeGridCapabilitiesFrom(gridConfiguration);
-            return RemoteWebDriver.builder()
-                    .oneOf(capabilities)
-                    .address(gridConfiguration.getUrl())
-                    .build();
+            return setTimeouts(RemoteWebDriver.builder().oneOf(capabilities).address(gridConfiguration.getUrl()).build(), configuration.getWebDriver());
         }
 
         final String driversPath = configuration.getApplication().getDriversPath();
@@ -57,12 +54,15 @@ public abstract class Browser<T extends MutableCapabilities> {
             System.setProperty(getSystemPropertyName(), Paths.get(driversPath).resolve(getDriverName()).toString());
         }
 
-        final Configuration.WebDriver webDriverConf = configuration.getWebDriver();
-        final WebDriver webDriver = buildWebDriver();
+        return setTimeouts(buildWebDriver(), configuration.getWebDriver());
+    }
+
+    protected WebDriver setTimeouts(final WebDriver webDriver, final Configuration.WebDriver webDriverConf) {
         webDriver.manage().timeouts()
                 .implicitlyWait(Duration.ofSeconds(webDriverConf.getWaitTimeout()))
                 .pageLoadTimeout(Duration.ofSeconds(webDriverConf.getPageLoadingWaitTimeout()))
                 .scriptTimeout(Duration.ofSeconds(webDriverConf.getScriptWaitTimeout()));
+
         return webDriver;
     }
 }
