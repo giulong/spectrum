@@ -28,7 +28,6 @@ webDriver:
     capabilities: { }
     arguments: [ ]
     experimentalOptions:
-      useAutomationExtension: false
       prefs:
         download.prompt_for_download: false
         download.directory_upgrade: true
@@ -55,9 +54,9 @@ webDriver:
 
 # Selenium internal logging levels
 seleniumLogs:
-  browser: SEVERE
-  client: OFF
-  driver: OFF
+  browser: INFO
+  client: INFO
+  driver: INFO
   performance: OFF
   profiler: OFF
   server: OFF

@@ -38,6 +38,7 @@ public abstract class Browser<T extends MutableCapabilities> {
     @SneakyThrows
     public WebDriver build(Configuration configuration, SystemProperties systemProperties) {
         buildCapabilitiesFrom(configuration, systemProperties);
+        log.info(capabilities.toString());
 
         if (systemProperties.isGrid()) {
             Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();

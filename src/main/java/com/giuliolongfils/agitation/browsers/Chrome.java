@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static io.github.bonigarcia.wdm.WebDriverManager.chromedriver;
 import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
-import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.*;
 
 public class Chrome extends Browser<ChromeOptions> {
 
@@ -55,7 +55,10 @@ public class Chrome extends Browser<ChromeOptions> {
 
         chromeConfig.getCapabilities().forEach(capabilities::setCapability);
         final LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(BROWSER, configuration.getSeleniumLogs().getBrowser());
+        final Configuration.SeleniumLogs seleniumLogs = configuration.getSeleniumLogs();
+        logPrefs.enable(BROWSER, seleniumLogs.getBrowser());
+        logPrefs.enable(DRIVER, seleniumLogs.getDriver());
+        logPrefs.enable(PERFORMANCE, seleniumLogs.getPerformance());
         capabilities.setCapability(LOGGING_PREFS, logPrefs);
 
         final Map<String, Object> experimentalOptions = chromeConfig.getExperimentalOptions();

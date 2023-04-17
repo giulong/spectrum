@@ -10,7 +10,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 
 import static io.github.bonigarcia.wdm.WebDriverManager.edgedriver;
 import static org.openqa.selenium.edge.EdgeOptions.LOGGING_PREFS;
-import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.*;
 
 public class Edge extends Browser<EdgeOptions> {
 
@@ -46,7 +46,10 @@ public class Edge extends Browser<EdgeOptions> {
         edgeConfig.getCapabilities().forEach(capabilities::setCapability);
 
         final LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(BROWSER, configuration.getSeleniumLogs().getBrowser());
+        final Configuration.SeleniumLogs seleniumLogs = configuration.getSeleniumLogs();
+        logPrefs.enable(BROWSER, seleniumLogs.getBrowser());
+        logPrefs.enable(DRIVER, seleniumLogs.getDriver());
+        logPrefs.enable(PERFORMANCE, seleniumLogs.getPerformance());
         capabilities.setCapability(LOGGING_PREFS, logPrefs);
     }
 
