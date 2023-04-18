@@ -186,7 +186,7 @@
                 <version>0.8.9</version>
                 <configuration>
                     <excludes>
-                        <exclude>it/giuliolongfils/pojos/**/*</exclude>
+                        <exclude>com/giuliolongfils/agitation/pojos/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
