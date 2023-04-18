@@ -1,6 +1,6 @@
 # AGITATION
 
-This is a technical readme. Check the [links below](#links) for the full reference.
+Agitation Selenium Framework
 
 ## How to build
 
