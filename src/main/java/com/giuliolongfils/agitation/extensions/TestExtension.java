@@ -115,9 +115,9 @@ public class TestExtension implements BeforeAllCallback, BeforeEachCallback, Aft
         htmlReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
         htmlReporter.config().setCSS(fileReader.read(USER_REPORT_CSS));
 
-        final ExtentReports extentReports = new ExtentReports();
-        extentReports.attachReporter(htmlReporter);
+        final ExtentReports reports = new ExtentReports();
+        reports.attachReporter(htmlReporter);
 
-        return extentReports;
+        return reports;
     }
 }
