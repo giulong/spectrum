@@ -19,21 +19,21 @@ public abstract class Browser<T extends MutableCapabilities> {
 
     protected T capabilities;
 
-    abstract public boolean exposesConsole();
+    public abstract boolean exposesConsole();
 
-    abstract public boolean takesPartialScreenshots();
+    public abstract boolean takesPartialScreenshots();
 
-    abstract public WebDriverManager getWebDriverManager();
+    public abstract WebDriverManager getWebDriverManager();
 
-    abstract public String getSystemPropertyName();
+    public abstract String getSystemPropertyName();
 
-    abstract public String getDriverName();
+    public abstract String getDriverName();
 
-    abstract public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties);
+    public abstract void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties);
 
-    abstract public WebDriver buildWebDriver();
+    public abstract WebDriver buildWebDriver();
 
-    abstract public void mergeGridCapabilitiesFrom(Configuration.WebDriver.Grid gridConfiguration);
+    public abstract void mergeGridCapabilitiesFrom(Configuration.WebDriver.Grid gridConfiguration);
 
     @SneakyThrows
     public WebDriver build(Configuration configuration, SystemProperties systemProperties) {
