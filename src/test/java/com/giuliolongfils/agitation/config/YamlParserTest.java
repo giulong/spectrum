@@ -7,8 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.util.Objects;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("YamlParser")
@@ -16,6 +17,12 @@ class YamlParserTest {
 
     @InjectMocks
     private YamlParser yamlParser;
+
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        assertSame(YamlParser.getInstance(), YamlParser.getInstance());
+    }
 
     @Test
     @DisplayName("read should return null if the provided client file doesn't exist")
@@ -26,7 +33,7 @@ class YamlParserTest {
     @Test
     @DisplayName("read should return an instance of the provided class deserializing the provided file")
     public void read() {
-        assertEquals("value", yamlParser.read("test.yaml", TestYaml.class, true).getKey());
+        assertEquals("value", Objects.requireNonNull(yamlParser.read("test.yaml", TestYaml.class, true)).getKey());
     }
 
     @Test
