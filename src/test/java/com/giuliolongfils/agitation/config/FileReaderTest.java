@@ -13,6 +13,7 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(MockitoExtension.class)
@@ -21,6 +22,12 @@ class FileReaderTest {
 
     @InjectMocks
     private FileReader fileReader;
+
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        assertSame(FileReader.getInstance(), FileReader.getInstance());
+    }
 
     @DisplayName("read should return the correct result")
     @ParameterizedTest(name = "reading file {0} we expect {1}")
