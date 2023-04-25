@@ -5,9 +5,8 @@ import com.giuliolongfils.agitation.client.Data;
 import com.giuliolongfils.agitation.pojos.Configuration;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
 import com.giuliolongfils.agitation.pojos.WebDriverWaits;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInstance;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
@@ -15,10 +14,16 @@ import org.openqa.selenium.support.PageFactory;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
+@Slf4j
 public abstract class AgitationTest extends BaseAgitationTest {
 
     protected static WebDriver webDriver;
     protected static WebDriverWaits webDriverWaits;
+
+    @Override
+    public WebDriver getWebDriver() {
+        return webDriver;
+    }
 
     @BeforeAll
     public void agitationTestBeforeAll(final WebDriver wd, final WebDriverWaits wdw, final AgitationUtil su,
@@ -48,12 +53,13 @@ public abstract class AgitationTest extends BaseAgitationTest {
 
         agitationPages.forEach(agitationPage -> {
             agitationPage.extentTest = extentTest;
-            agitationPage.eventListener = eventListener;
+            agitationPage.eventsListener = eventsListener;
         });
     }
 
-    @Override
-    public WebDriver getWebDriver() {
-        return webDriver;
+    @AfterAll
+    public void agitationTestAfterAll() {
+        log.debug("Quitting webDriver");
+        webDriver.quit();
     }
 }

@@ -8,7 +8,6 @@ import com.giuliolongfils.agitation.browsers.Browser;
 import com.giuliolongfils.agitation.internal.jackson.BrowserDeserializer;
 import com.giuliolongfils.agitation.internal.jackson.LogbackLogLevelDeserializer;
 import com.giuliolongfils.agitation.internal.jackson.UtilLogLevelDeserializer;
-import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,26 +16,25 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Slf4j
-@Builder
-public class YamlParser {
+public final class YamlParser {
 
+    private static final YamlParser INSTANCE = new YamlParser();
     private static final Path RESOURCES = Paths.get("src", "test", "resources");
-    private static final String EMPTY_YAML = "{}";
 
-    private final ObjectMapper yamlMapper = new YAMLMapper();
-
-    public YamlParser() {
-        yamlMapper
-                .setDefaultMergeable(true)
-                .registerModules(
-                        new SimpleModule().addDeserializer(java.util.logging.Level.class, new UtilLogLevelDeserializer()),
-                        new SimpleModule().addDeserializer(Level.class, new LogbackLogLevelDeserializer()),
-                        new SimpleModule().addDeserializer(Browser.class, new BrowserDeserializer())
-                );
+    public static YamlParser getInstance() {
+        return INSTANCE;
     }
 
+    private final ObjectMapper yamlMapper = new YAMLMapper()
+            .setDefaultMergeable(true)
+            .registerModules(
+                    new SimpleModule().addDeserializer(java.util.logging.Level.class, new UtilLogLevelDeserializer()),
+                    new SimpleModule().addDeserializer(Level.class, new LogbackLogLevelDeserializer()),
+                    new SimpleModule().addDeserializer(Browser.class, new BrowserDeserializer())
+            );
+
     @SneakyThrows
-    protected <T> T read(final String file, final Class<T> clazz, boolean internal) {
+    public <T> T read(final String file, final Class<T> clazz, boolean internal) {
         final Path path = Paths.get(file);
         if (!internal && Files.notExists(RESOURCES.resolve(path))) {
             log.warn("File {} not found.", path);

@@ -28,6 +28,10 @@ public abstract class TakesScreenshots {
         return agitationUtil.addScreenshotToReport(getWebDriver(), extentTest, msg, ERROR);
     }
 
+    public MediaEntityModelProvider failWithScreenshot(final String msg) {
+        return agitationUtil.addScreenshotToReport(getWebDriver(), extentTest, msg, FAIL);
+    }
+
     public void hover(final WebElement webElement) {
         actions.moveToElement(webElement).perform();
     }

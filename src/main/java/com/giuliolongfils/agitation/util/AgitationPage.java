@@ -1,7 +1,7 @@
 package com.giuliolongfils.agitation.util;
 
 import com.giuliolongfils.agitation.client.Data;
-import com.giuliolongfils.agitation.internal.EventListener;
+import com.giuliolongfils.agitation.internal.EventsListener;
 import com.giuliolongfils.agitation.pojos.Configuration;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
 import com.giuliolongfils.agitation.pojos.WebDriverWaits;
@@ -17,7 +17,7 @@ public abstract class AgitationPage extends TakesScreenshots {
     protected Configuration configuration;
     protected Data data;
     protected SystemProperties systemProperties;
-    protected EventListener eventListener;
+    protected EventsListener eventsListener;
     protected WebDriverWaits webDriverWaits;
 
     protected String endpoint;

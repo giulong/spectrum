@@ -6,6 +6,8 @@ import com.giuliolongfils.agitation.pojos.Configuration;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
 import com.giuliolongfils.agitation.pojos.WebDriverWaits;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
@@ -16,6 +18,7 @@ import org.openqa.selenium.support.PageFactory;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
+@Slf4j
 public abstract class AgitationTestParallel extends BaseAgitationTest {
 
     @Getter
@@ -43,10 +46,16 @@ public abstract class AgitationTestParallel extends BaseAgitationTest {
             agitationPage.webDriver = webDriver;
             agitationPage.webDriverWaits = webDriverWaits;
             agitationPage.extentTest = extentTest;
-            agitationPage.eventListener = eventListener;
+            agitationPage.eventsListener = eventsListener;
             agitationPage.actions = actions;
 
             PageFactory.initElements(agitationPage.webDriver, agitationPage);
         });
+    }
+
+    @AfterEach
+    public void agitationTestParallelAfterEach() {
+        log.debug("Quitting webDriver");
+        webDriver.quit();
     }
 }

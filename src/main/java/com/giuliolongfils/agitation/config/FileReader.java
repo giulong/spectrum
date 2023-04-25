@@ -1,6 +1,5 @@
 package com.giuliolongfils.agitation.config;
 
-import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,8 +8,16 @@ import java.util.Properties;
 import java.util.Scanner;
 
 @Slf4j
-@Builder
-public class FileReader {
+public final class FileReader {
+
+    private static final FileReader INSTANCE = new FileReader();
+
+    private FileReader() {
+    }
+
+    public static FileReader getInstance() {
+        return INSTANCE;
+    }
 
     public String read(final String file) {
         log.debug("Reading file {}", file);

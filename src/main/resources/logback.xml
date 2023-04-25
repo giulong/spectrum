@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <property name="PATTERN" value="%d{HH:mm:ss.SSS} %.-1level %-20.25logger{0} | %msg%n"/>
+    <property name="PATTERN" value="%d{HH:mm:ss.SSS} %.-1level %-25logger{0} | %msg%n"/>
     <property name="COLOR_PATTERN" value="%highlight(${PATTERN})"/>
     <property name="FILE_PATH" value="${logFilePath:-target/selenium/logs}"/>
 

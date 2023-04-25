@@ -44,7 +44,6 @@ public class Configuration {
 		private long pageLoadingWaitTimeout;
 		private long downloadWaitTimeout;
 		private long scriptWaitTimeout;
-		private boolean deleteCookies;
 		private boolean defaultEventListenerEnabled;
 		private Grid grid;
 		private Chrome chrome;

@@ -18,7 +18,7 @@ import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 @Slf4j
 @Builder
 @Getter
-public class EventListener implements WebDriverListener {
+public class EventsListener implements WebDriverListener {
 
     private ExtentTest extentTest;
     private Configuration.Events events;

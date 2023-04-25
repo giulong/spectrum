@@ -5,7 +5,6 @@ import com.aventstack.extentreports.MediaEntityModelProvider;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
-import com.giuliolongfils.agitation.internal.Util;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
 import com.giuliolongfils.agitation.pojos.WebDriverWaits;
 import lombok.Builder;
@@ -23,6 +22,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -35,9 +35,10 @@ import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
 @Builder
-public final class AgitationUtil {
+public class AgitationUtil {
 
     public static final String SCREEN_SHOT_FOLDER = "screenshots";
+    public static final String HASH_ALGORITHM = "SHA-256";
     private SystemProperties systemProperties;
 
     @SneakyThrows
@@ -79,8 +80,10 @@ public final class AgitationUtil {
         Files.createDirectories(downloadPath);
     }
 
-    public void waitForDownloadOf(final WebDriverWaits webDriverWaits, final Path file) {
-        webDriverWaits.getDownloadWait().until((ExpectedCondition<Boolean>) driver -> Util.exists(file));
+    public void waitForDownloadOf(final WebDriverWaits webDriverWaits, final Path path) {
+        webDriverWaits
+                .getDownloadWait()
+                .until((ExpectedCondition<Boolean>) driver -> Files.exists(path) && path.toFile().length() > 0);
     }
 
     public boolean logBrowserConsoleOutput(final WebDriver driver, final ExtentTest extentTest) {
@@ -109,6 +112,14 @@ public final class AgitationUtil {
 
         waitForDownloadOf(webDriverWaits, downloadedPdf);
 
-        return Arrays.equals(Util.sha256Of(downloadedPdf), Util.sha256Of(pdfToCheck));
+        return Arrays.equals(sha256Of(downloadedPdf), sha256Of(pdfToCheck));
+    }
+
+    @SneakyThrows
+    protected static byte[] sha256Of(final Path file) {
+        final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(Files.readAllBytes(file));
+
+        log.debug("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));
+        return digest;
     }
 }
