@@ -1,22 +1,22 @@
 package com.giuliolongfils.agitation.extensions.resolvers;
 
-import com.giuliolongfils.agitation.internal.ContextManager;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 
-public class ActionsResolver extends TypeBasedParameterResolver<Actions> {
+import static com.giuliolongfils.agitation.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
-    public static final String ACTIONS = "actions";
+@Slf4j
+public class ActionsResolver extends TypeBasedParameterResolver<Actions> {
 
     @Override
     public Actions resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
-        final ContextManager contextManager = ContextManager.getInstance();
-        final Actions actions = new Actions(contextManager.getWebDriver(context));
-
-        contextManager.store(ACTIONS, actions, context);
-        return actions;
+        log.debug("Building Actions");
+        return new Actions(context.getStore(GLOBAL).get(WEB_DRIVER, WebDriver.class));
     }
 }

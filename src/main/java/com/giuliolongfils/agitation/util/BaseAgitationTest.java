@@ -1,16 +1,16 @@
 package com.giuliolongfils.agitation.util;
 
 import com.giuliolongfils.agitation.client.Data;
-import com.giuliolongfils.agitation.interfaces.AgitationExtension;
-import com.giuliolongfils.agitation.internal.EventListener;
-import com.giuliolongfils.agitation.internal.Util;
+import com.giuliolongfils.agitation.extensions.AgitationExtension;
+import com.giuliolongfils.agitation.extensions.resolvers.*;
 import com.giuliolongfils.agitation.interfaces.Endpoint;
+import com.giuliolongfils.agitation.internal.EventsListener;
 import com.giuliolongfils.agitation.pojos.Configuration;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -22,19 +22,58 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @Slf4j
 @TestInstance(PER_CLASS)
-@AgitationExtension
 public abstract class BaseAgitationTest extends TakesScreenshots {
+
+    @RegisterExtension
+    public static final AgitationExtension AGITATION_EXTENSION = new AgitationExtension();
+
+    @RegisterExtension
+    public static final SystemPropertiesResolver SYSTEM_PROPERTIES_RESOLVER = new SystemPropertiesResolver();
+
+    @RegisterExtension
+    public static final AgitationUtilResolver AGITATION_UTIL_RESOLVER = new AgitationUtilResolver(
+            SYSTEM_PROPERTIES_RESOLVER.getSystemProperties()
+    );
+
+    @RegisterExtension
+    public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver(
+            SYSTEM_PROPERTIES_RESOLVER.getSystemProperties()
+    );
+
+    @RegisterExtension
+    public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver(
+            SYSTEM_PROPERTIES_RESOLVER.getSystemProperties(),
+            CONFIGURATION_RESOLVER.getConfiguration().getExtent()
+    );
+
+    @RegisterExtension
+    public static final WebDriverResolver WEB_DRIVER_RESOLVER = new WebDriverResolver(
+            SYSTEM_PROPERTIES_RESOLVER.getSystemProperties(),
+            CONFIGURATION_RESOLVER.getConfiguration()
+    );
+
+    @RegisterExtension
+    public static final WebDriverWaitsResolver WEB_DRIVER_WAITS_RESOLVER = new WebDriverWaitsResolver(
+            CONFIGURATION_RESOLVER.getConfiguration().getWebDriver()
+    );
+
+    @RegisterExtension
+    public static final ExtentTestResolver EXTENT_TEST_RESOLVER = new ExtentTestResolver(
+            EXTENT_REPORTS_RESOLVER.getExtentReports(),
+            AGITATION_UTIL_RESOLVER.getAgitationUtil()
+    );
+
+    @RegisterExtension
+    public static final DataResolver DATA_RESOLVER = new DataResolver();
+
+    @RegisterExtension
+    public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
 
     protected static Configuration configuration;
     protected static Data data;
-    protected static EventListener eventListener;
+    protected static EventsListener eventsListener;
     protected static SystemProperties systemProperties;
     protected List<AgitationPage> agitationPages;
-
-    @AfterAll
-    public void baseAgitationTestAfterAll() {
-        log.info("After the execution, you'll find the '{}' report at file:///{}", configuration.getExtent().getReportName(), Util.getReportPath(systemProperties));
-    }
 
     public void initPages() {
         final Class<?> clazz = this.getClass();

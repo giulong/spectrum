@@ -1,18 +1,28 @@
 package com.giuliolongfils.agitation.extensions.resolvers;
 
-import com.giuliolongfils.agitation.internal.ContextManager;
+import com.giuliolongfils.agitation.pojos.SystemProperties;
 import com.giuliolongfils.agitation.util.AgitationUtil;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
+@Slf4j
 public class AgitationUtilResolver extends TypeBasedParameterResolver<AgitationUtil> {
 
-	public static final String AGITATION_UTIL = "agitationUtil";
+	@Getter
+	private final AgitationUtil agitationUtil;
+
+	public AgitationUtilResolver(final SystemProperties systemProperties) {
+		log.debug("Building AgitationUtil");
+		agitationUtil = AgitationUtil.builder().systemProperties(systemProperties).build();
+		agitationUtil.deleteDownloadsFolder();
+	}
 
 	@Override
 	public AgitationUtil resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
-		return ContextManager.getInstance().getAgitationUtil(context);
+		return agitationUtil;
 	}
 }

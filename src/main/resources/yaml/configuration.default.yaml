@@ -16,7 +16,6 @@ webDriver:
   pageLoadingWaitTimeout: 10   # Number of seconds that selenium will wait before throwing a TimeoutException because page wasn't loaded. Injected in webDriverWaits
   downloadWaitTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download. Injected in webDriverWaits
   scriptWaitTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException. Injected in webDriverWaits
-  deleteCookies: true
   defaultEventListenerEnabled: true
 
   grid:
