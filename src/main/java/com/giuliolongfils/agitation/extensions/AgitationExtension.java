@@ -30,11 +30,11 @@ public class AgitationExtension implements BeforeAllCallback, AfterAllCallback {
     public void beforeAll(final ExtensionContext context) {
         final String className = context.getRequiredTestClass().getAnnotation(DisplayName.class).value();
         log.info("START execution of tests in class {}", className);
-        context.getStore(GLOBAL).put(CLASS_NAME, className);
+        context.getRoot().getStore(GLOBAL).put(CLASS_NAME, className);
     }
 
     @Override
     public void afterAll(final ExtensionContext context) {
-        log.info("END execution of tests in class {}", context.getStore(GLOBAL).get(CLASS_NAME));
+        log.info("END execution of tests in class {}", context.getRoot().getStore(GLOBAL).get(CLASS_NAME));
     }
 }

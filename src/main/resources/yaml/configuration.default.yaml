@@ -1,6 +1,6 @@
 # Application under test configuration
 application:
-  baseUrl: https://www.ggogle.com/
+  baseUrl: https://www.lambdatest.com/selenium-playground/simple-form-demo
   driversPath: ~/.m2/repository/webDriver   # Path to drivers executables
 
 # Extent Report configuration
@@ -60,7 +60,116 @@ seleniumLogs:
   profiler: OFF
   server: OFF
 
-# Events fired by the webDriver and automatically logged and added to the report. Specify a level among OFF, DEBUG, INFO, WARN.
+# Events fired by the webDriver and automatically logged and added to the report. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.
 events:
+  beforeAnyCall: OFF
+  afterAnyCall: OFF
+  onError: DEBUG
+  beforeAnyWebDriverCall: OFF
+  afterAnyWebDriverCall: OFF
+  beforeGet: INFO
+  afterGet: OFF
+  beforeGetCurrentUrl: OFF
+  afterGetCurrentUrl: OFF
+  beforeGetTitle: OFF
+  afterGetTitle: OFF
+  beforeFindElement: DEBUG
+  afterFindElement: OFF
+  beforeFindElements: DEBUG
+  afterFindElements: OFF
+  beforeGetPageSource: OFF
+  afterGetPageSource: DEBUG
+  beforeClose: DEBUG
+  afterClose: OFF
+  beforeQuit: DEBUG
+  afterQuit: OFF
+  beforeGetWindowHandles: DEBUG
+  afterGetWindowHandles: OFF
+  beforeGetWindowHandle: DEBUG
+  afterGetWindowHandle: OFF
+  beforeExecuteScript: DEBUG
+  afterExecuteScript: OFF
+  beforeExecuteAsyncScript: DEBUG
+  afterExecuteAsyncScript: OFF
+  beforePerform: OFF
+  afterPerform: OFF
+  beforeResetInputState: OFF
+  afterResetInputState: OFF
   beforeAnyWebElementCall: OFF
   afterAnyWebElementCall: OFF
+  beforeClick: INFO
+  afterClick: OFF
+  beforeSubmit: INFO
+  afterSubmit: OFF
+  beforeSendKeys: INFO
+  afterSendKeys: OFF
+  beforeClear: DEBUG
+  afterClear: OFF
+  beforeGetTagName: OFF
+  afterGetTagName: INFO
+  beforeGetAttribute: OFF
+  afterGetAttribute: INFO
+  beforeIsSelected: OFF
+  afterIsSelected: INFO
+  beforeIsEnabled: OFF
+  afterIsEnabled: INFO
+  beforeGetText: OFF
+  afterGetText: INFO
+  beforeIsDisplayed: OFF
+  afterIsDisplayed: INFO
+  beforeGetLocation: OFF
+  afterGetLocation: INFO
+  beforeGetSize: OFF
+  afterGetSize: INFO
+  beforeGetCssValue: OFF
+  afterGetCssValue: INFO
+  beforeAnyNavigationCall: INFO
+  afterAnyNavigationCall: OFF
+  beforeTo: INFO
+  afterTo: OFF
+  beforeBack: INFO
+  afterBack: OFF
+  beforeForward: INFO
+  afterForward: OFF
+  beforeRefresh: INFO
+  afterRefresh: OFF
+  beforeAnyAlertCall: OFF
+  afterAnyAlertCall: OFF
+  beforeAccept: INFO
+  afterAccept: OFF
+  beforeDismiss: INFO
+  afterDismiss: OFF
+  beforeAnyOptionsCall: OFF
+  afterAnyOptionsCall: OFF
+  beforeAddCookie: TRACE
+  afterAddCookie: OFF
+  beforeDeleteCookieNamed: TRACE
+  afterDeleteCookieNamed: OFF
+  beforeDeleteCookie: TRACE
+  afterDeleteCookie: OFF
+  beforeDeleteAllCookies: TRACE
+  afterDeleteAllCookies: OFF
+  beforeGetCookies: TRACE
+  afterGetCookies: OFF
+  beforeGetCookieNamed: TRACE
+  afterGetCookieNamed: OFF
+  beforeAnyTimeoutsCall: OFF
+  afterAnyTimeoutsCall: OFF
+  beforeImplicitlyWait: OFF
+  afterImplicitlyWait: OFF
+  beforeSetScriptTimeout: OFF
+  afterSetScriptTimeout: OFF
+  beforePageLoadTimeout: OFF
+  afterPageLoadTimeout: OFF
+  beforeAnyWindowCall: OFF
+  afterAnyWindowCall: OFF
+  beforeSetSize: OFF
+  afterSetSize: INFO
+  beforeGetPosition: OFF
+  afterGetPosition: INFO
+  beforeSetPosition: OFF
+  afterSetPosition: INFO
+  beforeMaximize: DEBUG
+  afterMaximize: OFF
+  beforeFullscreen: DEBUG
+  afterFullscreen: OFF

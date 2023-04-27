@@ -47,6 +47,12 @@ public abstract class BaseAgitationTest extends TakesScreenshots {
     );
 
     @RegisterExtension
+    public static final ExtentTestResolver EXTENT_TEST_RESOLVER = new ExtentTestResolver(
+            EXTENT_REPORTS_RESOLVER.getExtentReports(),
+            AGITATION_UTIL_RESOLVER.getAgitationUtil()
+    );
+
+    @RegisterExtension
     public static final WebDriverResolver WEB_DRIVER_RESOLVER = new WebDriverResolver(
             SYSTEM_PROPERTIES_RESOLVER.getSystemProperties(),
             CONFIGURATION_RESOLVER.getConfiguration()
@@ -55,12 +61,6 @@ public abstract class BaseAgitationTest extends TakesScreenshots {
     @RegisterExtension
     public static final WebDriverWaitsResolver WEB_DRIVER_WAITS_RESOLVER = new WebDriverWaitsResolver(
             CONFIGURATION_RESOLVER.getConfiguration().getWebDriver()
-    );
-
-    @RegisterExtension
-    public static final ExtentTestResolver EXTENT_TEST_RESOLVER = new ExtentTestResolver(
-            EXTENT_REPORTS_RESOLVER.getExtentReports(),
-            AGITATION_UTIL_RESOLVER.getAgitationUtil()
     );
 
     @RegisterExtension

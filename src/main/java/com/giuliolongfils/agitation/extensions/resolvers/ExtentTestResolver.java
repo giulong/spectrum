@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @Slf4j
 public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> implements BeforeEachCallback, TestWatcher {
 
+    public static final String EXTENT_TEST = "extentTest";
     private final ExtentReports extentReports;
     private final AgitationUtil agitationUtil;
     private ExtentTest extentTest;
@@ -39,11 +40,12 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> i
     @Override
     public void beforeEach(ExtensionContext context) {
         extentTest = createExtentTestFrom(context).info(createLabel("START TEST", getColorOf(INFO)));
+        context.getRoot().getStore(GLOBAL).put(EXTENT_TEST, extentTest);
     }
 
     public ExtentTest createExtentTestFrom(ExtensionContext context) {
         log.debug("Creating Extent Test");
-        return extentReports.createTest(String.format("<div>%s</div>%s", context.getStore(GLOBAL).get(CLASS_NAME), context.getDisplayName()));
+        return extentReports.createTest(String.format("<div>%s</div>%s", context.getRoot().getStore(GLOBAL).get(CLASS_NAME), context.getDisplayName()));
     }
 
     @Override
@@ -64,12 +66,12 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> i
     @Override
     public void testFailed(ExtensionContext context, Throwable exception) {
         extentTest.fail(exception);
-        agitationUtil.addScreenshotToReport(context.getStore(GLOBAL).get(WEB_DRIVER, WebDriver.class), extentTest, createLabel("TEST FAILED", RED).getMarkup(), FAIL);
+        agitationUtil.addScreenshotToReport(context.getRoot().getStore(GLOBAL).get(WEB_DRIVER, WebDriver.class), extentTest, createLabel("TEST FAILED", RED).getMarkup(), FAIL);
         logTestStatus(context, FAIL);
     }
 
     protected void logTestStatus(final ExtensionContext context, final Status status) {
-        log.info(String.format("END execution of '%s -> %s': %s", context.getStore(GLOBAL).get(CLASS_NAME), context.getDisplayName(), status.name()));
+        log.info(String.format("END execution of '%s -> %s': %s", context.getRoot().getStore(GLOBAL).get(CLASS_NAME), context.getDisplayName(), status.name()));
         extentTest.log(status, createLabel("END TEST", getColorOf(status)));
     }
 

@@ -17,6 +17,6 @@ public class ActionsResolver extends TypeBasedParameterResolver<Actions> {
     @Override
     public Actions resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
         log.debug("Building Actions");
-        return new Actions(context.getStore(GLOBAL).get(WEB_DRIVER, WebDriver.class));
+        return new Actions(context.getRoot().getStore(GLOBAL).get(WEB_DRIVER, WebDriver.class));
     }
 }
