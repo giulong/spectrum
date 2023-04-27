@@ -12,7 +12,7 @@ import java.util.List;
 
 public class LogbackLogLevelDeserializer extends JsonDeserializer<Level> {
 
-    private static final List<String> SUPPORTED_LEVELS = ImmutableList.of("OFF", "DEBUG", "INFO", "WARN");
+    private static final List<String> SUPPORTED_LEVELS = ImmutableList.of("OFF", "TRACE", "DEBUG", "INFO", "WARN");
 
     @Override
     public Level deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {

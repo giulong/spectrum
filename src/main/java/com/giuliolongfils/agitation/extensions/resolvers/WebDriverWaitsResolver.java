@@ -28,7 +28,7 @@ public class WebDriverWaitsResolver extends TypeBasedParameterResolver<WebDriver
     @Override
     public WebDriverWaits resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
         log.debug("Building WebDriverWaits");
-        final ExtensionContext.Store store = context.getStore(GLOBAL);
+        final ExtensionContext.Store store = context.getRoot().getStore(GLOBAL);
         final WebDriver webDriver = store.get(WEB_DRIVER, WebDriver.class);
         final WebDriverWaits webDriverWaits = WebDriverWaits.builder()
                 .pageLoadingWait(new WebDriverWait(webDriver, Duration.ofSeconds(webDriverConfiguration.getPageLoadingWaitTimeout())))
