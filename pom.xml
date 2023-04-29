@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.giuliolongfils</groupId>
-    <artifactId>agitation</artifactId>
+    <artifactId>spectrum</artifactId>
     <version>0.0.1</version>
 
     <contributors>
@@ -186,7 +186,7 @@
                 <version>0.8.9</version>
                 <configuration>
                     <excludes>
-                        <exclude>com/giuliolongfils/agitation/pojos/**/*</exclude>
+                        <exclude>com/giuliolongfils/spectrum/pojos/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
