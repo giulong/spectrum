@@ -1,6 +1,5 @@
 package com.giuliolongfils.agitation.util;
 
-import com.giuliolongfils.agitation.client.Data;
 import com.giuliolongfils.agitation.internal.EventsListener;
 import com.giuliolongfils.agitation.pojos.Configuration;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
@@ -10,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 
 @Slf4j
-public abstract class AgitationPage extends TakesScreenshots {
+public abstract class AgitationPage<Data> extends TakesScreenshots {
 
     @Getter
     protected WebDriver webDriver;
