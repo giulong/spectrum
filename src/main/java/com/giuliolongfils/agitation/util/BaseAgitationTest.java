@@ -30,18 +30,18 @@ public abstract class BaseAgitationTest<Data> extends TakesScreenshots {
     public static final SystemPropertiesResolver SYSTEM_PROPERTIES_RESOLVER = new SystemPropertiesResolver();
 
     @RegisterExtension
-    public static final AgitationUtilResolver AGITATION_UTIL_RESOLVER = new AgitationUtilResolver(
-            SYSTEM_PROPERTIES_RESOLVER.getSystemProperties()
-    );
-
-    @RegisterExtension
     public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver(
             SYSTEM_PROPERTIES_RESOLVER.getSystemProperties()
     );
 
     @RegisterExtension
-    public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver(
+    public static final AgitationUtilResolver AGITATION_UTIL_RESOLVER = new AgitationUtilResolver(
             SYSTEM_PROPERTIES_RESOLVER.getSystemProperties(),
+            CONFIGURATION_RESOLVER.getConfiguration()
+    );
+
+    @RegisterExtension
+    public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver(
             CONFIGURATION_RESOLVER.getConfiguration().getExtent()
     );
 

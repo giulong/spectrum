@@ -2,12 +2,16 @@
 application:
   baseUrl: https://www.lambdatest.com/selenium-playground/simple-form-demo
   driversPath: ~/.m2/repository/webDriver   # Path to drivers executables
+  filesFolder: src/test/resources/files
+  downloadsFolder: target/downloads
 
 # Extent Report configuration
 extent:
-  documentTitle: Selenium Report  # Title of the html page
-  reportName: Selenium Report   # Name shown in the header of the report
-  theme: STANDARD   # Theme used in the report
+  documentTitle: Spectrum Report  # Title of the html page
+  reportFolder: target/spectrum/reports
+  reportName: Spectrum Report   # Name shown in the header of the report
+  fileName: spectrum-report-{timestamp:dd-MM-yyyy_HH-mm-ss}.html
+  theme: STANDARD   # Theme used in the report. Can be STANDARD or DARK
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test start time and end time
 
 # WebDriver configuration

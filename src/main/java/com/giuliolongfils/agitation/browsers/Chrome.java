@@ -65,7 +65,7 @@ public class Chrome extends Browser<ChromeOptions> {
         experimentalOptions.forEach(capabilities::setExperimentalOption);
 
         @SuppressWarnings("unchecked") final Map<String, Object> prefs = (Map<String, Object>) experimentalOptions.getOrDefault("prefs", new HashMap<>());
-        prefs.put("download.default_directory", systemProperties.getDownloadsFolder());
+        prefs.put("download.default_directory", configuration.getApplication().getDownloadsFolder());
     }
 
     @Override

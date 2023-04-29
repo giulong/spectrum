@@ -5,6 +5,7 @@ import com.aventstack.extentreports.MediaEntityModelProvider;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.giuliolongfils.agitation.pojos.Configuration;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
 import com.giuliolongfils.agitation.pojos.WebDriverWaits;
 import lombok.Builder;
@@ -39,13 +40,15 @@ public class AgitationUtil {
 
     public static final String SCREEN_SHOT_FOLDER = "screenshots";
     public static final String HASH_ALGORITHM = "SHA-256";
-    private SystemProperties systemProperties;
+    private final SystemProperties systemProperties;
+    private final Configuration.Application application;
+    private final Configuration.Extent extent;
 
     @SneakyThrows
     public MediaEntityModelProvider addScreenshotToReport(final WebDriver webDriver, final ExtentTest extentTest, final String msg, final Status status) {
         try {
             final String fileName = String.format("%s.png", UUID.randomUUID()).replaceAll("[\\\\/]", "");
-            final Path screenShotPath = Paths.get(systemProperties.getReportsFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
+            final Path screenShotPath = Paths.get(extent.getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
             final byte[] screenShotBytes = !systemProperties.getBrowser().takesPartialScreenshots()
                     ? ((TakesScreenshot) webDriver).getScreenshotAs(BYTES)
                     : webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES);
@@ -65,7 +68,7 @@ public class AgitationUtil {
 
     @SneakyThrows
     public void deleteDownloadsFolder() {
-        final String downloadFolder = systemProperties.getDownloadsFolder();
+        final String downloadFolder = application.getDownloadsFolder();
         final Path downloadPath = Paths.get(downloadFolder);
 
         if (Files.exists(downloadPath)) {
@@ -107,12 +110,12 @@ public class AgitationUtil {
     }
 
     public boolean checkDownloadedFile(final WebDriverWaits webDriverWaits, final String file) {
-        final Path downloadedPdf = Paths.get(systemProperties.getDownloadsFolder(), file);
-        final Path pdfToCheck = Paths.get(systemProperties.getFilesFolder(), file);
+        final Path downloadedFile = Paths.get(application.getDownloadsFolder(), file);
+        final Path fileToCheck = Paths.get(application.getFilesFolder(), file);
 
-        waitForDownloadOf(webDriverWaits, downloadedPdf);
+        waitForDownloadOf(webDriverWaits, downloadedFile);
 
-        return Arrays.equals(sha256Of(downloadedPdf), sha256Of(pdfToCheck));
+        return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
     }
 
     @SneakyThrows

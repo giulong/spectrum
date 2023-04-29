@@ -1,5 +1,6 @@
 package com.giuliolongfils.agitation.extensions.resolvers;
 
+import com.giuliolongfils.agitation.pojos.Configuration;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
 import com.giuliolongfils.agitation.util.AgitationUtil;
 import lombok.Getter;
@@ -15,9 +16,13 @@ public class AgitationUtilResolver extends TypeBasedParameterResolver<AgitationU
 	@Getter
 	private final AgitationUtil agitationUtil;
 
-	public AgitationUtilResolver(final SystemProperties systemProperties) {
+	public AgitationUtilResolver(final SystemProperties systemProperties, final Configuration configuration) {
 		log.debug("Building AgitationUtil");
-		agitationUtil = AgitationUtil.builder().systemProperties(systemProperties).build();
+		agitationUtil = AgitationUtil.builder()
+				.systemProperties(systemProperties)
+				.application(configuration.getApplication())
+				.extent(configuration.getExtent())
+				.build();
 		agitationUtil.deleteDownloadsFolder();
 	}
 
