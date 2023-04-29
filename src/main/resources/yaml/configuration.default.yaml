@@ -57,7 +57,7 @@ webDriver:
 
 # Data models
 data:
-  fqdn: com.giuliolongfils.agitation.client
+  fqdn: com.giuliolongfils.spectrum.data
 
 # Selenium internal logging levels
 seleniumLogs:

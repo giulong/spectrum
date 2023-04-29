@@ -1,6 +1,6 @@
-# AGITATION
+# SPECTRUM
 
-Agitation Selenium Framework
+Spectrum Selenium Framework
 
 ## How to build
 
