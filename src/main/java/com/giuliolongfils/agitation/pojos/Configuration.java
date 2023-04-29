@@ -26,13 +26,17 @@ public class Configuration {
 	public static class Application {
 		private String baseUrl;
 		private String driversPath;
+		private String filesFolder;
+		private String downloadsFolder;
 	}
 
 	@Getter
 	@EqualsAndHashCode
 	public static class Extent {
 		private String documentTitle;
+		private String reportFolder;
 		private String reportName;
+		private String fileName;
 		private String theme;
 		private String timeStampFormat;
 	}

@@ -50,7 +50,7 @@ public class Firefox extends Browser<FirefoxOptions> {
 
         firefoxConfig.getPreferences().forEach((k, v) -> addPreference(k, v, capabilities));
 
-        capabilities.addPreference("browser.download.dir", systemProperties.getDownloadsFolder());
+        capabilities.addPreference("browser.download.dir", configuration.getApplication().getDownloadsFolder());
         capabilities.setAcceptInsecureCerts(true);
     }
 
