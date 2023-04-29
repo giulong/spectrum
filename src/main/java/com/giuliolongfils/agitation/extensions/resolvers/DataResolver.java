@@ -22,7 +22,7 @@ public class DataResolver<Data> implements ParameterResolver {
         @SuppressWarnings("unchecked")
         final Class<Data> dataClass = (Class<Data>) Class.forName(dataConfiguration.getFqdn());
 
-        this.data = YamlParser.getInstance().read("data/data.yaml", dataClass);
+        data = YamlParser.getInstance().read("data/data.yaml", dataClass);
         log.trace("Data:\n{}", YamlWriter.getInstance().write(data));
     }
 
