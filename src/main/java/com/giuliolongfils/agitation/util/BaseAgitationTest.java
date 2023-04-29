@@ -1,6 +1,5 @@
 package com.giuliolongfils.agitation.util;
 
-import com.giuliolongfils.agitation.client.Data;
 import com.giuliolongfils.agitation.extensions.AgitationExtension;
 import com.giuliolongfils.agitation.extensions.resolvers.*;
 import com.giuliolongfils.agitation.interfaces.Endpoint;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @Slf4j
 @TestInstance(PER_CLASS)
-public abstract class BaseAgitationTest extends TakesScreenshots {
+public abstract class BaseAgitationTest<Data> extends TakesScreenshots {
 
     @RegisterExtension
     public static final AgitationExtension AGITATION_EXTENSION = new AgitationExtension();
@@ -64,16 +63,18 @@ public abstract class BaseAgitationTest extends TakesScreenshots {
     );
 
     @RegisterExtension
-    public static final DataResolver DATA_RESOLVER = new DataResolver();
+    public final DataResolver<Data> dataResolver = new DataResolver<>(
+            CONFIGURATION_RESOLVER.getConfiguration().getData()
+    );
 
     @RegisterExtension
     public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
 
     protected static Configuration configuration;
-    protected static Data data;
+    protected Data data;
     protected static EventsListener eventsListener;
     protected static SystemProperties systemProperties;
-    protected List<AgitationPage> agitationPages;
+    protected List<AgitationPage<Data>> agitationPages;
 
     public void initPages() {
         final Class<?> clazz = this.getClass();
@@ -96,9 +97,10 @@ public abstract class BaseAgitationTest extends TakesScreenshots {
     }
 
     @SneakyThrows
-    public AgitationPage initPage(final Field f) {
+    public AgitationPage<Data> initPage(final Field f) {
         log.debug("Initializing page {}", f.getName());
-        final AgitationPage agitationPage = (AgitationPage) f.getType().getDeclaredConstructor().newInstance();
+        @SuppressWarnings("unchecked")
+        final AgitationPage<Data> agitationPage = (AgitationPage<Data>) f.getType().getDeclaredConstructor().newInstance();
 
         f.setAccessible(true);
         f.set(this, agitationPage);

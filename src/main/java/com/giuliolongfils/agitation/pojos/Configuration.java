@@ -17,6 +17,7 @@ public class Configuration {
 	private Application application;
 	private Extent extent;
 	private WebDriver webDriver;
+	private Data data;
 	private SeleniumLogs seleniumLogs;
 	private Events events;
 
@@ -86,6 +87,12 @@ public class Configuration {
 		public static class Edge {
 			private Map<String, Object> capabilities;
 		}
+	}
+
+	@Getter
+	@EqualsAndHashCode
+	public static class Data {
+		private String fqdn;
 	}
 
 	@Getter

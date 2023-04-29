@@ -51,6 +51,10 @@ webDriver:
   edge:
     capabilities: { }
 
+# Data models
+data:
+  fqdn: com.giuliolongfils.agitation.client
+
 # Selenium internal logging levels
 seleniumLogs:
   browser: INFO

@@ -1,7 +1,6 @@
 package com.giuliolongfils.agitation.util;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.giuliolongfils.agitation.client.Data;
 import com.giuliolongfils.agitation.pojos.Configuration;
 import com.giuliolongfils.agitation.pojos.SystemProperties;
 import com.giuliolongfils.agitation.pojos.WebDriverWaits;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 @TestInstance(PER_CLASS)
 @Slf4j
-public abstract class AgitationTestParallel extends BaseAgitationTest {
+public abstract class AgitationTestParallel<Data> extends BaseAgitationTest<Data> {
 
     @Getter
     protected WebDriver webDriver;
