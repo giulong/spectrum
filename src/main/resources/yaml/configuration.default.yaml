@@ -34,6 +34,7 @@ webDriver:
       prefs:
         download.prompt_for_download: false
         download.directory_upgrade: true
+        download.default_directory: target/downloads
         safebrowsing.enabled: true
 
   # Firefox capabilities. See: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
@@ -44,6 +45,7 @@ webDriver:
     preferences:
       browser.download.folderList: 2
       browser.download.useDownloadDir: true
+      browser.download.dir: target/downloads
       browser.helperApps.neverAsk.saveToDisk: application/pdf
       pdfjs.disabled: true
 

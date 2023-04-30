@@ -8,7 +8,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,9 +62,6 @@ public class Chrome extends Browser<ChromeOptions> {
 
         final Map<String, Object> experimentalOptions = chromeConfig.getExperimentalOptions();
         experimentalOptions.forEach(capabilities::setExperimentalOption);
-
-        @SuppressWarnings("unchecked") final Map<String, Object> prefs = (Map<String, Object>) experimentalOptions.getOrDefault("prefs", new HashMap<>());
-        prefs.put("download.default_directory", configuration.getApplication().getDownloadsFolder());
     }
 
     @Override
