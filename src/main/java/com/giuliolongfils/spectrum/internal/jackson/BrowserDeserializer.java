@@ -10,8 +10,8 @@ import java.io.IOException;
 public class BrowserDeserializer extends JsonDeserializer<Browser<?>> {
 
     @Override
-    public Browser<?> deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        String value = jsonParser.getValueAsString();
+    public Browser<?> deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+        final String value = jsonParser.getValueAsString();
 
         return switch (value) {
             case "chrome" -> new Chrome();

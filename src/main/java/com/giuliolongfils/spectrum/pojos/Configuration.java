@@ -14,6 +14,7 @@ import java.util.logging.Level;
 @EqualsAndHashCode
 public class Configuration {
 
+	private Map<String, String> vars;
 	private Application application;
 	private Extent extent;
 	private WebDriver webDriver;

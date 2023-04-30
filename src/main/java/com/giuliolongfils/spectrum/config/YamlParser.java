@@ -1,11 +1,13 @@
 package com.giuliolongfils.spectrum.config;
 
 import ch.qos.logback.classic.Level;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.giuliolongfils.spectrum.browsers.Browser;
 import com.giuliolongfils.spectrum.internal.jackson.BrowserDeserializer;
+import com.giuliolongfils.spectrum.internal.jackson.InterpolatedStringDeserializer;
 import com.giuliolongfils.spectrum.internal.jackson.LogbackLogLevelDeserializer;
 import com.giuliolongfils.spectrum.internal.jackson.UtilLogLevelDeserializer;
 import lombok.SneakyThrows;
@@ -28,16 +30,25 @@ public final class YamlParser {
     private final ObjectMapper yamlMapper = new YAMLMapper()
             .setDefaultMergeable(true)
             .registerModules(
+                    new SimpleModule().addDeserializer(String.class, new InterpolatedStringDeserializer()),
                     new SimpleModule().addDeserializer(java.util.logging.Level.class, new UtilLogLevelDeserializer()),
                     new SimpleModule().addDeserializer(Level.class, new LogbackLogLevelDeserializer()),
                     new SimpleModule().addDeserializer(Browser.class, new BrowserDeserializer())
             );
 
-    @SneakyThrows
-    public <T> T read(final String file, final Class<T> clazz, boolean internal) {
+    public boolean notExists(final String file, final boolean internal) {
         final Path path = Paths.get(file);
         if (!internal && Files.notExists(RESOURCES.resolve(path))) {
             log.warn("File {} not found.", path);
+            return true;
+        }
+
+        return false;
+    }
+
+    @SneakyThrows
+    public <T> T read(final String file, final Class<T> clazz, final boolean internal) {
+        if (notExists(file, internal)) {
             return null;
         }
 
@@ -51,6 +62,25 @@ public final class YamlParser {
 
     public <T> T readInternal(final String file, final Class<T> clazz) {
         return read(file, clazz, true);
+    }
+
+    @SneakyThrows
+    public <T> T readNode(final String node, final String file, final Class<T> clazz, final boolean internal) {
+        if (notExists(file, internal)) {
+            return null;
+        }
+
+        log.debug("Reading node '{}' of internal file '{}' onto an instance of {}", node, file, clazz.getSimpleName());
+        final JsonNode root = yamlMapper.readTree(YamlParser.class.getClassLoader().getResource(file));
+        return yamlMapper.convertValue(root.get(node), clazz);
+    }
+
+    public <T> T readNode(final String node, final String file, final Class<T> clazz) {
+        return readNode(node, file, clazz, false);
+    }
+
+    public <T> T readInternalNode(final String node, final String file, final Class<T> clazz) {
+        return readNode(node, file, clazz, true);
     }
 
     @SneakyThrows

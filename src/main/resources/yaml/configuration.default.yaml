@@ -1,9 +1,13 @@
+# Common vars to use to interpolate other String values in other nodes of the configuration
+vars:
+  downloadsFolder: target/downloads
+
 # Application under test configuration
 application:
   baseUrl: https://www.lambdatest.com/selenium-playground/simple-form-demo
   driversPath: ~/.m2/repository/webDriver   # Path to drivers executables
   filesFolder: src/test/resources/files
-  downloadsFolder: target/downloads
+  downloadsFolder: ${downloadsFolder}
 
 # Extent Report configuration
 extent:
@@ -34,7 +38,7 @@ webDriver:
       prefs:
         download.prompt_for_download: false
         download.directory_upgrade: true
-        download.default_directory: target/downloads
+        download.default_directory: ${downloadsFolder}
         safebrowsing.enabled: true
 
   # Firefox capabilities. See: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
@@ -45,7 +49,7 @@ webDriver:
     preferences:
       browser.download.folderList: 2
       browser.download.useDownloadDir: true
-      browser.download.dir: target/downloads
+      browser.download.dir: ${downloadsFolder}
       browser.helperApps.neverAsk.saveToDisk: application/pdf
       pdfjs.disabled: true
 
