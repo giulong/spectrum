@@ -99,6 +99,7 @@ public abstract class BaseSpectrumTest<Data> extends TakesScreenshots {
     @SneakyThrows
     public SpectrumPage<Data> initPage(final Field f) {
         log.debug("Initializing page {}", f.getName());
+
         @SuppressWarnings("unchecked")
         final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
 
