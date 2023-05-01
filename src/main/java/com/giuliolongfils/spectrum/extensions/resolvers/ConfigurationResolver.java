@@ -26,16 +26,14 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
 
     @Getter
     private final Configuration configuration;
+    private final YamlParser yamlParser = YamlParser.getInstance();
 
     @SneakyThrows
     public ConfigurationResolver(final SystemProperties systemProperties) {
         log.debug("Parsing Configuration");
-        final YamlParser yamlParser = YamlParser.getInstance();
-        final String envConfiguration = String.format("configuration-%s.yaml", systemProperties.getEnv());
 
-        VARS.putAll(yamlParser.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION, Map.class));
-        VARS.putAll(Optional.ofNullable(yamlParser.readNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
-        VARS.putAll(Optional.ofNullable(yamlParser.readNode(VARS_NODE, envConfiguration, Map.class)).orElse(new HashMap<>()));
+        final String envConfiguration = String.format("configuration-%s.yaml", systemProperties.getEnv());
+        parseVars(envConfiguration);
 
         configuration = yamlParser.readInternal(DEFAULT_CONFIGURATION, Configuration.class);
         yamlParser.updateWithFile(configuration, CONFIGURATION);
@@ -47,5 +45,12 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
     @Override
     public Configuration resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         return configuration;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void parseVars(final String envConfiguration) {
+        VARS.putAll(yamlParser.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION, Map.class));
+        VARS.putAll(Optional.ofNullable(yamlParser.readNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
+        VARS.putAll(Optional.ofNullable(yamlParser.readNode(VARS_NODE, envConfiguration, Map.class)).orElse(new HashMap<>()));
     }
 }
