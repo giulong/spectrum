@@ -1,7 +1,6 @@
 package com.giuliolongfils.spectrum.browsers;
 
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -40,7 +39,7 @@ public class Edge extends Browser<EdgeOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties) {
+    public void buildCapabilitiesFrom(Configuration configuration) {
         capabilities = new EdgeOptions();
         final Configuration.WebDriver.Edge edgeConfig = configuration.getWebDriver().getEdge();
         edgeConfig.getCapabilities().forEach(capabilities::setCapability);

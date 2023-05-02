@@ -1,7 +1,6 @@
 package com.giuliolongfils.spectrum.browsers;
 
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -37,7 +36,7 @@ public class Firefox extends Browser<FirefoxOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties) {
+    public void buildCapabilitiesFrom(Configuration configuration) {
         capabilities = new FirefoxOptions();
         final Configuration.WebDriver.Firefox firefoxConfig = configuration.getWebDriver().getFirefox();
 

@@ -6,7 +6,6 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
 import lombok.Builder;
 import lombok.SneakyThrows;
@@ -40,16 +39,14 @@ public class SpectrumUtil {
 
     public static final String SCREEN_SHOT_FOLDER = "screenshots";
     public static final String HASH_ALGORITHM = "SHA-256";
-    private final SystemProperties systemProperties;
-    private final Configuration.Application application;
-    private final Configuration.Extent extent;
+    private final Configuration configuration;
 
     @SneakyThrows
     public MediaEntityModelProvider addScreenshotToReport(final WebDriver webDriver, final ExtentTest extentTest, final String msg, final Status status) {
         try {
             final String fileName = String.format("%s.png", UUID.randomUUID()).replaceAll("[\\\\/]", "");
-            final Path screenShotPath = Paths.get(extent.getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
-            final byte[] screenShotBytes = !systemProperties.getBrowser().takesPartialScreenshots()
+            final Path screenShotPath = Paths.get(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
+            final byte[] screenShotBytes = !configuration.getSystemProperties().getBrowser().takesPartialScreenshots()
                     ? ((TakesScreenshot) webDriver).getScreenshotAs(BYTES)
                     : webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES);
 
@@ -68,7 +65,7 @@ public class SpectrumUtil {
 
     @SneakyThrows
     public void deleteDownloadsFolder() {
-        final String downloadFolder = application.getDownloadsFolder();
+        final String downloadFolder = configuration.getApplication().getDownloadsFolder();
         final Path downloadPath = Paths.get(downloadFolder);
 
         if (Files.exists(downloadPath)) {
@@ -90,7 +87,7 @@ public class SpectrumUtil {
     }
 
     public boolean logBrowserConsoleOutput(final WebDriver driver, final ExtentTest extentTest) {
-        if (!systemProperties.getBrowser().exposesConsole()) {
+        if (!configuration.getSystemProperties().getBrowser().exposesConsole()) {
             return false;
         }
 
@@ -110,6 +107,7 @@ public class SpectrumUtil {
     }
 
     public boolean checkDownloadedFile(final WebDriverWaits webDriverWaits, final String file) {
+        final Configuration.Application application = configuration.getApplication();
         final Path downloadedFile = Paths.get(application.getDownloadsFolder(), file);
         final Path fileToCheck = Paths.get(application.getFilesFolder(), file);
 

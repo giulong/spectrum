@@ -1,5 +1,8 @@
 package com.giuliolongfils.spectrum.pojos;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.giuliolongfils.spectrum.browsers.Browser;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
@@ -15,12 +18,24 @@ import java.util.logging.Level;
 public class Configuration {
 
 	private Map<String, String> vars;
+	private SystemProperties systemProperties;
 	private Application application;
 	private Extent extent;
 	private WebDriver webDriver;
 	private Data data;
 	private SeleniumLogs seleniumLogs;
 	private Events events;
+
+	@Getter
+	@EqualsAndHashCode
+	public static class SystemProperties {
+		private String env;
+
+		@JsonSerialize(using = ToStringSerializer.class)
+		private Browser<?> browser;
+		private boolean grid;
+		private boolean downloadWebDriver;
+	}
 
 	@Getter
 	@EqualsAndHashCode

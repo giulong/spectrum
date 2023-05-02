@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.giuliolongfils.spectrum.browsers.Browser;
-import com.giuliolongfils.spectrum.internal.jackson.BrowserDeserializer;
-import com.giuliolongfils.spectrum.internal.jackson.InterpolatedStringDeserializer;
-import com.giuliolongfils.spectrum.internal.jackson.LogbackLogLevelDeserializer;
-import com.giuliolongfils.spectrum.internal.jackson.UtilLogLevelDeserializer;
+import com.giuliolongfils.spectrum.internal.jackson.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,6 +28,7 @@ public final class YamlParser {
             .setDefaultMergeable(true)
             .registerModules(
                     new SimpleModule().addDeserializer(String.class, new InterpolatedStringDeserializer()),
+                    new SimpleModule().addDeserializer(boolean.class, new InterpolatedBooleanDeserializer()),
                     new SimpleModule().addDeserializer(java.util.logging.Level.class, new UtilLogLevelDeserializer()),
                     new SimpleModule().addDeserializer(Level.class, new LogbackLogLevelDeserializer()),
                     new SimpleModule().addDeserializer(Browser.class, new BrowserDeserializer())
@@ -72,7 +70,7 @@ public final class YamlParser {
 
         log.debug("Reading node '{}' of internal file '{}' onto an instance of {}", node, file, clazz.getSimpleName());
         final JsonNode root = yamlMapper.readTree(YamlParser.class.getClassLoader().getResource(file));
-        return yamlMapper.convertValue(root.get(node), clazz);
+        return yamlMapper.convertValue(root.at(node), clazz);
     }
 
     public <T> T readNode(final String node, final String file, final Class<T> clazz) {

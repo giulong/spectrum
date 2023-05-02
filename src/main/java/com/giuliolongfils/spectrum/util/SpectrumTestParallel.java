@@ -2,7 +2,6 @@ package com.giuliolongfils.spectrum.util;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -25,11 +24,10 @@ public abstract class SpectrumTestParallel<Data> extends BaseSpectrumTest<Data> 
     protected WebDriverWaits webDriverWaits;
 
     @BeforeAll
-    public void spectrumTestParallelBeforeAll(final SpectrumUtil nu, final Configuration c, final Data d, final SystemProperties sp) {
+    public void spectrumTestParallelBeforeAll(final SpectrumUtil nu, final Configuration c, final Data d) {
         spectrumUtil = nu;
         configuration = c;
         data = d;
-        systemProperties = sp;
 
         initPages();
     }

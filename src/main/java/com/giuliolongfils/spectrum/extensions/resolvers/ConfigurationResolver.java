@@ -3,7 +3,6 @@ package com.giuliolongfils.spectrum.extensions.resolvers;
 import com.giuliolongfils.spectrum.config.YamlParser;
 import com.giuliolongfils.spectrum.config.YamlWriter;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,8 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
 
     public static final String DEFAULT_CONFIGURATION = "yaml/configuration.default.yaml";
     public static final String CONFIGURATION = "configuration.yaml";
-    public static final String VARS_NODE = "vars";
+    public static final String ENV_NODE = "/systemProperties/env";
+    public static final String VARS_NODE = "/vars";
     public static final Map<String, String> VARS = new HashMap<>();
 
     @Getter
@@ -29,10 +29,10 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
     private final YamlParser yamlParser = YamlParser.getInstance();
 
     @SneakyThrows
-    public ConfigurationResolver(final SystemProperties systemProperties) {
+    public ConfigurationResolver() {
         log.debug("Parsing Configuration");
 
-        final String envConfiguration = String.format("configuration-%s.yaml", systemProperties.getEnv());
+        final String envConfiguration = String.format("configuration-%s.yaml", parseEnv());
         parseVars(envConfiguration);
 
         configuration = yamlParser.readInternal(DEFAULT_CONFIGURATION, Configuration.class);
@@ -45,6 +45,12 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
     @Override
     public Configuration resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         return configuration;
+    }
+
+    protected String parseEnv() {
+        return Optional
+                .ofNullable(yamlParser.readInternalNode(ENV_NODE, CONFIGURATION, String.class))
+                .orElse(yamlParser.readInternalNode(ENV_NODE, DEFAULT_CONFIGURATION, String.class));
     }
 
     @SuppressWarnings("unchecked")
