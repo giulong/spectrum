@@ -1,10 +1,10 @@
 package com.giuliolongfils.spectrum.util;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.MediaEntityModelProvider;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+import com.aventstack.extentreports.model.Media;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
 import lombok.Builder;
@@ -42,7 +42,7 @@ public class SpectrumUtil {
     private final Configuration configuration;
 
     @SneakyThrows
-    public MediaEntityModelProvider addScreenshotToReport(final WebDriver webDriver, final ExtentTest extentTest, final String msg, final Status status) {
+    public Media addScreenshotToReport(final WebDriver webDriver, final ExtentTest extentTest, final String msg, final Status status) {
         try {
             final String fileName = String.format("%s.png", UUID.randomUUID()).replaceAll("[\\\\/]", "");
             final Path screenShotPath = Paths.get(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
@@ -53,7 +53,7 @@ public class SpectrumUtil {
             Files.createDirectories(screenShotPath.getParent());
             Files.write(screenShotPath, screenShotBytes);
 
-            final MediaEntityModelProvider screenShot = createScreenCaptureFromPath(SCREEN_SHOT_FOLDER + "/" + screenShotPath.getFileName().toString()).build();
+            final Media screenShot = createScreenCaptureFromPath(SCREEN_SHOT_FOLDER + "/" + screenShotPath.getFileName().toString()).build();
             extentTest.log(status, "<div class=\"step-text\">" + msg + "</div>", screenShot);
 
             return screenShot;

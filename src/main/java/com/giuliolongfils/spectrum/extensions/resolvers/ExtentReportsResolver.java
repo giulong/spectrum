@@ -1,7 +1,7 @@
 package com.giuliolongfils.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.giuliolongfils.spectrum.config.FileReader;
 import com.giuliolongfils.spectrum.pojos.Configuration;
@@ -31,16 +31,15 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
 
     public ExtentReportsResolver(final Configuration.Extent extent) {
         log.debug("Init Extent Reports");
-        final FileReader fileReader = FileReader.getInstance();
         final String reportPath = getReportsPathFrom(extent.getReportFolder(), extent.getFileName());
         final String reportName = extent.getReportName();
-        final ExtentHtmlReporter htmlReporter = new ExtentHtmlReporter(reportPath);
+        final ExtentSparkReporter htmlReporter = new ExtentSparkReporter(reportPath);
 
         htmlReporter.config().setDocumentTitle(extent.getDocumentTitle());
         htmlReporter.config().setReportName(reportName);
         htmlReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
         htmlReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
-        htmlReporter.config().setCSS(fileReader.read("/css/report.css"));
+        htmlReporter.config().setCss(FileReader.getInstance().read("/css/report.css"));
 
         final ExtentReports extentReports = new ExtentReports();
         extentReports.attachReporter(htmlReporter);

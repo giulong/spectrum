@@ -42,14 +42,14 @@ public class EventsListener implements WebDriverListener {
                 log.trace(noTagsMessage);
 
                 if (log.isTraceEnabled()) {
-                    store.get(EXTENT_TEST, ExtentTest.class).debug(message);
+                    store.get(EXTENT_TEST, ExtentTest.class).info(message);
                 }
             }
             case "DEBUG" -> {
                 log.debug(noTagsMessage);
 
                 if (log.isDebugEnabled()) {
-                    store.get(EXTENT_TEST, ExtentTest.class).debug(message);
+                    store.get(EXTENT_TEST, ExtentTest.class).info(message);
                 }
             }
             case "INFO" -> {
