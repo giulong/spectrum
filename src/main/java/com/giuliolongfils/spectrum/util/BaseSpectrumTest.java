@@ -5,7 +5,6 @@ import com.giuliolongfils.spectrum.extensions.resolvers.*;
 import com.giuliolongfils.spectrum.interfaces.Endpoint;
 import com.giuliolongfils.spectrum.internal.EventsListener;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.TestInstance;
@@ -27,16 +26,10 @@ public abstract class BaseSpectrumTest<Data> extends TakesScreenshots {
     public static final SpectrumExtension SPECTRUM_EXTENSION = new SpectrumExtension();
 
     @RegisterExtension
-    public static final SystemPropertiesResolver SYSTEM_PROPERTIES_RESOLVER = new SystemPropertiesResolver();
-
-    @RegisterExtension
-    public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver(
-            SYSTEM_PROPERTIES_RESOLVER.getSystemProperties()
-    );
+    public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver();
 
     @RegisterExtension
     public static final SpectrumUtilResolver SPECTRUM_UTIL_RESOLVER = new SpectrumUtilResolver(
-            SYSTEM_PROPERTIES_RESOLVER.getSystemProperties(),
             CONFIGURATION_RESOLVER.getConfiguration()
     );
 
@@ -53,7 +46,6 @@ public abstract class BaseSpectrumTest<Data> extends TakesScreenshots {
 
     @RegisterExtension
     public static final WebDriverResolver WEB_DRIVER_RESOLVER = new WebDriverResolver(
-            SYSTEM_PROPERTIES_RESOLVER.getSystemProperties(),
             CONFIGURATION_RESOLVER.getConfiguration()
     );
 
@@ -73,7 +65,6 @@ public abstract class BaseSpectrumTest<Data> extends TakesScreenshots {
     protected static Configuration configuration;
     protected Data data;
     protected static EventsListener eventsListener;
-    protected static SystemProperties systemProperties;
     protected List<SpectrumPage<Data>> spectrumPages;
 
     public void initPages() {
@@ -112,7 +103,6 @@ public abstract class BaseSpectrumTest<Data> extends TakesScreenshots {
         spectrumPage.spectrumUtil = spectrumUtil;
         spectrumPage.configuration = configuration;
         spectrumPage.data = data;
-        spectrumPage.systemProperties = systemProperties;
 
         final Endpoint endpointAnnotation = spectrumPage.getClass().getAnnotation(Endpoint.class);
         final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";

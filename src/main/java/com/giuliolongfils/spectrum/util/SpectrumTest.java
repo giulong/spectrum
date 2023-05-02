@@ -2,7 +2,6 @@ package com.giuliolongfils.spectrum.util;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
@@ -29,13 +28,12 @@ public abstract class SpectrumTest<Data> extends BaseSpectrumTest<Data> {
 
     @BeforeAll
     public void spectrumTestBeforeAll(final WebDriver wd, final WebDriverWaits wdw, final SpectrumUtil su,
-                                       final Configuration c, final Data d, final SystemProperties sp, final Actions a) {
+                                       final Configuration c, final Data d, final Actions a) {
         webDriver = wd;
         webDriverWaits = wdw;
         spectrumUtil = su;
         configuration = c;
         data = d;
-        systemProperties = sp;
         actions = a;
 
         initPages();

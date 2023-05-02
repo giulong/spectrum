@@ -1,7 +1,6 @@
 package com.giuliolongfils.spectrum.browsers;
 
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -37,7 +36,7 @@ public class InternetExplorer extends Browser<InternetExplorerOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties) {
+    public void buildCapabilitiesFrom(Configuration configuration) {
         capabilities = new InternetExplorerOptions();
         final Configuration.WebDriver.InternetExplorer ieConfig = configuration.getWebDriver().getIe();
         ieConfig.getCapabilities().forEach(capabilities::setCapability);

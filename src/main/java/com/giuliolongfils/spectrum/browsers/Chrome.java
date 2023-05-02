@@ -1,7 +1,6 @@
 package com.giuliolongfils.spectrum.browsers;
 
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -43,7 +42,7 @@ public class Chrome extends Browser<ChromeOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties) {
+    public void buildCapabilitiesFrom(Configuration configuration) {
         capabilities = new ChromeOptions();
         final Configuration.WebDriver.Chrome chromeConfig = configuration.getWebDriver().getChrome();
 

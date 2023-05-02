@@ -2,7 +2,6 @@ package com.giuliolongfils.spectrum.util;
 
 import com.giuliolongfils.spectrum.internal.EventsListener;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ public abstract class SpectrumPage<Data> extends TakesScreenshots {
     protected WebDriver webDriver;
     protected Configuration configuration;
     protected Data data;
-    protected SystemProperties systemProperties;
     protected EventsListener eventsListener;
     protected WebDriverWaits webDriverWaits;
 

@@ -2,6 +2,12 @@
 vars:
   downloadsFolder: target/downloads
 
+systemProperties:
+  env: ${spectrum.env:-local}
+  browser: ${spectrum.browser:-chrome}
+  grid: ${spectrum.grid:-false}
+  downloadWebDriver: ${spectrum.download.webdriver:-true}
+
 # Application under test configuration
 application:
   baseUrl: https://www.lambdatest.com/selenium-playground/simple-form-demo

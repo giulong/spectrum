@@ -2,23 +2,24 @@ package com.giuliolongfils.spectrum.internal.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.giuliolongfils.spectrum.browsers.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-public class BrowserDeserializer extends JsonDeserializer<Browser<?>> {
+@Slf4j
+public class BrowserDeserializer extends InterpolatedDeserializer<Browser<?>> {
 
     @Override
     public Browser<?> deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
-        final String value = jsonParser.getValueAsString();
+        final String interpolatedValue = interpolate(jsonParser.getValueAsString(), jsonParser.currentName());
 
-        return switch (value) {
+        return switch (interpolatedValue) {
             case "chrome" -> new Chrome();
             case "firefox" -> new Firefox();
             case "ie" -> new InternetExplorer();
             case "edge" -> new Edge();
-            default -> throw new RuntimeException("Value " + value + " is not a valid browser!");
+            default -> throw new RuntimeException("Value '" + interpolatedValue + "' is not a valid browser!");
         };
     }
 }

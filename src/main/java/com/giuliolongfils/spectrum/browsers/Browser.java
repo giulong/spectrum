@@ -1,7 +1,6 @@
 package com.giuliolongfils.spectrum.browsers;
 
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -29,17 +28,18 @@ public abstract class Browser<T extends MutableCapabilities> {
 
     public abstract String getDriverName();
 
-    public abstract void buildCapabilitiesFrom(Configuration configuration, SystemProperties systemProperties);
+    public abstract void buildCapabilitiesFrom(Configuration configuration);
 
     public abstract WebDriver buildWebDriver();
 
     public abstract void mergeGridCapabilitiesFrom(Configuration.WebDriver.Grid gridConfiguration);
 
     @SneakyThrows
-    public WebDriver build(Configuration configuration, SystemProperties systemProperties) {
-        buildCapabilitiesFrom(configuration, systemProperties);
+    public WebDriver build(Configuration configuration) {
+        buildCapabilitiesFrom(configuration);
         log.info("Capabilities: {}", capabilities.toJson());
 
+        final Configuration.SystemProperties systemProperties = configuration.getSystemProperties();
         if (systemProperties.isGrid()) {
             Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();
             mergeGridCapabilitiesFrom(gridConfiguration);

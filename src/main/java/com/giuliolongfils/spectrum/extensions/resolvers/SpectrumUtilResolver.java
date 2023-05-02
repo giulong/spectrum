@@ -1,7 +1,6 @@
 package com.giuliolongfils.spectrum.extensions.resolvers;
 
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.SystemProperties;
 import com.giuliolongfils.spectrum.util.SpectrumUtil;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +15,9 @@ public class SpectrumUtilResolver extends TypeBasedParameterResolver<SpectrumUti
 	@Getter
 	private final SpectrumUtil spectrumUtil;
 
-	public SpectrumUtilResolver(final SystemProperties systemProperties, final Configuration configuration) {
+	public SpectrumUtilResolver(final Configuration configuration) {
 		log.debug("Building SpectrumUtil");
-		spectrumUtil = SpectrumUtil.builder()
-				.systemProperties(systemProperties)
-				.application(configuration.getApplication())
-				.extent(configuration.getExtent())
-				.build();
+		spectrumUtil = SpectrumUtil.builder().configuration(configuration).build();
 		spectrumUtil.deleteDownloadsFolder();
 	}
 
