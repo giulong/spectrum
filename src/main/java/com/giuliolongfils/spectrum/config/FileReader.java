@@ -25,7 +25,7 @@ public final class FileReader {
 
         if (inputStream == null) {
             log.warn("File {} not found.", file);
-            return null;
+            return "";
         }
 
         return new Scanner(inputStream).useDelimiter("\\Z").next();

@@ -1,7 +1,7 @@
 package com.giuliolongfils.spectrum.util;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.MediaEntityModelProvider;
+import com.aventstack.extentreports.model.Media;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -16,19 +16,15 @@ public abstract class TakesScreenshots {
 
     public abstract WebDriver getWebDriver();
 
-    public MediaEntityModelProvider infoWithScreenshot(final String msg) {
+    public Media infoWithScreenshot(final String msg) {
         return spectrumUtil.addScreenshotToReport(getWebDriver(), extentTest, msg, INFO);
     }
 
-    public MediaEntityModelProvider debugWithScreenshot(final String msg) {
-        return spectrumUtil.addScreenshotToReport(getWebDriver(), extentTest, msg, DEBUG);
+    public Media warningWithScreenshot(final String msg) {
+        return spectrumUtil.addScreenshotToReport(getWebDriver(), extentTest, msg, WARNING);
     }
 
-    public MediaEntityModelProvider errorWithScreenshot(final String msg) {
-        return spectrumUtil.addScreenshotToReport(getWebDriver(), extentTest, msg, ERROR);
-    }
-
-    public MediaEntityModelProvider failWithScreenshot(final String msg) {
+    public Media failWithScreenshot(final String msg) {
         return spectrumUtil.addScreenshotToReport(getWebDriver(), extentTest, msg, FAIL);
     }
 

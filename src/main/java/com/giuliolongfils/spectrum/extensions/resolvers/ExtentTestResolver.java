@@ -60,7 +60,7 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> i
 
     @Override
     public void testAborted(ExtensionContext context, Throwable throwable) {
-        logTestStatus(context, ERROR);
+        logTestStatus(context, FAIL);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> i
 
     protected ExtentColor getColorOf(final Status status) {
         return switch (status) {
-            case FAIL, ERROR -> RED;
+            case FAIL -> RED;
             case SKIP -> AMBER;
             default -> GREEN;
         };
