@@ -1,64 +1,155 @@
 package com.giuliolongfils.spectrum.util;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.giuliolongfils.spectrum.extensions.SpectrumExtension;
+import com.giuliolongfils.spectrum.extensions.resolvers.*;
+import com.giuliolongfils.spectrum.interfaces.Endpoint;
+import com.giuliolongfils.spectrum.internal.EventsListener;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
+import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-@TestInstance(PER_CLASS)
+import static java.util.stream.Collectors.toList;
+
 @Slf4j
-public abstract class SpectrumTest<Data> extends BaseSpectrumTest<Data> {
+public abstract class SpectrumTest<Data> extends TakesScreenshots {
 
-    protected static WebDriver webDriver;
-    protected static WebDriverWaits webDriverWaits;
+    @RegisterExtension
+    public static final SpectrumExtension SPECTRUM_EXTENSION = new SpectrumExtension();
 
-    @Override
-    public WebDriver getWebDriver() {
-        return webDriver;
+    @RegisterExtension
+    public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver();
+
+    @RegisterExtension
+    public static final SpectrumUtilResolver SPECTRUM_UTIL_RESOLVER = new SpectrumUtilResolver(
+            CONFIGURATION_RESOLVER.getConfiguration()
+    );
+
+    @RegisterExtension
+    public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver(
+            CONFIGURATION_RESOLVER.getConfiguration().getExtent()
+    );
+
+    @RegisterExtension
+    public static final ExtentTestResolver EXTENT_TEST_RESOLVER = new ExtentTestResolver(
+            EXTENT_REPORTS_RESOLVER.getExtentReports(),
+            SPECTRUM_UTIL_RESOLVER.getSpectrumUtil()
+    );
+
+    @RegisterExtension
+    public static final WebDriverResolver WEB_DRIVER_RESOLVER = new WebDriverResolver(
+            CONFIGURATION_RESOLVER.getConfiguration()
+    );
+
+    @RegisterExtension
+    public static final WebDriverWaitsResolver WEB_DRIVER_WAITS_RESOLVER = new WebDriverWaitsResolver(
+            CONFIGURATION_RESOLVER.getConfiguration().getWebDriver()
+    );
+
+    @RegisterExtension
+    public final DataResolver<Data> dataResolver = new DataResolver<>(
+            CONFIGURATION_RESOLVER.getConfiguration().getData()
+    );
+
+    @RegisterExtension
+    public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
+
+    protected static Configuration configuration;
+    protected static EventsListener eventsListener;
+
+    @Getter
+    protected WebDriver webDriver;
+    protected WebDriverWaits webDriverWaits;
+    protected Data data;
+    protected List<SpectrumPage<Data>> spectrumPages;
+
+    public void initPages() {
+        final Class<?> clazz = this.getClass();
+        log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
+
+        final List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
+
+        Class<?> superClazz = clazz.getSuperclass();
+        while (superClazz.getSuperclass() != TakesScreenshots.class) {
+            log.debug("Initializing also pages in superclass {}", superClazz.getSimpleName());
+            fields.addAll(Arrays.asList(superClazz.getDeclaredFields()));
+            superClazz = superClazz.getSuperclass();
+        }
+
+        spectrumPages = fields
+                .stream()
+                .filter(f -> SpectrumPage.class.isAssignableFrom(f.getType()))
+                .map(this::initPage)
+                .collect(toList());
+    }
+
+    @SneakyThrows
+    public SpectrumPage<Data> initPage(final Field f) {
+        log.debug("Initializing page {}", f.getName());
+
+        @SuppressWarnings("unchecked")
+        final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
+
+        f.setAccessible(true);
+        f.set(this, spectrumPage);
+
+        final String className = spectrumPage.getClass().getSimpleName();
+        log.debug("BeforeAll hook: injecting already resolved fields into an instance of {}", className);
+
+        spectrumPage.spectrumUtil = spectrumUtil;
+        spectrumPage.configuration = configuration;
+        spectrumPage.data = data;
+
+        final Endpoint endpointAnnotation = spectrumPage.getClass().getAnnotation(Endpoint.class);
+        final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";
+        log.debug("The endpoint of the page {} is '{}'", className, endpointValue);
+        spectrumPage.endpoint = endpointValue;
+
+        return spectrumPage;
     }
 
     @BeforeAll
-    public void spectrumTestBeforeAll(final WebDriver wd, final WebDriverWaits wdw, final SpectrumUtil su,
-                                       final Configuration c, final Data d, final Actions a) {
-        webDriver = wd;
-        webDriverWaits = wdw;
-        spectrumUtil = su;
+    public static void spectrumTestParallelBeforeAll(final SpectrumUtil nu, final Configuration c) {
+        spectrumUtil = nu;
         configuration = c;
-        data = d;
-        actions = a;
+    }
+
+    @BeforeEach
+    public void spectrumTestParallelBeforeEach(final WebDriver wd, final WebDriverWaits wdw, final ExtentTest et, final Actions a, final Data d) {
+        this.webDriver = wd;
+        this.webDriverWaits = wdw;
+        this.extentTest = et;
+        this.actions = a;
+        this.data = d;
 
         initPages();
-
         spectrumPages.forEach(spectrumPage -> {
             spectrumPage.webDriver = webDriver;
             spectrumPage.webDriverWaits = webDriverWaits;
+            spectrumPage.extentTest = extentTest;
+            spectrumPage.eventsListener = eventsListener;
             spectrumPage.actions = actions;
 
             PageFactory.initElements(spectrumPage.webDriver, spectrumPage);
         });
     }
 
-    @BeforeEach
-    public void spectrumTestBeforeEach(final ExtentTest et) {
-        this.extentTest = et;
-
-        spectrumPages.forEach(spectrumPage -> {
-            spectrumPage.extentTest = extentTest;
-            spectrumPage.eventsListener = eventsListener;
-        });
-    }
-
-    @AfterAll
-    public void spectrumTestAfterAll() {
+    @AfterEach
+    public void spectrumTestParallelAfterEach() {
         webDriver.quit();
     }
 }
