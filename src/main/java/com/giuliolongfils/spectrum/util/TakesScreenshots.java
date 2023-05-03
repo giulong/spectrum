@@ -10,7 +10,7 @@ import static com.aventstack.extentreports.Status.*;
 
 public abstract class TakesScreenshots {
 
-    protected SpectrumUtil spectrumUtil;
+    protected static SpectrumUtil spectrumUtil;
     protected ExtentTest extentTest;
     protected Actions actions;
 
