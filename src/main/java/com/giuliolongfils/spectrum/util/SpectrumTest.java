@@ -26,7 +26,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
-public abstract class SpectrumTest<Data> extends TakesScreenshots {
+public abstract class SpectrumTest<Data> extends SpectrumEntity {
 
     @RegisterExtension
     public static final SpectrumExtension SPECTRUM_EXTENSION = new SpectrumExtension();
@@ -84,7 +84,7 @@ public abstract class SpectrumTest<Data> extends TakesScreenshots {
         final List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
 
         Class<?> superClazz = clazz.getSuperclass();
-        while (superClazz.getSuperclass() != TakesScreenshots.class) {
+        while (superClazz.getSuperclass() != SpectrumEntity.class) {
             log.debug("Initializing also pages in superclass {}", superClazz.getSimpleName());
             fields.addAll(Arrays.asList(superClazz.getDeclaredFields()));
             superClazz = superClazz.getSuperclass();
@@ -110,7 +110,6 @@ public abstract class SpectrumTest<Data> extends TakesScreenshots {
         final String className = spectrumPage.getClass().getSimpleName();
         log.debug("BeforeAll hook: injecting already resolved fields into an instance of {}", className);
 
-        spectrumPage.spectrumUtil = spectrumUtil;
         spectrumPage.configuration = configuration;
         spectrumPage.data = data;
 
@@ -123,26 +122,29 @@ public abstract class SpectrumTest<Data> extends TakesScreenshots {
     }
 
     @BeforeAll
-    public static void spectrumTestParallelBeforeAll(final SpectrumUtil nu, final Configuration c) {
-        spectrumUtil = nu;
-        configuration = c;
+    public static void spectrumTestParallelBeforeAll(final SpectrumUtil spectrumUtil, final Configuration configuration) {
+        SpectrumEntity.spectrumUtil = spectrumUtil;
+        SpectrumTest.configuration = configuration;
     }
 
     @BeforeEach
-    public void spectrumTestParallelBeforeEach(final WebDriver wd, final WebDriverWaits wdw, final ExtentTest et, final Actions a, final Data d) {
-        this.webDriver = wd;
-        this.webDriverWaits = wdw;
-        this.extentTest = et;
-        this.actions = a;
-        this.data = d;
+    public void spectrumTestParallelBeforeEach(final WebDriver webDriver, final WebDriverWaits webDriverWaits, final ExtentTest extentTest,
+                                               final Actions actions, final Data data) {
+        this.webDriver = webDriver;
+        this.webDriverWaits = webDriverWaits;
+        this.extentTest = extentTest;
+        this.actions = actions;
+        this.data = data;
 
         initPages();
+
+        // TODO ci serve questo ciclo facendo già l'initPages?
         spectrumPages.forEach(spectrumPage -> {
-            spectrumPage.webDriver = webDriver;
-            spectrumPage.webDriverWaits = webDriverWaits;
-            spectrumPage.extentTest = extentTest;
+            spectrumPage.webDriver = this.webDriver;
+            spectrumPage.webDriverWaits = this.webDriverWaits;
+            spectrumPage.extentTest = this.extentTest;
             spectrumPage.eventsListener = eventsListener;
-            spectrumPage.actions = actions;
+            spectrumPage.actions = this.actions;
 
             PageFactory.initElements(spectrumPage.webDriver, spectrumPage);
         });
