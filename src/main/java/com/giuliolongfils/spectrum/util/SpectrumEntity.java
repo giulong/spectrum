@@ -8,7 +8,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import static com.aventstack.extentreports.Status.*;
 
-public abstract class TakesScreenshots {
+public abstract class SpectrumEntity {
 
     protected static SpectrumUtil spectrumUtil;
     protected ExtentTest extentTest;
