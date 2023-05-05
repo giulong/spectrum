@@ -5,9 +5,7 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.giuliolongfils.spectrum.config.FileReader;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
@@ -19,45 +17,40 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.giuliolongfils.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
 @Slf4j
-public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentReports> implements AfterAllCallback {
+public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentReports> {
 
+    public static final String EXTENT_REPORTS = "extentReports";
     public static final String DEFAULT_PATTERN = "dd-MM-yyyy_HH-mm-ss";
-
-    @Getter
-    private final ExtentReports extentReports;
-    private final String reportPath;
-    private final String reportName;
-
-    public ExtentReportsResolver(final Configuration.Extent extent) {
-        log.debug("Init Extent Reports");
-        final String reportPath = getReportsPathFrom(extent.getReportFolder(), extent.getFileName());
-        final String reportName = extent.getReportName();
-        final ExtentSparkReporter htmlReporter = new ExtentSparkReporter(reportPath);
-
-        htmlReporter.config().setDocumentTitle(extent.getDocumentTitle());
-        htmlReporter.config().setReportName(reportName);
-        htmlReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
-        htmlReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
-        htmlReporter.config().setCss(FileReader.getInstance().read("/css/report.css"));
-
-        final ExtentReports extentReports = new ExtentReports();
-        extentReports.attachReporter(htmlReporter);
-
-        this.extentReports = extentReports;
-        this.reportPath = reportPath;
-        this.reportName = reportName;
-    }
 
     @Override
     public ExtentReports resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
-        return extentReports;
-    }
+        final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
-    @Override
-    public void afterAll(final ExtensionContext context) {
-        log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
-        extentReports.flush();
+        return rootStore.getOrComputeIfAbsent(EXTENT_REPORTS, e -> {
+            log.debug("Resolving Extent Reports");
+
+            final Configuration.Extent extent = rootStore.get(CONFIGURATION, Configuration.class).getExtent();
+            final String reportsPath = getReportsPathFrom(extent.getReportFolder(), extent.getFileName());
+            final String reportsName = extent.getReportName();
+            final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportsPath);
+
+            sparkReporter.config().setDocumentTitle(extent.getDocumentTitle());
+            sparkReporter.config().setReportName(reportsName);
+            sparkReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
+            sparkReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
+            sparkReporter.config().setCss(FileReader.getInstance().read("/css/report.css"));
+
+            final ExtentReports extentReports = new ExtentReports();
+            extentReports.attachReporter(sparkReporter);
+
+            rootStore.put(EXTENT_REPORTS, extentReports);
+            log.info("After the execution, you'll find the '{}' report at file:///{}", reportsName, reportsPath);
+            return extentReports;
+        }, ExtentReports.class);
     }
 
     protected static String getReportsPathFrom(final String reportFolder, final String fileName) {

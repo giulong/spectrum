@@ -12,22 +12,19 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
+import static com.giuliolongfils.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
 
     public static final String WEB_DRIVER = "webDriver";
-    private final Configuration configuration;
-
-    public WebDriverResolver(final Configuration configuration) {
-        this.configuration = configuration;
-    }
 
     @Override
     public WebDriver resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
         log.debug("Building WebDriver");
         final ExtensionContext.Store store = context.getStore(GLOBAL);
+        final Configuration configuration = store.get(CONFIGURATION, Configuration.class);
         final Browser<?> browser = configuration.getSystemProperties().getBrowser();
         final WebDriver webDriver = browser.build(configuration);
 

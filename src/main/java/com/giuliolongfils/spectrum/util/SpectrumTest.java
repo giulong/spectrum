@@ -1,15 +1,15 @@
 package com.giuliolongfils.spectrum.util;
 
+import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.giuliolongfils.spectrum.extensions.SpectrumExtension;
 import com.giuliolongfils.spectrum.extensions.resolvers.*;
 import com.giuliolongfils.spectrum.interfaces.Endpoint;
-import com.giuliolongfils.spectrum.internal.EventsListener;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
-public abstract class SpectrumTest<Data> extends SpectrumEntity {
+public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
     @RegisterExtension
     public static final SpectrumExtension SPECTRUM_EXTENSION = new SpectrumExtension();
@@ -35,46 +35,26 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity {
     public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver();
 
     @RegisterExtension
-    public static final SpectrumUtilResolver SPECTRUM_UTIL_RESOLVER = new SpectrumUtilResolver(
-            CONFIGURATION_RESOLVER.getConfiguration()
-    );
+    public static final SpectrumUtilResolver SPECTRUM_UTIL_RESOLVER = new SpectrumUtilResolver();
 
     @RegisterExtension
-    public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver(
-            CONFIGURATION_RESOLVER.getConfiguration().getExtent()
-    );
+    public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver();
 
     @RegisterExtension
-    public static final ExtentTestResolver EXTENT_TEST_RESOLVER = new ExtentTestResolver(
-            EXTENT_REPORTS_RESOLVER.getExtentReports(),
-            SPECTRUM_UTIL_RESOLVER.getSpectrumUtil()
-    );
+    public static final ExtentTestResolver EXTENT_TEST_RESOLVER = new ExtentTestResolver();
 
     @RegisterExtension
-    public static final WebDriverResolver WEB_DRIVER_RESOLVER = new WebDriverResolver(
-            CONFIGURATION_RESOLVER.getConfiguration()
-    );
+    public static final WebDriverResolver WEB_DRIVER_RESOLVER = new WebDriverResolver();
 
     @RegisterExtension
-    public static final WebDriverWaitsResolver WEB_DRIVER_WAITS_RESOLVER = new WebDriverWaitsResolver(
-            CONFIGURATION_RESOLVER.getConfiguration().getWebDriver()
-    );
+    public static final WebDriverWaitsResolver WEB_DRIVER_WAITS_RESOLVER = new WebDriverWaitsResolver();
 
     @RegisterExtension
-    public final DataResolver<Data> dataResolver = new DataResolver<>(
-            CONFIGURATION_RESOLVER.getConfiguration().getData()
-    );
+    public final DataResolver<Data> dataResolver = new DataResolver<>();
 
     @RegisterExtension
     public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
 
-    protected static Configuration configuration;
-    protected static EventsListener eventsListener;
-
-    @Getter
-    protected WebDriver webDriver;
-    protected WebDriverWaits webDriverWaits;
-    protected Data data;
     protected List<SpectrumPage<Data>> spectrumPages;
 
     public void initPages() {
@@ -110,9 +90,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity {
         final String className = spectrumPage.getClass().getSimpleName();
         log.debug("BeforeAll hook: injecting already resolved fields into an instance of {}", className);
 
-        spectrumPage.configuration = configuration;
-        spectrumPage.data = data;
-
         final Endpoint endpointAnnotation = spectrumPage.getClass().getAnnotation(Endpoint.class);
         final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";
         log.debug("The endpoint of the page {} is '{}'", className, endpointValue);
@@ -122,14 +99,14 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity {
     }
 
     @BeforeAll
-    public static void spectrumTestParallelBeforeAll(final SpectrumUtil spectrumUtil, final Configuration configuration) {
+    public static void beforeAll(final SpectrumUtil spectrumUtil, final Configuration configuration, final ExtentReports extentReports) {
         SpectrumEntity.spectrumUtil = spectrumUtil;
-        SpectrumTest.configuration = configuration;
+        SpectrumEntity.configuration = configuration;
+        SpectrumEntity.extentReports = extentReports;
     }
 
     @BeforeEach
-    public void spectrumTestParallelBeforeEach(final WebDriver webDriver, final WebDriverWaits webDriverWaits, final ExtentTest extentTest,
-                                               final Actions actions, final Data data) {
+    public void beforeEach(final WebDriver webDriver, final WebDriverWaits webDriverWaits, final ExtentTest extentTest, final Actions actions, final Data data) {
         this.webDriver = webDriver;
         this.webDriverWaits = webDriverWaits;
         this.extentTest = extentTest;
@@ -143,15 +120,21 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity {
             spectrumPage.webDriver = this.webDriver;
             spectrumPage.webDriverWaits = this.webDriverWaits;
             spectrumPage.extentTest = this.extentTest;
-            spectrumPage.eventsListener = eventsListener;
+            spectrumPage.eventsListener = this.eventsListener;
             spectrumPage.actions = this.actions;
+            spectrumPage.data = this.data;
 
             PageFactory.initElements(spectrumPage.webDriver, spectrumPage);
         });
     }
 
     @AfterEach
-    public void spectrumTestParallelAfterEach() {
+    public void afterEach() {
         webDriver.quit();
+    }
+
+    @AfterAll
+    public static void afterAll(final ExtentReports extentReports) {
+        extentReports.flush();
     }
 }

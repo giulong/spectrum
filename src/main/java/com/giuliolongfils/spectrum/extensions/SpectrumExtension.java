@@ -1,9 +1,7 @@
 package com.giuliolongfils.spectrum.extensions;
 
 import com.giuliolongfils.spectrum.config.FileReader;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.AfterAllCallback;
 import org.junit.jupiter.api.extension.BeforeAllCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -14,7 +12,6 @@ import java.util.Properties;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
-@Getter
 public class SpectrumExtension implements BeforeAllCallback, AfterAllCallback {
 
     public static final String CLASS_NAME = "className";
@@ -28,7 +25,7 @@ public class SpectrumExtension implements BeforeAllCallback, AfterAllCallback {
 
     @Override
     public void beforeAll(final ExtensionContext context) {
-        final String className = context.getRequiredTestClass().getAnnotation(DisplayName.class).value();
+        final String className = context.getDisplayName();
         log.info("START execution of tests in class {}", className);
         context.getStore(GLOBAL).put(CLASS_NAME, className);
     }

@@ -6,7 +6,10 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.giuliolongfils.spectrum.util.SpectrumUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.*;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolutionException;
+import org.junit.jupiter.api.extension.TestWatcher;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebDriver;
 
@@ -16,34 +19,29 @@ import static com.aventstack.extentreports.Status.*;
 import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static com.giuliolongfils.spectrum.extensions.SpectrumExtension.CLASS_NAME;
+import static com.giuliolongfils.spectrum.extensions.resolvers.ExtentReportsResolver.EXTENT_REPORTS;
+import static com.giuliolongfils.spectrum.extensions.resolvers.SpectrumUtilResolver.SPECTRUM_UTIL;
 import static com.giuliolongfils.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
-public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> implements BeforeEachCallback, TestWatcher {
+public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> implements TestWatcher {
 
     public static final String EXTENT_TEST = "extentTest";
-    private final ExtentReports extentReports;
-    private final SpectrumUtil spectrumUtil;
-
-    public ExtentTestResolver(final ExtentReports extentReports, final SpectrumUtil spectrumUtil) {
-        this.extentReports = extentReports;
-        this.spectrumUtil = spectrumUtil;
-    }
 
     @Override
     public ExtentTest resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        return context.getStore(GLOBAL).get(EXTENT_TEST, ExtentTest.class);
-    }
+        final ExtentTest extentTest = createExtentTestFrom(context).info(createLabel("START TEST", getColorOf(INFO)));
+        context.getStore(GLOBAL).put(EXTENT_TEST, extentTest);
 
-    @Override
-    public void beforeEach(final ExtensionContext context) {
-        context.getStore(GLOBAL).put(EXTENT_TEST, createExtentTestFrom(context).info(createLabel("START TEST", getColorOf(INFO))));
+        return extentTest;
     }
 
     public ExtentTest createExtentTestFrom(final ExtensionContext context) {
         log.debug("Creating Extent Test");
-        return extentReports.createTest(String.format("<div>%s</div>%s", context.getStore(GLOBAL).get(CLASS_NAME), context.getDisplayName()));
+        return context.getRoot().getStore(GLOBAL)
+                .get(EXTENT_REPORTS, ExtentReports.class)
+                .createTest(String.format("<div>%s</div>%s", context.getStore(GLOBAL).get(CLASS_NAME), context.getDisplayName()));
     }
 
     @Override
@@ -63,9 +61,11 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> i
 
     @Override
     public void testFailed(final ExtensionContext context, final Throwable exception) {
-        final ExtentTest extentTest = context.getStore(GLOBAL).get(EXTENT_TEST, ExtentTest.class);
+        final ExtensionContext.Store store = context.getStore(GLOBAL);
+        final ExtentTest extentTest = store.get(EXTENT_TEST, ExtentTest.class);
+        final SpectrumUtil spectrumUtil = store.get(SPECTRUM_UTIL, SpectrumUtil.class);
         extentTest.fail(exception);
-        spectrumUtil.addScreenshotToReport(context.getStore(GLOBAL).get(WEB_DRIVER, WebDriver.class), extentTest, createLabel("TEST FAILED", RED).getMarkup(), FAIL);
+        spectrumUtil.addScreenshotToReport(store.get(WEB_DRIVER, WebDriver.class), extentTest, createLabel("TEST FAILED", RED).getMarkup(), FAIL);
         logTestStatus(context, FAIL);
     }
 

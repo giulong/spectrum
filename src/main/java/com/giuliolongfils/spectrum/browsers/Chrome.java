@@ -42,7 +42,7 @@ public class Chrome extends Browser<ChromeOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(Configuration configuration) {
+    public void buildCapabilitiesFrom(final Configuration configuration) {
         capabilities = new ChromeOptions();
         final Configuration.WebDriver.Chrome chromeConfig = configuration.getWebDriver().getChrome();
 
