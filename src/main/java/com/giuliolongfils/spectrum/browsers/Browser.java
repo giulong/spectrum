@@ -35,7 +35,7 @@ public abstract class Browser<T extends MutableCapabilities> {
     public abstract void mergeGridCapabilitiesFrom(Configuration.WebDriver.Grid gridConfiguration);
 
     @SneakyThrows
-    public WebDriver build(Configuration configuration) {
+    public WebDriver build(final Configuration configuration) {
         buildCapabilitiesFrom(configuration);
         log.info("Capabilities: {}", capabilities.toJson());
 

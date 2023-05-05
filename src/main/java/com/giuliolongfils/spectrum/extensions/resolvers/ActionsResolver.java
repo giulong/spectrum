@@ -14,9 +14,15 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @Slf4j
 public class ActionsResolver extends TypeBasedParameterResolver<Actions> {
 
+    public static final String ACTIONS = "actions";
+
     @Override
-    public Actions resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
-        log.debug("Building Actions");
-        return new Actions(context.getStore(GLOBAL).get(WEB_DRIVER, WebDriver.class));
+    public Actions resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
+        log.debug("Resolving Actions");
+
+        final ExtensionContext.Store store = context.getStore(GLOBAL);
+        final Actions actions = new Actions(store.get(WEB_DRIVER, WebDriver.class));
+        store.put(ACTIONS, actions);
+        return actions;
     }
 }

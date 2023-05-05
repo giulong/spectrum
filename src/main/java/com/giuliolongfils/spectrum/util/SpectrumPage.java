@@ -1,21 +1,9 @@
 package com.giuliolongfils.spectrum.util;
 
-import com.giuliolongfils.spectrum.internal.EventsListener;
-import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.WebDriver;
 
 @Slf4j
-public abstract class SpectrumPage<Data> extends SpectrumEntity {
-
-    @Getter
-    protected WebDriver webDriver;
-    protected Configuration configuration;
-    protected Data data;
-    protected EventsListener eventsListener;
-    protected WebDriverWaits webDriverWaits;
+public abstract class SpectrumPage<Data> extends SpectrumEntity<Data> {
 
     protected String endpoint;
 

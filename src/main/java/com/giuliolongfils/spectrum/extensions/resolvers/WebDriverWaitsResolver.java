@@ -12,6 +12,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
+import static com.giuliolongfils.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static com.giuliolongfils.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -19,16 +20,12 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class WebDriverWaitsResolver extends TypeBasedParameterResolver<WebDriverWaits> {
 
     public static final String WEB_DRIVER_WAITS = "webDriverWaits";
-    private final Configuration.WebDriver webDriverConfiguration;
-
-    public WebDriverWaitsResolver(final Configuration.WebDriver webDriverConfiguration) {
-        this.webDriverConfiguration = webDriverConfiguration;
-    }
 
     @Override
     public WebDriverWaits resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
         log.debug("Building WebDriverWaits");
         final ExtensionContext.Store store = context.getStore(GLOBAL);
+        final Configuration.WebDriver webDriverConfiguration = store.get(CONFIGURATION, Configuration.class).getWebDriver();
         final WebDriver webDriver = store.get(WEB_DRIVER, WebDriver.class);
         final WebDriverWaits webDriverWaits = WebDriverWaits.builder()
                 .pageLoadingWait(new WebDriverWait(webDriver, Duration.ofSeconds(webDriverConfiguration.getPageLoadingWaitTimeout())))
