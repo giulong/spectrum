@@ -68,11 +68,10 @@ public class SpectrumExtension implements TestWatcher, BeforeAllCallback, AfterA
     @Override
     public void testFailed(final ExtensionContext context, final Throwable exception) {
         final ExtensionContext.Store store = context.getStore(GLOBAL);
-        final ExtentTest extentTest = store.get(EXTENT_TEST, ExtentTest.class);
         final SpectrumTest<?> spectrumTest = (SpectrumTest<?>) context.getRequiredTestInstance();
 
-        extentTest.fail(exception);
-        spectrumTest.addScreenshotToReport(store.get(WEB_DRIVER, WebDriver.class), extentTest, createLabel("TEST FAILED", RED).getMarkup(), FAIL);
+        store.get(EXTENT_TEST, ExtentTest.class).fail(exception);
+        spectrumTest.addScreenshotToReport(createLabel("TEST FAILED", RED).getMarkup(), FAIL);
         finalizeTest(context, FAIL);
     }
 
