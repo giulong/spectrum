@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.giuliolongfils.spectrum.browsers.Browser;
 import com.giuliolongfils.spectrum.internals.jackson.*;
 import lombok.SneakyThrows;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 
 @Slf4j
 public final class YamlParser {
@@ -27,10 +29,12 @@ public final class YamlParser {
     private final ObjectMapper yamlMapper = new YAMLMapper()
             .setDefaultMergeable(true)
             .registerModules(
+                    new JavaTimeModule(),
                     new SimpleModule().addDeserializer(String.class, new InterpolatedStringDeserializer()),
                     new SimpleModule().addDeserializer(boolean.class, new InterpolatedBooleanDeserializer()),
                     new SimpleModule().addDeserializer(java.util.logging.Level.class, new UtilLogLevelDeserializer()),
                     new SimpleModule().addDeserializer(Level.class, new LogbackLogLevelDeserializer()),
+                    new SimpleModule().addDeserializer(Duration.class, new DurationDeserializer()),
                     new SimpleModule().addDeserializer(Browser.class, new BrowserDeserializer())
             );
 

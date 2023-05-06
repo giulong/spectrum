@@ -10,7 +10,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.nio.file.Paths;
-import java.time.Duration;
 
 @Slf4j
 @Getter
@@ -43,7 +42,7 @@ public abstract class Browser<T extends MutableCapabilities> {
         if (systemProperties.isGrid()) {
             Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();
             mergeGridCapabilitiesFrom(gridConfiguration);
-            return setTimeouts(RemoteWebDriver.builder().oneOf(capabilities).address(gridConfiguration.getUrl()).build(), configuration.getWebDriver());
+            return setTimeouts(RemoteWebDriver.builder().oneOf(capabilities).address(gridConfiguration.getUrl()).build(), configuration.getWebDriver().getWaits());
         }
 
         final String driversPath = configuration.getApplication().getDriversPath();
@@ -54,14 +53,14 @@ public abstract class Browser<T extends MutableCapabilities> {
             System.setProperty(getSystemPropertyName(), Paths.get(driversPath).resolve(getDriverName()).toString());
         }
 
-        return setTimeouts(buildWebDriver(), configuration.getWebDriver());
+        return setTimeouts(buildWebDriver(), configuration.getWebDriver().getWaits());
     }
 
-    protected WebDriver setTimeouts(final WebDriver webDriver, final Configuration.WebDriver webDriverConf) {
+    protected WebDriver setTimeouts(final WebDriver webDriver, final Configuration.WebDriver.Waits webDriverWaitsConf) {
         webDriver.manage().timeouts()
-                .implicitlyWait(Duration.ofSeconds(webDriverConf.getWaitTimeout()))
-                .pageLoadTimeout(Duration.ofSeconds(webDriverConf.getPageLoadingWaitTimeout()))
-                .scriptTimeout(Duration.ofSeconds(webDriverConf.getScriptWaitTimeout()));
+                .implicitlyWait(webDriverWaitsConf.getImplicit())
+                .pageLoadTimeout(webDriverWaitsConf.getPageLoadTimeout())
+                .scriptTimeout(webDriverWaitsConf.getScriptTimeout());
 
         return webDriver;
     }

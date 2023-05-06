@@ -8,6 +8,7 @@ import lombok.Getter;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -61,16 +62,22 @@ public class Configuration {
 	@EqualsAndHashCode
 	public static class WebDriver {
 
-		private long waitTimeout;
-		private long pageLoadingWaitTimeout;
-		private long downloadWaitTimeout;
-		private long scriptWaitTimeout;
+		private Waits waits;
 		private boolean defaultEventListenerEnabled;
 		private Grid grid;
 		private Chrome chrome;
 		private Firefox firefox;
 		private InternetExplorer ie;
 		private Edge edge;
+
+		@Getter
+		@EqualsAndHashCode
+		public static class Waits {
+			private Duration implicit;
+			private Duration pageLoadTimeout;
+			private Duration downloadTimeout;
+			private Duration scriptTimeout;
+		}
 
 		@Getter
 		@EqualsAndHashCode

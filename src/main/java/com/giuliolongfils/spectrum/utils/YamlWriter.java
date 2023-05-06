@@ -2,6 +2,7 @@ package com.giuliolongfils.spectrum.utils;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +19,7 @@ public final class YamlWriter {
 
     private final ObjectWriter writer = new YAMLMapper()
             .configure(FAIL_ON_EMPTY_BEANS, false)
+            .registerModules(new JavaTimeModule())
             .writerWithDefaultPrettyPrinter();
 
     @SneakyThrows

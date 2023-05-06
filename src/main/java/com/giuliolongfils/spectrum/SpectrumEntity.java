@@ -105,7 +105,7 @@ public abstract class SpectrumEntity<Data> {
 
     public void waitForDownloadOf(final WebDriverWaits webDriverWaits, final Path path) {
         webDriverWaits
-                .getDownloadWait()
+                .getDownloadTimeout()
                 .until(driver -> Files.exists(path) && path.toFile().length() > 0);
     }
 
