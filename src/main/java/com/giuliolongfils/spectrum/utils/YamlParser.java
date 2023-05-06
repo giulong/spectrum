@@ -1,4 +1,4 @@
-package com.giuliolongfils.spectrum.config;
+package com.giuliolongfils.spectrum.utils;
 
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.giuliolongfils.spectrum.browsers.Browser;
-import com.giuliolongfils.spectrum.internal.jackson.*;
+import com.giuliolongfils.spectrum.internals.jackson.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 

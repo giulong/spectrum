@@ -1,4 +1,4 @@
-package com.giuliolongfils.spectrum.util;
+package com.giuliolongfils.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -6,7 +6,7 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.model.Media;
-import com.giuliolongfils.spectrum.internal.EventsListener;
+import com.giuliolongfils.spectrum.internals.EventsListener;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
 import lombok.SneakyThrows;

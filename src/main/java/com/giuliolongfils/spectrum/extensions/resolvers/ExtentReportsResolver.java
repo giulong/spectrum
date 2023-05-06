@@ -3,7 +3,7 @@ package com.giuliolongfils.spectrum.extensions.resolvers;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
-import com.giuliolongfils.spectrum.config.FileReader;
+import com.giuliolongfils.spectrum.utils.FileReader;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;

@@ -1,7 +1,7 @@
 package com.giuliolongfils.spectrum.extensions.resolvers;
 
 import com.giuliolongfils.spectrum.browsers.Browser;
-import com.giuliolongfils.spectrum.internal.EventsListener;
+import com.giuliolongfils.spectrum.internals.EventsListener;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;

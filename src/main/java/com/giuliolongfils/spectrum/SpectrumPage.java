@@ -1,4 +1,4 @@
-package com.giuliolongfils.spectrum.util;
+package com.giuliolongfils.spectrum;
 
 import lombok.extern.slf4j.Slf4j;
 

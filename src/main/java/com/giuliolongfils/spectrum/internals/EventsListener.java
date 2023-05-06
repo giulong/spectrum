@@ -1,4 +1,4 @@
-package com.giuliolongfils.spectrum.internal;
+package com.giuliolongfils.spectrum.internals;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.giuliolongfils.spectrum.pojos.Configuration;
