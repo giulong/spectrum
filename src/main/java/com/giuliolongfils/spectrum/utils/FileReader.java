@@ -1,4 +1,4 @@
-package com.giuliolongfils.spectrum.config;
+package com.giuliolongfils.spectrum.utils;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

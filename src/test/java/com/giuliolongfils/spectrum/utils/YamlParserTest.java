@@ -1,4 +1,4 @@
-package com.giuliolongfils.spectrum.config;
+package com.giuliolongfils.spectrum.utils;
 
 import com.giuliolongfils.spectrum.TestYaml;
 import org.junit.jupiter.api.DisplayName;

@@ -1,7 +1,7 @@
 package com.giuliolongfils.spectrum.extensions.resolvers;
 
-import com.giuliolongfils.spectrum.config.YamlParser;
-import com.giuliolongfils.spectrum.config.YamlWriter;
+import com.giuliolongfils.spectrum.utils.YamlParser;
+import com.giuliolongfils.spectrum.utils.YamlWriter;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

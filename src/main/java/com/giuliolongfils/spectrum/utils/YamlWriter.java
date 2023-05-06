@@ -1,4 +1,4 @@
-package com.giuliolongfils.spectrum.config;
+package com.giuliolongfils.spectrum.utils;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;

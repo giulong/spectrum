@@ -1,4 +1,4 @@
-package com.giuliolongfils.spectrum.internal.jackson;
+package com.giuliolongfils.spectrum.internals.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
