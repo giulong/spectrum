@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogEntry;
-import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
@@ -31,6 +30,7 @@ import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptur
 import static com.aventstack.extentreports.Status.*;
 import static java.lang.System.lineSeparator;
 import static org.openqa.selenium.OutputType.BYTES;
+import static org.openqa.selenium.logging.LogType.BROWSER;
 
 @Slf4j
 public abstract class SpectrumEntity<Data> {
@@ -52,15 +52,15 @@ public abstract class SpectrumEntity<Data> {
     protected Data data;
 
     public Media infoWithScreenshot(final String msg) {
-        return addScreenshotToReport(webDriver, extentTest, msg, INFO);
+        return addScreenshotToReport(msg, INFO);
     }
 
     public Media warningWithScreenshot(final String msg) {
-        return addScreenshotToReport(webDriver, extentTest, msg, WARNING);
+        return addScreenshotToReport(msg, WARNING);
     }
 
     public Media failWithScreenshot(final String msg) {
-        return addScreenshotToReport(webDriver, extentTest, msg, FAIL);
+        return addScreenshotToReport(msg, FAIL);
     }
 
     public void hover(final WebElement webElement) {
@@ -68,21 +68,21 @@ public abstract class SpectrumEntity<Data> {
     }
 
     @SneakyThrows
-    public Media addScreenshotToReport(final WebDriver webDriver, final ExtentTest extentTest, final String msg, final Status status) {
+    public Media addScreenshotToReport(final String msg, final Status status) {
         try {
-            final String fileName = String.format("%s.png", UUID.randomUUID()).replaceAll("[\\\\/]", "");
-            final Path screenShotPath = Paths.get(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
-            final byte[] screenShotBytes = !configuration.getSystemProperties().getBrowser().takesPartialScreenshots()
-                    ? ((TakesScreenshot) webDriver).getScreenshotAs(BYTES)
-                    : webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES);
+            final String fileName = String.format("%s.png", UUID.randomUUID());
+            final Path screenshotPath = Paths.get(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
+            final TakesScreenshot takesScreenshot = configuration.getSystemProperties().getBrowser().takesPartialScreenshots()
+                    ? webDriver.findElement(By.tagName("body"))
+                    : ((TakesScreenshot) webDriver);
 
-            Files.createDirectories(screenShotPath.getParent());
-            Files.write(screenShotPath, screenShotBytes);
+            Files.createDirectories(screenshotPath.getParent());
+            Files.write(screenshotPath, takesScreenshot.getScreenshotAs(BYTES));
 
-            final Media screenShot = createScreenCaptureFromPath(SCREEN_SHOT_FOLDER + "/" + screenShotPath.getFileName().toString()).build();
-            extentTest.log(status, "<div class=\"step-text\">" + msg + "</div>", screenShot);
+            final Media screenshot = createScreenCaptureFromPath(Paths.get(SCREEN_SHOT_FOLDER, fileName).toString()).build();
+            extentTest.log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
 
-            return screenShot;
+            return screenshot;
         } catch (WebDriverException e) {
             log.error(e.getMessage(), e);
             return null;
@@ -110,23 +110,25 @@ public abstract class SpectrumEntity<Data> {
         downloadWait.until(driver -> Files.exists(path) && path.toFile().length() > 0);
     }
 
-    public boolean logBrowserConsoleOutput(final WebDriver driver, final ExtentTest extentTest) {
+    public boolean logBrowserConsoleOutput() {
         if (!configuration.getSystemProperties().getBrowser().exposesConsole()) {
             return false;
         }
 
-        final List<LogEntry> logs = driver.manage().logs().get(LogType.BROWSER).getAll();
+        final List<LogEntry> logs = webDriver.manage().logs().get(BROWSER).getAll();
 
         if (logs.isEmpty()) {
-            extentTest.info("<b>BROWSER CONSOLE IS EMPTY</b>");
+            extentTest.info("<b>Browser console is empty...</b>");
             return false;
         }
 
-        final Markup m = MarkupHelper.createCodeBlock(logs.stream()
-                .map(l -> String.format("%s: %s", l.getLevel(), l.getMessage()))
-                .collect(Collectors.joining(lineSeparator() + lineSeparator())));
+        final Markup markup = MarkupHelper.createCodeBlock(
+                logs
+                        .stream()
+                        .map(logEntry -> String.format("%s: %s", logEntry.getLevel(), logEntry.getMessage()))
+                        .collect(Collectors.joining(lineSeparator() + lineSeparator())));
 
-        extentTest.info("<b>BROWSER CONSOLE:</b><br/>" + m.getMarkup());
+        extentTest.info("<b>Browser console:</b><br/>" + markup.getMarkup());
         return true;
     }
 
@@ -144,7 +146,7 @@ public abstract class SpectrumEntity<Data> {
     protected static byte[] sha256Of(final Path file) {
         final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(Files.readAllBytes(file));
 
-        log.debug("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));
+        log.trace("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));
         return digest;
     }
 }
