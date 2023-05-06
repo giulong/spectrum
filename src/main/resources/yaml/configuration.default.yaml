@@ -5,6 +5,7 @@ vars:
 systemProperties:
   env: ${spectrum.env:-local}
   browser: ${spectrum.browser:-chrome}
+  docker: ${spectrum.docker:-false}
   grid: ${spectrum.grid:-false}
   downloadWebDriver: ${spectrum.download.webdriver:-true}
 
