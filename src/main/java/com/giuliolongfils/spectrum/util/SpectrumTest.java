@@ -9,8 +9,6 @@ import com.giuliolongfils.spectrum.pojos.Configuration;
 import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -33,9 +31,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
     @RegisterExtension
     public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver();
-
-    @RegisterExtension
-    public static final SpectrumUtilResolver SPECTRUM_UTIL_RESOLVER = new SpectrumUtilResolver();
 
     @RegisterExtension
     public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver();
@@ -99,8 +94,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     }
 
     @BeforeAll
-    public static void beforeAll(final SpectrumUtil spectrumUtil, final Configuration configuration, final ExtentReports extentReports) {
-        SpectrumEntity.spectrumUtil = spectrumUtil;
+    public static void beforeAll(final Configuration configuration, final ExtentReports extentReports) {
         SpectrumEntity.configuration = configuration;
         SpectrumEntity.extentReports = extentReports;
     }
@@ -126,15 +120,5 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
             PageFactory.initElements(spectrumPage.webDriver, spectrumPage);
         });
-    }
-
-    @AfterEach
-    public void afterEach() {
-        webDriver.quit();
-    }
-
-    @AfterAll
-    public static void afterAll(final ExtentReports extentReports) {
-        extentReports.flush();
     }
 }
