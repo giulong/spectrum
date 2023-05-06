@@ -42,12 +42,24 @@ public abstract class Browser<T extends MutableCapabilities> {
         if (systemProperties.isGrid()) {
             Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();
             mergeGridCapabilitiesFrom(gridConfiguration);
-            return setTimeouts(RemoteWebDriver.builder().oneOf(capabilities).address(gridConfiguration.getUrl()).build(), configuration.getWebDriver().getWaits());
+            return setTimeouts(
+                    RemoteWebDriver
+                            .builder()
+                            .oneOf(capabilities)
+                            .address(gridConfiguration.getUrl()).build(),
+                    configuration.getWebDriver().getWaits());
         }
 
         final String driversPath = configuration.getApplication().getDriversPath();
         if (systemProperties.isDownloadWebDriver()) {
-            getWebDriverManager().avoidOutputTree().cachePath(driversPath).setup();
+            final WebDriverManager webDriverManager = getWebDriverManager().avoidOutputTree().cachePath(driversPath);
+
+            if (systemProperties.isDocker()) {
+                log.info("Running in Docker");
+                webDriverManager.browserInDocker();
+            }
+
+            webDriverManager.setup();
         } else {
             log.warn("WebDriverManager disabled: using local webDriver");
             System.setProperty(getSystemPropertyName(), Paths.get(driversPath).resolve(getDriverName()).toString());

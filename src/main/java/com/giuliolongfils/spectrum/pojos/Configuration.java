@@ -34,6 +34,7 @@ public class Configuration {
 
 		@JsonSerialize(using = ToStringSerializer.class)
 		private Browser<?> browser;
+		private boolean docker;
 		private boolean grid;
 		private boolean downloadWebDriver;
 	}
