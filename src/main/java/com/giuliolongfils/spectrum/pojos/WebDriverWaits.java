@@ -7,9 +7,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 @Builder
 @Getter
 public class WebDriverWaits {
-    private WebDriverWait wait;
-    private WebDriverWait pageLoadingWait;
-    private WebDriverWait downloadWait;
-    private WebDriverWait scriptWait;
-    private WebDriverWait instantWait;
+    private WebDriverWait implicit;
+    private WebDriverWait pageLoadTimeout;
+    private WebDriverWait downloadTimeout;
+    private WebDriverWait scriptTimeout;
+    private WebDriverWait instantTimeout;
 }

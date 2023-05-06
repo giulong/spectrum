@@ -26,10 +26,11 @@ extent:
 
 # WebDriver configuration
 webDriver:
-  waitTimeout: 1    # Number of seconds selenium will wait before throwing a TimeoutException when an element isn't found. Injected in webDriverWaits
-  pageLoadingWaitTimeout: 10   # Number of seconds that selenium will wait before throwing a TimeoutException because page wasn't loaded. Injected in webDriverWaits
-  downloadWaitTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download. Injected in webDriverWaits
-  scriptWaitTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException. Injected in webDriverWaits
+  waits:
+    implicit: 1    # Number of seconds selenium will wait before throwing a TimeoutException when an element isn't found. Injected in webDriverWaits
+    pageLoadTimeout: 10   # Number of seconds that selenium will wait before throwing a TimeoutException because page wasn't loaded. Injected in webDriverWaits
+    downloadTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download. Injected in webDriverWaits
+    scriptTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException. Injected in webDriverWaits
   defaultEventListenerEnabled: true
 
   grid:

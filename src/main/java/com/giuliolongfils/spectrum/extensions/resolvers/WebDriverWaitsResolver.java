@@ -25,14 +25,14 @@ public class WebDriverWaitsResolver extends TypeBasedParameterResolver<WebDriver
     public WebDriverWaits resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
         log.debug("Building WebDriverWaits");
         final ExtensionContext.Store store = context.getStore(GLOBAL);
-        final Configuration.WebDriver webDriverConfiguration = store.get(CONFIGURATION, Configuration.class).getWebDriver();
+        final Configuration.WebDriver.Waits webDriverWaitsConfiguration = store.get(CONFIGURATION, Configuration.class).getWebDriver().getWaits();
         final WebDriver webDriver = store.get(WEB_DRIVER, WebDriver.class);
         final WebDriverWaits webDriverWaits = WebDriverWaits.builder()
-                .pageLoadingWait(new WebDriverWait(webDriver, Duration.ofSeconds(webDriverConfiguration.getPageLoadingWaitTimeout())))
-                .downloadWait(new WebDriverWait(webDriver, Duration.ofSeconds(webDriverConfiguration.getDownloadWaitTimeout())))
-                .scriptWait(new WebDriverWait(webDriver, Duration.ofSeconds(webDriverConfiguration.getScriptWaitTimeout())))
-                .instantWait(new WebDriverWait(webDriver, Duration.ZERO))
-                .wait(new WebDriverWait(webDriver, Duration.ofSeconds(webDriverConfiguration.getWaitTimeout())))
+                .pageLoadTimeout(new WebDriverWait(webDriver, webDriverWaitsConfiguration.getPageLoadTimeout()))
+                .downloadTimeout(new WebDriverWait(webDriver, webDriverWaitsConfiguration.getDownloadTimeout()))
+                .scriptTimeout(new WebDriverWait(webDriver, webDriverWaitsConfiguration.getScriptTimeout()))
+                .instantTimeout(new WebDriverWait(webDriver, Duration.ZERO))
+                .implicit(new WebDriverWait(webDriver, webDriverWaitsConfiguration.getImplicit()))
                 .build();
 
         store.put(WEB_DRIVER_WAITS, webDriverWaits);
