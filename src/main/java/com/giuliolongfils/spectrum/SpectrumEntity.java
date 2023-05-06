@@ -8,13 +8,13 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.model.Media;
 import com.giuliolongfils.spectrum.internals.EventsListener;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.WebDriverWaits;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -45,7 +45,10 @@ public abstract class SpectrumEntity<Data> {
     protected Actions actions;
     protected EventsListener eventsListener;
     protected WebDriver webDriver;
-    protected WebDriverWaits webDriverWaits;
+    protected WebDriverWait implicitWait;
+    protected WebDriverWait pageLoadWait;
+    protected WebDriverWait scriptWait;
+    protected WebDriverWait downloadWait;
     protected Data data;
 
     public Media infoWithScreenshot(final String msg) {
@@ -103,10 +106,8 @@ public abstract class SpectrumEntity<Data> {
         Files.createDirectories(downloadPath);
     }
 
-    public void waitForDownloadOf(final WebDriverWaits webDriverWaits, final Path path) {
-        webDriverWaits
-                .getDownloadTimeout()
-                .until(driver -> Files.exists(path) && path.toFile().length() > 0);
+    public void waitForDownloadOf(final Path path) {
+        downloadWait.until(driver -> Files.exists(path) && path.toFile().length() > 0);
     }
 
     public boolean logBrowserConsoleOutput(final WebDriver driver, final ExtentTest extentTest) {
@@ -129,12 +130,12 @@ public abstract class SpectrumEntity<Data> {
         return true;
     }
 
-    public boolean checkDownloadedFile(final WebDriverWaits webDriverWaits, final String file) {
+    public boolean checkDownloadedFile(final String file) {
         final Configuration.Application application = configuration.getApplication();
         final Path downloadedFile = Paths.get(application.getDownloadsFolder(), file);
         final Path fileToCheck = Paths.get(application.getFilesFolder(), file);
 
-        waitForDownloadOf(webDriverWaits, downloadedFile);
+        waitForDownloadOf(downloadedFile);
 
         return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
     }
