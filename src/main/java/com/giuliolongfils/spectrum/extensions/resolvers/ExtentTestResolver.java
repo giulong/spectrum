@@ -39,7 +39,7 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> i
 
     @Override
     public ExtentTest resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        log.debug("Resolving Extent Test");
+        log.debug("Resolving {}", EXTENT_TEST);
         final ExtentTest extentTest = createExtentTestFrom(context).info(createLabel("START TEST", getColorOf(INFO)));
         context.getStore(GLOBAL).put(EXTENT_TEST, extentTest);
 

@@ -21,8 +21,8 @@ public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
     public static final String WEB_DRIVER = "webDriver";
 
     @Override
-    public WebDriver resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
-        log.debug("Building WebDriver");
+    public WebDriver resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
+        log.debug("Resolving {}", WEB_DRIVER);
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final Configuration configuration = store.get(CONFIGURATION, Configuration.class);
         final Browser<?> browser = configuration.getSystemProperties().getBrowser();

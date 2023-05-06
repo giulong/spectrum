@@ -32,7 +32,7 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
         return rootStore.getOrComputeIfAbsent(CONFIGURATION, e -> {
-            log.debug("Resolving Configuration");
+            log.debug("Resolving {}", CONFIGURATION);
 
             final String envConfiguration = String.format("configuration-%s.yaml", parseEnv());
             parseVars(envConfiguration);

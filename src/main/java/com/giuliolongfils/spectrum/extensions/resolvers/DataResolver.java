@@ -19,13 +19,13 @@ public class DataResolver<Data> implements ParameterResolver {
     public static final String DATA = "data";
 
     @Override
-    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) throws ParameterResolutionException {
+    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
         return parameterContext.getParameter().getParameterizedType().getTypeName().equals(DataResolver.class.getTypeParameters()[0].getName());
     }
 
     @Override
     @SneakyThrows
-    public Data resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
+    public Data resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
         final Configuration.Data dataConfiguration = rootStore.get(CONFIGURATION, Configuration.class).getData();
 
@@ -33,7 +33,7 @@ public class DataResolver<Data> implements ParameterResolver {
         final Class<Data> dataClass = (Class<Data>) Class.forName(dataConfiguration.getFqdn());
 
         return rootStore.getOrComputeIfAbsent(DATA, e -> {
-            log.debug("Resolving Data");
+            log.debug("Resolving {}", DATA);
 
             final Data data = YamlParser.getInstance().read("data/data.yaml", dataClass);
             log.trace("Data:\n{}", YamlWriter.getInstance().write(data));

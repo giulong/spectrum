@@ -27,11 +27,11 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
     public static final String DEFAULT_PATTERN = "dd-MM-yyyy_HH-mm-ss";
 
     @Override
-    public ExtentReports resolveParameter(ParameterContext arg0, ExtensionContext context) throws ParameterResolutionException {
+    public ExtentReports resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
         return rootStore.getOrComputeIfAbsent(EXTENT_REPORTS, e -> {
-            log.debug("Resolving Extent Reports");
+            log.debug("Resolving {}", EXTENT_REPORTS);
 
             final Configuration.Extent extent = rootStore.get(CONFIGURATION, Configuration.class).getExtent();
             final String reportsPath = getReportsPathFrom(extent.getReportFolder(), extent.getFileName());
