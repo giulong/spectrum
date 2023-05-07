@@ -72,7 +72,7 @@ public abstract class SpectrumEntity<Data> {
         try {
             final String fileName = String.format("%s.png", UUID.randomUUID());
             final Path screenshotPath = Paths.get(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
-            final TakesScreenshot takesScreenshot = configuration.getSystemProperties().getBrowser().takesPartialScreenshots()
+            final TakesScreenshot takesScreenshot = configuration.getRuntime().getBrowser().takesPartialScreenshots()
                     ? webDriver.findElement(By.tagName("body"))
                     : ((TakesScreenshot) webDriver);
 
@@ -91,7 +91,7 @@ public abstract class SpectrumEntity<Data> {
 
     @SneakyThrows
     public void deleteDownloadsFolder() {
-        final String downloadFolder = configuration.getApplication().getDownloadsFolder();
+        final String downloadFolder = configuration.getRuntime().getDownloadsFolder();
         final Path downloadPath = Paths.get(downloadFolder);
 
         if (Files.exists(downloadPath)) {
@@ -111,7 +111,7 @@ public abstract class SpectrumEntity<Data> {
     }
 
     public boolean logBrowserConsoleOutput() {
-        if (!configuration.getSystemProperties().getBrowser().exposesConsole()) {
+        if (!configuration.getRuntime().getBrowser().exposesConsole()) {
             return false;
         }
 
@@ -133,9 +133,9 @@ public abstract class SpectrumEntity<Data> {
     }
 
     public boolean checkDownloadedFile(final String file) {
-        final Configuration.Application application = configuration.getApplication();
-        final Path downloadedFile = Paths.get(application.getDownloadsFolder(), file);
-        final Path fileToCheck = Paths.get(application.getFilesFolder(), file);
+        final Configuration.Runtime runtime = configuration.getRuntime();
+        final Path downloadedFile = Paths.get(runtime.getDownloadsFolder(), file);
+        final Path fileToCheck = Paths.get(runtime.getFilesFolder(), file);
 
         waitForDownloadOf(downloadedFile);
 

@@ -17,9 +17,8 @@ import java.util.logging.Level;
 @Getter
 @EqualsAndHashCode
 public class Configuration {
-
 	private Map<String, String> vars;
-	private SystemProperties systemProperties;
+	private Runtime runtime;
 	private Application application;
 	private Extent extent;
 	private WebDriver webDriver;
@@ -29,7 +28,7 @@ public class Configuration {
 
 	@Getter
 	@EqualsAndHashCode
-	public static class SystemProperties {
+	public static class Runtime {
 		private String env;
 
 		@JsonSerialize(using = ToStringSerializer.class)
@@ -37,15 +36,15 @@ public class Configuration {
 		private boolean docker;
 		private boolean grid;
 		private boolean downloadWebDriver;
+		private String driversPath;
+		private String filesFolder;
+		private String downloadsFolder;
 	}
 
 	@Getter
 	@EqualsAndHashCode
 	public static class Application {
 		private String baseUrl;
-		private String driversPath;
-		private String filesFolder;
-		private String downloadsFolder;
 	}
 
 	@Getter
@@ -62,7 +61,6 @@ public class Configuration {
 	@Getter
 	@EqualsAndHashCode
 	public static class WebDriver {
-
 		private Waits waits;
 		private boolean defaultEventListenerEnabled;
 		private Grid grid;

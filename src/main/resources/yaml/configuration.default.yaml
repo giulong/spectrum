@@ -2,19 +2,20 @@
 vars:
   downloadsFolder: target/downloads
 
-systemProperties:
+# Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
+runtime:
   env: ${spectrum.env:-local}
   browser: ${spectrum.browser:-chrome}
   docker: ${spectrum.docker:-false}
   grid: ${spectrum.grid:-false}
   downloadWebDriver: ${spectrum.download.webdriver:-true}
-
-# Application under test configuration
-application:
-  baseUrl: https://www.lambdatest.com/selenium-playground/simple-form-demo
   driversPath: ~/.m2/repository/webDriver   # Path to drivers executables
   filesFolder: src/test/resources/files
   downloadsFolder: ${downloadsFolder}
+
+# Application under test configuration
+application:
+  baseUrl: http://localhost:8080
 
 # Extent Report configuration
 extent:

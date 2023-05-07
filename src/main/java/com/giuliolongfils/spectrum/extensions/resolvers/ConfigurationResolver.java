@@ -21,7 +21,7 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
     public static final String CONFIGURATION = "configuration";
     public static final String DEFAULT_CONFIGURATION_YAML = "yaml/configuration.default.yaml";
     public static final String CONFIGURATION_YAML = "configuration.yaml";
-    public static final String ENV_NODE = "/systemProperties/env";
+    public static final String ENV_NODE = "/runtime/env";
     public static final String VARS_NODE = "/vars";
     public static final Map<String, String> VARS = new HashMap<>();
 

@@ -25,7 +25,7 @@ public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
         log.debug("Resolving {}", WEB_DRIVER);
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final Configuration configuration = store.get(CONFIGURATION, Configuration.class);
-        final Browser<?> browser = configuration.getSystemProperties().getBrowser();
+        final Browser<?> browser = configuration.getRuntime().getBrowser();
         final WebDriver webDriver = browser.build(configuration);
 
         if (!configuration.getWebDriver().isDefaultEventListenerEnabled()) {
