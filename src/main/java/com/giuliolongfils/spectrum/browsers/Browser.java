@@ -38,8 +38,8 @@ public abstract class Browser<T extends MutableCapabilities> {
         buildCapabilitiesFrom(configuration);
         log.info("Capabilities: {}", capabilities.toJson());
 
-        final Configuration.SystemProperties systemProperties = configuration.getSystemProperties();
-        if (systemProperties.isGrid()) {
+        final Configuration.Runtime runtime = configuration.getRuntime();
+        if (runtime.isGrid()) {
             Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();
             mergeGridCapabilitiesFrom(gridConfiguration);
             return setTimeouts(
@@ -50,11 +50,11 @@ public abstract class Browser<T extends MutableCapabilities> {
                     configuration.getWebDriver().getWaits());
         }
 
-        final String driversPath = configuration.getApplication().getDriversPath();
-        if (systemProperties.isDownloadWebDriver()) {
+        final String driversPath = runtime.getDriversPath();
+        if (runtime.isDownloadWebDriver()) {
             final WebDriverManager webDriverManager = getWebDriverManager().avoidOutputTree().cachePath(driversPath);
 
-            if (systemProperties.isDocker()) {
+            if (runtime.isDocker()) {
                 log.info("Running in Docker");
                 webDriverManager.browserInDocker();
             }
