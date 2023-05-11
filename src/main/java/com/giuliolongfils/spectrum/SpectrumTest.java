@@ -4,12 +4,15 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.giuliolongfils.spectrum.extensions.SpectrumExtension;
 import com.giuliolongfils.spectrum.extensions.resolvers.*;
+import com.giuliolongfils.spectrum.extensions.watchers.ExtentReportsWatcher;
+import com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher;
 import com.giuliolongfils.spectrum.interfaces.Endpoint;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import com.giuliolongfils.spectrum.types.DownloadWait;
 import com.giuliolongfils.spectrum.types.ImplicitWait;
 import com.giuliolongfils.spectrum.types.PageLoadWait;
 import com.giuliolongfils.spectrum.types.ScriptWait;
+import com.giuliolongfils.spectrum.utils.testbook.TestBookParser;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -28,6 +31,12 @@ import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
+
+    @RegisterExtension
+    public static final TestBookWatcher TEST_BOOK_RESOLVER = new TestBookWatcher();
+
+    @RegisterExtension
+    public static final ExtentReportsWatcher EXTENT_REPORTS_WATCHER = new ExtentReportsWatcher();
 
     @RegisterExtension
     public static final SpectrumExtension SPECTRUM_EXTENSION = new SpectrumExtension();
@@ -57,10 +66,13 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     public static final ScriptWaitResolver SCRIPT_WAIT_RESOLVER = new ScriptWaitResolver();
 
     @RegisterExtension
-    public final DataResolver<Data> dataResolver = new DataResolver<>();
+    public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
 
     @RegisterExtension
-    public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
+    public static final TestBookParserResolver TEST_BOOK_PARSER_RESOLVER = new TestBookParserResolver();
+
+    @RegisterExtension
+    public final DataResolver<Data> dataResolver = new DataResolver<>();
 
     protected List<SpectrumPage<Data>> spectrumPages;
 
@@ -106,9 +118,10 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     }
 
     @BeforeAll
-    public static void beforeAll(final Configuration configuration, final ExtentReports extentReports) {
+    public static void beforeAll(final Configuration configuration, final ExtentReports extentReports, final TestBookParser testBookParser) {
         SpectrumEntity.configuration = configuration;
         SpectrumEntity.extentReports = extentReports;
+        SpectrumEntity.testBookParser = testBookParser;
     }
 
     @BeforeEach

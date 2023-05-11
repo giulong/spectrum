@@ -16,6 +16,11 @@ runtime:
 # Application under test configuration
 application:
   baseUrl: http://localhost:8080
+  testBookParser:
+    txt:
+      path: ${spectrum.testbook.path:-src/test/resources/testbook.txt}
+      output:
+        - log: { }
 
 # Extent Report configuration
 extent:
