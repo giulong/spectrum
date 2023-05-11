@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.TestWatcher;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 import static com.aventstack.extentreports.Status.INFO;
@@ -19,7 +18,7 @@ import static com.giuliolongfils.spectrum.extensions.resolvers.ExtentReportsReso
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
-public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> implements TestWatcher {
+public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> {
 
     public static final String EXTENT_TEST = "extentTest";
 
