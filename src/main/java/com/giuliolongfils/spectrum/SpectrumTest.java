@@ -8,13 +8,15 @@ import com.giuliolongfils.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher;
 import com.giuliolongfils.spectrum.interfaces.Endpoint;
 import com.giuliolongfils.spectrum.pojos.Configuration;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import com.giuliolongfils.spectrum.types.DownloadWait;
 import com.giuliolongfils.spectrum.types.ImplicitWait;
 import com.giuliolongfils.spectrum.types.PageLoadWait;
 import com.giuliolongfils.spectrum.types.ScriptWait;
-import com.giuliolongfils.spectrum.utils.testbook.TestBookParser;
+import com.giuliolongfils.spectrum.utils.testbook.TestBook;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -27,7 +29,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.giuliolongfils.spectrum.pojos.testbook.TestBookResult.Status.NOT_RUN;
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
@@ -67,9 +72,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
     @RegisterExtension
     public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
-
-    @RegisterExtension
-    public static final TestBookParserResolver TEST_BOOK_PARSER_RESOLVER = new TestBookParserResolver();
 
     @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
@@ -118,10 +120,16 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     }
 
     @BeforeAll
-    public static void beforeAll(final Configuration configuration, final ExtentReports extentReports, final TestBookParser testBookParser) {
+    public static void beforeAll(final Configuration configuration, final ExtentReports extentReports) {
         SpectrumEntity.configuration = configuration;
         SpectrumEntity.extentReports = extentReports;
-        SpectrumEntity.testBookParser = testBookParser;
+
+        final TestBook testBook = configuration.getApplication().getTestBook();
+        testBook.getTests().putAll(testBook
+                .getParser()
+                .parse()
+                .stream()
+                .collect(toMap(identity(), testName -> new TestBookResult(NOT_RUN))));
     }
 
     @BeforeEach
@@ -152,5 +160,11 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
             PageFactory.initElements(spectrumPage.webDriver, spectrumPage);
         });
+    }
+
+    @AfterAll
+    public static void afterAll(final Configuration configuration) {
+        final TestBook testBook = configuration.getApplication().getTestBook();
+        testBook.getReporters().forEach(reporter -> reporter.updateWith(testBook));
     }
 }

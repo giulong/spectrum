@@ -3,7 +3,7 @@ package com.giuliolongfils.spectrum.pojos;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.giuliolongfils.spectrum.browsers.Browser;
-import com.giuliolongfils.spectrum.utils.testbook.TestBookParser;
+import com.giuliolongfils.spectrum.utils.testbook.TestBook;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
@@ -46,7 +46,7 @@ public class Configuration {
 	@EqualsAndHashCode
 	public static class Application {
 		private String baseUrl;
-		private TestBookParser testBookParser;
+		private TestBook testBook;
 	}
 
 	@Getter

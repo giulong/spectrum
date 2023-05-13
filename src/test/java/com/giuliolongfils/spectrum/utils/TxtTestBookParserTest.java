@@ -1,6 +1,6 @@
 package com.giuliolongfils.spectrum.utils;
 
-import com.giuliolongfils.spectrum.utils.testbook.TxtTestBookParser;
+import com.giuliolongfils.spectrum.utils.testbook.parsers.TxtTestBookParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -8,7 +8,6 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.model.Media;
 import com.giuliolongfils.spectrum.internals.EventsListener;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.utils.testbook.TestBookParser;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
@@ -41,7 +40,6 @@ public abstract class SpectrumEntity<Data> {
 
     protected static Configuration configuration;
     protected static ExtentReports extentReports;
-    protected static TestBookParser testBookParser;
 
     protected ExtentTest extentTest;
     protected Actions actions;
