@@ -1,14 +1,13 @@
-package com.giuliolongfils.spectrum.pojos;
+package com.giuliolongfils.spectrum.pojos.testbook;
 
-import lombok.*;
-
-import static com.giuliolongfils.spectrum.pojos.TestBookResult.Status.NOT_RUN;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @EqualsAndHashCode
-@With
-@NoArgsConstructor
 @AllArgsConstructor
 public class TestBookResult {
 
@@ -23,5 +22,5 @@ public class TestBookResult {
         private final String value;
     }
 
-    private Status status = NOT_RUN;
+    private Status status;
 }
