@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @Slf4j
 public class TestBookWatcher implements TestWatcher {
 
+    public static final String SEPARATOR = "::";
+
     @Override
     public void testDisabled(final ExtensionContext context, final Optional<String> reason) {
         updateTestBook(context, SKIPPED);
@@ -40,7 +42,7 @@ public class TestBookWatcher implements TestWatcher {
     public void updateTestBook(final ExtensionContext context, final TestBookResult.Status status) {
         final String className = context.getStore(GLOBAL).get(CLASS_NAME, String.class);
         final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getApplication().getTestBook();
-        final String fullName = String.format("%s.%s", className, context.getDisplayName());
+        final String fullName = String.format("%s%s%s", className, SEPARATOR, context.getDisplayName());
 
         if (testBook.getTests().containsKey(fullName)) {
             log.debug("Setting TestBook status {} for test '{}'", status, fullName);
