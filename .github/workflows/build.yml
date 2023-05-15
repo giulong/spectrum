@@ -22,6 +22,7 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
+    needs: build
     steps:
     - name: Generate Jacoco Badge
       id: jacoco
