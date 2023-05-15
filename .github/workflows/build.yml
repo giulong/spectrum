@@ -9,8 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    permissions:
-      repository-projects: write
+    permissions: write-all
     steps:
     - uses: actions/checkout@v3
 
