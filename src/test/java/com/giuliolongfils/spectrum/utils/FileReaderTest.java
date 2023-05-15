@@ -47,6 +47,6 @@ class FileReaderTest {
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("/test.yaml", "key: value"),
-                arguments("not-existing", null));
+                arguments("not-existing", ""));
     }
 }

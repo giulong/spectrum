@@ -1,11 +1,13 @@
 package com.giuliolongfils.spectrum.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.giuliolongfils.spectrum.TestYaml;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.MockedConstruction;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -28,6 +30,7 @@ class YamlWriterTest {
 
         try (MockedConstruction<YAMLMapper> ignored = mockConstruction(YAMLMapper.class, (mock, context) -> {
             when(mock.configure(FAIL_ON_EMPTY_BEANS, false)).thenReturn(mock);
+            when(mock.registerModules(ArgumentMatchers.<Module>any())).thenReturn(mock);
             when(mock.writerWithDefaultPrettyPrinter()).thenReturn(objectWriter);
         })) {
             YamlWriter yamlWriter = new YamlWriter();
