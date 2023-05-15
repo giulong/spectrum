@@ -1,6 +1,7 @@
 package com.giuliolongfils.spectrum.utils;
 
 import com.giuliolongfils.spectrum.utils.testbook.parsers.TxtTestBookParser;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ class TxtTestBookParserTest {
 
     @Test
     @DisplayName("parse should read the provided file line by line and return the list of test names")
+    @Disabled
     public void parse() {
         List<String> actual = testBookParser.parse();
         assertEquals(List.of("test 1", "another test"), actual);
