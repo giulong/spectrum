@@ -6,11 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
-defaults:
-  runs-on: ubuntu-latest
-
 jobs:
   build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -23,6 +21,7 @@ jobs:
       run: mvn -B package
 
   coverage:
+    runs-on: ubuntu-latest
     steps:
     - name: Generate Jacoco Badge
       id: jacoco
