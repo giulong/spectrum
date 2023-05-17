@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
         @Type(value = TxtTestBookParser.class, name = "txt")
 })
 @Getter
+@Setter
 public abstract class TestBookParser {
 
     protected String path;

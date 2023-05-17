@@ -49,6 +49,30 @@ class YamlParserTest {
     }
 
     @Test
+    @DisplayName("readNode should return null if the provided client file doesn't exist")
+    public void readNotExistingClientNode() {
+        assertNull(yamlParser.readNode("/objectKey", "not-existing", TestYaml.ObjectKey.class, false));
+    }
+
+    @Test
+    @DisplayName("readNode should check if the provided file exists and return the node requested")
+    public void readNode() {
+        assertEquals("objectValue", Objects.requireNonNull(yamlParser.readNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class, true)).getObjectField());
+    }
+
+    @Test
+    @DisplayName("readNode for client-side files should just delegate to the readNode method")
+    public void readClientNode() {
+        assertEquals("objectValue", yamlParser.readNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
+    }
+
+    @Test
+    @DisplayName("readInternalNode should just delegate to the readNode method")
+    public void readInternalNode() {
+        assertEquals("objectValue", yamlParser.readInternalNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
+    }
+
+    @Test
     @DisplayName("update should update the provided instance with the string content provided")
     public void update() {
         TestYaml testYaml = TestYaml.builder().key("original").build();
