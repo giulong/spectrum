@@ -10,5 +10,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestYaml {
+
     private String key;
+    private ObjectKey objectKey;
+
+    @Getter
+    public static class ObjectKey {
+        private String objectField;
+    }
 }

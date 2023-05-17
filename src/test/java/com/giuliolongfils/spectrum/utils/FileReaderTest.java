@@ -12,8 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,9 +43,15 @@ class FileReaderTest {
         assertEquals("value", actual.getProperty("key"));
     }
 
+    @Test
+    @DisplayName("readProperties should throw an exception if the provided file doesn't exist")
+    public void readPropertiesNotExisting() {
+        assertThrows(RuntimeException.class, () -> fileReader.readProperties("/not-existing"));
+    }
+
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("/test.yaml", "key: value"),
+                arguments("/test.yaml", "key: value\nobjectKey:\n  objectField: objectValue"),
                 arguments("not-existing", ""));
     }
 }
