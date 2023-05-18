@@ -2,7 +2,7 @@ package com.giuliolongfils.spectrum.utils.testbook.reporters;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
-import com.giuliolongfils.spectrum.utils.testbook.TestBook;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Comparator;

@@ -2,18 +2,19 @@ package com.giuliolongfils.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import com.giuliolongfils.spectrum.extensions.SpectrumExtension;
 import com.giuliolongfils.spectrum.extensions.resolvers.*;
 import com.giuliolongfils.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher;
 import com.giuliolongfils.spectrum.interfaces.Endpoint;
 import com.giuliolongfils.spectrum.pojos.Configuration;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBookStatistics;
 import com.giuliolongfils.spectrum.types.DownloadWait;
 import com.giuliolongfils.spectrum.types.ImplicitWait;
 import com.giuliolongfils.spectrum.types.PageLoadWait;
 import com.giuliolongfils.spectrum.types.ScriptWait;
-import com.giuliolongfils.spectrum.utils.testbook.TestBook;
+import com.giuliolongfils.spectrum.utils.FileReader;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
@@ -25,9 +26,9 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import static com.giuliolongfils.spectrum.pojos.testbook.TestBookResult.Status.NOT_RUN;
 import static java.util.function.Function.identity;
@@ -37,14 +38,15 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
+    private static final Lock LOCK = new ReentrantLock();
+
+    private static volatile boolean suiteInitialised;
+
     @RegisterExtension
     public static final TestBookWatcher TEST_BOOK_RESOLVER = new TestBookWatcher();
 
     @RegisterExtension
     public static final ExtentReportsWatcher EXTENT_REPORTS_WATCHER = new ExtentReportsWatcher();
-
-    @RegisterExtension
-    public static final SpectrumExtension SPECTRUM_EXTENSION = new SpectrumExtension();
 
     @RegisterExtension
     public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver();
@@ -121,15 +123,27 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
     @BeforeAll
     public static void beforeAll(final Configuration configuration, final ExtentReports extentReports) {
-        SpectrumEntity.configuration = configuration;
-        SpectrumEntity.extentReports = extentReports;
+        LOCK.lock();
+        try {
+            if (!suiteInitialised) {
+                suiteInitialised = true;
+                SpectrumEntity.configuration = configuration;
+                SpectrumEntity.extentReports = extentReports;
 
-        final TestBook testBook = configuration.getApplication().getTestBook();
-        testBook.getTests().putAll(testBook
-                .getParser()
-                .parse()
-                .stream()
-                .collect(toMap(identity(), testName -> new TestBookResult(NOT_RUN))));
+                final FileReader fileReader = FileReader.getInstance();
+                final Properties spectrumProperties = fileReader.readProperties("/spectrum.properties");
+                log.info(String.format(Objects.requireNonNull(fileReader.read("/banner.txt")), spectrumProperties.getProperty("version")));
+
+                final TestBook testBook = configuration.getApplication().getTestBook();
+                testBook.getTests().putAll(testBook
+                        .getParser()
+                        .parse()
+                        .stream()
+                        .collect(toMap(identity(), testName -> new TestBookResult(NOT_RUN))));
+            }
+        } finally {
+            LOCK.unlock();
+        }
     }
 
     @BeforeEach
@@ -163,8 +177,58 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     }
 
     @AfterAll
-    public static void afterAll(final Configuration configuration) {
+    public static void afterAll(final ExtentReports extentReports, final Configuration configuration) {
         final TestBook testBook = configuration.getApplication().getTestBook();
+        final TestBookStatistics statistics = testBook.getStatistics();
+        final TestBookStatistics.Percentages percentages = statistics.getPercentages();
+        final int total = testBook.getTests().size();
+        final int unmappedTestsTotal = testBook.getUnmappedTests().size();
+        final int grandTotal = total + unmappedTestsTotal;
+        log.debug("Updating testBook percentages");
+
+        final double successful = statistics.getSuccessful().doubleValue();
+        final double failed = statistics.getFailed().doubleValue();
+        final double aborted = statistics.getAborted().doubleValue();
+        final double disabled = statistics.getDisabled().doubleValue();
+        final double grandTotalSuccessful = statistics.getGrandTotalSuccessful().doubleValue();
+        final double grandTotalFailed = statistics.getGrandTotalFailed().doubleValue();
+        final double grandTotalAborted = statistics.getGrandTotalAborted().doubleValue();
+        final double grandTotalDisabled = statistics.getGrandTotalDisabled().doubleValue();
+
+        statistics.getGrandTotal().set(grandTotal);
+        statistics.getNotRun().set((int) (total - successful - failed - aborted - disabled));
+        statistics.getGrandTotalNotRun().set((int) (grandTotal - grandTotalSuccessful - grandTotalFailed - grandTotalAborted - grandTotalDisabled));
+
+        final double successfulPercentage = successful / total * 100;
+        final double failedPercentage = failed / total * 100;
+        final double abortedPercentage = aborted / total * 100;
+        final double disabledPercentage = disabled / total * 100;
+        final double notRunPercentage = statistics.getNotRun().doubleValue() / total * 100;
+        final double grandTotalSuccessfulPercentage = grandTotalSuccessful / grandTotal * 100;
+        final double grandTotalFailedPercentage = grandTotalFailed / grandTotal * 100;
+        final double grandTotalAbortedPercentage = grandTotalAborted / grandTotal * 100;
+        final double grandTotalDisabledPercentage = grandTotalDisabled / grandTotal * 100;
+        final double grandTotalNotRunPercentage = statistics.getNotRun().doubleValue() / grandTotal * 100;
+
+        percentages.setTests(total);
+        percentages.setUnmappedTests(unmappedTestsTotal);
+        percentages.setSuccessful(successfulPercentage);
+        percentages.setFailed(failedPercentage);
+        percentages.setAborted(abortedPercentage);
+        percentages.setDisabled(disabledPercentage);
+        percentages.setNotRun(notRunPercentage);
+        percentages.setGrandTotalSuccessful(grandTotalSuccessfulPercentage);
+        percentages.setGrandTotalFailed(grandTotalFailedPercentage);
+        percentages.setGrandTotalAborted(grandTotalAbortedPercentage);
+        percentages.setGrandTotalDisabled(grandTotalDisabledPercentage);
+        percentages.setGrandTotalNotRun(grandTotalNotRunPercentage);
+
+        log.trace("Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
+                successfulPercentage, failedPercentage, abortedPercentage, disabledPercentage, notRunPercentage);
+        log.trace("Grand Total Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
+                grandTotalSuccessfulPercentage, grandTotalFailedPercentage, grandTotalAbortedPercentage, grandTotalDisabledPercentage, grandTotalNotRunPercentage);
+
         testBook.getReporters().forEach(reporter -> reporter.updateWith(testBook));
+        extentReports.flush();
     }
 }

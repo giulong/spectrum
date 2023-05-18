@@ -13,7 +13,6 @@ import java.util.Optional;
 import static com.aventstack.extentreports.Status.*;
 import static com.aventstack.extentreports.markuputils.ExtentColor.RED;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
-import static com.giuliolongfils.spectrum.extensions.SpectrumExtension.CLASS_NAME;
 import static com.giuliolongfils.spectrum.extensions.resolvers.ExtentTestResolver.*;
 import static com.giuliolongfils.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -50,7 +49,7 @@ public class ExtentReportsWatcher implements TestWatcher {
     protected void finalizeTest(final ExtensionContext context, final Status status) {
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         store.get(WEB_DRIVER, WebDriver.class).quit();
-        log.info(String.format("END execution of '%s -> %s': %s", store.get(CLASS_NAME), context.getDisplayName(), status.name()));
+        log.info(String.format("END execution of '%s -> %s': %s", context.getParent().orElseThrow().getDisplayName(), context.getDisplayName(), status.name()));
         store.get(EXTENT_TEST, ExtentTest.class).log(status, createLabel("END TEST", getColorOf(status)));
     }
 }

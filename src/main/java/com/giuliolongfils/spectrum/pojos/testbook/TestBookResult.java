@@ -15,9 +15,10 @@ public class TestBookResult {
     @Getter
     public enum Status {
         NOT_RUN("Not Run"),
-        PASSED("Passed"),
+        SUCCESSFUL("Successful"),
         FAILED("Failed"),
-        SKIPPED("Skipped");
+        ABORTED("Aborted"),
+        DISABLED("Disabled");
 
         private final String value;
     }

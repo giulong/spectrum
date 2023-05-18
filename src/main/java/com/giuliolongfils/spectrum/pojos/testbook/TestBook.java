@@ -1,7 +1,6 @@
-package com.giuliolongfils.spectrum.utils.testbook;
+package com.giuliolongfils.spectrum.pojos.testbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import com.giuliolongfils.spectrum.utils.testbook.parsers.TestBookParser;
 import com.giuliolongfils.spectrum.utils.testbook.reporters.TestBookReporter;
 import lombok.Getter;
@@ -22,4 +21,7 @@ public class TestBook {
 
     @JsonIgnore
     private final Map<String, TestBookResult> unmappedTests = new HashMap<>();
+
+    @JsonIgnore
+    private final TestBookStatistics statistics = new TestBookStatistics();
 }

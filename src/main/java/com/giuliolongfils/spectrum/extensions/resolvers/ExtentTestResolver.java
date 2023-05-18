@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import static com.aventstack.extentreports.Status.INFO;
 import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
-import static com.giuliolongfils.spectrum.extensions.SpectrumExtension.CLASS_NAME;
 import static com.giuliolongfils.spectrum.extensions.resolvers.ExtentReportsResolver.EXTENT_REPORTS;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -25,7 +24,7 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> {
     public static ExtentTest createExtentTestFrom(final ExtensionContext context) {
         return context.getRoot().getStore(GLOBAL)
                 .get(EXTENT_REPORTS, ExtentReports.class)
-                .createTest(String.format("<div>%s</div>%s", context.getStore(GLOBAL).get(CLASS_NAME), context.getDisplayName()));
+                .createTest(String.format("<div>%s</div>%s", context.getParent().orElseThrow().getDisplayName(), context.getDisplayName()));
     }
 
     public static ExtentColor getColorOf(final Status status) {
