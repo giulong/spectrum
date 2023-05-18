@@ -3,8 +3,8 @@
 <img src="src/main/resources/spectrum-logo.png" width="512" height="102">
 
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg)](https://github.com/giulong/spectrum/actions)
-![coverage](.github/badges/jacoco.svg)
-![branches coverage](.github/badges/branches.svg)
+![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
+![branches coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/branches.svg)
 
 ## How to build
 
