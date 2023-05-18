@@ -23,6 +23,7 @@ public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
     @Override
     public WebDriver resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         log.debug("Resolving {}", WEB_DRIVER);
+
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final Configuration configuration = store.get(CONFIGURATION, Configuration.class);
         final Browser<?> browser = configuration.getRuntime().getBrowser();
@@ -38,6 +39,7 @@ public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .events(configuration.getEvents())
                 .build();
         final WebDriver decoratedWebDriver = new EventFiringDecorator<>(eventListener).decorate(webDriver);
+
         store.put(WEB_DRIVER, decoratedWebDriver);
         return decoratedWebDriver;
     }
