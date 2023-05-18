@@ -40,7 +40,7 @@ jobs:
       run: |
         cd .github/badges
         if [[ `git status --porcelain *.svg` ]]; then
-          git checkout --orphan actions/badges
+          git checkout actions/badges
           git rm --cached -f $(git ls-files)
           git config --global user.name 'github-actions'
           git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
