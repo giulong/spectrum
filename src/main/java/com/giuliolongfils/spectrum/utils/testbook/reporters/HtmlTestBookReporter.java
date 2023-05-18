@@ -1,7 +1,7 @@
 package com.giuliolongfils.spectrum.utils.testbook.reporters;
 
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
-import com.giuliolongfils.spectrum.utils.testbook.TestBook;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
 import lombok.Getter;
 import lombok.SneakyThrows;
 

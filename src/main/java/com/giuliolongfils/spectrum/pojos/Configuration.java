@@ -3,7 +3,7 @@ package com.giuliolongfils.spectrum.pojos;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.giuliolongfils.spectrum.browsers.Browser;
-import com.giuliolongfils.spectrum.utils.testbook.TestBook;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;

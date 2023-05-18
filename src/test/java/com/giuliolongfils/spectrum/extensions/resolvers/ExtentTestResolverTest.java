@@ -23,7 +23,6 @@ import java.util.stream.Stream;
 import static com.aventstack.extentreports.Status.*;
 import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
-import static com.giuliolongfils.spectrum.extensions.SpectrumExtension.CLASS_NAME;
 import static com.giuliolongfils.spectrum.extensions.resolvers.ExtentReportsResolver.EXTENT_REPORTS;
 import static com.giuliolongfils.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,7 +70,6 @@ class ExtentTestResolverTest {
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(EXTENT_REPORTS, ExtentReports.class)).thenReturn(extentReports);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(CLASS_NAME)).thenReturn(className);
         when(extensionContext.getDisplayName()).thenReturn(displayName);
         when(extentReports.createTest(String.format("<div>%s</div>%s", className, displayName))).thenReturn(extentTest);
 
@@ -93,7 +91,6 @@ class ExtentTestResolverTest {
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(EXTENT_REPORTS, ExtentReports.class)).thenReturn(extentReports);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(CLASS_NAME)).thenReturn(className);
         when(extensionContext.getDisplayName()).thenReturn(displayName);
         when(extentReports.createTest(String.format("<div>%s</div>%s", className, displayName))).thenReturn(extentTest);
 
