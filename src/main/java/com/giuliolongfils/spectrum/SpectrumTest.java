@@ -124,6 +124,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     @BeforeAll
     public static void beforeAll(final Configuration configuration, final ExtentReports extentReports) {
         LOCK.lock();
+
         try {
             if (!suiteInitialised) {
                 suiteInitialised = true;
@@ -178,57 +179,63 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
     @AfterAll
     public static void afterAll(final ExtentReports extentReports, final Configuration configuration) {
-        final TestBook testBook = configuration.getApplication().getTestBook();
-        final TestBookStatistics statistics = testBook.getStatistics();
-        final TestBookStatistics.Percentages percentages = statistics.getPercentages();
-        final int total = testBook.getTests().size();
-        final int unmappedTestsTotal = testBook.getUnmappedTests().size();
-        final int grandTotal = total + unmappedTestsTotal;
-        log.debug("Updating testBook percentages");
+        LOCK.lock();
 
-        final double successful = statistics.getSuccessful().doubleValue();
-        final double failed = statistics.getFailed().doubleValue();
-        final double aborted = statistics.getAborted().doubleValue();
-        final double disabled = statistics.getDisabled().doubleValue();
-        final double grandTotalSuccessful = statistics.getGrandTotalSuccessful().doubleValue();
-        final double grandTotalFailed = statistics.getGrandTotalFailed().doubleValue();
-        final double grandTotalAborted = statistics.getGrandTotalAborted().doubleValue();
-        final double grandTotalDisabled = statistics.getGrandTotalDisabled().doubleValue();
+        try {
+            final TestBook testBook = configuration.getApplication().getTestBook();
+            final TestBookStatistics statistics = testBook.getStatistics();
+            final TestBookStatistics.Percentages percentages = statistics.getPercentages();
+            final int total = testBook.getTests().size();
+            final int unmappedTestsTotal = testBook.getUnmappedTests().size();
+            final int grandTotal = total + unmappedTestsTotal;
+            log.debug("Updating testBook percentages");
 
-        statistics.getGrandTotal().set(grandTotal);
-        statistics.getNotRun().set((int) (total - successful - failed - aborted - disabled));
-        statistics.getGrandTotalNotRun().set((int) (grandTotal - grandTotalSuccessful - grandTotalFailed - grandTotalAborted - grandTotalDisabled));
+            final double successful = statistics.getSuccessful().doubleValue();
+            final double failed = statistics.getFailed().doubleValue();
+            final double aborted = statistics.getAborted().doubleValue();
+            final double disabled = statistics.getDisabled().doubleValue();
+            final double grandTotalSuccessful = statistics.getGrandTotalSuccessful().doubleValue();
+            final double grandTotalFailed = statistics.getGrandTotalFailed().doubleValue();
+            final double grandTotalAborted = statistics.getGrandTotalAborted().doubleValue();
+            final double grandTotalDisabled = statistics.getGrandTotalDisabled().doubleValue();
 
-        final double successfulPercentage = successful / total * 100;
-        final double failedPercentage = failed / total * 100;
-        final double abortedPercentage = aborted / total * 100;
-        final double disabledPercentage = disabled / total * 100;
-        final double notRunPercentage = statistics.getNotRun().doubleValue() / total * 100;
-        final double grandTotalSuccessfulPercentage = grandTotalSuccessful / grandTotal * 100;
-        final double grandTotalFailedPercentage = grandTotalFailed / grandTotal * 100;
-        final double grandTotalAbortedPercentage = grandTotalAborted / grandTotal * 100;
-        final double grandTotalDisabledPercentage = grandTotalDisabled / grandTotal * 100;
-        final double grandTotalNotRunPercentage = statistics.getNotRun().doubleValue() / grandTotal * 100;
+            statistics.getGrandTotal().set(grandTotal);
+            statistics.getNotRun().set((int) (total - successful - failed - aborted - disabled));
+            statistics.getGrandTotalNotRun().set((int) (grandTotal - grandTotalSuccessful - grandTotalFailed - grandTotalAborted - grandTotalDisabled));
 
-        percentages.setTests(total);
-        percentages.setUnmappedTests(unmappedTestsTotal);
-        percentages.setSuccessful(successfulPercentage);
-        percentages.setFailed(failedPercentage);
-        percentages.setAborted(abortedPercentage);
-        percentages.setDisabled(disabledPercentage);
-        percentages.setNotRun(notRunPercentage);
-        percentages.setGrandTotalSuccessful(grandTotalSuccessfulPercentage);
-        percentages.setGrandTotalFailed(grandTotalFailedPercentage);
-        percentages.setGrandTotalAborted(grandTotalAbortedPercentage);
-        percentages.setGrandTotalDisabled(grandTotalDisabledPercentage);
-        percentages.setGrandTotalNotRun(grandTotalNotRunPercentage);
+            final double successfulPercentage = successful / total * 100;
+            final double failedPercentage = failed / total * 100;
+            final double abortedPercentage = aborted / total * 100;
+            final double disabledPercentage = disabled / total * 100;
+            final double notRunPercentage = statistics.getNotRun().doubleValue() / total * 100;
+            final double grandTotalSuccessfulPercentage = grandTotalSuccessful / grandTotal * 100;
+            final double grandTotalFailedPercentage = grandTotalFailed / grandTotal * 100;
+            final double grandTotalAbortedPercentage = grandTotalAborted / grandTotal * 100;
+            final double grandTotalDisabledPercentage = grandTotalDisabled / grandTotal * 100;
+            final double grandTotalNotRunPercentage = statistics.getNotRun().doubleValue() / grandTotal * 100;
 
-        log.trace("Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
-                successfulPercentage, failedPercentage, abortedPercentage, disabledPercentage, notRunPercentage);
-        log.trace("Grand Total Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
-                grandTotalSuccessfulPercentage, grandTotalFailedPercentage, grandTotalAbortedPercentage, grandTotalDisabledPercentage, grandTotalNotRunPercentage);
+            percentages.setTests(total);
+            percentages.setUnmappedTests(unmappedTestsTotal);
+            percentages.setSuccessful(successfulPercentage);
+            percentages.setFailed(failedPercentage);
+            percentages.setAborted(abortedPercentage);
+            percentages.setDisabled(disabledPercentage);
+            percentages.setNotRun(notRunPercentage);
+            percentages.setGrandTotalSuccessful(grandTotalSuccessfulPercentage);
+            percentages.setGrandTotalFailed(grandTotalFailedPercentage);
+            percentages.setGrandTotalAborted(grandTotalAbortedPercentage);
+            percentages.setGrandTotalDisabled(grandTotalDisabledPercentage);
+            percentages.setGrandTotalNotRun(grandTotalNotRunPercentage);
 
-        testBook.getReporters().forEach(reporter -> reporter.updateWith(testBook));
-        extentReports.flush();
+            log.trace("Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
+                    successfulPercentage, failedPercentage, abortedPercentage, disabledPercentage, notRunPercentage);
+            log.trace("Grand Total Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
+                    grandTotalSuccessfulPercentage, grandTotalFailedPercentage, grandTotalAbortedPercentage, grandTotalDisabledPercentage, grandTotalNotRunPercentage);
+
+            testBook.getReporters().forEach(reporter -> reporter.updateWith(testBook));
+            extentReports.flush();
+        } finally {
+            LOCK.unlock();
+        }
     }
 }
