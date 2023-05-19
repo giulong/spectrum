@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Properties;
 import java.util.stream.Stream;
 
+import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
@@ -51,7 +52,7 @@ class FileReaderTest {
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("/test.yaml", "key: value\nobjectKey:\n  objectField: objectValue"),
+                arguments("/test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue"),
                 arguments("not-existing", ""));
     }
 }

@@ -20,6 +20,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.file.Paths;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -115,7 +116,7 @@ class ExtentReportsResolverTest {
         try (MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class, (mock2, context2) -> {
         })) {
             try (MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-                assertEquals(System.getProperty("user.dir") + "/reportFolder/fileName", context.arguments().get(0));
+                assertEquals(Paths.get(System.getProperty("user.dir"), reportFolder, fileName).toString().replaceAll("\\\\", "/"), context.arguments().get(0));
                 when(mock.config()).thenReturn(extentSparkReporterConfig);
             })) {
                 verify(rootStore).getOrComputeIfAbsent(eq(EXTENT_REPORTS), functionArgumentCaptor.capture(), eq(ExtentReports.class));
@@ -140,16 +141,16 @@ class ExtentReportsResolverTest {
     @ParameterizedTest(name = "with folder {0} and fileName {1} we expect {2}")
     @MethodSource("valuesProvider")
     public void getReportsPathFrom(final String reportFolder, final String fileName, final String expected) {
-        String actual = ExtentReportsResolver.getReportsPathFrom(reportFolder, fileName);
-        assertTrue(actual.matches(System.getProperty("user.dir") + "/" + expected));
+        final String actual = ExtentReportsResolver.getReportsPathFrom(reportFolder, fileName);
+        assertTrue(actual.matches(Paths.get(System.getProperty("user.dir"), expected).toString().replaceAll("\\\\", "/")));
     }
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("reportFolder", "fileName.html", "reportFolder/fileName.html"),
-                arguments("reportFolder", "fileName-{timestamp}.html", "reportFolder/fileName-\\d{2}-\\d{2}-\\d{4}_\\d{2}-\\d{2}-\\d{2}.html"),
-                arguments("reportFolder", "fileName-{timestamp:dd-MM-yyyy_HH-mm-ss}.html", "reportFolder/fileName-\\d{2}-\\d{2}-\\d{4}_\\d{2}-\\d{2}-\\d{2}.html"),
-                arguments("reportFolder", "fileName-{timestamp:dd-MM-yyyy}.html", "reportFolder/fileName-\\d{2}-\\d{2}-\\d{4}.html")
+                arguments("reportFolder", "fileName-{timestamp}.html", "reportFolder/fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
+                arguments("reportFolder", "fileName-{timestamp:dd-MM-yyyy_HH-mm-ss}.html", "reportFolder/fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
+                arguments("reportFolder", "fileName-{timestamp:dd-MM-yyyy}.html", "reportFolder/fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
         );
     }
 }
