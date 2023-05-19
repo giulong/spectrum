@@ -19,7 +19,7 @@ application:
   testBook:
     parser:
       txt:
-        path: ${spectrum.testbook.path:-src/test/resources/testbook.txt}
+        path: ${spectrum.testbook.path:-testbook.txt}
 
 # Extent Report configuration
 extent:

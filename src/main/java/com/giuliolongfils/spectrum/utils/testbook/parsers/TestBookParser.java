@@ -13,7 +13,8 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
 @JsonTypeInfo(use = NAME, include = WRAPPER_OBJECT)
 @JsonSubTypes({
-        @Type(value = TxtTestBookParser.class, name = "txt")
+        @Type(value = TxtTestBookParser.class, name = "txt"),
+        @Type(value = YamlTestBookParser.class, name = "yaml"),
 })
 @Getter
 @Setter

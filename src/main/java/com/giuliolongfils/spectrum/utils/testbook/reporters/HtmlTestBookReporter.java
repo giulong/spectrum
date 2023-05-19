@@ -47,6 +47,7 @@ public class HtmlTestBookReporter extends TestBookReporter {
                     return String.format("<div class=\"test-row %s\"><div class=\"inline test-name\">%s</div>" +
                             "<div class=\"inline status\">%s</div></div>", statusClass, e.getKey(), statusValue);
                 })
+                .sorted()
                 .collect(Collectors.joining());
     }
 }
