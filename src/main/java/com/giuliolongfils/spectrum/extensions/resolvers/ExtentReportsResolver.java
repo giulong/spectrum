@@ -34,12 +34,12 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
             log.debug("Resolving {}", EXTENT_REPORTS);
 
             final Configuration.Extent extent = rootStore.get(CONFIGURATION, Configuration.class).getExtent();
-            final String reportsPath = getReportsPathFrom(extent.getReportFolder(), extent.getFileName());
-            final String reportsName = extent.getReportName();
-            final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportsPath);
+            final String reportPath = getReportsPathFrom(extent.getReportFolder(), extent.getFileName());
+            final String reportName = extent.getReportName();
+            final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
 
             sparkReporter.config().setDocumentTitle(extent.getDocumentTitle());
-            sparkReporter.config().setReportName(reportsName);
+            sparkReporter.config().setReportName(reportName);
             sparkReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
             sparkReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
             sparkReporter.config().setCss(FileReader.getInstance().read("/css/report.css"));
@@ -48,16 +48,17 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
             extentReports.attachReporter(sparkReporter);
 
             rootStore.put(EXTENT_REPORTS, extentReports);
-            log.info("After the execution, you'll find the '{}' report at file:///{}", reportsName, reportsPath);
+            log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
             return extentReports;
         }, ExtentReports.class);
     }
 
     protected static String getReportsPathFrom(final String reportFolder, final String fileName) {
-        final String timestamp = "\\{.*:?(?<pattern>.*)}";
+        final String toReplace = "\\{timestamp:?(?<pattern>.*)}";
+        final String timestamp = ".*\\{timestamp:(?<pattern>.*)}.*";
         final Matcher matcher = Pattern.compile(timestamp).matcher(fileName);
         final String pattern = matcher.matches() ? matcher.group("pattern") : DEFAULT_PATTERN;
-        final String resolvedFileName = fileName.replaceAll(timestamp, LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern)));
+        final String resolvedFileName = fileName.replaceAll(toReplace, LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern)));
 
         return Paths.get(System.getProperty("user.dir"), reportFolder, resolvedFileName).toString().replaceAll("\\\\", "/");
     }

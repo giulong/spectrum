@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.Status.*;
@@ -46,6 +47,9 @@ class ExtentTestResolverTest {
     private ExtensionContext extensionContext;
 
     @Mock
+    private ExtensionContext parentContext;
+
+    @Mock
     private ExtensionContext.Store rootStore;
 
     @Mock
@@ -69,8 +73,9 @@ class ExtentTestResolverTest {
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(EXTENT_REPORTS, ExtentReports.class)).thenReturn(extentReports);
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getDisplayName()).thenReturn(displayName);
+        when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getDisplayName()).thenReturn(className);
         when(extentReports.createTest(String.format("<div>%s</div>%s", className, displayName))).thenReturn(extentTest);
 
         assertEquals(extentTest, ExtentTestResolver.createExtentTestFrom(extensionContext));
@@ -92,6 +97,8 @@ class ExtentTestResolverTest {
         when(rootStore.get(EXTENT_REPORTS, ExtentReports.class)).thenReturn(extentReports);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getDisplayName()).thenReturn(displayName);
+        when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getDisplayName()).thenReturn(className);
         when(extentReports.createTest(String.format("<div>%s</div>%s", className, displayName))).thenReturn(extentTest);
 
         when(extentTest.info(any(Markup.class))).thenReturn(extentTest);
