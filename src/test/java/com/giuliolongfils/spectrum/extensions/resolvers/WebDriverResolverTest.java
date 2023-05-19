@@ -114,9 +114,11 @@ class WebDriverResolverTest {
         when(eventsListenerBuilder.events(events)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.build()).thenReturn(eventsListener);
 
+        //noinspection rawtypes
         try (MockedConstruction<EventFiringDecorator> ignored = mockConstruction(EventFiringDecorator.class, (mock, context) -> {
             assertEquals(eventsListener, ((WebDriverListener[]) context.arguments().get(0))[0]);
 
+            //noinspection unchecked
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         })) {
             WebDriver actual = webDriverResolver.resolveParameter(parameterContext, extensionContext);
