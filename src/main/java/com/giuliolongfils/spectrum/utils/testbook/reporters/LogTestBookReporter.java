@@ -16,20 +16,14 @@ import static java.util.stream.Collectors.toSet;
 @Slf4j
 public class LogTestBookReporter extends TestBookReporter {
 
-    @SuppressWarnings({"FieldMayBeFinal", "FieldCanBeLocal"})
-    private String template = "/testbook/template.txt";
+    protected String template = "/testbook/template.txt";
 
     @JsonIgnore
-    private int longestName;
+    protected int longestTestName;
 
     @Override
     public void updateWith(final TestBook testBook) {
-        longestName = Stream.of(testBook.getTests().keySet(), testBook.getUnmappedTests().keySet()).flatMap(Set::stream)
-                .collect(toSet())
-                .stream().max(comparingInt(String::length))
-                .orElse("")
-                .length();
-
+        findLongestNameFrom(testBook);
         log.info(parse(template, testBook));
     }
 
@@ -43,11 +37,19 @@ public class LogTestBookReporter extends TestBookReporter {
         return format(testBook.getUnmappedTests());
     }
 
+    protected void findLongestNameFrom(final TestBook testBook) {
+        longestTestName = Stream.of(testBook.getTests().keySet(), testBook.getUnmappedTests().keySet()).flatMap(Set::stream)
+                .collect(toSet())
+                .stream().max(comparingInt(String::length))
+                .orElse("")
+                .length();
+    }
+
     public String format(final Map<String, TestBookResult> tests) {
         return tests
                 .entrySet()
                 .stream()
-                .map(e -> String.format("%" + longestName + "s -> %-8s", e.getKey(), e.getValue().getStatus().getValue()))
-                .collect(joining("\n\t\t"));
+                .map(e -> String.format("%-" + longestTestName + "s | %-8s", e.getKey(), e.getValue().getStatus().getValue()))
+                .collect(joining("\n\t"));
     }
 }

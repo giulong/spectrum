@@ -1,12 +1,41 @@
 
 ###############################################################################
 
-    Tests:
-        {{tests}}
+    SPECTRUM TESTBOOK RESULTS
 
+    Statistics
+    -------------------------------------------------------------------------
+    Mapped Tests:   {{tests-count}}
+    Unmapped Tests: {{unmapped-tests-count}}
+    Grand Total:    {{grand-total}}
+    -------------------------------------------------------------------------
+
+    Mapped Tests Ratio
+    -------------------------------------------------------------------------
+    Successful:     {{successful}}/{{tests-count}}  {{percentages.successful}}%
+    Failed:         {{failed}}/{{tests-count}}  {{percentages.failed}}%
+    Aborted:        {{aborted}}/{{tests-count}}  {{percentages.aborted}}%
+    Disabled:       {{disabled}}/{{tests-count}}  {{percentages.disabled}}%
+    Not run:        {{not-run}}/{{tests-count}}  {{percentages.not-run}}%
+    -------------------------------------------------------------------------
+
+    Grand Total Tests Ratio
+    -------------------------------------------------------------------------
+    Successful:     {{grand-total-successful}}/{{grand-total}}  {{percentages.grand-total-successful}}%
+    Failed:         {{grand-total-failed}}/{{grand-total}}  {{percentages.grand-total-failed}}%
+    Aborted:        {{grand-total-aborted}}/{{grand-total}}  {{percentages.grand-total-aborted}}%
+    Disabled:       {{grand-total-disabled}}/{{grand-total}}  {{percentages.grand-total-disabled}}%
+    Not run:        {{grand-total-not-run}}/{{grand-total}}  {{percentages.grand-total-not-run}}%
+    -------------------------------------------------------------------------
+
+    Tests:
+    -------------------------------------------------------------------------
+    {{tests}}
     -------------------------------------------------------------------------
 
     Unmapped Tests:
-        {{unmapped-tests}}
+    -------------------------------------------------------------------------
+    {{unmapped-tests}}
+    -------------------------------------------------------------------------
 
 ###############################################################################
