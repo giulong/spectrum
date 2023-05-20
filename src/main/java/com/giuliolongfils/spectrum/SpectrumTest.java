@@ -227,9 +227,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
             percentages.setGrandTotalDisabled(grandTotalDisabledPercentage);
             percentages.setGrandTotalNotRun(grandTotalNotRunPercentage);
 
-            log.trace("Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
+            log.debug("Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
                     successfulPercentage, failedPercentage, abortedPercentage, disabledPercentage, notRunPercentage);
-            log.trace("Grand Total Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
+            log.debug("Grand Total Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
                     grandTotalSuccessfulPercentage, grandTotalFailedPercentage, grandTotalAbortedPercentage, grandTotalDisabledPercentage, grandTotalNotRunPercentage);
 
             testBook.getReporters().forEach(reporter -> reporter.updateWith(testBook));

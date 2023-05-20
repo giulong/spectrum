@@ -19,6 +19,7 @@ import static java.util.Locale.US;
 @JsonTypeInfo(use = NAME, include = WRAPPER_OBJECT)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LogTestBookReporter.class, name = "log"),
+        @JsonSubTypes.Type(value = TxtTestBookReporter.class, name = "txt"),
         @JsonSubTypes.Type(value = HtmlTestBookReporter.class, name = "html"),
 })
 @Getter
