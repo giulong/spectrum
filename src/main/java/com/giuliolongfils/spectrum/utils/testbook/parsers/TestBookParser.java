@@ -15,6 +15,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @JsonSubTypes({
         @Type(value = TxtTestBookParser.class, name = "txt"),
         @Type(value = YamlTestBookParser.class, name = "yaml"),
+        @Type(value = CsvTestBookParser.class, name = "csv"),
 })
 @Getter
 @Setter
@@ -23,5 +24,7 @@ public abstract class TestBookParser {
     protected String path;
 
     public abstract List<String> parse();
+
+    protected abstract void validate(final String line);
 
 }

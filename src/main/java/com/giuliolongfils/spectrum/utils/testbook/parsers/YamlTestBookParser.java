@@ -14,13 +14,21 @@ public class YamlTestBookParser extends TestBookParser {
 
     @Override
     public List<String> parse() {
+        log.debug("Reading lines of yaml testbook");
+
         return YamlParser.getInstance()
                 .read(path, TestBookYamlData.class)
                 .entrySet()
                 .stream()
                 .flatMap(e -> e.getValue()
                         .stream()
-                        .map(v -> String.format("%s%s%s", e.getKey(), SEPARATOR, v)))
+                        .map(v -> String.format("%s%s%s", e.getKey(), SEPARATOR, v))
+                        .peek(this::validate))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    protected void validate(String line) {
+        log.debug("No validation needed for line '{}'", line);
     }
 }
