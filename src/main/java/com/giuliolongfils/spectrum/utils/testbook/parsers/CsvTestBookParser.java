@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher.SEPARATOR;
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class CsvTestBookParser extends TestBookParser {
@@ -22,7 +22,7 @@ public class CsvTestBookParser extends TestBookParser {
                         .split(lineSeparator()))
                 .peek(this::validate)
                 .map(line -> line.replace(",", SEPARATOR))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override

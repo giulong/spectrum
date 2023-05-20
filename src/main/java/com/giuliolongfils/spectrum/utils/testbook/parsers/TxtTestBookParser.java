@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class TxtTestBookParser extends TestBookParser {
@@ -21,7 +21,7 @@ public class TxtTestBookParser extends TestBookParser {
                         .read(String.format("/%s", path))
                         .split(lineSeparator()))
                 .peek(this::validate)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override

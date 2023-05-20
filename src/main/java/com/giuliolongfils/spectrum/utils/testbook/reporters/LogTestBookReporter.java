@@ -1,15 +1,17 @@
 package com.giuliolongfils.spectrum.utils.testbook.reporters;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 public class LogTestBookReporter extends TestBookReporter {
@@ -23,8 +25,8 @@ public class LogTestBookReporter extends TestBookReporter {
     @Override
     public void updateWith(final TestBook testBook) {
         longestName = Stream.of(testBook.getTests().keySet(), testBook.getUnmappedTests().keySet()).flatMap(Set::stream)
-                .collect(Collectors.toSet())
-                .stream().max(Comparator.comparingInt(String::length))
+                .collect(toSet())
+                .stream().max(comparingInt(String::length))
                 .orElse("")
                 .length();
 
@@ -46,6 +48,6 @@ public class LogTestBookReporter extends TestBookReporter {
                 .entrySet()
                 .stream()
                 .map(e -> String.format("%" + longestName + "s -> %-8s", e.getKey(), e.getValue().getStatus().getValue()))
-                .collect(Collectors.joining("\n\t\t"));
+                .collect(joining("\n\t\t"));
     }
 }
