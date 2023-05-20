@@ -7,29 +7,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher.SEPARATOR;
 import static java.lang.System.lineSeparator;
 
 @Slf4j
-public class TxtTestBookParser extends TestBookParser {
+public class CsvTestBookParser extends TestBookParser {
 
     @Override
     public List<String> parse() {
-        log.debug("Reading lines of txt testbook");
+        log.debug("Reading lines of csv testbook");
 
-        return Arrays
-                .stream(FileReader.getInstance()
+        return Arrays.stream(FileReader.getInstance()
                         .read(String.format("/%s", path))
                         .split(lineSeparator()))
                 .peek(this::validate)
+                .map(line -> line.replace(",", SEPARATOR))
                 .collect(Collectors.toList());
     }
 
     @Override
-    protected void validate(final String line) {
+    protected void validate(String line) {
         log.trace("Validating line {}", line);
 
-        if (!line.matches(".+::.+")) {
-            throw new RuntimeException(String.format("Line '%s' in TestBook doesn't match pattern ClassName::TestName", line));
+        if (line.split(",").length != 2) {
+            throw new RuntimeException(String.format("Wrong number of columns in line '%s' in TestBook. Need two as in: ClassName,TestName", line));
         }
     }
 }

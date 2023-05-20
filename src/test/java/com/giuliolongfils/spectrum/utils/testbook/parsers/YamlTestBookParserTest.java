@@ -26,4 +26,10 @@ class YamlTestBookParserTest {
         assertEquals(3, actual.size());
         assertTrue(actual.containsAll(List.of("first class::one", "first class::two", "second class::three")));
     }
+
+    @Test
+    @DisplayName("validate for yaml testbook shouldn't do nothing")
+    public void validate() {
+        testBookParser.validate("anything");
+    }
 }
