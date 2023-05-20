@@ -1,7 +1,7 @@
 package com.giuliolongfils.spectrum.utils.testbook.reporters;
 
-import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -9,7 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.joining;
 
 @Getter
 public class HtmlTestBookReporter extends TestBookReporter {
@@ -48,6 +49,6 @@ public class HtmlTestBookReporter extends TestBookReporter {
                             "<div class=\"inline status\">%s</div></div>", statusClass, e.getKey(), statusValue);
                 })
                 .sorted()
-                .collect(Collectors.joining());
+                .collect(joining());
     }
 }

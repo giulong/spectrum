@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
 import static java.lang.System.lineSeparator;
+import static java.util.stream.Collectors.joining;
 import static org.openqa.selenium.OutputType.BYTES;
 import static org.openqa.selenium.logging.LogType.BROWSER;
 
@@ -126,7 +127,7 @@ public abstract class SpectrumEntity<Data> {
                 logs
                         .stream()
                         .map(logEntry -> String.format("%s: %s", logEntry.getLevel(), logEntry.getMessage()))
-                        .collect(Collectors.joining(lineSeparator() + lineSeparator())));
+                        .collect(joining(lineSeparator() + lineSeparator())));
 
         extentTest.info("<b>Browser console:</b><br/>" + markup.getMarkup());
         return true;

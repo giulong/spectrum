@@ -5,9 +5,9 @@ import com.giuliolongfils.spectrum.utils.YamlParser;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher.SEPARATOR;
+import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class YamlTestBookParser extends TestBookParser {
@@ -24,7 +24,7 @@ public class YamlTestBookParser extends TestBookParser {
                         .stream()
                         .map(v -> String.format("%s%s%s", e.getKey(), SEPARATOR, v))
                         .peek(this::validate))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @Override
