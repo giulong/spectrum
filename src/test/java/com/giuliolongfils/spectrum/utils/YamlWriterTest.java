@@ -1,21 +1,23 @@
 package com.giuliolongfils.spectrum.utils;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.giuliolongfils.spectrum.TestYaml;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.MockedConstruction;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayName("YamlWriter")
 class YamlWriterTest {
+
+    @InjectMocks
+    private YamlWriter yamlWriter;
 
     @Test
     @DisplayName("getInstance should return the singleton")
@@ -25,19 +27,13 @@ class YamlWriterTest {
 
     @Test
     @DisplayName("write should just call the writeValueAsString of the provided object")
-    public void write() throws JsonProcessingException {
-        ObjectWriter objectWriter = mock(ObjectWriter.class);
+    public void write() {
+        final TestYaml testYaml = mock(TestYaml.class);
+        final TestYaml.ObjectKey objectKey = mock(TestYaml.ObjectKey.class);
 
-        try (MockedConstruction<YAMLMapper> ignored = mockConstruction(YAMLMapper.class, (mock, context) -> {
-            when(mock.configure(FAIL_ON_EMPTY_BEANS, false)).thenReturn(mock);
-            when(mock.registerModules(ArgumentMatchers.<Module>any())).thenReturn(mock);
-            when(mock.writerWithDefaultPrettyPrinter()).thenReturn(objectWriter);
-        })) {
-            YamlWriter yamlWriter = new YamlWriter();
-            TestYaml testYaml = mock(TestYaml.class);
-            yamlWriter.write(testYaml);
-
-            verify(objectWriter).writeValueAsString(testYaml);
-        }
+        when(testYaml.getKey()).thenReturn("value");
+        when(testYaml.getObjectKey()).thenReturn(objectKey);
+        when(objectKey.getObjectField()).thenReturn("field");
+        assertEquals("---\nkey: \"value\"\nobjectKey:\n  objectField: \"field\"\n", yamlWriter.write(testYaml));
     }
 }

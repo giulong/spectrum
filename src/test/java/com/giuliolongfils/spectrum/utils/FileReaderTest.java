@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 
@@ -48,6 +49,14 @@ class FileReaderTest {
     @DisplayName("readProperties should throw an exception if the provided file doesn't exist")
     public void readPropertiesNotExisting() {
         assertThrows(RuntimeException.class, () -> fileReader.readProperties("/not-existing"));
+    }
+
+    @Test
+    @DisplayName("interpolate should return the provided file with the placeholder replaced with vars from the provided map")
+    public void interpolate() {
+        assertEquals(
+                "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue",
+                fileReader.interpolate("/interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
     }
 
     public static Stream<Arguments> valuesProvider() {

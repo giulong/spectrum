@@ -1,19 +1,21 @@
 package com.giuliolongfils.spectrum.utils;
 
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Slf4j
+@NoArgsConstructor(access = PRIVATE)
 public final class FileReader {
 
     private static final FileReader INSTANCE = new FileReader();
-
-    private FileReader() {
-    }
 
     public static FileReader getInstance() {
         return INSTANCE;
@@ -37,5 +39,14 @@ public final class FileReader {
         final Properties properties = new Properties();
         properties.load(FileReader.class.getResourceAsStream(file));
         return properties;
+    }
+
+    public String interpolate(final String file, final Map<String, String> vars) {
+        String source = read(file);
+        for (Map.Entry<String, String> entry : vars.entrySet()) {
+            source = source.replace(entry.getKey(), entry.getValue());
+        }
+
+        return source;
     }
 }

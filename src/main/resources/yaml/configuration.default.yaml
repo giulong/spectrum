@@ -17,6 +17,8 @@ runtime:
 application:
   baseUrl: http://localhost:8080
   testBook:
+    qualityGate:
+      condition: true
     parser:
       txt:
         path: ${spectrum.testbook.path:-testbook.txt}

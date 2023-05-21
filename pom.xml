@@ -108,6 +108,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.mvel</groupId>
+            <artifactId>mvel2</artifactId>
+            <version>2.4.15.Final</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
             <version>${mockito.version}</version>
@@ -196,6 +202,7 @@
                     <excludes>
                         <exclude>com/giuliolongfils/spectrum/pojos/**/*</exclude>
                         <exclude>com/giuliolongfils/spectrum/types/**/*</exclude>
+                        <exclude>com/giuliolongfils/spectrum/enums/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
