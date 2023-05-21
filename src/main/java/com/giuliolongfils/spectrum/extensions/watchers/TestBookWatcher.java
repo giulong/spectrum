@@ -1,7 +1,7 @@
 package com.giuliolongfils.spectrum.extensions.watchers;
 
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
+import com.giuliolongfils.spectrum.utils.testbook.TestBook;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookStatistics;
 import lombok.extern.slf4j.Slf4j;

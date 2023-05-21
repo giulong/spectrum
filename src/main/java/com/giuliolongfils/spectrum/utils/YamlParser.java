@@ -8,6 +8,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.giuliolongfils.spectrum.browsers.Browser;
 import com.giuliolongfils.spectrum.internals.jackson.*;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +17,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Slf4j
+@NoArgsConstructor(access = PRIVATE)
 public final class YamlParser {
 
     private static final YamlParser INSTANCE = new YamlParser();

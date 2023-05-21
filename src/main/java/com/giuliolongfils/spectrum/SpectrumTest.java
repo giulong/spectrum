@@ -7,14 +7,13 @@ import com.giuliolongfils.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher;
 import com.giuliolongfils.spectrum.interfaces.Endpoint;
 import com.giuliolongfils.spectrum.pojos.Configuration;
-import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
-import com.giuliolongfils.spectrum.pojos.testbook.TestBookStatistics;
 import com.giuliolongfils.spectrum.types.DownloadWait;
 import com.giuliolongfils.spectrum.types.ImplicitWait;
 import com.giuliolongfils.spectrum.types.PageLoadWait;
 import com.giuliolongfils.spectrum.types.ScriptWait;
 import com.giuliolongfils.spectrum.utils.FileReader;
+import com.giuliolongfils.spectrum.utils.testbook.TestBook;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
@@ -182,57 +181,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
         LOCK.lock();
 
         try {
-            final TestBook testBook = configuration.getApplication().getTestBook();
-            final TestBookStatistics statistics = testBook.getStatistics();
-            final TestBookStatistics.Percentages percentages = statistics.getPercentages();
-            final int total = testBook.getTests().size();
-            final int unmappedTestsTotal = testBook.getUnmappedTests().size();
-            final int grandTotal = total + unmappedTestsTotal;
-            log.debug("Updating testBook percentages");
-
-            final double successful = statistics.getSuccessful().doubleValue();
-            final double failed = statistics.getFailed().doubleValue();
-            final double aborted = statistics.getAborted().doubleValue();
-            final double disabled = statistics.getDisabled().doubleValue();
-            final double grandTotalSuccessful = statistics.getGrandTotalSuccessful().doubleValue();
-            final double grandTotalFailed = statistics.getGrandTotalFailed().doubleValue();
-            final double grandTotalAborted = statistics.getGrandTotalAborted().doubleValue();
-            final double grandTotalDisabled = statistics.getGrandTotalDisabled().doubleValue();
-
-            statistics.getGrandTotal().set(grandTotal);
-            statistics.getNotRun().set((int) (total - successful - failed - aborted - disabled));
-            statistics.getGrandTotalNotRun().set((int) (grandTotal - grandTotalSuccessful - grandTotalFailed - grandTotalAborted - grandTotalDisabled));
-
-            final double successfulPercentage = successful / total * 100;
-            final double failedPercentage = failed / total * 100;
-            final double abortedPercentage = aborted / total * 100;
-            final double disabledPercentage = disabled / total * 100;
-            final double notRunPercentage = statistics.getNotRun().doubleValue() / total * 100;
-            final double grandTotalSuccessfulPercentage = grandTotalSuccessful / grandTotal * 100;
-            final double grandTotalFailedPercentage = grandTotalFailed / grandTotal * 100;
-            final double grandTotalAbortedPercentage = grandTotalAborted / grandTotal * 100;
-            final double grandTotalDisabledPercentage = grandTotalDisabled / grandTotal * 100;
-            final double grandTotalNotRunPercentage = statistics.getNotRun().doubleValue() / grandTotal * 100;
-
-            percentages.setTests(total);
-            percentages.setUnmappedTests(unmappedTestsTotal);
-            percentages.setSuccessful(successfulPercentage);
-            percentages.setFailed(failedPercentage);
-            percentages.setAborted(abortedPercentage);
-            percentages.setDisabled(disabledPercentage);
-            percentages.setNotRun(notRunPercentage);
-            percentages.setGrandTotalSuccessful(grandTotalSuccessfulPercentage);
-            percentages.setGrandTotalFailed(grandTotalFailedPercentage);
-            percentages.setGrandTotalAborted(grandTotalAbortedPercentage);
-            percentages.setGrandTotalDisabled(grandTotalDisabledPercentage);
-            percentages.setGrandTotalNotRun(grandTotalNotRunPercentage);
-
-            log.debug("Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
-                    successfulPercentage, failedPercentage, abortedPercentage, disabledPercentage, notRunPercentage);
-            log.debug("Grand Total Percentages are: successful {}, failed {}, aborted {}, disabled {}, not run {}",
-                    grandTotalSuccessfulPercentage, grandTotalFailedPercentage, grandTotalAbortedPercentage, grandTotalDisabledPercentage, grandTotalNotRunPercentage);
-
-            testBook.getReporters().forEach(reporter -> reporter.updateWith(testBook));
+            configuration.getApplication().getTestBook().flush();
             extentReports.flush();
         } finally {
             LOCK.unlock();

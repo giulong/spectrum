@@ -94,11 +94,15 @@
         background: #eee;
     }
 
-    .successful {
+    .qg-status {
+        text-align: center;
+    }
+
+    .successful, .qg-status-OK {
         background: #28a745;
     }
 
-    .failed, .aborted {
+    .failed, .aborted, .qg-status-KO {
         background: #dc3545;
     }
 
@@ -377,6 +381,13 @@
                         <div class="not-run bar grand-total-not-run-bar"></div>
                     </div>
                 </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="table-separator">Quality Gate</td>
+            </tr>
+            <tr>
+                <td colspan="3">{{qg.condition}}</td>
+                <td class="qg-status qg-status-{{qg.status}}">{{qg.status}}</td>
             </tr>
             </tbody>
         </table>

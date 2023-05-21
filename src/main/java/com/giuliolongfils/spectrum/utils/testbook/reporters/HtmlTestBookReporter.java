@@ -1,6 +1,5 @@
 package com.giuliolongfils.spectrum.utils.testbook.reporters;
 
-import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -22,20 +21,18 @@ public class HtmlTestBookReporter extends TestBookReporter {
     private Path output = Paths.get("target/spectrum/testbook/testbook.html");
 
     @Override
+    public Map<String, String> getSpecificReplacementsFor(final Map<String, TestBookResult> tests, final Map<String, TestBookResult> unmappedTests) {
+        return Map.of(
+                "{{tests}}", format(tests),
+                "{{unmapped-tests}}", format(unmappedTests)
+        );
+    }
+
+    @Override
     @SneakyThrows
-    public void updateWith(final TestBook testBook) {
+    public void doOutputFrom(final String interpolatedTemplate) {
         Files.createDirectories(output.getParent());
-        Files.write(output, parse(template, testBook).getBytes());
-    }
-
-    @Override
-    public String getTestsReplacementFrom(final TestBook testBook) {
-        return format(testBook.getTests());
-    }
-
-    @Override
-    public String getUnmappedTestsReplacementFrom(final TestBook testBook) {
-        return format(testBook.getUnmappedTests());
+        Files.write(output, interpolatedTemplate.getBytes());
     }
 
     public String format(final Map<String, TestBookResult> tests) {

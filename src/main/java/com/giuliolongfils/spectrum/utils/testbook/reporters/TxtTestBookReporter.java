@@ -1,6 +1,5 @@
 package com.giuliolongfils.spectrum.utils.testbook.reporters;
 
-import com.giuliolongfils.spectrum.pojos.testbook.TestBook;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,8 +15,8 @@ public class TxtTestBookReporter extends LogTestBookReporter {
 
     @Override
     @SneakyThrows
-    public void updateWith(final TestBook testBook) {
-        findLongestNameFrom(testBook);
-        Files.write(output, parse(template, testBook).getBytes());
+    public void doOutputFrom(final String interpolatedTemplate) {
+        Files.createDirectories(output.getParent());
+        Files.write(output, interpolatedTemplate.getBytes());
     }
 }
