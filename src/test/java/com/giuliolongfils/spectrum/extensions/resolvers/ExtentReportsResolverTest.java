@@ -1,7 +1,6 @@
 package com.giuliolongfils.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
@@ -61,12 +60,6 @@ class ExtentReportsResolverTest {
 
     @Mock
     private FileReader fileReader;
-
-    @Mock
-    private ExtensionContext.Store store;
-
-    @Mock
-    private ExtentTest extentTest;
 
     @Captor
     private ArgumentCaptor<Function<String, ExtentReports>> functionArgumentCaptor;
