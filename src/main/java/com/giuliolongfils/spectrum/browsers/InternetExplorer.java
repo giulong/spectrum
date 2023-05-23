@@ -38,8 +38,8 @@ public class InternetExplorer extends Browser<InternetExplorerOptions> {
     @Override
     public void buildCapabilitiesFrom(Configuration configuration) {
         capabilities = new InternetExplorerOptions();
-        final Configuration.WebDriver.InternetExplorer ieConfig = configuration.getWebDriver().getIe();
-        ieConfig.getCapabilities().forEach(capabilities::setCapability);
+        capabilities.setAcceptInsecureCerts(true);
+        configuration.getWebDriver().getIe().getCapabilities().forEach(capabilities::setCapability);
     }
 
     @Override

@@ -46,10 +46,9 @@ public class Firefox extends Browser<FirefoxOptions> {
 
         capabilities.addArguments(firefoxConfig.getArgs());
         capabilities.setLogLevel(firefoxConfig.getLogLevel());
+        capabilities.setAcceptInsecureCerts(true);
 
         firefoxConfig.getPreferences().forEach((k, v) -> addPreference(k, v, capabilities));
-
-        capabilities.setAcceptInsecureCerts(true);
     }
 
     @Override

@@ -25,6 +25,6 @@ public abstract class TestBookParser {
 
     public abstract List<String> parse();
 
-    protected abstract void validate(final String line);
+    protected abstract void validate(String line);
 
 }
