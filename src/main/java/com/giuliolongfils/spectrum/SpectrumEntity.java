@@ -23,7 +23,6 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
