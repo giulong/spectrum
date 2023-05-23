@@ -15,10 +15,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
 
 import static ch.qos.logback.classic.Level.*;
 import static com.giuliolongfils.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
@@ -32,9 +29,6 @@ class EventsListenerTest {
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
     private final String tagsMessage = "message <div>" + arg + "</div>";
-    private final String webElementMessage = "message <div>webElement</div>";
-    private final String[] args = new String[] {arg};
-    private final String result = "result";
 
     @Mock
     private ExtensionContext.Store store;
@@ -44,15 +38,6 @@ class EventsListenerTest {
 
     @Mock
     private ExtentTest extentTest;
-
-    @Mock
-    private WebElement webElement;
-
-    @Mock
-    private Method method;
-
-    @Mock
-    private Configuration.Events events;
 
     @Captor
     private ArgumentCaptor<Markup> markupArgumentCaptor;
