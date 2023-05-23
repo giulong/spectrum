@@ -36,7 +36,6 @@ class ExtentReportsWatcherTest {
 
     private final String className = "className";
     private final String displayName = "displayName";
-    private final String name = "name";
 
     @Mock
     private ExtensionContext extensionContext;
@@ -161,7 +160,7 @@ class ExtentReportsWatcherTest {
     @DisplayName("finalizeTest should close the webDriver and add a log in the extent report")
     public void finalizeTest() {
         finalizeTestStubs();
-        when(status.name()).thenReturn(name);
+        when(status.name()).thenReturn("name");
 
         extentReportsWatcher.finalizeTest(extensionContext, status);
         verify(webDriver).quit();
