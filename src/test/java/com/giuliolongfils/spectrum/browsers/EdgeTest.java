@@ -138,12 +138,12 @@ class EdgeTest {
     public void buildWebDriver() {
         edge.capabilities = edgeOptions;
 
-        try (MockedConstruction<EdgeDriver> edgeDriverMockedConstruction = mockConstruction(EdgeDriver.class, (mock, context) -> {
-            assertEquals(edgeOptions, context.arguments().get(0));
-        })) {
-            final WebDriver actual = edge.buildWebDriver();
-            assertEquals(edgeDriverMockedConstruction.constructed().get(0), actual);
-        }
+        MockedConstruction<EdgeDriver> edgeDriverMockedConstruction = mockConstruction(EdgeDriver.class,
+                (mock, context) -> assertEquals(edgeOptions, context.arguments().get(0)));
+        final WebDriver actual = edge.buildWebDriver();
+        assertEquals(edgeDriverMockedConstruction.constructed().get(0), actual);
+
+        edgeDriverMockedConstruction.close();
     }
 
     @Test

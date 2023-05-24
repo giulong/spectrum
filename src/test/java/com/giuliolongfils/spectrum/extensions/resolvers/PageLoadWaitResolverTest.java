@@ -71,14 +71,16 @@ class PageLoadWaitResolverTest {
         when(webDriverConfiguration.getWaits()).thenReturn(waits);
         when(waits.getPageLoadTimeout()).thenReturn(duration);
 
-        try (MockedConstruction<PageLoadWait> mockedConstruction = mockConstruction(PageLoadWait.class, (mock, context) -> {
+        MockedConstruction<PageLoadWait> mockedConstruction = mockConstruction(PageLoadWait.class, (mock, context) -> {
             assertEquals(webDriver, context.arguments().get(0));
             assertEquals(duration, context.arguments().get(1));
-        })) {
-            PageLoadWait actual = pageLoadWaitResolver.resolveParameter(parameterContext, extensionContext);
-            PageLoadWait pageLoadWait = mockedConstruction.constructed().get(0);
-            verify(store).put(PAGE_LOAD_WAIT, pageLoadWait);
-            assertEquals(pageLoadWait, actual);
-        }
+        });
+
+        PageLoadWait actual = pageLoadWaitResolver.resolveParameter(parameterContext, extensionContext);
+        PageLoadWait pageLoadWait = mockedConstruction.constructed().get(0);
+        verify(store).put(PAGE_LOAD_WAIT, pageLoadWait);
+        assertEquals(pageLoadWait, actual);
+
+        mockedConstruction.close();
     }
 }

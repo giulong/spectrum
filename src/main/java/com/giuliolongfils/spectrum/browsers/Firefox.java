@@ -36,7 +36,7 @@ public class Firefox extends Browser<FirefoxOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(Configuration configuration) {
+    public void buildCapabilitiesFrom(final Configuration configuration) {
         capabilities = new FirefoxOptions();
         final Configuration.WebDriver.Firefox firefoxConfig = configuration.getWebDriver().getFirefox();
 
@@ -48,7 +48,7 @@ public class Firefox extends Browser<FirefoxOptions> {
         capabilities.setLogLevel(firefoxConfig.getLogLevel());
         capabilities.setAcceptInsecureCerts(true);
 
-        firefoxConfig.getPreferences().forEach((k, v) -> addPreference(k, v, capabilities));
+        firefoxConfig.getPreferences().forEach(this::addPreference);
     }
 
     @Override
@@ -58,20 +58,20 @@ public class Firefox extends Browser<FirefoxOptions> {
 
     @Override
     public void mergeGridCapabilitiesFrom(final Configuration.WebDriver.Grid gridConfiguration) {
-        gridConfiguration.getCapabilities().forEach((k, v) -> setCapability(k, v, this.capabilities));
+        gridConfiguration.getCapabilities().forEach(this::setCapability);
     }
 
-    public void addPreference(final String key, final Object value, final FirefoxOptions firefoxOptions) {
-        firefoxOptions.addPreference(key, value instanceof Boolean || value instanceof Integer ? value : String.valueOf(value));
+    public void addPreference(final String key, final Object value) {
+        capabilities.addPreference(key, value instanceof Boolean || value instanceof Integer ? value : String.valueOf(value));
     }
 
-    public void setCapability(final String key, final Object value, final FirefoxOptions firefoxOptions) {
+    public void setCapability(final String key, final Object value) {
         if (value instanceof Boolean) {
-            firefoxOptions.setCapability(key, (boolean) value);
+            capabilities.setCapability(key, (boolean) value);
         } else if (value instanceof String) {
-            firefoxOptions.setCapability(key, String.valueOf(value));
+            capabilities.setCapability(key, String.valueOf(value));
         } else {
-            firefoxOptions.setCapability(key, value);
+            capabilities.setCapability(key, value);
         }
     }
 }
