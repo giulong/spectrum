@@ -3,7 +3,6 @@ package com.giuliolongfils.spectrum.browsers;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.Getter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
@@ -33,7 +32,6 @@ public abstract class Browser<T extends MutableCapabilities> {
 
     public abstract void mergeGridCapabilitiesFrom(Configuration.WebDriver.Grid gridConfiguration);
 
-    @SneakyThrows
     public WebDriver build(final Configuration configuration) {
         buildCapabilitiesFrom(configuration);
         log.info("Capabilities: {}", capabilities.toJson());
@@ -42,8 +40,7 @@ public abstract class Browser<T extends MutableCapabilities> {
         if (runtime.isGrid()) {
             Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();
             mergeGridCapabilitiesFrom(gridConfiguration);
-            return setTimeouts(
-                    RemoteWebDriver
+            return setTimeouts(RemoteWebDriver
                             .builder()
                             .oneOf(capabilities)
                             .address(gridConfiguration.getUrl()).build(),
@@ -68,11 +65,13 @@ public abstract class Browser<T extends MutableCapabilities> {
         return setTimeouts(buildWebDriver(), configuration.getWebDriver().getWaits());
     }
 
-    protected WebDriver setTimeouts(final WebDriver webDriver, final Configuration.WebDriver.Waits webDriverWaitsConf) {
-        webDriver.manage().timeouts()
-                .implicitlyWait(webDriverWaitsConf.getImplicit())
-                .pageLoadTimeout(webDriverWaitsConf.getPageLoadTimeout())
-                .scriptTimeout(webDriverWaitsConf.getScriptTimeout());
+    protected WebDriver setTimeouts(final WebDriver webDriver, final Configuration.WebDriver.Waits waits) {
+        webDriver
+                .manage()
+                .timeouts()
+                .implicitlyWait(waits.getImplicit())
+                .pageLoadTimeout(waits.getPageLoadTimeout())
+                .scriptTimeout(waits.getScriptTimeout());
 
         return webDriver;
     }

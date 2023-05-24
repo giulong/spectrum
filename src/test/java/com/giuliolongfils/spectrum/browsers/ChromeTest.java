@@ -146,12 +146,12 @@ class ChromeTest {
     public void buildWebDriver() {
         chrome.capabilities = chromeOptions;
 
-        try (MockedConstruction<ChromeDriver> chromeDriverMockedConstruction = mockConstruction(ChromeDriver.class, (mock, context) -> {
-            assertEquals(chromeOptions, context.arguments().get(0));
-        })) {
-            final WebDriver actual = chrome.buildWebDriver();
-            assertEquals(chromeDriverMockedConstruction.constructed().get(0), actual);
-        }
+        MockedConstruction<ChromeDriver> chromeDriverMockedConstruction = mockConstruction(ChromeDriver.class,
+                (mock, context) -> assertEquals(chromeOptions, context.arguments().get(0)));
+        final WebDriver actual = chrome.buildWebDriver();
+        assertEquals(chromeDriverMockedConstruction.constructed().get(0), actual);
+
+        chromeDriverMockedConstruction.close();
     }
 
     @Test

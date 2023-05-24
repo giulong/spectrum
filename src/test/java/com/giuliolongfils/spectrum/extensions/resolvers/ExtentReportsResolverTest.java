@@ -106,28 +106,29 @@ class ExtentReportsResolverTest {
 
         extentReportsResolver.resolveParameter(parameterContext, extensionContext);
 
-        try (MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class, (mock2, context2) -> {
-        })) {
-            try (MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-                assertEquals(Paths.get(System.getProperty("user.dir"), reportFolder, fileName).toString().replaceAll("\\\\", "/"), context.arguments().get(0));
-                when(mock.config()).thenReturn(extentSparkReporterConfig);
-            })) {
-                verify(rootStore).getOrComputeIfAbsent(eq(EXTENT_REPORTS), functionArgumentCaptor.capture(), eq(ExtentReports.class));
-                Function<String, ExtentReports> function = functionArgumentCaptor.getValue();
-                final ExtentReports actual = function.apply("value");
+        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
+        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
+            assertEquals(Paths.get(System.getProperty("user.dir"), reportFolder, fileName).toString().replaceAll("\\\\", "/"), context.arguments().get(0));
+            when(mock.config()).thenReturn(extentSparkReporterConfig);
+        });
+        verify(rootStore).getOrComputeIfAbsent(eq(EXTENT_REPORTS), functionArgumentCaptor.capture(), eq(ExtentReports.class));
+        Function<String, ExtentReports> function = functionArgumentCaptor.getValue();
+        final ExtentReports actual = function.apply("value");
 
-                verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
-                verify(extentSparkReporterConfig).setReportName(reportName);
-                verify(extentSparkReporterConfig).setTheme(Theme.DARK);
-                verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
-                verify(extentSparkReporterConfig).setCss(css);
+        verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
+        verify(extentSparkReporterConfig).setReportName(reportName);
+        verify(extentSparkReporterConfig).setTheme(Theme.DARK);
+        verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
+        verify(extentSparkReporterConfig).setCss(css);
 
-                final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
-                verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
-                verify(rootStore).put(eq(EXTENT_REPORTS), extentReportsArgumentCaptor.capture());
-                assertEquals(extentReports, actual);
-            }
-        }
+        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
+        verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
+        verify(rootStore).put(eq(EXTENT_REPORTS), extentReportsArgumentCaptor.capture());
+        assertEquals(extentReports, actual);
+
+        extentSparkReporterMockedConstruction.close();
+        extentReportsMockedConstruction.close();
+
     }
 
     @DisplayName("getReportsPathFrom should return the full path of the report")

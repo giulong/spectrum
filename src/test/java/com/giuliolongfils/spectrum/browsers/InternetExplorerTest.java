@@ -113,12 +113,12 @@ class InternetExplorerTest {
     public void buildWebDriver() {
         internetExplorer.capabilities = internetExplorerOptions;
 
-        try (MockedConstruction<InternetExplorerDriver> internetExplorerDriverMockedConstruction = mockConstruction(InternetExplorerDriver.class, (mock, context) -> {
-            assertEquals(internetExplorerOptions, context.arguments().get(0));
-        })) {
-            final WebDriver actual = internetExplorer.buildWebDriver();
-            assertEquals(internetExplorerDriverMockedConstruction.constructed().get(0), actual);
-        }
+        MockedConstruction<InternetExplorerDriver> internetExplorerDriverMockedConstruction = mockConstruction(InternetExplorerDriver.class,
+                (mock, context) -> assertEquals(internetExplorerOptions, context.arguments().get(0)));
+        final WebDriver actual = internetExplorer.buildWebDriver();
+        assertEquals(internetExplorerDriverMockedConstruction.constructed().get(0), actual);
+
+        internetExplorerDriverMockedConstruction.close();
     }
 
     @Test

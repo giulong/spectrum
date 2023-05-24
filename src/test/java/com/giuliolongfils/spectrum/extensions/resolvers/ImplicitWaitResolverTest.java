@@ -71,14 +71,16 @@ class ImplicitWaitResolverTest {
         when(webDriverConfiguration.getWaits()).thenReturn(waits);
         when(waits.getImplicit()).thenReturn(duration);
 
-        try (MockedConstruction<ImplicitWait> mockedConstruction = mockConstruction(ImplicitWait.class, (mock, context) -> {
+        MockedConstruction<ImplicitWait> mockedConstruction = mockConstruction(ImplicitWait.class, (mock, context) -> {
             assertEquals(webDriver, context.arguments().get(0));
             assertEquals(duration, context.arguments().get(1));
-        })) {
-            ImplicitWait actual = implicitWaitResolver.resolveParameter(parameterContext, extensionContext);
-            ImplicitWait implicitWait = mockedConstruction.constructed().get(0);
-            verify(store).put(IMPLICIT_WAIT, implicitWait);
-            assertEquals(implicitWait, actual);
-        }
+        });
+
+        ImplicitWait actual = implicitWaitResolver.resolveParameter(parameterContext, extensionContext);
+        ImplicitWait implicitWait = mockedConstruction.constructed().get(0);
+        verify(store).put(IMPLICIT_WAIT, implicitWait);
+        assertEquals(implicitWait, actual);
+
+        mockedConstruction.close();
     }
 }

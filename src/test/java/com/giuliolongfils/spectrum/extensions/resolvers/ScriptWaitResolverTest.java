@@ -71,14 +71,16 @@ class ScriptWaitResolverTest {
         when(webDriverConfiguration.getWaits()).thenReturn(waits);
         when(waits.getScriptTimeout()).thenReturn(duration);
 
-        try (MockedConstruction<ScriptWait> mockedConstruction = mockConstruction(ScriptWait.class, (mock, context) -> {
+        MockedConstruction<ScriptWait> mockedConstruction = mockConstruction(ScriptWait.class, (mock, context) -> {
             assertEquals(webDriver, context.arguments().get(0));
             assertEquals(duration, context.arguments().get(1));
-        })) {
-            ScriptWait actual = scriptWaitResolver.resolveParameter(parameterContext, extensionContext);
-            ScriptWait scriptWait = mockedConstruction.constructed().get(0);
-            verify(store).put(SCRIPT_WAIT, scriptWait);
-            assertEquals(scriptWait, actual);
-        }
+        });
+
+        ScriptWait actual = scriptWaitResolver.resolveParameter(parameterContext, extensionContext);
+        ScriptWait scriptWait = mockedConstruction.constructed().get(0);
+        verify(store).put(SCRIPT_WAIT, scriptWait);
+        assertEquals(scriptWait, actual);
+
+        mockedConstruction.close();
     }
 }
