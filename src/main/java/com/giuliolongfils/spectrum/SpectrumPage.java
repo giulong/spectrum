@@ -1,5 +1,6 @@
 package com.giuliolongfils.spectrum;
 
+import lombok.Generated;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -14,6 +15,7 @@ public abstract class SpectrumPage<Data> extends SpectrumEntity<Data> {
         waitForPageLoading();
     }
 
+    @Generated
     public void waitForPageLoading() {
         log.warn("Default no-op waitForPageLoading: override this method in your SpectrumPage!");
     }
