@@ -6,6 +6,7 @@ import com.giuliolongfils.spectrum.extensions.resolvers.*;
 import com.giuliolongfils.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher;
 import com.giuliolongfils.spectrum.interfaces.Endpoint;
+import com.giuliolongfils.spectrum.interfaces.Shared;
 import com.giuliolongfils.spectrum.pojos.Configuration;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import com.giuliolongfils.spectrum.types.DownloadWait;
@@ -28,8 +29,10 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 
 import static com.giuliolongfils.spectrum.pojos.testbook.TestBookResult.Status.NOT_RUN;
+import static java.util.Arrays.asList;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -83,41 +86,64 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
         final Class<?> clazz = this.getClass();
         log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
 
-        final List<Field> fields = new ArrayList<>(Arrays.asList(clazz.getDeclaredFields()));
+        final List<Field> fields = new ArrayList<>(asList(clazz.getDeclaredFields()));
 
+        // TODO getFields invece di declared
         Class<?> superClazz = clazz.getSuperclass();
         while (superClazz.getSuperclass() != SpectrumEntity.class) {
             log.debug("Initializing also pages in superclass {}", superClazz.getSimpleName());
-            fields.addAll(Arrays.asList(superClazz.getDeclaredFields()));
+            fields.addAll(asList(superClazz.getDeclaredFields()));
             superClazz = superClazz.getSuperclass();
         }
+
+        final List<Field> sharedFields = Arrays
+                .stream(getClass().getFields())
+                .filter(f -> f.isAnnotationPresent(Shared.class))
+                .toList();
 
         spectrumPages = fields
                 .stream()
                 .filter(f -> SpectrumPage.class.isAssignableFrom(f.getType()))
-                .map(this::initPage)
+                .map(f -> initPage(f, sharedFields))
                 .collect(toList());
     }
 
     @SneakyThrows
-    public SpectrumPage<Data> initPage(final Field f) {
+    public SpectrumPage<Data> initPage(final Field f, final List<Field> sharedFields) {
         log.debug("Initializing page {}", f.getName());
 
-        @SuppressWarnings("unchecked")
+        //noinspection unchecked
         final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
+        //noinspection unchecked
+        final Class<SpectrumPage<Data>> spectrumPageClass = (Class<SpectrumPage<Data>>) spectrumPage.getClass();
 
         f.setAccessible(true);
         f.set(this, spectrumPage);
 
-        final String className = spectrumPage.getClass().getSimpleName();
+        final String className = spectrumPageClass.getSimpleName();
         log.debug("BeforeAll hook: injecting already resolved fields into an instance of {}", className);
 
-        final Endpoint endpointAnnotation = spectrumPage.getClass().getAnnotation(Endpoint.class);
+        final Endpoint endpointAnnotation = spectrumPageClass.getAnnotation(Endpoint.class);
         final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";
         log.debug("The endpoint of the page {} is '{}'", className, endpointValue);
         spectrumPage.endpoint = endpointValue;
 
+        final Map<String, Field> targetFieldsMap = Arrays
+                .stream(spectrumPageClass.getFields())
+                .filter(field -> field.isAnnotationPresent(Shared.class))
+                .collect(toMap(Field::getName, Function.identity()));
+
+        sharedFields.forEach(s -> setSharedField(spectrumPage, s, targetFieldsMap));
+        PageFactory.initElements(spectrumPage.webDriver, spectrumPage);
+
         return spectrumPage;
+    }
+
+    @SneakyThrows
+    protected void setSharedField(final SpectrumPage<Data> spectrumPage, final Field spectrumTestField, final Map<String, Field> spectrumPageFieldsMap) {
+        final Field spectrumPageField = spectrumPageFieldsMap.get(spectrumTestField.getName());
+        spectrumPageField.setAccessible(true);
+        spectrumPageField.set(spectrumPage, spectrumTestField.get(this));
     }
 
     @BeforeAll
@@ -159,21 +185,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
         this.data = data;
 
         initPages();
-
-        // TODO ci serve questo ciclo facendo già l'initPages?
-        spectrumPages.forEach(spectrumPage -> {
-            spectrumPage.webDriver = this.webDriver;
-            spectrumPage.implicitWait = this.implicitWait;
-            spectrumPage.pageLoadWait = this.pageLoadWait;
-            spectrumPage.scriptWait = this.scriptWait;
-            spectrumPage.downloadWait = this.downloadWait;
-            spectrumPage.extentTest = this.extentTest;
-            spectrumPage.eventsListener = this.eventsListener;
-            spectrumPage.actions = this.actions;
-            spectrumPage.data = this.data;
-
-            PageFactory.initElements(spectrumPage.webDriver, spectrumPage);
-        });
     }
 
     @AfterAll
