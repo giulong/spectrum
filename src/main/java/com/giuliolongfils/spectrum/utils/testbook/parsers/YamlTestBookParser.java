@@ -1,19 +1,19 @@
 package com.giuliolongfils.spectrum.utils.testbook.parsers;
 
+import com.giuliolongfils.spectrum.pojos.testbook.TestBookTest;
 import com.giuliolongfils.spectrum.pojos.testbook.TestBookYamlData;
 import com.giuliolongfils.spectrum.utils.YamlParser;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-import static com.giuliolongfils.spectrum.extensions.watchers.TestBookWatcher.SEPARATOR;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class YamlTestBookParser extends TestBookParser {
 
     @Override
-    public List<String> parse() {
+    public List<TestBookTest> parse() {
         log.debug("Reading lines of yaml testbook");
 
         return YamlParser.getInstance()
@@ -22,13 +22,11 @@ public class YamlTestBookParser extends TestBookParser {
                 .stream()
                 .flatMap(e -> e.getValue()
                         .stream()
-                        .map(v -> String.format("%s%s%s", e.getKey(), SEPARATOR, v))
-                        .peek(this::validate))
+                        .map(v -> TestBookTest.builder()
+                                .className(e.getKey())
+                                .testName(v.getName())
+                                .weight(v.getWeight())
+                                .build()))
                 .collect(toList());
-    }
-
-    @Override
-    protected void validate(String line) {
-        log.debug("No validation needed for line '{}'", line);
     }
 }

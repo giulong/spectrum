@@ -2,12 +2,17 @@ package com.giuliolongfils.spectrum.utils.testbook.reporters;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
 import com.giuliolongfils.spectrum.utils.FileReader;
+import com.giuliolongfils.spectrum.utils.FreeMarkerConfiguration;
 import com.giuliolongfils.spectrum.utils.testbook.TestBook;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
-import java.util.Map;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
@@ -23,14 +28,22 @@ public abstract class TestBookReporter {
 
     public static final FileReader FILE_READER = FileReader.getInstance();
 
-    public abstract String getTemplate();
+    public static final Configuration CONFIGURATION = FreeMarkerConfiguration.getInstance().getConfiguration();
 
-    public abstract Map<String, String> getSpecificReplacementsFor(Map<String, TestBookResult> tests, Map<String, TestBookResult> unmappedTests);
+    public abstract String getTemplate();
 
     public abstract void doOutputFrom(String interpolatedTemplate);
 
+    @SneakyThrows
     public void flush(final TestBook testBook) {
-        testBook.getReplacements().putAll(getSpecificReplacementsFor(testBook.getTests(), testBook.getUnmappedTests()));
-        doOutputFrom(FILE_READER.interpolate(getTemplate(), testBook.getReplacements()));
+        final Template qgStatus = new Template("qgStatus", new StringReader(testBook.getQualityGate().getCondition()), CONFIGURATION);
+        final Writer qgStatusWriter = new StringWriter();
+        qgStatus.process(testBook.getVars(), qgStatusWriter);
+        testBook.getVars().put("qgStatus", qgStatusWriter.toString());
+
+        final Template template = new Template(getTemplate(), new StringReader(FILE_READER.read(getTemplate())), CONFIGURATION);
+        final Writer templateWriter = new StringWriter();
+        template.process(testBook.getVars(), templateWriter);
+        doOutputFrom(templateWriter.toString());
     }
 }

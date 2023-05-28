@@ -3,6 +3,7 @@ package com.giuliolongfils.spectrum.utils.testbook.parsers;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBookTest;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,8 +24,5 @@ public abstract class TestBookParser {
 
     protected String path;
 
-    public abstract List<String> parse();
-
-    protected abstract void validate(String line);
-
+    public abstract List<TestBookTest> parse();
 }

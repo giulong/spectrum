@@ -1,5 +1,11 @@
 <html lang="en">
 <head>
+    <#assign
+    testsSize = tests?size
+    totalWeighted = statistics.totalWeighted
+    grandTotal = statistics.grandTotal
+    grandTotalWeighted = statistics.grandTotalWeighted
+    >
     <style>
     .content {
         max-width: 1024px;
@@ -56,14 +62,24 @@
         font-size: 16px;
         font-weight: bold;
         border-bottom: 1px solid #aaa;
-        padding: 0 10px;
         min-width: 480px;
     }
 
     .test-row {
         border-bottom: 1px solid #aaa;
-        padding: 0 10px;
         min-width: 480px;
+    }
+
+    .tests-header > div, .test-row > div {
+        padding: 5px;
+    }
+
+    .test-row > div {
+        border-right: 1px solid #aaa;
+    }
+
+    .test-row > div:last-child {
+        border-right: 0;
     }
 
     .test-row:last-child {
@@ -72,20 +88,42 @@
         border-bottom-right-radius: 5px;
     }
 
-    .test-name {
-        width: 85%;
-        border-right: 1px solid #aaa;
+    .class-name-header {
+        width: 40%;
         padding: 5px 0;
     }
 
-    .status {
-        width: 10%;
+    .test-name-header {
+        width: 39%;
+        padding: 5px 0;
+    }
+
+    .class-name {
+        width: 40%;
+        padding: 5px 0;
+    }
+
+    .test-name {
+        width: 39%;
+        padding: 5px 0;
+    }
+
+    .test-name, .weight {
+        border-right: 1px solid #aaa;
+    }
+
+    .weight, .status {
+        width: 5%;
         min-width: 50px;
         padding: 0 10px;
     }
 
-    .status-header {
-        width: 10%;
+    .weight {
+        text-align: right;
+    }
+
+    .weight-header, .status-header {
+        width: 4%;
         min-width: 50px;
         padding-right: 10px;
     }
@@ -113,7 +151,6 @@
     #statistics-container {
         border: 1px solid #aaa;
         border-radius: 5px;
-        width: fit-content;
         margin: auto;
     }
 
@@ -121,6 +158,7 @@
         text-align:right;
         border-collapse: collapse;
         overflow-x: auto;
+        width: 100%;
         box-shadow: 3px 3px 2px #aaa;
     }
 
@@ -132,6 +170,11 @@
         border-top: 4px double #aaa;
         font-weight: bold;
         font-size: 16px;
+    }
+
+    .description {
+        font-weight: normal;
+        font-size: 12px;
     }
 
     #table-statistics tr {
@@ -183,7 +226,8 @@
         border: 1px solid #333;
         border-radius: 5px;
         padding: 0;
-        width: 300px;
+        width: 250px;
+        min-width: 100%;
         box-shadow: inset 0px 0px 3px #333;
     }
 
@@ -194,44 +238,86 @@
     }
 
     .successful-bar {
-        width: calc({{percentages.successful}}px * 3);
+        width: ${successful.percentage}%;
     }
 
     .failed-bar {
-        width: calc({{percentages.failed}}px * 3);
+        width: ${failed.percentage}%;
     }
 
     .aborted-bar {
-        width: calc({{percentages.aborted}}px * 3);
+        width: ${aborted.percentage}%;
     }
 
     .disabled-bar {
-        width: calc({{percentages.disabled}}px * 3);
+        width: ${disabled.percentage}%;
     }
 
     .not-run-bar {
-        width: calc({{percentages.not-run}}px * 3);
+        width: ${notRun.percentage}%;
         background: darkgray;
     }
 
     .grand-total-successful-bar {
-        width: calc({{percentages.grand-total-successful}}px * 3);
+        width: ${grandSuccessful.percentage}%;
     }
 
     .grand-total-failed-bar {
-        width: calc({{percentages.grand-total-failed}}px * 3);
+        width: ${grandFailed.percentage}%;
     }
 
     .grand-total-aborted-bar {
-        width: calc({{percentages.grand-total-aborted}}px * 3);
+        width: ${grandAborted.percentage}%;
     }
 
     .grand-total-disabled-bar {
-        width: calc({{percentages.grand-total-disabled}}px * 3);
+        width: ${grandDisabled.percentage}%;
     }
 
     .grand-total-not-run-bar {
-        width: calc({{percentages.grand-total-not-run}}px * 3);
+        width: ${grandNotRun.percentage}%;
+        background: darkgray;
+    }
+
+    .total-successful-weighted-bar {
+        width: ${weightedSuccessful.percentage}%;
+    }
+
+    .total-failed-weighted-bar {
+        width: ${weightedFailed.percentage}%;
+    }
+
+    .total-aborted-weighted-bar {
+        width: ${weightedAborted.percentage}%;
+    }
+
+    .total-disabled-weighted-bar {
+        width: ${weightedDisabled.percentage}%;
+    }
+
+    .total-not-run-weighted-bar {
+        width: ${weightedNotRun.percentage}%;
+        background: darkgray;
+    }
+
+    .grand-total-successful-weighted-bar {
+        width: ${grandWeightedSuccessful.percentage}%;
+    }
+
+    .grand-total-failed-weighted-bar {
+        width: ${grandWeightedFailed.percentage}%;
+    }
+
+    .grand-total-aborted-weighted-bar {
+        width: ${grandWeightedAborted.percentage}%;
+    }
+
+    .grand-total-disabled-weighted-bar {
+        width: ${grandWeightedDisabled.percentage}%;
+    }
+
+    .grand-total-not-run-weighted-bar {
+        width: ${grandWeightedNotRun.percentage}%;
         background: darkgray;
     }
     </style>
@@ -242,7 +328,7 @@
     <div class="logo left"></div>
     <div class="inline">
         <div class="title">TestBook Results</div>
-        <div>Generated on: {{timestamp}}</div>
+        <div>Generated on: ${timestamp}</div>
     </div>
     <div class="logo right"></div>
 
@@ -260,29 +346,147 @@
             <tbody>
             <tr>
                 <td>Mapped Tests</td>
-                <td>{{tests-count}}</td>
+                <td>${testsSize}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Unmapped Tests</td>
-                <td>{{unmapped-tests-count}}</td>
+                <td>${unmappedTests?size}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Grand Total</td>
-                <td>{{grand-total}}</td>
+                <td>${testsSize} + ${unmappedTests?size} = ${grandTotal}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
-                <td colspan="4" class="table-separator">Mapped Tests Ratio</td>
+                <td>Total Weighted</td>
+                <td>${totalWeighted}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Grand Total Weighted</td>
+                <td>${totalWeighted} + ${unmappedTests?size} = ${grandTotalWeighted}</td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="4" class="table-separator">Mapped Weighted Tests Ratio <span class="description"> | Ratio of tests mapped in the TestBook, based on their weights</span></td>
             </tr>
             <tr>
                 <td>Successful</td>
-                <td>{{successful}}/{{tests-count}}</td>
-                <td>{{percentages.successful}}%</td>
+                <td>${weightedSuccessful.total}/${totalWeighted}</td>
+                <td>${weightedSuccessful.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="successful bar total-successful-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Failed</td>
+                <td>${weightedFailed.total}/${totalWeighted}</td>
+                <td>${weightedFailed.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="failed bar total-failed-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Aborted</td>
+                <td>${weightedAborted.total}/${totalWeighted}</td>
+                <td>${weightedAborted.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="aborted bar total-aborted-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Disabled</td>
+                <td>${weightedDisabled.total}/${totalWeighted}</td>
+                <td>${weightedDisabled.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="disabled bar total-disabled-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Not run</td>
+                <td>${weightedNotRun.total}/${totalWeighted}</td>
+                <td>${weightedNotRun.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="not-run bar total-not-run-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="table-separator">Grand Total Weighted Tests Ratio <span class="description"> | Ratio of all tests, mapped or not, based on their weights</span></td>
+            </tr>
+            <tr>
+                <td>Successful</td>
+                <td>${grandWeightedSuccessful.total}/${grandTotalWeighted}</td>
+                <td>${grandWeightedSuccessful.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="successful bar grand-total-successful-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Failed</td>
+                <td>${grandWeightedFailed.total}/${grandTotalWeighted}</td>
+                <td>${grandWeightedFailed.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="failed bar grand-total-failed-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Aborted</td>
+                <td>${grandWeightedAborted.total}/${grandTotalWeighted}</td>
+                <td>${grandWeightedAborted.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="aborted bar grand-total-aborted-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Disabled</td>
+                <td>${grandWeightedDisabled.total}/${grandTotalWeighted}</td>
+                <td>${grandWeightedDisabled.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="disabled bar grand-total-disabled-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>Not run</td>
+                <td>${grandWeightedNotRun.total}/${grandTotalWeighted}</td>
+                <td>${grandWeightedNotRun.percentage}%</td>
+                <td>
+                    <div class="bar-container">
+                        <div class="not-run bar grand-total-not-run-weighted-bar"></div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="table-separator">Mapped Tests Ratio <span class="description"> | Ratio of tests mapped in the TestBook</span></td>
+            </tr>
+            <tr>
+                <td>Successful</td>
+                <td>${successful.total}/${testsSize}</td>
+                <td>${successful.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="successful bar successful-bar"></div>
@@ -291,8 +495,8 @@
             </tr>
             <tr>
                 <td>Failed</td>
-                <td>{{failed}}/{{tests-count}}</td>
-                <td>{{percentages.failed}}%</td>
+                <td>${failed.total}/${testsSize}</td>
+                <td>${failed.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="failed bar failed-bar"></div>
@@ -301,8 +505,8 @@
             </tr>
             <tr>
                 <td>Aborted</td>
-                <td>{{aborted}}/{{tests-count}}</td>
-                <td>{{percentages.aborted}}%</td>
+                <td>${aborted.total}/${testsSize}</td>
+                <td>${aborted.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="aborted bar aborted-bar"></div>
@@ -311,8 +515,8 @@
             </tr>
             <tr>
                 <td>Disabled</td>
-                <td>{{disabled}}/{{tests-count}}</td>
-                <td>{{percentages.disabled}}%</td>
+                <td>${disabled.total}/${testsSize}</td>
+                <td>${disabled.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="disabled bar disabled-bar"></div>
@@ -321,8 +525,8 @@
             </tr>
             <tr>
                 <td>Not run</td>
-                <td>{{not-run}}/{{tests-count}}</td>
-                <td>{{percentages.not-run}}%</td>
+                <td>${notRun.total}/${testsSize}</td>
+                <td>${notRun.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="not-run bar not-run-bar"></div>
@@ -330,12 +534,12 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="4" class="table-separator">Grand Total Tests Ratio</td>
+                <td colspan="4" class="table-separator">Grand Total Tests Ratio <span class="description"> | Ratio of tests, mapped or not, based on their weights</span></td>
             </tr>
             <tr>
                 <td>Successful</td>
-                <td>{{grand-total-successful}}/{{grand-total}}</td>
-                <td>{{percentages.grand-total-successful}}%</td>
+                <td>${grandSuccessful.total}/${grandTotal}</td>
+                <td>${grandSuccessful.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="successful bar grand-total-successful-bar"></div>
@@ -344,8 +548,8 @@
             </tr>
             <tr>
                 <td>Failed</td>
-                <td>{{grand-total-failed}}/{{grand-total}}</td>
-                <td>{{percentages.grand-total-failed}}%</td>
+                <td>${grandFailed.total}/${grandTotal}</td>
+                <td>${grandFailed.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="failed bar grand-total-failed-bar"></div>
@@ -354,8 +558,8 @@
             </tr>
             <tr>
                 <td>Aborted</td>
-                <td>{{grand-total-aborted}}/{{grand-total}}</td>
-                <td>{{percentages.grand-total-aborted}}%</td>
+                <td>${grandAborted.total}/${grandTotal}</td>
+                <td>${grandAborted.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="aborted bar grand-total-aborted-bar"></div>
@@ -364,8 +568,8 @@
             </tr>
             <tr>
                 <td>Disabled</td>
-                <td>{{grand-total-disabled}}/{{grand-total}}</td>
-                <td>{{percentages.grand-total-disabled}}%</td>
+                <td>${grandDisabled.total}/${grandTotal}</td>
+                <td>${grandDisabled.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="disabled bar grand-total-disabled-bar"></div>
@@ -374,8 +578,8 @@
             </tr>
             <tr>
                 <td>Not run</td>
-                <td>{{grand-total-not-run}}/{{grand-total}}</td>
-                <td>{{percentages.grand-total-not-run}}%</td>
+                <td>${grandNotRun.total}/${grandTotal}</td>
+                <td>${grandNotRun.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="not-run bar grand-total-not-run-bar"></div>
@@ -383,11 +587,11 @@
                 </td>
             </tr>
             <tr>
-                <td colspan="4" class="table-separator">Quality Gate</td>
+                <td colspan="4" class="table-separator">Quality Gate <span class="description"> | Minimum threshold to consider the suite successful</span></td>
             </tr>
             <tr>
-                <td colspan="3">{{qg.condition}}</td>
-                <td class="qg-status qg-status-{{qg.status}}">{{qg.status}}</td>
+                <td colspan="3"><b>Condition:</b> ${qg.condition}<br/><b>Evaluated:</b><#assign evaluatedCondition = "${qg.condition}"?interpret> <@evaluatedCondition /></td>
+                <td class="qg-status qg-status-${qgStatus?eval?string('OK', 'KO')}">${qgStatus?eval?string('OK', 'KO')}</td>
             </tr>
             </tbody>
         </table>
@@ -396,19 +600,39 @@
     <h2 class="table-title">Mapped Tests</h2>
     <div class="tests-container">
         <div class="tests-header">
-            <div class="inline test-name">Test Name</div>
+            <div class="inline class-name-header">Class Name</div>
+            <div class="inline test-name-header">Test Name</div>
+            <div class="inline weight-header">Weight</div>
             <div class="inline status-header">Status</div>
         </div>
-        {{tests}}
+        <#list tests as test, result>
+        <#assign statusValue = result.status.value>
+        <div class="test-row ${statusValue?lower_case?replace(' ', '-')}">
+            <div class="inline class-name">${test.className}</div>
+            <div class="inline test-name">${test.testName}</div>
+            <div class="inline weight">${test.weight}</div>
+            <div class="inline status">${statusValue}</div>
+        </div>
+        </#list>
     </div>
 
     <h2 class="table-title">Unmapped Tests</h2>
     <div class="tests-container">
         <div class="tests-header">
-            <div class="inline test-name">Test Name</div>
+            <div class="inline class-name-header">Class Name</div>
+            <div class="inline test-name-header">Test Name</div>
+            <div class="inline weight-header">Weight</div>
             <div class="inline status-header">Status</div>
         </div>
-        {{unmapped-tests}}
+        <#list unmappedTests as test, result>
+        <#assign statusValue = result.status.value>
+        <div class="test-row ${statusValue?lower_case?replace(' ', '-')}">
+            <div class="inline class-name">${test.className}</div>
+            <div class="inline test-name">${test.testName}</div>
+            <div class="inline weight">${test.weight}</div>
+            <div class="inline status">${statusValue}</div>
+        </div>
+    </#list>
     </div>
 </div>
 </body>

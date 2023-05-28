@@ -1,6 +1,7 @@
 first class:
-  - one
-  - two
+  - name: one
+  - name: two
 
 second class:
-  - three
+  - name: one
+    weight: 12
