@@ -135,7 +135,7 @@ public class TestBook {
         flush(weightedTestsTotal + getWeightedTotalOf(unmappedTests), statistics.getGrandTotalWeightedCount());
 
         mapVars();
-
+        TestBookReporter.evaluateQualityGateStatusFrom(this);
         reporters.forEach(reporter -> reporter.flush(this));
     }
 }

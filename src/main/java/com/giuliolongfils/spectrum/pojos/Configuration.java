@@ -4,19 +4,18 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.giuliolongfils.spectrum.browsers.Browser;
 import com.giuliolongfils.spectrum.utils.testbook.TestBook;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 import java.net.URL;
 import java.time.Duration;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
 @SuppressWarnings("unused")
 @Getter
-@EqualsAndHashCode
 public class Configuration {
 	private Map<String, String> vars;
 	private Runtime runtime;
@@ -25,10 +24,10 @@ public class Configuration {
 	private WebDriver webDriver;
 	private Data data;
 	private SeleniumLogs seleniumLogs;
+	private FreeMarker freeMarker;
 	private Events events;
 
 	@Getter
-	@EqualsAndHashCode
 	public static class Runtime {
 		private String env;
 
@@ -43,7 +42,6 @@ public class Configuration {
 	}
 
 	@Getter
-	@EqualsAndHashCode
 	public static class Application {
 		private String baseUrl;
 
@@ -52,7 +50,6 @@ public class Configuration {
 	}
 
 	@Getter
-	@EqualsAndHashCode
 	public static class Extent {
 		private String documentTitle;
 		private String reportFolder;
@@ -63,7 +60,6 @@ public class Configuration {
 	}
 
 	@Getter
-	@EqualsAndHashCode
 	public static class WebDriver {
 		private Waits waits;
 		private boolean defaultEventListenerEnabled;
@@ -74,7 +70,6 @@ public class Configuration {
 		private Edge edge;
 
 		@Getter
-		@EqualsAndHashCode
 		public static class Waits {
 			private Duration implicit;
 			private Duration pageLoadTimeout;
@@ -83,14 +78,12 @@ public class Configuration {
 		}
 
 		@Getter
-		@EqualsAndHashCode
 		public static class Grid {
 			private URL url;
 			private Map<String, String> capabilities;
 		}
 
 		@Getter
-		@EqualsAndHashCode
 		public static class Chrome {
 			private Map<String, Object> capabilities;
 			private List<String> arguments;
@@ -98,7 +91,6 @@ public class Configuration {
 		}
 
 		@Getter
-		@EqualsAndHashCode
 		public static class Firefox {
 			private String binary;
 			private List<String> args;
@@ -107,26 +99,22 @@ public class Configuration {
 		}
 
 		@Getter
-		@EqualsAndHashCode
 		public static class InternetExplorer {
 			private Map<String, Object> capabilities;
 		}
 
 		@Getter
-		@EqualsAndHashCode
 		public static class Edge {
 			private Map<String, Object> capabilities;
 		}
 	}
 
 	@Getter
-	@EqualsAndHashCode
 	public static class Data {
 		private String fqdn;
 	}
 
 	@Getter
-	@EqualsAndHashCode
 	public static class SeleniumLogs {
 		private Level browser;
 		private Level client;
@@ -137,7 +125,13 @@ public class Configuration {
 	}
 
 	@Getter
-	@EqualsAndHashCode
+	public static class FreeMarker {
+		private String version;
+		private Locale locale;
+		private String numberFormat;
+	}
+
+	@Getter
 	public static class Events {
 		private Event beforeAnyCall;
 		private Event afterAnyCall;
@@ -259,7 +253,6 @@ public class Configuration {
 	}
 
 	@Getter
-	@EqualsAndHashCode
 	public static class Event {
 		private ch.qos.logback.classic.Level level;
 		private String message;

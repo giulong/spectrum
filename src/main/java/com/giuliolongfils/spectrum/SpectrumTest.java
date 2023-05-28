@@ -14,6 +14,7 @@ import com.giuliolongfils.spectrum.types.ImplicitWait;
 import com.giuliolongfils.spectrum.types.PageLoadWait;
 import com.giuliolongfils.spectrum.types.ScriptWait;
 import com.giuliolongfils.spectrum.utils.FileReader;
+import com.giuliolongfils.spectrum.utils.FreeMarkerWrapper;
 import com.giuliolongfils.spectrum.utils.testbook.TestBook;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -166,6 +167,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
                         .parse()
                         .stream()
                         .collect(toMap(identity(), testName -> new TestBookResult(NOT_RUN))));
+
+                FreeMarkerWrapper.getInstance().setupFrom(configuration.getFreeMarker());
             }
         } finally {
             LOCK.unlock();
