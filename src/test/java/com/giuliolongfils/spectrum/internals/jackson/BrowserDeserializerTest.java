@@ -60,7 +60,7 @@ class BrowserDeserializerTest {
         when(jsonParser.getValueAsString()).thenReturn(notValidBrowser);
         when(jsonParser.currentName()).thenReturn("key");
 
-        Exception exception = assertThrows(RuntimeException.class, () -> browserDeserializer.deserialize(jsonParser, deserializationContext));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> browserDeserializer.deserialize(jsonParser, deserializationContext));
         assertEquals("Value '" + notValidBrowser + "' is not a valid browser!", exception.getMessage());
     }
 

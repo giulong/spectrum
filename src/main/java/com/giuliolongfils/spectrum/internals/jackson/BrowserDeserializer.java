@@ -19,7 +19,7 @@ public class BrowserDeserializer extends InterpolatedDeserializer<Browser<?>> {
             case "firefox" -> new Firefox();
             case "ie" -> new InternetExplorer();
             case "edge" -> new Edge();
-            default -> throw new RuntimeException("Value '" + interpolatedValue + "' is not a valid browser!");
+            default -> throw new IllegalArgumentException("Value '" + interpolatedValue + "' is not a valid browser!");
         };
     }
 }
