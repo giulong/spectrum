@@ -108,7 +108,8 @@ class SpectrumEntityTest {
         final String screenShotName = screenShot.getPath();
         final Path screenShotPath = Paths.get(reportsFolder.toString(), screenShotName);
         assertTrue(Files.exists(screenShotPath));
-        assertThat(screenShotName, matchesPattern(SCREEN_SHOT_FOLDER + "/" + UUID_REGEX));
+        assertEquals(Paths.get(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
+        assertThat(Paths.get(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(((TakesScreenshot) webDriver)).getScreenshotAs(BYTES);
         verify(webDriver, never()).findElement(By.tagName("body"));
         verify(extentTest).log(status, "<div class=\"screenshot-container\">blah</div>", screenShot);
@@ -169,7 +170,8 @@ class SpectrumEntityTest {
         final String screenShotName = screenShot.getPath();
         final Path screenShotPath = Paths.get(reportsFolder.toString(), screenShotName);
         assertTrue(Files.exists(screenShotPath));
-        assertThat(screenShotName, matchesPattern(SCREEN_SHOT_FOLDER + "/" + UUID_REGEX));
+        assertEquals(Paths.get(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
+        assertThat(Paths.get(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(extentTest).log(INFO, "<div class=\"screenshot-container\">blah</div>", screenShot);
 
         Files.delete(screenShotPath);

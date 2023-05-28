@@ -112,9 +112,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     public SpectrumPage<Data> initPage(final Field f, final List<Field> sharedFields) {
         log.debug("Initializing page {}", f.getName());
 
-        //noinspection unchecked
+        @SuppressWarnings("unchecked")
         final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
-        //noinspection unchecked
+        @SuppressWarnings("unchecked")
         final Class<SpectrumPage<Data>> spectrumPageClass = (Class<SpectrumPage<Data>>) spectrumPage.getClass();
 
         f.setAccessible(true);
