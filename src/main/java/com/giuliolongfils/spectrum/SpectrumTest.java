@@ -173,6 +173,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     }
 
     @BeforeEach
+    @SuppressWarnings("checkstyle:ParameterNumber")
     public void beforeEach(final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait,
                            final DownloadWait downloadWait, final ExtentTest extentTest, final Actions actions, final Data data) {
         this.webDriver = webDriver;
