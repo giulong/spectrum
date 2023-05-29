@@ -16,4 +16,4 @@
 
 ## Contributors:
 
-- Giulio Longfils: [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)
+- Giulio Longfils: [![Linkedin](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/giuliolongfils/)
