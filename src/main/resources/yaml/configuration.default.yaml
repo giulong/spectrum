@@ -78,7 +78,7 @@ webDriver:
 
 # Data models
 data:
-  fqdn: com.giuliolongfils.spectrum.data
+  fqdn: com.github.giulong.spectrum.data
 
 # Selenium internal logging levels
 seleniumLogs:
