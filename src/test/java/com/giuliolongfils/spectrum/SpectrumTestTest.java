@@ -1,31 +1,49 @@
 package com.giuliolongfils.spectrum;
 
+import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.giuliolongfils.spectrum.interfaces.Endpoint;
 import com.giuliolongfils.spectrum.interfaces.Shared;
 import com.giuliolongfils.spectrum.internals.EventsListener;
+import com.giuliolongfils.spectrum.pojos.Configuration;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBookResult;
+import com.giuliolongfils.spectrum.pojos.testbook.TestBookTest;
+import com.giuliolongfils.spectrum.types.DownloadWait;
+import com.giuliolongfils.spectrum.types.ImplicitWait;
+import com.giuliolongfils.spectrum.types.PageLoadWait;
+import com.giuliolongfils.spectrum.types.ScriptWait;
+import com.giuliolongfils.spectrum.utils.FileReader;
+import com.giuliolongfils.spectrum.utils.FreeMarkerWrapper;
+import com.giuliolongfils.spectrum.utils.testbook.TestBook;
+import com.giuliolongfils.spectrum.utils.testbook.parsers.TestBookParser;
 import lombok.Getter;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import static com.giuliolongfils.spectrum.pojos.testbook.TestBookResult.Status.NOT_RUN;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SpectrumTest")
 public class SpectrumTestTest<T> {
 
+    private MockedStatic<FileReader> fileReaderMockedStatic;
+    private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private List<Field> sharedFields;
 
     @Mock
@@ -38,16 +56,16 @@ public class SpectrumTestTest<T> {
     private FakeSpectrumTest<T> spectrumTest;
 
     @Mock
-    private WebDriverWait implicitWait;
+    private ImplicitWait implicitWait;
 
     @Mock
-    private WebDriverWait pageLoadWait;
+    private PageLoadWait pageLoadWait;
 
     @Mock
-    private WebDriverWait scriptWait;
+    private ScriptWait scriptWait;
 
     @Mock
-    private WebDriverWait downloadWait;
+    private DownloadWait downloadWait;
 
     @Mock
     private ExtentTest extentTest;
@@ -58,6 +76,32 @@ public class SpectrumTestTest<T> {
     @Mock
     private Actions actions;
 
+    @Mock
+    private Configuration configuration;
+
+    @Mock
+    private ExtentReports extentReports;
+
+    @Mock
+    private FileReader fileReader;
+
+    @Mock
+    private Properties properties;
+
+    @Mock
+    private Configuration.Application application;
+
+    @Mock
+    private TestBook testBook;
+
+    @Mock
+    private TestBookParser testBookParser;
+
+    @Mock
+    private FreeMarkerWrapper freeMarkerWrapper;
+
+    @Mock
+    private Configuration.FreeMarker freeMarker;
 
     @InjectMocks
     private FakeChild<T> childTest;
@@ -70,6 +114,14 @@ public class SpectrumTestTest<T> {
                 .toList();
 
         spectrumTest.data = data;
+        fileReaderMockedStatic = mockStatic(FileReader.class);
+        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        fileReaderMockedStatic.close();
+        freeMarkerWrapperMockedStatic.close();
     }
 
     @Test
@@ -126,6 +178,85 @@ public class SpectrumTestTest<T> {
         assertNull(childTest.getParentToSkip());
         assertNotNull(childTest.getParentTestPage());
         assertThat(childTest.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
+    }
+
+    @Test
+    @DisplayName("beforeAll should leverage a reentrant lock to initialize spectrum once for the entire suite")
+    public void testBeforeAll() {
+        final String banner = "banner";
+        final String version = "version";
+        final Map<TestBookTest, TestBookResult> tests = new HashMap<>();
+        final TestBookTest test1 = TestBookTest.builder()
+                .className("test 1")
+                .testName("one")
+                .build();
+
+        final TestBookTest test2 = TestBookTest.builder()
+                .className("another test")
+                .testName("another")
+                .build();
+        final List<TestBookTest> testBookTests = List.of(test1, test2);
+
+        when(FileReader.getInstance()).thenReturn(fileReader);
+        when(fileReader.readProperties("/spectrum.properties")).thenReturn(properties);
+        when(fileReader.read("/banner.txt")).thenReturn(banner);
+        when(properties.getProperty("version")).thenReturn(version);
+        when(configuration.getApplication()).thenReturn(application);
+        when(application.getTestBook()).thenReturn(testBook);
+        when(testBook.getTests()).thenReturn(tests);
+        when(testBook.getParser()).thenReturn(testBookParser);
+        when(testBookParser.parse()).thenReturn(testBookTests);
+        when(configuration.getFreeMarker()).thenReturn(freeMarker);
+
+        when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
+
+        // explicitly called twice to ensure verifications are called just once
+        SpectrumTest.beforeAll(configuration, extentReports);
+        SpectrumTest.beforeAll(configuration, extentReports);
+
+        assertTrue(SpectrumTest.isSuiteInitialised());
+        assertEquals(configuration, SpectrumTest.configuration);
+        assertEquals(extentReports, SpectrumTest.extentReports);
+        assertEquals(2, tests.size());
+        tests.values().forEach(t -> assertEquals(NOT_RUN, t.getStatus()));
+
+        verify(freeMarkerWrapper).setupFrom(freeMarker);
+    }
+
+    @Test
+    @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
+    public void testBeforeEach() {
+        childTest.beforeEach(webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentTest, actions, data);
+
+        assertEquals(webDriver, spectrumTest.webDriver);
+        assertEquals(implicitWait, spectrumTest.implicitWait);
+        assertEquals(pageLoadWait, spectrumTest.pageLoadWait);
+        assertEquals(scriptWait, spectrumTest.scriptWait);
+        assertEquals(downloadWait, spectrumTest.downloadWait);
+        assertEquals(extentTest, spectrumTest.extentTest);
+        assertEquals(actions, spectrumTest.actions);
+        assertEquals(data, spectrumTest.data);
+
+        // initPages
+        assertNull(childTest.toSkip);
+        assertNotNull(childTest.childTestPage);
+        assertThat(childTest.childTestPage, instanceOf(FakeSpectrumPage.class));
+
+        assertNull(childTest.getParentToSkip());
+        assertNotNull(childTest.getParentTestPage());
+        assertThat(childTest.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
+    }
+
+    @Test
+    @DisplayName("afterAll should flush the testbook and the extent reports")
+    public void afterAll() {
+        when(configuration.getApplication()).thenReturn(application);
+        when(application.getTestBook()).thenReturn(testBook);
+
+        SpectrumTest.afterAll(extentReports, configuration);
+
+        verify(testBook).flush();
+        verify(extentReports).flush();
     }
 
     @SuppressWarnings("unused")
