@@ -28,7 +28,7 @@ extent:
   documentTitle: Spectrum Report  # Title of the html page
   reportFolder: target/spectrum/reports
   reportName: Spectrum Report   # Name shown in the header of the report
-  fileName: spectrum-report-{timestamp:dd-MM-yyyy_HH-mm-ss}.html
+  fileName: spectrum-report-{timestamp}.html
   theme: STANDARD   # Theme used in the report. Can be STANDARD or DARK
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test start time and end time
 

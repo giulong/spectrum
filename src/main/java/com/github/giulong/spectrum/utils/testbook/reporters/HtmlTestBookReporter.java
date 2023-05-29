@@ -1,5 +1,6 @@
 package com.github.giulong.spectrum.utils.testbook.reporters;
 
+import com.github.giulong.spectrum.utils.FileUtils;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -14,12 +15,13 @@ public class HtmlTestBookReporter extends TestBookReporter {
     private String template = "/testbook/template.html";
 
     @SuppressWarnings("FieldMayBeFinal")
-    private Path output = Paths.get("target/spectrum/testbook/testbook.html");
+    private String output = "target/spectrum/testbook/testbook-{timestamp}.html";
 
     @Override
     @SneakyThrows
     public void doOutputFrom(final String interpolatedTemplate) {
-        Files.createDirectories(output.getParent());
-        Files.write(output, interpolatedTemplate.getBytes());
+        final Path outputPath = Paths.get(FileUtils.getInstance().interpolateTimestampFrom(output));
+        Files.createDirectories(outputPath.getParent());
+        Files.write(outputPath, interpolatedTemplate.getBytes());
     }
 }
