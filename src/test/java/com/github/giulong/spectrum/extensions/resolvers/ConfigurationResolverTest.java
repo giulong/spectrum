@@ -1,7 +1,7 @@
 package com.github.giulong.spectrum.extensions.resolvers;
 
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.utils.YamlParser;
+import com.github.giulong.spectrum.utils.YamlUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("ConfigurationResolver")
 class ConfigurationResolverTest {
 
-    private MockedStatic<YamlParser> yamlParserMockedStatic;
+    private MockedStatic<YamlUtils> yamlUtilsMockedStatic;
 
     @Mock
     private ParameterContext parameterContext;
@@ -48,7 +48,7 @@ class ConfigurationResolverTest {
     private ExtensionContext.Store rootStore;
 
     @Mock
-    private YamlParser yamlParser;
+    private YamlUtils yamlUtils;
 
     @Mock
     private Configuration configuration;
@@ -58,12 +58,12 @@ class ConfigurationResolverTest {
 
     @BeforeEach
     public void beforeEach() {
-        yamlParserMockedStatic = mockStatic(YamlParser.class);
+        yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
     }
 
     @AfterEach
     public void afterEach() {
-        yamlParserMockedStatic.close();
+        yamlUtilsMockedStatic.close();
         VARS.clear();
     }
 
@@ -75,16 +75,16 @@ class ConfigurationResolverTest {
 
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
-        when(YamlParser.getInstance()).thenReturn(yamlParser);
+        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
 
         // parseEnv
-        when(yamlParser.readInternalNode(ENV_NODE, CONFIGURATION_YAML, String.class)).thenReturn(env);
-        when(yamlParser.readInternalNode(ENV_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultEnv");
+        when(yamlUtils.readInternalNode(ENV_NODE, CONFIGURATION_YAML, String.class)).thenReturn(env);
+        when(yamlUtils.readInternalNode(ENV_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultEnv");
 
         // parseVars
-        when(yamlParser.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
+        when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
 
-        when(yamlParser.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class)).thenReturn(configuration);
+        when(yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class)).thenReturn(configuration);
 
         final ConfigurationResolver configurationResolver = new ConfigurationResolver();
         configurationResolver.resolveParameter(parameterContext, extensionContext);
@@ -93,8 +93,8 @@ class ConfigurationResolverTest {
         Function<String, Configuration> function = functionArgumentCaptor.getValue();
         final Configuration actual = function.apply("value");
 
-        verify(yamlParser).updateWithFile(configuration, CONFIGURATION_YAML);
-        verify(yamlParser).updateWithFile(configuration, envConfiguration);
+        verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
+        verify(yamlUtils).updateWithFile(configuration, envConfiguration);
         verify(rootStore).put(CONFIGURATION, configuration);
 
         assertEquals(configuration, actual);
@@ -104,11 +104,11 @@ class ConfigurationResolverTest {
     @ParameterizedTest(name = "with env {0} and default env {1} we expect {2}")
     @MethodSource("envValuesProvider")
     public void parseEnv(final String env, final String defaultEnv, final String expected) {
-        when(YamlParser.getInstance()).thenReturn(yamlParser);
+        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         final ConfigurationResolver configurationResolver = new ConfigurationResolver();
 
-        when(yamlParser.readInternalNode(ENV_NODE, CONFIGURATION_YAML, String.class)).thenReturn(env);
-        when(yamlParser.readInternalNode(ENV_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn(defaultEnv);
+        when(yamlUtils.readInternalNode(ENV_NODE, CONFIGURATION_YAML, String.class)).thenReturn(env);
+        when(yamlUtils.readInternalNode(ENV_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn(defaultEnv);
 
         assertEquals(expected, configurationResolver.parseEnv());
     }
@@ -119,12 +119,12 @@ class ConfigurationResolverTest {
     public void parseVars(final Map<String, String> defaultVars, final Map<String, String> vars, final Map<String, String> envVars, final Map<String, String> expected) {
         final String envConfiguration = "envConfiguration";
 
-        when(YamlParser.getInstance()).thenReturn(yamlParser);
+        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         final ConfigurationResolver configurationResolver = new ConfigurationResolver();
 
-        when(yamlParser.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(defaultVars);
-        when(yamlParser.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).thenReturn(vars);
-        when(yamlParser.readNode(VARS_NODE, envConfiguration, Map.class)).thenReturn(envVars);
+        when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(defaultVars);
+        when(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).thenReturn(vars);
+        when(yamlUtils.readNode(VARS_NODE, envConfiguration, Map.class)).thenReturn(envVars);
 
         configurationResolver.parseVars(envConfiguration);
         assertEquals(expected, VARS);

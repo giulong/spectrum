@@ -1,7 +1,6 @@
 package com.github.giulong.spectrum.extensions.resolvers;
 
-import com.github.giulong.spectrum.utils.YamlParser;
-import com.github.giulong.spectrum.utils.YamlWriter;
+import com.github.giulong.spectrum.utils.YamlUtils;
 import com.github.giulong.spectrum.pojos.Configuration;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +33,9 @@ public class DataResolver<Data> implements ParameterResolver {
         return rootStore.getOrComputeIfAbsent(DATA, e -> {
             log.debug("Resolving {}", DATA);
 
-            final Data data = YamlParser.getInstance().read("data/data.yaml", dataClass);
-            log.trace("Data:\n{}", YamlWriter.getInstance().write(data));
+            final YamlUtils yamlUtils = YamlUtils.getInstance();
+            final Data data = yamlUtils.read("data/data.yaml", dataClass);
+            log.trace("Data:\n{}", yamlUtils.write(data));
             rootStore.put(DATA, data);
             return data;
         }, dataClass);

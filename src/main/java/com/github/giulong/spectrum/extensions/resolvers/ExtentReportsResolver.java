@@ -4,7 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.utils.FileReader;
+import com.github.giulong.spectrum.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -12,10 +12,6 @@ import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -23,7 +19,6 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentReports> {
 
     public static final String EXTENT_REPORTS = "extentReports";
-    public static final String DEFAULT_PATTERN = "dd-MM-yyyy_HH-mm-ss";
 
     @Override
     public ExtentReports resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
@@ -41,7 +36,7 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
             sparkReporter.config().setReportName(reportName);
             sparkReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
             sparkReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
-            sparkReporter.config().setCss(FileReader.getInstance().read("/css/report.css"));
+            sparkReporter.config().setCss(FileUtils.getInstance().read("/css/report.css"));
 
             final ExtentReports extentReports = new ExtentReports();
             extentReports.attachReporter(sparkReporter);
@@ -53,12 +48,7 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
     }
 
     protected static String getReportsPathFrom(final String reportFolder, final String fileName) {
-        final String toReplace = "\\{timestamp:?(?<pattern>.*)}";
-        final String timestamp = ".*\\{timestamp:(?<pattern>.*)}.*";
-        final Matcher matcher = Pattern.compile(timestamp).matcher(fileName);
-        final String pattern = matcher.matches() ? matcher.group("pattern") : DEFAULT_PATTERN;
-        final String resolvedFileName = fileName.replaceAll(toReplace, LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern)));
-
+        final String resolvedFileName = FileUtils.getInstance().interpolateTimestampFrom(fileName);
         return Paths.get(System.getProperty("user.dir"), reportFolder, resolvedFileName).toString().replaceAll("\\\\", "/");
     }
 }

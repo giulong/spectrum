@@ -1,6 +1,6 @@
 package com.github.giulong.spectrum.utils.testbook.parsers;
 
-import com.github.giulong.spectrum.utils.FileReader;
+import com.github.giulong.spectrum.utils.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,22 +21,22 @@ import static org.mockito.Mockito.when;
 @DisplayName("CsvTestBookParser")
 class CsvTestBookParserTest {
 
-    private MockedStatic<FileReader> fileReaderMockedStatic;
+    private MockedStatic<FileUtils> fileUtilsMockedStatic;
 
     @Mock
-    private FileReader fileReader;
+    private FileUtils fileUtils;
 
     @InjectMocks
     private CsvTestBookParser testBookParser;
 
     @BeforeEach
     public void beforeEach() {
-        fileReaderMockedStatic = mockStatic(FileReader.class);
+        fileUtilsMockedStatic = mockStatic(FileUtils.class);
     }
 
     @AfterEach
     public void afterEach() {
-        fileReaderMockedStatic.close();
+        fileUtilsMockedStatic.close();
     }
 
     @DisplayName("parse should throw an IllegalArgumentException")
@@ -44,8 +44,8 @@ class CsvTestBookParserTest {
     @ValueSource(strings = {"a", "a,", "a,b,c", "a,b,c,d"})
     public void parseException(final String line) {
         final String path = "path";
-        when(FileReader.getInstance()).thenReturn(fileReader);
-        when(fileReader.read(String.format("/%s", path))).thenReturn(line);
+        when(FileUtils.getInstance()).thenReturn(fileUtils);
+        when(fileUtils.read(String.format("/%s", path))).thenReturn(line);
 
         testBookParser.setPath(path);
 
@@ -58,8 +58,8 @@ class CsvTestBookParserTest {
     @ValueSource(strings = {"a,b", "a,b,23"})
     public void parseValid(final String line) {
         final String path = "path";
-        when(FileReader.getInstance()).thenReturn(fileReader);
-        when(fileReader.read(String.format("/%s", path))).thenReturn(line);
+        when(FileUtils.getInstance()).thenReturn(fileUtils);
+        when(fileUtils.read(String.format("/%s", path))).thenReturn(line);
 
         testBookParser.setPath(path);
 

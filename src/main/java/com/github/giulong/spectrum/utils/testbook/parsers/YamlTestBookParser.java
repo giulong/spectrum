@@ -2,7 +2,7 @@ package com.github.giulong.spectrum.utils.testbook.parsers;
 
 import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import com.github.giulong.spectrum.pojos.testbook.TestBookYamlData;
-import com.github.giulong.spectrum.utils.YamlParser;
+import com.github.giulong.spectrum.utils.YamlUtils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -16,7 +16,7 @@ public class YamlTestBookParser extends TestBookParser {
     public List<TestBookTest> parse() {
         log.debug("Reading lines of yaml testbook");
 
-        return YamlParser.getInstance()
+        return YamlUtils.getInstance()
                 .read(path, TestBookYamlData.class)
                 .entrySet()
                 .stream()

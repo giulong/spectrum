@@ -1,7 +1,6 @@
 package com.github.giulong.spectrum.extensions.resolvers;
 
-import com.github.giulong.spectrum.utils.YamlParser;
-import com.github.giulong.spectrum.utils.YamlWriter;
+import com.github.giulong.spectrum.utils.YamlUtils;
 import com.github.giulong.spectrum.pojos.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -25,7 +24,7 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
     public static final String VARS_NODE = "/vars";
     public static final Map<String, String> VARS = new HashMap<>();
 
-    private final YamlParser yamlParser = YamlParser.getInstance();
+    private final YamlUtils yamlUtils = YamlUtils.getInstance();
 
     @Override
     public Configuration resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
@@ -37,11 +36,11 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
             final String envConfiguration = String.format("configuration-%s.yaml", parseEnv());
             parseVars(envConfiguration);
 
-            final Configuration configuration = yamlParser.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class);
-            yamlParser.updateWithFile(configuration, CONFIGURATION_YAML);
-            yamlParser.updateWithFile(configuration, envConfiguration);
+            final Configuration configuration = yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class);
+            yamlUtils.updateWithFile(configuration, CONFIGURATION_YAML);
+            yamlUtils.updateWithFile(configuration, envConfiguration);
 
-            log.trace("Configuration:\n{}", YamlWriter.getInstance().write(configuration));
+            log.trace("Configuration:\n{}", YamlUtils.getInstance().write(configuration));
 
             rootStore.put(CONFIGURATION, configuration);
             return configuration;
@@ -50,14 +49,14 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
 
     protected String parseEnv() {
         return Optional
-                .ofNullable(yamlParser.readInternalNode(ENV_NODE, CONFIGURATION_YAML, String.class))
-                .orElse(yamlParser.readInternalNode(ENV_NODE, DEFAULT_CONFIGURATION_YAML, String.class));
+                .ofNullable(yamlUtils.readInternalNode(ENV_NODE, CONFIGURATION_YAML, String.class))
+                .orElse(yamlUtils.readInternalNode(ENV_NODE, DEFAULT_CONFIGURATION_YAML, String.class));
     }
 
     @SuppressWarnings("unchecked")
     protected void parseVars(final String envConfiguration) {
-        VARS.putAll(yamlParser.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
-        VARS.putAll(Optional.ofNullable(yamlParser.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
-        VARS.putAll(Optional.ofNullable(yamlParser.readNode(VARS_NODE, envConfiguration, Map.class)).orElse(new HashMap<>()));
+        VARS.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
+        VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
+        VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, envConfiguration, Map.class)).orElse(new HashMap<>()));
     }
 }

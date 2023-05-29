@@ -3,6 +3,7 @@ package com.github.giulong.spectrum.utils;
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -17,16 +18,17 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 
+import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
-public final class YamlParser {
+public final class YamlUtils {
 
-    private static final YamlParser INSTANCE = new YamlParser();
+    private static final YamlUtils INSTANCE = new YamlUtils();
     private static final Path RESOURCES = Paths.get("src", "test", "resources");
 
-    public static YamlParser getInstance() {
+    public static YamlUtils getInstance() {
         return INSTANCE;
     }
 
@@ -41,6 +43,11 @@ public final class YamlParser {
                     new SimpleModule().addDeserializer(Duration.class, new DurationDeserializer()),
                     new SimpleModule().addDeserializer(Browser.class, new BrowserDeserializer())
             );
+
+    private final ObjectWriter writer = new YAMLMapper()
+            .configure(FAIL_ON_EMPTY_BEANS, false)
+            .registerModules(new JavaTimeModule())
+            .writerWithDefaultPrettyPrinter();
 
     public boolean notExists(final String file, final boolean internal) {
         final Path path = Paths.get(file);
@@ -59,7 +66,7 @@ public final class YamlParser {
         }
 
         log.debug("Reading {} file '{}' onto an instance of {}", internal ? "internal" : "client", file, clazz.getSimpleName());
-        return yamlMapper.readValue(YamlParser.class.getClassLoader().getResource(file), clazz);
+        return yamlMapper.readValue(YamlUtils.class.getClassLoader().getResource(file), clazz);
     }
 
     public <T> T read(final String file, final Class<T> clazz) {
@@ -77,7 +84,7 @@ public final class YamlParser {
         }
 
         log.debug("Reading node '{}' of internal file '{}' onto an instance of {}", node, file, clazz.getSimpleName());
-        final JsonNode root = yamlMapper.readTree(YamlParser.class.getClassLoader().getResource(file));
+        final JsonNode root = yamlMapper.readTree(YamlUtils.class.getClassLoader().getResource(file));
         return yamlMapper.convertValue(root.at(node), clazz);
     }
 
@@ -105,6 +112,11 @@ public final class YamlParser {
         }
 
         log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), file);
-        yamlMapper.readerForUpdating(t).readValue(YamlParser.class.getClassLoader().getResource(file));
+        yamlMapper.readerForUpdating(t).readValue(YamlUtils.class.getClassLoader().getResource(file));
+    }
+
+    @SneakyThrows
+    public String write(Object object) {
+        return writer.writeValueAsString(object);
     }
 }
