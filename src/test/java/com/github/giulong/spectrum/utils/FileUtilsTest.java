@@ -14,33 +14,35 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 import static java.lang.System.lineSeparator;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("FileReader")
-class FileReaderTest {
+@DisplayName("FileUtils")
+class FileUtilsTest {
 
     @InjectMocks
-    private FileReader fileReader;
+    private FileUtils fileUtils;
 
     @Test
     @DisplayName("getInstance should return the singleton")
     public void getInstance() {
-        assertSame(FileReader.getInstance(), FileReader.getInstance());
+        assertSame(FileUtils.getInstance(), FileUtils.getInstance());
     }
 
     @DisplayName("read should return the correct result")
     @ParameterizedTest(name = "reading file {0} we expect {1}")
     @MethodSource("valuesProvider")
     public void read(String file, String expected) {
-        assertEquals(expected, fileReader.read(file));
+        assertEquals(expected, fileUtils.read(file));
     }
 
     @Test
     @DisplayName("readProperties should read the provided file and return the corresponding properties instance")
     public void readProperties() {
-        Properties actual = fileReader.readProperties("/test.properties");
+        Properties actual = fileUtils.readProperties("/test.properties");
         assertEquals(1, actual.size());
         assertEquals("value", actual.getProperty("key"));
     }
@@ -48,7 +50,7 @@ class FileReaderTest {
     @Test
     @DisplayName("readProperties should throw an exception if the provided file doesn't exist")
     public void readPropertiesNotExisting() {
-        assertThrows(RuntimeException.class, () -> fileReader.readProperties("/not-existing"));
+        assertThrows(RuntimeException.class, () -> fileUtils.readProperties("/not-existing"));
     }
 
     @Test
@@ -56,7 +58,23 @@ class FileReaderTest {
     public void interpolate() {
         assertEquals(
                 "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue",
-                fileReader.interpolate("/interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
+                fileUtils.interpolate("/interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
+    }
+
+    @DisplayName("interpolateTimestampFrom should replace the timestamp from the provided file name")
+    @ParameterizedTest(name = "with fileName {0} we expect {2}")
+    @MethodSource("fileNamesProvider")
+    public void interpolateTimestampFrom(final String fileName, final String expected) {
+        assertThat(fileUtils.interpolateTimestampFrom(fileName), matchesPattern(expected));
+    }
+
+    public static Stream<Arguments> fileNamesProvider() {
+        return Stream.of(
+                arguments("fileName.html", "fileName.html"),
+                arguments("fileName-{timestamp}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
+                arguments("fileName-{timestamp:dd-MM-yyyy_HH-mm-ss}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
+                arguments("fileName-{timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
+        );
     }
 
     public static Stream<Arguments> valuesProvider() {

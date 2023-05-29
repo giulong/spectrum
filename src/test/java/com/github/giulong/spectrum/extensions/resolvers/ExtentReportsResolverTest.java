@@ -5,7 +5,7 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.utils.FileReader;
+import com.github.giulong.spectrum.utils.FileUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,29 +13,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Paths;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static com.github.giulong.spectrum.extensions.resolvers.ExtentReportsResolver.EXTENT_REPORTS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ExtentReportsResolver")
 class ExtentReportsResolverTest {
 
-    private static MockedStatic<FileReader> fileReaderMockedStatic;
+    private static MockedStatic<FileUtils> fileUtilsMockedStatic;
 
     @Mock
     private ParameterContext parameterContext;
@@ -59,7 +54,7 @@ class ExtentReportsResolverTest {
     private ExtentSparkReporterConfig extentSparkReporterConfig;
 
     @Mock
-    private FileReader fileReader;
+    private FileUtils fileUtils;
 
     @Captor
     private ArgumentCaptor<Function<String, ExtentReports>> functionArgumentCaptor;
@@ -72,12 +67,12 @@ class ExtentReportsResolverTest {
 
     @BeforeEach
     public void beforeEach() {
-        fileReaderMockedStatic = mockStatic(FileReader.class);
+        fileUtilsMockedStatic = mockStatic(FileUtils.class);
     }
 
     @AfterEach
     public void afterEach() {
-        fileReaderMockedStatic.close();
+        fileUtilsMockedStatic.close();
     }
 
     @Test
@@ -101,8 +96,9 @@ class ExtentReportsResolverTest {
         when(extent.getDocumentTitle()).thenReturn(documentTitle);
         when(extent.getTheme()).thenReturn(theme);
         when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
-        when(FileReader.getInstance()).thenReturn(fileReader);
-        when(fileReader.read("/css/report.css")).thenReturn(css);
+        when(FileUtils.getInstance()).thenReturn(fileUtils);
+        when(fileUtils.read("/css/report.css")).thenReturn(css);
+        when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
 
         extentReportsResolver.resolveParameter(parameterContext, extensionContext);
 
@@ -128,23 +124,19 @@ class ExtentReportsResolverTest {
 
         extentSparkReporterMockedConstruction.close();
         extentReportsMockedConstruction.close();
-
     }
 
+    @Test
     @DisplayName("getReportsPathFrom should return the full path of the report")
-    @ParameterizedTest(name = "with folder {0} and fileName {1} we expect {2}")
-    @MethodSource("valuesProvider")
-    public void getReportsPathFrom(final String reportFolder, final String fileName, final String expected) {
+    public void getReportsPathFrom() {
+        final String reportFolder = "reportFolder";
+        final String fileName = "fileName";
+        final String expected = reportFolder + "/" + fileName;
+
+        when(FileUtils.getInstance()).thenReturn(fileUtils);
+        when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
+
         final String actual = ExtentReportsResolver.getReportsPathFrom(reportFolder, fileName);
         assertTrue(actual.matches(Paths.get(System.getProperty("user.dir"), expected).toString().replaceAll("\\\\", "/")));
-    }
-
-    public static Stream<Arguments> valuesProvider() {
-        return Stream.of(
-                arguments("reportFolder", "fileName.html", "reportFolder/fileName.html"),
-                arguments("reportFolder", "fileName-{timestamp}.html", "reportFolder/fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
-                arguments("reportFolder", "fileName-{timestamp:dd-MM-yyyy_HH-mm-ss}.html", "reportFolder/fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
-                arguments("reportFolder", "fileName-{timestamp:dd-MM-yyyy}.html", "reportFolder/fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
-        );
     }
 }

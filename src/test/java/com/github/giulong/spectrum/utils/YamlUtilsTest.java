@@ -10,66 +10,68 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("YamlParser")
-class YamlParserTest {
+@DisplayName("YamlUtils")
+class YamlUtilsTest {
 
     @InjectMocks
-    private YamlParser yamlParser;
+    private YamlUtils yamlUtils;
 
     @Test
     @DisplayName("getInstance should return the singleton")
     public void getInstance() {
-        assertSame(YamlParser.getInstance(), YamlParser.getInstance());
+        assertSame(YamlUtils.getInstance(), YamlUtils.getInstance());
     }
 
     @Test
     @DisplayName("read should return null if the provided client file doesn't exist")
     public void readNotExistingClientFile() {
-        assertNull(yamlParser.read("not-existing", TestYaml.class, false));
+        assertNull(yamlUtils.read("not-existing", TestYaml.class, false));
     }
 
     @Test
     @DisplayName("read should return an instance of the provided class deserializing the provided file")
     public void read() {
-        assertEquals("value", Objects.requireNonNull(yamlParser.read("test.yaml", TestYaml.class, true)).getKey());
+        assertEquals("value", Objects.requireNonNull(yamlUtils.read("test.yaml", TestYaml.class, true)).getKey());
     }
 
     @Test
     @DisplayName("overloaded read should return an instance of the provided class deserializing the provided file")
     public void readClient() {
-        assertEquals("value", yamlParser.read("test.yaml", TestYaml.class).getKey());
+        assertEquals("value", yamlUtils.read("test.yaml", TestYaml.class).getKey());
     }
 
     @Test
     @DisplayName("readInternal should return an instance of the provided class deserializing the provided file")
     public void readInternal() {
-        assertEquals("value", yamlParser.readInternal("test.yaml", TestYaml.class).getKey());
+        assertEquals("value", yamlUtils.readInternal("test.yaml", TestYaml.class).getKey());
     }
 
     @Test
     @DisplayName("readNode should return null if the provided client file doesn't exist")
     public void readNotExistingClientNode() {
-        assertNull(yamlParser.readNode("/objectKey", "not-existing", TestYaml.ObjectKey.class, false));
+        assertNull(yamlUtils.readNode("/objectKey", "not-existing", TestYaml.ObjectKey.class, false));
     }
 
     @Test
     @DisplayName("readNode should check if the provided file exists and return the node requested")
     public void readNode() {
-        assertEquals("objectValue", Objects.requireNonNull(yamlParser.readNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class, true)).getObjectField());
+        assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class, true)).getObjectField());
     }
 
     @Test
     @DisplayName("readNode for client-side files should just delegate to the readNode method")
     public void readClientNode() {
-        assertEquals("objectValue", yamlParser.readNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
+        assertEquals("objectValue", yamlUtils.readNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
     }
 
     @Test
     @DisplayName("readInternalNode should just delegate to the readNode method")
     public void readInternalNode() {
-        assertEquals("objectValue", yamlParser.readInternalNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
+        assertEquals("objectValue", yamlUtils.readInternalNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
     }
 
     @Test
@@ -77,7 +79,7 @@ class YamlParserTest {
     public void update() {
         TestYaml testYaml = TestYaml.builder().key("original").build();
 
-        yamlParser.update(testYaml, "{ \"key\": \"value\" }");
+        yamlUtils.update(testYaml, "{ \"key\": \"value\" }");
         assertEquals("value", testYaml.getKey());
     }
 
@@ -86,7 +88,7 @@ class YamlParserTest {
     public void updateWithFile() {
         TestYaml testYaml = TestYaml.builder().key("original").build();
 
-        yamlParser.updateWithFile(testYaml, "test.yaml");
+        yamlUtils.updateWithFile(testYaml, "test.yaml");
         assertEquals("value", testYaml.getKey());
     }
 
@@ -95,7 +97,19 @@ class YamlParserTest {
     public void updateWithNotExistingFile() {
         TestYaml testYaml = TestYaml.builder().key("original").build();
 
-        yamlParser.updateWithFile(testYaml, "not-existing");
+        yamlUtils.updateWithFile(testYaml, "not-existing");
         assertEquals("original", testYaml.getKey());
+    }
+
+    @Test
+    @DisplayName("write should just call the writeValueAsString of the provided object")
+    public void write() {
+        final TestYaml testYaml = mock(TestYaml.class);
+        final TestYaml.ObjectKey objectKey = mock(TestYaml.ObjectKey.class);
+
+        when(testYaml.getKey()).thenReturn("value");
+        when(testYaml.getObjectKey()).thenReturn(objectKey);
+        when(objectKey.getObjectField()).thenReturn("field");
+        assertEquals("---\nkey: \"value\"\nobjectKey:\n  objectField: \"field\"\n", yamlUtils.write(testYaml));
     }
 }

@@ -5,7 +5,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.github.giulong.spectrum.types.DownloadWait;
 import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.ScriptWait;
-import com.github.giulong.spectrum.utils.FileReader;
+import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
 import com.github.giulong.spectrum.interfaces.Endpoint;
 import com.github.giulong.spectrum.interfaces.Shared;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("SpectrumTest")
 public class SpectrumTestTest<T> {
 
-    private MockedStatic<FileReader> fileReaderMockedStatic;
+    private MockedStatic<FileUtils> fileUtilsMockedStatic;
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private List<Field> sharedFields;
 
@@ -83,7 +83,7 @@ public class SpectrumTestTest<T> {
     private ExtentReports extentReports;
 
     @Mock
-    private FileReader fileReader;
+    private FileUtils fileUtils;
 
     @Mock
     private Properties properties;
@@ -114,13 +114,13 @@ public class SpectrumTestTest<T> {
                 .toList();
 
         spectrumTest.data = data;
-        fileReaderMockedStatic = mockStatic(FileReader.class);
+        fileUtilsMockedStatic = mockStatic(FileUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
     }
 
     @AfterEach
     public void afterEach() {
-        fileReaderMockedStatic.close();
+        fileUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
     }
 
@@ -197,9 +197,9 @@ public class SpectrumTestTest<T> {
                 .build();
         final List<TestBookTest> testBookTests = List.of(test1, test2);
 
-        when(FileReader.getInstance()).thenReturn(fileReader);
-        when(fileReader.readProperties("/spectrum.properties")).thenReturn(properties);
-        when(fileReader.read("/banner.txt")).thenReturn(banner);
+        when(FileUtils.getInstance()).thenReturn(fileUtils);
+        when(fileUtils.readProperties("/spectrum.properties")).thenReturn(properties);
+        when(fileUtils.read("/banner.txt")).thenReturn(banner);
         when(properties.getProperty("version")).thenReturn(version);
         when(configuration.getApplication()).thenReturn(application);
         when(application.getTestBook()).thenReturn(testBook);

@@ -2,7 +2,7 @@ package com.github.giulong.spectrum.utils.testbook.reporters;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.github.giulong.spectrum.utils.FileReader;
+import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
 import lombok.Getter;
@@ -19,7 +19,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @Getter
 public abstract class TestBookReporter {
 
-    public static final FileReader FILE_READER = FileReader.getInstance();
+    public static final FileUtils FILE_UTILS = FileUtils.getInstance();
 
     public static final FreeMarkerWrapper FREE_MARKER_WRAPPER = FreeMarkerWrapper.getInstance();
 
@@ -32,6 +32,6 @@ public abstract class TestBookReporter {
     }
 
     public void flush(final TestBook testBook) {
-        doOutputFrom(FREE_MARKER_WRAPPER.interpolate(getTemplate(), FILE_READER.read(getTemplate()), testBook.getVars()));
+        doOutputFrom(FREE_MARKER_WRAPPER.interpolate(getTemplate(), FILE_UTILS.read(getTemplate()), testBook.getVars()));
     }
 }

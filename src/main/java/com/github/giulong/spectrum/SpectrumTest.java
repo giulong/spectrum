@@ -13,7 +13,7 @@ import com.github.giulong.spectrum.types.DownloadWait;
 import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.PageLoadWait;
 import com.github.giulong.spectrum.types.ScriptWait;
-import com.github.giulong.spectrum.utils.FileReader;
+import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
 import lombok.Getter;
@@ -158,9 +158,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
                 SpectrumEntity.configuration = configuration;
                 SpectrumEntity.extentReports = extentReports;
 
-                final FileReader fileReader = FileReader.getInstance();
-                final Properties spectrumProperties = fileReader.readProperties("/spectrum.properties");
-                log.info(String.format(Objects.requireNonNull(fileReader.read("/banner.txt")), spectrumProperties.getProperty("version")));
+                final FileUtils fileUtils = FileUtils.getInstance();
+                final Properties spectrumProperties = fileUtils.readProperties("/spectrum.properties");
+                log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), spectrumProperties.getProperty("version")));
 
                 final TestBook testBook = configuration.getApplication().getTestBook();
                 testBook.getTests().putAll(testBook
