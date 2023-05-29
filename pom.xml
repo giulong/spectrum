@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.giuliolongfils</groupId>
+    <groupId>com.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
     <version>0.0.1</version>
 
@@ -207,9 +207,9 @@
                 <version>0.8.9</version>
                 <configuration>
                     <excludes>
-                        <exclude>com/giuliolongfils/spectrum/pojos/**/*</exclude>
-                        <exclude>com/giuliolongfils/spectrum/types/**/*</exclude>
-                        <exclude>com/giuliolongfils/spectrum/enums/**/*</exclude>
+                        <exclude>com/github/giulong/spectrum/pojos/**/*</exclude>
+                        <exclude>com/github/giulong/spectrum/types/**/*</exclude>
+                        <exclude>com/github/giulong/spectrum/enums/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
