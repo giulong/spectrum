@@ -16,6 +16,7 @@ import com.giuliolongfils.spectrum.types.ScriptWait;
 import com.giuliolongfils.spectrum.utils.FileReader;
 import com.giuliolongfils.spectrum.utils.FreeMarkerWrapper;
 import com.giuliolongfils.spectrum.utils.testbook.TestBook;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterAll;
@@ -43,6 +44,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
     private static final Lock LOCK = new ReentrantLock();
 
+    @Getter
     private static volatile boolean suiteInitialised;
 
     @RegisterExtension
