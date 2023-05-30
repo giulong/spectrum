@@ -25,8 +25,10 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -114,6 +116,30 @@ class SpectrumEntityTest {
         verify(extentTest).log(status, "<div class=\"screenshot-container\">blah</div>", screenShot);
 
         Files.delete(screenShotPath);
+    }
+
+    @Test
+    @DisplayName("getSharedFields should return the list of fields of SpectrumEntity.class that are annotated with @Shared")
+    public void getSharedFields() {
+        final List<Field> actual = spectrumEntity.getSharedFields();
+        final List<String> sharedFieldsNames = actual
+                .stream()
+                .map(Field::getName)
+                .toList();
+
+        // we're checking real size and names here, no mocks
+        assertEquals(9, actual.size());
+        assertTrue(sharedFieldsNames.containsAll(List.of(
+                "extentTest",
+                "actions",
+                "eventsListener",
+                "webDriver",
+                "implicitWait",
+                "pageLoadWait",
+                "scriptWait",
+                "downloadWait",
+                "data"
+        )));
     }
 
     @Test

@@ -2,19 +2,18 @@ package com.github.giulong.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import com.github.giulong.spectrum.types.DownloadWait;
-import com.github.giulong.spectrum.types.ImplicitWait;
-import com.github.giulong.spectrum.types.ScriptWait;
-import com.github.giulong.spectrum.utils.FileUtils;
-import com.github.giulong.spectrum.utils.testbook.TestBook;
 import com.github.giulong.spectrum.interfaces.Endpoint;
-import com.github.giulong.spectrum.interfaces.Shared;
 import com.github.giulong.spectrum.internals.EventsListener;
 import com.github.giulong.spectrum.pojos.Configuration;
 import com.github.giulong.spectrum.pojos.testbook.TestBookResult;
 import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import com.github.giulong.spectrum.types.DownloadWait;
+import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.PageLoadWait;
+import com.github.giulong.spectrum.types.ScriptWait;
+import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
+import com.github.giulong.spectrum.utils.testbook.TestBook;
 import com.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import lombok.Getter;
 import org.junit.jupiter.api.AfterEach;
@@ -29,8 +28,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import static com.github.giulong.spectrum.pojos.testbook.TestBookResult.Status.NOT_RUN;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -44,7 +45,6 @@ public class SpectrumTestTest<T> {
 
     private MockedStatic<FileUtils> fileUtilsMockedStatic;
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
-    private List<Field> sharedFields;
 
     @Mock
     private WebDriver webDriver;
@@ -108,11 +108,6 @@ public class SpectrumTestTest<T> {
 
     @BeforeEach
     public void beforeEach() {
-        sharedFields = Arrays
-                .stream(spectrumTest.getClass().getFields())
-                .filter(f -> f.isAnnotationPresent(Shared.class))
-                .toList();
-
         spectrumTest.data = data;
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
@@ -127,7 +122,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("initPage should init the provided field")
     public void testInitPage() throws NoSuchFieldException {
-        final SpectrumPage<T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPage"), sharedFields);
+        final SpectrumPage<T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPage"));
 
         assertEquals(spectrumTest.testPage, actual);
         assertThat(spectrumTest.testPage, instanceOf(FakeSpectrumPage.class));
@@ -148,7 +143,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("initPages without endpoint")
     public void initPageWithoutEndpoint() throws NoSuchFieldException {
-        final SpectrumPage<T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPageWithoutEndpoint"), sharedFields);
+        final SpectrumPage<T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPageWithoutEndpoint"));
 
         assertEquals(spectrumTest.testPageWithoutEndpoint, actual);
         assertThat(spectrumTest.testPageWithoutEndpoint, instanceOf(FakeSpectrumPageWithoutEndpoint.class));

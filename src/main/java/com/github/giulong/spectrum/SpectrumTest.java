@@ -6,7 +6,6 @@ import com.github.giulong.spectrum.extensions.resolvers.*;
 import com.github.giulong.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.github.giulong.spectrum.extensions.watchers.TestBookWatcher;
 import com.github.giulong.spectrum.interfaces.Endpoint;
-import com.github.giulong.spectrum.interfaces.Shared;
 import com.github.giulong.spectrum.pojos.Configuration;
 import com.github.giulong.spectrum.pojos.testbook.TestBookResult;
 import com.github.giulong.spectrum.types.DownloadWait;
@@ -90,7 +89,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
         final List<Field> fields = new ArrayList<>(asList(clazz.getDeclaredFields()));
 
-        // TODO getFields invece di declared
         Class<?> superClazz = clazz.getSuperclass();
         while (superClazz.getSuperclass() != SpectrumEntity.class) {
             log.debug("Initializing also pages in superclass {}", superClazz.getSimpleName());
@@ -98,26 +96,19 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
             superClazz = superClazz.getSuperclass();
         }
 
-        final List<Field> sharedFields = Arrays
-                .stream(getClass().getFields())
-                .filter(f -> f.isAnnotationPresent(Shared.class))
-                .toList();
-
         spectrumPages = fields
                 .stream()
                 .filter(f -> SpectrumPage.class.isAssignableFrom(f.getType()))
-                .map(f -> initPage(f, sharedFields))
+                .map(this::initPage)
                 .collect(toList());
     }
 
     @SneakyThrows
-    public SpectrumPage<Data> initPage(final Field f, final List<Field> sharedFields) {
+    public SpectrumPage<Data> initPage(final Field f) {
         log.debug("Initializing page {}", f.getName());
 
-        @SuppressWarnings("unchecked")
-        final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
-        @SuppressWarnings("unchecked")
-        final Class<SpectrumPage<Data>> spectrumPageClass = (Class<SpectrumPage<Data>>) spectrumPage.getClass();
+        @SuppressWarnings("unchecked") final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
+        @SuppressWarnings("unchecked") final Class<SpectrumPage<Data>> spectrumPageClass = (Class<SpectrumPage<Data>>) spectrumPage.getClass();
 
         f.setAccessible(true);
         f.set(this, spectrumPage);
@@ -130,9 +121,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
         log.debug("The endpoint of the page {} is '{}'", className, endpointValue);
         spectrumPage.endpoint = endpointValue;
 
-        final Map<String, Field> targetFieldsMap = Arrays
-                .stream(spectrumPageClass.getFields())
-                .filter(field -> field.isAnnotationPresent(Shared.class))
+        final List<Field> sharedFields = getSharedFields();
+        final Map<String, Field> targetFieldsMap = sharedFields
+                .stream()
                 .collect(toMap(Field::getName, Function.identity()));
 
         sharedFields.forEach(s -> setSharedField(spectrumPage, s, targetFieldsMap));
