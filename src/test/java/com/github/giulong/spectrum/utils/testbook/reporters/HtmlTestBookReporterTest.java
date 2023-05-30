@@ -51,7 +51,8 @@ class HtmlTestBookReporterTest {
         filesMockedStatic.verify(() -> Files.createDirectories(Path.of(output).getParent()));
         filesMockedStatic.verify(() -> {
             Files.write(pathArgumentCaptor.capture(), eq(interpolatedTemplate.getBytes()));
-            assertThat(pathArgumentCaptor.getValue().toString(), matchesPattern(output.replace("{timestamp}.html", "[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html")));
+            assertThat(pathArgumentCaptor.getValue().toString().replace("\\", "/"),
+                    matchesPattern(output.replace("{timestamp}.html", "[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html")));
         });
     }
 }
