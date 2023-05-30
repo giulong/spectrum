@@ -16,7 +16,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.function.Function;
 
 import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -104,7 +104,7 @@ class ExtentReportsResolverTest {
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(Paths.get(System.getProperty("user.dir"), reportFolder, fileName).toString().replaceAll("\\\\", "/"), context.arguments().get(0));
+            assertEquals(Path.of(System.getProperty("user.dir"), reportFolder, fileName).toString().replaceAll("\\\\", "/"), context.arguments().get(0));
             when(mock.config()).thenReturn(extentSparkReporterConfig);
         });
         verify(rootStore).getOrComputeIfAbsent(eq(EXTENT_REPORTS), functionArgumentCaptor.capture(), eq(ExtentReports.class));
@@ -137,6 +137,6 @@ class ExtentReportsResolverTest {
         when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
 
         final String actual = ExtentReportsResolver.getReportsPathFrom(reportFolder, fileName);
-        assertTrue(actual.matches(Paths.get(System.getProperty("user.dir"), expected).toString().replaceAll("\\\\", "/")));
+        assertTrue(actual.matches(Path.of(System.getProperty("user.dir"), expected).toString().replaceAll("\\\\", "/")));
     }
 }

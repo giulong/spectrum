@@ -8,7 +8,7 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 @Slf4j
 @Getter
@@ -59,7 +59,7 @@ public abstract class Browser<T extends MutableCapabilities> {
             webDriverManager.setup();
         } else {
             log.warn("WebDriverManager disabled: using local webDriver");
-            System.setProperty(getSystemPropertyName(), Paths.get(driversPath).resolve(getDriverName()).toString());
+            System.setProperty(getSystemPropertyName(), Path.of(driversPath).resolve(getDriverName()).toString());
         }
 
         return setTimeouts(buildWebDriver(), configuration.getWebDriver().getWaits());

@@ -3,8 +3,8 @@ package com.github.giulong.spectrum;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
-import com.github.giulong.spectrum.pojos.Configuration;
 import com.github.giulong.spectrum.browsers.Browser;
+import com.github.giulong.spectrum.pojos.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -106,10 +105,10 @@ class SpectrumEntityTest {
         assertNotNull(screenShot);
 
         final String screenShotName = screenShot.getPath();
-        final Path screenShotPath = Paths.get(reportsFolder.toString(), screenShotName);
+        final Path screenShotPath = Path.of(reportsFolder.toString(), screenShotName);
         assertTrue(Files.exists(screenShotPath));
-        assertEquals(Paths.get(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
-        assertThat(Paths.get(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
+        assertEquals(Path.of(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
+        assertThat(Path.of(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(((TakesScreenshot) webDriver)).getScreenshotAs(BYTES);
         verify(webDriver, never()).findElement(By.tagName("body"));
         verify(extentTest).log(status, "<div class=\"screenshot-container\">blah</div>", screenShot);
@@ -168,10 +167,10 @@ class SpectrumEntityTest {
         assertNotNull(screenShot);
 
         final String screenShotName = screenShot.getPath();
-        final Path screenShotPath = Paths.get(reportsFolder.toString(), screenShotName);
+        final Path screenShotPath = Path.of(reportsFolder.toString(), screenShotName);
         assertTrue(Files.exists(screenShotPath));
-        assertEquals(Paths.get(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
-        assertThat(Paths.get(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
+        assertEquals(Path.of(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
+        assertThat(Path.of(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(extentTest).log(INFO, "<div class=\"screenshot-container\">blah</div>", screenShot);
 
         Files.delete(screenShotPath);
@@ -222,7 +221,7 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("waitForDownloadOf should wait until the provided file exist")
     public void waitForDownloadOfNotYetCreated() {
-        spectrumEntity.waitForDownloadOf(Paths.get("not existing"));
+        spectrumEntity.waitForDownloadOf(Path.of("not existing"));
 
         verify(downloadWait).until(functionArgumentCaptor.capture());
         final Function<WebDriver, Boolean> function = functionArgumentCaptor.getValue();
@@ -235,10 +234,10 @@ class SpectrumEntityTest {
     public void checkDownloadedFile() throws IOException {
         final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
         final Path filesFolder = Files.createTempDirectory("filesFolder");
-        final Path downloadedFile = Files.createFile(Paths.get(downloadsFolder + "/fakeFile.txt"));
-        final Path fileToCheck = Files.createFile(Paths.get(filesFolder + "/fakeFile.txt"));
-        final Path wrongDownloadedFile = Files.createFile(Paths.get(downloadsFolder + "/wrongFakeFile.txt"));
-        final Path wrongFileToCheck = Files.createFile(Paths.get(filesFolder + "/wrongFakeFile.txt"));
+        final Path downloadedFile = Files.createFile(Path.of(downloadsFolder + "/fakeFile.txt"));
+        final Path fileToCheck = Files.createFile(Path.of(filesFolder + "/fakeFile.txt"));
+        final Path wrongDownloadedFile = Files.createFile(Path.of(downloadsFolder + "/wrongFakeFile.txt"));
+        final Path wrongFileToCheck = Files.createFile(Path.of(filesFolder + "/wrongFakeFile.txt"));
         Files.writeString(downloadedFile, "I'm an airplane!!!");
         Files.writeString(fileToCheck, "I'm an airplane!!!");
         Files.writeString(wrongDownloadedFile, "I'm a teapot...");
@@ -271,7 +270,7 @@ class SpectrumEntityTest {
 
     public static Stream<Arguments> valuesProvider() throws IOException {
         return Stream.of(
-                arguments(Paths.get("abc not existing")),
+                arguments(Path.of("abc not existing")),
                 arguments(Files.createTempDirectory("downloadsFolder")));
     }
 

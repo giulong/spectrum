@@ -19,7 +19,7 @@ import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -158,7 +158,7 @@ class BrowserTest {
             verify(chromeOptions).setExperimentalOption("one", "value");
 
             assertEquals(chromeDriverMockedConstruction.constructed().get(0), actual);
-            assertEquals(Paths.get(driversPath, "chromedriver.exe").toString(), System.getProperty("webDriver.chrome.driver"));
+            assertEquals(Path.of(driversPath, "chromedriver.exe").toString(), System.getProperty("webDriver.chrome.driver"));
         }
     }
 
