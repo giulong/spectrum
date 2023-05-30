@@ -17,10 +17,12 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -38,31 +40,38 @@ public abstract class SpectrumEntity<Data> {
     protected static ExtentReports extentReports;
 
     @Shared
-    public ExtentTest extentTest;
+    protected ExtentTest extentTest;
 
     @Shared
-    public Actions actions;
+    protected Actions actions;
 
     @Shared
-    public EventsListener eventsListener;
+    protected EventsListener eventsListener;
 
     @Shared
-    public WebDriver webDriver;
+    protected WebDriver webDriver;
 
     @Shared
-    public WebDriverWait implicitWait;
+    protected WebDriverWait implicitWait;
 
     @Shared
-    public WebDriverWait pageLoadWait;
+    protected WebDriverWait pageLoadWait;
 
     @Shared
-    public WebDriverWait scriptWait;
+    protected WebDriverWait scriptWait;
 
     @Shared
-    public WebDriverWait downloadWait;
+    protected WebDriverWait downloadWait;
 
     @Shared
-    public Data data;
+    protected Data data;
+
+    public List<Field> getSharedFields() {
+        return Arrays
+                .stream(SpectrumEntity.class.getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(Shared.class))
+                .toList();
+    }
 
     public void hover(final WebElement webElement) {
         actions.moveToElement(webElement).perform();
