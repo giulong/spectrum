@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.Duration;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
@@ -26,7 +25,7 @@ import static lombok.AccessLevel.PRIVATE;
 public final class YamlUtils {
 
     private static final YamlUtils INSTANCE = new YamlUtils();
-    private static final Path RESOURCES = Paths.get("src", "test", "resources");
+    private static final Path RESOURCES = Path.of("src", "test", "resources");
 
     public static YamlUtils getInstance() {
         return INSTANCE;
@@ -50,7 +49,7 @@ public final class YamlUtils {
             .writerWithDefaultPrettyPrinter();
 
     public boolean notExists(final String file, final boolean internal) {
-        final Path path = Paths.get(file);
+        final Path path = Path.of(file);
         if (!internal && Files.notExists(RESOURCES.resolve(path))) {
             log.warn("File {} not found.", path);
             return true;
@@ -105,7 +104,7 @@ public final class YamlUtils {
 
     @SneakyThrows
     public <T> void updateWithFile(final T t, final String file) {
-        final Path path = Paths.get(file);
+        final Path path = Path.of(file);
         if (Files.notExists(RESOURCES.resolve(path))) {
             log.warn("File {} not found. Skipping update of the instance of {}", path, t.getClass().getSimpleName());
             return;

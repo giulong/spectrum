@@ -19,7 +19,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.UUID;
@@ -84,7 +83,7 @@ public abstract class SpectrumEntity<Data> {
     @SneakyThrows
     public Media addScreenshotToReport(final String msg, final Status status) {
         final String fileName = String.format("%s.png", UUID.randomUUID());
-        final Path screenshotPath = Paths.get(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
+        final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
         final TakesScreenshot takesScreenshot = configuration.getRuntime().getBrowser().takesPartialScreenshots()
                 ? webDriver.findElement(By.tagName("body"))
                 : ((TakesScreenshot) webDriver);
@@ -92,7 +91,7 @@ public abstract class SpectrumEntity<Data> {
         Files.createDirectories(screenshotPath.getParent());
         Files.write(screenshotPath, takesScreenshot.getScreenshotAs(BYTES));
 
-        final Media screenshot = createScreenCaptureFromPath(Paths.get(SCREEN_SHOT_FOLDER, fileName).toString()).build();
+        final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
         extentTest.log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
 
         return screenshot;
@@ -101,7 +100,7 @@ public abstract class SpectrumEntity<Data> {
     @SneakyThrows
     public void deleteDownloadsFolder() {
         final String downloadFolder = configuration.getRuntime().getDownloadsFolder();
-        final Path downloadPath = Paths.get(downloadFolder);
+        final Path downloadPath = Path.of(downloadFolder);
 
         if (Files.exists(downloadPath)) {
             log.info("About to delete downloads folder '{}'", downloadFolder);
@@ -121,8 +120,8 @@ public abstract class SpectrumEntity<Data> {
 
     public boolean checkDownloadedFile(final String file) {
         final Configuration.Runtime runtime = configuration.getRuntime();
-        final Path downloadedFile = Paths.get(runtime.getDownloadsFolder(), file);
-        final Path fileToCheck = Paths.get(runtime.getFilesFolder(), file);
+        final Path downloadedFile = Path.of(runtime.getDownloadsFolder(), file);
+        final Path fileToCheck = Path.of(runtime.getFilesFolder(), file);
 
         waitForDownloadOf(downloadedFile);
 

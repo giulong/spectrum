@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -49,6 +49,6 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
 
     protected static String getReportsPathFrom(final String reportFolder, final String fileName) {
         final String resolvedFileName = FileUtils.getInstance().interpolateTimestampFrom(fileName);
-        return Paths.get(System.getProperty("user.dir"), reportFolder, resolvedFileName).toString().replaceAll("\\\\", "/");
+        return Path.of(System.getProperty("user.dir"), reportFolder, resolvedFileName).toString().replaceAll("\\\\", "/");
     }
 }
