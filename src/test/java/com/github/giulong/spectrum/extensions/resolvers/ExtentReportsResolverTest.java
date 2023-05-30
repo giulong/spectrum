@@ -104,7 +104,7 @@ class ExtentReportsResolverTest {
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(Path.of(System.getProperty("user.dir"), reportFolder, fileName).toString().replaceAll("\\\\", "/"), context.arguments().get(0));
+            assertEquals(Path.of(System.getProperty("user.dir"), reportFolder, fileName).toString().replace("\\", "/"), context.arguments().get(0));
             when(mock.config()).thenReturn(extentSparkReporterConfig);
         });
         verify(rootStore).getOrComputeIfAbsent(eq(EXTENT_REPORTS), functionArgumentCaptor.capture(), eq(ExtentReports.class));
@@ -137,6 +137,6 @@ class ExtentReportsResolverTest {
         when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
 
         final String actual = ExtentReportsResolver.getReportsPathFrom(reportFolder, fileName);
-        assertTrue(actual.matches(Path.of(System.getProperty("user.dir"), expected).toString().replaceAll("\\\\", "/")));
+        assertTrue(actual.matches(Path.of(System.getProperty("user.dir"), expected).toString().replace("\\", "/")));
     }
 }

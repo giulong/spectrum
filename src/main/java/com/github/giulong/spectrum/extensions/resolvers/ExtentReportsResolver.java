@@ -49,6 +49,6 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
 
     protected static String getReportsPathFrom(final String reportFolder, final String fileName) {
         final String resolvedFileName = FileUtils.getInstance().interpolateTimestampFrom(fileName);
-        return Path.of(System.getProperty("user.dir"), reportFolder, resolvedFileName).toString().replaceAll("\\\\", "/");
+        return Path.of(System.getProperty("user.dir"), reportFolder, resolvedFileName).toString().replace("\\", "/");
     }
 }
