@@ -1,10 +1,10 @@
 package com.github.giulong.spectrum.extensions.watchers;
 
-import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
-import com.github.giulong.spectrum.utils.testbook.TestBook;
+import com.github.giulong.spectrum.enums.TestBookResult;
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.pojos.testbook.TestBookResult;
+import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import com.github.giulong.spectrum.utils.testbook.TestBook;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
@@ -12,8 +12,8 @@ import org.junit.jupiter.api.extension.TestWatcher;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.github.giulong.spectrum.enums.TestBookResult.*;
 import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static com.github.giulong.spectrum.pojos.testbook.TestBookResult.Status.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -39,35 +39,30 @@ public class TestBookWatcher implements TestWatcher {
         updateTestBook(context, FAILED);
     }
 
-    public void updateTestBook(final ExtensionContext context, final TestBookResult.Status status) {
+    public void updateTestBook(final ExtensionContext context, final TestBookResult result) {
         final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getApplication().getTestBook();
         final TestBookStatistics statistics = testBook.getStatistics();
-        final Map<TestBookTest, TestBookResult> tests = testBook.getTests();
-        final TestBookTest testToCheck = TestBookTest.builder()
+        final Map<String, TestBookTest> tests = testBook.getTests();
+        final String fullName = context.getParent().orElseThrow().getDisplayName() + context.getDisplayName();
+        final TestBookTest test = TestBookTest.builder()
                 .className(context.getParent().orElseThrow().getDisplayName())
                 .testName(context.getDisplayName())
                 .build();
 
-        if (tests.containsKey(testToCheck)) {
-            log.debug("Setting TestBook status {} for test '{}'", status, testToCheck);
-            final int weight = tests
-                    .keySet()
-                    .stream()
-                    .filter(t -> t.equals(testToCheck))
-                    .findFirst()
-                    .orElseThrow()
-                    .getWeight();
+        if (tests.containsKey(fullName)) {
+            log.debug("Setting TestBook result {} for test '{}'", result, fullName);
+            final int weight = test.getWeight();
 
-            tests.get(testToCheck).setStatus(status);
-            statistics.getTotalCount().get(status).getTotal().incrementAndGet();
-            statistics.getTotalWeightedCount().get(status).getTotal().addAndGet(weight);
-            statistics.getGrandTotalCount().get(status).getTotal().incrementAndGet();
-            statistics.getGrandTotalWeightedCount().get(status).getTotal().addAndGet(weight);
+            test.setResult(result);
+            statistics.getTotalCount().get(result).getTotal().incrementAndGet();
+            statistics.getTotalWeightedCount().get(result).getTotal().addAndGet(weight);
+            statistics.getGrandTotalCount().get(result).getTotal().incrementAndGet();
+            statistics.getGrandTotalWeightedCount().get(result).getTotal().addAndGet(weight);
         } else {
-            log.debug("Setting TestBook status {} for unmapped test '{}'", status, testToCheck);
-            testBook.getUnmappedTests().put(testToCheck, new TestBookResult(status));
-            statistics.getGrandTotalCount().get(status).getTotal().incrementAndGet();
-            statistics.getGrandTotalWeightedCount().get(status).getTotal().incrementAndGet();
+            log.debug("Setting TestBook result {} for unmapped test '{}'", result, test);
+            testBook.getUnmappedTests().put(fullName, test);
+            statistics.getGrandTotalCount().get(result).getTotal().incrementAndGet();
+            statistics.getGrandTotalWeightedCount().get(result).getTotal().incrementAndGet();
         }
     }
 }
