@@ -1,7 +1,8 @@
 package com.github.giulong.spectrum.utils.testbook.parsers;
 
-import com.github.giulong.spectrum.pojos.testbook.Test;
+import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -18,24 +19,24 @@ class YamlTestBookParserTest {
     @InjectMocks
     private YamlTestBookParser testBookParser;
 
-    @org.junit.jupiter.api.Test
+    @Test
     @DisplayName("parse should read the provided file line by line and return the list of test names")
     public void parse() {
         testBookParser.setPath("testbook.yaml");
-        List<Test> actual = testBookParser.parse();
+        List<TestBookTest> actual = testBookParser.parse();
         assertEquals(3, actual.size());
 
-        final Test test1 = Test.builder()
+        final TestBookTest test1 = TestBookTest.builder()
                 .className("first class")
                 .testName("one")
                 .build();
 
-        final Test test2 = Test.builder()
+        final TestBookTest test2 = TestBookTest.builder()
                 .className("first class")
                 .testName("two")
                 .build();
 
-        final Test test3 = Test.builder()
+        final TestBookTest test3 = TestBookTest.builder()
                 .className("second class")
                 .testName("one")
                 .weight(12)
@@ -47,7 +48,7 @@ class YamlTestBookParserTest {
         actual
                 .stream()
                 .filter(t -> t.getClassName().equals("first class"))
-                .map(Test::getWeight)
+                .map(TestBookTest::getWeight)
                 .forEach(weight -> assertEquals(1, weight));
 
         assertEquals(12, actual

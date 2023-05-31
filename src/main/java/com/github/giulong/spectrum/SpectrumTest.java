@@ -7,7 +7,7 @@ import com.github.giulong.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.github.giulong.spectrum.extensions.watchers.TestBookWatcher;
 import com.github.giulong.spectrum.interfaces.Endpoint;
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.pojos.testbook.Test;
+import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import com.github.giulong.spectrum.types.DownloadWait;
 import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.PageLoadWait;
@@ -156,8 +156,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
                 log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), spectrumProperties.getProperty("version")));
 
                 final TestBook testBook = configuration.getApplication().getTestBook();
-                final List<Test> tests = testBook.getParser().parse();
-                final Map<String, Set<Test>> groupedMappedTests = testBook.getGroupedMappedTests();
+                final List<TestBookTest> tests = testBook.getParser().parse();
+                final Map<String, Set<TestBookTest>> groupedMappedTests = testBook.getGroupedMappedTests();
 
                 testBook.getMappedTests().putAll(tests
                         .stream()
@@ -172,8 +172,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
         }
     }
 
-    public static void updateGroupedTests(final Map<String, Set<Test>> groupedTests, final String className, final Test test) {
-        final Set<Test> tests = groupedTests.getOrDefault(className, new HashSet<>());
+    public static void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
+        final Set<TestBookTest> tests = groupedTests.getOrDefault(className, new HashSet<>());
         tests.add(test);
         groupedTests.put(className, tests);
     }

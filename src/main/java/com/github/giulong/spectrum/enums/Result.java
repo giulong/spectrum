@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum TestBookResult {
+public enum Result {
 
     NOT_RUN("Not Run"),
     SUCCESSFUL("Successful"),
