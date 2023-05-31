@@ -1,6 +1,6 @@
 package com.github.giulong.spectrum.extensions.watchers;
 
-import com.github.giulong.spectrum.enums.TestBookResult;
+import com.github.giulong.spectrum.enums.Result;
 import com.github.giulong.spectrum.pojos.Configuration;
 import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
@@ -9,10 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestWatcher;
 
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static com.github.giulong.spectrum.enums.TestBookResult.*;
+import static com.github.giulong.spectrum.enums.Result.*;
 import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -39,30 +38,43 @@ public class TestBookWatcher implements TestWatcher {
         updateTestBook(context, FAILED);
     }
 
-    public void updateTestBook(final ExtensionContext context, final TestBookResult result) {
+    public void updateTestBook(final ExtensionContext context, final Result result) {
         final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getApplication().getTestBook();
         final TestBookStatistics statistics = testBook.getStatistics();
-        final Map<String, TestBookTest> tests = testBook.getTests();
-        final String fullName = context.getParent().orElseThrow().getDisplayName() + context.getDisplayName();
-        final TestBookTest test = TestBookTest.builder()
-                .className(context.getParent().orElseThrow().getDisplayName())
-                .testName(context.getDisplayName())
-                .build();
+        final Map<String, TestBookTest> mappedTests = testBook.getMappedTests();
+        final String className = context.getParent().orElseThrow().getDisplayName();
+        final String testName = context.getDisplayName();
+        final String fullName = String.format("%s %s", className, testName);
 
-        if (tests.containsKey(fullName)) {
+        statistics.getGrandTotalCount().get(result).getTotal().incrementAndGet();
+
+        if (mappedTests.containsKey(fullName)) {
             log.debug("Setting TestBook result {} for test '{}'", result, fullName);
-            final int weight = test.getWeight();
+            final TestBookTest actualTest = mappedTests.get(fullName);
+            final int weight = actualTest.getWeight();
 
-            test.setResult(result);
+            actualTest.setResult(result);
             statistics.getTotalCount().get(result).getTotal().incrementAndGet();
             statistics.getTotalWeightedCount().get(result).getTotal().addAndGet(weight);
-            statistics.getGrandTotalCount().get(result).getTotal().incrementAndGet();
             statistics.getGrandTotalWeightedCount().get(result).getTotal().addAndGet(weight);
+            updateGroupedTests(testBook.getGroupedMappedTests(), className, actualTest);
         } else {
-            log.debug("Setting TestBook result {} for unmapped test '{}'", result, test);
-            testBook.getUnmappedTests().put(fullName, test);
-            statistics.getGrandTotalCount().get(result).getTotal().incrementAndGet();
+            final TestBookTest unmappedTest = TestBookTest.builder()
+                    .className(className)
+                    .testName(testName)
+                    .result(result)
+                    .build();
+
+            log.debug("Setting TestBook result {} for unmapped test '{}'", result, unmappedTest);
+            testBook.getUnmappedTests().put(fullName, unmappedTest);
             statistics.getGrandTotalWeightedCount().get(result).getTotal().incrementAndGet();
+            updateGroupedTests(testBook.getGroupedUnmappedTests(), className, unmappedTest);
         }
+    }
+
+    public void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
+        final Set<TestBookTest> tests = groupedTests.getOrDefault(className, new HashSet<>());
+        tests.add(test);
+        groupedTests.put(className, tests);
     }
 }

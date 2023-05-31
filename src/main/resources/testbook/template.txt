@@ -6,7 +6,7 @@
 ##########################################################################################################
 
 <#assign
-    testsSize = tests?size
+    testsSize = mappedTests?size
     totalWeighted = statistics.totalWeighted
     grandTotal = statistics.grandTotal
     grandTotalWeighted = statistics.grandTotalWeighted
@@ -14,7 +14,7 @@
 STATISTICS
 <#assign pad = 15>
 ----------------------------------------------------------------------------------------------------------
-  Mapped Tests:        ${tests?size?left_pad(pad)}
+  Mapped Tests:        ${mappedTests?size?left_pad(pad)}
   Unmapped Tests:      ${unmappedTests?size?left_pad(pad)}
   Grand Total:         ${"${testsSize} + ${unmappedTests?size} = ${grandTotal}"?left_pad(pad)}
   Total Weighted:      ${totalWeighted?left_pad(pad)}
@@ -72,32 +72,42 @@ QUALITY GATE:
 | Evaluated: <@evaluatedCondition />
 | Result:    ${qgStatus?eval?string('OK', 'KO')}
 ----------------------------------------------------------------------------------------------------------
-
+<#assign maxLength = 84>
 MAPPED TESTS:
 ----------------------------------------------------------------------------------------------------------
-<#list tests as test, result>
-<#assign
-    fullName = "${test.className}: ${test.testName}"
-    maxLength = 84
->
-<#if fullName?length &gt; maxLength>
-    <#assign fullName = "${test.className}: ${test.testName}"?substring(0, maxLength - 4) + "...">
+<#list groupedMappedTests as className, tests>
+<#if className?length &gt; maxLength>
+    <#assign className = className?substring(0, maxLength - 4) + "...">
 </#if>
-| ${fullName?right_pad(maxLength)}|${test.weight?left_pad(4)} | ${result.status.value?right_pad(11)}|
+| ${"Test Name"?right_pad(maxLength - 4)} | Weight | Result     |
+| ${className?right_pad(maxLength - 3, '-')}|--------|------------|
+    <#list tests as test>
+        <#assign fullName = test.testName>
+        <#if fullName?length &gt; maxLength>
+            <#assign fullName = fullName?substring(0, maxLength - 4) + "...">
+        </#if>
+|   - ${fullName?right_pad(maxLength - 8)} | ${test.weight?left_pad(6)} | ${test.result.value?right_pad(11)}|
+    </#list>
+----------------------------------------------------------------------------------------------------------
 </#list>
 ----------------------------------------------------------------------------------------------------------
 
 UNMAPPED TESTS:
 ----------------------------------------------------------------------------------------------------------
-<#list unmappedTests as test, result>
-<#assign
-    fullName = "${test.className}: ${test.testName}"
-    maxLength = 84
->
-<#if fullName?length &gt; maxLength>
-    <#assign fullName = "${test.className}: ${test.testName}"?substring(0, maxLength - 4) + "...">
+<#list groupedUnmappedTests as className, tests>
+<#if className?length &gt; maxLength>
+    <#assign className = className?substring(0, maxLength - 4) + "...">
 </#if>
-| ${fullName?right_pad(maxLength)}|${test.weight?left_pad(4)} | ${result.status.value?right_pad(11)}|
+| ${"Test Name"?right_pad(maxLength - 4)} | Weight | Result     |
+| ${className?right_pad(maxLength - 3, '-')}|--------|------------|
+    <#list tests as test>
+        <#assign fullName = test.testName>
+        <#if fullName?length &gt; maxLength>
+            <#assign fullName = fullName?substring(0, maxLength - 4) + "...">
+        </#if>
+|   - ${fullName?right_pad(maxLength - 8)} | ${test.weight?left_pad(6)} | ${test.result.value?right_pad(11)}|
+    </#list>
+----------------------------------------------------------------------------------------------------------
 </#list>
 ----------------------------------------------------------------------------------------------------------
 

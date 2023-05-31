@@ -1,28 +1,25 @@
 package com.github.giulong.spectrum.utils.testbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.github.giulong.spectrum.enums.QualityGateStatus;
-import com.github.giulong.spectrum.enums.TestBookResult;
+import com.github.giulong.spectrum.enums.Result;
 import com.github.giulong.spectrum.pojos.testbook.QualityGate;
 import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
-import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics.TestStatistics;
+import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import com.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import com.github.giulong.spectrum.utils.testbook.reporters.TestBookReporter;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import static com.github.giulong.spectrum.enums.QualityGateStatus.OK;
-import static com.github.giulong.spectrum.enums.TestBookResult.*;
+import static com.github.giulong.spectrum.enums.Result.*;
 
 @Getter
+@Setter
 @Slf4j
 public class TestBook {
 
@@ -33,10 +30,16 @@ public class TestBook {
     private List<TestBookReporter> reporters;
 
     @JsonIgnore
-    private final Map<String, TestBookTest> tests = new HashMap<>();
+    private final Map<String, TestBookTest> mappedTests = new HashMap<>();
 
     @JsonIgnore
     private final Map<String, TestBookTest> unmappedTests = new HashMap<>();
+
+    @JsonIgnore
+    private final Map<String, Set<TestBookTest>> groupedMappedTests = new HashMap<>();
+
+    @JsonIgnore
+    private final Map<String, Set<TestBookTest>> groupedUnmappedTests = new HashMap<>();
 
     @JsonIgnore
     private final TestBookStatistics statistics = new TestBookStatistics();
@@ -44,29 +47,32 @@ public class TestBook {
     @JsonIgnore
     private final Map<String, Object> vars = new HashMap<>();
 
-    @SuppressWarnings("FieldMayBeFinal")
-    @JsonIgnore
-    private QualityGateStatus qualityGateStatus = OK;
-
     public TestBook() {
+        final Map<Result, Statistics> totalCount = statistics.getTotalCount();
+        final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
+        final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
+        final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
+
         Arrays
-                .stream(TestBookResult.values())
+                .stream(Result.values())
                 .forEach(result -> {
-                    statistics.getTotalCount().put(result, new TestStatistics());
-                    statistics.getGrandTotalCount().put(result, new TestStatistics());
-                    statistics.getTotalWeightedCount().put(result, new TestStatistics());
-                    statistics.getGrandTotalWeightedCount().put(result, new TestStatistics());
+                    totalCount.put(result, new Statistics());
+                    grandTotalCount.put(result, new Statistics());
+                    totalWeightedCount.put(result, new Statistics());
+                    grandTotalWeightedCount.put(result, new Statistics());
                 });
     }
 
     public void mapVars() {
-        final Map<TestBookResult, TestStatistics> totalCount = statistics.getTotalCount();
-        final Map<TestBookResult, TestStatistics> grandTotalCount = statistics.getGrandTotalCount();
-        final Map<TestBookResult, TestStatistics> totalWeightedCount = statistics.getTotalWeightedCount();
-        final Map<TestBookResult, TestStatistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
+        final Map<Result, Statistics> totalCount = statistics.getTotalCount();
+        final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
+        final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
+        final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
 
-        vars.put("tests", tests);
+        vars.put("mappedTests", mappedTests);
         vars.put("unmappedTests", unmappedTests);
+        vars.put("groupedMappedTests", groupedMappedTests);
+        vars.put("groupedUnmappedTests", groupedUnmappedTests);
         vars.put("statistics", statistics);
         vars.put("qg", qualityGate);
         vars.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
@@ -92,46 +98,51 @@ public class TestBook {
         vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
     }
 
-    public int getWeightedTotalOf(final Map<String, TestBookTest> testsMap) {
-        return testsMap
+    public int getWeightedTotalOf(final Map<String, TestBookTest> tests) {
+        return tests
                 .values()
                 .stream()
                 .map(TestBookTest::getWeight)
                 .reduce(0, Integer::sum);
     }
 
-    public void flush(final int total, final Map<TestBookResult, TestStatistics> map) {
-        statistics.getGrandTotalWeighted().set(total);
+    public void flush(final int total, final Map<Result, Statistics> statistics) {
+        final Statistics successful = statistics.get(SUCCESSFUL);
+        final Statistics failed = statistics.get(FAILED);
+        final Statistics aborted = statistics.get(ABORTED);
+        final Statistics disabled = statistics.get(DISABLED);
+        final Statistics notRun = statistics.get(NOT_RUN);
 
-        final double totalSuccessful = map.get(SUCCESSFUL).getTotal().doubleValue();
-        final double totalFailed = map.get(FAILED).getTotal().doubleValue();
-        final double totalAborted = map.get(ABORTED).getTotal().doubleValue();
-        final double totalDisabled = map.get(DISABLED).getTotal().doubleValue();
+        final double totalSuccessful = successful.getTotal().doubleValue();
+        final double totalFailed = failed.getTotal().doubleValue();
+        final double totalAborted = aborted.getTotal().doubleValue();
+        final double totalDisabled = disabled.getTotal().doubleValue();
         final double totalNotRun = total - totalSuccessful - totalFailed - totalAborted - totalDisabled;
 
-        map.get(NOT_RUN).getTotal().set((int) totalNotRun);
-
-        map.get(SUCCESSFUL).getPercentage().set(totalSuccessful / total * 100);
-        map.get(FAILED).getPercentage().set(totalFailed / total * 100);
-        map.get(ABORTED).getPercentage().set(totalAborted / total * 100);
-        map.get(DISABLED).getPercentage().set(totalDisabled / total * 100);
-        map.get(NOT_RUN).getPercentage().set(totalNotRun / total * 100);
+        successful.getPercentage().set(totalSuccessful / total * 100);
+        failed.getPercentage().set(totalFailed / total * 100);
+        aborted.getPercentage().set(totalAborted / total * 100);
+        disabled.getPercentage().set(totalDisabled / total * 100);
+        notRun.getPercentage().set(totalNotRun / total * 100);
+        notRun.getTotal().set((int) totalNotRun);
     }
 
     public void flush() {
         log.debug("Updating testBook percentages");
 
-        final int testsTotal = tests.size();
+        final int testsTotal = mappedTests.size();
         final int unmappedTestsTotal = unmappedTests.size();
-        final int weightedTestsTotal = getWeightedTotalOf(tests);
+        final int weightedTestsTotal = getWeightedTotalOf(mappedTests);
+        final int weightedTestsGrandTotal = weightedTestsTotal + getWeightedTotalOf(unmappedTests);
 
         statistics.getGrandTotal().set(testsTotal + unmappedTestsTotal);
         statistics.getTotalWeighted().set(weightedTestsTotal);
+        statistics.getGrandTotalWeighted().set(weightedTestsGrandTotal);
 
         flush(testsTotal, statistics.getTotalCount());
         flush(testsTotal + unmappedTestsTotal, statistics.getGrandTotalCount());
         flush(weightedTestsTotal, statistics.getTotalWeightedCount());
-        flush(weightedTestsTotal + getWeightedTotalOf(unmappedTests), statistics.getGrandTotalWeightedCount());
+        flush(weightedTestsGrandTotal, statistics.getGrandTotalWeightedCount());
 
         mapVars();
         TestBookReporter.evaluateQualityGateStatusFrom(this);
