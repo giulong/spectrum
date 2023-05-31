@@ -7,7 +7,7 @@ import com.github.giulong.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.github.giulong.spectrum.extensions.watchers.TestBookWatcher;
 import com.github.giulong.spectrum.interfaces.Endpoint;
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.pojos.testbook.TestBookResult;
+import com.github.giulong.spectrum.pojos.testbook.Test;
 import com.github.giulong.spectrum.types.DownloadWait;
 import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.PageLoadWait;
@@ -107,8 +107,10 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     public SpectrumPage<Data> initPage(final Field f) {
         log.debug("Initializing page {}", f.getName());
 
-        @SuppressWarnings("unchecked") final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
-        @SuppressWarnings("unchecked") final Class<SpectrumPage<Data>> spectrumPageClass = (Class<SpectrumPage<Data>>) spectrumPage.getClass();
+        @SuppressWarnings("unchecked")
+        final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
+        @SuppressWarnings("unchecked")
+        final Class<SpectrumPage<Data>> spectrumPageClass = (Class<SpectrumPage<Data>>) spectrumPage.getClass();
 
         f.setAccessible(true);
         f.set(this, spectrumPage);
@@ -154,17 +156,26 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
                 log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), spectrumProperties.getProperty("version")));
 
                 final TestBook testBook = configuration.getApplication().getTestBook();
-                testBook.getTests().putAll(testBook
-                        .getParser()
-                        .parse()
+                final List<Test> tests = testBook.getParser().parse();
+                final Map<String, Set<Test>> groupedMappedTests = testBook.getGroupedMappedTests();
+
+                testBook.getMappedTests().putAll(tests
                         .stream()
-                        .collect(toMap(identity(), testName -> new TestBookResult(TestBookResult.Status.NOT_RUN))));
+                        .collect(toMap(t -> String.format("%s %s", t.getClassName(), t.getTestName()), identity())));
+
+                tests.forEach(t -> updateGroupedTests(groupedMappedTests, t.getClassName(), t));
 
                 FreeMarkerWrapper.getInstance().setupFrom(configuration.getFreeMarker());
             }
         } finally {
             LOCK.unlock();
         }
+    }
+
+    public static void updateGroupedTests(final Map<String, Set<Test>> groupedTests, final String className, final Test test) {
+        final Set<Test> tests = groupedTests.getOrDefault(className, new HashSet<>());
+        tests.add(test);
+        groupedTests.put(className, tests);
     }
 
     @BeforeEach

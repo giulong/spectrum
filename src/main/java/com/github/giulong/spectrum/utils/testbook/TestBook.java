@@ -2,9 +2,8 @@ package com.github.giulong.spectrum.utils.testbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.giulong.spectrum.enums.QualityGateStatus;
+import com.github.giulong.spectrum.enums.TestBookResult;
 import com.github.giulong.spectrum.pojos.testbook.QualityGate;
-import com.github.giulong.spectrum.pojos.testbook.TestBookResult;
-import com.github.giulong.spectrum.pojos.testbook.TestBookResult.Status;
 import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics.TestStatistics;
 import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.github.giulong.spectrum.enums.QualityGateStatus.OK;
-import static com.github.giulong.spectrum.pojos.testbook.TestBookResult.Status.*;
+import static com.github.giulong.spectrum.enums.TestBookResult.*;
 
 @Getter
 @Slf4j
@@ -34,10 +33,10 @@ public class TestBook {
     private List<TestBookReporter> reporters;
 
     @JsonIgnore
-    private final Map<TestBookTest, TestBookResult> tests = new HashMap<>();
+    private final Map<String, TestBookTest> tests = new HashMap<>();
 
     @JsonIgnore
-    private final Map<TestBookTest, TestBookResult> unmappedTests = new HashMap<>();
+    private final Map<String, TestBookTest> unmappedTests = new HashMap<>();
 
     @JsonIgnore
     private final TestBookStatistics statistics = new TestBookStatistics();
@@ -51,20 +50,20 @@ public class TestBook {
 
     public TestBook() {
         Arrays
-                .stream(Status.values())
-                .forEach(s -> {
-                    statistics.getTotalCount().put(s, new TestStatistics());
-                    statistics.getGrandTotalCount().put(s, new TestStatistics());
-                    statistics.getTotalWeightedCount().put(s, new TestStatistics());
-                    statistics.getGrandTotalWeightedCount().put(s, new TestStatistics());
+                .stream(TestBookResult.values())
+                .forEach(result -> {
+                    statistics.getTotalCount().put(result, new TestStatistics());
+                    statistics.getGrandTotalCount().put(result, new TestStatistics());
+                    statistics.getTotalWeightedCount().put(result, new TestStatistics());
+                    statistics.getGrandTotalWeightedCount().put(result, new TestStatistics());
                 });
     }
 
     public void mapVars() {
-        final Map<Status, TestStatistics> totalCount = statistics.getTotalCount();
-        final Map<Status, TestStatistics> grandTotalCount = statistics.getGrandTotalCount();
-        final Map<Status, TestStatistics> totalWeightedCount = statistics.getTotalWeightedCount();
-        final Map<Status, TestStatistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
+        final Map<TestBookResult, TestStatistics> totalCount = statistics.getTotalCount();
+        final Map<TestBookResult, TestStatistics> grandTotalCount = statistics.getGrandTotalCount();
+        final Map<TestBookResult, TestStatistics> totalWeightedCount = statistics.getTotalWeightedCount();
+        final Map<TestBookResult, TestStatistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
 
         vars.put("tests", tests);
         vars.put("unmappedTests", unmappedTests);
@@ -93,15 +92,15 @@ public class TestBook {
         vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
     }
 
-    public int getWeightedTotalOf(final Map<TestBookTest, TestBookResult> testsMap) {
+    public int getWeightedTotalOf(final Map<String, TestBookTest> testsMap) {
         return testsMap
-                .keySet()
+                .values()
                 .stream()
                 .map(TestBookTest::getWeight)
                 .reduce(0, Integer::sum);
     }
 
-    public void flush(final int total, final Map<Status, TestStatistics> map) {
+    public void flush(final int total, final Map<TestBookResult, TestStatistics> map) {
         statistics.getGrandTotalWeighted().set(total);
 
         final double totalSuccessful = map.get(SUCCESSFUL).getTotal().doubleValue();

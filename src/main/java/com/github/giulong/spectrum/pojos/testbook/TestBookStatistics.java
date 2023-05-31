@@ -1,6 +1,6 @@
 package com.github.giulong.spectrum.pojos.testbook;
 
-import com.github.giulong.spectrum.pojos.testbook.TestBookResult.Status;
+import com.github.giulong.spectrum.enums.TestBookResult;
 import com.google.common.util.concurrent.AtomicDouble;
 import lombok.Getter;
 
@@ -15,10 +15,10 @@ public class TestBookStatistics {
     private final AtomicInteger totalWeighted = new AtomicInteger();
     private final AtomicInteger grandTotalWeighted = new AtomicInteger();
 
-    private final Map<Status, TestStatistics> totalCount = new HashMap<>();
-    private final Map<Status, TestStatistics> grandTotalCount = new HashMap<>();
-    private final Map<Status, TestStatistics> totalWeightedCount = new HashMap<>();
-    private final Map<Status, TestStatistics> grandTotalWeightedCount = new HashMap<>();
+    private final Map<TestBookResult, TestStatistics> totalCount = new HashMap<>();
+    private final Map<TestBookResult, TestStatistics> grandTotalCount = new HashMap<>();
+    private final Map<TestBookResult, TestStatistics> totalWeightedCount = new HashMap<>();
+    private final Map<TestBookResult, TestStatistics> grandTotalWeightedCount = new HashMap<>();
 
     @Getter
     public static class TestStatistics {

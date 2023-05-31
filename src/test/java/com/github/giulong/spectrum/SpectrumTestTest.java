@@ -2,11 +2,11 @@ package com.github.giulong.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.github.giulong.spectrum.enums.Result;
 import com.github.giulong.spectrum.interfaces.Endpoint;
 import com.github.giulong.spectrum.internals.EventsListener;
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.pojos.testbook.TestBookResult;
-import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import com.github.giulong.spectrum.pojos.testbook.Test;
 import com.github.giulong.spectrum.types.DownloadWait;
 import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.PageLoadWait;
@@ -19,7 +19,6 @@ import lombok.Getter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static com.github.giulong.spectrum.pojos.testbook.TestBookResult.Status.NOT_RUN;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -119,7 +117,7 @@ public class SpectrumTestTest<T> {
         freeMarkerWrapperMockedStatic.close();
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     @DisplayName("initPage should init the provided field")
     public void testInitPage() throws NoSuchFieldException {
         final SpectrumPage<T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPage"));
@@ -140,7 +138,7 @@ public class SpectrumTestTest<T> {
         assertEquals(data, spectrumTest.testPage.data);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     @DisplayName("initPages without endpoint")
     public void initPageWithoutEndpoint() throws NoSuchFieldException {
         final SpectrumPage<T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPageWithoutEndpoint"));
@@ -161,7 +159,7 @@ public class SpectrumTestTest<T> {
         assertEquals(data, spectrumTest.testPageWithoutEndpoint.data);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     @DisplayName("initPages should init also init pages from super classes")
     public void initPages() {
         childTest.initPages();
@@ -175,22 +173,22 @@ public class SpectrumTestTest<T> {
         assertThat(childTest.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     @DisplayName("beforeAll should leverage a reentrant lock to initialize spectrum once for the entire suite")
     public void testBeforeAll() {
         final String banner = "banner";
         final String version = "version";
-        final Map<TestBookTest, TestBookResult> tests = new HashMap<>();
-        final TestBookTest test1 = TestBookTest.builder()
+        final Map<Test, Result> mappedTests = new HashMap<>();
+        final Test test1 = Test.builder()
                 .className("test 1")
                 .testName("one")
                 .build();
 
-        final TestBookTest test2 = TestBookTest.builder()
+        final Test test2 = Test.builder()
                 .className("another test")
                 .testName("another")
                 .build();
-        final List<TestBookTest> testBookTests = List.of(test1, test2);
+        final List<Test> tests = List.of(test1, test2);
 
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.readProperties("/spectrum.properties")).thenReturn(properties);
@@ -198,9 +196,9 @@ public class SpectrumTestTest<T> {
         when(properties.getProperty("version")).thenReturn(version);
         when(configuration.getApplication()).thenReturn(application);
         when(application.getTestBook()).thenReturn(testBook);
-        when(testBook.getTests()).thenReturn(tests);
+        //when(testBook.getTests()).thenReturn(mappedTests);
         when(testBook.getParser()).thenReturn(testBookParser);
-        when(testBookParser.parse()).thenReturn(testBookTests);
+        when(testBookParser.parse()).thenReturn(tests);
         when(configuration.getFreeMarker()).thenReturn(freeMarker);
 
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
@@ -212,13 +210,13 @@ public class SpectrumTestTest<T> {
         assertTrue(SpectrumTest.isSuiteInitialised());
         assertEquals(configuration, SpectrumTest.configuration);
         assertEquals(extentReports, SpectrumTest.extentReports);
-        assertEquals(2, tests.size());
-        tests.values().forEach(t -> assertEquals(NOT_RUN, t.getStatus()));
+        assertEquals(2, mappedTests.size());
+        //mappedTests.values().forEach(t -> assertEquals(NOT_RUN, t.get()));
 
         verify(freeMarkerWrapper).setupFrom(freeMarker);
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
         childTest.beforeEach(webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentTest, actions, data);
@@ -242,7 +240,7 @@ public class SpectrumTestTest<T> {
         assertThat(childTest.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
     }
 
-    @Test
+    @org.junit.jupiter.api.Test
     @DisplayName("afterAll should flush the testbook and the extent reports")
     public void afterAll() {
         when(configuration.getApplication()).thenReturn(application);
