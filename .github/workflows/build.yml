@@ -27,7 +27,7 @@ jobs:
     - name: Get version from pom.xml
       run: |
         VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
-        echo "::set-output name=version::$VERSION"
+        echo "{version}=$VERSION" >> $GITHUB_OUTPUT
       id: get_version
 
     - name: Push json schemas
