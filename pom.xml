@@ -226,6 +226,27 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.victools</groupId>
+                <artifactId>jsonschema-maven-plugin</artifactId>
+                <version>4.31.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <packageNames>com.github.giulong.spectrum.pojos</packageNames>
+                    <schemaFilePath>target/json-schemas</schemaFilePath>
+                    <modules>
+                        <module>
+                            <name>Jackson</name>
+                        </module>
+                    </modules>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
