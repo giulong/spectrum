@@ -24,8 +24,11 @@ jobs:
     - name: mvn package
       run: mvn -B package
 
-    - name: Get Project Version from pom.xml
-      uses: entimaniac/read-pom-version-action@1.0.0
+    - name: Get version from pom.xml
+      run: |
+        VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
+        echo "::set-output name=version::$VERSION"
+      id: get_version
 
     - name: Push json schemas
       uses: cpina/github-action-push-to-another-repository@main
@@ -37,7 +40,7 @@ jobs:
         destination-repository-name: spectrum-json-schemas
         user-email: giuliolongfils@gmail.com
         target-branch: main
-        target-directory: ${{ steps.getVersion.outputs.version }}
+        target-directory: ${{ env.VERSION }}
 
     - name: Generate Jacoco Badge
       id: jacoco
