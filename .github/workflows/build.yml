@@ -27,7 +27,7 @@ jobs:
     - name: Get version from pom.xml
       run: |
         VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
-        echo "{version}=$VERSION" >> $GITHUB_OUTPUT
+        echo "version=$VERSION" >> $GITHUB_ENV
       id: get_version
 
     - name: Push json schemas
@@ -40,7 +40,7 @@ jobs:
         destination-repository-name: spectrum-json-schemas
         user-email: giuliolongfils@gmail.com
         target-branch: main
-        target-directory: ${{ env.VERSION }}
+        target-directory: ${{ env.version }}
 
     - name: Generate Jacoco Badge
       id: jacoco
