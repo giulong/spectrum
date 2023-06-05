@@ -24,24 +24,6 @@ jobs:
     - name: mvn package
       run: mvn -B package
 
-    - name: Get version from pom.xml
-      run: |
-        VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
-        echo "version=$VERSION" >> $GITHUB_ENV
-      id: get_version
-
-    - name: Push json schemas
-      uses: cpina/github-action-push-to-another-repository@main
-      env:
-        SSH_DEPLOY_KEY: ${{ secrets.JSON_SCHEMA_DEPLOY_KEY }}
-      with:
-        source-directory: target/json-schemas
-        destination-github-username: giulong
-        destination-repository-name: spectrum-json-schemas
-        user-email: giuliolongfils@gmail.com
-        target-branch: main
-        target-directory: ${{ env.version }}
-
     - name: Generate Jacoco Badge
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2
@@ -72,3 +54,21 @@ jobs:
       with:
         name: jacoco-report
         path: target/site/jacoco/
+
+    - name: Get version from pom.xml
+      run: |
+        VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
+        echo "version=$VERSION" >> $GITHUB_ENV
+      id: get_version
+
+    - name: Push json schemas
+      uses: cpina/github-action-push-to-another-repository@main
+      env:
+        SSH_DEPLOY_KEY: ${{ secrets.JSON_SCHEMA_DEPLOY_KEY }}
+      with:
+        source-directory: target/json-schemas
+        destination-github-username: giulong
+        destination-repository-name: spectrum-json-schemas
+        user-email: giuliolongfils@gmail.com
+        target-branch: main
+        target-directory: ${{ env.version }}
