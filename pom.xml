@@ -240,6 +240,7 @@
                 <configuration>
                     <packageNames>com.github.giulong.spectrum.pojos</packageNames>
                     <schemaFilePath>target/json-schemas</schemaFilePath>
+                    <schemaFileName>{0}.schema</schemaFileName>
                     <modules>
                         <module>
                             <name>Jackson</name>
