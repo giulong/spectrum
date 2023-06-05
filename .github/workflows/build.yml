@@ -32,7 +32,7 @@ jobs:
         source-directory: target/json-schemas
         destination-github-username: giulong
         destination-repository-name: spectrum-json-schemas
-        user-email: giuliolongfils@gmai.com
+        user-email: giuliolongfils@gmail.com
         target-branch: main
         #target-directory:
 
