@@ -27,8 +27,7 @@ jobs:
     - name: Push json schemas
       uses: cpina/github-action-push-to-another-repository@main
       env:
-        SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
-        #API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        SSH_DEPLOY_KEY: ${{ secrets.JSON_SCHEMA_DEPLOY_KEY }}
       with:
         source-directory: target/json-schemas
         destination-github-username: giulong
