@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "feature/json-schema" ]
   pull_request:
     branches: [ "main" ]
 
@@ -23,6 +23,19 @@ jobs:
 
     - name: mvn package
       run: mvn -B package
+
+    - name: Pushes to another repository
+      uses: cpina/github-action-push-to-another-repository@main
+      env:
+#        SSH_DEPLOY_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source-directory: target/json-schemas
+        destination-github-username: giulong
+        destination-repository-name: spectrum-json-schemas
+        user-email: giuliolongfils@gmai.com
+        target-branch: main
+        #target-directory:
 
     - name: Generate Jacoco Badge
       id: jacoco
