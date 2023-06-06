@@ -1,0 +1,40 @@
+runtime:
+  downloadWebDriver: false # we don't want to download the webdriver(s). We rely on local ones.
+  driversPath: /Users/ada/drivers # Local path to webdrivers
+
+application:
+  baseUrl: https://my-super-webapp.com  # we provide the actual url of the webapp we want to test
+  testBook:
+    qualityGate:
+      condition: ${weightedSuccessful.percentage} > 40 || ${failed} < 10  # We want the testbook to be marked as successful if we have at least 40% of successful weighted tests or less than 10 tests failed
+    parser:
+      yaml: # We want to read a yaml testbook
+        path: ${spectrum.testbook.path:-testbook.yaml}
+
+extent:
+  documentTitle: My custom report name
+  reportFolder: /anotherDrive/reports
+
+webDriver:
+  waits:
+    downloadTimeout: 60 # We raise the download timeout to 60 seconds
+
+  grid:
+    url: https://my-remote-grid.com:4444/wd/hub/  # we need to provide the actual url of the remote grid we'll use
+
+  chrome:
+    arguments:  # We want chrome to start full screen
+      - start-maximized
+      - start-fullscreen
+
+data:
+  fqdn: com.my_package.data # Full name of package containing custom data models
+
+freeMarker:
+  numberFormat: 0.###;; roundingMode=halfUp # We want 3 decimals in numbers
+
+events:
+  beforeGet:
+    message: 'Navigating to: <a href="%2$s" target="_blank">%2$s</a>' # Custom message for navigation events. We need to wrap with apostrophes due to the colon (:) in the value
+  beforeClick:
+    level: TRACE  # We want to lower the log level of click events from INFO (default) to TRACE

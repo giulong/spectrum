@@ -1,0 +1,18 @@
+application:
+  baseUrl: https://www.lambdatest.com/selenium-playground/simple-form-demo
+  testBook:
+    reporters:  # Configuring some testbook reporters, providing custom templates and/or custom output destination
+      - txt:
+          template: /testbook/template.txt
+      - log: { }
+      - html:
+          template: /my-custom-template.html
+          output: some/path/testbook.html
+
+webDriver:
+  chrome:
+    arguments:
+      - --headless=new  # Running chrome in headless mode
+
+extent:
+  theme: DARK
