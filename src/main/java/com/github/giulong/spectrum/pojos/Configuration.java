@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
 import com.github.giulong.spectrum.browsers.Browser;
+import com.github.giulong.spectrum.utils.webdrivers.Environment;
 import lombok.Getter;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
@@ -33,9 +34,7 @@ public class Configuration {
 
 		@JsonSerialize(using = ToStringSerializer.class)
 		private Browser<?> browser;
-		private boolean docker;
-		private boolean grid;
-		private boolean downloadWebDriver;
+		private Environment environment;
 		private String driversPath;
 		private String filesFolder;
 		private String downloadsFolder;

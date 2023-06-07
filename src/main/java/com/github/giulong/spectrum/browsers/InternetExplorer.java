@@ -36,10 +36,14 @@ public class InternetExplorer extends Browser<InternetExplorerOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(Configuration configuration) {
+    public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
         capabilities = new InternetExplorerOptions();
         capabilities.setAcceptInsecureCerts(true);
-        configuration.getWebDriver().getIe().getCapabilities().forEach(capabilities::setCapability);
+
+        webDriverConfiguration
+                .getIe()
+                .getCapabilities()
+                .forEach(capabilities::setCapability);
     }
 
     @Override

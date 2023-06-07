@@ -37,9 +37,6 @@ class ChromeTest {
     private ChromeOptions chromeOptions;
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
     private Configuration.WebDriver webDriverConfig;
 
     @Mock
@@ -112,10 +109,8 @@ class ChromeTest {
     public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
 
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
         when(webDriverConfig.getChrome()).thenReturn(chromeConfig);
         when(chromeConfig.getArguments()).thenReturn(arguments);
-        when(configuration.getSeleniumLogs()).thenReturn(seleniumLogs);
         when(seleniumLogs.getBrowser()).thenReturn(browserLevel);
         when(seleniumLogs.getDriver()).thenReturn(driverLevel);
         when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
@@ -124,7 +119,7 @@ class ChromeTest {
         MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class);
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        chrome.buildCapabilitiesFrom(configuration);
+        chrome.buildCapabilitiesFrom(webDriverConfig, seleniumLogs);
         final ChromeOptions chromeOptions = chromeOptionsMockedConstruction.constructed().get(0);
         verify(chromeOptions).addArguments(arguments);
         verify(chromeOptions).setAcceptInsecureCerts(true);

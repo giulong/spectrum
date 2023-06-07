@@ -23,17 +23,17 @@ public class Chrome extends Chromium<ChromeOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(final Configuration configuration) {
-        capabilities = new ChromeOptions();
-        final Configuration.WebDriver.Chrome chromeConfig = configuration.getWebDriver().getChrome();
+    public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
+        final Configuration.WebDriver.Chrome chromeConfig = webDriverConfiguration.getChrome();
         final List<String> arguments = chromeConfig.getArguments();
 
+        capabilities = new ChromeOptions();
         capabilities.addArguments(arguments);
         capabilities.setAcceptInsecureCerts(true);
 
         chromeConfig.getCapabilities().forEach(capabilities::setCapability);
         chromeConfig.getExperimentalOptions().forEach(capabilities::setExperimentalOption);
-        setLoggingPreferencesFrom(configuration.getSeleniumLogs());
+        setLoggingPreferencesFrom(seleniumLogs);
     }
 
     @Override

@@ -1,5 +1,7 @@
 runtime:
-  downloadWebDriver: false # we don't want to download the webdriver(s). We rely on local ones.
+  environment:
+    local:
+      downloadWebDriver: false # we don't want to download the webdriver(s). We rely on local ones.
   driversPath: /Users/ada/drivers # Local path to webdrivers
 
 application:

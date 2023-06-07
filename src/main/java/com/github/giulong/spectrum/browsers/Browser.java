@@ -6,9 +6,6 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.nio.file.Path;
 
 @Slf4j
 @Getter
@@ -26,46 +23,24 @@ public abstract class Browser<T extends MutableCapabilities> {
 
     public abstract String getDriverName();
 
-    public abstract void buildCapabilitiesFrom(Configuration configuration);
+    public abstract void buildCapabilitiesFrom(Configuration.WebDriver webDriverConfiguration, Configuration.SeleniumLogs seleniumLogs);
 
     public abstract WebDriver buildWebDriver();
 
     public abstract void mergeGridCapabilitiesFrom(Configuration.WebDriver.Grid gridConfiguration);
 
     public WebDriver build(final Configuration configuration) {
-        buildCapabilitiesFrom(configuration);
-        log.info("Capabilities: {}", capabilities.toJson());
+        final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
 
-        final Configuration.Runtime runtime = configuration.getRuntime();
-        if (runtime.isGrid()) {
-            Configuration.WebDriver.Grid gridConfiguration = configuration.getWebDriver().getGrid();
-            mergeGridCapabilitiesFrom(gridConfiguration);
-            return setTimeouts(RemoteWebDriver
-                            .builder()
-                            .oneOf(capabilities)
-                            .address(gridConfiguration.getUrl()).build(),
-                    configuration.getWebDriver().getWaits());
-        }
+        buildCapabilitiesFrom(webDriverConfiguration, configuration.getSeleniumLogs());
+        log.debug("Capabilities: {}", capabilities.toJson());
 
-        final String driversPath = runtime.getDriversPath();
-        if (runtime.isDownloadWebDriver()) {
-            final WebDriverManager webDriverManager = getWebDriverManager().avoidOutputTree().cachePath(driversPath);
+        final Configuration.WebDriver.Waits waits = webDriverConfiguration.getWaits();
+        final WebDriver webDriver = configuration
+                .getRuntime()
+                .getEnvironment()
+                .buildFrom(configuration, this);
 
-            if (runtime.isDocker()) {
-                log.info("Running in Docker");
-                webDriverManager.browserInDocker();
-            }
-
-            webDriverManager.setup();
-        } else {
-            log.warn("WebDriverManager disabled: using local webDriver");
-            System.setProperty(getSystemPropertyName(), Path.of(driversPath).resolve(getDriverName()).toString());
-        }
-
-        return setTimeouts(buildWebDriver(), configuration.getWebDriver().getWaits());
-    }
-
-    protected WebDriver setTimeouts(final WebDriver webDriver, final Configuration.WebDriver.Waits waits) {
         webDriver
                 .manage()
                 .timeouts()

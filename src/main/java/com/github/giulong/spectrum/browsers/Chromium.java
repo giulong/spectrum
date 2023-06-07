@@ -32,9 +32,8 @@ public abstract class Chromium<T extends MutableCapabilities> extends Browser<T>
         capabilities.setCapability(LOGGING_PREFS, logPrefs);
     }
 
-
     @Override
-    public void mergeGridCapabilitiesFrom(final Configuration.WebDriver.Grid grid) {
-        grid.getCapabilities().forEach(capabilities::setCapability);
+    public void mergeGridCapabilitiesFrom(final Configuration.WebDriver.Grid gridConfiguration) {
+        gridConfiguration.getCapabilities().forEach(capabilities::setCapability);
     }
 }

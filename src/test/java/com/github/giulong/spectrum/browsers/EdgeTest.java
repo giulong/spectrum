@@ -36,9 +36,6 @@ class EdgeTest {
     private EdgeOptions edgeOptions;
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
     private Configuration.WebDriver webDriverConfig;
 
     @Mock
@@ -109,9 +106,7 @@ class EdgeTest {
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
     public void buildCapabilitiesFrom() {
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
         when(webDriverConfig.getEdge()).thenReturn(edgeConfig);
-        when(configuration.getSeleniumLogs()).thenReturn(seleniumLogs);
         when(seleniumLogs.getBrowser()).thenReturn(browserLevel);
         when(seleniumLogs.getDriver()).thenReturn(driverLevel);
         when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
@@ -119,7 +114,7 @@ class EdgeTest {
         MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class);
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        edge.buildCapabilitiesFrom(configuration);
+        edge.buildCapabilitiesFrom(webDriverConfig, seleniumLogs);
         final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().get(0);
         verify(edgeOptions).setAcceptInsecureCerts(true);
 

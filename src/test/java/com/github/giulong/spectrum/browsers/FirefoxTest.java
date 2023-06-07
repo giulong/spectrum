@@ -37,9 +37,6 @@ class FirefoxTest {
     private FirefoxOptions firefoxOptions;
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
     private Configuration.WebDriver webDriverConfig;
 
     @Mock
@@ -107,7 +104,6 @@ class FirefoxTest {
     public void buildCapabilitiesFrom(final String binaryPath, final int times) {
         final List<String> arguments = List.of("args");
 
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
         when(webDriverConfig.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
         when(firefoxConfig.getLogLevel()).thenReturn(firefoxDriverLogLevel);
@@ -116,7 +112,7 @@ class FirefoxTest {
 
         MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class);
 
-        firefox.buildCapabilitiesFrom(configuration);
+        firefox.buildCapabilitiesFrom(webDriverConfig, null);
         final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().get(0);
         verify(firefoxOptions).addArguments(arguments);
         verify(firefoxOptions).setLogLevel(firefoxDriverLogLevel);

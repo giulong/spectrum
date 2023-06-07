@@ -36,9 +36,9 @@ public class Firefox extends Browser<FirefoxOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(final Configuration configuration) {
+    public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
+        final Configuration.WebDriver.Firefox firefoxConfig = webDriverConfiguration.getFirefox();
         capabilities = new FirefoxOptions();
-        final Configuration.WebDriver.Firefox firefoxConfig = configuration.getWebDriver().getFirefox();
 
         if (firefoxConfig.getBinary() != null) {
             capabilities.setBinary(firefoxConfig.getBinary());
