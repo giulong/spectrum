@@ -106,12 +106,12 @@ public class TestBook {
                 .reduce(0, Integer::sum);
     }
 
-    public void flush(final int total, final Map<Result, Statistics> statistics) {
-        final Statistics successful = statistics.get(SUCCESSFUL);
-        final Statistics failed = statistics.get(FAILED);
-        final Statistics aborted = statistics.get(ABORTED);
-        final Statistics disabled = statistics.get(DISABLED);
-        final Statistics notRun = statistics.get(NOT_RUN);
+    public void flush(final int total, final Map<Result, Statistics> map) {
+        final Statistics successful = map.get(SUCCESSFUL);
+        final Statistics failed = map.get(FAILED);
+        final Statistics aborted = map.get(ABORTED);
+        final Statistics disabled = map.get(DISABLED);
+        final Statistics notRun = map.get(NOT_RUN);
 
         final double totalSuccessful = successful.getTotal().doubleValue();
         final double totalFailed = failed.getTotal().doubleValue();
