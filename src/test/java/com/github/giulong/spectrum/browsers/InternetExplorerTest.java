@@ -33,9 +33,6 @@ class InternetExplorerTest {
     private InternetExplorerOptions internetExplorerOptions;
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
     private Configuration.WebDriver webDriverConfig;
 
     @Mock
@@ -94,13 +91,12 @@ class InternetExplorerTest {
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
     public void buildCapabilitiesFrom() {
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
         when(webDriverConfig.getIe()).thenReturn(internetExplorerConfig);
 
         MockedConstruction<InternetExplorerOptions> internetExplorerOptionsMockedConstruction = mockConstruction(InternetExplorerOptions.class);
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        internetExplorer.buildCapabilitiesFrom(configuration);
+        internetExplorer.buildCapabilitiesFrom(webDriverConfig, null);
         final InternetExplorerOptions internetExplorerOptions = internetExplorerOptionsMockedConstruction.constructed().get(0);
         verify(internetExplorerOptions).setAcceptInsecureCerts(true);
 

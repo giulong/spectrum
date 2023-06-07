@@ -6,9 +6,9 @@ vars:
 runtime:
   env: ${spectrum.env:-local}
   browser: ${spectrum.browser:-chrome}
-  docker: ${spectrum.docker:-false}
-  grid: ${spectrum.grid:-false}
-  downloadWebDriver: ${spectrum.download.webdriver:-true}
+  environment:
+    local:
+      downloadWebDriver: ${spectrum.download.webdriver:-true}
   driversPath: ~/.m2/repository/webDriver   # Path to drivers executables
   filesFolder: src/test/resources/files
   downloadsFolder: ${downloadsFolder}

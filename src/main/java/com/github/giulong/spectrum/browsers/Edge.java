@@ -21,14 +21,16 @@ public class Edge extends Chromium<EdgeOptions> {
     }
 
     @Override
-    public void buildCapabilitiesFrom(Configuration configuration) {
+    public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
         capabilities = new EdgeOptions();
-        final Configuration.WebDriver.Edge edgeConfig = configuration.getWebDriver().getEdge();
-
         capabilities.setAcceptInsecureCerts(true);
 
-        edgeConfig.getCapabilities().forEach(capabilities::setCapability);
-        setLoggingPreferencesFrom(configuration.getSeleniumLogs());
+        webDriverConfiguration
+                .getEdge()
+                .getCapabilities()
+                .forEach(capabilities::setCapability);
+
+        setLoggingPreferencesFrom(seleniumLogs);
     }
 
     @Override
