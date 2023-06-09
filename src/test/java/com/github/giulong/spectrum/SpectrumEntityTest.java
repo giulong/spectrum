@@ -5,7 +5,6 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import com.github.giulong.spectrum.browsers.Browser;
 import com.github.giulong.spectrum.pojos.Configuration;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -82,11 +81,6 @@ class SpectrumEntityTest {
     @InjectMocks
     private DummySpectrumEntity<?> spectrumEntity;
 
-    @BeforeEach
-    public void beforeEach() {
-        SpectrumEntity.configuration = configuration;
-    }
-
     private Path addScreenshotToReportStubs() throws IOException {
         final Path reportsFolder = Files.createTempDirectory("reportsFolder");
         reportsFolder.toFile().deleteOnExit();
@@ -128,8 +122,10 @@ class SpectrumEntityTest {
                 .toList();
 
         // we're checking real size and names here, no mocks
-        assertEquals(9, actual.size());
+        assertEquals(11, actual.size());
         assertTrue(sharedFieldsNames.containsAll(List.of(
+                "configuration",
+                "extentReports",
                 "extentTest",
                 "actions",
                 "eventsListener",

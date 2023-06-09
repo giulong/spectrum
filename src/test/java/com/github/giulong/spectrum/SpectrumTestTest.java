@@ -5,15 +5,12 @@ import com.aventstack.extentreports.ExtentTest;
 import com.github.giulong.spectrum.interfaces.Endpoint;
 import com.github.giulong.spectrum.internals.EventsListener;
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import com.github.giulong.spectrum.types.DownloadWait;
 import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.PageLoadWait;
 import com.github.giulong.spectrum.types.ScriptWait;
 import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import com.github.giulong.spectrum.utils.testbook.TestBook;
-import com.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import lombok.Getter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,16 +24,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import static com.github.giulong.spectrum.enums.Result.NOT_RUN;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SpectrumTest")
@@ -80,27 +71,6 @@ public class SpectrumTestTest<T> {
 
     @Mock
     private ExtentReports extentReports;
-
-    @Mock
-    private FileUtils fileUtils;
-
-    @Mock
-    private Properties properties;
-
-    @Mock
-    private Configuration.Application application;
-
-    @Mock
-    private TestBook testBook;
-
-    @Mock
-    private TestBookParser testBookParser;
-
-    @Mock
-    private FreeMarkerWrapper freeMarkerWrapper;
-
-    @Mock
-    private Configuration.FreeMarker freeMarker;
 
     @InjectMocks
     private FakeChild<T> childTest;
@@ -175,58 +145,17 @@ public class SpectrumTestTest<T> {
     }
 
     @Test
-    @DisplayName("beforeAll should leverage a reentrant lock to initialize spectrum once for the entire suite")
-    public void testBeforeAll() {
-        final String banner = "banner";
-        final String version = "version";
-        final Map<String, TestBookTest> mappedTests = new HashMap<>();
-        final TestBookTest test1 = TestBookTest.builder()
-                .className("test 1")
-                .testName("one")
-                .build();
-
-        final TestBookTest test2 = TestBookTest.builder()
-                .className("another test")
-                .testName("another")
-                .build();
-        final List<TestBookTest> tests = List.of(test1, test2);
-
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.readProperties("/spectrum.properties")).thenReturn(properties);
-        when(fileUtils.read("/banner.txt")).thenReturn(banner);
-        when(properties.getProperty("version")).thenReturn(version);
-        when(configuration.getApplication()).thenReturn(application);
-        when(application.getTestBook()).thenReturn(testBook);
-        when(testBook.getMappedTests()).thenReturn(mappedTests);
-        when(testBook.getParser()).thenReturn(testBookParser);
-        when(testBookParser.parse()).thenReturn(tests);
-        when(configuration.getFreeMarker()).thenReturn(freeMarker);
-
-        when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
-
-        // explicitly called twice to ensure verifications are called just once
-        SpectrumTest.beforeAll(configuration, extentReports);
-        SpectrumTest.beforeAll(configuration, extentReports);
-
-        assertTrue(SpectrumTest.isSuiteInitialised());
-        assertEquals(configuration, SpectrumTest.configuration);
-        assertEquals(extentReports, SpectrumTest.extentReports);
-        assertEquals(2, mappedTests.size());
-        mappedTests.values().stream().map(TestBookTest::getResult).forEach(result -> assertEquals(NOT_RUN, result));
-
-        verify(freeMarkerWrapper).setupFrom(freeMarker);
-    }
-
-    @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
-        childTest.beforeEach(webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentTest, actions, data);
+        childTest.beforeEach(configuration, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, extentTest, actions, data);
 
+        assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.webDriver);
         assertEquals(implicitWait, spectrumTest.implicitWait);
         assertEquals(pageLoadWait, spectrumTest.pageLoadWait);
         assertEquals(scriptWait, spectrumTest.scriptWait);
         assertEquals(downloadWait, spectrumTest.downloadWait);
+        assertEquals(extentReports, spectrumTest.extentReports);
         assertEquals(extentTest, spectrumTest.extentTest);
         assertEquals(actions, spectrumTest.actions);
         assertEquals(data, spectrumTest.data);
@@ -239,18 +168,6 @@ public class SpectrumTestTest<T> {
         assertNull(childTest.getParentToSkip());
         assertNotNull(childTest.getParentTestPage());
         assertThat(childTest.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
-    }
-
-    @Test
-    @DisplayName("afterAll should flush the testbook and the extent reports")
-    public void afterAll() {
-        when(configuration.getApplication()).thenReturn(application);
-        when(application.getTestBook()).thenReturn(testBook);
-
-        SpectrumTest.afterAll(extentReports, configuration);
-
-        verify(testBook).flush();
-        verify(extentReports).flush();
     }
 
     @SuppressWarnings("unused")

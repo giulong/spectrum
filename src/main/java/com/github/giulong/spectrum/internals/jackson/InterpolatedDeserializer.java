@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.VARS;
+import static com.github.giulong.spectrum.SpectrumSessionListener.VARS;
 
 @Slf4j
 public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {

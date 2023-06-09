@@ -36,8 +36,11 @@ public abstract class SpectrumEntity<Data> {
     public static final String SCREEN_SHOT_FOLDER = "screenshots";
     public static final String HASH_ALGORITHM = "SHA-256";
 
-    protected static Configuration configuration;
-    protected static ExtentReports extentReports;
+    @Shared
+    protected Configuration configuration;
+
+    @Shared
+    protected ExtentReports extentReports;
 
     @Shared
     protected ExtentTest extentTest;
