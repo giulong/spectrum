@@ -154,6 +154,7 @@
                 <excludes>
                     <exclude>*.png</exclude>
                     <exclude>examples/**/*</exclude>
+                    <exclude>org.junit.platform.launcher.LauncherSessionListener</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -248,6 +249,29 @@
                         </module>
                     </modules>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.3.1</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/src/main/resources</directory>
+                                    <includes>
+                                        <include>org.junit.platform.launcher.LauncherSessionListener</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

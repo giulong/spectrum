@@ -7,19 +7,12 @@ import com.github.giulong.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.github.giulong.spectrum.extensions.watchers.TestBookWatcher;
 import com.github.giulong.spectrum.interfaces.Endpoint;
 import com.github.giulong.spectrum.pojos.Configuration;
-import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import com.github.giulong.spectrum.types.DownloadWait;
 import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.PageLoadWait;
 import com.github.giulong.spectrum.types.ScriptWait;
-import com.github.giulong.spectrum.utils.FileUtils;
-import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import com.github.giulong.spectrum.utils.testbook.TestBook;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
@@ -27,23 +20,17 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static java.util.Arrays.asList;
-import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
-
-    private static final Lock LOCK = new ReentrantLock();
-
-    @Getter
-    private static volatile boolean suiteInitialised;
 
     @RegisterExtension
     public static final TestBookWatcher TEST_BOOK_RESOLVER = new TestBookWatcher();
@@ -141,68 +128,22 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
         spectrumPageField.set(spectrumPage, spectrumTestField.get(this));
     }
 
-    @BeforeAll
-    public static void beforeAll(final Configuration configuration, final ExtentReports extentReports) {
-        LOCK.lock();
-
-        try {
-            if (!suiteInitialised) {
-                suiteInitialised = true;
-                SpectrumEntity.configuration = configuration;
-                SpectrumEntity.extentReports = extentReports;
-
-                final FileUtils fileUtils = FileUtils.getInstance();
-                final Properties spectrumProperties = fileUtils.readProperties("/spectrum.properties");
-                log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), spectrumProperties.getProperty("version")));
-
-                final TestBook testBook = configuration.getApplication().getTestBook();
-                final List<TestBookTest> tests = testBook.getParser().parse();
-                final Map<String, Set<TestBookTest>> groupedMappedTests = testBook.getGroupedMappedTests();
-
-                testBook.getMappedTests().putAll(tests
-                        .stream()
-                        .collect(toMap(t -> String.format("%s %s", t.getClassName(), t.getTestName()), identity())));
-
-                tests.forEach(t -> updateGroupedTests(groupedMappedTests, t.getClassName(), t));
-
-                FreeMarkerWrapper.getInstance().setupFrom(configuration.getFreeMarker());
-            }
-        } finally {
-            LOCK.unlock();
-        }
-    }
-
-    public static void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
-        final Set<TestBookTest> tests = groupedTests.getOrDefault(className, new HashSet<>());
-        tests.add(test);
-        groupedTests.put(className, tests);
-    }
-
     @BeforeEach
     @SuppressWarnings("checkstyle:ParameterNumber")
-    public void beforeEach(final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait,
-                           final DownloadWait downloadWait, final ExtentTest extentTest, final Actions actions, final Data data) {
+    public void beforeEach(final Configuration configuration, final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait,
+                           final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final ExtentTest extentTest,
+                           final Actions actions, final Data data) {
+        this.configuration = configuration;
         this.webDriver = webDriver;
         this.implicitWait = implicitWait;
         this.pageLoadWait = pageLoadWait;
         this.scriptWait = scriptWait;
         this.downloadWait = downloadWait;
+        this.extentReports = extentReports;
         this.extentTest = extentTest;
         this.actions = actions;
         this.data = data;
 
         initPages();
-    }
-
-    @AfterAll
-    public static void afterAll(final ExtentReports extentReports, final Configuration configuration) {
-        LOCK.lock();
-
-        try {
-            configuration.getApplication().getTestBook().flush();
-            extentReports.flush();
-        } finally {
-            LOCK.unlock();
-        }
     }
 }

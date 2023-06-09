@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.VARS;
+import static com.github.giulong.spectrum.SpectrumSessionListener.VARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;

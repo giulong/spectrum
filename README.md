@@ -116,6 +116,13 @@ TODO: Configuration nodes
 
 ---
 
+## How to Build Spectrum
+
+### How to run Unit Tests
+
+Since we need to get rid of the `SpectrumSessionListener`, which is copied into the `META-INF` folder during the `prepare-package` phase,
+it's recommended to run a `mvn clean` before. You should configure your IDE's JUnit configuration template to add it as a before-launch task.
+
 ## Contributors:
 
 - Giulio Longfils: [![Linkedin](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/giuliolongfils/)
