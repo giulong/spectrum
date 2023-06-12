@@ -1,6 +1,6 @@
 ####
 
-<img src="src/main/resources/spectrum-logo.png" alt="Spectrum logo">
+<img src="src/main/resources/docs/images/spectrum-logo.png" alt="Spectrum logo">
 
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg)](https://github.com/giulong/spectrum/actions?branch=main)
 ![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
@@ -11,18 +11,17 @@
 
 Spectrum is a Java/[Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests suites by:
 * managing the WebDriver automatically
-* generating html execution reports automatically
-* mapping testbook execution to check coverage of expected tests cases
+* generating html reports automatically
+* generating coverage by leveraging a testbook which could be written in different formats
 * providing out-of-the-box defaults to let you immediately run tests with no additional configuration needed
-* providing a human-readable declarative configuration via yaml files
+* providing a human-readable and declarative configuration via yaml files
 
 Spectrum leverages [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) extension model to initialise and inject all the needed objects 
 directly in your test classes, so that you can focus just on writing tests to navigate through your web application and run the needed assertions.
 
 TODO: TABLE OF CONTENT
 
----
-### Quick example
+## Quick example
 
 Let's see a quick example to immediately run a first test. All you need to do is:
 1. add the Spectrum dependency to your project TODO maven link
@@ -37,12 +36,24 @@ Let's see a quick example to immediately run a first test. All you need to do is
    }
     ```
 
+> ⚠️<br/>
+> If you run tests with Maven, and you don't want to customise the failsafe plugin configuration, 
+> it's important that the name of your test classes ends with `IT` as in the example above: `HelloWorldIT`. 
+> These are indeed the [default inclusions](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inclusion-exclusion.html) of the failsafe plugin.
+
+> 💡<br/>
+> The default browser is `chrome`. If you want to use another one, you can switch via the `spectrum.browser` system property, setting its value to
+> `firefox`, `edge` ...
+
+> 💡<br/>
+> The web driver is managed by WebDriverManager. By sure to check its [docs](https://bonigarcia.dev/webdrivermanager/) in case of issues and/or to customise its behaviour.
+
 You can immediately run this test. After the execution, you will find a html report generated in the `target/spectrum/reports` folder.
 
+TODO: archetype
 TODO: examples
 
----
-## Configuration
+# Configuration
 
 Spectrum is fully configurable and comes with default values which you can find in the [configuration.default.yaml](src/main/resources/yaml/configuration.default.yaml).
 
@@ -71,7 +82,8 @@ Values in the most specific configuration file will take precedence over the oth
 > * configuration-local-local.yaml
 > * configuration-local-grid.yaml
 
-### Vars node
+## Vars node
+
 The `vars` node is a special one in the `configuration.yaml`: you can use it to define common vars once and refer to them in several nodes. `vars` is a map, so you can define how many keys you need.
 
 ```yaml
@@ -86,7 +98,7 @@ anotherNode:
     key: ${commonKey} # Will be replaced with `some-value`
 ```
 
-### Values interpolation
+## Values interpolation
 
 Each non-object value in the configuration can be interpolated by placing a dollar-string like this:
 
@@ -110,19 +122,96 @@ If the provided key can't be found, a warning will be raised. Both key name and 
 
 TODO: Configuration nodes
 
-## Reports
+# Automatically Generated Reports
 
+On each execution, Spectrum automatically produces two files:
+* [log](#log-file)
+* [html report](#html-report)
 
+## Log file
 
----
+The log file will contain the same information you see in the console. It will be produced by default under the `target/spectrum/logs` folder.
 
-## How to Build Spectrum
+It's generated using [Logback](https://logback.qos.ch/), and [here](src/main/resources/logback.xml) you can find its configuration.
+Logs are rotated daily, meaning the results of each execution occurred in the same day will be appended to the same file.
 
-### How to run Unit Tests
+> 💡<br/>
+> By default, logs are generated using a colored pattern. In case the console you use doesn't support it (if you see weird characters at the beginning of each line),
+> you should deactivate colors by setting the `spectrum.log.colors` system properties to `false`.
+
+## Html report
+
+Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/). By default, it will be produced under the `target/spectrum/reports` folder.
+You can see an example here:
+
+<img src="src/main/resources/docs/images/ExtentReports-screenshot.png" alt="Extent Reports">
+
+> 💡<br/>
+> You can also provide your own Look and Feel by putting additional css rules in the `src/test/resources/css/report.css` file. Spectrum will automatically load it and apply to the
+> Extent Reports.
+
+# Data
+
+# Project Structure
+
+Let's see how your project will look like. Few assumptions for this example:
+* you defined base values plus three environments, each with its own set of Data:
+  * [base] &rarr; `configuration.yaml` + `data.yaml`
+  * local &rarr; `configuration-local.yaml` + `data-local.yaml`
+  * test &rarr; `configuration-test.yaml` + `data-test.yaml`
+  * uat &rarr; `configuration-uat.yaml` + `data-uat.yaml`
+* you configured the yaml testbook parser, which will read the `testbook.yaml`
+* you configured both a html and a txt testbook reporters, which will produce `testbook.html` and `testbook.txt` reports
+
+```
+root
+└─ src
+|  └─ test
+|     ├─ java
+|     |  └─ com.your.tests
+|     |     └─ ...
+|     └─ resources
+|        ├─ data
+|        |  ├─ data.yaml
+|        |  ├─ data-local.yaml
+|        |  ├─ data-test.yaml
+|        |  └─ data-uat.yaml
+|        ├─ configuration.yaml
+|        ├─ configuration-local.yaml
+|        ├─ configuration-test.yaml
+|        ├─ configuration-uat.yaml
+|        └─ testbook.yaml
+├─ target
+|  └─ spectrum
+|     |─ logs
+|     |  └─ spectrum.log   # rotated daily
+|     |─ reports
+|     |  |─ screenshots    # folder where Extent Reports screenshots are saved
+|     |  └─ report.html    # by default the name will ends with the timestamp
+|     |─ testbook
+|        |─ testbook.html  # by default the name will ends with the timestamp
+|        └─ testbook.txt   # by default the name will ends with the timestamp
+└─ pom.xml
+```
+
+# Advanced Topics
+
+## Parallel Execution
+
+Spectrum tests can be run in parallel by leveraging [Junit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution)
+
+# How to Build Spectrum
+
+## How to run Unit Tests
 
 Since we need to get rid of the `SpectrumSessionListener`, which is copied into the `META-INF` folder during the `prepare-package` phase,
-it's recommended to run a `mvn clean` before. You should configure your IDE's JUnit configuration template to add it as a before-launch task.
+it's recommended to run a `mvn clean` before. You should configure your IDE's de
 
-## Contributors:
+# TODO SpectrumPage
 
-- Giulio Longfils: [![Linkedin](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/giuliolongfils/)
+# Licenses
+
+# About
+
+Spectrum is created and maintained by Giulio Longfils: [![Linkedin](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/giuliolongfils/) 
+and licensed under the terms of the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
