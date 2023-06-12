@@ -2,6 +2,7 @@ package com.github.giulong.spectrum.pojos;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.github.giulong.spectrum.utils.events.EventHandler;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
 import com.github.giulong.spectrum.browsers.Browser;
 import com.github.giulong.spectrum.utils.webdrivers.Environment;
@@ -27,6 +28,7 @@ public class Configuration {
 	private SeleniumLogs seleniumLogs;
 	private FreeMarker freeMarker;
 	private Events events;
+	private List<EventHandler> eventHandlers;
 
 	@Getter
 	public static class Runtime {
