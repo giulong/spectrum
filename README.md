@@ -9,9 +9,9 @@
 [![badge-jdk](https://img.shields.io/badge/jdk-17-blue.svg)](https://www.oracle.com/java/technologies/javase-downloads.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Spectrum is a Java/[Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests suites by:
-* managing the WebDriver automatically
-* generating html reports automatically
+Spectrum is a Java/[Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests suites by automatically:
+* managing the WebDriver
+* generating html reports
 * generating coverage by leveraging a testbook which could be written in different formats
 * providing out-of-the-box defaults to let you immediately run tests with no additional configuration needed
 * providing a human-readable and declarative configuration via yaml files
@@ -110,7 +110,7 @@ object:
 Where the `:-` is the separator between the name of the key to search for and the default value in case the key is not found. The default value is optional: you can just have `${key}`
 
 Spectrum will replace the dollar-string with the first value found in this list:
-1. key named `key` in `vars` node in the `configuration.yaml`
+1. `key` in [vars node](#vars-node)
     ```yaml
     vars:
       key: value 
@@ -204,8 +204,10 @@ Spectrum tests can be run in parallel by leveraging [Junit Parallel Execution](h
 
 ## How to run Unit Tests
 
-Since we need to get rid of the `SpectrumSessionListener`, which is copied into the `META-INF` folder during the `prepare-package` phase,
-it's recommended to run a `mvn clean` before. You should configure your IDE's de
+Spectrum leverages `SpectrumSessionListener`, a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom) registered via the
+Service Loader mechanism. A file is copied into the `META-INF` folder during the `prepare-package` phase.
+Since we need to get rid of it while running Spectrum's own unit tests, it's recommended to run a `mvn clean` before. 
+You should configure your IDE's JUnit configuration template to add it as a before-launch task.
 
 # TODO SpectrumPage
 
