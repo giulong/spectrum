@@ -3,6 +3,7 @@ package com.github.giulong.spectrum;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.github.giulong.spectrum.extensions.resolvers.*;
+import com.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import com.github.giulong.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.github.giulong.spectrum.extensions.watchers.TestBookWatcher;
 import com.github.giulong.spectrum.interfaces.Endpoint;
@@ -11,6 +12,7 @@ import com.github.giulong.spectrum.types.DownloadWait;
 import com.github.giulong.spectrum.types.ImplicitWait;
 import com.github.giulong.spectrum.types.PageLoadWait;
 import com.github.giulong.spectrum.types.ScriptWait;
+import com.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,13 +35,19 @@ import static java.util.stream.Collectors.toMap;
 public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
     @RegisterExtension
-    public static final TestBookWatcher TEST_BOOK_RESOLVER = new TestBookWatcher();
+    public static final EventsWatcher EVENTS_WATCHER = new EventsWatcher();
+
+    @RegisterExtension
+    public static final TestBookWatcher TEST_BOOK_WATCHER = new TestBookWatcher();
 
     @RegisterExtension
     public static final ExtentReportsWatcher EXTENT_REPORTS_WATCHER = new ExtentReportsWatcher();
 
     @RegisterExtension
     public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver();
+
+    @RegisterExtension
+    public static final EventsDispatcherResolver EVENTS_DISPATCHER_RESOLVER = new EventsDispatcherResolver();
 
     @RegisterExtension
     public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver();
@@ -132,7 +140,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     @SuppressWarnings("checkstyle:ParameterNumber")
     public void beforeEach(final Configuration configuration, final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait,
                            final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final ExtentTest extentTest,
-                           final Actions actions, final Data data) {
+                           final Actions actions, final EventsDispatcher eventsDispatcher, final Data data) {
         this.configuration = configuration;
         this.webDriver = webDriver;
         this.implicitWait = implicitWait;
@@ -142,6 +150,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
         this.extentReports = extentReports;
         this.extentTest = extentTest;
         this.actions = actions;
+        this.eventsDispatcher = eventsDispatcher;
         this.data = data;
 
         initPages();

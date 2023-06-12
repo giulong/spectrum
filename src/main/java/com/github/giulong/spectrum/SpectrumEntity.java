@@ -7,6 +7,7 @@ import com.aventstack.extentreports.model.Media;
 import com.github.giulong.spectrum.interfaces.Shared;
 import com.github.giulong.spectrum.internals.EventsListener;
 import com.github.giulong.spectrum.pojos.Configuration;
+import com.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
@@ -65,6 +66,9 @@ public abstract class SpectrumEntity<Data> {
 
     @Shared
     protected WebDriverWait downloadWait;
+
+    @Shared
+    protected EventsDispatcher eventsDispatcher;
 
     @Shared
     protected Data data;

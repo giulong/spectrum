@@ -11,6 +11,7 @@ import com.github.giulong.spectrum.types.PageLoadWait;
 import com.github.giulong.spectrum.types.ScriptWait;
 import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
+import com.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.Getter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,6 +66,9 @@ public class SpectrumTestTest<T> {
 
     @Mock
     private Actions actions;
+
+    @Mock
+    private EventsDispatcher eventsDispatcher;
 
     @Mock
     private Configuration configuration;
@@ -147,7 +151,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
-        childTest.beforeEach(configuration, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, extentTest, actions, data);
+        childTest.beforeEach(configuration, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, extentTest, actions, eventsDispatcher, data);
 
         assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.webDriver);
@@ -158,6 +162,7 @@ public class SpectrumTestTest<T> {
         assertEquals(extentReports, spectrumTest.extentReports);
         assertEquals(extentTest, spectrumTest.extentTest);
         assertEquals(actions, spectrumTest.actions);
+        assertEquals(eventsDispatcher, spectrumTest.eventsDispatcher);
         assertEquals(data, spectrumTest.data);
 
         // initPages

@@ -8,6 +8,7 @@ import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import com.github.giulong.spectrum.utils.YamlUtils;
+import com.github.giulong.spectrum.utils.events.EventsDispatcher;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,9 @@ import org.junit.platform.launcher.LauncherSessionListener;
 import java.nio.file.Path;
 import java.util.*;
 
+import static com.github.giulong.spectrum.enums.EventReason.AFTER;
+import static com.github.giulong.spectrum.enums.EventReason.BEFORE;
+import static com.github.giulong.spectrum.enums.EventTag.SUITE;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
@@ -39,6 +43,9 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     @Getter
     protected static ExtentReports extentReports;
 
+    @Getter
+    protected static EventsDispatcher eventsDispatcher;
+
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
         final Properties spectrumProperties = fileUtils.readProperties("/spectrum.properties");
@@ -47,14 +54,17 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         parseConfiguration();
         parseTestBook();
         initExtentReports();
+        initEventsDispatcher();
 
         freeMarkerWrapper.setupFrom(configuration.getFreeMarker());
+        eventsDispatcher.dispatch(BEFORE, Set.of(SUITE));
     }
 
     @Override
     public void launcherSessionClosed(final LauncherSession session) {
         configuration.getApplication().getTestBook().flush();
         extentReports.flush();
+        eventsDispatcher.dispatch(AFTER, Set.of(SUITE));
     }
 
     protected void parseConfiguration() {
@@ -95,7 +105,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         tests.forEach(t -> updateGroupedTests(groupedMappedTests, t.getClassName(), t));
     }
 
-    public void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
+    protected void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
         final Set<TestBookTest> tests = groupedTests.getOrDefault(className, new HashSet<>());
         tests.add(test);
         groupedTests.put(className, tests);
@@ -122,5 +132,14 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     protected String getReportsPathFrom(final String reportFolder, final String fileName) {
         final String resolvedFileName = fileUtils.interpolateTimestampFrom(fileName);
         return Path.of(System.getProperty("user.dir"), reportFolder, resolvedFileName).toString().replace("\\", "/");
+    }
+
+    protected void initEventsDispatcher() {
+        eventsDispatcher = EventsDispatcher
+                .builder()
+                .handlers(Optional
+                        .ofNullable(configuration.getEventHandlers())
+                        .orElse(List.of()))
+                .build();
     }
 }

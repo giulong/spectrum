@@ -9,6 +9,8 @@ import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import com.github.giulong.spectrum.utils.YamlUtils;
+import com.github.giulong.spectrum.utils.events.EventHandler;
+import com.github.giulong.spectrum.utils.events.EventsDispatcher;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
 import com.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import org.junit.jupiter.api.AfterEach;
@@ -31,6 +33,9 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static com.github.giulong.spectrum.SpectrumSessionListener.*;
+import static com.github.giulong.spectrum.enums.EventReason.AFTER;
+import static com.github.giulong.spectrum.enums.EventReason.BEFORE;
+import static com.github.giulong.spectrum.enums.EventTag.SUITE;
 import static com.github.giulong.spectrum.enums.Result.NOT_RUN;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -44,6 +49,7 @@ class SpectrumSessionListenerTest {
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;
     private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
+    private static MockedStatic<EventsDispatcher> eventsDispatcherMockedStatic;
 
     @Mock
     private FileUtils fileUtils;
@@ -79,10 +85,19 @@ class SpectrumSessionListenerTest {
     private ExtentReports extentReports;
 
     @Mock
+    private EventsDispatcher.EventsDispatcherBuilder eventsDispatcherBuilder;
+
+    @Mock
+    private EventsDispatcher eventsDispatcher;
+
+    @Mock
     private Properties properties;
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
+
+    @Mock
+    private List<EventHandler> handlers;
 
     @Mock
     private Configuration.FreeMarker freeMarker;
@@ -92,6 +107,7 @@ class SpectrumSessionListenerTest {
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
         yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
+        eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
     }
 
     @AfterEach
@@ -99,6 +115,7 @@ class SpectrumSessionListenerTest {
         fileUtilsMockedStatic.close();
         yamlUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
+        eventsDispatcherMockedStatic.close();
         VARS.clear();
     }
 
@@ -165,9 +182,15 @@ class SpectrumSessionListenerTest {
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
         when(configuration.getFreeMarker()).thenReturn(freeMarker);
 
+        when(configuration.getEventHandlers()).thenReturn(handlers);
+        when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
+        when(eventsDispatcherBuilder.handlers(handlers)).thenReturn(eventsDispatcherBuilder);
+        when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
+
         final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
         SpectrumSessionListener.configuration = configuration;
         SpectrumSessionListener.extentReports = extentReports;
+        SpectrumSessionListener.eventsDispatcher = eventsDispatcher;
         spectrumSessionListener.launcherSessionOpened(launcherSession);
 
         assertEquals(configuration, SpectrumSessionListener.getConfiguration());
@@ -188,8 +211,12 @@ class SpectrumSessionListenerTest {
         verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
         assertEquals(extentReports, SpectrumSessionListener.getExtentReports());
 
+        assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
+
         extentSparkReporterMockedConstruction.close();
         extentReportsMockedConstruction.close();
+
+        verify(eventsDispatcher).dispatch(BEFORE, Set.of(SUITE));
     }
 
     @Test
@@ -201,10 +228,12 @@ class SpectrumSessionListenerTest {
         final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
         SpectrumSessionListener.configuration = configuration;
         SpectrumSessionListener.extentReports = extentReports;
+        SpectrumSessionListener.eventsDispatcher = eventsDispatcher;
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
         verify(testBook).flush();
         verify(extentReports).flush();
+        verify(eventsDispatcher).dispatch(AFTER, Set.of(SUITE));
     }
 
     @Test
@@ -385,5 +414,37 @@ class SpectrumSessionListenerTest {
 
         final String actual = spectrumSessionListener.getReportsPathFrom(reportFolder, fileName);
         assertTrue(actual.matches(Path.of(System.getProperty("user.dir"), expected).toString().replace("\\", "/")));
+    }
+
+    @Test
+    @DisplayName("initEventsDispatcher should build the events dispatcher with all the event handlers configured")
+    public void initEventsDispatcher() {
+        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+
+        when(configuration.getEventHandlers()).thenReturn(handlers);
+        when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
+        when(eventsDispatcherBuilder.handlers(handlers)).thenReturn(eventsDispatcherBuilder);
+        when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
+
+        SpectrumSessionListener.configuration = configuration;
+        spectrumSessionListener.initEventsDispatcher();
+
+        assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
+    }
+
+    @Test
+    @DisplayName("initEventsDispatcher should build the events dispatcher with an empty list if not handler is provided")
+    public void initEventsDispatcherNoHandlers() {
+        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+
+        when(configuration.getEventHandlers()).thenReturn(null);
+        when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
+        when(eventsDispatcherBuilder.handlers(List.of())).thenReturn(eventsDispatcherBuilder);
+        when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
+
+        SpectrumSessionListener.configuration = configuration;
+        spectrumSessionListener.initEventsDispatcher();
+
+        assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
     }
 }
