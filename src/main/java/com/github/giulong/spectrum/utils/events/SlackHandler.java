@@ -34,6 +34,7 @@ public class SlackHandler extends EventHandler {
                 .methods(token)
                 .chatPostMessage(ChatPostMessageRequest.builder()
                         .channel(channel)
+                        .text("Spectrum notification")
                         .blocksAsString(interpolatedTemplate)
                         .build());
     }
