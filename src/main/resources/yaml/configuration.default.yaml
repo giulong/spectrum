@@ -96,10 +96,18 @@ freeMarker:
   numberFormat: 0.##;; roundingMode=halfUp
 
 eventHandlers:
+  - extentTest:
+      handles:
+        - reason: AFTER
+          tags: [ TEST ]
   - testbook:
       handles:
         - reason: AFTER
-          tags: [TEST]
+          tags: [ TEST ]
+  - webDriver:
+      handles:
+        - reason: AFTER
+          tags: [ TEST ]
 
 # Events fired by the webDriver and automatically logged and added to the report. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.
 events:

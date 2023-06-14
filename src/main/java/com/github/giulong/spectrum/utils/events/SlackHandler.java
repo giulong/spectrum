@@ -25,7 +25,7 @@ public class SlackHandler extends EventHandler {
     protected String token;
 
     @SneakyThrows
-    public void handle(Event event) {
+    public void handle(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
         final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate("slack", FILE_UTILS.read(template), vars);
 

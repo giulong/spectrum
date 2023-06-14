@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @Slf4j
 public class TestBookHandler extends EventHandler {
 
-    public void handle(Event event) {
+    public void handle(final Event event) {
         final ExtensionContext context = event.getContext();
         final Result result = event.getResult();
         final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getApplication().getTestBook();

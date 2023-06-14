@@ -4,7 +4,6 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.github.giulong.spectrum.extensions.resolvers.*;
 import com.github.giulong.spectrum.extensions.watchers.EventsWatcher;
-import com.github.giulong.spectrum.extensions.watchers.ExtentReportsWatcher;
 import com.github.giulong.spectrum.interfaces.Endpoint;
 import com.github.giulong.spectrum.pojos.Configuration;
 import com.github.giulong.spectrum.types.DownloadWait;
@@ -35,9 +34,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
 
     @RegisterExtension
     public static final EventsWatcher EVENTS_WATCHER = new EventsWatcher();
-
-    @RegisterExtension
-    public static final ExtentReportsWatcher EXTENT_REPORTS_WATCHER = new ExtentReportsWatcher();
 
     @RegisterExtension
     public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver();
