@@ -1,7 +1,8 @@
-package com.github.giulong.spectrum.extensions.watchers;
+package com.github.giulong.spectrum.utils.events;
 
 import com.github.giulong.spectrum.enums.Result;
 import com.github.giulong.spectrum.pojos.Configuration;
+import com.github.giulong.spectrum.pojos.events.Event;
 import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
@@ -21,7 +22,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.github.giulong.spectrum.enums.Result.*;
+import static com.github.giulong.spectrum.enums.Result.FAILED;
 import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -31,8 +32,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("TestBookWatcher")
-class TestBookWatcherTest {
+@DisplayName("TestBookHandler")
+class TestBookHandlerTest {
 
     @Mock
     private ExtensionContext context;
@@ -64,10 +65,16 @@ class TestBookWatcherTest {
     @Mock
     private TestBookTest actualTest;
 
-    @InjectMocks
-    private TestBookWatcher testBookWatcher;
+    @Mock
+    private Event event;
 
-    private void updateTestBookStubsFor(final Result result) {
+    @InjectMocks
+    private TestBookHandler testBookHandler;
+
+    @Test
+    @DisplayName("updateTestBook should update the testbook with the currently unmapped test")
+    public void updateTestBook() {
+        final Result result = FAILED;
         final Map<String, TestBookTest> unmappedTests = new HashMap<>();
         final Map<Result, Statistics> grandTotalCount = new HashMap<>();
         final Map<Result, Statistics> grandTotalWeightedCount = new HashMap<>();
@@ -80,6 +87,8 @@ class TestBookWatcherTest {
         grandTotalWeightedStatistics.getTotal().set(456);
         grandTotalWeightedCount.put(result, grandTotalWeightedStatistics);
 
+        when(event.getContext()).thenReturn(context);
+        when(event.getResult()).thenReturn(result);
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
@@ -94,9 +103,9 @@ class TestBookWatcherTest {
 
         when(statistics.getGrandTotalCount()).thenReturn(grandTotalCount);
         when(statistics.getGrandTotalWeightedCount()).thenReturn(grandTotalWeightedCount);
-    }
 
-    private void updateTestBookAssertionsFor(final Result result) {
+        testBookHandler.handle(event);
+
         final TestBookTest unmappedTest = testBook.getUnmappedTests().get(String.format("%s %s", "className", "testName"));
         assertEquals("className", unmappedTest.getClassName());
         assertEquals("testName", unmappedTest.getTestName());
@@ -106,59 +115,10 @@ class TestBookWatcherTest {
         assertTrue(testBook.getGroupedUnmappedTests().get("className").contains(unmappedTest));
     }
 
-    @Test
-    @DisplayName("testDisabled should update the testbook with the currently disabled test")
-    public void testDisabled() {
-        final Result result = DISABLED;
-        updateTestBookStubsFor(result);
-
-        testBookWatcher.testDisabled(context, Optional.of("reason"));
-        updateTestBookAssertionsFor(result);
-    }
 
     @Test
-    @DisplayName("testSuccessful should update the testbook with the currently successful test")
-    public void testSuccessful() {
-        final Result result = SUCCESSFUL;
-        updateTestBookStubsFor(result);
-
-        testBookWatcher.testSuccessful(context);
-        updateTestBookAssertionsFor(result);
-    }
-
-    @Test
-    @DisplayName("testAborted should update the testbook with the currently aborted test")
-    public void testAborted() {
-        final Result result = ABORTED;
-        updateTestBookStubsFor(result);
-
-        testBookWatcher.testAborted(context, new RuntimeException());
-        updateTestBookAssertionsFor(result);
-    }
-
-    @Test
-    @DisplayName("testFailed should update the testbook with the currently failed test")
-    public void testFailed() {
-        final Result result = FAILED;
-        updateTestBookStubsFor(result);
-
-        testBookWatcher.testFailed(context, new RuntimeException());
-        updateTestBookAssertionsFor(result);
-    }
-
-    @Test
-    @DisplayName("updateTestBook should update the testbook with the currently unmapped test")
-    public void updateTestBook() {
-        final Result result = FAILED;
-        updateTestBookStubsFor(result);
-
-        testBookWatcher.updateTestBook(context, result);
-        updateTestBookAssertionsFor(result);
-    }
-
-    @Test
-    @DisplayName("updateTestBook should update the testbook with the currently mapped test")
-    public void updateTestBookMappedTest() {
+    @DisplayName("handle should update the testbook with the currently finished test")
+    public void handle() {
         final Result result = FAILED;
         final Map<String, TestBookTest> mappedTests = new HashMap<>();
         final Map<Result, Statistics> totalCount = new HashMap<>();
@@ -183,6 +143,8 @@ class TestBookWatcherTest {
         grandTotalWeightedStatistics.getTotal().set(456);
         grandTotalWeightedCount.put(result, grandTotalWeightedStatistics);
 
+        when(event.getContext()).thenReturn(context);
+        when(event.getResult()).thenReturn(result);
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
@@ -201,7 +163,7 @@ class TestBookWatcherTest {
         when(statistics.getGrandTotalCount()).thenReturn(grandTotalCount);
         when(statistics.getGrandTotalWeightedCount()).thenReturn(grandTotalWeightedCount);
 
-        testBookWatcher.updateTestBook(context, result);
+        testBookHandler.handle(event);
 
         verify(actualTest).setResult(result);
         assertEquals(4, statistics.getTotalCount().get(result).getTotal().get());
@@ -215,7 +177,7 @@ class TestBookWatcherTest {
     @ParameterizedTest(name = "with className {0} and grouped tests {1}")
     @MethodSource("valuesProvider")
     public void updateGroupedTests(final String className, final Map<String, Set<TestBookTest>> groupedTests) {
-        testBookWatcher.updateGroupedTests(groupedTests, className, test);
+        testBookHandler.updateGroupedTests(groupedTests, className, test);
 
         assertTrue(groupedTests.get(className).contains(test));
     }

@@ -95,6 +95,12 @@ freeMarker:
   locale: US
   numberFormat: 0.##;; roundingMode=halfUp
 
+eventHandlers:
+  - testbook:
+      handles:
+        - reason: AFTER
+          tags: [TEST]
+
 # Events fired by the webDriver and automatically logged and added to the report. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.
 events:
   beforeAnyCall:
