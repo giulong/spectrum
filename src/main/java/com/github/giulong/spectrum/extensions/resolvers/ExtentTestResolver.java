@@ -1,9 +1,9 @@
 package com.github.giulong.spectrum.extensions.resolvers;
 
-import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.github.giulong.spectrum.SpectrumSessionListener;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import static com.aventstack.extentreports.Status.INFO;
 import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
-import static com.github.giulong.spectrum.extensions.resolvers.ExtentReportsResolver.EXTENT_REPORTS;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -22,8 +21,7 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> {
     public static final String EXTENT_TEST = "extentTest";
 
     public static ExtentTest createExtentTestFrom(final ExtensionContext context) {
-        return context.getRoot().getStore(GLOBAL)
-                .get(EXTENT_REPORTS, ExtentReports.class)
+        return SpectrumSessionListener.getExtentReports()
                 .createTest(String.format("<div>%s</div>%s", context.getParent().orElseThrow().getDisplayName(), context.getDisplayName()));
     }
 

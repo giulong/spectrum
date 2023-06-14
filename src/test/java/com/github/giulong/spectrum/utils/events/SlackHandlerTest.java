@@ -83,6 +83,7 @@ class SlackHandlerTest {
 
         when(ChatPostMessageRequest.builder()).thenReturn(chatPostMessageRequestBuilder);
         when(chatPostMessageRequestBuilder.channel(channel)).thenReturn(chatPostMessageRequestBuilder);
+        when(chatPostMessageRequestBuilder.text("Spectrum notification")).thenReturn(chatPostMessageRequestBuilder);
         when(chatPostMessageRequestBuilder.blocksAsString(interpolatedTemplate)).thenReturn(chatPostMessageRequestBuilder);
         when(chatPostMessageRequestBuilder.build()).thenReturn(chatPostMessageRequest);
         when(Slack.getInstance()).thenReturn(slack);
