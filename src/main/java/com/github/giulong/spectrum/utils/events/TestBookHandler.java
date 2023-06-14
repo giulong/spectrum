@@ -1,44 +1,27 @@
-package com.github.giulong.spectrum.extensions.watchers;
+package com.github.giulong.spectrum.utils.events;
 
 import com.github.giulong.spectrum.enums.Result;
 import com.github.giulong.spectrum.pojos.Configuration;
+import com.github.giulong.spectrum.pojos.events.Event;
 import com.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import com.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestWatcher;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import static com.github.giulong.spectrum.enums.Result.*;
 import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
-public class TestBookWatcher implements TestWatcher {
+public class TestBookHandler extends EventHandler {
 
-    @Override
-    public void testDisabled(final ExtensionContext context, final Optional<String> reason) {
-        updateTestBook(context, DISABLED);
-    }
-
-    @Override
-    public void testSuccessful(final ExtensionContext context) {
-        updateTestBook(context, SUCCESSFUL);
-    }
-
-    @Override
-    public void testAborted(final ExtensionContext context, final Throwable throwable) {
-        updateTestBook(context, ABORTED);
-    }
-
-    @Override
-    public void testFailed(final ExtensionContext context, final Throwable exception) {
-        updateTestBook(context, FAILED);
-    }
-
-    public void updateTestBook(final ExtensionContext context, final Result result) {
+    public void handle(Event event) {
+        final ExtensionContext context = event.getContext();
+        final Result result = event.getResult();
         final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getApplication().getTestBook();
         final TestBookStatistics statistics = testBook.getStatistics();
         final Map<String, TestBookTest> mappedTests = testBook.getMappedTests();

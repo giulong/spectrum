@@ -15,6 +15,7 @@ import static java.util.stream.Collectors.toSet;
 @JsonTypeInfo(use = NAME, include = WRAPPER_OBJECT)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SlackHandler.class, name = "slack"),
+        @JsonSubTypes.Type(value = TestBookHandler.class, name = "testbook"),
 })
 @Getter
 @Slf4j
