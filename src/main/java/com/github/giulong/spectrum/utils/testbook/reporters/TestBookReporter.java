@@ -19,9 +19,9 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @Getter
 public abstract class TestBookReporter {
 
-    public static final FileUtils FILE_UTILS = FileUtils.getInstance();
+    protected static final FileUtils FILE_UTILS = FileUtils.getInstance();
 
-    public static final FreeMarkerWrapper FREE_MARKER_WRAPPER = FreeMarkerWrapper.getInstance();
+    protected static final FreeMarkerWrapper FREE_MARKER_WRAPPER = FreeMarkerWrapper.getInstance();
 
     public abstract String getTemplate();
 
