@@ -49,7 +49,7 @@
     "type": "section",
     "text": {
       "type": "mrkdwn",
-      "text": "*Excpetion*: `${event.context.executionException.get()}`"
+      "text": "*Exception*: `${event.context.executionException.get()}`"
     }
   }
 </#if>
