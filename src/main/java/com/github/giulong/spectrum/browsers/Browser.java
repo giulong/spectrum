@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ThreadGuard;
 
 @Slf4j
 @Getter
 public abstract class Browser<T extends MutableCapabilities> {
+
+    public static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
 
     protected T capabilities;
 
@@ -48,6 +51,7 @@ public abstract class Browser<T extends MutableCapabilities> {
                 .pageLoadTimeout(waits.getPageLoadTimeout())
                 .scriptTimeout(waits.getScriptTimeout());
 
-        return webDriver;
+        WEB_DRIVER_THREAD_LOCAL.set(ThreadGuard.protect(webDriver));
+        return WEB_DRIVER_THREAD_LOCAL.get();
     }
 }

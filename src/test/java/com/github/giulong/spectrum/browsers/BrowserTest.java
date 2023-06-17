@@ -17,12 +17,14 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.support.ThreadGuard;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import static com.github.giulong.spectrum.browsers.Browser.WEB_DRIVER_THREAD_LOCAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -32,6 +34,8 @@ class BrowserTest {
 
     private MockedStatic<WebDriverManager> webDriverManagerMockedStatic;
     private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
+    private MockedStatic<ThreadGuard> threadGuardMockedStatic;
+
     private MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction;
     private MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction;
 
@@ -58,6 +62,9 @@ class BrowserTest {
 
     @Mock
     private WebDriver webDriver;
+
+    @Mock
+    private WebDriver protectedWebDriver;
 
     @Mock
     private Configuration.WebDriver.Waits waits;
@@ -90,6 +97,7 @@ class BrowserTest {
     public void beforeEach() {
         webDriverManagerMockedStatic = mockStatic(WebDriverManager.class);
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
+        threadGuardMockedStatic = mockStatic(ThreadGuard.class);
         chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class);
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
     }
@@ -98,6 +106,7 @@ class BrowserTest {
     public void afterEach() {
         webDriverManagerMockedStatic.close();
         remoteWebDriverMockedStatic.close();
+        threadGuardMockedStatic.close();
         chromeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();
     }
@@ -129,6 +138,12 @@ class BrowserTest {
         when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
         when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
 
-        assertEquals(webDriver, browser.build(configuration));
+        when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
+
+        final WebDriver actual = browser.build(configuration);
+        final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
+
+        assertEquals(protectedWebDriver, threadLocalWebDriver);
+        assertEquals(protectedWebDriver, actual);
     }
 }
