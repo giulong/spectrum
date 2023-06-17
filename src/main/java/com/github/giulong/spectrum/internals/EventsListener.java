@@ -49,46 +49,54 @@ public class EventsListener implements WebDriverListener {
         return Arrays.stream(args)
                 .map(arg -> (arg instanceof WebElement)
                         ? extractSelectorFrom((WebElement) arg)
-                        : arg.toString())
+                        : String.valueOf(arg))
                 .toList();
     }
 
     protected void log(final Configuration.Event event, final Object... args) {
-        final String message = String.format(event.getMessage(), parse(args));
-        final String noTagsMessage = message.replaceAll("<.*?>", "");
-
         switch (event.getLevel().levelStr) {
             case "OFF" -> {
             }
             case "TRACE" -> {
-                log.trace(noTagsMessage);
-
                 if (log.isTraceEnabled()) {
+                    final String message = String.format(event.getMessage(), parse(args).toArray());
+                    final String noTagsMessage = message.replaceAll("<.*?>", "");
+
+                    log.trace(noTagsMessage);
                     store.get(EXTENT_TEST, ExtentTest.class).info(message);
                 }
             }
             case "DEBUG" -> {
-                log.debug(noTagsMessage);
-
                 if (log.isDebugEnabled()) {
+                    final String message = String.format(event.getMessage(), parse(args).toArray());
+                    final String noTagsMessage = message.replaceAll("<.*?>", "");
+
+                    log.debug(noTagsMessage);
                     store.get(EXTENT_TEST, ExtentTest.class).info(message);
                 }
             }
             case "INFO" -> {
-                log.info(noTagsMessage);
-
                 if (log.isInfoEnabled()) {
+                    final String message = String.format(event.getMessage(), parse(args).toArray());
+                    final String noTagsMessage = message.replaceAll("<.*?>", "");
+
+                    log.info(noTagsMessage);
                     store.get(EXTENT_TEST, ExtentTest.class).info(message);
                 }
             }
             case "WARN" -> {
-                log.warn(noTagsMessage);
-
                 if (log.isWarnEnabled()) {
+                    final String message = String.format(event.getMessage(), parse(args).toArray());
+                    final String noTagsMessage = message.replaceAll("<.*?>", "");
+
+                    log.warn(noTagsMessage);
                     store.get(EXTENT_TEST, ExtentTest.class).warning(createLabel(message, YELLOW));
                 }
             }
-            default -> log.warn("Message '{}' won't be logged. Wrong log level set in configuration.yaml. Choose one among OFF, TRACE, DEBUG, INFO, WARN", message);
+            default -> {
+                final String message = String.format(event.getMessage(), parse(args).toArray());
+                log.warn("Message '{}' won't be logged. Wrong log level set in configuration.yaml. Choose one among OFF, TRACE, DEBUG, INFO, WARN", message);
+            }
         }
     }
 
