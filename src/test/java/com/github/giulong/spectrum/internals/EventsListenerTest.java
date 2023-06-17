@@ -10,16 +10,24 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 import static ch.qos.logback.classic.Level.*;
 import static com.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,7 +36,7 @@ class EventsListenerTest {
 
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
-    private final String tagsMessage = "message <div>" + arg + "</div>";
+    private final String tagsMessage = "message <div>[" + arg + "]</div>";
 
     @Mock
     private ExtensionContext.Store store;
@@ -39,6 +47,15 @@ class EventsListenerTest {
     @Mock
     private ExtentTest extentTest;
 
+    @Mock
+    private WebElement webElement1;
+
+    @Mock
+    private WebElement webElement2;
+
+    @Mock
+    private WebElement webElement3;
+
     @Captor
     private ArgumentCaptor<Markup> markupArgumentCaptor;
 
@@ -48,6 +65,42 @@ class EventsListenerTest {
     @BeforeEach
     public void beforeEach() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(INFO);
+    }
+
+    @DisplayName("extractSelectorFrom should extract just the relevant info from the webElement")
+    @ParameterizedTest(name = "with WebElement {0} we expect {1}")
+    @MethodSource("valuesProvider")
+    public void extractSelectorFrom(final String fullWebElement, final String expected) {
+        when(webElement1.toString()).thenReturn(fullWebElement);
+        assertEquals(expected, eventsListener.extractSelectorFrom(webElement1));
+    }
+
+    public static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments("[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]", "id: message"),
+                arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]", "css selector: #gettotal -> tag name: button"),
+                arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]", "css selector: #get1-.total -> tag name: button")
+        );
+    }
+
+    @Test
+    @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list")
+    public void parse() {
+        final String s = "string";
+        final List<String> expected = List.of(
+                "id: message",
+                s,
+                "css selector: #gettotal -> tag name: button",
+                "css selector: #get1-.total -> tag name: button"
+        );
+
+        when(webElement1.toString()).thenReturn("[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]");
+        when(webElement2.toString()).thenReturn("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]");
+        when(webElement3.toString()).thenReturn("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]");
+
+        final Object[] args = new Object[] { webElement1, s, webElement2, webElement3 };
+
+        assertEquals(expected, eventsListener.parse(args));
     }
 
     @Test
