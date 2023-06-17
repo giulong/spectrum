@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -36,7 +37,7 @@ class EventsListenerTest {
 
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
-    private final String tagsMessage = "message <div>[" + arg + "]</div>";
+    private final String tagsMessage = "message <div>" + arg + "</div>";
 
     @Mock
     private ExtensionContext.Store store;
@@ -84,12 +85,13 @@ class EventsListenerTest {
     }
 
     @Test
-    @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list")
+    @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list, and using String.valueOf to avoid NPEs")
     public void parse() {
         final String s = "string";
-        final List<String> expected = List.of(
+        final List<String> expected = Arrays.asList(
                 "id: message",
                 s,
+                "null",
                 "css selector: #gettotal -> tag name: button",
                 "css selector: #get1-.total -> tag name: button"
         );
@@ -98,7 +100,7 @@ class EventsListenerTest {
         when(webElement2.toString()).thenReturn("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]");
         when(webElement3.toString()).thenReturn("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]");
 
-        final Object[] args = new Object[] { webElement1, s, webElement2, webElement3 };
+        final Object[] args = new Object[] { webElement1, s, null, webElement2, webElement3 };
 
         assertEquals(expected, eventsListener.parse(args));
     }
@@ -106,10 +108,10 @@ class EventsListenerTest {
     @Test
     @DisplayName("OFF level: log should not log the provided event")
     public void logOff() {
-        when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(Level.OFF);
 
         eventsListener.log(event, arg);
+        verify(event, never()).getMessage();
     }
 
     @Test
@@ -128,10 +130,10 @@ class EventsListenerTest {
     @DisplayName("TRACE level off: log should not log the provided event")
     public void logTraceOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
-        when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(Level.TRACE);
 
         eventsListener.log(event, arg);
+        verify(event, never()).getMessage();
         verify(store, never()).get(EXTENT_TEST, ExtentTest.class);
         verify(extentTest, never()).info(tagsMessage);
     }
@@ -152,10 +154,10 @@ class EventsListenerTest {
     @DisplayName("DEBUG level off: log should not log the provided event")
     public void logDebugOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
-        when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(Level.DEBUG);
 
         eventsListener.log(event, arg);
+        verify(event, never()).getMessage();
         verify(store, never()).get(EXTENT_TEST, ExtentTest.class);
         verify(extentTest, never()).info(tagsMessage);
     }
@@ -176,10 +178,10 @@ class EventsListenerTest {
     @DisplayName("INFO level off: log should not log the provided event")
     public void logInfoOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
-        when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(Level.INFO);
 
         eventsListener.log(event, arg);
+        verify(event, never()).getMessage();
         verify(store, never()).get(EXTENT_TEST, ExtentTest.class);
         verify(extentTest, never()).info(tagsMessage);
     }
@@ -203,10 +205,10 @@ class EventsListenerTest {
     @DisplayName("WARN level off: log should not log the provided event")
     public void logWarnOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
-        when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(Level.WARN);
 
         eventsListener.log(event, arg);
+        verify(event, never()).getMessage();
         verify(store, never()).get(EXTENT_TEST, ExtentTest.class);
         verify(extentTest, never()).warning(markupArgumentCaptor.capture());
     }
