@@ -151,4 +151,11 @@ public abstract class SpectrumEntity<Data> {
         log.trace("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));
         return digest;
     }
+
+    protected WebElement clearAndSendKeys(final WebElement webElement, final CharSequence keysToSend) {
+        webElement.clear();
+        webElement.sendKeys(keysToSend);
+
+        return webElement;
+    }
 }
