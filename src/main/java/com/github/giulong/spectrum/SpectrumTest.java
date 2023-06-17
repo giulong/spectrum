@@ -116,7 +116,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
                 .collect(toMap(Field::getName, Function.identity()));
 
         sharedFields.forEach(s -> setSharedField(spectrumPage, s, targetFieldsMap));
-        PageFactory.initElements(spectrumPage.webDriver, spectrumPage);
+        PageFactory.initElements(webDriver, spectrumPage);
 
         return spectrumPage;
     }
