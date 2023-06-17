@@ -15,10 +15,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.time.Duration;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.aventstack.extentreports.markuputils.ExtentColor.YELLOW;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
@@ -29,11 +28,33 @@ import static com.github.giulong.spectrum.extensions.resolvers.ExtentTestResolve
 @Getter
 public class EventsListener implements WebDriverListener {
 
+    private static final Pattern LOCATOR_PATTERN = Pattern.compile("\\s->\\s(?<locator>[\\w:\\s\\-.#]+)");
+
     private ExtensionContext.Store store;
     private Configuration.Events events;
 
+    protected String extractSelectorFrom(final WebElement webElement) {
+        final String fullWebElement = webElement.toString();
+        final Matcher matcher = LOCATOR_PATTERN.matcher(fullWebElement);
+
+        final List<String> locators = new ArrayList<>();
+        while (matcher.find()) {
+            locators.add(matcher.group("locator"));
+        }
+
+        return String.join(" -> ", locators);
+    }
+
+    protected List<String> parse(final Object[] args) {
+        return Arrays.stream(args)
+                .map(arg -> (arg instanceof WebElement)
+                        ? extractSelectorFrom((WebElement) arg)
+                        : arg.toString())
+                .toList();
+    }
+
     protected void log(final Configuration.Event event, final Object... args) {
-        final String message = String.format(event.getMessage(), args);
+        final String message = String.format(event.getMessage(), parse(args));
         final String noTagsMessage = message.replaceAll("<.*?>", "");
 
         switch (event.getLevel().levelStr) {
