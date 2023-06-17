@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
@@ -214,6 +215,12 @@ class SpectrumEntityTest {
         assertEquals(0, Objects.requireNonNull(downloadsFolder.toFile().list()).length);
     }
 
+    public static Stream<Arguments> valuesProvider() throws IOException {
+        return Stream.of(
+                arguments(Path.of("abc not existing")),
+                arguments(Files.createTempDirectory("downloadsFolder")));
+    }
+
     @Test
     @DisplayName("waitForDownloadOf should return true if the provided file is fully downloaded")
     public void waitForDownloadOf() throws IOException {
@@ -291,10 +298,14 @@ class SpectrumEntityTest {
                 -126, 71, -121, -84, -51, 110, 113, -124, 119, -71, -51, 73, -75, 100}, SpectrumEntity.sha256Of(path));
     }
 
-    public static Stream<Arguments> valuesProvider() throws IOException {
-        return Stream.of(
-                arguments(Path.of("abc not existing")),
-                arguments(Files.createTempDirectory("downloadsFolder")));
+    @DisplayName("clearAndSendKeys should clear the provided webElement and send the provided keys to it")
+    @ParameterizedTest(name = "with keys {0}")
+    @ValueSource(strings = {"string", "another"})
+    public void clearAndSendKeys(final String string) {
+        assertEquals(webElement, spectrumEntity.clearAndSendKeys(webElement, string));
+
+        verify(webElement).clear();
+        verify(webElement).sendKeys(string);
     }
 
     private static class DummySpectrumEntity<T> extends SpectrumEntity<T> {
