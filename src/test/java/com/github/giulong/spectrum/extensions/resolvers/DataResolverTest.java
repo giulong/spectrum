@@ -23,14 +23,12 @@ import java.util.stream.Stream;
 
 import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static com.github.giulong.spectrum.extensions.resolvers.DataResolver.DATA;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("DataResolver")
@@ -100,7 +98,7 @@ class DataResolverTest {
     }
 
     @Test
-    @DisplayName("resolveParameter should throw an exception if the provided fqdn is not a valid class name")
+    @DisplayName("resolveParameter should return null if the provided fqdn is not a valid class name")
     public void resolveParameterException() {
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
@@ -108,7 +106,8 @@ class DataResolverTest {
         when(configuration.getData()).thenReturn(data);
         when(data.getFqdn()).thenReturn("invalid");
 
-        assertThrows(ClassNotFoundException.class, () -> dataResolver.resolveParameter(parameterContext, extensionContext));
+        assertNull(dataResolver.resolveParameter(parameterContext, extensionContext));
+        verify(rootStore, never()).getOrComputeIfAbsent(eq(DATA), runnableArgumentCaptor.capture(), any());
     }
 
     public static Stream<Arguments> valuesProvider() {
