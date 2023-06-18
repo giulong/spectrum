@@ -17,7 +17,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +31,7 @@ import static com.aventstack.extentreports.Status.*;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
-public abstract class SpectrumEntity<Data> {
+public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     public static final String SCREEN_SHOT_FOLDER = "screenshots";
     public static final String HASH_ALGORITHM = "SHA-256";
@@ -80,8 +79,11 @@ public abstract class SpectrumEntity<Data> {
                 .toList();
     }
 
-    public void hover(final WebElement webElement) {
+    public T hover(final WebElement webElement) {
         actions.moveToElement(webElement).perform();
+
+        //noinspection unchecked
+        return (T) this;
     }
 
     public Media infoWithScreenshot(final String msg) {
@@ -122,16 +124,20 @@ public abstract class SpectrumEntity<Data> {
             log.info("About to delete downloads folder '{}'", downloadFolder);
 
             try (Stream<Path> files = Files.walk(downloadPath)) {
-                //noinspection ResultOfMethodCallIgnored
-                files.map(Path::toFile).forEach(File::delete);
+                files
+                        .map(Path::toFile)
+                        .forEach(f -> log.trace("File '{}' deleted? {}", f, f.delete()));
             }
         }
 
         Files.createDirectories(downloadPath);
     }
 
-    public void waitForDownloadOf(final Path path) {
+    public T waitForDownloadOf(final Path path) {
         downloadWait.until(driver -> Files.exists(path) && path.toFile().length() > 0);
+
+        //noinspection unchecked
+        return (T) this;
     }
 
     public boolean checkDownloadedFile(final String file) {

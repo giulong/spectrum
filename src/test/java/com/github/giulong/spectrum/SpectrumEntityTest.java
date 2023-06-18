@@ -144,7 +144,7 @@ class SpectrumEntityTest {
     @DisplayName("hover should move the pointer over the provided webElement")
     public void hover() {
         when(actions.moveToElement(webElement)).thenReturn(actions);
-        spectrumEntity.hover(webElement);
+        assertEquals(spectrumEntity, spectrumEntity.hover(webElement));
         verify(actions).perform();
     }
 
@@ -227,7 +227,7 @@ class SpectrumEntityTest {
         final Path path = Files.createTempFile("fakeFile", ".txt");
         Files.writeString(path, "I'm an airplane!!!");
 
-        spectrumEntity.waitForDownloadOf(path);
+        assertEquals(spectrumEntity, spectrumEntity.waitForDownloadOf(path));
 
         verify(downloadWait).until(functionArgumentCaptor.capture());
         final Function<WebDriver, Boolean> function = functionArgumentCaptor.getValue();
@@ -308,6 +308,6 @@ class SpectrumEntityTest {
         verify(webElement).sendKeys(string);
     }
 
-    private static class DummySpectrumEntity<T> extends SpectrumEntity<T> {
+    private static class DummySpectrumEntity<T> extends SpectrumEntity<DummySpectrumEntity<T>, T> {
     }
 }

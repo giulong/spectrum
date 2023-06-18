@@ -95,7 +95,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("initPage should init the provided field")
     public void testInitPage() throws NoSuchFieldException {
-        final SpectrumPage<T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPage"));
+        final SpectrumPage<?, T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPage"));
 
         assertEquals(spectrumTest.testPage, actual);
         assertThat(spectrumTest.testPage, instanceOf(FakeSpectrumPage.class));
@@ -116,7 +116,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("initPages without endpoint")
     public void initPageWithoutEndpoint() throws NoSuchFieldException {
-        final SpectrumPage<T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPageWithoutEndpoint"));
+        final SpectrumPage<?, T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPageWithoutEndpoint"));
 
         assertEquals(spectrumTest.testPageWithoutEndpoint, actual);
         assertThat(spectrumTest.testPageWithoutEndpoint, instanceOf(FakeSpectrumPageWithoutEndpoint.class));
@@ -196,9 +196,9 @@ public class SpectrumTestTest<T> {
     }
 
     @Endpoint("blah")
-    static class FakeSpectrumPage<T> extends SpectrumPage<T> {
+    static class FakeSpectrumPage<T> extends SpectrumPage<FakeSpectrumPage<T>, T> {
     }
 
-    static class FakeSpectrumPageWithoutEndpoint<T> extends SpectrumPage<T> {
+    static class FakeSpectrumPageWithoutEndpoint<T> extends SpectrumPage<FakeSpectrumPageWithoutEndpoint<T>, T> {
     }
 }

@@ -30,7 +30,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 @Slf4j
-public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
+public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Data>, Data> {
 
     @RegisterExtension
     public static final EventsWatcher EVENTS_WATCHER = new EventsWatcher();
@@ -68,7 +68,27 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
-    protected List<SpectrumPage<Data>> spectrumPages;
+    protected List<SpectrumPage<?, Data>> spectrumPages;
+
+    @BeforeEach
+    @SuppressWarnings("checkstyle:ParameterNumber")
+    public void beforeEach(final Configuration configuration, final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait,
+                           final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final ExtentTest extentTest,
+                           final Actions actions, final EventsDispatcher eventsDispatcher, final Data data) {
+        this.configuration = configuration;
+        this.webDriver = webDriver;
+        this.implicitWait = implicitWait;
+        this.pageLoadWait = pageLoadWait;
+        this.scriptWait = scriptWait;
+        this.downloadWait = downloadWait;
+        this.extentReports = extentReports;
+        this.extentTest = extentTest;
+        this.actions = actions;
+        this.eventsDispatcher = eventsDispatcher;
+        this.data = data;
+
+        initPages();
+    }
 
     public void initPages() {
         final Class<?> clazz = this.getClass();
@@ -91,13 +111,13 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     }
 
     @SneakyThrows
-    public SpectrumPage<Data> initPage(final Field f) {
+    public SpectrumPage<?, Data> initPage(final Field f) {
         log.debug("Initializing page {}", f.getName());
 
         @SuppressWarnings("unchecked")
-        final SpectrumPage<Data> spectrumPage = (SpectrumPage<Data>) f.getType().getDeclaredConstructor().newInstance();
+        final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) f.getType().getDeclaredConstructor().newInstance();
         @SuppressWarnings("unchecked")
-        final Class<SpectrumPage<Data>> spectrumPageClass = (Class<SpectrumPage<Data>>) spectrumPage.getClass();
+        final Class<SpectrumPage<?, Data>> spectrumPageClass = (Class<SpectrumPage<?, Data>>) spectrumPage.getClass();
 
         f.setAccessible(true);
         f.set(this, spectrumPage);
@@ -122,29 +142,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<Data> {
     }
 
     @SneakyThrows
-    protected void setSharedField(final SpectrumPage<Data> spectrumPage, final Field spectrumTestField, final Map<String, Field> spectrumPageFieldsMap) {
+    protected void setSharedField(final SpectrumPage<?, Data> spectrumPage, final Field spectrumTestField, final Map<String, Field> spectrumPageFieldsMap) {
         final Field spectrumPageField = spectrumPageFieldsMap.get(spectrumTestField.getName());
         spectrumPageField.setAccessible(true);
         spectrumPageField.set(spectrumPage, spectrumTestField.get(this));
-    }
-
-    @BeforeEach
-    @SuppressWarnings("checkstyle:ParameterNumber")
-    public void beforeEach(final Configuration configuration, final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait,
-                           final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final ExtentTest extentTest,
-                           final Actions actions, final EventsDispatcher eventsDispatcher, final Data data) {
-        this.configuration = configuration;
-        this.webDriver = webDriver;
-        this.implicitWait = implicitWait;
-        this.pageLoadWait = pageLoadWait;
-        this.scriptWait = scriptWait;
-        this.downloadWait = downloadWait;
-        this.extentReports = extentReports;
-        this.extentTest = extentTest;
-        this.actions = actions;
-        this.eventsDispatcher = eventsDispatcher;
-        this.data = data;
-
-        initPages();
     }
 }
