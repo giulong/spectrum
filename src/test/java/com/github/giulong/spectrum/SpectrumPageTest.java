@@ -23,7 +23,6 @@ import static org.mockito.Mockito.when;
 @DisplayName("SpectrumPage")
 class SpectrumPageTest {
 
-    private final String url = "url";
     private final String endpoint = "/endpoint";
 
     @Mock
@@ -41,13 +40,20 @@ class SpectrumPageTest {
     @Test
     @DisplayName("open should get the configured base url and wait for the page to be loaded")
     public void open() {
+        final String url = "url";
         spectrumPage.endpoint = endpoint;
 
         when(configuration.getApplication()).thenReturn(application);
         when(application.getBaseUrl()).thenReturn(url);
 
-        spectrumPage.open();
+        assertEquals(spectrumPage, spectrumPage.open());
         verify(webDriver).get(url + endpoint);
+    }
+
+    @Test
+    @DisplayName("waitForPageLoading should do nothing but return the page instance")
+    public void waitForPageLoading() {
+        assertEquals(spectrumPage, spectrumPage.waitForPageLoading());
     }
 
     @DisplayName("isLoaded should check if the current page url matches the endpoint")
@@ -70,7 +76,7 @@ class SpectrumPageTest {
         );
     }
 
-    private static class DummySpectrumPage<T> extends SpectrumPage<T> {
+    private static class DummySpectrumPage<T> extends SpectrumPage<DummySpectrumPage<T>, T> {
 
         public DummySpectrumPage() {
             configuration = SpectrumPageTest.configuration;
