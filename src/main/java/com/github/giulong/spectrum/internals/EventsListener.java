@@ -4,7 +4,6 @@ import com.aventstack.extentreports.ExtentTest;
 import com.github.giulong.spectrum.pojos.Configuration;
 import lombok.Builder;
 import lombok.Generated;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.*;
@@ -25,10 +24,10 @@ import static com.github.giulong.spectrum.extensions.resolvers.ExtentTestResolve
 
 @Slf4j
 @Builder
-@Getter
 public class EventsListener implements WebDriverListener {
 
     private static final Pattern LOCATOR_PATTERN = Pattern.compile("\\s->\\s(?<locator>[\\w:\\s\\-.#]+)");
+    private static final String TAG = "<.*?>";
 
     private ExtensionContext.Store store;
     private Configuration.Events events;
@@ -60,7 +59,7 @@ public class EventsListener implements WebDriverListener {
             case "TRACE" -> {
                 if (log.isTraceEnabled()) {
                     final String message = String.format(event.getMessage(), parse(args).toArray());
-                    final String noTagsMessage = message.replaceAll("<.*?>", "");
+                    final String noTagsMessage = message.replaceAll(TAG, "");
 
                     log.trace(noTagsMessage);
                     store.get(EXTENT_TEST, ExtentTest.class).info(message);
@@ -69,7 +68,7 @@ public class EventsListener implements WebDriverListener {
             case "DEBUG" -> {
                 if (log.isDebugEnabled()) {
                     final String message = String.format(event.getMessage(), parse(args).toArray());
-                    final String noTagsMessage = message.replaceAll("<.*?>", "");
+                    final String noTagsMessage = message.replaceAll(TAG, "");
 
                     log.debug(noTagsMessage);
                     store.get(EXTENT_TEST, ExtentTest.class).info(message);
@@ -78,7 +77,7 @@ public class EventsListener implements WebDriverListener {
             case "INFO" -> {
                 if (log.isInfoEnabled()) {
                     final String message = String.format(event.getMessage(), parse(args).toArray());
-                    final String noTagsMessage = message.replaceAll("<.*?>", "");
+                    final String noTagsMessage = message.replaceAll(TAG, "");
 
                     log.info(noTagsMessage);
                     store.get(EXTENT_TEST, ExtentTest.class).info(message);
@@ -87,7 +86,7 @@ public class EventsListener implements WebDriverListener {
             case "WARN" -> {
                 if (log.isWarnEnabled()) {
                     final String message = String.format(event.getMessage(), parse(args).toArray());
-                    final String noTagsMessage = message.replaceAll("<.*?>", "");
+                    final String noTagsMessage = message.replaceAll(TAG, "");
 
                     log.warn(noTagsMessage);
                     store.get(EXTENT_TEST, ExtentTest.class).warning(createLabel(message, YELLOW));
