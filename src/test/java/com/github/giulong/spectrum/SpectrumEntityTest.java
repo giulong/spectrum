@@ -76,6 +76,9 @@ class SpectrumEntityTest {
     @Mock
     private Actions actions;
 
+    @Mock
+    private By by;
+
     @Captor
     private ArgumentCaptor<Function<WebDriver, Boolean>> functionArgumentCaptor;
 
@@ -320,6 +323,22 @@ class SpectrumEntityTest {
         assertEquals(spectrumEntity, spectrumEntity.upload(webElement, fileName));
 
         verify(webElement).sendKeys(Path.of(System.getProperty("user.dir"), filesFolder, fileName).toString());
+    }
+
+    @DisplayName("isNotPresent should return true if the element located by the provided By is not in the dom")
+    @ParameterizedTest(name = "with list {0} we expect {1}")
+    @MethodSource("isNotPresentProvider")
+    public void isNotPresent(final List<WebElement> webElements, final boolean expected) {
+        when(webDriver.findElements(by)).thenReturn(webElements);
+
+        assertEquals(expected, spectrumEntity.isNotPresent(by));
+    }
+
+    public static Stream<Arguments> isNotPresentProvider() {
+        return Stream.of(
+                arguments(List.of(), true),
+                arguments(List.of(mock(WebElement.class)), false)
+        );
     }
 
     private static class DummySpectrumEntity<T> extends SpectrumEntity<DummySpectrumEntity<T>, T> {

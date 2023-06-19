@@ -86,6 +86,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
+    // TODO fluent
     public Media infoWithScreenshot(final String msg) {
         return addScreenshotToReport(msg, INFO);
     }
@@ -180,5 +181,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
         //noinspection unchecked
         return (T) this;
+    }
+
+    public boolean isNotPresent(final By by) {
+        return webDriver.findElements(by).size() == 0;
     }
 }
