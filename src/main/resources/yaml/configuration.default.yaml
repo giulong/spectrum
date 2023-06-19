@@ -39,7 +39,6 @@ webDriver:
     pageLoadTimeout: 10   # Number of seconds that selenium will wait before throwing a TimeoutException because page wasn't loaded. Injected in webDriverWaits
     downloadTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download. Injected in webDriverWaits
     scriptTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException. Injected in webDriverWaits
-  defaultEventListenerEnabled: true
 
   grid:
     url: http://127.0.0.1:4444/wd/hub/
