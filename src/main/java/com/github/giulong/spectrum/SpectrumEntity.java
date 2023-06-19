@@ -134,7 +134,10 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     public T waitForDownloadOf(final Path path) {
-        downloadWait.until(driver -> Files.exists(path) && path.toFile().length() > 0);
+        downloadWait.until(driver -> {
+            log.trace("Checking for download completion of file '{}'", path);
+            return Files.exists(path) && path.toFile().length() > 0;
+        });
 
         //noinspection unchecked
         return (T) this;
@@ -142,11 +145,16 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     public boolean checkDownloadedFile(final String file) {
         final Configuration.Runtime runtime = configuration.getRuntime();
-        final Path downloadedFile = Path.of(runtime.getDownloadsFolder(), file);
-        final Path fileToCheck = Path.of(runtime.getFilesFolder(), file);
+        final Path downloadedFile = Path.of(runtime.getDownloadsFolder(), file).toAbsolutePath();
+        final Path fileToCheck = Path.of(runtime.getFilesFolder(), file).toAbsolutePath();
 
         waitForDownloadOf(downloadedFile);
 
+        log.info("""
+                Checking if these files are the same:
+                {}
+                {}
+                """, downloadedFile, fileToCheck);
         return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
     }
 
@@ -158,10 +166,19 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return digest;
     }
 
-    protected WebElement clearAndSendKeys(final WebElement webElement, final CharSequence keysToSend) {
+    public WebElement clearAndSendKeys(final WebElement webElement, final CharSequence keysToSend) {
         webElement.clear();
         webElement.sendKeys(keysToSend);
 
         return webElement;
+    }
+
+    public T upload(final WebElement webElement, final String fileName) {
+        final String fullPath = Path.of(System.getProperty("user.dir"), configuration.getRuntime().getFilesFolder(), fileName).toString();
+        log.info("Uploading file '{}'", fullPath);
+        webElement.sendKeys(fullPath);
+
+        //noinspection unchecked
+        return (T) this;
     }
 }
