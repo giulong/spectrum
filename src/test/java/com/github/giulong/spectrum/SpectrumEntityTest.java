@@ -308,6 +308,20 @@ class SpectrumEntityTest {
         verify(webElement).sendKeys(string);
     }
 
+    @Test
+    @DisplayName("upload should send the full path of the provided file to the provided webElement and return the SpectrumEntity instance")
+    public void upload() {
+        final String filesFolder = "filesFolder";
+        final String fileName = "fileName";
+
+        when(configuration.getRuntime()).thenReturn(runtime);
+        when(runtime.getFilesFolder()).thenReturn(filesFolder);
+
+        assertEquals(spectrumEntity, spectrumEntity.upload(webElement, fileName));
+
+        verify(webElement).sendKeys(Path.of(System.getProperty("user.dir"), filesFolder, fileName).toString());
+    }
+
     private static class DummySpectrumEntity<T> extends SpectrumEntity<DummySpectrumEntity<T>, T> {
     }
 }
