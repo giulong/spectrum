@@ -54,9 +54,6 @@ class WebDriverResolverTest {
     private WebDriver decoratedWebDriver;
 
     @Mock
-    private Configuration.WebDriver webDriverConfiguration;
-
-    @Mock
     private Configuration.Events events;
 
     @Mock
@@ -79,23 +76,6 @@ class WebDriverResolverTest {
     }
 
     @Test
-    @DisplayName("resolveParameter should return the instance of the webdriver based on the runtime parameter")
-    public void resolveParameter() {
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(ConfigurationResolver.CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getRuntime()).thenReturn(runtime);
-        doReturn(browser).when(runtime).getBrowser();
-        when(browser.build(configuration)).thenReturn(webDriver);
-        when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
-        when(webDriverConfiguration.isDefaultEventListenerEnabled()).thenReturn(false);
-
-        WebDriver actual = webDriverResolver.resolveParameter(parameterContext, extensionContext);
-        verify(store).put(WebDriverResolver.WEB_DRIVER, webDriver);
-
-        assertEquals(webDriver, actual);
-    }
-
-    @Test
     @DisplayName("resolveParameter should return the instance of the webdriver decorated with the default event listener")
     public void resolveParameterEventListener() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
@@ -103,8 +83,6 @@ class WebDriverResolverTest {
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(browser).when(runtime).getBrowser();
         when(browser.build(configuration)).thenReturn(webDriver);
-        when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
-        when(webDriverConfiguration.isDefaultEventListenerEnabled()).thenReturn(true);
         when(configuration.getEvents()).thenReturn(events);
 
         when(EventsListener.builder()).thenReturn(eventsListenerBuilder);

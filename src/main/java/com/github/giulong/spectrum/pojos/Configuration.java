@@ -63,7 +63,6 @@ public class Configuration {
 	@Getter
 	public static class WebDriver {
 		private Waits waits;
-		private boolean defaultEventListenerEnabled;
 		private Grid grid;
 		private Chrome chrome;
 		private Firefox firefox;

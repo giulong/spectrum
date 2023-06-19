@@ -1,6 +1,5 @@
 package com.github.giulong.spectrum.extensions.resolvers;
 
-import com.github.giulong.spectrum.browsers.Browser;
 import com.github.giulong.spectrum.internals.EventsListener;
 import com.github.giulong.spectrum.pojos.Configuration;
 import lombok.extern.slf4j.Slf4j;
@@ -25,14 +24,7 @@ public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final Configuration configuration = store.get(ConfigurationResolver.CONFIGURATION, Configuration.class);
-        final Browser<?> browser = configuration.getRuntime().getBrowser();
-        final WebDriver webDriver = browser.build(configuration);
-
-        if (!configuration.getWebDriver().isDefaultEventListenerEnabled()) {
-            store.put(WEB_DRIVER, webDriver);
-            return webDriver;
-        }
-
+        final WebDriver webDriver = configuration.getRuntime().getBrowser().build(configuration);
         final WebDriverListener eventListener = EventsListener.builder()
                 .store(store)
                 .events(configuration.getEvents())
