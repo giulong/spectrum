@@ -17,7 +17,6 @@ public class BrowserDeserializer extends InterpolatedDeserializer<Browser<?>> {
         return switch (interpolatedValue) {
             case "chrome" -> new Chrome();
             case "firefox" -> new Firefox();
-            case "ie" -> new InternetExplorer();
             case "edge" -> new Edge();
             default -> throw new IllegalArgumentException("Value '" + interpolatedValue + "' is not a valid browser!");
         };

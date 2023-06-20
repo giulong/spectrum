@@ -74,12 +74,6 @@ class ChromeTest {
     }
 
     @Test
-    @DisplayName("exposesConsole should return true")
-    public void exposesConsole() {
-        assertTrue(chrome.exposesConsole());
-    }
-
-    @Test
     @DisplayName("takesPartialScreenshots should return true")
     public void takesPartialScreenshots() {
         assertTrue(chrome.takesPartialScreenshots());

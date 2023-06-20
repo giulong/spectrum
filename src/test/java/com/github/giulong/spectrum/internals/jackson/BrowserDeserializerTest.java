@@ -69,7 +69,6 @@ class BrowserDeserializerTest {
                 arguments("${justToTestInterpolation:-chrome}", mock(Chrome.class)),
                 arguments("chrome", mock(Chrome.class)),
                 arguments("firefox", mock(Firefox.class)),
-                arguments("ie", mock(InternetExplorer.class)),
                 arguments("edge", mock(Edge.class))
         );
     }

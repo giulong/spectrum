@@ -16,8 +16,6 @@ public abstract class Browser<T extends MutableCapabilities> {
 
     protected T capabilities;
 
-    public abstract boolean exposesConsole();
-
     public abstract boolean takesPartialScreenshots();
 
     public abstract WebDriverManager getWebDriverManager();

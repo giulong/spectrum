@@ -67,10 +67,6 @@ webDriver:
       browser.helperApps.neverAsk.saveToDisk: application/pdf
       pdfjs.disabled: true
 
-  # Internet Explorer capabilities. See: https://github.com/SeleniumHQ/selenium/wiki/DesiredCapabilities#ie-specific
-  ie:
-    capabilities: { }
-
   # Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options
   edge:
     capabilities: { }
