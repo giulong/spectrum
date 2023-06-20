@@ -131,8 +131,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     protected String getReportsPathFrom(final String reportFolder, final String fileName) {
         final String resolvedFileName = fileUtils.interpolateTimestampFrom(fileName);
-        // TODO move user.dir to configuration.yaml
-        return Path.of(System.getProperty("user.dir"), reportFolder, resolvedFileName).toString().replace("\\", "/");
+        return Path.of(reportFolder, resolvedFileName).toString().replace("\\", "/");
     }
 
     protected void initEventsDispatcher() {
