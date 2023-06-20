@@ -65,12 +65,6 @@ class FirefoxTest {
     }
 
     @Test
-    @DisplayName("exposesConsole should return true")
-    public void exposesConsole() {
-        assertTrue(firefox.exposesConsole());
-    }
-
-    @Test
     @DisplayName("takesPartialScreenshots should return false")
     public void takesPartialScreenshots() {
         assertFalse(firefox.takesPartialScreenshots());

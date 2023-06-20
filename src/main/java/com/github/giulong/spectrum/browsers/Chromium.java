@@ -10,11 +10,6 @@ import static org.openqa.selenium.logging.LogType.*;
 public abstract class Chromium<T extends MutableCapabilities> extends Browser<T> {
 
     @Override
-    public boolean exposesConsole() {
-        return true;
-    }
-
-    @Override
     public boolean takesPartialScreenshots() {
         return true;
     }

@@ -23,11 +23,11 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
+import static java.util.UUID.randomUUID;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
@@ -101,7 +101,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @SneakyThrows
     public Media addScreenshotToReport(final String msg, final Status status) {
-        final String fileName = String.format("%s.png", UUID.randomUUID());
+        final String fileName = String.format("%s.png", randomUUID());
         final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
         final TakesScreenshot takesScreenshot = configuration.getRuntime().getBrowser().takesPartialScreenshots()
                 ? webDriver.findElement(By.tagName("body"))

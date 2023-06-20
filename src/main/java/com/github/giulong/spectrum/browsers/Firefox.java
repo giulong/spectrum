@@ -11,11 +11,6 @@ import static io.github.bonigarcia.wdm.WebDriverManager.firefoxdriver;
 public class Firefox extends Browser<FirefoxOptions> {
 
     @Override
-    public boolean exposesConsole() {
-        return true;
-    }
-
-    @Override
     public boolean takesPartialScreenshots() {
         return false;
     }

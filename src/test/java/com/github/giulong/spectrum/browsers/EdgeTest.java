@@ -73,12 +73,6 @@ class EdgeTest {
     }
 
     @Test
-    @DisplayName("exposesConsole should return true")
-    public void exposesConsole() {
-        assertTrue(edge.exposesConsole());
-    }
-
-    @Test
     @DisplayName("takesPartialScreenshots should return true")
     public void takesPartialScreenshots() {
         assertTrue(edge.takesPartialScreenshots());

@@ -66,7 +66,6 @@ public class Configuration {
 		private Grid grid;
 		private Chrome chrome;
 		private Firefox firefox;
-		private InternetExplorer ie;
 		private Edge edge;
 
 		@Getter
@@ -96,11 +95,6 @@ public class Configuration {
 			private List<String> args;
 			private FirefoxDriverLogLevel logLevel;
 			private Map<String, Object> preferences;
-		}
-
-		@Getter
-		public static class InternetExplorer {
-			private Map<String, Object> capabilities;
 		}
 
 		@Getter
