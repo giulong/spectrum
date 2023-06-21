@@ -87,18 +87,6 @@ class ChromeTest {
     }
 
     @Test
-    @DisplayName("getSystemPropertyName should return webDriver.chrome.driver")
-    public void getSystemPropertyName() {
-        assertEquals("webDriver.chrome.driver", chrome.getSystemPropertyName());
-    }
-
-    @Test
-    @DisplayName("getDriverName should return the name of the executable")
-    public void getDriverName() {
-        assertEquals("chromedriver.exe", chrome.getDriverName());
-    }
-
-    @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
     public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");

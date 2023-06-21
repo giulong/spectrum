@@ -7,9 +7,7 @@ runtime:
   env: ${spectrum.env:-local}
   browser: ${spectrum.browser:-chrome}
   environment:
-    local:
-      downloadWebDriver: ${spectrum.download.webdriver:-true}
-  driversPath: ~/.m2/repository/webDriver   # Path to drivers executables
+    local: { }
   filesFolder: src/test/resources/files
   downloadsFolder: ${downloadsFolder}
 

@@ -18,11 +18,6 @@ public class Chrome extends Chromium<ChromeOptions> {
     }
 
     @Override
-    public String getDriverName() {
-        return "chromedriver.exe";
-    }
-
-    @Override
     public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
         final Configuration.WebDriver.Chrome chromeConfig = webDriverConfiguration.getChrome();
         final List<String> arguments = chromeConfig.getArguments();

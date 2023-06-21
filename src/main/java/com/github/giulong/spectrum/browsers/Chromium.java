@@ -14,11 +14,6 @@ public abstract class Chromium<T extends MutableCapabilities> extends Browser<T>
         return true;
     }
 
-    @Override
-    public String getSystemPropertyName() {
-        return "webDriver.chrome.driver";
-    }
-
     public void setLoggingPreferencesFrom(final Configuration.SeleniumLogs seleniumLogs) {
         final LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(BROWSER, seleniumLogs.getBrowser());
