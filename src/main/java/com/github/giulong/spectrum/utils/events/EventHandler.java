@@ -26,7 +26,7 @@ public abstract class EventHandler {
 
     protected List<Event> handles;
 
-    public abstract void handle(Event event);
+    public abstract void handle(Event event) throws Exception;
 
     protected boolean tagsIntersect(final Event e1, final Event e2) {
         final boolean matches = e1.getTags() != null && e2.getTags() != null &&
@@ -81,6 +81,15 @@ public abstract class EventHandler {
                 .peek(h -> log.trace("{} matchers for {}", getClass().getSimpleName(), event))
                 .filter(h -> findMatchFor(event, h))
                 .peek(h -> log.debug("{} is handling {}", getClass().getSimpleName(), event))
-                .forEach(h -> handle(event));
+                .forEach(h -> handleSilently(event));
+    }
+
+    @SuppressWarnings("checkstyle:IllegalCatch")
+    protected void handleSilently(final Event event) {
+        try {
+            handle(event);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+        }
     }
 }

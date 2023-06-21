@@ -4,10 +4,11 @@ import com.github.giulong.spectrum.pojos.events.Event;
 import com.github.giulong.spectrum.utils.FileUtils;
 import com.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import com.slack.api.Slack;
+import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import lombok.Getter;
-import lombok.SneakyThrows;
 
+import java.io.IOException;
 import java.util.Map;
 
 @Getter
@@ -24,8 +25,7 @@ public class SlackHandler extends EventHandler {
 
     protected String token;
 
-    @SneakyThrows
-    public void handle(final Event event) {
+    public void handle(final Event event) throws SlackApiException, IOException {
         final Map<String, Object> vars = Map.of("event", event);
         final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate("slack", FILE_UTILS.read(template), vars);
 
