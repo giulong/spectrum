@@ -23,6 +23,7 @@ import static com.github.giulong.spectrum.enums.EventTag.SUITE;
 import static com.github.giulong.spectrum.enums.EventTag.TEST;
 import static com.github.giulong.spectrum.enums.Result.FAILED;
 import static com.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
@@ -177,6 +178,18 @@ class EventHandlerTest {
         verify(firedEvent).getContext();
         verify(matchingEvent, never()).getContext();    // we never handle the user-defined event (as "handle"). We handle the fired event
         verify(neverMatchingEvent, never()).getContext();
+    }
+
+    @Test
+    @DisplayName("handleSilently should ignore any exception thrown when handling the provided event")
+    public void handleSilently() {
+        final String exceptionMessage = "exceptionMessage";
+        final Event event = mock(Event.class);
+
+        when(event.getContext()).thenThrow(new RuntimeException(exceptionMessage));
+
+        eventHandler.handles = List.of(event);
+        assertDoesNotThrow(() -> eventHandler.handleSilently(event), exceptionMessage);
     }
 
     private static class DummyEventHandler extends EventHandler {
