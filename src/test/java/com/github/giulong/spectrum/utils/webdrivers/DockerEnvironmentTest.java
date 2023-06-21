@@ -9,9 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.WebDriver;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -28,9 +26,6 @@ class DockerEnvironmentTest {
     @Mock
     private WebDriverManager webDriverManager;
 
-    @Mock
-    private WebDriver webDriver;
-
     @InjectMocks
     private DockerEnvironment dockerEnvironment;
 
@@ -39,9 +34,8 @@ class DockerEnvironmentTest {
     public void buildFrom() {
         when(browser.getWebDriverManager()).thenReturn(webDriverManager);
         when(webDriverManager.browserInDocker()).thenReturn(webDriverManager);
-        when(browser.buildWebDriver()).thenReturn(webDriver);
 
-        assertEquals(webDriver, dockerEnvironment.buildFrom(configuration, browser));
+        dockerEnvironment.buildFrom(configuration, browser, null);
 
         verify(webDriverManager).setup();
     }

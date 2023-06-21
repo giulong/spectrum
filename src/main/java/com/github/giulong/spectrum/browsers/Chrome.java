@@ -2,8 +2,6 @@ package com.github.giulong.spectrum.browsers;
 
 import com.github.giulong.spectrum.pojos.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.List;
@@ -29,10 +27,5 @@ public class Chrome extends Chromium<ChromeOptions> {
         chromeConfig.getCapabilities().forEach(capabilities::setCapability);
         chromeConfig.getExperimentalOptions().forEach(capabilities::setExperimentalOption);
         setLoggingPreferencesFrom(seleniumLogs);
-    }
-
-    @Override
-    public WebDriver buildWebDriver() {
-        return new ChromeDriver(capabilities);
     }
 }

@@ -12,8 +12,6 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 
@@ -21,7 +19,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 import static org.openqa.selenium.logging.LogType.*;
@@ -73,12 +70,6 @@ class EdgeTest {
     }
 
     @Test
-    @DisplayName("takesPartialScreenshots should return true")
-    public void takesPartialScreenshots() {
-        assertTrue(edge.takesPartialScreenshots());
-    }
-
-    @Test
     @DisplayName("getWebDriverManager should return call the edgedriver method")
     public void getWebDriverManager() {
         when(WebDriverManager.edgedriver()).thenReturn(webDriverManager);
@@ -108,19 +99,6 @@ class EdgeTest {
 
         edgeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("buildWebDriver should return a ChromeDriver with the capabilities")
-    public void buildWebDriver() {
-        edge.capabilities = edgeOptions;
-
-        MockedConstruction<EdgeDriver> edgeDriverMockedConstruction = mockConstruction(EdgeDriver.class,
-                (mock, context) -> assertEquals(edgeOptions, context.arguments().get(0)));
-        final WebDriver actual = edge.buildWebDriver();
-        assertEquals(edgeDriverMockedConstruction.constructed().get(0), actual);
-
-        edgeDriverMockedConstruction.close();
     }
 
     @Test

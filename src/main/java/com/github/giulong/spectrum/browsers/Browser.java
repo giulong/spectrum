@@ -2,27 +2,23 @@ package com.github.giulong.spectrum.browsers;
 
 import com.github.giulong.spectrum.pojos.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.support.ThreadGuard;
 
 @Slf4j
-@Getter
 public abstract class Browser<T extends MutableCapabilities> {
 
     public static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
 
     protected T capabilities;
 
-    public abstract boolean takesPartialScreenshots();
-
     public abstract WebDriverManager getWebDriverManager();
 
     public abstract void buildCapabilitiesFrom(Configuration.WebDriver webDriverConfiguration, Configuration.SeleniumLogs seleniumLogs);
-
-    public abstract WebDriver buildWebDriver();
 
     public abstract void mergeGridCapabilitiesFrom(Configuration.WebDriver.Grid gridConfiguration);
 
@@ -32,11 +28,15 @@ public abstract class Browser<T extends MutableCapabilities> {
         buildCapabilitiesFrom(webDriverConfiguration, configuration.getSeleniumLogs());
         log.debug("Capabilities: {}", capabilities.toJson());
 
-        final Configuration.WebDriver.Waits waits = webDriverConfiguration.getWaits();
-        final WebDriver webDriver = configuration
+        final RemoteWebDriverBuilder webDriverBuilder = RemoteWebDriver.builder().oneOf(capabilities);
+
+        configuration
                 .getRuntime()
                 .getEnvironment()
-                .buildFrom(configuration, this);
+                .buildFrom(configuration, this, webDriverBuilder);
+
+        final WebDriver webDriver = webDriverBuilder.build();
+        final Configuration.WebDriver.Waits waits = webDriverConfiguration.getWaits();
 
         webDriver
                 .manage()

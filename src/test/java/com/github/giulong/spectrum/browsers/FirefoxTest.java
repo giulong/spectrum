@@ -8,14 +8,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -65,12 +65,6 @@ class FirefoxTest {
     }
 
     @Test
-    @DisplayName("takesPartialScreenshots should return false")
-    public void takesPartialScreenshots() {
-        assertFalse(firefox.takesPartialScreenshots());
-    }
-
-    @Test
     @DisplayName("getWebDriverManager should return call the firefoxdriver method")
     public void getWebDriverManager() {
         when(WebDriverManager.firefoxdriver()).thenReturn(webDriverManager);
@@ -103,19 +97,6 @@ class FirefoxTest {
         verify(firefoxOptions, times(times)).setBinary(binaryPath);
 
         firefoxOptionsMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("buildWebDriver should return a ChromeDriver with the capabilities")
-    public void buildWebDriver() {
-        firefox.capabilities = firefoxOptions;
-
-        MockedConstruction<FirefoxDriver> firefoxDriverMockedConstruction = mockConstruction(FirefoxDriver.class,
-                (mock, context) -> assertEquals(firefoxOptions, context.arguments().get(0)));
-        final WebDriver actual = firefox.buildWebDriver();
-        assertEquals(firefoxDriverMockedConstruction.constructed().get(0), actual);
-
-        firefoxDriverMockedConstruction.close();
     }
 
     @Test

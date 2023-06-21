@@ -3,7 +3,6 @@ package com.github.giulong.spectrum;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
-import com.github.giulong.spectrum.browsers.Browser;
 import com.github.giulong.spectrum.pojos.Configuration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -63,10 +62,6 @@ class SpectrumEntityTest {
     @Mock
     private ExtentTest extentTest;
 
-    @SuppressWarnings("rawtypes")
-    @Mock
-    private Browser browser;
-
     @Mock(extraInterfaces = TakesScreenshot.class)
     private WebDriver webDriver;
 
@@ -91,12 +86,8 @@ class SpectrumEntityTest {
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(reportsFolder.toString());
-        when(configuration.getRuntime()).thenReturn(runtime);
-        //noinspection unchecked
-        when(runtime.getBrowser()).thenReturn(browser);
-        when(browser.takesPartialScreenshots()).thenReturn(false);
-
-        when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
+        when(webDriver.findElement(By.tagName("body"))).thenReturn(webElement);
+        when(webElement.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
         return reportsFolder;
     }
@@ -109,8 +100,7 @@ class SpectrumEntityTest {
         assertTrue(Files.exists(screenShotPath));
         assertEquals(Path.of(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
         assertThat(Path.of(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
-        verify(((TakesScreenshot) webDriver)).getScreenshotAs(BYTES);
-        verify(webDriver, never()).findElement(By.tagName("body"));
+        verify(webElement).getScreenshotAs(BYTES);
         verify(extentTest).log(status, "<div class=\"screenshot-container\">blah</div>", screenShot);
 
         Files.delete(screenShotPath);
@@ -173,34 +163,6 @@ class SpectrumEntityTest {
     @DisplayName("addScreenshotToReport should add the provided message to the report, at the provided status level and attaching a screenshot")
     public void addScreenshotToReport() throws IOException {
         addScreenshotToReportVerifications(addScreenshotToReportStubs(), spectrumEntity.addScreenshotToReport("blah", INFO), INFO);
-    }
-
-    @Test
-    @DisplayName("addScreenshotToReport should work also if the browser can take partial screenshots")
-    public void addScreenshotToReportTakesPartialScreenshots() throws IOException {
-        final Path reportsFolder = Files.createTempDirectory("reportsFolder");
-        reportsFolder.toFile().deleteOnExit();
-
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getReportFolder()).thenReturn(reportsFolder.toString());
-        when(configuration.getRuntime()).thenReturn(runtime);
-        //noinspection unchecked
-        when(runtime.getBrowser()).thenReturn(browser);
-        when(browser.takesPartialScreenshots()).thenReturn(true);
-        when(webDriver.findElement(By.tagName("body"))).thenReturn(webElement);
-        when(webElement.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
-
-        final Media screenShot = spectrumEntity.addScreenshotToReport("blah", INFO);
-        assertNotNull(screenShot);
-
-        final String screenShotName = screenShot.getPath();
-        final Path screenShotPath = Path.of(reportsFolder.toString(), screenShotName);
-        assertTrue(Files.exists(screenShotPath));
-        assertEquals(Path.of(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
-        assertThat(Path.of(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
-        verify(extentTest).log(INFO, "<div class=\"screenshot-container\">blah</div>", screenShot);
-
-        Files.delete(screenShotPath);
     }
 
     @DisplayName("deleteDownloadsFolder should delete and recreate the downloads folder")

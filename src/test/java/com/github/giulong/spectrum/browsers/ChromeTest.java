@@ -12,8 +12,6 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 
@@ -22,7 +20,6 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 import static org.openqa.selenium.logging.LogType.*;
@@ -74,12 +71,6 @@ class ChromeTest {
     }
 
     @Test
-    @DisplayName("takesPartialScreenshots should return true")
-    public void takesPartialScreenshots() {
-        assertTrue(chrome.takesPartialScreenshots());
-    }
-
-    @Test
     @DisplayName("getWebDriverManager should return call the chromedriver method")
     public void getWebDriverManager() {
         when(WebDriverManager.chromedriver()).thenReturn(webDriverManager);
@@ -116,19 +107,6 @@ class ChromeTest {
 
         chromeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("buildWebDriver should return a ChromeDriver with the capabilities")
-    public void buildWebDriver() {
-        chrome.capabilities = chromeOptions;
-
-        MockedConstruction<ChromeDriver> chromeDriverMockedConstruction = mockConstruction(ChromeDriver.class,
-                (mock, context) -> assertEquals(chromeOptions, context.arguments().get(0)));
-        final WebDriver actual = chrome.buildWebDriver();
-        assertEquals(chromeDriverMockedConstruction.constructed().get(0), actual);
-
-        chromeDriverMockedConstruction.close();
     }
 
     @Test

@@ -11,7 +11,6 @@ import com.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -103,12 +102,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     public Media addScreenshotToReport(final String msg, final Status status) {
         final String fileName = String.format("%s.png", randomUUID());
         final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
-        final TakesScreenshot takesScreenshot = configuration.getRuntime().getBrowser().takesPartialScreenshots()
-                ? webDriver.findElement(By.tagName("body"))
-                : ((TakesScreenshot) webDriver);
 
         Files.createDirectories(screenshotPath.getParent());
-        Files.write(screenshotPath, takesScreenshot.getScreenshotAs(BYTES));
+        Files.write(screenshotPath,  webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES));
 
         final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
         extentTest.log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
