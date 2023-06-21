@@ -35,7 +35,7 @@ class LocalEnvironmentTest {
     public void buildFromDownload() {
         when(browser.getWebDriverManager()).thenReturn(webDriverManager);
 
-        localEnvironment.buildFrom(configuration, browser);
+        localEnvironment.buildFrom(configuration, browser, null);
 
         verify(webDriverManager).setup();
     }

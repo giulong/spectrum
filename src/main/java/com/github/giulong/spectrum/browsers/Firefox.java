@@ -2,18 +2,11 @@ package com.github.giulong.spectrum.browsers;
 
 import com.github.giulong.spectrum.pojos.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
 import static io.github.bonigarcia.wdm.WebDriverManager.firefoxdriver;
 
 public class Firefox extends Browser<FirefoxOptions> {
-
-    @Override
-    public boolean takesPartialScreenshots() {
-        return false;
-    }
 
     @Override
     public WebDriverManager getWebDriverManager() {
@@ -34,11 +27,6 @@ public class Firefox extends Browser<FirefoxOptions> {
         capabilities.setAcceptInsecureCerts(true);
 
         firefoxConfig.getPreferences().forEach(this::addPreference);
-    }
-
-    @Override
-    public WebDriver buildWebDriver() {
-        return new FirefoxDriver(capabilities);
     }
 
     @Override

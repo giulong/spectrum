@@ -183,7 +183,7 @@ class EventHandlerTest {
     @Test
     @DisplayName("handleSilently should ignore any exception thrown when handling the provided event")
     public void handleSilently() {
-        final String exceptionMessage = "exceptionMessage";
+        final String exceptionMessage = "THE STACKTRACE BELOW IS EXPECTED!!!";
         final Event event = mock(Event.class);
 
         when(event.getContext()).thenThrow(new RuntimeException(exceptionMessage));

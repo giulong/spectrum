@@ -9,11 +9,6 @@ import static org.openqa.selenium.logging.LogType.*;
 
 public abstract class Chromium<T extends MutableCapabilities> extends Browser<T> {
 
-    @Override
-    public boolean takesPartialScreenshots() {
-        return true;
-    }
-
     public void setLoggingPreferencesFrom(final Configuration.SeleniumLogs seleniumLogs) {
         final LoggingPreferences logPrefs = new LoggingPreferences();
         logPrefs.enable(BROWSER, seleniumLogs.getBrowser());

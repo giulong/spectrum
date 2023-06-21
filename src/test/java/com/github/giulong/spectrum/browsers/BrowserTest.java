@@ -17,6 +17,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.support.ThreadGuard;
 
 import java.time.Duration;
@@ -36,7 +37,6 @@ class BrowserTest {
     private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
     private MockedStatic<ThreadGuard> threadGuardMockedStatic;
 
-    private MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction;
     private MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction;
 
     @Mock
@@ -90,6 +90,9 @@ class BrowserTest {
     @Mock
     private Environment environment;
 
+    @Mock
+    private RemoteWebDriverBuilder webDriverBuilder;
+
     @InjectMocks
     private Chrome browser;
 
@@ -98,7 +101,6 @@ class BrowserTest {
         webDriverManagerMockedStatic = mockStatic(WebDriverManager.class);
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
-        chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class);
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
     }
 
@@ -107,7 +109,6 @@ class BrowserTest {
         webDriverManagerMockedStatic.close();
         remoteWebDriverMockedStatic.close();
         threadGuardMockedStatic.close();
-        chromeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();
     }
 
@@ -125,12 +126,17 @@ class BrowserTest {
         when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
         when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of("one", "value"));
 
+        MockedConstruction<ChromeOptions> mockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
+            when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
+            when(webDriverBuilder.oneOf(mock)).thenReturn(webDriverBuilder);
+            when(webDriverBuilder.build()).thenReturn(webDriver);
+        });
+
         when(waits.getImplicit()).thenReturn(implicitDuration);
         when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);
         when(waits.getScriptTimeout()).thenReturn(scriptDuration);
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getEnvironment()).thenReturn(environment);
-        when(environment.buildFrom(configuration, browser)).thenReturn(webDriver);
         when(webDriver.manage()).thenReturn(options);
         when(options.timeouts()).thenReturn(timeouts);
         when(webDriverConfig.getWaits()).thenReturn(waits);
@@ -143,7 +149,10 @@ class BrowserTest {
         final WebDriver actual = browser.build(configuration);
         final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
 
+        verify(environment).buildFrom(configuration, browser, webDriverBuilder);
         assertEquals(protectedWebDriver, threadLocalWebDriver);
         assertEquals(protectedWebDriver, actual);
+
+        mockedConstruction.close();
     }
 }
