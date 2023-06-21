@@ -21,16 +21,6 @@ public class Firefox extends Browser<FirefoxOptions> {
     }
 
     @Override
-    public String getSystemPropertyName() {
-        return "webDriver.gecko.driver";
-    }
-
-    @Override
-    public String getDriverName() {
-        return "geckodriver.exe";
-    }
-
-    @Override
     public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
         final Configuration.WebDriver.Firefox firefoxConfig = webDriverConfiguration.getFirefox();
         capabilities = new FirefoxOptions();

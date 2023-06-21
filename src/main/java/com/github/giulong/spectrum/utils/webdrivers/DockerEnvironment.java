@@ -15,8 +15,6 @@ public class DockerEnvironment extends Environment {
 
         browser
                 .getWebDriverManager()
-                .avoidOutputTree()
-                .cachePath(configuration.getRuntime().getDriversPath())
                 .browserInDocker()
                 .setup();
 

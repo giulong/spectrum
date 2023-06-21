@@ -77,18 +77,6 @@ class FirefoxTest {
         assertEquals(webDriverManager, firefox.getWebDriverManager());
     }
 
-    @Test
-    @DisplayName("getSystemPropertyName should return webDriver.gecko.driver")
-    public void getSystemPropertyName() {
-        assertEquals("webDriver.gecko.driver", firefox.getSystemPropertyName());
-    }
-
-    @Test
-    @DisplayName("getDriverName should return the name of the executable")
-    public void getDriverName() {
-        assertEquals("geckodriver.exe", firefox.getDriverName());
-    }
-
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration, and set the binary path if specified")
     @ParameterizedTest(name = "with value {0} we expect {1} invocations")
     @CsvSource(value = {

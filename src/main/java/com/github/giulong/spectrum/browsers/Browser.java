@@ -20,10 +20,6 @@ public abstract class Browser<T extends MutableCapabilities> {
 
     public abstract WebDriverManager getWebDriverManager();
 
-    public abstract String getSystemPropertyName();
-
-    public abstract String getDriverName();
-
     public abstract void buildCapabilitiesFrom(Configuration.WebDriver webDriverConfiguration, Configuration.SeleniumLogs seleniumLogs);
 
     public abstract WebDriver buildWebDriver();

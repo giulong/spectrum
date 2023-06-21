@@ -86,18 +86,6 @@ class EdgeTest {
     }
 
     @Test
-    @DisplayName("getSystemPropertyName should return webDriver.chrome.driver")
-    public void getSystemPropertyName() {
-        assertEquals("webDriver.chrome.driver", edge.getSystemPropertyName());
-    }
-
-    @Test
-    @DisplayName("getDriverName should return the name of the executable")
-    public void getDriverName() {
-        assertEquals("msedgedriver.exe", edge.getDriverName());
-    }
-
-    @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
     public void buildCapabilitiesFrom() {
         when(webDriverConfig.getEdge()).thenReturn(edgeConfig);

@@ -58,6 +58,7 @@ class InterpolatedStringDeserializerTest {
                 arguments("${notSet:-local.dots}", "local.dots"),
                 arguments("${varInEnv:-local}", varInEnv),
                 arguments("${varInEnv}", varInEnv),
+                arguments("${varInEnv:-~/local}", varInEnv),
                 arguments("${not.set}", "${not.set}"),
                 arguments("${notSet}", "${notSet}")
         );

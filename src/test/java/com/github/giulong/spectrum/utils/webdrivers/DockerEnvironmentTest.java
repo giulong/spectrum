@@ -26,9 +26,6 @@ class DockerEnvironmentTest {
     private Browser<?> browser;
 
     @Mock
-    private Configuration.Runtime runtime;
-
-    @Mock
     private WebDriverManager webDriverManager;
 
     @Mock
@@ -40,13 +37,7 @@ class DockerEnvironmentTest {
     @Test
     @DisplayName("buildFrom should configure webDriverManager with docker")
     public void buildFrom() {
-        final String driversPath = "driversPath";
-
-        when(configuration.getRuntime()).thenReturn(runtime);
-        when(runtime.getDriversPath()).thenReturn(driversPath);
         when(browser.getWebDriverManager()).thenReturn(webDriverManager);
-        when(webDriverManager.avoidOutputTree()).thenReturn(webDriverManager);
-        when(webDriverManager.cachePath(driversPath)).thenReturn(webDriverManager);
         when(webDriverManager.browserInDocker()).thenReturn(webDriverManager);
         when(browser.buildWebDriver()).thenReturn(webDriver);
 

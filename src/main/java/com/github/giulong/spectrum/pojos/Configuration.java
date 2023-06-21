@@ -37,7 +37,6 @@ public class Configuration {
 		@JsonSerialize(using = ToStringSerializer.class)
 		private Browser<?> browser;
 		private Environment environment;
-		private String driversPath;
 		private String filesFolder;
 		private String downloadsFolder;
 	}

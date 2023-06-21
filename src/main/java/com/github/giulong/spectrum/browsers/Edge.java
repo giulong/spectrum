@@ -16,11 +16,6 @@ public class Edge extends Chromium<EdgeOptions> {
     }
 
     @Override
-    public String getDriverName() {
-        return "msedgedriver.exe";
-    }
-
-    @Override
     public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
         capabilities = new EdgeOptions();
         capabilities.setAcceptInsecureCerts(true);
