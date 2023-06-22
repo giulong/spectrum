@@ -90,7 +90,6 @@ public class Configuration {
 
 		@Getter
 		public static class Firefox {
-			private String binary;
 			private List<String> args;
 			private FirefoxDriverLogLevel logLevel;
 			private Map<String, Object> preferences;

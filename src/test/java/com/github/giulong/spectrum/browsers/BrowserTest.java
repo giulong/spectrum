@@ -126,7 +126,7 @@ class BrowserTest {
         when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
         when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of("one", "value"));
 
-        MockedConstruction<ChromeOptions> mockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
+        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
             when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
             when(webDriverBuilder.oneOf(mock)).thenReturn(webDriverBuilder);
             when(webDriverBuilder.build()).thenReturn(webDriver);
@@ -149,10 +149,11 @@ class BrowserTest {
         final WebDriver actual = browser.build(configuration);
         final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
 
+        verify(chromeOptionsMockedConstruction.constructed().get(0)).setAcceptInsecureCerts(true);
         verify(environment).buildFrom(configuration, browser, webDriverBuilder);
         assertEquals(protectedWebDriver, threadLocalWebDriver);
         assertEquals(protectedWebDriver, actual);
 
-        mockedConstruction.close();
+        chromeOptionsMockedConstruction.close();
     }
 }

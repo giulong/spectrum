@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 
 import java.net.MalformedURLException;
@@ -29,7 +29,7 @@ class GridEnvironmentTest {
     private Configuration configuration;
 
     @Mock
-    private Browser<MutableCapabilities> browser;
+    private Browser<AbstractDriverOptions<?>> browser;
 
     @Mock
     private Configuration.WebDriver webDriverConfiguration;

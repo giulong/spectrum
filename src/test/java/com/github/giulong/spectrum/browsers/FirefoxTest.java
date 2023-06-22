@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -71,20 +70,15 @@ class FirefoxTest {
         assertEquals(webDriverManager, firefox.getWebDriverManager());
     }
 
-    @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration, and set the binary path if specified")
-    @ParameterizedTest(name = "with value {0} we expect {1} invocations")
-    @CsvSource(value = {
-            "binaryPath,1",
-            "NIL,0"
-    }, nullValues = "NIL")
-    public void buildCapabilitiesFrom(final String binaryPath, final int times) {
+    @Test
+    @DisplayName("buildCapabilitiesFrom should build an instance of Firefox based on the provided configuration")
+    public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
 
         when(webDriverConfig.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
         when(firefoxConfig.getLogLevel()).thenReturn(firefoxDriverLogLevel);
         when(firefoxConfig.getPreferences()).thenReturn(Map.of("one", "value"));
-        when(firefoxConfig.getBinary()).thenReturn(binaryPath);
 
         MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class);
 
@@ -92,9 +86,7 @@ class FirefoxTest {
         final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().get(0);
         verify(firefoxOptions).addArguments(arguments);
         verify(firefoxOptions).setLogLevel(firefoxDriverLogLevel);
-        verify(firefoxOptions).setAcceptInsecureCerts(true);
         verify(firefoxOptions).addPreference("one", "value");
-        verify(firefoxOptions, times(times)).setBinary(binaryPath);
 
         firefoxOptionsMockedConstruction.close();
     }

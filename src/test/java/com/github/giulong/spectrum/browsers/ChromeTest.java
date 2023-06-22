@@ -95,7 +95,6 @@ class ChromeTest {
         chrome.buildCapabilitiesFrom(webDriverConfig, seleniumLogs);
         final ChromeOptions chromeOptions = chromeOptionsMockedConstruction.constructed().get(0);
         verify(chromeOptions).addArguments(arguments);
-        verify(chromeOptions).setAcceptInsecureCerts(true);
 
         final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().get(0);
         verify(loggingPreferences).enable(BROWSER, browserLevel);
