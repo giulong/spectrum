@@ -104,7 +104,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
 
         Files.createDirectories(screenshotPath.getParent());
-        Files.write(screenshotPath,  webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES));
+        Files.write(screenshotPath, webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES));
 
         final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
         extentTest.log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
