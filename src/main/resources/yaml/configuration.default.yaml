@@ -55,7 +55,6 @@ webDriver:
 
   # Firefox capabilities. See: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
   firefox:
-    binary: null
     args: [ ]
     logLevel: INFO
     preferences:

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -22,7 +22,7 @@ class LocalEnvironmentTest {
     private Configuration configuration;
 
     @Mock
-    private Browser<MutableCapabilities> browser;
+    private Browser<AbstractDriverOptions<?>> browser;
 
     @Mock
     private WebDriverManager webDriverManager;

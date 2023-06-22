@@ -16,15 +16,10 @@ public class Firefox extends Browser<FirefoxOptions> {
     @Override
     public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
         final Configuration.WebDriver.Firefox firefoxConfig = webDriverConfiguration.getFirefox();
+
         capabilities = new FirefoxOptions();
-
-        if (firefoxConfig.getBinary() != null) {
-            capabilities.setBinary(firefoxConfig.getBinary());
-        }
-
         capabilities.addArguments(firefoxConfig.getArgs());
         capabilities.setLogLevel(firefoxConfig.getLogLevel());
-        capabilities.setAcceptInsecureCerts(true);
 
         firefoxConfig.getPreferences().forEach(this::addPreference);
     }

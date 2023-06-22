@@ -89,9 +89,8 @@ class EdgeTest {
 
         edge.buildCapabilitiesFrom(webDriverConfig, seleniumLogs);
         final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().get(0);
-        verify(edgeOptions).setAcceptInsecureCerts(true);
-
         final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().get(0);
+
         verify(loggingPreferences).enable(BROWSER, browserLevel);
         verify(loggingPreferences).enable(DRIVER, driverLevel);
         verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);

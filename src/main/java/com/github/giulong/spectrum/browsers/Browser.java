@@ -3,14 +3,14 @@ package com.github.giulong.spectrum.browsers;
 import com.github.giulong.spectrum.pojos.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.support.ThreadGuard;
 
 @Slf4j
-public abstract class Browser<T extends MutableCapabilities> {
+public abstract class Browser<T extends AbstractDriverOptions<?>> {
 
     public static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
 
@@ -26,6 +26,7 @@ public abstract class Browser<T extends MutableCapabilities> {
         final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
 
         buildCapabilitiesFrom(webDriverConfiguration, configuration.getSeleniumLogs());
+        capabilities.setAcceptInsecureCerts(true);
         log.debug("Capabilities: {}", capabilities.toJson());
 
         final RemoteWebDriverBuilder webDriverBuilder = RemoteWebDriver.builder().oneOf(capabilities);
