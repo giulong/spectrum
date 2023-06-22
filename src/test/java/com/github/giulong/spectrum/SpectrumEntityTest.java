@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import com.github.giulong.spectrum.pojos.Configuration;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
@@ -46,6 +48,7 @@ import static org.openqa.selenium.OutputType.BYTES;
 class SpectrumEntityTest {
 
     private static final String UUID_REGEX = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
+    private static Path reportsFolder;
 
     @Mock
     private WebDriverWait downloadWait;
@@ -80,9 +83,18 @@ class SpectrumEntityTest {
     @InjectMocks
     private DummySpectrumEntity<?> spectrumEntity;
 
+    @AfterAll
+    public static void afterAll() throws IOException {
+        if (Files.exists(reportsFolder)) {
+            try (Stream<Path> files = Files.walk(reportsFolder)) {
+                //noinspection ResultOfMethodCallIgnored
+                files.map(Path::toFile).forEach(File::delete);
+            }
+        }
+    }
+
     private Path addScreenshotToReportStubs() throws IOException {
-        final Path reportsFolder = Files.createTempDirectory("reportsFolder");
-        reportsFolder.toFile().deleteOnExit();
+        reportsFolder = Files.createTempDirectory("reportsFolder");
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(reportsFolder.toString());
@@ -90,20 +102,6 @@ class SpectrumEntityTest {
         when(webElement.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
         return reportsFolder;
-    }
-
-    private void addScreenshotToReportVerifications(final Path reportsFolder, final Media screenShot, final Status status) throws IOException {
-        assertNotNull(screenShot);
-
-        final String screenShotName = screenShot.getPath();
-        final Path screenShotPath = Path.of(reportsFolder.toString(), screenShotName);
-        assertTrue(Files.exists(screenShotPath));
-        assertEquals(Path.of(screenShotName).getParent().toString(), SCREEN_SHOT_FOLDER);
-        assertThat(Path.of(screenShotName).getFileName().toString(), matchesPattern(UUID_REGEX));
-        verify(webElement).getScreenshotAs(BYTES);
-        verify(extentTest).log(status, "<div class=\"screenshot-container\">blah</div>", screenShot);
-
-        Files.delete(screenShotPath);
     }
 
     @Test
@@ -142,27 +140,73 @@ class SpectrumEntityTest {
     }
 
     @Test
+    @DisplayName("screenshot should delegate to addScreenshotToReport")
+    public void screenshot() throws IOException {
+        addScreenshotToReportStubs();
+
+        assertEquals(spectrumEntity, spectrumEntity.screenshot());
+
+        verify(webElement).getScreenshotAs(BYTES);
+        verify(extentTest).log(eq(INFO), (String) eq(null), any());
+    }
+
+    @Test
     @DisplayName("infoWithScreenshot should delegate to addScreenshotToReport")
     public void infoWithScreenshot() throws IOException {
-        addScreenshotToReportVerifications(addScreenshotToReportStubs(), spectrumEntity.infoWithScreenshot("blah"), INFO);
+        final String msg = "msg";
+        addScreenshotToReportStubs();
+
+        assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(msg));
+
+        verify(webElement).getScreenshotAs(BYTES);
+        verify(extentTest).log(eq(INFO), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
     }
 
     @Test
     @DisplayName("warningWithScreenshot should delegate to addScreenshotToReport")
     public void warningWithScreenshot() throws IOException {
-        addScreenshotToReportVerifications(addScreenshotToReportStubs(), spectrumEntity.warningWithScreenshot("blah"), WARNING);
+        final String msg = "msg";
+        addScreenshotToReportStubs();
+
+        assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(msg));
+
+        verify(webElement).getScreenshotAs(BYTES);
+        verify(extentTest).log(eq(WARNING), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
     }
 
     @Test
     @DisplayName("failWithScreenshot should delegate to addScreenshotToReport")
     public void failWithScreenshot() throws IOException {
-        addScreenshotToReportVerifications(addScreenshotToReportStubs(), spectrumEntity.failWithScreenshot("blah"), FAIL);
+        final String msg = "msg";
+        addScreenshotToReportStubs();
+
+        assertEquals(spectrumEntity, spectrumEntity.screenshotFail(msg));
+
+        verify(webElement).getScreenshotAs(BYTES);
+        verify(extentTest).log(eq(FAIL), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
     }
 
     @Test
     @DisplayName("addScreenshotToReport should add the provided message to the report, at the provided status level and attaching a screenshot")
     public void addScreenshotToReport() throws IOException {
-        addScreenshotToReportVerifications(addScreenshotToReportStubs(), spectrumEntity.addScreenshotToReport("blah", INFO), INFO);
+        final Path reportsFolder = addScreenshotToReportStubs();
+        final String msg = "msg";
+        final Status status = INFO;
+        final Media screenShot = spectrumEntity.addScreenshotToReport(msg, status);
+
+        assertNotNull(screenShot);
+
+        final String screenShotName = screenShot.getPath();
+        final Path screenshotPath = Path.of(screenShotName);
+        final Path fullScreenShotPath = Path.of(reportsFolder.toString(), screenShotName);
+
+        assertTrue(Files.exists(fullScreenShotPath));
+        assertEquals(screenshotPath.getParent().toString(), SCREEN_SHOT_FOLDER);
+        assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
+        verify(webElement).getScreenshotAs(BYTES);
+        verify(extentTest).log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenShot);
+
+        Files.delete(fullScreenShotPath);
     }
 
     @DisplayName("deleteDownloadsFolder should delete and recreate the downloads folder")

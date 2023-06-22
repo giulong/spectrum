@@ -71,7 +71,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     @Shared
     protected Data data;
 
-    public List<Field> getSharedFields() {
+    protected List<Field> getSharedFields() {
         return Arrays
                 .stream(SpectrumEntity.class.getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(Shared.class))
@@ -85,17 +85,32 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
-    // TODO fluent
-    public Media infoWithScreenshot(final String msg) {
-        return addScreenshotToReport(msg, INFO);
+    public T screenshot() {
+        addScreenshotToReport(null, INFO);
+
+        //noinspection unchecked
+        return (T) this;
     }
 
-    public Media warningWithScreenshot(final String msg) {
-        return addScreenshotToReport(msg, WARNING);
+    public T screenshotInfo(final String msg) {
+        addScreenshotToReport(msg, INFO);
+
+        //noinspection unchecked
+        return (T) this;
     }
 
-    public Media failWithScreenshot(final String msg) {
-        return addScreenshotToReport(msg, FAIL);
+    public T screenshotWarning(final String msg) {
+        addScreenshotToReport(msg, WARNING);
+
+        //noinspection unchecked
+        return (T) this;
+    }
+
+    public T screenshotFail(final String msg) {
+        addScreenshotToReport(msg, FAIL);
+
+        //noinspection unchecked
+        return (T) this;
     }
 
     @SneakyThrows
@@ -107,7 +122,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         Files.write(screenshotPath, webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES));
 
         final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
-        extentTest.log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
+        extentTest.log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
 
         return screenshot;
     }
