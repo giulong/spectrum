@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -36,6 +37,7 @@ import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.Status.*;
 import static com.github.giulong.spectrum.SpectrumEntity.SCREEN_SHOT_FOLDER;
+import static java.util.Comparator.reverseOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
@@ -48,7 +50,7 @@ import static org.openqa.selenium.OutputType.BYTES;
 class SpectrumEntityTest {
 
     private static final String UUID_REGEX = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
-    private static Path reportsFolder;
+    private static final List<Path> REPORTS_FOLDERS = new ArrayList<>();
 
     @Mock
     private WebDriverWait downloadWait;
@@ -84,24 +86,30 @@ class SpectrumEntityTest {
     private DummySpectrumEntity<?> spectrumEntity;
 
     @AfterAll
-    public static void afterAll() throws IOException {
-        if (Files.exists(reportsFolder)) {
-            try (Stream<Path> files = Files.walk(reportsFolder)) {
+    public static void afterAll() {
+        REPORTS_FOLDERS.forEach(folder -> {
+            try (Stream<Path> files = Files.walk(folder)) {
                 //noinspection ResultOfMethodCallIgnored
-                files.map(Path::toFile).forEach(File::delete);
+                files
+                        .sorted(reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        }
+        });
     }
 
     private Path addScreenshotToReportStubs() throws IOException {
-        reportsFolder = Files.createTempDirectory("reportsFolder");
+        final Path path = Files.createTempDirectory("reportsFolder");
+        REPORTS_FOLDERS.add(path);
 
         when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getReportFolder()).thenReturn(reportsFolder.toString());
+        when(extent.getReportFolder()).thenReturn(path.toString());
         when(webDriver.findElement(By.tagName("body"))).thenReturn(webElement);
         when(webElement.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
-        return reportsFolder;
+        return path;
     }
 
     @Test
@@ -205,8 +213,6 @@ class SpectrumEntityTest {
         assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(webElement).getScreenshotAs(BYTES);
         verify(extentTest).log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenShot);
-
-        Files.delete(fullScreenShotPath);
     }
 
     @DisplayName("deleteDownloadsFolder should delete and recreate the downloads folder")

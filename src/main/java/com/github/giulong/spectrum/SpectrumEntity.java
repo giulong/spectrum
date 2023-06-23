@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
+import static java.util.Comparator.reverseOrder;
 import static java.util.UUID.randomUUID;
 import static org.openqa.selenium.OutputType.BYTES;
 
@@ -137,6 +138,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
             try (Stream<Path> files = Files.walk(downloadPath)) {
                 files
+                        .sorted(reverseOrder())
                         .map(Path::toFile)
                         .forEach(f -> log.trace("File '{}' deleted? {}", f, f.delete()));
             }
