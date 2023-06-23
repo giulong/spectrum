@@ -29,6 +29,8 @@ jobs:
       with:
         repository: giulong/spectrum-examples
         ref: main
+        path: ./examples
+        token: ${{ secrets.CLONE_REPO }}
 
     - name: Generate Jacoco Badge
       id: jacoco
