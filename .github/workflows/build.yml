@@ -32,6 +32,7 @@ jobs:
         path: ./examples
         ssh-key: ${{ secrets.CLONE_REPO }}
 
+
     - name: Generate Jacoco Badge
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2
