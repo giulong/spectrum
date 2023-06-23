@@ -30,7 +30,7 @@ jobs:
         repository: giulong/spectrum-examples
         ref: main
         path: ./examples
-        token: ${{ secrets.CLONE_REPO }}
+        token: ${{ secrets.clone_internal_repos }}
 
     - name: Generate Jacoco Badge
       id: jacoco
