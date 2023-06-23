@@ -37,6 +37,6 @@ class DockerEnvironmentTest {
 
         dockerEnvironment.buildFrom(configuration, browser, null);
 
-        verify(webDriverManager).setup();
+        verify(webDriverManager).create();
     }
 }

@@ -12,6 +12,6 @@ public class DockerEnvironment extends Environment {
     @Override
     public void buildFrom(final Configuration configuration, final Browser<? extends MutableCapabilities> browser, final RemoteWebDriverBuilder webDriverBuilder) {
         log.info("Running in Docker");
-        browser.getWebDriverManager().browserInDocker().setup();
+        browser.getWebDriverManager().browserInDocker().create();
     }
 }
