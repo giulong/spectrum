@@ -21,8 +21,13 @@ public class TestBookHandler extends EventHandler {
 
     public void handle(final Event event) {
         final ExtensionContext context = event.getContext();
+        final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getTestBook();
+
+        if (testBook == null) {
+            return;
+        }
+
         final Result result = event.getResult();
-        final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getApplication().getTestBook();
         final TestBookStatistics statistics = testBook.getStatistics();
         final Map<String, TestBookTest> mappedTests = testBook.getMappedTests();
         final String className = context.getParent().orElseThrow().getDisplayName();

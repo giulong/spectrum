@@ -62,7 +62,11 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @Override
     public void launcherSessionClosed(final LauncherSession session) {
-        configuration.getApplication().getTestBook().flush();
+        final TestBook testBook = configuration.getTestBook();
+        if (testBook != null) {
+            configuration.getTestBook().flush();
+        }
+
         extentReports.flush();
         eventsDispatcher.dispatch(AFTER, Set.of(SUITE));
     }
@@ -92,7 +96,12 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     }
 
     protected void parseTestBook() {
-        final TestBook testBook = configuration.getApplication().getTestBook();
+        final TestBook testBook = configuration.getTestBook();
+        if (testBook == null) {
+            log.debug("No Testbook provided in configuration");
+            return;
+        }
+
         final List<TestBookTest> tests = testBook.getParser().parse();
         final Map<String, Set<TestBookTest>> groupedMappedTests = testBook.getGroupedMappedTests();
 

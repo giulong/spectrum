@@ -67,9 +67,6 @@ class SpectrumSessionListenerTest {
     private ExtentSparkReporterConfig extentSparkReporterConfig;
 
     @Mock
-    private Configuration.Application application;
-
-    @Mock
     private TestBook testBook;
 
     @Mock
@@ -167,8 +164,7 @@ class SpectrumSessionListenerTest {
         when(fileUtils.readProperties("/spectrum.properties")).thenReturn(properties);
         when(fileUtils.read("/banner.txt")).thenReturn(banner);
         when(properties.getProperty("version")).thenReturn(version);
-        when(configuration.getApplication()).thenReturn(application);
-        when(application.getTestBook()).thenReturn(testBook);
+        when(configuration.getTestBook()).thenReturn(testBook);
         when(testBook.getMappedTests()).thenReturn(mappedTests);
         when(testBook.getParser()).thenReturn(testBookParser);
         when(testBookParser.parse()).thenReturn(tests);
@@ -222,8 +218,7 @@ class SpectrumSessionListenerTest {
     @Test
     @DisplayName("launcherSessionClosed should flush the testbook and the extent report")
     public void launcherSessionClosed() {
-        when(configuration.getApplication()).thenReturn(application);
-        when(application.getTestBook()).thenReturn(testBook);
+        when(configuration.getTestBook()).thenReturn(testBook);
 
         final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
         SpectrumSessionListener.configuration = configuration;
@@ -232,6 +227,22 @@ class SpectrumSessionListenerTest {
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
         verify(testBook).flush();
+        verify(extentReports).flush();
+        verify(eventsDispatcher).dispatch(AFTER, Set.of(SUITE));
+    }
+
+    @Test
+    @DisplayName("launcherSessionClosed should check if the testbook is not null")
+    public void launcherSessionClosedTestBookNull() {
+        when(configuration.getTestBook()).thenReturn(null);
+
+        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+        SpectrumSessionListener.configuration = configuration;
+        SpectrumSessionListener.extentReports = extentReports;
+        SpectrumSessionListener.eventsDispatcher = eventsDispatcher;
+        spectrumSessionListener.launcherSessionClosed(launcherSession);
+
+        verify(testBook, never()).flush();
         verify(extentReports).flush();
         verify(eventsDispatcher).dispatch(AFTER, Set.of(SUITE));
     }
@@ -323,8 +334,7 @@ class SpectrumSessionListenerTest {
                 .build();
         final List<TestBookTest> tests = List.of(test1, test2);
 
-        when(configuration.getApplication()).thenReturn(application);
-        when(application.getTestBook()).thenReturn(testBook);
+        when(configuration.getTestBook()).thenReturn(testBook);
         when(testBook.getMappedTests()).thenReturn(mappedTests);
         when(testBook.getParser()).thenReturn(testBookParser);
         when(testBookParser.parse()).thenReturn(tests);
@@ -335,6 +345,16 @@ class SpectrumSessionListenerTest {
 
         assertEquals(2, mappedTests.size());
         mappedTests.values().stream().map(TestBookTest::getResult).forEach(result -> assertEquals(NOT_RUN, result));
+    }
+
+    @Test
+    @DisplayName("parseTestBook should do nothing if not provided in the configuration.yaml")
+    public void parseTestBookNull() {
+        when(configuration.getTestBook()).thenReturn(null);
+
+        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+        SpectrumSessionListener.configuration = configuration;
+        spectrumSessionListener.parseTestBook();
     }
 
     @DisplayName("updateGroupedTests should add the provided test to the provided map of grouped tests")
