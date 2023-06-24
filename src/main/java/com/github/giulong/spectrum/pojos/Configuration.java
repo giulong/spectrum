@@ -2,9 +2,9 @@ package com.github.giulong.spectrum.pojos;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.github.giulong.spectrum.browsers.Browser;
 import com.github.giulong.spectrum.utils.events.EventHandler;
 import com.github.giulong.spectrum.utils.testbook.TestBook;
-import com.github.giulong.spectrum.browsers.Browser;
 import com.github.giulong.spectrum.utils.webdrivers.Environment;
 import lombok.Getter;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
@@ -25,6 +25,9 @@ public class Configuration {
 	private Extent extent;
 	private WebDriver webDriver;
 	private Data data;
+
+	@JsonSerialize(using = ToStringSerializer.class)
+	private TestBook testBook;
 	private SeleniumLogs seleniumLogs;
 	private FreeMarker freeMarker;
 	private Events events;
@@ -44,9 +47,6 @@ public class Configuration {
 	@Getter
 	public static class Application {
 		private String baseUrl;
-
-		@JsonSerialize(using = ToStringSerializer.class)
-		private TestBook testBook;
 	}
 
 	@Getter

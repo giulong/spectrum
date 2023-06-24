@@ -28,8 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("TestBookHandler")
@@ -51,9 +50,6 @@ class TestBookHandlerTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.Application application;
-
-    @Mock
     private TestBook testBook;
 
     @Mock
@@ -72,8 +68,22 @@ class TestBookHandlerTest {
     private TestBookHandler testBookHandler;
 
     @Test
-    @DisplayName("updateTestBook should update the testbook with the currently unmapped test")
-    public void updateTestBook() {
+    @DisplayName("handle should do nothing if no testBook is provided")
+    public void handleTestBookNull() {
+        when(event.getContext()).thenReturn(context);
+        when(context.getRoot()).thenReturn(rootContext);
+        when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
+        when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(configuration.getTestBook()).thenReturn(null);
+
+        testBookHandler.handle(event);
+
+        verify(event, never()).getResult();
+    }
+
+    @Test
+    @DisplayName("handle should update the testbook with the currently unmapped test")
+    public void handleUnmapped() {
         final Result result = FAILED;
         final Map<String, TestBookTest> unmappedTests = new HashMap<>();
         final Map<Result, Statistics> grandTotalCount = new HashMap<>();
@@ -92,8 +102,7 @@ class TestBookHandlerTest {
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getApplication()).thenReturn(application);
-        when(application.getTestBook()).thenReturn(testBook);
+        when(configuration.getTestBook()).thenReturn(testBook);
         when(testBook.getUnmappedTests()).thenReturn(unmappedTests);
         when(testBook.getStatistics()).thenReturn(statistics);
         when(testBook.getGroupedUnmappedTests()).thenReturn(groupedUnmappedTests);
@@ -114,7 +123,6 @@ class TestBookHandlerTest {
         assertEquals(457, statistics.getGrandTotalWeightedCount().get(result).getTotal().get());
         assertTrue(testBook.getGroupedUnmappedTests().get("className").contains(unmappedTest));
     }
-
 
     @Test
     @DisplayName("handle should update the testbook with the currently finished test")
@@ -148,8 +156,7 @@ class TestBookHandlerTest {
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getApplication()).thenReturn(application);
-        when(application.getTestBook()).thenReturn(testBook);
+        when(configuration.getTestBook()).thenReturn(testBook);
         when(testBook.getMappedTests()).thenReturn(mappedTests);
         when(testBook.getStatistics()).thenReturn(statistics);
         when(testBook.getGroupedMappedTests()).thenReturn(groupedMappedTests);

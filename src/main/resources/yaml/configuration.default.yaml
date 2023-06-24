@@ -14,12 +14,8 @@ runtime:
 # Application under test configuration
 application:
   baseUrl: http://localhost:8080
-  testBook:
-    qualityGate:
-      condition: ${weightedSuccessful.percentage} > 60
-    parser:
-      txt:
-        path: ${spectrum.testbook.path:-testbook.txt}
+
+testBook: null
 
 # Extent Report configuration
 extent:
