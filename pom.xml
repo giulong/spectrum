@@ -7,6 +7,7 @@
     <groupId>com.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
     <version>0.0.1</version>
+    <name>Spectrum</name>
 
     <contributors>
         <contributor>
@@ -29,6 +30,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jacoco.outputDirectory>${project.reporting.outputDirectory}/jacoco</jacoco.outputDirectory>
 
         <junit.version>5.9.2</junit.version>
@@ -210,7 +212,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.1.2</version>
                 <configuration>
                     <reportsDirectory>${reportsDirectory}</reportsDirectory>
                 </configuration>
