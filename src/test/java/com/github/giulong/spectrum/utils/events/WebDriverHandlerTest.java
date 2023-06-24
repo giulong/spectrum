@@ -36,7 +36,7 @@ class WebDriverHandlerTest {
 
     @Test
     @DisplayName("handle should just quit the webDriver")
-    public void handle() {
+    public void handle() throws InterruptedException {
         when(event.getContext()).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(WEB_DRIVER, WebDriver.class)).thenReturn(webDriver);
