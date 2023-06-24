@@ -83,9 +83,8 @@ public class Configuration {
 
 		@Getter
 		public static class Chrome {
+			private List<String> args;
 			private Map<String, Object> capabilities;
-			private List<String> arguments;
-			private Map<String, Object> experimentalOptions;
 		}
 
 		@Getter
@@ -97,6 +96,7 @@ public class Configuration {
 
 		@Getter
 		public static class Edge {
+			private List<String> args;
 			private Map<String, Object> capabilities;
 		}
 	}

@@ -83,11 +83,11 @@ class ChromeTest {
         final List<String> arguments = List.of("args");
 
         when(webDriverConfig.getChrome()).thenReturn(chromeConfig);
-        when(chromeConfig.getArguments()).thenReturn(arguments);
+        when(chromeConfig.getArgs()).thenReturn(arguments);
         when(seleniumLogs.getBrowser()).thenReturn(browserLevel);
         when(seleniumLogs.getDriver()).thenReturn(driverLevel);
         when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
-        when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of("one", "value"));
+        when(chromeConfig.getCapabilities()).thenReturn(Map.of("one", "value"));
 
         MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class);
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);

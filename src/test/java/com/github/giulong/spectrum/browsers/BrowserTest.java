@@ -119,12 +119,12 @@ class BrowserTest {
         final List<String> arguments = List.of("args");
         when(configuration.getWebDriver()).thenReturn(webDriverConfig);
         when(webDriverConfig.getChrome()).thenReturn(chromeConfig);
-        when(chromeConfig.getArguments()).thenReturn(arguments);
+        when(chromeConfig.getArgs()).thenReturn(arguments);
         when(configuration.getSeleniumLogs()).thenReturn(seleniumLogs);
         when(seleniumLogs.getBrowser()).thenReturn(browserLevel);
         when(seleniumLogs.getDriver()).thenReturn(driverLevel);
         when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
-        when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of("one", "value"));
+        when(chromeConfig.getCapabilities()).thenReturn(Map.of("one", "value"));
 
         MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
             when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
