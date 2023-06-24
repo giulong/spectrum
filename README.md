@@ -55,6 +55,8 @@ TODO: examples
 
 # Configuration
 
+TODO: downloadPath defaults for windows (path separator)
+
 Spectrum is fully configurable and comes with default values which you can find in the [configuration.default.yaml](src/main/resources/yaml/configuration.default.yaml).
 
 To provide different values, you can create the `src/test/resources/configuration.yaml` file in your project.

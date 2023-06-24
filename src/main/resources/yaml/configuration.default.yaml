@@ -1,6 +1,6 @@
 # Common vars to use to interpolate other String values in other nodes of the configuration
 vars:
-  downloadsFolder: ${user.dir}/target/downloads
+  downloadsFolder: ${user.dir}\target\downloads
 
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:
