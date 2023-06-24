@@ -15,6 +15,7 @@ runtime:
 application:
   baseUrl: http://localhost:8080
 
+# TestBook (coverage)
 testBook: null
 
 # Extent Report configuration
@@ -40,9 +41,8 @@ webDriver:
 
   # Chrome capabilities. See: https://chromedriver.chromium.org/capabilities
   chrome:
-    capabilities: { }
-    arguments: [ ]
-    experimentalOptions:
+    args: [ ]
+    capabilities:
       prefs:
         download.prompt_for_download: false
         download.directory_upgrade: true
@@ -62,7 +62,10 @@ webDriver:
 
   # Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options
   edge:
-    capabilities: { }
+    args: [ ]
+    capabilities:
+      prefs:
+        download.default_directory: ${downloadsFolder}
 
 # Data models
 data:
