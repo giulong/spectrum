@@ -23,7 +23,8 @@ public class DataResolver<Data> implements ParameterResolver {
     @Override
     public Data resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
-        final String fqdn = rootStore.get(ConfigurationResolver.CONFIGURATION, Configuration.class).getData().getFqdn();
+        final Configuration.Data dataConfiguration = rootStore.get(ConfigurationResolver.CONFIGURATION, Configuration.class).getData();
+        final String fqdn = dataConfiguration.getFqdn();
 
         try {
             @SuppressWarnings("unchecked")
@@ -33,13 +34,13 @@ public class DataResolver<Data> implements ParameterResolver {
                 log.debug("Resolving {}", DATA);
 
                 final YamlUtils yamlUtils = YamlUtils.getInstance();
-                final Data data = yamlUtils.read("data/data.yaml", dataClass);
+                final Data data = yamlUtils.read(String.format("%s/data.yaml", dataConfiguration.getFolder()), dataClass);
                 log.trace("Data:\n{}", yamlUtils.write(data));
                 rootStore.put(DATA, data);
                 return data;
             }, dataClass);
         } catch (ClassNotFoundException e) {
-            log.warn("Invalid value for Data class in 'configuration.data.fqdn': {}. If Data class is needed, you can safely ignore this warning.", fqdn);
+            log.warn("Invalid value for Data class in 'configuration.data.fqdn': {}. If no Data class is needed, you can safely ignore this warning.", fqdn);
             return null;
         }
     }
