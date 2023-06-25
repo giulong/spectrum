@@ -103,6 +103,7 @@ public class Configuration {
 
 	@Getter
 	public static class Data {
+		private String folder;
 		private String fqdn;
 	}
 

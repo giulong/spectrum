@@ -69,6 +69,7 @@ webDriver:
 
 # Data models
 data:
+  folder: data
   fqdn: fqdn.placeholder
 
 # Selenium internal logging levels
