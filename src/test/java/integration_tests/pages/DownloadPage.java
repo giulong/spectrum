@@ -1,4 +1,4 @@
-package com.github.giulong.spectrum.it.pages;
+package integration_tests.pages;
 
 import com.github.giulong.spectrum.SpectrumPage;
 import com.github.giulong.spectrum.interfaces.Endpoint;
@@ -10,12 +10,13 @@ import org.openqa.selenium.support.FindBys;
 import java.util.List;
 
 @Getter
-@Endpoint("checkboxes")
-public class CheckboxPage extends SpectrumPage<CheckboxPage, Void> {
+@Endpoint("download")
+public class DownloadPage extends SpectrumPage<DownloadPage, Void> {
 
     @FindBys({
-            @FindBy(id = "checkboxes"),
-            @FindBy(tagName = "input")
+            @FindBy(id = "content"),
+            @FindBy(className = "example"),
+            @FindBy(tagName = "a"),
     })
-    private List<WebElement> checkboxes;
+    private List<WebElement> downloadLinks;
 }
