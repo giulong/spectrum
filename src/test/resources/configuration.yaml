@@ -1,0 +1,92 @@
+# This is the minimum set of properties you'll need to provide.
+# This file is automatically merged with the default configuration.yaml.
+# D.R.Y. and specify just the values different from the defaults!
+
+#vars:
+#  abc: ${same}
+  #downloadsFolder: target/downloads
+
+#webDriver:
+#  chrome:
+#    args: # We want chrome to start full screen
+#      - start-maximized
+#      - start-fullscreen
+  #edge:
+  #  capabilities:
+  #    prefs:
+  #      download.default_directory: ${downloadsFolder}
+
+#runtime:
+#  environment:
+#    local: { }
+
+runtime:
+  filesFolder: src/test/resources/integration-tests/files
+
+#freeMarker:
+#  version: 2.3.27
+#  locale: EN
+#  numberFormat: 0.##;; roundingMode=halfUp
+
+#eventHandlers:
+#  - slack:
+#      token: xoxb-2946027914464-5368618319377-sTW5Sw20eKogMlFF0VJDcCdN
+#      channel: C05AFRQKEAW
+#      template: /integration-tests/templates/slack-suite.json
+#      handles:
+#        - reason: BEFORE
+#          tags: [SUITE]
+#  - slack:
+#      token: xoxb-2946027914464-5368618319377-sTW5Sw20eKogMlFF0VJDcCdN
+#      channel: C05AFRQKEAW
+#      #template: /integration-tests/templates/slack-ok.json
+#      handles:
+#        - reason: AFTER
+#          tags: [TEST]
+#        - result: SUCCESSFUL
+#          tags: [TEST]
+  #- mail:
+  #    handles:
+  #      - reason: AFTER
+  #        tags: [ SUITE ]
+  #    #template: /mail-ok.html
+  #    attachments:
+  #      - name: testbook
+  #        file: target/spectrum/testbook/testbook.html
+
+# Change this with your app's landing page
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+webDriver:
+  waits:
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+
+#testBook:
+#  #qualityGate:
+#  #  condition: ${weightedSuccessful.percentage} > 60
+#  parser:
+#    #csv:
+#    #  path: testbook.csv
+#    txt:
+#      path: testbook-ok.txt
+#    #yaml:
+#    #  path: testbook.yaml
+#  reporters:
+#    - txt:
+#        #template: /integration-tests/testbook/template-ok.txt
+#        output: target/spectrum/testbook/testbook.txt
+#    - log: { }
+#    - html:
+#        #template: /integration-tests/template-ok.html
+#        output: target/spectrum/testbook/testbook.html
+
+data:
+  fqdn: com.github.giulong.spectrum.it.data.Data
+
+extent:
+  theme: DARK
+  fileName: report.html

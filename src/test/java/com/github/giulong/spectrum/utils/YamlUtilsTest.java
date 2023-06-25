@@ -35,19 +35,19 @@ class YamlUtilsTest {
     @Test
     @DisplayName("read should return an instance of the provided class deserializing the provided file")
     public void read() {
-        assertEquals("value", Objects.requireNonNull(yamlUtils.read("test.yaml", TestYaml.class, true)).getKey());
+        assertEquals("value", Objects.requireNonNull(yamlUtils.read("unit-tests/test.yaml", TestYaml.class, true)).getKey());
     }
 
     @Test
     @DisplayName("overloaded read should return an instance of the provided class deserializing the provided file")
     public void readClient() {
-        assertEquals("value", yamlUtils.read("test.yaml", TestYaml.class).getKey());
+        assertEquals("value", yamlUtils.read("unit-tests/test.yaml", TestYaml.class).getKey());
     }
 
     @Test
     @DisplayName("readInternal should return an instance of the provided class deserializing the provided file")
     public void readInternal() {
-        assertEquals("value", yamlUtils.readInternal("test.yaml", TestYaml.class).getKey());
+        assertEquals("value", yamlUtils.readInternal("unit-tests/test.yaml", TestYaml.class).getKey());
     }
 
     @Test
@@ -59,19 +59,19 @@ class YamlUtilsTest {
     @Test
     @DisplayName("readNode should check if the provided file exists and return the node requested")
     public void readNode() {
-        assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class, true)).getObjectField());
+        assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readNode("/objectKey", "unit-tests/test.yaml", TestYaml.ObjectKey.class, true)).getObjectField());
     }
 
     @Test
     @DisplayName("readNode for client-side files should just delegate to the readNode method")
     public void readClientNode() {
-        assertEquals("objectValue", yamlUtils.readNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
+        assertEquals("objectValue", yamlUtils.readNode("/objectKey", "unit-tests/test.yaml", TestYaml.ObjectKey.class).getObjectField());
     }
 
     @Test
     @DisplayName("readInternalNode should just delegate to the readNode method")
     public void readInternalNode() {
-        assertEquals("objectValue", yamlUtils.readInternalNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
+        assertEquals("objectValue", yamlUtils.readInternalNode("/objectKey", "unit-tests/test.yaml", TestYaml.ObjectKey.class).getObjectField());
     }
 
     @Test
@@ -88,7 +88,7 @@ class YamlUtilsTest {
     public void updateWithFile() {
         TestYaml testYaml = TestYaml.builder().key("original").build();
 
-        yamlUtils.updateWithFile(testYaml, "test.yaml");
+        yamlUtils.updateWithFile(testYaml, "unit-tests/test.yaml");
         assertEquals("value", testYaml.getKey());
     }
 

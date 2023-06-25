@@ -1,3 +1,7 @@
-key: value
-objectKey:
-  objectField: objectValue
+users:
+  tom:
+    name: tomsmith
+    password: SuperSecretPassword!
+  giulio:
+    name: Giulio Longfils
+    password: pwd
