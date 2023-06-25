@@ -12,15 +12,6 @@ public class Data {
     @Getter
     public static class User {
         private String name;
-        private String email;
         private String password;
-        private String company;
-        private String website;
-        private String country;
-        private String city;
-        private String address1;
-        private String address2;
-        private String state;
-        private String zipCode;
     }
 }
