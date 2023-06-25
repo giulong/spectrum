@@ -1,8 +1,8 @@
-package com.github.giulong.spectrum.it.tests;
+package integration_tests.tests;
 
 import com.github.giulong.spectrum.SpectrumTest;
-import com.github.giulong.spectrum.it.pages.CheckboxPage;
-import com.github.giulong.spectrum.it.pages.LandingPage;
+import integration_tests.pages.CheckboxPage;
+import integration_tests.pages.LandingPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;

@@ -1,8 +1,8 @@
-package com.github.giulong.spectrum.it.tests;
+package integration_tests.tests;
 
 import com.github.giulong.spectrum.SpectrumTest;
-import com.github.giulong.spectrum.it.data.Data;
-import com.github.giulong.spectrum.it.pages.LoginPage;
+import integration_tests.data.Data;
+import integration_tests.pages.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;

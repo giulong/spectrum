@@ -1,4 +1,4 @@
-package com.github.giulong.spectrum.it.data;
+package integration_tests.data;
 
 import lombok.Getter;
 

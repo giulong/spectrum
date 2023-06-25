@@ -1,4 +1,4 @@
-package com.github.giulong.spectrum.it.pages;
+package integration_tests.pages;
 
 import com.github.giulong.spectrum.SpectrumPage;
 import lombok.Getter;

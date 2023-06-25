@@ -1,8 +1,8 @@
-package com.github.giulong.spectrum.it.pages;
+package integration_tests.pages;
 
 import com.github.giulong.spectrum.SpectrumPage;
 import com.github.giulong.spectrum.interfaces.Endpoint;
-import com.github.giulong.spectrum.it.data.Data;
+import integration_tests.data.Data;
 import lombok.Getter;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
