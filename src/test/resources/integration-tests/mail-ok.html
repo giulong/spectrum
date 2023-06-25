@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spectrum Notification</title>
+</head>
+<body style="width: 512px;;">
+    <h2>Spectrum Notification</h2>
+    <div>
+        <table>
+            <#if event.context??>
+            <tr>
+                <td>Class Name: </td>
+                <td>${event.context.parent.get().displayName}</td>
+            </tr>
+            <tr>
+                <td>Test Name: </td>
+                <td>${event.context.displayName}</td>
+            </tr>
+            </#if>
+            <tr>
+                <td>Reason: </td>
+                <td>${event.reason}</td>
+            </tr>
+            <#if event.result??>
+            <#switch event.result>
+                <#case "FAILED">
+                    <#assign color = "#dc3545" >
+                    <#break>
+                <#case "SUCCESSFUL">
+                    <#assign color = "#28a745" >
+                    <#break>
+                <#case "DISABLED">
+                    <#assign color = "#ffc107" >
+                    <#break>
+                <#case "ABORTED">
+                    <#assign color = "#dc3545" >
+                    <#break>
+                <#default>
+                    <#assign color = "transparent" >
+                    <#break>
+            </#switch>
+            <tr>
+                <td>Result: </td>
+                <td style="background: ${color};">${event.result}</td>
+            </tr>
+            </#if>
+            <#if event.context?? && event.context.executionException.isPresent()>
+            <tr>
+                <td>Exception: </td>
+                <td>${event.context.executionException.get()}</td>
+            </tr>
+            </#if>
+            <tr>
+                <td>Tags: </td>
+                <td>${event.tags?join(", ")}</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

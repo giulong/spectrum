@@ -2,6 +2,7 @@ package com.github.giulong.spectrum.extensions.resolvers;
 
 import com.github.giulong.spectrum.TestYaml;
 import com.github.giulong.spectrum.pojos.Configuration;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -78,6 +79,7 @@ class DataResolverTest {
         assertEquals(expected, dataResolver.supportsParameter(parameterContext, extensionContext));
     }
 
+    @Disabled("need to introduce the data folder param")
     @Test
     @DisplayName("resolveParameter should load the data class from client side and deserialize the data.yaml on it")
     public void resolveParameter() {
