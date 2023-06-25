@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 
 @DisplayName("Login Form")
 public class LoginFormIT extends SpectrumTest<Data> {
@@ -24,7 +25,7 @@ public class LoginFormIT extends SpectrumTest<Data> {
     @DisplayName("Login Form leveraging the data.yaml")
     @ParameterizedTest(name = "with user {0} we expect login to be successful: {1}")
     @MethodSource("valuesProvider")
-    public void shouldRunSuccessfully(final String userName, final boolean expected) {
+    public void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {
         loginPage.open();
         assertTrue(isNotPresent(By.id("flash")));
 
@@ -41,13 +42,14 @@ public class LoginFormIT extends SpectrumTest<Data> {
                 .loginWith(data.getUsers().get(userName))
                 .screenshotInfo("After successful login");
 
+        pageLoadWait.until(urlContains(endpoint));
         assertEquals(expected, webDriver.getCurrentUrl().endsWith("/secure"));
     }
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("tom", true),
-                arguments("giulio", false)
+                arguments("tom", true, "/secure"),
+                arguments("giulio", false, "/login")
         );
     }
 }

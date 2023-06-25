@@ -63,6 +63,12 @@ webDriver:
   chrome:
     args:
       - --headless=new
+  firefox:
+    args:
+      - -headless
+  edge:
+    args:
+      - headless
 
 #testBook:
 #  #qualityGate:
