@@ -8,23 +8,26 @@
     <artifactId>spectrum</artifactId>
     <version>0.0.1</version>
     <name>Spectrum</name>
+    <description>Java Selenium Framework</description>
+    <url>https://github.com/giulong/spectrum</url>
 
-    <contributors>
-        <contributor>
+    <developers>
+        <developer>
             <name>Giulio Longfils</name>
             <email>giuliolongfils@gmail.com</email>
+            <url>https://github.com/giulong</url>
             <roles>
                 <role>Creator</role>
             </roles>
-        </contributor>
-    </contributors>
+        </developer>
+    </developers>
 
     <inceptionYear>2023</inceptionYear>
 
     <licenses>
         <license>
-            <name>Apache 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
 
