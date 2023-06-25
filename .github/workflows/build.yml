@@ -21,8 +21,8 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: mvn package
-      run: mvn -B package
+    - name: mvn verify
+      run: mvn -B verify
 
     - name: Generate Jacoco Badge
       id: jacoco
