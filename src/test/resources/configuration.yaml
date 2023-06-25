@@ -54,7 +54,6 @@ runtime:
   #      - name: testbook
   #        file: target/spectrum/testbook/testbook.html
 
-# Change this with your app's landing page
 application:
   baseUrl: https://the-internet.herokuapp.com/
 
@@ -85,7 +84,8 @@ webDriver:
 #        output: target/spectrum/testbook/testbook.html
 
 data:
-  fqdn: com.github.giulong.spectrum.it.data.Data
+  folder: integration-tests/data
+  fqdn: integration_tests.data.Data
 
 extent:
   theme: DARK
