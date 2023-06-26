@@ -8,8 +8,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 public class WebDriverHandler extends EventHandler {
 
-    public void handle(final Event event) throws InterruptedException {
-        Thread.sleep(1000);
+    public void handle(final Event event) {
         event.getContext().getStore(GLOBAL).get(WEB_DRIVER, WebDriver.class).quit();
     }
 }
