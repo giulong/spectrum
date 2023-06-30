@@ -215,6 +215,10 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 
 # TODO SpectrumPage
 
+TODO GRID:
+hub: java -jar selenium-server-4.10.0.jar hub --host localhost
+node: java -Dwebdriver.chrome.driver=/Users/c325006/.cache/selenium/chromedriver/mac-arm64/114.0.5735.90/chromedriver -jar selenium-server-4.10.0.jar node --hub http://localhost:4444 --host localhost
+
 # Licenses
 
 # About

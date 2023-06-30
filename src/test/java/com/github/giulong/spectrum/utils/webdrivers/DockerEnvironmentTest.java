@@ -1,7 +1,6 @@
 package com.github.giulong.spectrum.utils.webdrivers;
 
 import com.github.giulong.spectrum.browsers.Browser;
-import com.github.giulong.spectrum.pojos.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openqa.selenium.WebDriver;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -18,13 +18,13 @@ import static org.mockito.Mockito.when;
 class DockerEnvironmentTest {
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
     private Browser<?> browser;
 
     @Mock
     private WebDriverManager webDriverManager;
+
+    @Mock
+    private WebDriver webDriver;
 
     @InjectMocks
     private DockerEnvironment dockerEnvironment;
@@ -35,8 +35,14 @@ class DockerEnvironmentTest {
         when(browser.getWebDriverManager()).thenReturn(webDriverManager);
         when(webDriverManager.browserInDocker()).thenReturn(webDriverManager);
 
-        dockerEnvironment.buildFrom(configuration, browser, null);
+        dockerEnvironment.buildFrom(browser, null);
 
         verify(webDriverManager).create();
+    }
+
+    @Test
+    @DisplayName("finalizeSetupOf should do nothing")
+    public void finalizeSetupOf() {
+        dockerEnvironment.finalizeSetupOf(webDriver);
     }
 }

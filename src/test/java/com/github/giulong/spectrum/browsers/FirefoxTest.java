@@ -45,9 +45,6 @@ class FirefoxTest {
     private FirefoxDriverLogLevel firefoxDriverLogLevel;
 
     @Mock
-    private Configuration.WebDriver.Grid grid;
-
-    @Mock
     private WebDriverManager webDriverManager;
 
     @InjectMocks
@@ -96,8 +93,7 @@ class FirefoxTest {
     public void mergeGridCapabilitiesFrom() {
         firefox.capabilities = firefoxOptions;
 
-        when(grid.getCapabilities()).thenReturn(Map.of("one", "value"));
-        firefox.mergeGridCapabilitiesFrom(grid);
+        firefox.mergeGridCapabilitiesFrom(Map.of("one", "value"));
         verify(firefoxOptions).setCapability("one", "value");
     }
 

@@ -9,7 +9,6 @@ import com.github.giulong.spectrum.utils.webdrivers.Environment;
 import lombok.Getter;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
-import java.net.URL;
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
@@ -62,7 +61,6 @@ public class Configuration {
 	@Getter
 	public static class WebDriver {
 		private Waits waits;
-		private Grid grid;
 		private Chrome chrome;
 		private Firefox firefox;
 		private Edge edge;
@@ -73,12 +71,6 @@ public class Configuration {
 			private Duration pageLoadTimeout;
 			private Duration downloadTimeout;
 			private Duration scriptTimeout;
-		}
-
-		@Getter
-		public static class Grid {
-			private URL url;
-			private Map<String, String> capabilities;
 		}
 
 		@Getter

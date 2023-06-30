@@ -7,16 +7,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.remote.AbstractDriverOptions;
+import org.openqa.selenium.remote.LocalFileDetector;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Map;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GridEnvironment")
@@ -26,16 +29,13 @@ class GridEnvironmentTest {
     private RemoteWebDriverBuilder webDriverBuilder;
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
     private Browser<AbstractDriverOptions<?>> browser;
 
     @Mock
     private Configuration.WebDriver webDriverConfiguration;
 
     @Mock
-    private Configuration.WebDriver.Grid grid;
+    private RemoteWebDriver webDriver;
 
     @InjectMocks
     private GridEnvironment gridEnvironment;
@@ -45,13 +45,33 @@ class GridEnvironmentTest {
     public void buildFrom() throws MalformedURLException {
         final URL url = URI.create("http://url").toURL();
 
-        when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
-        when(webDriverConfiguration.getGrid()).thenReturn(grid);
-        when(grid.getUrl()).thenReturn(url);
-        when(webDriverBuilder.address(url)).thenReturn(webDriverBuilder);
+        gridEnvironment.url = url;
+        gridEnvironment.capabilities.put("one", "value");
+        gridEnvironment.buildFrom(browser, webDriverBuilder);
 
-        gridEnvironment.buildFrom(configuration, browser, webDriverBuilder);
+        verify(browser).mergeGridCapabilitiesFrom(Map.of("one", "value"));
+        verify(webDriverBuilder).address(url);
+    }
 
-        verify(browser).mergeGridCapabilitiesFrom(grid);
+    @Test
+    @DisplayName("finalizeSetupOf with localFileDetector should set the file detector on the webdriver")
+    public void finalizeSetupOfTrue() {
+        gridEnvironment.localFileDetector = true;
+
+        MockedConstruction<LocalFileDetector> mockedConstruction = mockConstruction(LocalFileDetector.class);
+
+        gridEnvironment.finalizeSetupOf(webDriver);
+        verify(webDriver).setFileDetector(mockedConstruction.constructed().get(0));
+
+        mockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("finalizeSetupOf with no localFileDetector should do nothing")
+    public void finalizeSetupOfFalse() {
+        gridEnvironment.localFileDetector = false;
+
+        gridEnvironment.finalizeSetupOf(webDriver);
+        verify(webDriver, never()).setFileDetector(any());
     }
 }

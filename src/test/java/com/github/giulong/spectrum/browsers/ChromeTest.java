@@ -52,9 +52,6 @@ class ChromeTest {
     private Configuration.SeleniumLogs seleniumLogs;
 
     @Mock
-    private Configuration.WebDriver.Grid grid;
-
-    @Mock
     private WebDriverManager webDriverManager;
 
     @InjectMocks
@@ -106,15 +103,5 @@ class ChromeTest {
 
         chromeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        chrome.capabilities = chromeOptions;
-
-        when(grid.getCapabilities()).thenReturn(Map.of("one", "value"));
-        chrome.mergeGridCapabilitiesFrom(grid);
-        verify(chromeOptions).setCapability("one", "value");
     }
 }

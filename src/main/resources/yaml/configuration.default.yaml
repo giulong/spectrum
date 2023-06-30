@@ -35,10 +35,6 @@ webDriver:
     downloadTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download. Injected in webDriverWaits
     scriptTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException. Injected in webDriverWaits
 
-  grid:
-    url: http://127.0.0.1:4444/wd/hub/
-    capabilities: { }
-
   # Chrome capabilities. See: https://chromedriver.chromium.org/capabilities
   chrome:
     args: [ ]

@@ -453,20 +453,4 @@ class SpectrumSessionListenerTest {
 
         assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
     }
-
-    @Test
-    @DisplayName("initEventsDispatcher should build the events dispatcher with an empty list if not handler is provided")
-    public void initEventsDispatcherNoHandlers() {
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-
-        when(configuration.getEventHandlers()).thenReturn(null);
-        when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
-        when(eventsDispatcherBuilder.handlers(List.of())).thenReturn(eventsDispatcherBuilder);
-        when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
-
-        SpectrumSessionListener.configuration = configuration;
-        spectrumSessionListener.initEventsDispatcher();
-
-        assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
-    }
 }

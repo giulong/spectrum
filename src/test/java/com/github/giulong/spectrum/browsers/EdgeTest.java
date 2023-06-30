@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 
-import java.util.Map;
 import java.util.logging.Level;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,9 +48,6 @@ class EdgeTest {
 
     @Mock
     private Configuration.SeleniumLogs seleniumLogs;
-
-    @Mock
-    private Configuration.WebDriver.Grid grid;
 
     @Mock
     private WebDriverManager webDriverManager;
@@ -98,15 +94,5 @@ class EdgeTest {
 
         edgeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        edge.capabilities = edgeOptions;
-
-        when(grid.getCapabilities()).thenReturn(Map.of("one", "value"));
-        edge.mergeGridCapabilitiesFrom(grid);
-        verify(edgeOptions).setCapability("one", "value");
     }
 }
