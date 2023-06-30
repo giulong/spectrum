@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.github.giulong.spectrum.browsers.Browser;
-import com.github.giulong.spectrum.pojos.Configuration;
 import org.openqa.selenium.MutableCapabilities;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
@@ -18,5 +18,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
         @Type(value = DockerEnvironment.class, name = "docker"),
 })
 public abstract class Environment {
-    public abstract void buildFrom(Configuration configuration, Browser<? extends MutableCapabilities> browser, RemoteWebDriverBuilder webDriverBuilder);
+    public abstract void buildFrom(Browser<? extends MutableCapabilities> browser, RemoteWebDriverBuilder webDriverBuilder);
+
+    public abstract void finalizeSetupOf(WebDriver webDriver);
 }

@@ -4,6 +4,8 @@ import com.github.giulong.spectrum.pojos.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.firefox.FirefoxOptions;
 
+import java.util.Map;
+
 import static io.github.bonigarcia.wdm.WebDriverManager.firefoxdriver;
 
 public class Firefox extends Browser<FirefoxOptions> {
@@ -25,8 +27,8 @@ public class Firefox extends Browser<FirefoxOptions> {
     }
 
     @Override
-    public void mergeGridCapabilitiesFrom(final Configuration.WebDriver.Grid gridConfiguration) {
-        gridConfiguration.getCapabilities().forEach(this::setCapability);
+    public void mergeGridCapabilitiesFrom(final Map<String, String> gridCapabilities) {
+        gridCapabilities.forEach(this::setCapability);
     }
 
     public void addPreference(final String key, final Object value) {

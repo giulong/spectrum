@@ -64,7 +64,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     public void launcherSessionClosed(final LauncherSession session) {
         final TestBook testBook = configuration.getTestBook();
         if (testBook != null) {
-            configuration.getTestBook().flush();
+            testBook.flush();
         }
 
         extentReports.flush();
@@ -93,6 +93,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         VARS.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
         VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
         VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, envConfiguration, Map.class)).orElse(new HashMap<>()));
+        System.out.println("METHOD " + VARS);
     }
 
     protected void parseTestBook() {
@@ -146,9 +147,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     protected void initEventsDispatcher() {
         eventsDispatcher = EventsDispatcher
                 .builder()
-                .handlers(Optional
-                        .ofNullable(configuration.getEventHandlers())
-                        .orElse(List.of()))
+                .handlers(configuration.getEventHandlers())
                 .build();
     }
 }
