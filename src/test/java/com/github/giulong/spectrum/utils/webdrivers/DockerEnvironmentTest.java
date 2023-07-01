@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 class DockerEnvironmentTest {
 
     @Mock
-    private Browser<?> browser;
+    private Browser<?, ?, ?> browser;
 
     @Mock
     private WebDriverManager webDriverManager;
@@ -35,7 +35,7 @@ class DockerEnvironmentTest {
         when(browser.getWebDriverManager()).thenReturn(webDriverManager);
         when(webDriverManager.browserInDocker()).thenReturn(webDriverManager);
 
-        dockerEnvironment.buildFrom(browser, null);
+        dockerEnvironment.setupFrom(browser, null);
 
         verify(webDriverManager).create();
     }

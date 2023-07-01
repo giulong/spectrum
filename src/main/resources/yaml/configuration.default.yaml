@@ -92,7 +92,7 @@ eventHandlers:
       handles:
         - reason: AFTER
           tags: [ TEST ]
-  - webDriver:
+  - browser:
       handles:
         - reason: AFTER
           tags: [ TEST ]

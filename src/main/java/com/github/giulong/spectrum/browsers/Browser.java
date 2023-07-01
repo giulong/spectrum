@@ -8,16 +8,20 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.ThreadGuard;
 
 import java.util.Map;
 
 @Slf4j
-public abstract class Browser<T extends AbstractDriverOptions<?>> {
+public abstract class Browser<T extends AbstractDriverOptions<?>, U extends DriverService, V extends DriverService.Builder<U, V>> {
 
-    public static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
+    protected static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
+    protected static final ThreadLocal<DriverService> DRIVER_SERVICE_THREAD_LOCAL = new ThreadLocal<>();
 
     protected T capabilities;
+
+    public abstract DriverService.Builder<U, V> getDriverServiceBuilder();
 
     public abstract WebDriverManager getWebDriverManager();
 
@@ -30,14 +34,15 @@ public abstract class Browser<T extends AbstractDriverOptions<?>> {
         buildCapabilitiesFrom(webDriverConfiguration, configuration.getSeleniumLogs());
 
         final Environment environment = configuration.getRuntime().getEnvironment();
-        final RemoteWebDriverBuilder webDriverBuilder = RemoteWebDriver.builder().oneOf(capabilities);
-        environment.buildFrom(this, webDriverBuilder);
-
         capabilities.setAcceptInsecureCerts(true);
         log.debug("Capabilities: {}", capabilities.toJson());
 
-        final WebDriver webDriver = webDriverBuilder.build();
+        final RemoteWebDriverBuilder webDriverBuilder = RemoteWebDriver.builder().oneOf(capabilities);
+        environment.setupFrom(this, webDriverBuilder);
+
+        DRIVER_SERVICE_THREAD_LOCAL.set(getDriverServiceBuilder().withLogOutput(System.out).build());
         final Configuration.WebDriver.Waits waits = webDriverConfiguration.getWaits();
+        final WebDriver webDriver = webDriverBuilder.withDriverService(DRIVER_SERVICE_THREAD_LOCAL.get()).build();
 
         webDriver
                 .manage()
@@ -50,5 +55,10 @@ public abstract class Browser<T extends AbstractDriverOptions<?>> {
         WEB_DRIVER_THREAD_LOCAL.set(ThreadGuard.protect(webDriver));
 
         return WEB_DRIVER_THREAD_LOCAL.get();
+    }
+
+    public void shutdown() {
+        WEB_DRIVER_THREAD_LOCAL.get().quit();
+        DRIVER_SERVICE_THREAD_LOCAL.get().close();
     }
 }

@@ -12,8 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.List;
 import java.util.Map;
@@ -29,9 +31,6 @@ import static org.openqa.selenium.logging.LogType.*;
 class ChromeTest {
 
     private MockedStatic<WebDriverManager> webDriverManagerMockedStatic;
-
-    @Mock
-    private ChromeOptions chromeOptions;
 
     @Mock
     private Configuration.WebDriver webDriverConfig;
@@ -68,7 +67,18 @@ class ChromeTest {
     }
 
     @Test
-    @DisplayName("getWebDriverManager should return call the chromedriver method")
+    @DisplayName("getDriverServiceBuilder should return a new instance of ChromeDriverService.Builder()")
+    public void getDriverServiceBuilder() {
+        MockedConstruction<ChromeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(ChromeDriverService.Builder.class);
+
+        final DriverService.Builder<ChromeDriverService, ChromeDriverService.Builder> driverServiceBuilder = chrome.getDriverServiceBuilder();
+        assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
+
+        chromeDriverServiceMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("getWebDriverManager should return the chromedriver method")
     public void getWebDriverManager() {
         when(WebDriverManager.chromedriver()).thenReturn(webDriverManager);
         assertEquals(webDriverManager, chrome.getWebDriverManager());

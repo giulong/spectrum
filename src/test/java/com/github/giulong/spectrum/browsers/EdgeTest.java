@@ -12,8 +12,10 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.logging.Level;
 
@@ -27,9 +29,6 @@ import static org.openqa.selenium.logging.LogType.*;
 class EdgeTest {
 
     private MockedStatic<WebDriverManager> webDriverManagerMockedStatic;
-
-    @Mock
-    private EdgeOptions edgeOptions;
 
     @Mock
     private Configuration.WebDriver webDriverConfig;
@@ -63,6 +62,17 @@ class EdgeTest {
     @AfterEach
     public void afterEach() {
         webDriverManagerMockedStatic.close();
+    }
+
+    @Test
+    @DisplayName("getDriverServiceBuilder should return a new instance of EdgeDriverService.Builder()")
+    public void getDriverServiceBuilder() {
+        MockedConstruction<EdgeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(EdgeDriverService.Builder.class);
+
+        final DriverService.Builder<EdgeDriverService, EdgeDriverService.Builder> driverServiceBuilder = edge.getDriverServiceBuilder();
+        assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
+
+        chromeDriverServiceMockedConstruction.close();
     }
 
     @Test

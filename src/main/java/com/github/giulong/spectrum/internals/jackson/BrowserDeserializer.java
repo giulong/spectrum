@@ -8,10 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 
 @Slf4j
-public class BrowserDeserializer extends InterpolatedDeserializer<Browser<?>> {
+public class BrowserDeserializer extends InterpolatedDeserializer<Browser<?, ?, ?>> {
 
     @Override
-    public Browser<?> deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+    public Browser<?, ?, ?> deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
         final String interpolatedValue = interpolate(jsonParser.getValueAsString(), jsonParser.currentName());
 
         return switch (interpolatedValue) {

@@ -1,7 +1,6 @@
 package com.github.giulong.spectrum.utils.webdrivers;
 
 import com.github.giulong.spectrum.browsers.Browser;
-import com.github.giulong.spectrum.pojos.Configuration;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.AbstractDriverOptions;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,10 +18,7 @@ import static org.mockito.Mockito.when;
 class LocalEnvironmentTest {
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
-    private Browser<AbstractDriverOptions<?>> browser;
+    private Browser<?, ?, ?> browser;
 
     @Mock
     private WebDriverManager webDriverManager;
@@ -39,7 +34,7 @@ class LocalEnvironmentTest {
     public void buildFromDownload() {
         when(browser.getWebDriverManager()).thenReturn(webDriverManager);
 
-        localEnvironment.buildFrom(browser, null);
+        localEnvironment.setupFrom(browser, null);
 
         verify(webDriverManager).setup();
     }
