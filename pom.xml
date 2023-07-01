@@ -216,7 +216,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
                     <systemPropertyVariables>
                         <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
                     </systemPropertyVariables>
@@ -280,7 +280,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
                     <failIfNoTests>true</failIfNoTests>
                     <systemPropertyVariables>
                         <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
