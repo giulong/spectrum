@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="PATTERN" value="%d{HH:mm:ss.SSS} %.-1level %-25logger{0} | %msg%nopex%n"/>
+    <property name="COLOR_PATTERN" value="%highlight(${PATTERN})"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${COLOR_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <root level="${spectrum.log.level:-INFO}">
+        <appender-ref ref="STDOUT"/>
+    </root>
+</configuration>
