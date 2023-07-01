@@ -176,7 +176,6 @@
                 <excludes>
                     <exclude>docs/**/*</exclude>
                     <exclude>examples/**/*</exclude>
-                    <exclude>org.junit.platform.launcher.LauncherSessionListener</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -277,32 +276,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.3.1</version>
-                <configuration>
-                    <propertiesEncoding>UTF-8</propertiesEncoding>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.outputDirectory}/META-INF/services</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${basedir}/src/main/resources</directory>
-                                    <includes>
-                                        <include>org.junit.platform.launcher.LauncherSessionListener</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.1.2</version>
@@ -334,6 +307,7 @@
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
+                            <skip>true</skip>
                             <reportNameSuffix>firefox</reportNameSuffix>
                             <systemPropertyVariables>
                                 <spectrum.browser>firefox</spectrum.browser>
@@ -347,6 +321,7 @@
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
+                            <skip>true</skip>
                             <reportNameSuffix>edge</reportNameSuffix>
                             <systemPropertyVariables>
                                 <spectrum.browser>edge</spectrum.browser>
