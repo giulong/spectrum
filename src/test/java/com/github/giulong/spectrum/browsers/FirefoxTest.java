@@ -17,6 +17,8 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.List;
 import java.util.Map;
@@ -58,6 +60,17 @@ class FirefoxTest {
     @AfterEach
     public void afterEach() {
         webDriverManagerMockedStatic.close();
+    }
+
+    @Test
+    @DisplayName("getDriverServiceBuilder should return a new instance of GeckoDriverService.Builder()")
+    public void getDriverServiceBuilder() {
+        MockedConstruction<GeckoDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(GeckoDriverService.Builder.class);
+
+        final DriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> driverServiceBuilder = firefox.getDriverServiceBuilder();
+        assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
+
+        chromeDriverServiceMockedConstruction.close();
     }
 
     @Test

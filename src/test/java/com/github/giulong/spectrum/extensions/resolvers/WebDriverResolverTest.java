@@ -45,7 +45,7 @@ class WebDriverResolverTest {
     private Configuration.Runtime runtime;
 
     @Mock
-    private Browser<?> browser;
+    private Browser<?, ?, ?> browser;
 
     @Mock
     private WebDriver webDriver;

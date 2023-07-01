@@ -15,4 +15,7 @@ public class UploadPage extends SpectrumPage<UploadPage, Void> {
 
     @FindBy(id = "file-submit")
     private WebElement submit;
+
+    @FindBy(id = "uploaded-files")
+    private WebElement uploadedFiles;
 }

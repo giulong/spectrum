@@ -67,9 +67,9 @@ application:
 webDriver:
   waits:
     downloadTimeout: 5
-  #chrome:
-  #  args:
-  #    - --headless=new
+  chrome:
+    args:
+      - --headless=new
   firefox:
     args:
       - -headless

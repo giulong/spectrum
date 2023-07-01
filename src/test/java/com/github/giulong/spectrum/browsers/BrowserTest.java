@@ -14,10 +14,12 @@ import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
+import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.ThreadGuard;
 
 import java.time.Duration;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import static com.github.giulong.spectrum.browsers.Browser.DRIVER_SERVICE_THREAD_LOCAL;
 import static com.github.giulong.spectrum.browsers.Browser.WEB_DRIVER_THREAD_LOCAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -91,6 +94,12 @@ class BrowserTest {
     private Environment environment;
 
     @Mock
+    private ChromeDriverService chromeDriverService;
+
+    @Mock
+    private ChromeDriverService.Builder chromeDriverServiceBuilder;
+
+    @Mock
     private RemoteWebDriverBuilder webDriverBuilder;
 
     @InjectMocks
@@ -98,6 +107,9 @@ class BrowserTest {
 
     @BeforeEach
     public void beforeEach() {
+        WEB_DRIVER_THREAD_LOCAL.remove();
+        DRIVER_SERVICE_THREAD_LOCAL.remove();
+
         webDriverManagerMockedStatic = mockStatic(WebDriverManager.class);
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
@@ -129,6 +141,7 @@ class BrowserTest {
         MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
             when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
             when(webDriverBuilder.oneOf(mock)).thenReturn(webDriverBuilder);
+            when(webDriverBuilder.withDriverService(chromeDriverService)).thenReturn(webDriverBuilder);
             when(webDriverBuilder.build()).thenReturn(webDriver);
         });
 
@@ -143,17 +156,38 @@ class BrowserTest {
         when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
         when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
         when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
+        when(chromeDriverServiceBuilder.build()).thenReturn(chromeDriverService);
 
         when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
 
+        MockedConstruction<ChromeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(ChromeDriverService.Builder.class, (mock, context) -> {
+            when(mock.withLogOutput(System.out)).thenReturn(chromeDriverServiceBuilder);
+        });
+
         final WebDriver actual = browser.build(configuration);
         final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
+        final DriverService threadLocalDriverService = DRIVER_SERVICE_THREAD_LOCAL.get();
 
         verify(chromeOptionsMockedConstruction.constructed().get(0)).setAcceptInsecureCerts(true);
-        verify(environment).buildFrom(browser, webDriverBuilder);
+        verify(environment).setupFrom(browser, webDriverBuilder);
+        verify(environment).finalizeSetupOf(webDriver);
         assertEquals(protectedWebDriver, threadLocalWebDriver);
         assertEquals(protectedWebDriver, actual);
+        assertEquals(chromeDriverService, threadLocalDriverService);
 
         chromeOptionsMockedConstruction.close();
+        chromeDriverServiceMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("shutdown should quit the webDriver and close the driverService")
+    public void shutdown() {
+        WEB_DRIVER_THREAD_LOCAL.set(webDriver);
+        DRIVER_SERVICE_THREAD_LOCAL.set(chromeDriverService);
+
+        browser.shutdown();
+
+        verify(webDriver).quit();
+        verify(chromeDriverService).close();
     }
 }

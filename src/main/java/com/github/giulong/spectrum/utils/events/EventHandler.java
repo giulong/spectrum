@@ -17,7 +17,7 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = SlackHandler.class, name = "slack"),
         @JsonSubTypes.Type(value = TestBookHandler.class, name = "testbook"),
         @JsonSubTypes.Type(value = ExtentTestHandler.class, name = "extentTest"),
-        @JsonSubTypes.Type(value = WebDriverHandler.class, name = "webDriver"),
+        @JsonSubTypes.Type(value = BrowserHandler.class, name = "browser"),
         @JsonSubTypes.Type(value = MailHandler.class, name = "mail"),
 })
 @Getter

@@ -1,7 +1,6 @@
 package com.github.giulong.spectrum.utils.webdrivers;
 
 import com.github.giulong.spectrum.browsers.Browser;
-import com.github.giulong.spectrum.pojos.Configuration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,7 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.remote.AbstractDriverOptions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
@@ -29,10 +27,7 @@ class GridEnvironmentTest {
     private RemoteWebDriverBuilder webDriverBuilder;
 
     @Mock
-    private Browser<AbstractDriverOptions<?>> browser;
-
-    @Mock
-    private Configuration.WebDriver webDriverConfiguration;
+    private Browser<?, ?, ?> browser;
 
     @Mock
     private RemoteWebDriver webDriver;
@@ -47,7 +42,7 @@ class GridEnvironmentTest {
 
         gridEnvironment.url = url;
         gridEnvironment.capabilities.put("one", "value");
-        gridEnvironment.buildFrom(browser, webDriverBuilder);
+        gridEnvironment.setupFrom(browser, webDriverBuilder);
 
         verify(browser).mergeGridCapabilitiesFrom(Map.of("one", "value"));
         verify(webDriverBuilder).address(url);
