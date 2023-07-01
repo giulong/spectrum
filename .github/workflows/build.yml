@@ -21,8 +21,8 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    - name: mvn verify
-      run: mvn -B verify
+    - name: mvn install
+      run: mvn -B install -P chrome,firefox,edge
 
     - name: Generate Jacoco Badge
       id: jacoco
