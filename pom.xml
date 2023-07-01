@@ -216,10 +216,10 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
                     <systemPropertyVariables>
                         <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
                     </systemPropertyVariables>
-                    <encoding>UTF-8</encoding>
                     <reportsDirectory>${reportsDirectory}</reportsDirectory>
                 </configuration>
             </plugin>
@@ -280,7 +280,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.1.2</version>
                 <configuration>
-                    <encoding>UTF-8</encoding>
+                    <argLine>-Dfile.encoding=UTF-8</argLine>
                     <failIfNoTests>true</failIfNoTests>
                     <systemPropertyVariables>
                         <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
@@ -307,7 +307,6 @@
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
-                            <skip>true</skip>
                             <reportNameSuffix>firefox</reportNameSuffix>
                             <systemPropertyVariables>
                                 <spectrum.browser>firefox</spectrum.browser>
@@ -321,7 +320,6 @@
                             <goal>integration-test</goal>
                         </goals>
                         <configuration>
-                            <skip>true</skip>
                             <reportNameSuffix>edge</reportNameSuffix>
                             <systemPropertyVariables>
                                 <spectrum.browser>edge</spectrum.browser>
