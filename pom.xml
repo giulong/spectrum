@@ -244,6 +244,9 @@
                         <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
                     </systemPropertyVariables>
                     <reportsDirectory>${reportsDirectory}</reportsDirectory>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>  <!-- Otherwise the TestBookIT matches since it starts with "Test" -->
+                    </excludes>
                 </configuration>
             </plugin>
             <plugin>
