@@ -8,6 +8,14 @@
             <location>target\spectrum\reports\report.html</location>
         </file>
         <file>
+            <location>target\spectrum\testbook\testbook.html</location>
+            <exists>false</exists>
+        </file>
+        <file>
+            <location>target\spectrum\testbook\testbook.txt</location>
+            <exists>false</exists>
+        </file>
+        <file>
             <location>target\failsafe-reports\failsafe-chrome.xml</location>
             <contains>completed.8..completed</contains>
         </file>
