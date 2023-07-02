@@ -11,6 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
+import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -23,12 +24,10 @@ public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
         log.debug("Resolving {}", WEB_DRIVER);
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);
-        final Configuration configuration = store.get(ConfigurationResolver.CONFIGURATION, Configuration.class);
+        final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
+        final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
         final WebDriver webDriver = configuration.getRuntime().getBrowser().build(configuration);
-        final WebDriverListener eventListener = EventsListener.builder()
-                .store(store)
-                .events(configuration.getEvents())
-                .build();
+        final WebDriverListener eventListener = EventsListener.builder().store(store).events(configuration.getEvents()).build();
         final WebDriver decoratedWebDriver = new EventFiringDecorator<>(eventListener).decorate(webDriver);
 
         store.put(WEB_DRIVER, decoratedWebDriver);

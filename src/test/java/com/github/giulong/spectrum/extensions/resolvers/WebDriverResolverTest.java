@@ -19,6 +19,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
+import static com.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
@@ -36,7 +37,13 @@ class WebDriverResolverTest {
     private ExtensionContext extensionContext;
 
     @Mock
+    private ExtensionContext rootContext;
+
+    @Mock
     private ExtensionContext.Store store;
+
+    @Mock
+    private ExtensionContext.Store rootStore;
 
     @Mock
     private Configuration configuration;
@@ -79,7 +86,9 @@ class WebDriverResolverTest {
     @DisplayName("resolveParameter should return the instance of the webdriver decorated with the default event listener")
     public void resolveParameterEventListener() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(ConfigurationResolver.CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(extensionContext.getRoot()).thenReturn(rootContext);
+        when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
+        when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(browser).when(runtime).getBrowser();
         when(browser.build(configuration)).thenReturn(webDriver);
