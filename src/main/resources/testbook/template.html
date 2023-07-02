@@ -329,31 +329,31 @@
             <tbody>
             <tr>
                 <td>Mapped Tests</td>
-                <td>${testsSize}</td>
+                <td id="mapped-tests">${testsSize}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Unmapped Tests</td>
-                <td>${unmappedTests?size}</td>
+                <td id="unmapped-tests">${unmappedTests?size}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Grand Total</td>
-                <td>${testsSize} + ${unmappedTests?size} = ${grandTotal}</td>
+                <td id="grand-total">${testsSize} + ${unmappedTests?size} = ${grandTotal}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Total Weighted</td>
-                <td>${totalWeighted}</td>
+                <td id="total-weighted">${totalWeighted}</td>
                 <td></td>
                 <td></td>
             </tr>
             <tr>
                 <td>Grand Total Weighted</td>
-                <td>${totalWeighted} + ${unmappedTests?size} = ${grandTotalWeighted}</td>
+                <td id="grand-total-weighted">${totalWeighted} + ${unmappedTests?size} = ${grandTotalWeighted}</td>
                 <td></td>
                 <td></td>
             </tr>
@@ -362,8 +362,8 @@
             </tr>
             <tr>
                 <td>Successful</td>
-                <td>${weightedSuccessful.total}/${totalWeighted}</td>
-                <td>${weightedSuccessful.percentage}%</td>
+                <td id="weighted-successful">${weightedSuccessful.total}/${totalWeighted}</td>
+                <td id="weighted-successful-percentage">${weightedSuccessful.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="successful bar total-successful-weighted-bar"></div>
@@ -372,8 +372,8 @@
             </tr>
             <tr>
                 <td>Failed</td>
-                <td>${weightedFailed.total}/${totalWeighted}</td>
-                <td>${weightedFailed.percentage}%</td>
+                <td id="weighted-failed">${weightedFailed.total}/${totalWeighted}</td>
+                <td id="weighted-failed-percentage">${weightedFailed.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="failed bar total-failed-weighted-bar"></div>
@@ -382,8 +382,8 @@
             </tr>
             <tr>
                 <td>Aborted</td>
-                <td>${weightedAborted.total}/${totalWeighted}</td>
-                <td>${weightedAborted.percentage}%</td>
+                <td id="weighted-aborted">${weightedAborted.total}/${totalWeighted}</td>
+                <td id="weighted-aborted-percentage">${weightedAborted.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="aborted bar total-aborted-weighted-bar"></div>
@@ -392,8 +392,8 @@
             </tr>
             <tr>
                 <td>Disabled</td>
-                <td>${weightedDisabled.total}/${totalWeighted}</td>
-                <td>${weightedDisabled.percentage}%</td>
+                <td id="weighted-disabled">${weightedDisabled.total}/${totalWeighted}</td>
+                <td id="weighted-disabled-percentage">${weightedDisabled.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="disabled bar total-disabled-weighted-bar"></div>
@@ -402,8 +402,8 @@
             </tr>
             <tr>
                 <td>Not run</td>
-                <td>${weightedNotRun.total}/${totalWeighted}</td>
-                <td>${weightedNotRun.percentage}%</td>
+                <td id="weighted-not-run">${weightedNotRun.total}/${totalWeighted}</td>
+                <td id="weighted-not-run-percentage">${weightedNotRun.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="not-run bar total-not-run-weighted-bar"></div>
@@ -415,8 +415,8 @@
             </tr>
             <tr>
                 <td>Successful</td>
-                <td>${grandWeightedSuccessful.total}/${grandTotalWeighted}</td>
-                <td>${grandWeightedSuccessful.percentage}%</td>
+                <td id="grand-weighted-successful">${grandWeightedSuccessful.total}/${grandTotalWeighted}</td>
+                <td id="grand-weighted-successful-percentage">${grandWeightedSuccessful.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="successful bar grand-total-successful-weighted-bar"></div>
@@ -425,8 +425,8 @@
             </tr>
             <tr>
                 <td>Failed</td>
-                <td>${grandWeightedFailed.total}/${grandTotalWeighted}</td>
-                <td>${grandWeightedFailed.percentage}%</td>
+                <td id="grand-weighted-failed">${grandWeightedFailed.total}/${grandTotalWeighted}</td>
+                <td id="grand-weighted-failed-percentage">${grandWeightedFailed.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="failed bar grand-total-failed-weighted-bar"></div>
@@ -435,8 +435,8 @@
             </tr>
             <tr>
                 <td>Aborted</td>
-                <td>${grandWeightedAborted.total}/${grandTotalWeighted}</td>
-                <td>${grandWeightedAborted.percentage}%</td>
+                <td id="grand-weighted-aborted">${grandWeightedAborted.total}/${grandTotalWeighted}</td>
+                <td id="grand-weighted-aborted-percentage">${grandWeightedAborted.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="aborted bar grand-total-aborted-weighted-bar"></div>
@@ -445,8 +445,8 @@
             </tr>
             <tr>
                 <td>Disabled</td>
-                <td>${grandWeightedDisabled.total}/${grandTotalWeighted}</td>
-                <td>${grandWeightedDisabled.percentage}%</td>
+                <td id="grand-weighted-disabled">${grandWeightedDisabled.total}/${grandTotalWeighted}</td>
+                <td id="grand-weighted-disabled-percentage">${grandWeightedDisabled.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="disabled bar grand-total-disabled-weighted-bar"></div>
@@ -455,8 +455,8 @@
             </tr>
             <tr>
                 <td>Not run</td>
-                <td>${grandWeightedNotRun.total}/${grandTotalWeighted}</td>
-                <td>${grandWeightedNotRun.percentage}%</td>
+                <td id="grand-weighted-not-run">${grandWeightedNotRun.total}/${grandTotalWeighted}</td>
+                <td id="grand-weighted-not-run-percentage">${grandWeightedNotRun.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="not-run bar grand-total-not-run-weighted-bar"></div>
@@ -468,8 +468,8 @@
             </tr>
             <tr>
                 <td>Successful</td>
-                <td>${successful.total}/${testsSize}</td>
-                <td>${successful.percentage}%</td>
+                <td id="successful">${successful.total}/${testsSize}</td>
+                <td id="successful-percentage">${successful.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="successful bar successful-bar"></div>
@@ -478,8 +478,8 @@
             </tr>
             <tr>
                 <td>Failed</td>
-                <td>${failed.total}/${testsSize}</td>
-                <td>${failed.percentage}%</td>
+                <td id="failed">${failed.total}/${testsSize}</td>
+                <td id="failed-percentage">${failed.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="failed bar failed-bar"></div>
@@ -488,8 +488,8 @@
             </tr>
             <tr>
                 <td>Aborted</td>
-                <td>${aborted.total}/${testsSize}</td>
-                <td>${aborted.percentage}%</td>
+                <td id="aborted">${aborted.total}/${testsSize}</td>
+                <td id="aborted-percentage">${aborted.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="aborted bar aborted-bar"></div>
@@ -498,8 +498,8 @@
             </tr>
             <tr>
                 <td>Disabled</td>
-                <td>${disabled.total}/${testsSize}</td>
-                <td>${disabled.percentage}%</td>
+                <td id="disabled">${disabled.total}/${testsSize}</td>
+                <td id="disabled-percentage">${disabled.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="disabled bar disabled-bar"></div>
@@ -508,8 +508,8 @@
             </tr>
             <tr>
                 <td>Not run</td>
-                <td>${notRun.total}/${testsSize}</td>
-                <td>${notRun.percentage}%</td>
+                <td id="not-run">${notRun.total}/${testsSize}</td>
+                <td id="not-run-percentage">${notRun.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="not-run bar not-run-bar"></div>
@@ -521,8 +521,8 @@
             </tr>
             <tr>
                 <td>Successful</td>
-                <td>${grandSuccessful.total}/${grandTotal}</td>
-                <td>${grandSuccessful.percentage}%</td>
+                <td id="grand-successful">${grandSuccessful.total}/${grandTotal}</td>
+                <td id="grand-successful-percentage">${grandSuccessful.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="successful bar grand-total-successful-bar"></div>
@@ -531,8 +531,8 @@
             </tr>
             <tr>
                 <td>Failed</td>
-                <td>${grandFailed.total}/${grandTotal}</td>
-                <td>${grandFailed.percentage}%</td>
+                <td id="grand-failed">${grandFailed.total}/${grandTotal}</td>
+                <td id="grand-failed-percentage">${grandFailed.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="failed bar grand-total-failed-bar"></div>
@@ -541,8 +541,8 @@
             </tr>
             <tr>
                 <td>Aborted</td>
-                <td>${grandAborted.total}/${grandTotal}</td>
-                <td>${grandAborted.percentage}%</td>
+                <td id="grand-aborted">${grandAborted.total}/${grandTotal}</td>
+                <td id="grand-aborted-percentage">${grandAborted.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="aborted bar grand-total-aborted-bar"></div>
@@ -551,8 +551,8 @@
             </tr>
             <tr>
                 <td>Disabled</td>
-                <td>${grandDisabled.total}/${grandTotal}</td>
-                <td>${grandDisabled.percentage}%</td>
+                <td id="grand-disabled">${grandDisabled.total}/${grandTotal}</td>
+                <td id="grand-disabled-percentage">${grandDisabled.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="disabled bar grand-total-disabled-bar"></div>
@@ -561,8 +561,8 @@
             </tr>
             <tr>
                 <td>Not run</td>
-                <td>${grandNotRun.total}/${grandTotal}</td>
-                <td>${grandNotRun.percentage}%</td>
+                <td id="grand-not-run">${grandNotRun.total}/${grandTotal}</td>
+                <td id="grand-not-run-percentage">${grandNotRun.percentage}%</td>
                 <td>
                     <div class="bar-container">
                         <div class="not-run bar grand-total-not-run-bar"></div>
