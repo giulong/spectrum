@@ -1,0 +1,12 @@
+testBook:
+  qualityGate:
+    condition: ${weightedSuccessful.percentage} > 60
+  parser:
+    yaml:
+      path: integration-tests/testbook.yaml
+  reporters:
+    - log: { }
+    - txt:
+        output: target/spectrum/testbook/testbook.txt
+    - html:
+        output: target/spectrum/testbook/testbook.html
