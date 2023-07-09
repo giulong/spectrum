@@ -1,7 +1,7 @@
-package io.github.giulong.spectrum.tests;
+package io.github.giulong.spectrum.it_testbook.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.pages.TestBookPage;
+import io.github.giulong.spectrum.it_testbook.pages.TestBookPage;
 import io.github.giulong.spectrum.utils.testbook.reporters.HtmlTestBookReporter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

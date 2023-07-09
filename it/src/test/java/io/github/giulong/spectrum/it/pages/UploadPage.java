@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.pages;
+package io.github.giulong.spectrum.it.pages;
 
 import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
@@ -8,6 +8,7 @@ import org.openqa.selenium.support.FindBy;
 
 @Getter
 @Endpoint("upload")
+@SuppressWarnings("unused")
 public class UploadPage extends SpectrumPage<UploadPage, Void> {
 
     @FindBy(id = "file-upload")

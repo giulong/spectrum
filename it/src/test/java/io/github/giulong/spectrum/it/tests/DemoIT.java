@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.tests;
+package io.github.giulong.spectrum.it.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import org.junit.jupiter.api.Disabled;
