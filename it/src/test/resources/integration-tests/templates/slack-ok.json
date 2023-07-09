@@ -1,0 +1,57 @@
+<#switch event.reason>
+<#case "FAILED">
+<#assign icon = ":red_circle:" >
+<#break>
+<#case "SUCCESSFUL">
+<#assign icon = ":large_green_circle:" >
+<#break>
+<#case "DISABLED">
+<#assign icon = ":large_yellow_circle:" >
+<#break>
+<#case "ABORTED">
+<#assign icon = ":red_circle:" >
+<#break>
+<#default>
+<#assign icon = "" >
+<#break>
+</#switch>
+<#if event.result??>
+<#assign result = "`${event.result}`" >
+<#else>
+<#assign result = "" >
+</#if>
+[
+  {
+    "type": "header",
+    "text": {
+      "type": "plain_text",
+      "text": "Test Results"
+    }
+  },
+  {
+    "type": "divider"
+  },
+  {
+    "type": "section",
+    "fields": [
+      {
+        "type": "mrkdwn",
+        "text": "*Name*\n*Class*: `${event.context.parent.get().displayName}`\n*Test*: `${event.context.displayName}`"
+      },
+      {
+        "type": "mrkdwn",
+        "text": "*Details*\n*Reason*: `${event.reason}`\n*Result*: ${icon} ${result}"
+      }
+    ]
+  }
+  <#if event.context.executionException.isPresent()>
+,
+  {
+    "type": "section",
+    "text": {
+      "type": "mrkdwn",
+      "text": "*Excpetion*: `${event.context.executionException.get()}`"
+    }
+  }
+  </#if>
+]

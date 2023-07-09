@@ -4,10 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.giulong</groupId>
-    <artifactId>spectrum</artifactId>
-    <version>0.0.1</version>
-    <name>Spectrum</name>
+    <groupId>io.github.giulong</groupId>
+    <artifactId>spectrum-aggregate</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <name>Spectrum Aggregate</name>
     <description>Java Selenium Framework</description>
     <url>https://github.com/giulong/spectrum</url>
 
@@ -32,6 +33,7 @@
     </licenses>
 
     <properties>
+        <revision>0.0.1-SNAPSHOT</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jacoco.outputDirectory>${project.reporting.outputDirectory}/jacoco</jacoco.outputDirectory>
@@ -40,6 +42,12 @@
         <jackson.version>2.15.0</jackson.version>
         <mockito.version>5.2.0</mockito.version>
     </properties>
+
+    <modules>
+        <module>framework</module>
+        <module>it</module>
+        <module>it-testbook</module>
+    </modules>
 
     <dependencies>
         <dependency>
@@ -165,268 +173,79 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources/filtered</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>docs/**/*</exclude>
-                    <exclude>examples/**/*</exclude>
-                </excludes>
-            </resource>
-        </resources>
-
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>3.2.1</version>
                     <configuration>
-                        <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
-                        <failIfNoTests>true</failIfNoTests>
-                        <systemPropertyVariables>
-                            <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
-                            <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
-                        </systemPropertyVariables>
+                        <configLocation>checkstyle.xml</configLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                        <linkXRef>false</linkXRef>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>validate</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.11.0</version>
+                    <configuration>
+                        <source>17</source>
+                        <target>17</target>
+                        <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-verifier-plugin</artifactId>
-                    <version>1.1</version>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.1.2</version>
+                    <configuration>
+                        <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
+                        <systemPropertyVariables>
+                            <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
+                        </systemPropertyVariables>
+                        <reportsDirectory>${reportsDirectory}</reportsDirectory>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>3.2.1</version>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.5.0</version>
                 <configuration>
-                    <configLocation>checkstyle.xml</configLocation>
-                    <consoleOutput>true</consoleOutput>
-                    <failsOnError>true</failsOnError>
-                    <linkXRef>false</linkXRef>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
                         <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <source>17</source>
-                    <target>17</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
-                    <systemPropertyVariables>
-                        <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
-                    </systemPropertyVariables>
-                    <reportsDirectory>${reportsDirectory}</reportsDirectory>
-                    <excludes>
-                        <exclude>**/*IT.java</exclude>  <!-- Otherwise the TestBookIT matches since it starts with "Test" -->
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.9</version>
-                <configuration>
-                    <excludes>
-                        <exclude>com/github/giulong/spectrum/pojos/**/*</exclude>
-                        <exclude>com/github/giulong/spectrum/types/**/*</exclude>
-                        <exclude>com/github/giulong/spectrum/enums/**/*</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
+                            <goal>flatten</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
                         <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${jacoco.outputDirectory}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.github.victools</groupId>
-                <artifactId>jsonschema-maven-plugin</artifactId>
-                <version>4.31.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
+                            <goal>clean</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <packageNames>com.github.giulong.spectrum.pojos</packageNames>
-                    <schemaFilePath>target/json-schemas</schemaFilePath>
-                    <schemaFileName>{0}.json</schemaFileName>
-                    <modules>
-                        <module>
-                            <name>Jackson</name>
-                        </module>
-                    </modules>
-                </configuration>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>chrome</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Chrome IT</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                </goals>
-                                <configuration>
-                                    <reportNameSuffix>chrome</reportNameSuffix>
-                                    <systemPropertyVariables>
-                                        <spectrum.browser>chrome</spectrum.browser>
-                                    </systemPropertyVariables>
-                                    <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-verifier-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Verify Chrome</id>
-                                <goals>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <verificationFile>src/test/verifier/verifications-chrome.xml</verificationFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>firefox</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Firefox IT</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                </goals>
-                                <configuration>
-                                    <reportNameSuffix>firefox</reportNameSuffix>
-                                    <systemPropertyVariables>
-                                        <spectrum.browser>firefox</spectrum.browser>
-                                    </systemPropertyVariables>
-                                    <summaryFile>target/failsafe-reports/failsafe-firefox.xml</summaryFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-verifier-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Verify Firefox</id>
-                                <goals>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <verificationFile>src/test/verifier/verifications-firefox.xml</verificationFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>edge</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Edge IT</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                </goals>
-                                <configuration>
-                                    <reportNameSuffix>edge</reportNameSuffix>
-                                    <systemPropertyVariables>
-                                        <spectrum.browser>edge</spectrum.browser>
-                                    </systemPropertyVariables>
-                                    <summaryFile>target/failsafe-reports/failsafe-edge.xml</summaryFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-verifier-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Verify Edge</id>
-                                <goals>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <verificationFile>src/test/verifier/verifications-edge.xml</verificationFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

@@ -1,6 +1,6 @@
 ####
 
-<img src="src/main/resources/docs/images/spectrum-logo.png" alt="Spectrum logo">
+<img src="framework/src/main/resources/docs/images/spectrum-logo.png" alt="Spectrum logo">
 
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg)](https://github.com/giulong/spectrum/actions?branch=main)
 ![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
@@ -57,7 +57,7 @@ TODO: examples
 
 TODO: downloadPath defaults for windows (path separator)
 
-Spectrum is fully configurable and comes with default values which you can find in the [configuration.default.yaml](src/main/resources/yaml/configuration.default.yaml).
+Spectrum is fully configurable and comes with default values which you can find in the [configuration.default.yaml](framework/src/main/resources/yaml/configuration.default.yaml).
 
 To provide different values, you can create the `src/test/resources/configuration.yaml` file in your project.
 Furthermore, you can provide how many env-specific configurations in the same folder, by naming them 
@@ -134,7 +134,7 @@ On each execution, Spectrum automatically produces two files:
 
 The log file will contain the same information you see in the console. It will be produced by default under the `target/spectrum/logs` folder.
 
-It's generated using [Logback](https://logback.qos.ch/), and [here](src/main/resources/logback.xml) you can find its configuration.
+It's generated using [Logback](https://logback.qos.ch/), and [here](framework/src/main/resources/logback.xml) you can find its configuration.
 Logs are rotated daily, meaning the results of each execution occurred in the same day will be appended to the same file.
 
 > 💡<br/>
@@ -146,7 +146,7 @@ Logs are rotated daily, meaning the results of each execution occurred in the sa
 Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/). By default, it will be produced under the `target/spectrum/reports` folder.
 You can see an example here:
 
-<img src="src/main/resources/docs/images/ExtentReports-screenshot.png" alt="Extent Reports">
+<img src="framework/src/main/resources/docs/images/ExtentReports-screenshot.png" alt="Extent Reports">
 
 > 💡<br/>
 > You can also provide your own Look and Feel by putting additional css rules in the `src/test/resources/css/report.css` file. Spectrum will automatically load it and apply to the

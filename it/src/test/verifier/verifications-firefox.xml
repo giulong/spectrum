@@ -1,0 +1,35 @@
+<verifications
+        xmlns="http://maven.apache.org/verifications/1.0.0"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://maven.apache.org/verifications/1.0.0
+  http://maven.apache.org/xsd/verifications-1.0.0.xsd">
+    <files>
+        <file>
+            <location>target\spectrum\reports\report.html</location>
+        </file>
+        <file>
+            <location>target\spectrum\testbook\testbook.html</location>
+            <exists>false</exists>
+        </file>
+        <file>
+            <location>target\spectrum\testbook\testbook.txt</location>
+            <exists>false</exists>
+        </file>
+        <file>
+            <location>target\failsafe-reports\failsafe-firefox.xml</location>
+            <contains>completed.8..completed</contains>
+        </file>
+        <file>
+            <location>target\failsafe-reports\failsafe-firefox.xml</location>
+            <contains>errors.1..errors</contains>
+        </file>
+        <file>
+            <location>target\failsafe-reports\failsafe-firefox.xml</location>
+            <contains>failures.0..failures</contains>
+        </file>
+        <file>
+            <location>target\failsafe-reports\failsafe-firefox.xml</location>
+            <contains>skipped.1..skipped</contains>
+        </file>
+    </files>
+</verifications>

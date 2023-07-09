@@ -1,0 +1,9 @@
+Hello World Selenium:
+  - name: This is my first selenium!
+    weight: 2
+  - name: another test
+    weight: 3
+  - name: Successful
+
+Second Class:
+  - name: skipped
