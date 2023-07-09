@@ -25,38 +25,24 @@
     </dependency>
   </dependencies>
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <skip>true</skip>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.1.2</version>
-          <configuration>
-            <argLine>-Dfile.encoding=UTF-8</argLine>
-            <failIfNoTests>true</failIfNoTests>
-            <systemPropertyVariables>
-              <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
-              <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
-            </systemPropertyVariables>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-verifier-plugin</artifactId>
-          <version>1.1</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-failsafe-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-verifier-plugin</artifactId>
       </plugin>
     </plugins>
   </build>
