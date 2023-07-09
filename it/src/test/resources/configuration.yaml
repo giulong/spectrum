@@ -1,0 +1,28 @@
+runtime:
+  filesFolder: src/test/resources/integration-tests/files
+  environment:
+    local: { }
+
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+webDriver:
+  waits:
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+  firefox:
+    args:
+      - -headless
+  edge:
+    args:
+      - headless
+
+data:
+  folder: integration-tests/data
+  fqdn: io.github.giulong.spectrum.data.Data
+
+extent:
+  theme: DARK
+  fileName: report.html
