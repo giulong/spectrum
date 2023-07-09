@@ -27,7 +27,7 @@
     </developer>
   </developers>
   <modules>
-    <module>framework</module>
+    <module>spectrum</module>
     <module>it</module>
     <module>it-testbook</module>
   </modules>
