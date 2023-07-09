@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.pages;
+package io.github.giulong.spectrum.it.pages;
 
 import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
@@ -11,6 +11,7 @@ import java.util.List;
 
 @Getter
 @Endpoint("download")
+@SuppressWarnings("unused")
 public class DownloadPage extends SpectrumPage<DownloadPage, Void> {
 
     @FindBys({

@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.pages;
+package io.github.giulong.spectrum.it_testbook.pages;
 
 import io.github.giulong.spectrum.SpectrumPage;
 import lombok.Getter;

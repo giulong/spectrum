@@ -10,7 +10,15 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>it-commons</artifactId>
+    <artifactId>it-verifier</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

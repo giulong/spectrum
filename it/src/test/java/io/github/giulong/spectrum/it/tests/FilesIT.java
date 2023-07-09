@@ -1,8 +1,8 @@
-package io.github.giulong.spectrum.tests;
+package io.github.giulong.spectrum.it.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.pages.DownloadPage;
-import io.github.giulong.spectrum.pages.UploadPage;
+import io.github.giulong.spectrum.it.pages.DownloadPage;
+import io.github.giulong.spectrum.it.pages.UploadPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;

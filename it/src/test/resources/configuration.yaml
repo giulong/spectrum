@@ -21,7 +21,7 @@ webDriver:
 
 data:
   folder: integration-tests/data
-  fqdn: io.github.giulong.spectrum.data.Data
+  fqdn: io.github.giulong.spectrum.it.data.Data
 
 extent:
   theme: DARK

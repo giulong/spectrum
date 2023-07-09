@@ -28,9 +28,9 @@
   </developers>
   <modules>
     <module>spectrum</module>
-    <module>it-commons</module>
     <module>it</module>
     <module>it-testbook</module>
+    <module>it-verifier</module>
   </modules>
   <properties>
     <jacoco.outputDirectory>${project.reporting.outputDirectory}/jacoco</jacoco.outputDirectory>
