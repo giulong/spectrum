@@ -1,5 +1,5 @@
 runtime:
-  filesFolder: src/test/resources/integration-tests/files
+  filesFolder: src/test/resources/files
   environment:
     local: { }
 
@@ -20,7 +20,7 @@ webDriver:
       - headless
 
 data:
-  folder: integration-tests/data
+  folder: data
   fqdn: io.github.giulong.spectrum.it_testbook.data.Data
 
 extent:
