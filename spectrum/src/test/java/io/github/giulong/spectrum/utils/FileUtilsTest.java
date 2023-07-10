@@ -42,7 +42,7 @@ class FileUtilsTest {
     @Test
     @DisplayName("readProperties should read the provided file and return the corresponding properties instance")
     public void readProperties() {
-        Properties actual = fileUtils.readProperties("/unit-tests/test.properties");
+        Properties actual = fileUtils.readProperties("/test.properties");
         assertEquals(1, actual.size());
         assertEquals("value", actual.getProperty("key"));
     }
@@ -58,7 +58,7 @@ class FileUtilsTest {
     public void interpolate() {
         assertEquals(
                 "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue",
-                fileUtils.interpolate("/unit-tests/interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
+                fileUtils.interpolate("/interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
     }
 
     @DisplayName("interpolateTimestampFrom should replace the timestamp from the provided file name")
@@ -79,7 +79,7 @@ class FileUtilsTest {
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("/unit-tests/test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue"),
+                arguments("/test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue"),
                 arguments("not-existing", ""));
     }
 }
