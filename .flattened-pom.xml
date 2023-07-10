@@ -184,6 +184,13 @@
           </configuration>
         </plugin>
         <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.3.1</version>
+          <configuration>
+            <propertiesEncoding>UTF-8</propertiesEncoding>
+          </configuration>
+        </plugin>
+        <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>3.1.2</version>
           <configuration>
@@ -205,10 +212,6 @@
               <junit.jupiter.execution.parallel.mode.default>concurrent</junit.jupiter.execution.parallel.mode.default>
             </systemPropertyVariables>
           </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-verifier-plugin</artifactId>
-          <version>1.1</version>
         </plugin>
       </plugins>
     </pluginManagement>

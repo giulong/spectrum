@@ -67,7 +67,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.9</version>
+        <version>0.8.10</version>
         <executions>
           <execution>
             <id>pre-unit-test</id>
@@ -118,7 +118,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <version>3.3.1</version>
         <executions>
           <execution>
             <phase>prepare-package</phase>
@@ -138,9 +137,6 @@
             </configuration>
           </execution>
         </executions>
-        <configuration>
-          <propertiesEncoding>UTF-8</propertiesEncoding>
-        </configuration>
       </plugin>
     </plugins>
   </build>
