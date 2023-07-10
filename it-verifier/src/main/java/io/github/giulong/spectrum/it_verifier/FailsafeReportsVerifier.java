@@ -64,7 +64,6 @@ public class FailsafeReportsVerifier {
         final String skippedLine = String.format(FORMAT, "skipped:", skipped, report.skipped, skipped != report.skipped ? ERROR_MARKER : "");
 
         log.info("""
-                                                
                         Results for report '{}' are:
                         {}
                         {}
@@ -72,8 +71,8 @@ public class FailsafeReportsVerifier {
                         {}
                         {}
                                         
-                        Result: {}""",
-                filePath,
+                        Result: {}
+                        """, filePath,
                 header,
                 completedLine,
                 errorsLine,
