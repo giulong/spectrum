@@ -41,9 +41,6 @@
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>
       </plugin>
-      <plugin>
-        <artifactId>maven-verifier-plugin</artifactId>
-      </plugin>
     </plugins>
   </build>
   <profiles>
@@ -65,20 +62,6 @@
                     <spectrum.browser>chrome</spectrum.browser>
                   </systemPropertyVariables>
                   <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-verifier-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>Verify Chrome</id>
-                <goals>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <verificationFile>src/test/verifier/verifications-chrome.xml</verificationFile>
                 </configuration>
               </execution>
             </executions>
@@ -108,20 +91,6 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
-            <artifactId>maven-verifier-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>Verify Firefox</id>
-                <goals>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <verificationFile>src/test/verifier/verifications-firefox.xml</verificationFile>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
         </plugins>
       </build>
     </profile>
@@ -143,20 +112,6 @@
                     <spectrum.browser>edge</spectrum.browser>
                   </systemPropertyVariables>
                   <summaryFile>target/failsafe-reports/failsafe-edge.xml</summaryFile>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <artifactId>maven-verifier-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>Verify Edge</id>
-                <goals>
-                  <goal>verify</goal>
-                </goals>
-                <configuration>
-                  <verificationFile>src/test/verifier/verifications-edge.xml</verificationFile>
                 </configuration>
               </execution>
             </executions>
