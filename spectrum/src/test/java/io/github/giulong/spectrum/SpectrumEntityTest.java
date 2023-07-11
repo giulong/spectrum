@@ -353,6 +353,40 @@ class SpectrumEntityTest {
         );
     }
 
+    @DisplayName("hasClass should check if the provided webElement has the provided css class")
+    @ParameterizedTest(name = "with class {0} we expect {1}")
+    @MethodSource("hasClassProvider")
+    public void hasClass(final String classes, final boolean expected) {
+        when(webElement.getAttribute("class")).thenReturn(classes);
+
+        assertEquals(expected, spectrumEntity.hasClass(webElement, "cssClass"));
+    }
+
+    public static Stream<Arguments> hasClassProvider() {
+        return Stream.of(
+                arguments("", false),
+                arguments("cssClass", true),
+                arguments("one cssClass another", true)
+        );
+    }
+
+    @DisplayName("hasClasses should check if the provided webElement has all the provided css class")
+    @ParameterizedTest(name = "with class {0} we expect {1}")
+    @MethodSource("hasClassesProvider")
+    public void hasClasses(final String classes, final boolean expected) {
+        when(webElement.getAttribute("class")).thenReturn(classes);
+
+        assertEquals(expected, spectrumEntity.hasClasses(webElement, "one", "cssClass"));
+    }
+
+    public static Stream<Arguments> hasClassesProvider() {
+        return Stream.of(
+                arguments("", false),
+                arguments("cssClass", false),
+                arguments("one cssClass another", true)
+        );
+    }
+
     private static class DummySpectrumEntity<T> extends SpectrumEntity<DummySpectrumEntity<T>, T> {
     }
 }

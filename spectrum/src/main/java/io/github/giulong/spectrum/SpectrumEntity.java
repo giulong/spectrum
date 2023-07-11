@@ -199,4 +199,14 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     public boolean isNotPresent(final By by) {
         return webDriver.findElements(by).size() == 0;
     }
+
+    public boolean hasClass(final WebElement webElement, final String className) {
+        return Arrays.asList(webElement.getAttribute("class").split(" ")).contains(className);
+    }
+
+    public boolean hasClasses(final WebElement webElement, final String... classes) {
+        return Arrays
+                .stream(classes)
+                .allMatch(c -> hasClass(webElement, c));
+    }
 }
