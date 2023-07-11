@@ -18,6 +18,8 @@ public class FailsafeReportsVerifier {
 
     private static final FailsafeReportsVerifier INSTANCE = new FailsafeReportsVerifier();
 
+    private static final Path BASE_DIR = Path.of(System.getProperty("user.dir")).getParent();
+
     private static final String FORMAT = "%-10s %10s %10s %s";
 
     private static final String ERROR_MARKER = "<----";
@@ -50,7 +52,7 @@ public class FailsafeReportsVerifier {
     }
 
     public boolean verifyResultsAre(final Path filePath, final int completed, final int errors, final int failures, final int skipped) {
-        final Report report = read(filePath);
+        final Report report = read(BASE_DIR.resolve(filePath));
         final boolean result = verifyCompletedAre(report, completed) &&
                 verifyErrorsAre(report, errors) &&
                 verifyFailuresAre(report, failures) &&
