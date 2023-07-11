@@ -81,9 +81,9 @@
                 <version>0.8.10</version>
                 <configuration>
                     <excludes>
-                        <exclude>com/github/giulong/spectrum/pojos/**/*</exclude>
-                        <exclude>com/github/giulong/spectrum/types/**/*</exclude>
-                        <exclude>com/github/giulong/spectrum/enums/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/pojos/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/types/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/enums/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
