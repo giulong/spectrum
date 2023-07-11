@@ -1,0 +1,2 @@
+vars:
+  downloadsFolder: ${user.dir}/target/downloads

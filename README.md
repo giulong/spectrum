@@ -225,3 +225,6 @@ node: java -Dwebdriver.chrome.driver=/Users/c325006/.cache/selenium/chromedriver
 
 Spectrum is created and maintained by Giulio Longfils: [![Linkedin](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/giuliolongfils/) 
 and licensed under the terms of the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
+
+
+TODO example with local-windows and local-mac configurations to handle different path separator

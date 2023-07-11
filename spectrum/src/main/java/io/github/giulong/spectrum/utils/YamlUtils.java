@@ -115,6 +115,12 @@ public final class YamlUtils {
     }
 
     @SneakyThrows
+    public <T> void updateWithInternalFile(final T t, final String file) {
+        log.debug("Updating the instance of {} with internal file '{}'", t.getClass().getSimpleName(), file);
+        yamlMapper.readerForUpdating(t).readValue(YamlUtils.class.getClassLoader().getResource(file));
+    }
+
+    @SneakyThrows
     public String write(Object object) {
         return writer.writeValueAsString(object);
     }

@@ -28,6 +28,7 @@ import static java.util.stream.Collectors.toMap;
 public class SpectrumSessionListener implements LauncherSessionListener {
 
     public static final String DEFAULT_CONFIGURATION_YAML = "yaml/configuration.default.yaml";
+    public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
     public static final String CONFIGURATION_YAML = "configuration.yaml";
     public static final String ENV_NODE = "/runtime/env";
     public static final String VARS_NODE = "/vars";
@@ -76,6 +77,12 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         parseVars(envConfiguration);
 
         configuration = yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class);
+
+        if (isUnix()) {
+            yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
+        }
+
+        // TODO parse configuration-<SO>.yaml
         yamlUtils.updateWithFile(configuration, CONFIGURATION_YAML);
         yamlUtils.updateWithFile(configuration, envConfiguration);
 
@@ -91,6 +98,11 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     @SuppressWarnings("unchecked")
     protected void parseVars(final String envConfiguration) {
         VARS.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
+
+        if (isUnix()) {
+            VARS.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
+        }
+
         VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
         VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, envConfiguration, Map.class)).orElse(new HashMap<>()));
     }
@@ -148,5 +160,9 @@ public class SpectrumSessionListener implements LauncherSessionListener {
                 .builder()
                 .handlers(configuration.getEventHandlers())
                 .build();
+    }
+
+    protected boolean isUnix() {
+        return !System.getProperty("os.name").toLowerCase().contains("win");
     }
 }
