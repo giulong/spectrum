@@ -32,7 +32,7 @@ testBook:
     condition: ${weightedSuccessful.percentage} > 60
   parser:
     yaml:
-      path: integration-tests/testbook.yaml
+      path: testbook.yaml
   reporters:
     - log: { }
     - txt:
