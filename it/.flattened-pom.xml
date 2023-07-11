@@ -46,6 +46,11 @@
   <profiles>
     <profile>
       <id>chrome</id>
+      <activation>
+        <property>
+          <name>allTests</name>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>
@@ -71,6 +76,11 @@
     </profile>
     <profile>
       <id>firefox</id>
+      <activation>
+        <property>
+          <name>allTests</name>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>
@@ -96,6 +106,11 @@
     </profile>
     <profile>
       <id>edge</id>
+      <activation>
+        <property>
+          <name>allTests</name>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>

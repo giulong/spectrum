@@ -46,6 +46,11 @@
   <profiles>
     <profile>
       <id>chrome</id>
+      <activation>
+        <property>
+          <name>allTests</name>
+        </property>
+      </activation>
       <build>
         <plugins>
           <plugin>
