@@ -102,6 +102,15 @@ class YamlUtilsTest {
     }
 
     @Test
+    @DisplayName("updateWithInternalFile should update the provided instance with the internal file provided")
+    public void updateWithInternalFile() {
+        TestYaml testYaml = TestYaml.builder().key("original").build();
+
+        yamlUtils.updateWithInternalFile(testYaml, "test.yaml");
+        assertEquals("value", testYaml.getKey());
+    }
+
+    @Test
     @DisplayName("write should just call the writeValueAsString of the provided object")
     public void write() {
         final TestYaml testYaml = mock(TestYaml.class);

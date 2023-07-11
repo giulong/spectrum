@@ -84,7 +84,7 @@ class ExtentTestHandlerTest {
 
     @DisplayName("testDisabled should create the test in the report and delegate to finalizeTest")
     @ParameterizedTest(name = "with method {0} we expect {1}")
-    @CsvSource(value = {
+    @CsvSource({
             "noReasonMethod,no reason",
             "reasonMethod,specific reason"
     })

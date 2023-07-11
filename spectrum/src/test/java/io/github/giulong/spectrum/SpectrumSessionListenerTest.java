@@ -13,6 +13,7 @@ import io.github.giulong.spectrum.utils.events.EventHandler;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,6 +51,9 @@ class SpectrumSessionListenerTest {
     private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private static MockedStatic<EventsDispatcher> eventsDispatcherMockedStatic;
+    private static MockedStatic<SystemUtils> systemUtilsMockedStatic;
+
+    private String osName;
 
     @Mock
     private FileUtils fileUtils;
@@ -101,10 +105,12 @@ class SpectrumSessionListenerTest {
 
     @BeforeEach
     public void beforeEach() {
+        osName = System.getProperty("os.name");
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
         yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
+        systemUtilsMockedStatic = mockStatic(SystemUtils.class);
     }
 
     @AfterEach
@@ -113,7 +119,9 @@ class SpectrumSessionListenerTest {
         yamlUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
         eventsDispatcherMockedStatic.close();
+        systemUtilsMockedStatic.close();
         VARS.clear();
+        System.setProperty("os.name", osName);
     }
 
     @Test
@@ -142,6 +150,8 @@ class SpectrumSessionListenerTest {
         final String theme = "DARK";
         final String timeStampFormat = "timeStampFormat";
         final String css = "css";
+
+        System.setProperty("os.name", "Win");
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(reportFolder);
@@ -253,6 +263,8 @@ class SpectrumSessionListenerTest {
         final String env = "env";
         final String envConfiguration = String.format("configuration-%s.yaml", env);
 
+        System.setProperty("os.name", "Win");
+
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
 
         // parseEnv
@@ -267,6 +279,36 @@ class SpectrumSessionListenerTest {
         final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
         spectrumSessionListener.parseConfiguration();
 
+        verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
+        verify(yamlUtils).updateWithFile(configuration, envConfiguration);
+
+        assertEquals(configuration, SpectrumSessionListener.getConfiguration());
+    }
+
+    @Test
+    @DisplayName("parseConfiguration should parse all the configurations considering also the internal configuration.default.unix.yaml")
+    public void parseConfigurationUnix() {
+        final String env = "env";
+        final String envConfiguration = String.format("configuration-%s.yaml", env);
+
+        System.setProperty("os.name", "nix");
+
+        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
+
+        // parseEnv
+        when(yamlUtils.readInternalNode(ENV_NODE, CONFIGURATION_YAML, String.class)).thenReturn(env);
+        when(yamlUtils.readInternalNode(ENV_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultEnv");
+
+        // parseVars
+        when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
+        when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class)).thenReturn(Map.of("one", "one"));
+
+        when(yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class)).thenReturn(configuration);
+
+        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+        spectrumSessionListener.parseConfiguration();
+
+        verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, envConfiguration);
 
@@ -299,10 +341,30 @@ class SpectrumSessionListenerTest {
     public void parseVars(final Map<String, String> defaultVars, final Map<String, String> vars, final Map<String, String> envVars, final Map<String, String> expected) {
         final String envConfiguration = "envConfiguration";
 
+        System.setProperty("os.name", "Win");
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
 
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(defaultVars);
+        when(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).thenReturn(vars);
+        when(yamlUtils.readNode(VARS_NODE, envConfiguration, Map.class)).thenReturn(envVars);
+
+        spectrumSessionListener.parseVars(envConfiguration);
+        assertEquals(expected, VARS);
+    }
+
+    @DisplayName("parseVars should put in the VARS map also those read from the internal configuration.default.unix.yaml")
+    @ParameterizedTest
+    @MethodSource("varsValuesProvider")
+    public void parseVarsUnix(final Map<String, String> defaultVars, final Map<String, String> vars, final Map<String, String> envVars, final Map<String, String> expected) {
+        final String envConfiguration = "envConfiguration";
+
+        System.setProperty("os.name", "nix");
+        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
+        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+
+        when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(defaultVars);
+        when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class)).thenReturn(defaultVars);
         when(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).thenReturn(vars);
         when(yamlUtils.readNode(VARS_NODE, envConfiguration, Map.class)).thenReturn(envVars);
 
@@ -452,5 +514,25 @@ class SpectrumSessionListenerTest {
         spectrumSessionListener.initEventsDispatcher();
 
         assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
+    }
+
+    @DisplayName("isUnix should check the OS")
+    @ParameterizedTest(name = "with OS {0} we expect {1}")
+    @MethodSource("isUnixValuesProvider")
+    public void isUnix(final String osName, final boolean expected) {
+        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+
+        System.setProperty("os.name", osName);
+
+        assertEquals(expected, spectrumSessionListener.isUnix());
+    }
+
+    public static Stream<Arguments> isUnixValuesProvider() {
+        return Stream.of(
+                arguments("nix", true),
+                arguments("blah", true),
+                arguments("Win", false),
+                arguments("WiN", false)
+        );
     }
 }
