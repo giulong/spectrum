@@ -82,7 +82,6 @@ public class SpectrumSessionListener implements LauncherSessionListener {
             yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
         }
 
-        // TODO parse configuration-<SO>.yaml
         yamlUtils.updateWithFile(configuration, CONFIGURATION_YAML);
         yamlUtils.updateWithFile(configuration, envConfiguration);
 
