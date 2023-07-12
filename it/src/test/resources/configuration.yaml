@@ -1,7 +1,5 @@
 runtime:
   filesFolder: src/test/resources/files
-  environment:
-    local: { }
 
 application:
   baseUrl: https://the-internet.herokuapp.com/
@@ -17,7 +15,7 @@ webDriver:
       - -headless
   edge:
     args:
-      - headless
+      - --headless=new
 
 data:
   folder: data

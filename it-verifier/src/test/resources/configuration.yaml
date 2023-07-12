@@ -1,0 +1,13 @@
+runtime:
+  filesFolder: src/test/resources/files
+
+webDriver:
+  waits:
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+
+data:
+  folder: data
+  fqdn: io.github.giulong.spectrum.it_testbook_verifier.data.Data

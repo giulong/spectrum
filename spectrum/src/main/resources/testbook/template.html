@@ -573,8 +573,8 @@
                 <td colspan="4" class="table-separator">Quality Gate <span class="description"> | Minimum threshold to consider the suite successful</span></td>
             </tr>
             <tr>
-                <td colspan="3"><b>Condition:</b> ${qg.condition}<br/><b>Evaluated:</b><#assign evaluatedCondition = "${qg.condition}"?interpret> <@evaluatedCondition /></td>
-                <td class="qg-status qg-status-${qgStatus?eval?string('OK', 'KO')}">${qgStatus?eval?string('OK', 'KO')}</td>
+                <td colspan="3"><b>Condition: </b><span id="condition">${qg.condition}</span><br/><b>Evaluated: </b><span id="evaluated-condition"><#assign evaluatedCondition = "${qg.condition}"?interpret> <@evaluatedCondition /></span></td>
+                <td id="qg-status" class="qg-status qg-status-${qgStatus?eval?string('OK', 'KO')}">${qgStatus?eval?string('OK', 'KO')}</td>
             </tr>
             </tbody>
         </table>
