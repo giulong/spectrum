@@ -8,16 +8,19 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
+import static java.util.Locale.US;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("TestBook Verifier")
+@DisplayName("It TestBook Module Verifier")
+@SuppressWarnings("unused")
 public class TestBookVerifierIT extends SpectrumTest<Data> {
 
-    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", new DecimalFormatSymbols(US));
 
     private TestBookPage testBookPage;
 

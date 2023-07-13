@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.internals.jackson;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import io.github.giulong.spectrum.browsers.*;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,11 @@ class BrowserDeserializerTest {
     @BeforeAll
     public static void beforeAll() {
         VARS.put("varInEnv", varInEnv);
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        VARS.clear();
     }
 
     @DisplayName("deserialize should delegate to the parent method passing the string value")
