@@ -45,6 +45,8 @@ public class Data {
         @Getter
         public static class Qg {
             private String status;
+            private String condition;
+            private String evaluatedCondition;
         }
     }
 
