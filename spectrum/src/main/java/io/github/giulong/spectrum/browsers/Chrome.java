@@ -21,7 +21,7 @@ public class Chrome extends Chromium<ChromeOptions, ChromeDriverService, ChromeD
     }
 
     @Override
-    public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
+    public synchronized void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
         final Configuration.WebDriver.Chrome chromeConfig = webDriverConfiguration.getChrome();
 
         capabilities = new ChromeOptions();
