@@ -132,6 +132,9 @@ public class TestBookVerifierIT extends SpectrumTest<Data> {
         assertEquals(String.valueOf(DECIMAL_FORMAT.format(parseDouble(grandTotalNotRun) / totalInt * 100)), testBookPage.getGrandNotRunPercentage().getText().replace("%", ""));
 
         // QUALITY GATE
-        assertTrue(hasClass(testBookPage.getQgStatus(), String.format("qg-status-%s", data.getTestBook().getQg().getStatus())));
+        final Data.TestBook.Qg qg = data.getTestBook().getQg();
+        assertTrue(hasClass(testBookPage.getQgStatus(), String.format("qg-status-%s", qg.getStatus())));
+        assertEquals(qg.getCondition(), testBookPage.getCondition().getText());
+        assertEquals(qg.getEvaluatedCondition(), testBookPage.getEvaluatedCondition().getText());
     }
 }

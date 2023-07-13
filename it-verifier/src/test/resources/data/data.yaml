@@ -35,6 +35,8 @@ testBook:
 
   qg:
     status: KO
+    condition: ${weightedSuccessful.percentage} > 60
+    evaluatedCondition: 0 > 60
 
 extentReport:
   testLabels:
