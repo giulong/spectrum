@@ -14,8 +14,8 @@ import static java.lang.Integer.parseInt;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("It TestBook Module Verifier")
-public class ItTestBookVerifierIT extends SpectrumTest<Data> {
+@DisplayName("TestBook Verifier")
+public class TestBookVerifierIT extends SpectrumTest<Data> {
 
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
 
@@ -24,14 +24,14 @@ public class ItTestBookVerifierIT extends SpectrumTest<Data> {
     @Test
     @DisplayName("should check the testbook")
     public void testbook() {
-        final Data.Statistics statistics = data.getStatistics();
+        final Data.TestBook.Statistics statistics = data.getTestBook().getStatistics();
 
         webDriver.get(String.format("file:///%s/it-testbook/target/spectrum/testbook/testbook.html", Path.of(System.getProperty("user.dir")).getParent()));
 
         assertEquals("TestBook Results", testBookPage.getTitle().getText());
 
         // STATISTICS
-        final Data.Statistics.Generic generic = statistics.getGeneric();
+        final Data.TestBook.Statistics.Generic generic = statistics.getGeneric();
         final String mappedTests = generic.getMappedTests();
         final int mappedTestsInt = parseInt(generic.getMappedTests());
         final String unmappedTests = generic.getUnmappedTests();
@@ -49,7 +49,7 @@ public class ItTestBookVerifierIT extends SpectrumTest<Data> {
         assertEquals(String.format("%s + %s = %s", totalWeighted, unmappedTests, grandTotalWeighted), testBookPage.getGrandTotalWeighted().getText());
 
         // MAPPED WEIGHTED
-        final Data.Statistics.Group mappedWeighted = statistics.getMappedWeighted();
+        final Data.TestBook.Statistics.Group mappedWeighted = statistics.getMappedWeighted();
         final String mappedWeightedSuccessful = mappedWeighted.getSuccessful();
         final String mappedWeightedFailed = mappedWeighted.getFailed();
         final String mappedWeightedAborted = mappedWeighted.getAborted();
@@ -69,7 +69,7 @@ public class ItTestBookVerifierIT extends SpectrumTest<Data> {
         assertEquals(String.valueOf(DECIMAL_FORMAT.format(parseDouble(mappedWeightedNotRun) / totalWeightedInt * 100)), testBookPage.getWeightedNotRunPercentage().getText().replace("%", ""));
 
         // GRAND TOTAL WEIGHTED
-        final Data.Statistics.Group grandTotalWeightedGroup = statistics.getGrandTotalWeighted();
+        final Data.TestBook.Statistics.Group grandTotalWeightedGroup = statistics.getGrandTotalWeighted();
         final String grandTotalWeightedSuccessful = grandTotalWeightedGroup.getSuccessful();
         final String grandTotalWeightedFailed = grandTotalWeightedGroup.getFailed();
         final String grandTotalWeightedAborted = grandTotalWeightedGroup.getAborted();
@@ -89,7 +89,7 @@ public class ItTestBookVerifierIT extends SpectrumTest<Data> {
         assertEquals(String.valueOf(DECIMAL_FORMAT.format(parseDouble(grandTotalWeightedNotRun) / grandTotalWeightedInt * 100)), testBookPage.getGrandWeightedNotRunPercentage().getText().replace("%", ""));
 
         // MAPPED
-        final Data.Statistics.Group mapped = statistics.getMapped();
+        final Data.TestBook.Statistics.Group mapped = statistics.getMapped();
         final String mappedSuccessful = mapped.getSuccessful();
         final String mappedFailed = mapped.getFailed();
         final String mappedAborted = mapped.getAborted();
@@ -109,7 +109,7 @@ public class ItTestBookVerifierIT extends SpectrumTest<Data> {
         assertEquals(String.valueOf(DECIMAL_FORMAT.format(parseDouble(mappedNotRun) / mappedTestsInt * 100)), testBookPage.getNotRunPercentage().getText().replace("%", ""));
 
         // GRAND TOTAL
-        final Data.Statistics.Group grandTotal = statistics.getGrandTotal();
+        final Data.TestBook.Statistics.Group grandTotal = statistics.getGrandTotal();
         final String grandTotalSuccessful = grandTotal.getSuccessful();
         final String grandTotalFailed = grandTotal.getFailed();
         final String grandTotalAborted = grandTotal.getAborted();
@@ -129,6 +129,6 @@ public class ItTestBookVerifierIT extends SpectrumTest<Data> {
         assertEquals(String.valueOf(DECIMAL_FORMAT.format(parseDouble(grandTotalNotRun) / totalInt * 100)), testBookPage.getGrandNotRunPercentage().getText().replace("%", ""));
 
         // QUALITY GATE
-        assertTrue(hasClass(testBookPage.getQgStatus(), String.format("qg-status-%s", data.getQg().getStatus())));
+        assertTrue(hasClass(testBookPage.getQgStatus(), String.format("qg-status-%s", data.getTestBook().getQg().getStatus())));
     }
 }
