@@ -67,7 +67,7 @@ jobs:
       env:
         SSH_DEPLOY_KEY: ${{ secrets.JSON_SCHEMA_DEPLOY_KEY }}
       with:
-        source-directory: target/json-schemas
+        source-directory: spectrum/target/json-schemas
         destination-github-username: giulong
         destination-repository-name: spectrum-json-schemas
         user-email: giuliolongfils@gmail.com
