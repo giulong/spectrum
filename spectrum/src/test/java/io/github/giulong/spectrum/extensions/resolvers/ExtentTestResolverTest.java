@@ -63,6 +63,7 @@ class ExtentTestResolverTest {
 
     private final String className = "className";
     private final String displayName = "displayName";
+    private final String transformedTestName = "classname-displayname";
 
     @BeforeEach
     public void beforeEach() {
@@ -81,9 +82,15 @@ class ExtentTestResolverTest {
         when(extensionContext.getDisplayName()).thenReturn(displayName);
         when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(className);
-        when(extentReports.createTest(String.format("<div>%s</div>%s", className, displayName))).thenReturn(extentTest);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", transformedTestName, className, displayName))).thenReturn(extentTest);
 
         assertEquals(extentTest, ExtentTestResolver.createExtentTestFrom(extensionContext));
+    }
+
+    @Test
+    @DisplayName("transformInKebabCase should return the provided string with spaces replaced by dashes and in lowercase")
+    public void transformInKebabCase() {
+        assertEquals("some-composite-string", ExtentTestResolver.transformInKebabCase("Some Composite STRING"));
     }
 
     @DisplayName("getColorOf should return the color corresponding to the provided status")
@@ -102,7 +109,7 @@ class ExtentTestResolverTest {
         when(extensionContext.getDisplayName()).thenReturn(displayName);
         when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(className);
-        when(extentReports.createTest(String.format("<div>%s</div>%s", className, displayName))).thenReturn(extentTest);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", transformedTestName, className, displayName))).thenReturn(extentTest);
 
         when(extentTest.info(any(Markup.class))).thenReturn(extentTest);
 

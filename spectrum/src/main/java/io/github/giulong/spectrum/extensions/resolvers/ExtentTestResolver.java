@@ -21,8 +21,15 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> {
     public static final String EXTENT_TEST = "extentTest";
 
     public static ExtentTest createExtentTestFrom(final ExtensionContext context) {
+        final String className = context.getParent().orElseThrow().getDisplayName();
+        final String testName = context.getDisplayName();
+
         return SpectrumSessionListener.getExtentReports()
-                .createTest(String.format("<div>%s</div>%s", context.getParent().orElseThrow().getDisplayName(), context.getDisplayName()));
+                .createTest(String.format("<div id=\"%s-%s\">%s</div>%s", transformInKebabCase(className), transformInKebabCase(testName), className, testName));
+    }
+
+    protected static String transformInKebabCase(final String string) {
+        return string.replaceAll("\\s", "-").toLowerCase();
     }
 
     public static ExtentColor getColorOf(final Status status) {
