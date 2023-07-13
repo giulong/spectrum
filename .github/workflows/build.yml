@@ -22,7 +22,7 @@ jobs:
         cache: maven
 
     - name: mvn install
-      run: mvn -B install -P chrome,firefox,edge
+      run: mvn -B install -D allTests
 
     - name: Generate Jacoco Badge
       id: jacoco
