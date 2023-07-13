@@ -2,7 +2,7 @@
 
 <img src="spectrum/src/main/resources/docs/images/spectrum-logo.png" alt="Spectrum logo">
 
-[![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg)](https://github.com/giulong/spectrum/actions?branch=main)
+[![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg)](https://github.com/giulong/spectrum/actions?branch=develop)
 ![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
 ![branches coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/branches.svg)
 
