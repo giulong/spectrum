@@ -58,7 +58,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         initEventsDispatcher();
 
         freeMarkerWrapper.setupFrom(configuration.getFreeMarker());
-        eventsDispatcher.dispatch(BEFORE, Set.of(SUITE));
+        eventsDispatcher.fire(BEFORE, Set.of(SUITE));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         }
 
         extentReports.flush();
-        eventsDispatcher.dispatch(AFTER, Set.of(SUITE));
+        eventsDispatcher.fire(AFTER, Set.of(SUITE));
     }
 
     protected void parseConfiguration() {

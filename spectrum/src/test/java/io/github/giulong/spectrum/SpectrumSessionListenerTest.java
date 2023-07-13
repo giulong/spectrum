@@ -222,7 +222,7 @@ class SpectrumSessionListenerTest {
         extentSparkReporterMockedConstruction.close();
         extentReportsMockedConstruction.close();
 
-        verify(eventsDispatcher).dispatch(BEFORE, Set.of(SUITE));
+        verify(eventsDispatcher).fire(BEFORE, Set.of(SUITE));
     }
 
     @Test
@@ -238,7 +238,7 @@ class SpectrumSessionListenerTest {
 
         verify(testBook).flush();
         verify(extentReports).flush();
-        verify(eventsDispatcher).dispatch(AFTER, Set.of(SUITE));
+        verify(eventsDispatcher).fire(AFTER, Set.of(SUITE));
     }
 
     @Test
@@ -254,7 +254,7 @@ class SpectrumSessionListenerTest {
 
         verify(testBook, never()).flush();
         verify(extentReports).flush();
-        verify(eventsDispatcher).dispatch(AFTER, Set.of(SUITE));
+        verify(eventsDispatcher).fire(AFTER, Set.of(SUITE));
     }
 
     @Test

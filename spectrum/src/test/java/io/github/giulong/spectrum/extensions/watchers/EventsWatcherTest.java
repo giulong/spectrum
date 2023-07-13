@@ -73,7 +73,7 @@ class EventsWatcherTest {
     public void testBeforeAll() {
         notifyStubs();
         eventsWatcher.beforeAll(extensionContext);
-        verify(eventsDispatcher).dispatch(className, displayName, BEFORE, null, Set.of(CLASS), extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(CLASS), extensionContext);
     }
 
     @Test
@@ -81,7 +81,7 @@ class EventsWatcherTest {
     public void testBeforeEach() {
         notifyStubs();
         eventsWatcher.beforeEach(extensionContext);
-        verify(eventsDispatcher).dispatch(className, displayName, BEFORE, null, Set.of(TEST), extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(TEST), extensionContext);
     }
 
     @Test
@@ -89,7 +89,7 @@ class EventsWatcherTest {
     public void testAfterAll() {
         notifyStubs();
         eventsWatcher.afterAll(extensionContext);
-        verify(eventsDispatcher).dispatch(className, displayName, AFTER, null, Set.of(CLASS), extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, AFTER, null, Set.of(CLASS), extensionContext);
     }
 
     @Test
@@ -97,7 +97,7 @@ class EventsWatcherTest {
     public void testDisabled() {
         notifyStubs();
         eventsWatcher.testDisabled(extensionContext, Optional.of("reason"));
-        verify(eventsDispatcher).dispatch(className, displayName, AFTER, DISABLED, Set.of(TEST), extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, AFTER, DISABLED, Set.of(TEST), extensionContext);
     }
 
     @Test
@@ -105,7 +105,7 @@ class EventsWatcherTest {
     public void testSuccessful() {
         notifyStubs();
         eventsWatcher.testSuccessful(extensionContext);
-        verify(eventsDispatcher).dispatch(className, displayName, AFTER, SUCCESSFUL, Set.of(TEST), extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, AFTER, SUCCESSFUL, Set.of(TEST), extensionContext);
     }
 
     @Test
@@ -113,7 +113,7 @@ class EventsWatcherTest {
     public void testAborted() {
         notifyStubs();
         eventsWatcher.testAborted(extensionContext, new RuntimeException());
-        verify(eventsDispatcher).dispatch(className, displayName, AFTER, ABORTED, Set.of(TEST), extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, AFTER, ABORTED, Set.of(TEST), extensionContext);
     }
 
     @Test
@@ -121,7 +121,7 @@ class EventsWatcherTest {
     public void testFailed() {
         notifyStubs();
         eventsWatcher.testFailed(extensionContext, new RuntimeException());
-        verify(eventsDispatcher).dispatch(className, displayName, AFTER, FAILED, Set.of(TEST), extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, AFTER, FAILED, Set.of(TEST), extensionContext);
     }
 
     @Test
@@ -133,6 +133,6 @@ class EventsWatcherTest {
 
         notifyStubs();
         eventsWatcher.notify(extensionContext, reason, result, tags);
-        verify(eventsDispatcher).dispatch(className, displayName, reason, result, tags, extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, reason, result, tags, extensionContext);
     }
 }
