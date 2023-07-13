@@ -22,7 +22,7 @@ jobs:
         cache: maven
 
     - name: mvn install
-      run: mvn -B install -D allTests
+      run: mvn -B install -D allTests --file pom.xml
 
     - name: Generate Jacoco Badge
       id: jacoco
