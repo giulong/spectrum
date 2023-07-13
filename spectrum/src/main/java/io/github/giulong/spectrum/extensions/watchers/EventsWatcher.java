@@ -57,6 +57,6 @@ public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEach
         final String className = context.getParent().orElse(context.getRoot()).getDisplayName();
         final String testName = context.getDisplayName();
 
-        SpectrumSessionListener.getEventsDispatcher().dispatch(className, testName, reason, result, tags, context);
+        SpectrumSessionListener.getEventsDispatcher().fire(className, testName, reason, result, tags, context);
     }
 }

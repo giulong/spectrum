@@ -17,11 +17,11 @@ public class EventsDispatcher {
 
     private List<EventHandler> handlers;
 
-    public void dispatch(final EventReason reason, final Set<EventTag> tags) {
-        dispatch(null, null, reason, null, tags, null);
+    public void fire(final EventReason reason, final Set<EventTag> tags) {
+        fire(null, null, reason, null, tags, null);
     }
 
-    public void dispatch(final String className, final String testName, final EventReason reason, final Result result, final Set<EventTag> tags, final ExtensionContext context) {
+    public void fire(final String className, final String testName, final EventReason reason, final Result result, final Set<EventTag> tags, final ExtensionContext context) {
         final Event event = Event.builder()
                 .className(className)
                 .testName(testName)

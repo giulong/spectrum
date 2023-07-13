@@ -73,7 +73,7 @@ class EventsDispatcherTest {
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
-        eventsDispatcher.dispatch(reason, tags);
+        eventsDispatcher.fire(reason, tags);
 
         verify(handler1).match(event);
         verify(handler2).match(event);
@@ -97,7 +97,7 @@ class EventsDispatcherTest {
         when(eventBuilder.context(extensionContext)).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
-        eventsDispatcher.dispatch(className, testName, reason, result, tags, extensionContext);
+        eventsDispatcher.fire(className, testName, reason, result, tags, extensionContext);
 
         verify(handler1).match(event);
         verify(handler2).match(event);
