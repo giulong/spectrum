@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
 import io.github.giulong.spectrum.SpectrumSessionListener;
-import io.github.giulong.spectrum.enums.EventReason;
 import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -10,10 +9,11 @@ import org.junit.jupiter.api.extension.*;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.github.giulong.spectrum.enums.EventReason.*;
 import static io.github.giulong.spectrum.enums.EventTag.CLASS;
 import static io.github.giulong.spectrum.enums.EventTag.TEST;
 import static io.github.giulong.spectrum.enums.Result.*;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
 
 @Slf4j
 public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
@@ -53,7 +53,7 @@ public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEach
         notify(context, AFTER, FAILED, Set.of(TEST));
     }
 
-    public void notify(final ExtensionContext context, final EventReason reason, final Result result, final Set<EventTag> tags) {
+    public void notify(final ExtensionContext context, final String reason, final Result result, final Set<EventTag> tags) {
         final String className = context.getParent().orElse(context.getRoot()).getDisplayName();
         final String testName = context.getDisplayName();
 

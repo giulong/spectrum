@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.enums.EventReason;
 import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
@@ -17,12 +16,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static io.github.giulong.spectrum.enums.EventReason.AFTER;
-import static io.github.giulong.spectrum.enums.EventReason.BEFORE;
 import static io.github.giulong.spectrum.enums.EventTag.SUITE;
 import static io.github.giulong.spectrum.enums.EventTag.TEST;
 import static io.github.giulong.spectrum.enums.Result.FAILED;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -55,17 +54,17 @@ class EventHandlerTest {
         );
     }
 
-    @DisplayName("classNameAndTestNameMatches")
+    @DisplayName("primaryAndSecondaryIdMatch")
     @ParameterizedTest(name = "with value1 {0}, value2 {1}, value3 {2}, value4 {3} we expect {5}")
-    @MethodSource("classNameAndTestNameMatchesProvider")
-    public void classNameAndTestNameMatches(final String value1, final String value2, final String value3, final String value4, final boolean expected) {
-        final Event e1 = Event.builder().className(value1).testName(value2).build();
-        final Event e2 = Event.builder().className(value3).testName(value4).build();
+    @MethodSource("primaryAndSecondaryIdMatchProvider")
+    public void primaryAndSecondaryIdMatch(final String value1, final String value2, final String value3, final String value4, final boolean expected) {
+        final Event e1 = Event.builder().primaryId(value1).secondaryId(value2).build();
+        final Event e2 = Event.builder().primaryId(value3).secondaryId(value4).build();
 
-        assertEquals(expected, eventHandler.classNameAndTestNameMatches(e1, e2));
+        assertEquals(expected, eventHandler.primaryAndSecondaryIdMatch(e1, e2));
     }
 
-    public static Stream<Arguments> classNameAndTestNameMatchesProvider() {
+    public static Stream<Arguments> primaryAndSecondaryIdMatchProvider() {
         return Stream.of(
                 arguments(null, null, "nope", "nope", false),
                 arguments(null, "test", "nope", "nope", false),
@@ -76,17 +75,17 @@ class EventHandlerTest {
         );
     }
 
-    @DisplayName("justClassNameMatches")
+    @DisplayName("justPrimaryIdMatches")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
-    @MethodSource("justClassNameMatchesProvider")
-    public void justClassNameMatches(final String value1, final String value2, final boolean expected) {
-        final Event e1 = Event.builder().className(value1).build();
-        final Event e2 = Event.builder().className(value2).build();
+    @MethodSource("justPrimaryIdMatchesProvider")
+    public void justPrimaryIdMatches(final String value1, final String value2, final boolean expected) {
+        final Event e1 = Event.builder().primaryId(value1).build();
+        final Event e2 = Event.builder().primaryId(value2).build();
 
-        assertEquals(expected, eventHandler.justClassNameMatches(e1, e2));
+        assertEquals(expected, eventHandler.justPrimaryIdMatches(e1, e2));
     }
 
-    public static Stream<Arguments> justClassNameMatchesProvider() {
+    public static Stream<Arguments> justPrimaryIdMatchesProvider() {
         return Stream.of(
                 arguments(null, "nope", false),
                 arguments("class", "nope", false),
@@ -97,7 +96,7 @@ class EventHandlerTest {
     @DisplayName("reasonMatches")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
     @MethodSource("reasonMatchesProvider")
-    public void reasonMatches(final EventReason value1, final EventReason value2, final boolean expected) {
+    public void reasonMatches(final String value1, final String value2, final boolean expected) {
         final Event e1 = Event.builder().reason(value1).build();
         final Event e2 = Event.builder().reason(value2).build();
 
@@ -141,17 +140,17 @@ class EventHandlerTest {
         return Stream.of(
                 arguments(Event.builder().build(), Event.builder().build(), false),
                 arguments(Event.builder().reason(BEFORE).build(), Event.builder().reason(BEFORE).build(), false),
-                arguments(Event.builder().reason(BEFORE).className("class").testName("test").build(), Event.builder().reason(BEFORE).className("class").build(), false),
-                arguments(Event.builder().reason(BEFORE).className("class").testName("test").build(), Event.builder().reason(BEFORE).className("class").testName("test").build(), true),
-                arguments(Event.builder().reason(BEFORE).className("class").build(), Event.builder().reason(BEFORE).className("nope").build(), false),
-                arguments(Event.builder().reason(BEFORE).className("class").build(), Event.builder().reason(BEFORE).className("class").build(), true),
+                arguments(Event.builder().reason(BEFORE).primaryId("class").secondaryId("test").build(), Event.builder().reason(BEFORE).primaryId("class").build(), false),
+                arguments(Event.builder().reason(BEFORE).primaryId("class").secondaryId("test").build(), Event.builder().reason(BEFORE).primaryId("class").secondaryId("test").build(), true),
+                arguments(Event.builder().reason(BEFORE).primaryId("class").build(), Event.builder().reason(BEFORE).primaryId("nope").build(), false),
+                arguments(Event.builder().reason(BEFORE).primaryId("class").build(), Event.builder().reason(BEFORE).primaryId("class").build(), true),
                 arguments(Event.builder().reason(BEFORE).tags(Set.of(TEST)).build(), Event.builder().reason(BEFORE).tags(Set.of(SUITE)).build(), false),
                 arguments(Event.builder().reason(BEFORE).tags(Set.of(TEST)).build(), Event.builder().reason(BEFORE).tags(Set.of(TEST)).build(), true),
                 arguments(Event.builder().result(FAILED).build(), Event.builder().result(FAILED).build(), false),
-                arguments(Event.builder().result(FAILED).className("class").testName("test").build(), Event.builder().result(FAILED).className("class").build(), false),
-                arguments(Event.builder().result(FAILED).className("class").testName("test").build(), Event.builder().result(FAILED).className("class").testName("test").build(), true),
-                arguments(Event.builder().result(FAILED).className("class").build(), Event.builder().result(FAILED).className("nope").build(), false),
-                arguments(Event.builder().result(FAILED).className("class").build(), Event.builder().result(FAILED).className("class").build(), true),
+                arguments(Event.builder().result(FAILED).primaryId("class").secondaryId("test").build(), Event.builder().result(FAILED).primaryId("class").build(), false),
+                arguments(Event.builder().result(FAILED).primaryId("class").secondaryId("test").build(), Event.builder().result(FAILED).primaryId("class").secondaryId("test").build(), true),
+                arguments(Event.builder().result(FAILED).primaryId("class").build(), Event.builder().result(FAILED).primaryId("nope").build(), false),
+                arguments(Event.builder().result(FAILED).primaryId("class").build(), Event.builder().result(FAILED).primaryId("class").build(), true),
                 arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(SUITE)).build(), false),
                 arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(TEST)).build(), true)
         );
@@ -168,8 +167,8 @@ class EventHandlerTest {
 
         when(firedEvent.getResult()).thenReturn(result);
         when(matchingEvent.getResult()).thenReturn(result);
-        when(firedEvent.getClassName()).thenReturn(className);
-        when(matchingEvent.getClassName()).thenReturn(className);
+        when(firedEvent.getPrimaryId()).thenReturn(className);
+        when(matchingEvent.getPrimaryId()).thenReturn(className);
 
         eventHandler.handles = List.of(matchingEvent, neverMatchingEvent);
         eventHandler.match(firedEvent);
@@ -196,7 +195,7 @@ class EventHandlerTest {
 
         public DummyEventHandler() {
             handles = List.of(
-                    Event.builder().reason(BEFORE).className("class").build()
+                    Event.builder().reason(BEFORE).primaryId("class").build()
             );
         }
 

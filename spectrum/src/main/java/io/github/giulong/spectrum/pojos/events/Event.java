@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.pojos.events;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.giulong.spectrum.enums.EventReason;
 import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import lombok.*;
@@ -16,10 +15,10 @@ import java.util.Set;
 @ToString
 public class Event {
 
-    private String className;
-    private String testName;
+    private String primaryId;
+    private String secondaryId;
     private Set<EventTag> tags;
-    private EventReason reason;
+    private String reason;
     private Result result;
 
     @JsonIgnore

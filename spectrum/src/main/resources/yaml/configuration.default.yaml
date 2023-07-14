@@ -87,15 +87,15 @@ freeMarker:
 eventHandlers:
   - extentTest: # We need to add an entry to the Extent Report once each test is done
       handles:
-        - reason: AFTER
+        - reason: after
           tags: [ TEST ]
   - testbook: # We need to update the TestBook (if configured) once each test is done
       handles:
-        - reason: AFTER
+        - reason: after
           tags: [ TEST ]
   - browser: # We need to close the browser once each test is done
       handles:
-        - reason: AFTER
+        - reason: after
           tags: [ TEST ]
 
 # Events fired by the webDriver and automatically logged and added to the report. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.

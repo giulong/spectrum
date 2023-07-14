@@ -41,16 +41,16 @@ public abstract class EventHandler {
         return matches;
     }
 
-    protected boolean classNameAndTestNameMatches(final Event e1, final Event e2) {
-        final boolean matches = e1.getClassName() != null && e1.getClassName().equals(e2.getClassName()) &&
-                e1.getTestName() != null && e1.getTestName().equals(e2.getTestName());
+    protected boolean primaryAndSecondaryIdMatch(final Event e1, final Event e2) {
+        final boolean matches = e1.getPrimaryId() != null && e1.getPrimaryId().equals(e2.getPrimaryId()) &&
+                e1.getSecondaryId() != null && e1.getSecondaryId().equals(e2.getSecondaryId());
 
         log.trace("classNameAndTestNameMatches: {}", matches);
         return matches;
     }
 
-    protected boolean justClassNameMatches(final Event e1, final Event e2) {
-        final boolean matches = e1.getClassName() != null && e1.getClassName().equals(e2.getClassName()) && e1.getTestName() == null;
+    protected boolean justPrimaryIdMatches(final Event e1, final Event e2) {
+        final boolean matches = e1.getPrimaryId() != null && e1.getPrimaryId().equals(e2.getPrimaryId()) && e1.getSecondaryId() == null;
 
         log.trace("justClassNameMatches: {}", matches);
         return matches;
@@ -72,7 +72,7 @@ public abstract class EventHandler {
 
     protected boolean findMatchFor(Event e1, Event e2) {
         return (reasonMatches(e1, e2) || resultMatches(e1, e2)) &&
-                (classNameAndTestNameMatches(e1, e2) || justClassNameMatches(e1, e2) || tagsIntersect(e1, e2));
+                (primaryAndSecondaryIdMatch(e1, e2) || justPrimaryIdMatches(e1, e2) || tagsIntersect(e1, e2));
     }
 
     public void match(final Event event) {

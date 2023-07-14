@@ -18,9 +18,9 @@ import org.junit.platform.launcher.LauncherSessionListener;
 import java.nio.file.Path;
 import java.util.*;
 
-import static io.github.giulong.spectrum.enums.EventReason.AFTER;
-import static io.github.giulong.spectrum.enums.EventReason.BEFORE;
 import static io.github.giulong.spectrum.enums.EventTag.SUITE;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
