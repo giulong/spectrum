@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.enums.EventReason;
 import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
@@ -17,8 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Set;
 
-import static io.github.giulong.spectrum.enums.EventReason.AFTER;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,14 +58,14 @@ class EventsDispatcherTest {
     }
 
     @Test
-    @DisplayName("dispatch should build an event with the provided reason and tags and call match on every handler")
-    public void dispatch() {
-        final EventReason reason = AFTER;
+    @DisplayName("fire should build an event with the provided reason and tags and call match on every handler")
+    public void fire() {
+        final String reason = AFTER;
         final Set<EventTag> tags = Set.of();
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.className(null)).thenReturn(eventBuilder);
-        when(eventBuilder.testName(null)).thenReturn(eventBuilder);
+        when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
@@ -80,17 +79,60 @@ class EventsDispatcherTest {
     }
 
     @Test
-    @DisplayName("dispatch should build an event with all the provided parameters and call match on every handler")
-    public void dispatchAllParams() {
+    @DisplayName("fire should build an event with the provided primaryId and reason and call match on every handler")
+    public void firePrimaryIdAndReason() {
+        final String reason = AFTER;
+        final String primaryId = "primaryId";
+
+        when(Event.builder()).thenReturn(eventBuilder);
+        when(eventBuilder.primaryId(primaryId)).thenReturn(eventBuilder);
+        when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
+        when(eventBuilder.result(null)).thenReturn(eventBuilder);
+        when(eventBuilder.tags(null)).thenReturn(eventBuilder);
+        when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.build()).thenReturn(event);
+
+        eventsDispatcher.fire(primaryId, reason);
+
+        verify(handler1).match(event);
+        verify(handler2).match(event);
+    }
+
+    @Test
+    @DisplayName("fire should build an event with the provided primaryId, secondaryId and reason and call match on every handler")
+    public void firePrimaryIdAndSecondaryIdAndReason() {
+        final String reason = AFTER;
+        final String primaryId = "primaryId";
+        final String secondaryId = "secondaryId";
+
+        when(Event.builder()).thenReturn(eventBuilder);
+        when(eventBuilder.primaryId(primaryId)).thenReturn(eventBuilder);
+        when(eventBuilder.secondaryId(secondaryId)).thenReturn(eventBuilder);
+        when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
+        when(eventBuilder.result(null)).thenReturn(eventBuilder);
+        when(eventBuilder.tags(null)).thenReturn(eventBuilder);
+        when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.build()).thenReturn(event);
+
+        eventsDispatcher.fire(primaryId, secondaryId, reason);
+
+        verify(handler1).match(event);
+        verify(handler2).match(event);
+    }
+
+    @Test
+    @DisplayName("fire should build an event with all the provided parameters and call match on every handler")
+    public void fireAllParams() {
         final String className = "className";
         final String testName = "testName";
-        final EventReason reason = AFTER;
+        final String reason = AFTER;
         final Result result = SUCCESSFUL;
         final Set<EventTag> tags = Set.of();
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.className(className)).thenReturn(eventBuilder);
-        when(eventBuilder.testName(testName)).thenReturn(eventBuilder);
+        when(eventBuilder.primaryId(className)).thenReturn(eventBuilder);
+        when(eventBuilder.secondaryId(testName)).thenReturn(eventBuilder);
         when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
         when(eventBuilder.result(result)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);

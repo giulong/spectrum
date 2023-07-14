@@ -37,6 +37,6 @@ public class ExtentTestHandler extends EventHandler {
             default -> extentTest.log(status, createLabel("END TEST", getColorOf(status)));
         }
 
-        log.info(String.format("END execution of '%s -> %s': %s", event.getClassName(), event.getTestName(), status.name()));
+        log.info(String.format("END execution of '%s -> %s': %s", event.getPrimaryId(), event.getSecondaryId(), status.name()));
     }
 }

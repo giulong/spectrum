@@ -75,8 +75,8 @@ class ExtentTestHandlerTest {
 
     private void addStubs() {
         when(event.getContext()).thenReturn(context);
-        when(event.getClassName()).thenReturn("className");
-        when(event.getTestName()).thenReturn("displayName");
+        when(event.getPrimaryId()).thenReturn("className");
+        when(event.getSecondaryId()).thenReturn("displayName");
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(ExtentTestResolver.createExtentTestFrom(context)).thenReturn(extentTest);
         when(store.getOrComputeIfAbsent(eq(EXTENT_TEST), functionArgumentCaptor.capture(), eq(ExtentTest.class))).thenReturn(extentTest);

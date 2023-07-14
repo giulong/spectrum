@@ -11,7 +11,7 @@ public class DemoIT extends SpectrumTest<Void> {
     @Test
     @DisplayName("Sending custom events")
     public void events() {
-        //eventsDispatcher.dispatch(getClass().getSimpleName(), "events", CLIENT, Set.of(TEST));
+        eventsDispatcher.fire("primaryId", "custom-event");
     }
 
     @Test

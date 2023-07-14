@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
 import io.github.giulong.spectrum.SpectrumSessionListener;
-import io.github.giulong.spectrum.enums.EventReason;
 import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -19,11 +18,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.github.giulong.spectrum.enums.EventReason.AFTER;
-import static io.github.giulong.spectrum.enums.EventReason.BEFORE;
 import static io.github.giulong.spectrum.enums.EventTag.CLASS;
 import static io.github.giulong.spectrum.enums.EventTag.TEST;
 import static io.github.giulong.spectrum.enums.Result.*;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -127,7 +126,7 @@ class EventsWatcherTest {
     @Test
     @DisplayName("notify should dispatch an event with the className and testName taken from the context")
     public void testNotify() {
-        final EventReason reason = BEFORE;
+        final String reason = BEFORE;
         final Result result = SUCCESSFUL;
         final Set<EventTag> tags = Set.of();
 
