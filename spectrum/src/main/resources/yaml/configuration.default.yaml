@@ -1,17 +1,17 @@
-# Common vars to use to interpolate other String values in other nodes of the configuration
+# Common vars to interpolate other String values in the configuration
 vars:
-  downloadsFolder: ${user.dir}\target\downloads
+  downloadsFolder: ${user.dir}\target\downloads # Path, as you can see below, where to save downloaded files
 
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:
-  env: ${spectrum.env:-local}
-  browser: ${spectrum.browser:-chrome}
-  environment:
+  env: ${spectrum.env:-local} # environment configuration to be activated. By default, it's 'local', meaning the configuration-local.yaml will be loaded (if present)
+  browser: ${spectrum.browser:-chrome}  # browser to use
+  environment:  # Runtime environment. Can be local, docker, grid
     local: { }
-  filesFolder: src/test/resources/files
+  filesFolder: src/test/resources/files # folder where you will store files to be checked against downloaded ones
   downloadsFolder: ${downloadsFolder}
 
-# Application under test configuration
+# Application under test
 application:
   baseUrl: http://localhost:8080
 
@@ -21,19 +21,19 @@ testBook: null
 # Extent Report configuration
 extent:
   documentTitle: Spectrum Report  # Title of the html page
-  reportFolder: target/spectrum/reports
+  reportFolder: target/spectrum/reports # Where to generate the report
   reportName: Spectrum Report   # Name shown in the header of the report
   fileName: spectrum-report-{timestamp}.html
-  theme: STANDARD   # Theme used in the report. Can be STANDARD or DARK
-  timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test start time and end time
+  theme: STANDARD   # Theme used. Can be STANDARD or DARK
+  timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
 
 # WebDriver configuration
 webDriver:
   waits:
-    implicit: 1    # Number of seconds selenium will wait before throwing a TimeoutException when an element isn't found. Injected in webDriverWaits
-    pageLoadTimeout: 10   # Number of seconds that selenium will wait before throwing a TimeoutException because page wasn't loaded. Injected in webDriverWaits
-    downloadTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download. Injected in webDriverWaits
-    scriptTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException. Injected in webDriverWaits
+    implicit: 1    # Number of seconds selenium will wait before throwing a TimeoutException when an element isn't found.
+    pageLoadTimeout: 10   # Number of seconds that selenium will wait before throwing a TimeoutException because page wasn't loaded.
+    downloadTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download.
+    scriptTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException.
 
   # Chrome capabilities. See: https://chromedriver.chromium.org/capabilities
   chrome:
@@ -65,8 +65,8 @@ webDriver:
 
 # Data models
 data:
-  folder: data
-  fqdn: fqdn.placeholder
+  folder: data  # subfolder under src/test/resources where you will save your data*.yaml
+  fqdn: fqdn.placeholder  # you need to provide the fully qualified name of your Data class, meaning its package name AND class name. Check the examples repo.
 
 # Selenium internal logging levels
 seleniumLogs:
@@ -83,16 +83,17 @@ freeMarker:
   locale: US
   numberFormat: 0.##;; roundingMode=halfUp
 
+# Internal event handlers
 eventHandlers:
-  - extentTest:
+  - extentTest: # We need to add an entry to the Extent Report once each test is done
       handles:
         - reason: AFTER
           tags: [ TEST ]
-  - testbook:
+  - testbook: # We need to update the TestBook (if configured) once each test is done
       handles:
         - reason: AFTER
           tags: [ TEST ]
-  - browser:
+  - browser: # We need to close the browser once each test is done
       handles:
         - reason: AFTER
           tags: [ TEST ]

@@ -1,2 +1,2 @@
 vars:
-  downloadsFolder: ${user.dir}/target/downloads
+  downloadsFolder: ${user.dir}/target/downloads # this needs to be overridden since it's passed to browsers, which don't manage path separators wisely: they want the right one according to the underlying FS
