@@ -54,7 +54,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: jacoco-report
-        path: target/site/jacoco/
+        path: spectrum/target/site/jacoco/
 
     - name: Get version from pom.xml
       run: |
