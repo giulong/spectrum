@@ -3,6 +3,7 @@ runtime:
 
 webDriver:
   waits:
+    implicit: 5
     downloadTimeout: 5
   chrome:
     args:

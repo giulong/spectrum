@@ -30,10 +30,10 @@ extent:
 # WebDriver configuration
 webDriver:
   waits:
-    implicit: 1    # Number of seconds selenium will wait before throwing a TimeoutException when an element isn't found.
-    pageLoadTimeout: 10   # Number of seconds that selenium will wait before throwing a TimeoutException because page wasn't loaded.
-    downloadTimeout: 15   # Number of seconds that selenium will wait before throwing a TimeoutException on file download.
-    scriptTimeout: 10   # Number of seconds that selenium will wait before throwing a ScriptTimeoutException.
+    implicit: 0    # Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found.
+    pageLoadTimeout: 10   # Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet.
+    scriptTimeout: 10   # Seconds that Selenium waits before throwing a ScriptTimeoutException.
+    downloadTimeout: 15   # FluentWait injected in test classes/pages that you can use on file download.
 
   # Chrome capabilities. See: https://chromedriver.chromium.org/capabilities
   chrome:

@@ -32,10 +32,10 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
 
         final Environment environment = configuration.getRuntime().getEnvironment();
         capabilities.setAcceptInsecureCerts(true);
-        log.debug("Capabilities: {}", capabilities.toJson());
 
         final RemoteWebDriverBuilder webDriverBuilder = RemoteWebDriver.builder().oneOf(capabilities);
         environment.setupFrom(this, webDriverBuilder);
+        log.debug("Capabilities: {}", capabilities.toJson());
 
         DRIVER_SERVICE_THREAD_LOCAL.set(getDriverServiceBuilder().withLogOutput(System.out).build());
         final Configuration.WebDriver.Waits waits = webDriverConfiguration.getWaits();
