@@ -9,6 +9,7 @@
 [![badge-jdk](https://img.shields.io/badge/jdk-17-blue.svg)](https://www.oracle.com/java/technologies/javase-downloads.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum-archetype.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum-archetype)
+[![Giulio Longfils](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/giuliolongfils/)
 TODO MAVEN BADGE FIX URL
 
 Spectrum is a Java 17 and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests by automatically:
@@ -25,7 +26,7 @@ directly in your test classes, so that you can focus just on writing the logic t
 
 > ⚠️ JDK<br/>
 > Since Spectrum is compiled with a jdk 17, you need a jdk 17+ to be able to run your tests. 
-> If you get an `Unsupported major.minor version` exception, this is the reason.
+> If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
 ### Spectrum Archetype
 
@@ -366,6 +367,63 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 * manually delete the
   file [target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener](spectrum/target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener)
 
+# Event Handlers
+
+## Slack
+
+A few steps are needed to configure your Slack Workspace to receive notifications from Spectrum:
+1. You need to [create an app](https://api.slack.com/apps).<br/><br/>
+   1. When prompt, choose to create it **from an app manifest**<br/><br/>
+      ![slack-new-app.png](src/main/resources/images/slack-new-app.png)<br/><br/>
+      ![slack-manifest.png](src/main/resources/images/slack-manifest.png)<br/><br/>
+   2. Select your workspace and delete the default yaml manifest and copy this one:
+      ```yaml
+      display_information:
+        name: Spectrum
+        description: Notification from Spectrum Selenium Framework
+        background_color: "#2c2d30"
+      features:
+        bot_user:
+          display_name: Spectrum
+          always_online: false
+      oauth_config:
+        scopes:
+          bot:
+            - channels:read
+            - chat:write
+            - incoming-webhook
+      settings:
+        org_deploy_enabled: false
+        socket_mode_enabled: false
+        token_rotation_enabled: false
+      ```
+   3. Click on Create<br/><br/>
+2. You should have been redirected to the **Basic Information** page of the newly created app. From there:<br/><br/>
+   1. Install the app to Workspace:<br/><br/>
+      ![slack-install-to-workspace.png](src/main/resources/images/slack-install-to-workspace.png)<br/><br/>
+   2. Choose the channel where you want to receive the notification and click **Allow**:<br/><br/>
+      ![slack-channel.png](src/main/resources/images/slack-channel.png)<br/><br/>
+3. Go in the **OAuth & Permissions** page and copy the **Bot User OAuth Token**. You will need this in the `configuration*yaml` (see last bullet)<br/><br/>
+   ![slack-token.png](src/main/resources/images/slack-token.png)<br/><br/>
+4. In Slack:<br/><br/>
+   1. open the channel you chose in the previous step and invite the Spectrum app by sending this message: `/invite @Spectrum`. You should see this after adding it<br/><br/>
+      ![slack-add-app.png](src/main/resources/images/slack-add-app.png)<br/><br/>
+   2. right-click on the channel you chose in the previous step:<br/><br/>
+      ![slack-channel-details.png](src/main/resources/images/slack-channel-details.png)<br/><br/>
+   3. copy the Channel ID from the details overlay:<br/><br/>
+      ![slack-channel-id.png](src/main/resources/images/slack-channel-id.png)<br/><br/>
+5. Configure the Slack handler(s) in your `configuration*.yaml` by providing the token and the channel ID:
+   ```yaml
+   - slack:
+       token: xoxb-***
+       channel: C05***
+       template: /templates/slack-suite.json
+       handles:
+         - reason: before
+           tags: [SUITE]
+   ```
+6. If everything is configured correctly, with the handler above you should receive a notification at the very beginning of your test suite.
+
 # TODO injected objects
 
 # TODO freemarker templates
@@ -386,11 +444,3 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 * [FreeMarker](https://freemarker.apache.org/)
 * [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
 * [Simple Java Mail](https://www.simplejavamail.org/)
-
-# About
-
-Spectrum is created and maintained by Giulio Longfils: [![Linkedin](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/giuliolongfils/)
-and licensed under the terms of the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
-
-
-<a href="https://slack.com/oauth/v2/authorize?client_id=2946027914464.5355770664291&scope=chat:write,channels:read,incoming-webhook&user_scope="><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>
