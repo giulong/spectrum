@@ -11,7 +11,6 @@ public class LocalEnvironment extends Environment {
     @Override
     public void setupFrom(final Browser<?, ?, ?> browser, final RemoteWebDriverBuilder webDriverBuilder) {
         log.info("Running in local");
-        browser.getWebDriverManager().setup();
     }
 
     @Override

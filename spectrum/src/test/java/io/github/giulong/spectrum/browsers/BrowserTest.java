@@ -2,7 +2,6 @@ package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +35,6 @@ import static org.mockito.Mockito.*;
 @DisplayName("Browser")
 class BrowserTest {
 
-    private MockedStatic<WebDriverManager> webDriverManagerMockedStatic;
     private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
     private MockedStatic<ThreadGuard> threadGuardMockedStatic;
 
@@ -110,7 +108,6 @@ class BrowserTest {
         WEB_DRIVER_THREAD_LOCAL.remove();
         DRIVER_SERVICE_THREAD_LOCAL.remove();
 
-        webDriverManagerMockedStatic = mockStatic(WebDriverManager.class);
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
@@ -118,7 +115,6 @@ class BrowserTest {
 
     @AfterEach
     public void afterEach() {
-        webDriverManagerMockedStatic.close();
         remoteWebDriverMockedStatic.close();
         threadGuardMockedStatic.close();
         loggingPreferencesMockedConstruction.close();

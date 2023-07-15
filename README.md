@@ -11,7 +11,6 @@
 
 Spectrum is a Java 17 and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests by automatically:
 
-* managing the WebDriver
 * generating html reports
 * generating coverage by reading a testbook
 * providing out-of-the-box defaults to let you immediately run tests with no additional configuration needed
@@ -58,9 +57,6 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > 💡 Tip<br/>
 > The default browser is `chrome`. If you want to use another one, you can switch via the `spectrum.browser` system property, setting its value to
 > `firefox`, `edge` ...
-
-> 💡 Tip<br/>
-> The web driver is managed by WebDriverManager. By sure to check its [docs](https://bonigarcia.dev/webdrivermanager/) in case of issues and/or to customise its behaviour.
 
 If you now run the test, you will find a html report generated in the `target/spectrum/reports` folder.
 
@@ -370,8 +366,6 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 
 # TODO event handlers
 
-# TODO webdriver manager customisation
-
 # TODO mail configuration
 
 # TODO env vars
@@ -382,7 +376,6 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 
 # Honourable Mentions
 
-* [WebDriverManager](https://bonigarcia.dev/webdrivermanager/)
 * [Extent Reports](https://www.extentreports.com/)
 * [FreeMarker](https://freemarker.apache.org/)
 * [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
