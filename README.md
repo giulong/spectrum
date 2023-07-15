@@ -372,11 +372,12 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 ## Slack
 
 A few steps are needed to configure your Slack Workspace to receive notifications from Spectrum:
-1. You need to [create an app](https://api.slack.com/apps).<br/><br/>
-   1. When prompt, choose to create it **from an app manifest**<br/><br/>
+1. You need to create an app [from here](https://api.slack.com/apps) by following these steps:<br/><br/>
+   1. click on the **Create New App** button:<br/><br/>
       ![slack-new-app.png](src/main/resources/images/slack-new-app.png)<br/><br/>
+   2. choose to create it **from an app manifest**<br/><br/>
       ![slack-manifest.png](src/main/resources/images/slack-manifest.png)<br/><br/>
-   2. Select your workspace and delete the default yaml manifest and copy this one:
+   3. Select your workspace and delete the default yaml manifest and copy this one:<br/><br/>
       ```yaml
       display_information:
         name: Spectrum
@@ -397,7 +398,7 @@ A few steps are needed to configure your Slack Workspace to receive notification
         socket_mode_enabled: false
         token_rotation_enabled: false
       ```
-   3. Click on Create<br/><br/>
+   4. Click on **Next** and then **Create**<br/><br/>
 2. You should have been redirected to the **Basic Information** page of the newly created app. From there:<br/><br/>
    1. Install the app to Workspace:<br/><br/>
       ![slack-install-to-workspace.png](src/main/resources/images/slack-install-to-workspace.png)<br/><br/>
@@ -406,13 +407,13 @@ A few steps are needed to configure your Slack Workspace to receive notification
 3. Go in the **OAuth & Permissions** page and copy the **Bot User OAuth Token**. You will need this in the `configuration*yaml` (see last bullet)<br/><br/>
    ![slack-token.png](src/main/resources/images/slack-token.png)<br/><br/>
 4. In Slack:<br/><br/>
-   1. open the channel you chose in the previous step and invite the Spectrum app by sending this message: `/invite @Spectrum`. You should see this after adding it<br/><br/>
+   1. open the channel you chose in the previous steps and invite the Spectrum app by sending this message: `/invite @Spectrum`. You should see this after adding it:<br/><br/>
       ![slack-add-app.png](src/main/resources/images/slack-add-app.png)<br/><br/>
-   2. right-click on the channel you chose in the previous step:<br/><br/>
+   2. right-click on the channel you chose in the previous steps and select **View channel details**:<br/><br/>
       ![slack-channel-details.png](src/main/resources/images/slack-channel-details.png)<br/><br/>
-   3. copy the Channel ID from the details overlay:<br/><br/>
+   3. copy the **Channel ID** from the details overlay:<br/><br/>
       ![slack-channel-id.png](src/main/resources/images/slack-channel-id.png)<br/><br/>
-5. Configure the Slack handler(s) in your `configuration*.yaml` by providing the token and the channel ID:
+5. Configure the Slack handler(s) in your `configuration*.yaml` by providing the token and the channel ID:<br/><br/>
    ```yaml
    - slack:
        token: xoxb-***
