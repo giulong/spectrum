@@ -1,16 +1,12 @@
 package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
@@ -27,8 +23,6 @@ import static org.openqa.selenium.logging.LogType.*;
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Edge")
 class EdgeTest {
-
-    private MockedStatic<WebDriverManager> webDriverManagerMockedStatic;
 
     @Mock
     private Configuration.WebDriver webDriverConfig;
@@ -48,21 +42,8 @@ class EdgeTest {
     @Mock
     private Configuration.SeleniumLogs seleniumLogs;
 
-    @Mock
-    private WebDriverManager webDriverManager;
-
     @InjectMocks
     private Edge edge;
-
-    @BeforeEach
-    public void beforeEach() {
-        webDriverManagerMockedStatic = mockStatic(WebDriverManager.class);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        webDriverManagerMockedStatic.close();
-    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of EdgeDriverService.Builder()")
@@ -73,13 +54,6 @@ class EdgeTest {
         assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
 
         chromeDriverServiceMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("getWebDriverManager should return call the edgedriver method")
-    public void getWebDriverManager() {
-        when(WebDriverManager.edgedriver()).thenReturn(webDriverManager);
-        assertEquals(webDriverManager, edge.getWebDriverManager());
     }
 
     @Test

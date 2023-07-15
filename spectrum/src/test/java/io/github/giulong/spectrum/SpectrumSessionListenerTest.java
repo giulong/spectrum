@@ -13,7 +13,6 @@ import io.github.giulong.spectrum.utils.events.EventHandler;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
-import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,7 +50,6 @@ class SpectrumSessionListenerTest {
     private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private static MockedStatic<EventsDispatcher> eventsDispatcherMockedStatic;
-    private static MockedStatic<SystemUtils> systemUtilsMockedStatic;
 
     private String osName;
 
@@ -110,7 +108,6 @@ class SpectrumSessionListenerTest {
         yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
-        systemUtilsMockedStatic = mockStatic(SystemUtils.class);
     }
 
     @AfterEach
@@ -119,7 +116,6 @@ class SpectrumSessionListenerTest {
         yamlUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
         eventsDispatcherMockedStatic.close();
-        systemUtilsMockedStatic.close();
         VARS.clear();
         System.setProperty("os.name", osName);
     }

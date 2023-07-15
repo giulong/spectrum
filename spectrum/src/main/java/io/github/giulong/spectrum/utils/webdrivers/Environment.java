@@ -14,7 +14,6 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @JsonSubTypes({
         @Type(value = LocalEnvironment.class, name = "local"),
         @Type(value = GridEnvironment.class, name = "grid"),
-        @Type(value = DockerEnvironment.class, name = "docker"),
 })
 public abstract class Environment {
     public abstract void setupFrom(Browser<?, ?, ?> browser, RemoteWebDriverBuilder webDriverBuilder);

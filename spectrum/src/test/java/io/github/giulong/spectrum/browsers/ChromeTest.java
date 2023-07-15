@@ -1,16 +1,12 @@
 package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -30,8 +26,6 @@ import static org.openqa.selenium.logging.LogType.*;
 @DisplayName("Chrome")
 class ChromeTest {
 
-    private MockedStatic<WebDriverManager> webDriverManagerMockedStatic;
-
     @Mock
     private Configuration.WebDriver webDriverConfig;
 
@@ -50,21 +44,8 @@ class ChromeTest {
     @Mock
     private Configuration.SeleniumLogs seleniumLogs;
 
-    @Mock
-    private WebDriverManager webDriverManager;
-
     @InjectMocks
     private Chrome chrome;
-
-    @BeforeEach
-    public void beforeEach() {
-        webDriverManagerMockedStatic = mockStatic(WebDriverManager.class);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        webDriverManagerMockedStatic.close();
-    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of ChromeDriverService.Builder()")
@@ -75,13 +56,6 @@ class ChromeTest {
         assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
 
         chromeDriverServiceMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("getWebDriverManager should return the chromedriver method")
-    public void getWebDriverManager() {
-        when(WebDriverManager.chromedriver()).thenReturn(webDriverManager);
-        assertEquals(webDriverManager, chrome.getWebDriverManager());
     }
 
     @Test

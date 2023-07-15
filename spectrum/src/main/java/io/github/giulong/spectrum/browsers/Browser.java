@@ -2,7 +2,6 @@ package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.AbstractDriverOptions;
@@ -22,8 +21,6 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
     protected T capabilities;
 
     public abstract DriverService.Builder<U, V> getDriverServiceBuilder();
-
-    public abstract WebDriverManager getWebDriverManager();
 
     public abstract void buildCapabilitiesFrom(Configuration.WebDriver webDriverConfiguration, Configuration.SeleniumLogs seleniumLogs);
 

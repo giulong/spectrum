@@ -6,7 +6,7 @@ vars:
 runtime:
   env: ${spectrum.env:-local} # environment configuration to be activated. By default, it's 'local', meaning the configuration-local.yaml will be loaded (if present)
   browser: ${spectrum.browser:-chrome}  # browser to use
-  environment:  # Runtime environment. Can be local, docker, grid
+  environment:  # Runtime environment. Can be local or grid
     local: { }
   filesFolder: src/test/resources/files # folder where you will store files to be checked against downloaded ones
   downloadsFolder: ${downloadsFolder}

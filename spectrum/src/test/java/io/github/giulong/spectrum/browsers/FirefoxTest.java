@@ -1,9 +1,6 @@
 package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +10,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -32,8 +28,6 @@ import static org.mockito.Mockito.*;
 @DisplayName("Firefox")
 class FirefoxTest {
 
-    private MockedStatic<WebDriverManager> webDriverManagerMockedStatic;
-
     @Mock
     private FirefoxOptions firefoxOptions;
 
@@ -46,21 +40,8 @@ class FirefoxTest {
     @Mock
     private FirefoxDriverLogLevel firefoxDriverLogLevel;
 
-    @Mock
-    private WebDriverManager webDriverManager;
-
     @InjectMocks
     private Firefox firefox;
-
-    @BeforeEach
-    public void beforeEach() {
-        webDriverManagerMockedStatic = mockStatic(WebDriverManager.class);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        webDriverManagerMockedStatic.close();
-    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of GeckoDriverService.Builder()")
@@ -71,13 +52,6 @@ class FirefoxTest {
         assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
 
         chromeDriverServiceMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("getWebDriverManager should return call the firefoxdriver method")
-    public void getWebDriverManager() {
-        when(WebDriverManager.firefoxdriver()).thenReturn(webDriverManager);
-        assertEquals(webDriverManager, firefox.getWebDriverManager());
     }
 
     @Test
