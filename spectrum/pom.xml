@@ -55,7 +55,6 @@
                 <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>docs/**/*</exclude>
                     <exclude>examples/**/*</exclude>
                     <exclude>org.junit.platform.launcher.LauncherSessionListener</exclude>
                 </excludes>

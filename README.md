@@ -1,6 +1,6 @@
 ####
 
-<img src="spectrum/src/main/resources/docs/images/spectrum-logo.png" alt="Spectrum logo">
+<img src="src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">
 
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg)](https://github.com/giulong/spectrum/actions?branch=develop)
 ![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
@@ -22,6 +22,10 @@ Spectrum leverages [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) 
 directly in your test classes, so that you can focus just on writing the logic to test your application.
 
 ## Setup
+
+> ⚠️ JDK<br/>
+> Since Spectrum is compiled with a jdk 17, you need a jdk 17+ to be able to run your tests. 
+> If you get an `Unsupported major.minor version` exception, this is the reason.
 
 ### Spectrum Archetype
 
@@ -293,13 +297,11 @@ Logs are rotated daily, meaning the results of each execution occurred in the sa
 Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/). By default, it will be produced under the `target/spectrum/reports` folder.
 You can see an example here:
 
-<img src="spectrum/src/main/resources/docs/images/ExtentReports-screenshot.png" alt="Extent Reports">
+<img src="src/main/resources/images/ExtentReports-screenshot.png" alt="Extent Reports">
 
 > 💡 Tip<br/>
 > You can also provide your own Look&Feel by putting additional css rules in the `src/test/resources/css/report.css` file.
 > Spectrum will automatically load and apply it to the Extent Report.
-
-# Data
 
 # Project Structure
 
