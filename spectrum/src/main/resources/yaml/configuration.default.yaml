@@ -4,7 +4,7 @@ vars:
 
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:
-  env: ${spectrum.env:-local} # environment configuration to be activated. By default, it's 'local', meaning the configuration-local.yaml will be loaded (if present)
+  profiles: ${spectrum.profiles:-local} # profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
   browser: ${spectrum.browser:-chrome}  # browser to use
   environment:  # Runtime environment. Can be local or grid
     local: { }

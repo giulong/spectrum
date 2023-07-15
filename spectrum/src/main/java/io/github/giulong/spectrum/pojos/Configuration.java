@@ -34,7 +34,7 @@ public class Configuration {
 
 	@Getter
 	public static class Runtime {
-		private String env;
+		private String profiles;
 
 		@JsonSerialize(using = ToStringSerializer.class)
 		private Browser<?, ?, ?> browser;

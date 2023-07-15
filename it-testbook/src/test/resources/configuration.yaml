@@ -1,8 +1,8 @@
 runtime:
-  filesFolder: src/test/resources/files
+  profiles: local,second
 
 application:
-  baseUrl: https://the-internet.herokuapp.com/
+  baseUrl: it's in the configuration-second.yaml
 
 webDriver:
   waits:
