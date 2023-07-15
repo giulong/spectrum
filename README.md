@@ -8,6 +8,8 @@
 
 [![badge-jdk](https://img.shields.io/badge/jdk-17-blue.svg)](https://www.oracle.com/java/technologies/javase-downloads.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum-archetype.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum-archetype)
+TODO MAVEN BADGE FIX URL
 
 Spectrum is a Java 17 and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests by automatically:
 
@@ -76,23 +78,25 @@ To customise these values, you can create the `src/test/resources/configuration.
 > ⚠️ Files Extension<br/>
 > The extension must be `.yaml`. The shortened `.yml` won't work.
 
-Furthermore, you can provide how many env-specific configurations in the same folder, by naming them
-`configuration-<ENV>.yaml`, where `<ENV>` is a placeholder that you need to replace with the actual environment name.
+Furthermore, you can provide how many profile-specific configurations in the same folder, by naming them
+`configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name.
 
-To let Spectrum pick the right environment-related configuration, you must run with the `-Dspectrum.env` flag.
+To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag, 
+which is a comma separated list of profile names you want to activate. 
 
 > **_Example:_**
-> When running tests with `-Dspectrum.env=test`, Spectrum will merge these files in this order of precedence:
+> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this order of precedence:
 > 1. configuration.default.yaml [Spectrum internal defaults]
 > 2. configuration.default.unix.yaml [Spectrum internal defaults for *nix, not read on Windows]
 > 3. configuration.yaml
-> 4. configuration-test.yaml
+> 4. configuration-test.yaml [A warning will be raised if not found, no errors]
+> 5. configuration-grid.yaml [A warning will be raised if not found, no errors]
 
 Values in the most specific configuration file will take precedence over the others.
 
 > 💡 Tip<br/>
-> There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the environments in the base configuration.yaml,
-> while providing `<ENV>`-specific ones in the `configuration-<ENV>.yaml`
+> There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base configuration.yaml,
+> while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`
 
 > ⚠️ Merging Lists<br/>
 > Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
@@ -109,7 +113,7 @@ Values in the most specific configuration file will take precedence over the oth
 >   - value2
 > ```
 >
-> If you run with `-Dspectrum.env=test` both files will be loaded and lists will be merged, resulting in:
+> If you run with `-Dspectrum.profiles=test` both files will be loaded and lists will be merged, resulting in:
 >
 > ```yaml
 > someList:
@@ -119,9 +123,9 @@ Values in the most specific configuration file will take precedence over the oth
 
 > 💡 Tip<br/>
 > If you need different configurations for the same environment, instead of manually changing values in the configuration*.yaml, you should
-> provide different files and choose the right one with the `-Dspectrum.env` flag. <br/>
+> provide different files and choose the right one with the `-Dspectrum.profiles` flag. <br/>
 > For example, if you need to be able to run from your local machine alternatively targeting a remote grid or executing browsers in local,
-> it's preferable to have these two files, where you change just the target runtime:
+> it's preferable to have something like these two files, where you change just the target runtime:
 > * configuration-local-local.yaml
 > * configuration-local-grid.yaml
 >
@@ -130,7 +134,7 @@ Values in the most specific configuration file will take precedence over the oth
 > You need just to activate the right one by creating different run configurations in your IDE.
 
 > 💡 Tip<br/>
-> Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-local.yaml`,
+> Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
 > so that everyone can provide its own configuration without interfering with others.
 
 ## Vars node
@@ -183,7 +187,7 @@ By default, you can create `data*.yaml` files under the `src/test/resources/data
 Data files will be loaded and merged following the same conventions of `configurations*.yaml` files.
 
 > **_Example:_**
-> When running tests with `-Dspectrum.env=test`, Spectrum will merge these files in this order of precedence:
+> When running tests with `-Dspectrum.profiles=test`, Spectrum will merge these files in this order of precedence:
 > 1. data.yaml
 > 2. data-test.yaml
 
@@ -301,7 +305,7 @@ You can see an example here:
 
 Let's see how your project will look like. Few assumptions for this example:
 
-* you defined base values plus three environments, each with its own set of Data:
+* you defined base values plus three profiles, each with its own set of Data:
     * [base] &rarr; `configuration.yaml` + `data.yaml`
     * local &rarr; `configuration-local.yaml` + `data-local.yaml`
     * test &rarr; `configuration-test.yaml` + `data-test.yaml`
@@ -358,7 +362,7 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 * manually run a `mvn clean`
 * configure your IDE's JUnit configuration template to add it as a before-launch task to run `mvn clean`
 * manually delete the
-  file [target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener](target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener)
+  file [target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener](spectrum/target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener)
 
 # TODO injected objects
 
@@ -385,3 +389,6 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 
 Spectrum is created and maintained by Giulio Longfils: [![Linkedin](https://i.stack.imgur.com/gVE0j.png) LinkedIn](https://www.linkedin.com/in/giuliolongfils/)
 and licensed under the terms of the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0).
+
+
+<a href="https://slack.com/oauth/v2/authorize?client_id=2946027914464.5355770664291&scope=chat:write,channels:read,incoming-webhook&user_scope="><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>

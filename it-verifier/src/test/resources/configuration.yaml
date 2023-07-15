@@ -1,6 +1,3 @@
-runtime:
-  filesFolder: src/test/resources/files
-
 webDriver:
   waits:
     implicit: 5

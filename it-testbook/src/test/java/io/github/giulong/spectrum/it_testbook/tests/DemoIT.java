@@ -11,6 +11,7 @@ public class DemoIT extends SpectrumTest<Void> {
     @Test
     @DisplayName("Sending custom events")
     public void events() {
+        webDriver.get(configuration.getApplication().getBaseUrl());
         eventsDispatcher.fire("primaryId", "custom-event");
     }
 
