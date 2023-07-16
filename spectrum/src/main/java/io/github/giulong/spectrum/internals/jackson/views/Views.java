@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson;
+package io.github.giulong.spectrum.internals.jackson.views;
 
 @SuppressWarnings("checkstyle:WhitespaceAround")
 public class Views {

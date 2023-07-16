@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import io.github.giulong.spectrum.internals.jackson.Views;
+import io.github.giulong.spectrum.internals.jackson.views.Views;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -83,6 +83,7 @@
                         <exclude>io/github/giulong/spectrum/pojos/**/*</exclude>
                         <exclude>io/github/giulong/spectrum/types/**/*</exclude>
                         <exclude>io/github/giulong/spectrum/enums/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/internals/jackson/views/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
