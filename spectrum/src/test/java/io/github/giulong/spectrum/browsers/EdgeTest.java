@@ -40,7 +40,7 @@ class EdgeTest {
     private Level performanceLevel;
 
     @Mock
-    private Configuration.SeleniumLogs seleniumLogs;
+    private Configuration.WebDriver.Logs logs;
 
     @InjectMocks
     private Edge edge;
@@ -60,14 +60,15 @@ class EdgeTest {
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
     public void buildCapabilitiesFrom() {
         when(webDriverConfig.getEdge()).thenReturn(edgeConfig);
-        when(seleniumLogs.getBrowser()).thenReturn(browserLevel);
-        when(seleniumLogs.getDriver()).thenReturn(driverLevel);
-        when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
+        when(webDriverConfig.getLogs()).thenReturn(logs);
+        when(logs.getBrowser()).thenReturn(browserLevel);
+        when(logs.getDriver()).thenReturn(driverLevel);
+        when(logs.getPerformance()).thenReturn(performanceLevel);
 
         MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class);
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        edge.buildCapabilitiesFrom(webDriverConfig, seleniumLogs);
+        edge.buildCapabilitiesFrom(webDriverConfig);
         final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().get(0);
         final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().get(0);
 

@@ -25,7 +25,7 @@ class ChromiumTest {
     private ChromeOptions chromeOptions;
 
     @Mock
-    private Configuration.SeleniumLogs seleniumLogs;
+    private Configuration.WebDriver.Logs logs;
 
     @Mock
     private Level browserLevel;
@@ -42,14 +42,14 @@ class ChromiumTest {
     @Test
     @DisplayName("setLoggingPreferencesFrom should set the LOGGING_PREFS in the capabilities")
     public void setLoggingPreferencesFrom() {
-        when(seleniumLogs.getBrowser()).thenReturn(browserLevel);
-        when(seleniumLogs.getDriver()).thenReturn(driverLevel);
-        when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
+        when(logs.getBrowser()).thenReturn(browserLevel);
+        when(logs.getDriver()).thenReturn(driverLevel);
+        when(logs.getPerformance()).thenReturn(performanceLevel);
 
         MockedConstruction<LoggingPreferences> mockedConstruction = mockConstruction(LoggingPreferences.class);
 
         chrome.capabilities = chromeOptions;
-        chrome.setLoggingPreferencesFrom(seleniumLogs);
+        chrome.setLoggingPreferencesFrom(logs);
         verify(chromeOptions).setCapability(LOGGING_PREFS, mockedConstruction.constructed().get(0));
 
         mockedConstruction.close();

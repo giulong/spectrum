@@ -27,7 +27,6 @@ public class Configuration {
 
 	@JsonSerialize(using = ToStringSerializer.class)
 	private TestBook testBook;
-	private SeleniumLogs seleniumLogs;
 	private FreeMarker freeMarker;
 	private Events events;
 	private List<EventHandler> eventHandlers;
@@ -64,6 +63,7 @@ public class Configuration {
 		private Chrome chrome;
 		private Firefox firefox;
 		private Edge edge;
+		private Logs logs;
 
 		@Getter
 		public static class Waits {
@@ -91,22 +91,19 @@ public class Configuration {
 			private List<String> args;
 			private Map<String, Object> capabilities;
 		}
+
+		@Getter
+		public static class Logs {
+			private Level browser;
+			private Level driver;
+			private Level performance;
+		}
 	}
 
 	@Getter
 	public static class Data {
 		private String folder;
 		private String fqdn;
-	}
-
-	@Getter
-	public static class SeleniumLogs {
-		private Level browser;
-		private Level client;
-		private Level driver;
-		private Level performance;
-		private Level profiler;
-		private Level server;
 	}
 
 	@Getter

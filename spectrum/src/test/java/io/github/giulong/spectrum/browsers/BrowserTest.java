@@ -59,7 +59,7 @@ class BrowserTest {
     private Level performanceLevel;
 
     @Mock
-    private Configuration.SeleniumLogs seleniumLogs;
+    private Configuration.WebDriver.Logs logs;
 
     @Mock
     private WebDriver webDriver;
@@ -128,10 +128,10 @@ class BrowserTest {
         when(configuration.getWebDriver()).thenReturn(webDriverConfig);
         when(webDriverConfig.getChrome()).thenReturn(chromeConfig);
         when(chromeConfig.getArgs()).thenReturn(arguments);
-        when(configuration.getSeleniumLogs()).thenReturn(seleniumLogs);
-        when(seleniumLogs.getBrowser()).thenReturn(browserLevel);
-        when(seleniumLogs.getDriver()).thenReturn(driverLevel);
-        when(seleniumLogs.getPerformance()).thenReturn(performanceLevel);
+        when(webDriverConfig.getLogs()).thenReturn(logs);
+        when(logs.getBrowser()).thenReturn(browserLevel);
+        when(logs.getDriver()).thenReturn(driverLevel);
+        when(logs.getPerformance()).thenReturn(performanceLevel);
         when(chromeConfig.getCapabilities()).thenReturn(Map.of("one", "value"));
 
         MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {

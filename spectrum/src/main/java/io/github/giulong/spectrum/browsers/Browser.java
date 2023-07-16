@@ -22,13 +22,13 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
 
     public abstract DriverService.Builder<U, V> getDriverServiceBuilder();
 
-    public abstract void buildCapabilitiesFrom(Configuration.WebDriver webDriverConfiguration, Configuration.SeleniumLogs seleniumLogs);
+    public abstract void buildCapabilitiesFrom(Configuration.WebDriver webDriverConfiguration);
 
     public abstract void mergeGridCapabilitiesFrom(Map<String, String> gridCapabilities);
 
     public WebDriver build(final Configuration configuration) {
         final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
-        buildCapabilitiesFrom(webDriverConfiguration, configuration.getSeleniumLogs());
+        buildCapabilitiesFrom(webDriverConfiguration);
 
         final Environment environment = configuration.getRuntime().getEnvironment();
         capabilities.setAcceptInsecureCerts(true);
