@@ -1,3 +1,5 @@
 key: value
 objectKey:
   objectField: objectValue
+internalKey:
+  field: ignored

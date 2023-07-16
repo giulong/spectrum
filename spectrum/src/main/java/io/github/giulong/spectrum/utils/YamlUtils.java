@@ -96,13 +96,6 @@ public final class YamlUtils {
     }
 
     @SneakyThrows
-    public <T> void update(final T t, final String content) {
-        log.debug("Updating the instance of {}", t.getClass().getSimpleName());
-        log.trace("Content:\n{}", content);
-        yamlMapper.readerForUpdating(t).readValue(content);
-    }
-
-    @SneakyThrows
     public <T> void updateWithFile(final T t, final String file) {
         final Path path = Path.of(file);
         if (Files.notExists(RESOURCES.resolve(path))) {
@@ -111,7 +104,7 @@ public final class YamlUtils {
         }
 
         log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), file);
-        yamlMapper.readerForUpdating(t).readValue(YamlUtils.class.getClassLoader().getResource(file));
+        yamlMapper.readerForUpdating(t).withView(Views.Public.class).readValue(YamlUtils.class.getClassLoader().getResource(file));
     }
 
     @SneakyThrows

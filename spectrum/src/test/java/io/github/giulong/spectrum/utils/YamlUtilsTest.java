@@ -75,21 +75,16 @@ class YamlUtilsTest {
     }
 
     @Test
-    @DisplayName("update should update the provided instance with the string content provided")
-    public void update() {
-        TestYaml testYaml = TestYaml.builder().key("original").build();
-
-        yamlUtils.update(testYaml, "{ \"key\": \"value\" }");
-        assertEquals("value", testYaml.getKey());
-    }
-
-    @Test
-    @DisplayName("updateWithFile should update the provided instance with the file provided")
+    @DisplayName("updateWithFile should update the provided instance with the file provided, reading only public fields")
     public void updateWithFile() {
-        TestYaml testYaml = TestYaml.builder().key("original").build();
+        TestYaml testYaml = TestYaml.builder()
+                .key("original")
+                .internalKey(TestYaml.InternalKey.builder().field("field").build())
+                .build();
 
         yamlUtils.updateWithFile(testYaml, "test.yaml");
         assertEquals("value", testYaml.getKey());
+        assertEquals("field", testYaml.getInternalKey().getField()); // from the original pojo above: it's not updated with the content of test.yaml
     }
 
     @Test
@@ -111,14 +106,17 @@ class YamlUtilsTest {
     }
 
     @Test
-    @DisplayName("write should just call the writeValueAsString of the provided object")
+    @DisplayName("write should just call the writeValueAsString of the provided object, printing internal fields as well")
     public void write() {
         final TestYaml testYaml = mock(TestYaml.class);
         final TestYaml.ObjectKey objectKey = mock(TestYaml.ObjectKey.class);
+        final TestYaml.InternalKey internalKey = mock(TestYaml.InternalKey.class);
 
         when(testYaml.getKey()).thenReturn("value");
         when(testYaml.getObjectKey()).thenReturn(objectKey);
+        when(testYaml.getInternalKey()).thenReturn(internalKey);
         when(objectKey.getObjectField()).thenReturn("field");
-        assertEquals("---\nkey: \"value\"\nobjectKey:\n  objectField: \"field\"\n", yamlUtils.write(testYaml));
+        when(internalKey.getField()).thenReturn("internalField");
+        assertEquals("---\nkey: \"value\"\nobjectKey:\n  objectField: \"field\"\ninternalKey:\n  field: \"internalField\"\n", yamlUtils.write(testYaml));
     }
 }
