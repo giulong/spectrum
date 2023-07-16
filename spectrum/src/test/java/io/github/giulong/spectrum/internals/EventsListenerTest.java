@@ -43,7 +43,7 @@ class EventsListenerTest {
     private ExtensionContext.Store store;
 
     @Mock
-    private Configuration.Event event;
+    private Configuration.WebDriver.Event event;
 
     @Mock
     private ExtentTest extentTest;
