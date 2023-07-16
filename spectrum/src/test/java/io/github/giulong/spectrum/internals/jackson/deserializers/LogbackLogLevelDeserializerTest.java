@@ -1,8 +1,9 @@
-package io.github.giulong.spectrum.internals.jackson;
+package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import io.github.giulong.spectrum.internals.jackson.deserializers.LogbackLogLevelDeserializer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

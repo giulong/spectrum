@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson;
+package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -10,14 +10,14 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.time.Duration;
 
-import static java.util.logging.Level.INFO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("UtilLogLevelDeserializer")
-class UtilLogLevelDeserializerTest {
+@DisplayName("DurationDeserializer")
+class DurationDeserializerTest {
 
     @Mock
     private JsonParser jsonParser;
@@ -26,14 +26,14 @@ class UtilLogLevelDeserializerTest {
     private DeserializationContext deserializationContext;
 
     @InjectMocks
-    private UtilLogLevelDeserializer UtilLogLevelDeserializer;
+    private DurationDeserializer durationDeserializer;
 
     @Test
-    @DisplayName("deserialize should return the log level from the provided string")
+    @DisplayName("deserialize should return the duration in seconds from the provided string")
     public void deserialize() throws IOException {
-        String value = "INFO";
-        when(jsonParser.getValueAsString()).thenReturn(value);
+        int value = 123;
+        when(jsonParser.getValueAsInt()).thenReturn(value);
 
-        assertEquals(INFO, UtilLogLevelDeserializer.deserialize(jsonParser, deserializationContext));
+        assertEquals(Duration.ofSeconds(value), durationDeserializer.deserialize(jsonParser, deserializationContext));
     }
 }

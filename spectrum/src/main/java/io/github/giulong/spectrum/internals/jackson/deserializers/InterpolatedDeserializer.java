@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson;
+package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import lombok.extern.slf4j.Slf4j;
