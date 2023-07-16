@@ -61,7 +61,10 @@ class WebDriverResolverTest {
     private WebDriver decoratedWebDriver;
 
     @Mock
-    private Configuration.Events events;
+    private Configuration.WebDriver webDriverConfiguration;
+
+    @Mock
+    private Configuration.WebDriver.Events events;
 
     @Mock
     private EventsListener.EventsListenerBuilder eventsListenerBuilder;
@@ -92,7 +95,8 @@ class WebDriverResolverTest {
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(browser).when(runtime).getBrowser();
         when(browser.build(configuration)).thenReturn(webDriver);
-        when(configuration.getEvents()).thenReturn(events);
+        when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
+        when(webDriverConfiguration.getEvents()).thenReturn(events);
 
         when(EventsListener.builder()).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.store(store)).thenReturn(eventsListenerBuilder);

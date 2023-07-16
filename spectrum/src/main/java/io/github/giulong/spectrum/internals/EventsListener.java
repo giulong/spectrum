@@ -30,7 +30,7 @@ public class EventsListener implements WebDriverListener {
     private static final String TAG = "<.*?>";
 
     private ExtensionContext.Store store;
-    private Configuration.Events events;
+    private Configuration.WebDriver.Events events;
 
     protected String extractSelectorFrom(final WebElement webElement) {
         final String fullWebElement = webElement.toString();
@@ -52,7 +52,7 @@ public class EventsListener implements WebDriverListener {
                 .toList();
     }
 
-    protected void log(final Configuration.Event event, final Object... args) {
+    protected void log(final Configuration.WebDriver.Event event, final Object... args) {
         switch (event.getLevel().levelStr) {
             case "OFF" -> {
             }
