@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("MailHandler")
-class MailHandlerTest {
+@DisplayName("MailConsumer")
+class MailConsumerTest {
 
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
@@ -78,8 +78,8 @@ class MailHandlerTest {
     }
 
     @Test
-    @DisplayName("handle should send an email with the provided attachments interpolating the provided template")
-    public void handle() {
+    @DisplayName("consume should send an email with the provided attachments interpolating the provided template")
+    public void consume() {
         final String template = "template";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String name1 = "name1";
@@ -126,9 +126,9 @@ class MailHandlerTest {
         when(attachment2.getName()).thenReturn(name2);
         when(attachment2.getFile()).thenReturn(file2);
 
-        final MailHandler mailHandler = new MailHandler();
-        mailHandler.attachments = List.of(attachment1, attachment2);
-        mailHandler.handle(event);
+        final MailConsumer mailConsumer = new MailConsumer();
+        mailConsumer.attachments = List.of(attachment1, attachment2);
+        mailConsumer.consumes(event);
 
         final AttachmentResource attachmentResource1 = attachmentResourceMockedConstruction.constructed().get(0);
         final AttachmentResource attachmentResource2 = attachmentResourceMockedConstruction.constructed().get(1);

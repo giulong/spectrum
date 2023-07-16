@@ -9,9 +9,9 @@ import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResol
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @JsonView(Views.Internal.class)
-public class BrowserHandler extends EventHandler {
+public class BrowserConsumer extends EventsConsumer {
 
-    public void handle(final Event event) {
+    public void consumes(final Event event) {
         event
                 .getContext()
                 .getRoot()

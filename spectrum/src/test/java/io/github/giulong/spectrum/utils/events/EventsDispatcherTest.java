@@ -36,10 +36,10 @@ class EventsDispatcherTest {
     private Event event;
 
     @Mock
-    private EventHandler handler1;
+    private EventsConsumer consumer1;
 
     @Mock
-    private EventHandler handler2;
+    private EventsConsumer consumer2;
 
     private EventsDispatcher eventsDispatcher;
 
@@ -48,7 +48,7 @@ class EventsDispatcherTest {
         eventMockedStatic = mockStatic(Event.class);
         eventsDispatcher = EventsDispatcher
                 .builder()
-                .handlers(List.of(handler1, handler2))
+                .consumers(List.of(consumer1, consumer2))
                 .build();
     }
 
@@ -58,7 +58,7 @@ class EventsDispatcherTest {
     }
 
     @Test
-    @DisplayName("fire should build an event with the provided reason and tags and call match on every handler")
+    @DisplayName("fire should build an event with the provided reason and tags and call match on every consumer")
     public void fire() {
         final String reason = AFTER;
         final Set<EventTag> tags = Set.of();
@@ -74,12 +74,12 @@ class EventsDispatcherTest {
 
         eventsDispatcher.fire(reason, tags);
 
-        verify(handler1).match(event);
-        verify(handler2).match(event);
+        verify(consumer1).match(event);
+        verify(consumer2).match(event);
     }
 
     @Test
-    @DisplayName("fire should build an event with the provided primaryId and reason and call match on every handler")
+    @DisplayName("fire should build an event with the provided primaryId and reason and call match on every consumer")
     public void firePrimaryIdAndReason() {
         final String reason = AFTER;
         final String primaryId = "primaryId";
@@ -95,12 +95,12 @@ class EventsDispatcherTest {
 
         eventsDispatcher.fire(primaryId, reason);
 
-        verify(handler1).match(event);
-        verify(handler2).match(event);
+        verify(consumer1).match(event);
+        verify(consumer2).match(event);
     }
 
     @Test
-    @DisplayName("fire should build an event with the provided primaryId, secondaryId and reason and call match on every handler")
+    @DisplayName("fire should build an event with the provided primaryId, secondaryId and reason and call match on every consumer")
     public void firePrimaryIdAndSecondaryIdAndReason() {
         final String reason = AFTER;
         final String primaryId = "primaryId";
@@ -117,12 +117,12 @@ class EventsDispatcherTest {
 
         eventsDispatcher.fire(primaryId, secondaryId, reason);
 
-        verify(handler1).match(event);
-        verify(handler2).match(event);
+        verify(consumer1).match(event);
+        verify(consumer2).match(event);
     }
 
     @Test
-    @DisplayName("fire should build an event with all the provided parameters and call match on every handler")
+    @DisplayName("fire should build an event with all the provided parameters and call match on every consumer")
     public void fireAllParams() {
         final String className = "className";
         final String testName = "testName";
@@ -141,7 +141,7 @@ class EventsDispatcherTest {
 
         eventsDispatcher.fire(className, testName, reason, result, tags, extensionContext);
 
-        verify(handler1).match(event);
-        verify(handler2).match(event);
+        verify(consumer1).match(event);
+        verify(consumer2).match(event);
     }
 }

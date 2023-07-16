@@ -19,9 +19,9 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 @JsonView(Views.Internal.class)
-public class ExtentTestHandler extends EventHandler {
+public class ExtentTestConsumer extends EventsConsumer {
 
-    public void handle(final Event event) {
+    public void consumes(final Event event) {
         final ExtensionContext context = event.getContext();
         final Status status = event.getResult().getStatus();
         final ExtentTest extentTest = context.getStore(GLOBAL).getOrComputeIfAbsent(EXTENT_TEST, e -> createExtentTestFrom(context), ExtentTest.class);

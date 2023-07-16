@@ -28,11 +28,11 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("EventHandler")
-class EventHandlerTest {
+@DisplayName("EventsConsumer")
+class EventsConsumerTest {
 
     @InjectMocks
-    private DummyEventHandler eventHandler;
+    private DummyEventsConsumer eventsConsumer;
 
     @DisplayName("tagsIntersect")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
@@ -41,7 +41,7 @@ class EventHandlerTest {
         final Event e1 = Event.builder().tags(value1).build();
         final Event e2 = Event.builder().tags(value2).build();
 
-        assertEquals(expected, eventHandler.tagsIntersect(e1, e2));
+        assertEquals(expected, eventsConsumer.tagsIntersect(e1, e2));
     }
 
     public static Stream<Arguments> tagsIntersectProvider() {
@@ -61,7 +61,7 @@ class EventHandlerTest {
         final Event e1 = Event.builder().primaryId(value1).secondaryId(value2).build();
         final Event e2 = Event.builder().primaryId(value3).secondaryId(value4).build();
 
-        assertEquals(expected, eventHandler.primaryAndSecondaryIdMatch(e1, e2));
+        assertEquals(expected, eventsConsumer.primaryAndSecondaryIdMatch(e1, e2));
     }
 
     public static Stream<Arguments> primaryAndSecondaryIdMatchProvider() {
@@ -82,7 +82,7 @@ class EventHandlerTest {
         final Event e1 = Event.builder().primaryId(value1).build();
         final Event e2 = Event.builder().primaryId(value2).build();
 
-        assertEquals(expected, eventHandler.justPrimaryIdMatches(e1, e2));
+        assertEquals(expected, eventsConsumer.justPrimaryIdMatches(e1, e2));
     }
 
     public static Stream<Arguments> justPrimaryIdMatchesProvider() {
@@ -100,7 +100,7 @@ class EventHandlerTest {
         final Event e1 = Event.builder().reason(value1).build();
         final Event e2 = Event.builder().reason(value2).build();
 
-        assertEquals(expected, eventHandler.reasonMatches(e1, e2));
+        assertEquals(expected, eventsConsumer.reasonMatches(e1, e2));
     }
 
     public static Stream<Arguments> reasonMatchesProvider() {
@@ -118,7 +118,7 @@ class EventHandlerTest {
         final Event e1 = Event.builder().result(value1).build();
         final Event e2 = Event.builder().result(value2).build();
 
-        assertEquals(expected, eventHandler.resultMatches(e1, e2));
+        assertEquals(expected, eventsConsumer.resultMatches(e1, e2));
     }
 
     public static Stream<Arguments> resultProvider() {
@@ -133,7 +133,7 @@ class EventHandlerTest {
     @ParameterizedTest(name = "with event1 {0} and event2 {1} we expect {2}")
     @MethodSource("findMatchForProvider")
     public void findMatchFor(final Event e1, final Event e2, final boolean expected) {
-        assertEquals(expected, eventHandler.findMatchFor(e1, e2));
+        assertEquals(expected, eventsConsumer.findMatchFor(e1, e2));
     }
 
     public static Stream<Arguments> findMatchForProvider() {
@@ -157,7 +157,7 @@ class EventHandlerTest {
     }
 
     @Test
-    @DisplayName("match should filter all the handlers listening to the provided event and let them handle it")
+    @DisplayName("match should filter all the consumers listening to the provided event and let them consume it")
     public void match() {
         final Event firedEvent = mock(Event.class);
         final Event matchingEvent = mock(Event.class);
@@ -170,37 +170,37 @@ class EventHandlerTest {
         when(firedEvent.getPrimaryId()).thenReturn(className);
         when(matchingEvent.getPrimaryId()).thenReturn(className);
 
-        eventHandler.handles = List.of(matchingEvent, neverMatchingEvent);
-        eventHandler.match(firedEvent);
+        eventsConsumer.events = List.of(matchingEvent, neverMatchingEvent);
+        eventsConsumer.match(firedEvent);
 
-        // we use the getContext method in the handle of the DummyEventHandler below just to verify the interaction
+        // we use the getContext method in the consume of the DummyEventsConsumer below just to verify the interaction
         verify(firedEvent).getContext();
-        verify(matchingEvent, never()).getContext();    // we never handle the user-defined event (as "handle"). We handle the fired event
+        verify(matchingEvent, never()).getContext();    // we never consume the user-defined event (as "event"). We consume the fired event
         verify(neverMatchingEvent, never()).getContext();
     }
 
     @Test
-    @DisplayName("handleSilently should ignore any exception thrown when handling the provided event")
-    public void handleSilently() {
+    @DisplayName("consumeSilently should ignore any exception thrown when consuming the provided event")
+    public void consumeSilently() {
         final String exceptionMessage = "THE STACKTRACE BELOW IS EXPECTED!!!";
         final Event event = mock(Event.class);
 
         when(event.getContext()).thenThrow(new RuntimeException(exceptionMessage));
 
-        eventHandler.handles = List.of(event);
-        assertDoesNotThrow(() -> eventHandler.handleSilently(event), exceptionMessage);
+        eventsConsumer.events = List.of(event);
+        assertDoesNotThrow(() -> eventsConsumer.consumeSilently(event), exceptionMessage);
     }
 
-    private static class DummyEventHandler extends EventHandler {
+    private static class DummyEventsConsumer extends EventsConsumer {
 
-        public DummyEventHandler() {
-            handles = List.of(
+        public DummyEventsConsumer() {
+            events = List.of(
                     Event.builder().reason(BEFORE).primaryId("class").build()
             );
         }
 
         @Override
-        public void handle(final Event event) {
+        public void consumes(final Event event) {
             //noinspection ResultOfMethodCallIgnored
             event.getContext();
         }

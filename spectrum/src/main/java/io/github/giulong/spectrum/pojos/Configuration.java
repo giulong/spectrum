@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.pojos;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.browsers.Browser;
-import io.github.giulong.spectrum.utils.events.EventHandler;
+import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
 import lombok.Getter;
@@ -28,7 +28,7 @@ public class Configuration {
 	@JsonSerialize(using = ToStringSerializer.class)
 	private TestBook testBook;
 	private FreeMarker freeMarker;
-	private List<EventHandler> eventHandlers;
+	private List<EventsConsumer> eventsConsumers;
 
 	@Getter
 	public static class Runtime {

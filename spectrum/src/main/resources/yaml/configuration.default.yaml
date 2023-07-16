@@ -434,17 +434,17 @@ freeMarker:
   locale: US
   numberFormat: 0.##;; roundingMode=halfUp
 
-# Internal event handlers
-eventHandlers:
+# Internal event consumers
+eventsConsumers:
   - extentTest: # We need to add an entry to the Extent Report once each test is done
-      handles:
+      events:
         - reason: after
           tags: [ TEST ]
   - testbook: # We need to update the TestBook (if configured) once each test is done
-      handles:
+      events:
         - reason: after
           tags: [ TEST ]
   - browser: # We need to close the browser once each test is done
-      handles:
+      events:
         - reason: after
           tags: [ TEST ]

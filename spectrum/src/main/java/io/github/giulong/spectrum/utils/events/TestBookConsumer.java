@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 @JsonView(Views.Internal.class)
-public class TestBookHandler extends EventHandler {
+public class TestBookConsumer extends EventsConsumer {
 
-    public void handle(final Event event) {
+    public void consumes(final Event event) {
         final ExtensionContext context = event.getContext();
         final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getTestBook();
 

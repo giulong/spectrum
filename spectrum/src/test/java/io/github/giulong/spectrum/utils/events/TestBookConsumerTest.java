@@ -31,8 +31,8 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("TestBookHandler")
-class TestBookHandlerTest {
+@DisplayName("TestBookConsumer")
+class TestBookConsumerTest {
 
     @Mock
     private ExtensionContext context;
@@ -65,25 +65,25 @@ class TestBookHandlerTest {
     private Event event;
 
     @InjectMocks
-    private TestBookHandler testBookHandler;
+    private TestBookConsumer testBookConsumer;
 
     @Test
-    @DisplayName("handle should do nothing if no testBook is provided")
-    public void handleTestBookNull() {
+    @DisplayName("consume should do nothing if no testBook is provided")
+    public void consumeTestBookNull() {
         when(event.getContext()).thenReturn(context);
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getTestBook()).thenReturn(null);
 
-        testBookHandler.handle(event);
+        testBookConsumer.consumes(event);
 
         verify(event, never()).getResult();
     }
 
     @Test
-    @DisplayName("handle should update the testbook with the currently unmapped test")
-    public void handleUnmapped() {
+    @DisplayName("consume should update the testbook with the currently unmapped test")
+    public void consumeUnmapped() {
         final Result result = FAILED;
         final Map<String, TestBookTest> unmappedTests = new HashMap<>();
         final Map<Result, Statistics> grandTotalCount = new HashMap<>();
@@ -113,7 +113,7 @@ class TestBookHandlerTest {
         when(statistics.getGrandTotalCount()).thenReturn(grandTotalCount);
         when(statistics.getGrandTotalWeightedCount()).thenReturn(grandTotalWeightedCount);
 
-        testBookHandler.handle(event);
+        testBookConsumer.consumes(event);
 
         final TestBookTest unmappedTest = testBook.getUnmappedTests().get(String.format("%s %s", "className", "testName"));
         assertEquals("className", unmappedTest.getClassName());
@@ -125,8 +125,8 @@ class TestBookHandlerTest {
     }
 
     @Test
-    @DisplayName("handle should update the testbook with the currently finished test")
-    public void handle() {
+    @DisplayName("consume should update the testbook with the currently finished test")
+    public void consume() {
         final Result result = FAILED;
         final Map<String, TestBookTest> mappedTests = new HashMap<>();
         final Map<Result, Statistics> totalCount = new HashMap<>();
@@ -170,7 +170,7 @@ class TestBookHandlerTest {
         when(statistics.getGrandTotalCount()).thenReturn(grandTotalCount);
         when(statistics.getGrandTotalWeightedCount()).thenReturn(grandTotalWeightedCount);
 
-        testBookHandler.handle(event);
+        testBookConsumer.consumes(event);
 
         verify(actualTest).setResult(result);
         assertEquals(4, statistics.getTotalCount().get(result).getTotal().get());
@@ -184,7 +184,7 @@ class TestBookHandlerTest {
     @ParameterizedTest(name = "with className {0} and grouped tests {1}")
     @MethodSource("valuesProvider")
     public void updateGroupedTests(final String className, final Map<String, Set<TestBookTest>> groupedTests) {
-        testBookHandler.updateGroupedTests(groupedTests, className, test);
+        testBookConsumer.updateGroupedTests(groupedTests, className, test);
 
         assertTrue(groupedTests.get(className).contains(test));
     }

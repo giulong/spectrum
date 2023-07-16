@@ -170,7 +170,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     protected void initEventsDispatcher() {
         eventsDispatcher = EventsDispatcher
                 .builder()
-                .handlers(configuration.getEventHandlers())
+                .consumers(configuration.getEventsConsumers())
                 .build();
     }
 

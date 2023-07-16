@@ -9,7 +9,7 @@ import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.YamlUtils;
-import io.github.giulong.spectrum.utils.events.EventHandler;
+import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
@@ -96,7 +96,7 @@ class SpectrumSessionListenerTest {
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
-    private List<EventHandler> handlers;
+    private List<EventsConsumer> consumers;
 
     @Mock
     private Configuration.FreeMarker freeMarker;
@@ -184,9 +184,9 @@ class SpectrumSessionListenerTest {
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
         when(configuration.getFreeMarker()).thenReturn(freeMarker);
 
-        when(configuration.getEventHandlers()).thenReturn(handlers);
+        when(configuration.getEventsConsumers()).thenReturn(consumers);
         when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
-        when(eventsDispatcherBuilder.handlers(handlers)).thenReturn(eventsDispatcherBuilder);
+        when(eventsDispatcherBuilder.consumers(consumers)).thenReturn(eventsDispatcherBuilder);
         when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
 
         final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
@@ -519,13 +519,13 @@ class SpectrumSessionListenerTest {
     }
 
     @Test
-    @DisplayName("initEventsDispatcher should build the events dispatcher with all the event handlers configured")
+    @DisplayName("initEventsDispatcher should build the events dispatcher with all the event consumers configured")
     public void initEventsDispatcher() {
         final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
 
-        when(configuration.getEventHandlers()).thenReturn(handlers);
+        when(configuration.getEventsConsumers()).thenReturn(consumers);
         when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
-        when(eventsDispatcherBuilder.handlers(handlers)).thenReturn(eventsDispatcherBuilder);
+        when(eventsDispatcherBuilder.consumers(consumers)).thenReturn(eventsDispatcherBuilder);
         when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
 
         SpectrumSessionListener.configuration = configuration;
