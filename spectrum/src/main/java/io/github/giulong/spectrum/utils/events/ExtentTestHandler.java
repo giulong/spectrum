@@ -4,7 +4,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.internals.jackson.Views;
+import io.github.giulong.spectrum.internals.jackson.views.Views;
 import io.github.giulong.spectrum.pojos.events.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;

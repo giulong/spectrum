@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.events;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import io.github.giulong.spectrum.internals.jackson.Views;
+import io.github.giulong.spectrum.internals.jackson.views.Views;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
 
