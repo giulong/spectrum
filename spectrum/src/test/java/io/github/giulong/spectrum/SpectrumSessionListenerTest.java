@@ -237,6 +237,26 @@ class SpectrumSessionListenerTest {
         verify(eventsDispatcher).fire(AFTER, Set.of(SUITE));
     }
 
+    @DisplayName("buildVersionLine should build the fixed-length line with the version to put in the logged banner")
+    @ParameterizedTest(name = "with version {0} we expect {1}")
+    @MethodSource("buildVersionLineValuesProvider")
+    public void buildVersionLine(final String version, final String expected) {
+        when(FileUtils.getInstance()).thenReturn(fileUtils);
+        when(fileUtils.readProperties("/spectrum.properties")).thenReturn(properties);
+        when(properties.getProperty("version")).thenReturn(version);
+
+        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+        assertEquals(expected, spectrumSessionListener.buildVersionLine());
+    }
+
+    public static Stream<Arguments> buildVersionLineValuesProvider() {
+        return Stream.of(
+                arguments("version", "#                                   Version: version                                   #"),
+                arguments("0.0.1", "#                                    Version: 0.0.1                                    #"),
+                arguments("0.0.1-SNAPSHOT", "#                               Version: 0.0.1-SNAPSHOT                                #")
+        );
+    }
+
     @Test
     @DisplayName("launcherSessionClosed should check if the testbook is not null")
     public void launcherSessionClosedTestBookNull() {

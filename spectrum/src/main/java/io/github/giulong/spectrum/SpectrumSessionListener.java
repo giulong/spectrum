@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {
 
+    public static final int BANNER_LINE_LENGTH = 86;
     public static final String DEFAULT_CONFIGURATION_YAML = "yaml/configuration.default.yaml";
     public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
     public static final String CONFIGURATION_YAML = "configuration.yaml";
@@ -49,8 +50,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
-        final Properties spectrumProperties = fileUtils.readProperties("/spectrum.properties");
-        log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), spectrumProperties.getProperty("version")));
+        log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), buildVersionLine()));
 
         parseConfiguration();
         parseTestBook();
@@ -70,6 +70,14 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
         extentReports.flush();
         eventsDispatcher.fire(AFTER, Set.of(SUITE));
+    }
+
+    protected String buildVersionLine() {
+        final Properties spectrumProperties = fileUtils.readProperties("/spectrum.properties");
+        final String version = String.format("Version: %s", spectrumProperties.getProperty("version"));
+        final int wrappingSpacesLeft = (BANNER_LINE_LENGTH - version.length()) / 2;
+        final int wrappingSpacesRight = version.length() % 2 == 0 ? wrappingSpacesLeft : wrappingSpacesLeft + 1;
+        return String.format("#%" + wrappingSpacesLeft + "s%s%" + wrappingSpacesRight + "s#", " ", version, " ");
     }
 
     protected void parseConfiguration() {
