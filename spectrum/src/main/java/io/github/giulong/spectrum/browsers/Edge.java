@@ -13,13 +13,13 @@ public class Edge extends Chromium<EdgeOptions, EdgeDriverService, EdgeDriverSer
     }
 
     @Override
-    public synchronized void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration, final Configuration.SeleniumLogs seleniumLogs) {
+    public synchronized void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration) {
         final Configuration.WebDriver.Edge edgeConfig = webDriverConfiguration.getEdge();
 
         capabilities = new EdgeOptions();
         capabilities.addArguments(edgeConfig.getArgs());
 
         edgeConfig.getCapabilities().forEach(capabilities::setExperimentalOption);
-        setLoggingPreferencesFrom(seleniumLogs);
+        setLoggingPreferencesFrom(webDriverConfiguration.getLogs());
     }
 }

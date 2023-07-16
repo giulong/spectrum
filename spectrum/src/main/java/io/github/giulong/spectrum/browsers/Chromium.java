@@ -12,11 +12,11 @@ import static org.openqa.selenium.logging.LogType.*;
 
 public abstract class Chromium<T extends ChromiumOptions<T>, U extends DriverService, V extends DriverService.Builder<U, V>> extends Browser<T, U, V> {
 
-    public void setLoggingPreferencesFrom(final Configuration.SeleniumLogs seleniumLogs) {
+    public void setLoggingPreferencesFrom(final Configuration.WebDriver.Logs logs) {
         final LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(BROWSER, seleniumLogs.getBrowser());
-        logPrefs.enable(DRIVER, seleniumLogs.getDriver());
-        logPrefs.enable(PERFORMANCE, seleniumLogs.getPerformance());
+        logPrefs.enable(BROWSER, logs.getBrowser());
+        logPrefs.enable(DRIVER, logs.getDriver());
+        logPrefs.enable(PERFORMANCE, logs.getPerformance());
         capabilities.setCapability(LOGGING_PREFS, logPrefs);
     }
 

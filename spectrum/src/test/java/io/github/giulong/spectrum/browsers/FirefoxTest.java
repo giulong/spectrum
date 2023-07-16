@@ -66,7 +66,7 @@ class FirefoxTest {
 
         MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class);
 
-        firefox.buildCapabilitiesFrom(webDriverConfig, null);
+        firefox.buildCapabilitiesFrom(webDriverConfig);
         final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().get(0);
         verify(firefoxOptions).addArguments(arguments);
         verify(firefoxOptions).setLogLevel(firefoxDriverLogLevel);

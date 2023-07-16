@@ -63,19 +63,16 @@ webDriver:
       prefs:
         download.default_directory: ${downloadsFolder}
 
+  # WebDriver's internal logging levels
+  logs:
+    browser: INFO
+    driver: INFO
+    performance: OFF
+
 # Data models
 data:
   folder: data  # subfolder under src/test/resources where you will save your data*.yaml
   fqdn: fqdn.placeholder  # you need to provide the fully qualified name of your Data class, meaning its package name AND class name. Check the examples repo.
-
-# Selenium internal logging levels
-seleniumLogs:
-  browser: INFO
-  client: INFO
-  driver: INFO
-  performance: OFF
-  profiler: OFF
-  server: OFF
 
 # FreeMarker template engine configuration. See https://freemarker.apache.org/
 freeMarker:
@@ -98,7 +95,7 @@ eventHandlers:
         - reason: after
           tags: [ TEST ]
 
-# Events fired by the webDriver and automatically logged and added to the report. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.
+# Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.
 events:
   beforeAnyCall:
     level: OFF
