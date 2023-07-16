@@ -2,7 +2,9 @@ package io.github.giulong.spectrum.utils.events;
 
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
+import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.internals.jackson.Views;
 import io.github.giulong.spectrum.pojos.events.Event;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
@@ -16,6 +18,7 @@ import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
+@JsonView(Views.Internal.class)
 public class ExtentTestHandler extends EventHandler {
 
     public void handle(final Event event) {

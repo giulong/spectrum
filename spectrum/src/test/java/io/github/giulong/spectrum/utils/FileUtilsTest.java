@@ -79,7 +79,7 @@ class FileUtilsTest {
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("/test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue"),
+                arguments("/test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
                 arguments("not-existing", ""));
     }
 }
