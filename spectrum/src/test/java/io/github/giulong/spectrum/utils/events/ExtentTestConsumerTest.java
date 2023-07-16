@@ -26,8 +26,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("ExtentTestHandler")
-class ExtentTestHandlerTest {
+@DisplayName("ExtentTestConsumer")
+class ExtentTestConsumerTest {
 
     private final ExtentColor color = ExtentColor.TRANSPARENT;
 
@@ -61,7 +61,7 @@ class ExtentTestHandlerTest {
     private ArgumentCaptor<Markup> skipMarkupArgumentCaptor;
 
     @InjectMocks
-    private ExtentTestHandler extentTestHandler;
+    private ExtentTestConsumer extentTestConsumer;
 
     @BeforeEach
     public void beforeEach() {
@@ -95,7 +95,7 @@ class ExtentTestHandlerTest {
         when(ExtentTestResolver.getColorOf(SKIP)).thenReturn(color);
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
 
-        extentTestHandler.handle(event);
+        extentTestConsumer.consumes(event);
         verify(extentTest).skip(skipMarkupArgumentCaptor.capture());
 
         assertEquals("<span class='badge white-text transparent'>Skipped: " + expected + "</span>", skipMarkupArgumentCaptor.getValue().getMarkup());
@@ -109,19 +109,19 @@ class ExtentTestHandlerTest {
         when(context.getExecutionException()).thenReturn(Optional.of(exception));
 
         when(event.getResult()).thenReturn(FAILED);
-        extentTestHandler.handle(event);
+        extentTestConsumer.consumes(event);
         verify(extentTest).fail(exception);
         verify(spectrumTest).addScreenshotToReport("<span class='badge white-text red'>TEST FAILED</span>", FAIL);
     }
 
     @Test
-    @DisplayName("handle should add a log in the extent report by default")
-    public void handleDefault() {
+    @DisplayName("consume should add a log in the extent report by default")
+    public void consumeDefault() {
         addStubs();
         when(event.getResult()).thenReturn(SUCCESSFUL);
         when(ExtentTestResolver.getColorOf(PASS)).thenReturn(color);
 
-        extentTestHandler.handle(event);
+        extentTestConsumer.consumes(event);
 
         verify(extentTest).log(eq(PASS), markupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text transparent'>END TEST</span>", markupArgumentCaptor.getValue().getMarkup());

@@ -22,8 +22,8 @@ import java.util.Map;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("SlackHandler")
-class SlackHandlerTest {
+@DisplayName("SlackConsumer")
+class SlackConsumerTest {
 
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
@@ -68,8 +68,8 @@ class SlackHandlerTest {
     }
 
     @Test
-    @DisplayName("handle should send a notification to the provided channel using the provided token")
-    public void handle() throws SlackApiException, IOException {
+    @DisplayName("consume should send a notification to the provided channel using the provided token")
+    public void consume() throws SlackApiException, IOException {
         final String template = "template";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String channel = "channel";
@@ -89,10 +89,10 @@ class SlackHandlerTest {
         when(Slack.getInstance()).thenReturn(slack);
         when(slack.methods(token)).thenReturn(methodsClient);
 
-        final SlackHandler slackHandler = new SlackHandler();
-        slackHandler.channel = channel;
-        slackHandler.token = token;
-        slackHandler.handle(event);
+        final SlackConsumer slackConsumer = new SlackConsumer();
+        slackConsumer.channel = channel;
+        slackConsumer.token = token;
+        slackConsumer.consumes(event);
 
         verify(methodsClient).chatPostMessage(chatPostMessageRequest);
     }

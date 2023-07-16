@@ -17,7 +17,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 @Getter
-public class MailHandler extends EventHandler {
+public class MailConsumer extends EventsConsumer {
 
     private static final FileUtils FILE_UTILS = FileUtils.getInstance();
 
@@ -30,7 +30,7 @@ public class MailHandler extends EventHandler {
 
     protected List<Attachment> attachments;
 
-    public void handle(final Event event) {
+    public void consumes(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
         final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate("mail", FILE_UTILS.read(template), vars);
 

@@ -14,19 +14,19 @@ import static java.util.stream.Collectors.toSet;
 
 @JsonTypeInfo(use = NAME, include = WRAPPER_OBJECT)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = SlackHandler.class, name = "slack"),
-        @JsonSubTypes.Type(value = TestBookHandler.class, name = "testbook"),
-        @JsonSubTypes.Type(value = ExtentTestHandler.class, name = "extentTest"),
-        @JsonSubTypes.Type(value = BrowserHandler.class, name = "browser"),
-        @JsonSubTypes.Type(value = MailHandler.class, name = "mail"),
+        @JsonSubTypes.Type(value = SlackConsumer.class, name = "slack"),
+        @JsonSubTypes.Type(value = TestBookConsumer.class, name = "testbook"),
+        @JsonSubTypes.Type(value = ExtentTestConsumer.class, name = "extentTest"),
+        @JsonSubTypes.Type(value = BrowserConsumer.class, name = "browser"),
+        @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),
 })
 @Getter
 @Slf4j
-public abstract class EventHandler {
+public abstract class EventsConsumer {
 
-    protected List<Event> handles;
+    protected List<Event> events;
 
-    public abstract void handle(Event event) throws Exception;
+    public abstract void consumes(Event event) throws Exception;
 
     protected boolean tagsIntersect(final Event e1, final Event e2) {
         final boolean matches = e1.getTags() != null && e2.getTags() != null &&
@@ -76,18 +76,18 @@ public abstract class EventHandler {
     }
 
     public void match(final Event event) {
-        handles
+        events
                 .stream()
                 .peek(h -> log.trace("{} matchers for {}", getClass().getSimpleName(), event))
                 .filter(h -> findMatchFor(event, h))
-                .peek(h -> log.debug("{} is handling {}", getClass().getSimpleName(), event))
-                .forEach(h -> handleSilently(event));
+                .peek(h -> log.debug("{} is consuming {}", getClass().getSimpleName(), event))
+                .forEach(h -> consumeSilently(event));
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    protected void handleSilently(final Event event) {
+    protected void consumeSilently(final Event event) {
         try {
-            handle(event);
+            consumes(event);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

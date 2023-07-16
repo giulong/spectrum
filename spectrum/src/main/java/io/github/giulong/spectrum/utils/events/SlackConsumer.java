@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Map;
 
 @Getter
-public class SlackHandler extends EventHandler {
+public class SlackConsumer extends EventsConsumer {
 
     private static final FileUtils FILE_UTILS = FileUtils.getInstance();
 
@@ -25,7 +25,7 @@ public class SlackHandler extends EventHandler {
 
     protected String token;
 
-    public void handle(final Event event) throws SlackApiException, IOException {
+    public void consumes(final Event event) throws SlackApiException, IOException {
         final Map<String, Object> vars = Map.of("event", event);
         final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate("slack", FILE_UTILS.read(template), vars);
 

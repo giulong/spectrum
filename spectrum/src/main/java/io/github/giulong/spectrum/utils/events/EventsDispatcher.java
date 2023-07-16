@@ -17,7 +17,7 @@ public class EventsDispatcher {
     public static final String BEFORE = "before";
     public static final String AFTER = "after";
 
-    private List<EventHandler> handlers;
+    private List<EventsConsumer> consumers;
 
     public void fire(final String reason, final Set<EventTag> tags) {
         fire(null, null, reason, null, tags, null);
@@ -42,6 +42,6 @@ public class EventsDispatcher {
                 .build();
 
         log.debug("Dispatching event {}", event);
-        handlers.forEach(eventHandler -> eventHandler.match(event));
+        consumers.forEach(consumer -> consumer.match(event));
     }
 }

@@ -368,7 +368,7 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 * manually delete the
   file [target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener](spectrum/target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener)
 
-# Event Handlers
+# Event Consumers
 
 ## Slack
 
@@ -414,23 +414,21 @@ A few steps are needed to configure your Slack Workspace to receive notification
       ![slack-channel-details.png](src/main/resources/images/slack-channel-details.png)<br/><br/>
    3. copy the **Channel ID** from the details overlay:<br/><br/>
       ![slack-channel-id.png](src/main/resources/images/slack-channel-id.png)<br/><br/>
-5. Configure the Slack handler(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:<br/><br/>
+5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:<br/><br/>
    ```yaml
    - slack:
        token: xoxb-***
        channel: C05***
        template: /templates/slack-suite.json
-       handles:
+       events:
          - reason: before
            tags: [SUITE]
    ```
-6. If everything is configured correctly, with the handler above you should receive a notification at the very beginning of your test suite.
+6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
 # TODO injected objects
 
 # TODO freemarker templates
-
-# TODO event handlers
 
 # TODO mail configuration
 

@@ -16,8 +16,8 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("BrowserHandler")
-class BrowserHandlerTest {
+@DisplayName("BrowserConsumer")
+class BrowserConsumerTest {
 
     @Mock
     private ExtensionContext context;
@@ -41,11 +41,11 @@ class BrowserHandlerTest {
     private Browser<?, ?, ?> browser;
 
     @InjectMocks
-    private BrowserHandler browserHandler;
+    private BrowserConsumer browserConsumer;
 
     @Test
-    @DisplayName("handle should shutdown the browser")
-    public void handle() {
+    @DisplayName("consumes should shutdown the browser")
+    public void consumes() {
         when(event.getContext()).thenReturn(context);
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
@@ -53,7 +53,7 @@ class BrowserHandlerTest {
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(browser).when(runtime).getBrowser();
 
-        browserHandler.handle(event);
+        browserConsumer.consumes(event);
 
         verify(browser).shutdown();
     }
