@@ -1,16 +1,16 @@
-package io.github.giulong.spectrum.internals.jackson;
+package io.github.giulong.spectrum.internals.jackson.deserializers;
 
-import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
+import java.util.logging.Level;
 
-public class LogbackLogLevelDeserializer extends JsonDeserializer<Level> {
+public class UtilLogLevelDeserializer extends JsonDeserializer<Level> {
 
     @Override
     public Level deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        return Level.toLevel(jsonParser.getValueAsString());
+        return Level.parse(jsonParser.getValueAsString());
     }
 }

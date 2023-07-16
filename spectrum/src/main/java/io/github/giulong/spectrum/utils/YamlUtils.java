@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.internals.jackson.*;
+import io.github.giulong.spectrum.internals.jackson.deserializers.*;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

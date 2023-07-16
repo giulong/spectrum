@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson;
+package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -22,8 +22,8 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("InterpolatedStringDeserializer")
-class InterpolatedStringDeserializerTest {
+@DisplayName("InterpolatedBooleanDeserializer")
+class InterpolatedBooleanDeserializerTest {
 
     @Mock
     private JsonParser jsonParser;
@@ -32,7 +32,7 @@ class InterpolatedStringDeserializerTest {
     private DeserializationContext deserializationContext;
 
     @InjectMocks
-    private InterpolatedStringDeserializer interpolatedStringDeserializer;
+    private InterpolatedBooleanDeserializer interpolatedBooleanDeserializer;
 
     private static final String varInEnv = "varInEnv";
 
@@ -49,24 +49,23 @@ class InterpolatedStringDeserializerTest {
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserialize(final String value, final String expected) throws IOException {
+    public void deserialize(final String value, final boolean expected) throws IOException {
         when(jsonParser.getValueAsString()).thenReturn(value);
         when(jsonParser.currentName()).thenReturn("key");
 
-        assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext));
+        assertEquals(expected, interpolatedBooleanDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("value", "value"),
-                arguments("${not.set:-local}", "local"),
-                arguments("${notSet:-local}", "local"),
-                arguments("${notSet:-local.dots}", "local.dots"),
-                arguments("${varInEnv:-local}", varInEnv),
-                arguments("${varInEnv}", varInEnv),
-                arguments("${varInEnv:-~/local}", varInEnv),
-                arguments("${not.set}", "${not.set}"),
-                arguments("${notSet}", "${notSet}")
+                arguments("true", true),
+                arguments("false", false),
+                arguments("${not.set:-true}", true),
+                arguments("${notSet:-true}", true),
+                arguments("${varInEnv:-true}", false),
+                arguments("${varInEnv}", false),
+                arguments("${not.set}", false),
+                arguments("${notSet}", false)
         );
     }
 }
