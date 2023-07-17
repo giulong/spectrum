@@ -426,6 +426,17 @@ A few steps are needed to configure your Slack Workspace to receive notification
    ```
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
+# JSON Schema
+
+You can find the JSON Schema for the `configuration*.yaml` in the [spectrum-json-schemas repository](https://github.com/giulong/spectrum-json-schemas).
+
+If your IDE supports json schemas, be sure to pick the right one according to the version of Spectrum you are using.
+
+The path to the raw file is: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/<SPECTRUM VERSION>/Configuration.json`,
+where `<SPECTRUM VERSION>` must be replaced with the one you're using.
+
+TODO check json schema url is accessible
+
 # TODO injected objects
 
 # TODO freemarker templates
