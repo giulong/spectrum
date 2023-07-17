@@ -89,10 +89,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
             </plugin>
             <plugin>
@@ -105,6 +101,7 @@
                         <exclude>io/github/giulong/spectrum/types/**/*</exclude>
                         <exclude>io/github/giulong/spectrum/enums/**/*</exclude>
                         <exclude>io/github/giulong/spectrum/internals/jackson/views/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/internals/jackson/json_schema/**/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -129,21 +126,18 @@
             <plugin>
                 <groupId>com.github.victools</groupId>
                 <artifactId>jsonschema-maven-plugin</artifactId>
-                <version>4.31.1</version>
                 <executions>
                     <execution>
+                        <phase>install</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <packageNames>io.github.giulong.spectrum.pojos</packageNames>
-                    <schemaFilePath>target/json-schemas</schemaFilePath>
-                    <schemaFileName>{0}.json</schemaFileName>
                     <modules>
                         <module>
-                            <name>Jackson</name>
+                            <className>io.github.giulong.spectrum.internals.jackson.json_schema.JsonSchemaGeneratorModule</className>
                         </module>
                     </modules>
                 </configuration>
@@ -170,6 +164,15 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/JsonSchemaGeneratorModule.class</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
