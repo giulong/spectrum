@@ -36,53 +36,32 @@
     </licenses>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jacoco.outputDirectory>${project.reporting.outputDirectory}/jacoco</jacoco.outputDirectory>
-        <resourcesFolder>src/main/resources</resourcesFolder>
-        <servicesFolder>${project.build.outputDirectory}/META-INF/services</servicesFolder>
-        <launcherSessionListener>org.junit.platform.launcher.LauncherSessionListener</launcherSessionListener>
+
+        <junit.version>5.9.2</junit.version>
+        <jackson.version>2.15.0</jackson.version>
+        <mockito.version>5.2.0</mockito.version>
     </properties>
 
     <build>
         <resources>
             <resource>
-                <directory>${resourcesFolder}/filtered</directory>
+                <directory>src/main/resources/filtered</directory>
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <directory>${resourcesFolder}</directory>
+                <directory>src/main/resources</directory>
                 <filtering>false</filtering>
                 <excludes>
                     <exclude>examples/**/*</exclude>
-                    <exclude>${launcherSessionListener}</exclude>
+                    <exclude>org.junit.platform.launcher.LauncherSessionListener</exclude>
                 </excludes>
             </resource>
         </resources>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>Clean LauncherSessionListener folder</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <configuration>
-                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                            <filesets>
-                                <fileset>
-                                    <directory>${servicesFolder}</directory>
-                                    <includes>
-                                        <include>${launcherSessionListener}</include>
-                                    </includes>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -152,12 +131,12 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${servicesFolder}</outputDirectory>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/services</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${resourcesFolder}</directory>
+                                    <directory>${basedir}/src/main/resources</directory>
                                     <includes>
-                                        <include>${launcherSessionListener}</include>
+                                        <include>org.junit.platform.launcher.LauncherSessionListener</include>
                                     </includes>
                                 </resource>
                             </resources>
