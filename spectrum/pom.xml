@@ -35,16 +35,6 @@
         </license>
     </licenses>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <jacoco.outputDirectory>${project.reporting.outputDirectory}/jacoco</jacoco.outputDirectory>
-
-        <junit.version>5.9.2</junit.version>
-        <jackson.version>2.15.0</jackson.version>
-        <mockito.version>5.2.0</mockito.version>
-    </properties>
-
     <build>
         <resources>
             <resource>
