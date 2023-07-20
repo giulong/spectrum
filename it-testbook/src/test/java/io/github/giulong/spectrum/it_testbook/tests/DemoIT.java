@@ -13,6 +13,7 @@ public class DemoIT extends SpectrumTest<Void> {
     public void events() {
         webDriver.get(configuration.getApplication().getBaseUrl());
         eventsDispatcher.fire("primaryId", "custom-event");
+        eventsDispatcher.fire("primaryId", "secondReason");
     }
 
     @Test

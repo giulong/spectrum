@@ -26,7 +26,7 @@ directly in your test classes, so that you can focus just on writing the logic t
 ## Setup
 
 > ⚠️ JDK<br/>
-> Since Spectrum is compiled with a jdk 17, you need a jdk 17+ to be able to run your tests. 
+> Since Spectrum is compiled with a jdk 17, you need a jdk 17+ to be able to run your tests.
 > If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
 ### Spectrum Archetype
@@ -87,10 +87,10 @@ To customise these values, you can create the `src/test/resources/configuration.
 Furthermore, you can provide how many profile-specific configurations in the same folder, by naming them
 `configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name.
 
-To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag, 
-which is a comma separated list of profile names you want to activate. 
+To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag,
+which is a comma separated list of profile names you want to activate.
 
-> **_Example:_**
+> **_Example:_**<br/>
 > When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this order of precedence:
 > 1. configuration.default.yaml [Spectrum internal defaults]
 > 2. configuration.default.unix.yaml [Spectrum internal defaults for *nix, not read on Windows]
@@ -270,10 +270,10 @@ We need to take four steps:
 This is just a simple example. Be sure to check the example repo for more complex use cases, such as data driven and parameterised tests.
 
 > 💡 Tip<br/>
-> For the sake of completeness, you can name the `Data` *pojo* as you prefer. 
+> For the sake of completeness, you can name the `Data` *pojo* as you prefer.
 > You can name it `MySuperShinyWhatever.java` and have this as generic in you SpectrumTest(s):
 > `public class SomeIT extends SpectrumTest<MySuperShinyWhatever> {`
-> 
+>
 > That said, I don't really see any valid use case for this. Let me know if you see one.
 
 # Automatically Generated Reports
@@ -352,7 +352,7 @@ root
 
 ## Parallel Execution
 
-Spectrum tests can be run in parallel by leveraging [Junit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution)
+Spectrum tests can be run in parallel by leveraging [JUnit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution)
 
 # How to Build Spectrum
 
@@ -368,52 +368,256 @@ You need to get rid of it while running Spectrum's own unit tests. You have a co
 * manually delete the
   file [target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener](spectrum/target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener)
 
-# Event Consumers
+# Event Sourcing
 
-## Slack
+Spectrum leverages event sourcing, meaning throughout the execution it fires events at specific moments.
+These events are sent in broadcast to a list of consumers.
+Each consumer defines the events it's interested into. Whenever an event is fired, any consumer interested into that is notified,
+performing the action it's supposed to (more in the [Events Consumers section](#events-consumers) below).
+
+Each [event](spectrum/src/main/java/io/github/giulong/spectrum/pojos/events/Event.java) defines a set of keys that consumers can use to define the events they want to be
+notified about:
+
+| Field Name  | Type                                                                          | Match |
+|-------------|-------------------------------------------------------------------------------|-------|
+| primaryId   | String                                                                        | regex |
+| secondaryId | String                                                                        | regex |
+| tags        | Set<String>                                                                   | exact |
+| reason      | String                                                                        | regex |
+| result      | [Result](spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java) | exact |
+
+Let's see them in detail:
+
+### PrimaryId and SecondaryId
+
+`primaryId` and `secondaryId` are strings through which you can identify each event. For example, for each test method, their value is:
+
+* `primaryId` &rarr; \<CLASS NAME> meaning the actual name of the test class
+* `secondaryId` &rarr; \<TEST NAME> meaning the actual name of the test method
+
+Let's see what they mean with an example. Given the following test:
+
+```Java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    @Test
+    public void dummyTest() {
+        ...
+    }
+}
+```
+
+Spectrum will fire an event with:
+
+* `primaryId` &rarr; "HelloWorldIT"
+* `secondaryId` &rarr; "dummyTest()"
+
+If the `@DisplayName` is provided for either the class and/or the method, those will be used. Given:
+
+```Java
+
+@DisplayName("Class display name")
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    @Test
+    @DisplayName("Method display name")
+    public void dummyTest() {
+        ...
+    }
+}
+```
+
+Spectrum will fire an event with:
+
+* `primaryId` &rarr; "Class display name"
+* `secondaryId` &rarr; "Method display name"
+
+### Tags
+
+Tags are a set of strings used to group events together. For example, all test methods will have the "test" tag.
+This way, instead of attaching a consumer to a specific event (with primary and secondary id, for example) you can listen
+to all events tagged in a particular way, such as all the tests.
+
+### Reason
+
+Reason specifies why an event has been fired.
+
+### Result
+
+This is the result of the executed test. Of course, this will be available only in events fired after tests execution, as per the table below.
+
+---
+
+## Events fired
+
+Spectrum fires these events. The first column in the table below highlights the moment when that specific event is fired.
+The other columns are the event's keys, with blank values being nulls.
+
+| Event description                 | primaryId     | secondaryId  | tags       | reason | result                                                 |
+|-----------------------------------|---------------|--------------|------------|--------|--------------------------------------------------------|
+| Suite started                     |               |              | \[ suite ] | before |                                                        |
+| Suite ended                       |               |              | \[ suite ] | after  |                                                        |
+| Class started (JUnit's BeforeAll) | \<CLASS NAME> |              | \[ class ] | before |                                                        |
+| Class ended (JUnit's AfterAll)    | \<CLASS NAME> |              | \[ class ] | after  |                                                        |
+| Test started (JUnit's BeforeEach) | \<CLASS NAME> | \<TEST NAME> | \[ test ]  | before |                                                        |
+| Test ended (JUnit's AfterEach)    | \<CLASS NAME> | \<TEST NAME> | \[ test ]  | after  | NOT_RUN \| SUCCESSFUL \| FAILED \| ABORTED \| DISABLED |
+
+> 💡 Tip<br/>
+> If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
+> you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like:
+> ```text
+> 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
+> 18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
+> 18:00:05.081 T EventsConsumer            | reasonMatches: false
+> 18:00:05.081 T EventsConsumer            | resultMatches: false
+> 18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
+> 18:00:05.081 T EventsConsumer            | reasonMatches: false
+> 18:00:05.081 T EventsConsumer            | resultMatches: false
+> ```
+
+## Custom Events
+
+Since `eventsDispatcher` is injected in every `SpectrumTest` and `SpectrumPage`, you can programmatically send custom events and listen to them:
+
+```Java
+
+@DisplayName("Class display name")
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    @Test
+    @DisplayName("Method display name")
+    public void dummyTest() {
+        eventsDispatcher.fire("myCustom primary Id", "my custom reason");
+    }
+}
+```
+
+## Events Consumers
+
+Time to understand what to do with events: we need consumers!
+
+Given the events' keys defined above, the consumers list will be looped to check if any of those is interested into being notified.
+This is done by comparing the fired event's keys with each consumer's events' keys.
+
+Here below are the checks applied. Order matters:
+as soon as a check is satisfied, the consumer is notified, and the subsequent checks will not be considered.
+Spectrum will proceed with inspecting the next consumer.
+
+1. reason and primaryId and secondaryId
+2. reason and just primaryId
+3. reason and tags
+4. result and primaryId and secondaryId
+5. result and just primaryId
+6. result and tags
+
+> ⚠️ Matches applied<br/>
+> You can specify regexes to match Reason, primaryId, and secondaryId.<br/>
+> To match tags and result you need to provide the exact value.
+
+> ⚠️ Tags matchers condition<br/>
+> In the conditions above, "tags" means that the set of tags of the fired event and the set of tags of the consumer events must intersect.
+> This means that they don't need to be all matching, it's enough to have at least one match among all the tags. Few examples:
+
+| Fired event's tags | Consumer event's tags | Match |
+|--------------------|-----------------------|-------|
+| \[ tag1, tag2 ]    | \[ tag1, tag2 ]       | ✅     |
+| \[ tag1, tag2 ]    | \[ tag2 ]             | ✅     |
+| \[ tag1 ]          | \[ tag1, tag2 ]       | ✅     |
+| \[ tag1, tag2 ]    | \[ tag666 ]           | ❌     |
+
+> ⚠️ Consumers exceptions<br/>
+> Each consumer handles events silently, meaning if any exception is thrown during the handling of an event,
+> that will be logged and the execution of the tests will continue without breaking. This is meant to avoid that something like a network issue
+> during the sending of an email can cause the whole suite to fail.
+
+> 💡 Tip<br/>
+> You can configure how many consumers you need. Each consumer can listen to many events
+
+Let's now see how to configure few consumers:
+
+> **_Example: reason and primaryId and secondaryId_**<br/>
+> We want to send a slack notification before and after every test, and an email just after:
+> ```yaml
+> eventsConsumers:
+>   - slack:
+>       events:
+>         - primaryId: Class Name 
+>           secondaryId: test name 
+>           reason: before
+>         - primaryId: Class Name 
+>           secondaryId: test name 
+>           reason: after
+>   - mail:
+>       events:
+>         - primaryId: Class Name 
+>           secondaryId: test name 
+>           reason: after
+> ```
+
+> **_Example: reason and primaryId and secondaryId_**<br/>
+> We want to send a mail notification if the whole suite fails:
+> ```yaml
+> eventsConsumers:
+>   - mail:
+>       events:
+>         - result: FAILED
+>           tags: [ suite ]
+> ```
+
+> **_Example: Custom event by primaryId and reason_**<br/>
+> ```yaml
+> eventsConsumers:
+>   - slack:
+>       events:
+>         - primaryId: primary.*  # every event which primaryId is starting with "primary" 
+>           reason: custom-event
+> ```
+
+### Slack
 
 A few steps are needed to configure your Slack Workspace to receive notifications from Spectrum:
+
 1. You need to create an app [from here](https://api.slack.com/apps) by following these steps:<br/><br/>
-   1. click on the **Create New App** button:<br/><br/>
-      ![slack-new-app.png](src/main/resources/images/slack-new-app.png)<br/><br/>
-   2. choose to create it **from an app manifest**<br/><br/>
-      ![slack-manifest.png](src/main/resources/images/slack-manifest.png)<br/><br/>
-   3. Select your workspace, delete the default yaml manifest and copy this one:<br/><br/>
-      ```yaml
-      display_information:
-        name: Spectrum
-        description: Notification from Spectrum Selenium Framework
-        background_color: "#2c2d30"
-      features:
-        bot_user:
-          display_name: Spectrum
-          always_online: false
-      oauth_config:
-        scopes:
-          bot:
-            - channels:read
-            - chat:write
-            - incoming-webhook
-      settings:
-        org_deploy_enabled: false
-        socket_mode_enabled: false
-        token_rotation_enabled: false
-      ```
-   4. Click on **Next** and then **Create**<br/><br/>
+    1. click on the **Create New App** button:<br/><br/>
+       ![slack-new-app.png](src/main/resources/images/slack-new-app.png)<br/><br/>
+    2. choose to create it **from an app manifest**<br/><br/>
+       ![slack-manifest.png](src/main/resources/images/slack-manifest.png)<br/><br/>
+    3. Select your workspace, delete the default yaml manifest and copy this one:<br/><br/>
+       ```yaml
+       display_information:
+         name: Spectrum
+         description: Notification from Spectrum Selenium Framework
+         background_color: "#2c2d30"
+       features:
+         bot_user:
+           display_name: Spectrum
+           always_online: false
+       oauth_config:
+         scopes:
+           bot:
+             - channels:read
+             - chat:write
+             - incoming-webhook
+       settings:
+         org_deploy_enabled: false
+         socket_mode_enabled: false
+         token_rotation_enabled: false
+       ```
+    4. Click on **Next** and then **Create**<br/><br/>
 2. You should have been redirected to the **Basic Information** page of the newly created app. From there:<br/><br/>
-   1. Install the app to Workspace:<br/><br/>
-      ![slack-install-to-workspace.png](src/main/resources/images/slack-install-to-workspace.png)<br/><br/>
-   2. Choose the channel where you want to receive the notifications and click **Allow**:<br/><br/>
-      ![slack-channel.png](src/main/resources/images/slack-channel.png)<br/><br/>
+    1. Install the app to Workspace:<br/><br/>
+       ![slack-install-to-workspace.png](src/main/resources/images/slack-install-to-workspace.png)<br/><br/>
+    2. Choose the channel where you want to receive the notifications and click **Allow**:<br/><br/>
+       ![slack-channel.png](src/main/resources/images/slack-channel.png)<br/><br/>
 3. Go in the **OAuth & Permissions** page and copy the **Bot User OAuth Token**. You will need this in the `configuration*.yaml` (see last bullet)<br/><br/>
    ![slack-token.png](src/main/resources/images/slack-token.png)<br/><br/>
 4. In Slack:<br/><br/>
-   1. open the channel you chose in the previous steps and invite the Spectrum app by sending this message: `/invite @Spectrum`. You should see this after sending it:<br/><br/>
-      ![slack-add-app.png](src/main/resources/images/slack-add-app.png)<br/><br/>
-   2. right-click on the channel you chose in the previous steps and select **View channel details**:<br/><br/>
-      ![slack-channel-details.png](src/main/resources/images/slack-channel-details.png)<br/><br/>
-   3. copy the **Channel ID** from the details overlay:<br/><br/>
-      ![slack-channel-id.png](src/main/resources/images/slack-channel-id.png)<br/><br/>
+    1. open the channel you chose in the previous steps and invite the Spectrum app by sending this message: `/invite @Spectrum`. You should see this after sending it:<br/><br/>
+       ![slack-add-app.png](src/main/resources/images/slack-add-app.png)<br/><br/>
+    2. right-click on the channel you chose in the previous steps and select **View channel details**:<br/><br/>
+       ![slack-channel-details.png](src/main/resources/images/slack-channel-details.png)<br/><br/>
+    3. copy the **Channel ID** from the details overlay:<br/><br/>
+       ![slack-channel-id.png](src/main/resources/images/slack-channel-id.png)<br/><br/>
 5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:<br/><br/>
    ```yaml
    - slack:
@@ -422,9 +626,11 @@ A few steps are needed to configure your Slack Workspace to receive notification
        template: /templates/slack-suite.json
        events:
          - reason: before
-           tags: [SUITE]
+           tags: [ suite ]
    ```
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
+
+TODO slack template
 
 # JSON Schema
 

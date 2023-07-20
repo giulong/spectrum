@@ -42,22 +42,23 @@ public abstract class EventsConsumer {
     }
 
     protected boolean primaryAndSecondaryIdMatch(final Event e1, final Event e2) {
-        final boolean matches = e1.getPrimaryId() != null && e1.getPrimaryId().equals(e2.getPrimaryId()) &&
-                e1.getSecondaryId() != null && e1.getSecondaryId().equals(e2.getSecondaryId());
+        final boolean matches = e1.getPrimaryId() != null && e2.getPrimaryId() != null && e1.getPrimaryId().matches(e2.getPrimaryId()) &&
+                e1.getSecondaryId() != null && e2.getSecondaryId() != null && e1.getSecondaryId().matches(e2.getSecondaryId());
 
-        log.trace("classNameAndTestNameMatches: {}", matches);
+        log.trace("primaryAndSecondaryIdMatch: {}", matches);
         return matches;
     }
 
     protected boolean justPrimaryIdMatches(final Event e1, final Event e2) {
-        final boolean matches = e1.getPrimaryId() != null && e1.getPrimaryId().equals(e2.getPrimaryId()) && e1.getSecondaryId() == null;
+        final boolean matches = e1.getPrimaryId() != null && e2.getPrimaryId() != null && e1.getPrimaryId().matches(e2.getPrimaryId())
+                && e1.getSecondaryId() == null;
 
-        log.trace("justClassNameMatches: {}", matches);
+        log.trace("justPrimaryIdMatches: {}", matches);
         return matches;
     }
 
     protected boolean reasonMatches(final Event e1, final Event e2) {
-        final boolean matches = e1.getReason() != null && e1.getReason().equals(e2.getReason());
+        final boolean matches = e1.getReason() != null && e2.getReason() != null && e1.getReason().matches(e2.getReason());
 
         log.trace("reasonMatches: {}", matches);
         return matches;
@@ -89,6 +90,7 @@ public abstract class EventsConsumer {
         try {
             consumes(event);
         } catch (Exception e) {
+            log.warn("Exception when consuming {}", event);
             log.error(e.getMessage(), e);
         }
     }

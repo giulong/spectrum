@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import org.junit.jupiter.api.AfterEach;
@@ -61,7 +60,7 @@ class EventsDispatcherTest {
     @DisplayName("fire should build an event with the provided reason and tags and call match on every consumer")
     public void fire() {
         final String reason = AFTER;
-        final Set<EventTag> tags = Set.of();
+        final Set<String> tags = Set.of();
 
         when(Event.builder()).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
@@ -128,7 +127,7 @@ class EventsDispatcherTest {
         final String testName = "testName";
         final String reason = AFTER;
         final Result result = SUCCESSFUL;
-        final Set<EventTag> tags = Set.of();
+        final Set<String> tags = Set.of();
 
         when(Event.builder()).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(className)).thenReturn(eventBuilder);

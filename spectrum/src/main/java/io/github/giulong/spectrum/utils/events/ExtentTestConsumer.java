@@ -34,6 +34,8 @@ public class ExtentTestConsumer extends EventsConsumer {
             }
             case FAIL -> {
                 final SpectrumTest<?> spectrumTest = (SpectrumTest<?>) context.getRequiredTestInstance();
+
+                // TODO fail with media
                 extentTest.fail(context.getExecutionException().orElse(new RuntimeException("Test Failed with no exception")));
                 spectrumTest.addScreenshotToReport(createLabel("TEST FAILED", RED).getMarkup(), FAIL);
             }

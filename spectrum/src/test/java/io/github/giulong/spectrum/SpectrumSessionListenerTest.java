@@ -33,10 +33,8 @@ import java.util.*;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumSessionListener.*;
-import static io.github.giulong.spectrum.enums.EventTag.SUITE;
 import static io.github.giulong.spectrum.enums.Result.NOT_RUN;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;

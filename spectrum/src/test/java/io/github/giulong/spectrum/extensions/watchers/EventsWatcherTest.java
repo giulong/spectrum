@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
 import io.github.giulong.spectrum.SpectrumSessionListener;
-import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import org.junit.jupiter.api.AfterEach;
@@ -18,11 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.Set;
 
-import static io.github.giulong.spectrum.enums.EventTag.CLASS;
-import static io.github.giulong.spectrum.enums.EventTag.TEST;
 import static io.github.giulong.spectrum.enums.Result.*;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -59,7 +55,12 @@ class EventsWatcherTest {
         spectrumSessionListenerMockedStatic.close();
     }
 
-    private void notifyStubs() {
+    private void notifyClassStubs() {
+        when(SpectrumSessionListener.getEventsDispatcher()).thenReturn(eventsDispatcher);
+        when(extensionContext.getDisplayName()).thenReturn(className);
+    }
+
+    private void notifyTestStubs() {
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(SpectrumSessionListener.getEventsDispatcher()).thenReturn(eventsDispatcher);
         when(extensionContext.getDisplayName()).thenReturn(displayName);
@@ -70,15 +71,15 @@ class EventsWatcherTest {
     @Test
     @DisplayName("beforeAll should dispatch an event")
     public void testBeforeAll() {
-        notifyStubs();
+        notifyClassStubs();
         eventsWatcher.beforeAll(extensionContext);
-        verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(CLASS), extensionContext);
+        verify(eventsDispatcher).fire(className, null, BEFORE, null, Set.of(CLASS), extensionContext);
     }
 
     @Test
     @DisplayName("beforeEach should dispatch an event")
     public void testBeforeEach() {
-        notifyStubs();
+        notifyTestStubs();
         eventsWatcher.beforeEach(extensionContext);
         verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(TEST), extensionContext);
     }
@@ -86,15 +87,15 @@ class EventsWatcherTest {
     @Test
     @DisplayName("afterAll should dispatch an event")
     public void testAfterAll() {
-        notifyStubs();
+        notifyClassStubs();
         eventsWatcher.afterAll(extensionContext);
-        verify(eventsDispatcher).fire(className, displayName, AFTER, null, Set.of(CLASS), extensionContext);
+        verify(eventsDispatcher).fire(className, null, AFTER, null, Set.of(CLASS), extensionContext);
     }
 
     @Test
     @DisplayName("testDisabled should dispatch an event")
     public void testDisabled() {
-        notifyStubs();
+        notifyTestStubs();
         eventsWatcher.testDisabled(extensionContext, Optional.of("reason"));
         verify(eventsDispatcher).fire(className, displayName, AFTER, DISABLED, Set.of(TEST), extensionContext);
     }
@@ -102,7 +103,7 @@ class EventsWatcherTest {
     @Test
     @DisplayName("testSuccessful should dispatch an event")
     public void testSuccessful() {
-        notifyStubs();
+        notifyTestStubs();
         eventsWatcher.testSuccessful(extensionContext);
         verify(eventsDispatcher).fire(className, displayName, AFTER, SUCCESSFUL, Set.of(TEST), extensionContext);
     }
@@ -110,7 +111,7 @@ class EventsWatcherTest {
     @Test
     @DisplayName("testAborted should dispatch an event")
     public void testAborted() {
-        notifyStubs();
+        notifyTestStubs();
         eventsWatcher.testAborted(extensionContext, new RuntimeException());
         verify(eventsDispatcher).fire(className, displayName, AFTER, ABORTED, Set.of(TEST), extensionContext);
     }
@@ -118,20 +119,32 @@ class EventsWatcherTest {
     @Test
     @DisplayName("testFailed should dispatch an event")
     public void testFailed() {
-        notifyStubs();
+        notifyTestStubs();
         eventsWatcher.testFailed(extensionContext, new RuntimeException());
         verify(eventsDispatcher).fire(className, displayName, AFTER, FAILED, Set.of(TEST), extensionContext);
     }
 
     @Test
-    @DisplayName("notify should dispatch an event with the className and testName taken from the context")
-    public void testNotify() {
+    @DisplayName("notifyClass should dispatch an event with the className taken from the context and no test name")
+    public void testNotifyClass() {
         final String reason = BEFORE;
         final Result result = SUCCESSFUL;
-        final Set<EventTag> tags = Set.of();
+        final Set<String> tags = Set.of();
 
-        notifyStubs();
-        eventsWatcher.notify(extensionContext, reason, result, tags);
+        notifyClassStubs();
+        eventsWatcher.notifyClass(extensionContext, reason, result, tags);
+        verify(eventsDispatcher).fire(className, null, reason, result, tags, extensionContext);
+    }
+
+    @Test
+    @DisplayName("notifyTest should dispatch an event with the className and testName taken from the context")
+    public void testNotifyTest() {
+        final String reason = BEFORE;
+        final Result result = SUCCESSFUL;
+        final Set<String> tags = Set.of();
+
+        notifyTestStubs();
+        eventsWatcher.notifyTest(extensionContext, reason, result, tags);
         verify(eventsDispatcher).fire(className, displayName, reason, result, tags, extensionContext);
     }
 }
