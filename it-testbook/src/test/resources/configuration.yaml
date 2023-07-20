@@ -32,3 +32,12 @@ testBook:
         output: target/spectrum/testbook/testbook.txt
     - html:
         output: target/spectrum/testbook/testbook.html
+
+# these will fail. We use them to check log fail and verify a warning is logged
+eventsConsumers:
+  - slack:
+      events:
+        - primaryId: primary.*  # custom event by primaryId regex
+          reason: custom-event
+        - primaryId: primaryId  # custom event by reason regex
+          reason: .*condReas.*

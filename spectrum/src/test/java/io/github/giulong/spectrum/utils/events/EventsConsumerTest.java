@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import org.junit.jupiter.api.DisplayName;
@@ -16,14 +15,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import static io.github.giulong.spectrum.enums.EventTag.SUITE;
-import static io.github.giulong.spectrum.enums.EventTag.TEST;
 import static io.github.giulong.spectrum.enums.Result.FAILED;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +32,7 @@ class EventsConsumerTest {
     @DisplayName("tagsIntersect")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
     @MethodSource("tagsIntersectProvider")
-    public void tagsIntersect(final Set<EventTag> value1, final Set<EventTag> value2, final boolean expected) {
+    public void tagsIntersect(final Set<String> value1, final Set<String> value2, final boolean expected) {
         final Event e1 = Event.builder().tags(value1).build();
         final Event e2 = Event.builder().tags(value2).build();
 
@@ -69,9 +64,15 @@ class EventsConsumerTest {
                 arguments(null, null, "nope", "nope", false),
                 arguments(null, "test", "nope", "nope", false),
                 arguments("class", null, "nope", "nope", false),
+                arguments("class", "test", null, null, false),
+                arguments("class", "test", null, "nope", false),
+                arguments("class", "test", "nope", null, false),
                 arguments("class", "test", "nope", "nope", false),
                 arguments("class", "test", "class", "nope", false),
-                arguments("class", "test", "class", "test", true)
+                arguments("class", "test", "class", "test", true),
+                arguments("classAAA", "test", "class.*", "test", true),
+                arguments("class", "testAAA", "class", "test.*", true),
+                arguments("classAAA", "testAAA", "class.*", "test.*", true)
         );
     }
 
@@ -88,8 +89,10 @@ class EventsConsumerTest {
     public static Stream<Arguments> justPrimaryIdMatchesProvider() {
         return Stream.of(
                 arguments(null, "nope", false),
+                arguments("class", null, false),
                 arguments("class", "nope", false),
-                arguments("class", "class", true)
+                arguments("class", "class", true),
+                arguments("classAAA", "class.*", true)
         );
     }
 
@@ -106,8 +109,10 @@ class EventsConsumerTest {
     public static Stream<Arguments> reasonMatchesProvider() {
         return Stream.of(
                 arguments(null, BEFORE, false),
+                arguments(AFTER, null, false),
                 arguments(AFTER, BEFORE, false),
-                arguments(AFTER, AFTER, true)
+                arguments(AFTER, AFTER, true),
+                arguments("afterAAA", "after.*", true)
         );
     }
 
@@ -173,7 +178,7 @@ class EventsConsumerTest {
         eventsConsumer.events = List.of(matchingEvent, neverMatchingEvent);
         eventsConsumer.match(firedEvent);
 
-        // we use the getContext method in the consume of the DummyEventsConsumer below just to verify the interaction
+        // we use the getContext method in the consumes of the DummyEventsConsumer below just to verify the interaction
         verify(firedEvent).getContext();
         verify(matchingEvent, never()).getContext();    // we never consume the user-defined event (as "event"). We consume the fired event
         verify(neverMatchingEvent, never()).getContext();

@@ -2,6 +2,7 @@
 <configuration>
     <property name="PATTERN" value="%d{HH:mm:ss.SSS} %.-1level %-25logger{0} | %msg%nopex%n"/>
     <property name="COLOR_PATTERN" value="%highlight(${PATTERN})"/>
+    <property name="FILE_PATH" value="${spectrum.log.path:-target/spectrum/logs}"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -9,7 +10,15 @@
         </encoder>
     </appender>
 
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${FILE_PATH}/spectrum.log</file>
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
     <root level="${spectrum.log.level:-INFO}">
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
     </root>
 </configuration>

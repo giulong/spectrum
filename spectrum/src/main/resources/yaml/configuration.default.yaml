@@ -439,12 +439,12 @@ eventsConsumers:
   - extentTest: # We need to add an entry to the Extent Report once each test is done
       events:
         - reason: after
-          tags: [ TEST ]
+          tags: [ test ]
   - testbook: # We need to update the TestBook (if configured) once each test is done
       events:
         - reason: after
-          tags: [ TEST ]
+          tags: [ test ]
   - browser: # We need to close the browser once each test is done
       events:
         - reason: after
-          tags: [ TEST ]
+          tags: [ test ]

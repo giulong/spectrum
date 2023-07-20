@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.enums.EventTag;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import lombok.Builder;
@@ -16,10 +15,13 @@ public class EventsDispatcher {
 
     public static final String BEFORE = "before";
     public static final String AFTER = "after";
+    public static final String TEST = "test";
+    public static final String CLASS = "class";
+    public static final String SUITE = "suite";
 
     private List<EventsConsumer> consumers;
 
-    public void fire(final String reason, final Set<EventTag> tags) {
+    public void fire(final String reason, final Set<String> tags) {
         fire(null, null, reason, null, tags, null);
     }
 
@@ -31,7 +33,7 @@ public class EventsDispatcher {
         fire(primaryId, secondaryId, reason, null, null, null);
     }
 
-    public void fire(final String primaryId, final String secondaryId, final String reason, final Result result, final Set<EventTag> tags, final ExtensionContext context) {
+    public void fire(final String primaryId, final String secondaryId, final String reason, final Result result, final Set<String> tags, final ExtensionContext context) {
         final Event event = Event.builder()
                 .primaryId(primaryId)
                 .secondaryId(secondaryId)
