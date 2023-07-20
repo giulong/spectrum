@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import static com.aventstack.extentreports.Status.FAIL;
 import static com.aventstack.extentreports.Status.SKIP;
 import static com.aventstack.extentreports.markuputils.ExtentColor.RED;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
@@ -34,10 +33,8 @@ public class ExtentTestConsumer extends EventsConsumer {
             }
             case FAIL -> {
                 final SpectrumTest<?> spectrumTest = (SpectrumTest<?>) context.getRequiredTestInstance();
-
-                // TODO fail with media
                 extentTest.fail(context.getExecutionException().orElse(new RuntimeException("Test Failed with no exception")));
-                spectrumTest.addScreenshotToReport(createLabel("TEST FAILED", RED).getMarkup(), FAIL);
+                spectrumTest.screenshotFail(createLabel("TEST FAILED", RED).getMarkup());
             }
             default -> extentTest.log(status, createLabel("END TEST", getColorOf(status)));
         }

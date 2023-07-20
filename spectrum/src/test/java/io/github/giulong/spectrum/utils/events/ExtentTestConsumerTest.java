@@ -111,7 +111,7 @@ class ExtentTestConsumerTest {
         when(event.getResult()).thenReturn(FAILED);
         extentTestConsumer.consumes(event);
         verify(extentTest).fail(exception);
-        verify(spectrumTest).addScreenshotToReport("<span class='badge white-text red'>TEST FAILED</span>", FAIL);
+        verify(spectrumTest).screenshotFail("<span class='badge white-text red'>TEST FAILED</span>");
     }
 
     @Test
