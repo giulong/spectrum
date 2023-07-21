@@ -38,15 +38,15 @@
     <build>
         <resources>
             <resource>
-                <directory>src/main/resources/filtered</directory>
+                <directory>${resourcesFolder}/filtered</directory>
                 <filtering>true</filtering>
             </resource>
             <resource>
-                <directory>src/main/resources</directory>
+                <directory>${resourcesFolder}</directory>
                 <filtering>false</filtering>
                 <excludes>
                     <exclude>examples/**/*</exclude>
-                    <exclude>org.junit.platform.launcher.LauncherSessionListener</exclude>
+                    <exclude>${launcherSessionListener}</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -124,9 +124,9 @@
                             <outputDirectory>${project.build.outputDirectory}/META-INF/services</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${basedir}/src/main/resources</directory>
+                                    <directory>${basedir}/${resourcesFolder}</directory>
                                     <includes>
-                                        <include>org.junit.platform.launcher.LauncherSessionListener</include>
+                                        <include>${launcherSessionListener}</include>
                                     </includes>
                                 </resource>
                             </resources>
