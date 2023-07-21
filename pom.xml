@@ -40,6 +40,10 @@
         <resourcesFolder>src/main/resources</resourcesFolder>
         <launcherSessionListener>org.junit.platform.launcher.LauncherSessionListener</launcherSessionListener>
 
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <jar.skipIfEmpty>true</jar.skipIfEmpty>
+        <maven.install.skip>true</maven.install.skip>
+
         <junit.version>5.9.2</junit.version>
         <jackson.version>2.15.0</jackson.version>
         <mockito.version>5.2.0</mockito.version>

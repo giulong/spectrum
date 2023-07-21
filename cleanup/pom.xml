@@ -12,12 +12,6 @@
 
     <artifactId>cleanup</artifactId>
 
-    <properties>
-        <maven.deploy.skip>true</maven.deploy.skip>
-        <jar.skipIfEmpty>true</jar.skipIfEmpty>
-        <maven.install.skip>true</maven.install.skip>
-    </properties>
-
     <build>
         <plugins>
             <plugin>
