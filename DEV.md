@@ -18,7 +18,8 @@ In both the `it` and `it-testbook` modules, some tests are meant to fail for dem
 They will be checked later on by the `it-verifier` module.
 
 Spectrum leverages `SpectrumSessionListener`, a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom)
-registered via the Service Loader mechanism. The [org.junit.platform.launcher.LauncherSessionListener](spectrum/src/main/resources/org.junit.platform.launcher.LauncherSessionListener)
+registered via the Service Loader mechanism.
+The [org.junit.platform.launcher.LauncherSessionListener](spectrum/src/main/resources/org.junit.platform.launcher.LauncherSessionListener)
 file is copied into the `META-INF/services` folder during the `prepare-package` phase.
 It's not placed already there since that would load the framework during its own unit tests, breaking them.
 
@@ -29,9 +30,22 @@ The `cleanup` module takes care of this, but in case it's needed, you need to de
 
 `mvn clean install -D allTests -fae`
 
-* the `allTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to run: `mvn clean install -P chrome,firefox,edge -fae`.
+* the `allTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
+  run: `mvn clean install -P chrome,firefox,edge -fae`.
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.
 
 ## Workflow
 
-We use [GitFlow](http://datasift.github.io/gitflow/IntroducingGitFlow.html)
+We use [GitFlow](http://datasift.github.io/gitflow/IntroducingGitFlow.html):
+
+* `feature` branches are forked from `develop`. Once the feature is complete, a pull request must be opened towards `develop`.
+* `release` branches must be forked from `develop`. A pull request must be opened towards `main`.
+* When a PR on `main` is merged, the `deploy` workflow will start. Once that is successful, the marge back on `develop` must be made.
+
+GitHub workflows:
+
+| Branch     | Event     | Workflow                               |
+|------------|-----------|----------------------------------------|
+| develop    | push      | [build](.github/workflows/build.yml)   |
+| feature/** | push      | [build](.github/workflows/build.yml)   |
+| main       | pr closed | [deploy](.github/workflows/deploy.yml) |

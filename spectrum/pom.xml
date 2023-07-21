@@ -35,6 +35,19 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git://github.com/giulong/spectrum.git</connection>
+        <developerConnection>scm:git:ssh://github.com:giulong/spectrum.git</developerConnection>
+        <url>https://github.com/giulong/spectrum</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
         <maven.deploy.skip>false</maven.deploy.skip>
         <maven.install.skip>false</maven.install.skip>
