@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.github.giulong</groupId>
+        <artifactId>spectrum-aggregate</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>spectrum</artifactId>
+    <name>Spectrum</name>
+    <description>Java Selenium Framework</description>
+    <url>https://github.com/giulong/spectrum</url>
+
+    <developers>
+        <developer>
+            <name>Giulio Longfils</name>
+            <email>giuliolongfils@gmail.com</email>
+            <url>https://github.com/giulong</url>
+            <roles>
+                <role>Creator</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <inceptionYear>2023</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <maven.deploy.skip>false</maven.deploy.skip>
+        <maven.install.skip>false</maven.install.skip>
+    </properties>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${resourcesFolder}/filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${resourcesFolder}</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>examples/**/*</exclude>
+                    <exclude>${launcherSessionListener}</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.10</version>
+                <configuration>
+                    <excludes>
+                        <exclude>io/github/giulong/spectrum/pojos/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/types/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/enums/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/internals/jackson/views/**/*</exclude>
+                        <exclude>io/github/giulong/spectrum/internals/jackson/json_schema/**/*</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${jacoco.outputDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.github.victools</groupId>
+                <artifactId>jsonschema-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <modules>
+                        <module>
+                            <className>io.github.giulong.spectrum.internals.jackson.json_schema.JsonSchemaGeneratorModule</className>
+                        </module>
+                    </modules>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/${resourcesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/JsonSchemaGeneratorModule.class</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

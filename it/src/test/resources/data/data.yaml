@@ -1,0 +1,7 @@
+users:
+  tom:
+    name: tomsmith
+    password: SuperSecretPassword!
+  giulio:
+    name: Giulio Longfils
+    password: pwd

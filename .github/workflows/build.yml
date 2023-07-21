@@ -2,9 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop", "feature/**" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "develop" ]
 
 jobs:
   build:
@@ -22,13 +22,14 @@ jobs:
         cache: maven
 
     - name: mvn install
-      run: mvn -B install -P chrome,firefox,edge
+      run: mvn -B install -D allTests
 
     - name: Generate Jacoco Badge
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2
       with:
         generate-branches-badge: true
+        jacoco-csv-file: spectrum/target/site/jacoco/jacoco.csv
 
     - name: Log coverage percentage
       run: |
@@ -53,22 +54,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: jacoco-report
-        path: target/site/jacoco/
-
-    - name: Get version from pom.xml
-      run: |
-        VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
-        echo "version=$VERSION" >> $GITHUB_ENV
-      id: get_version
-
-    - name: Push json schemas
-      uses: cpina/github-action-push-to-another-repository@main
-      env:
-        SSH_DEPLOY_KEY: ${{ secrets.JSON_SCHEMA_DEPLOY_KEY }}
-      with:
-        source-directory: target/json-schemas
-        destination-github-username: giulong
-        destination-repository-name: spectrum-json-schemas
-        user-email: giuliolongfils@gmail.com
-        target-branch: main
-        target-directory: ${{ env.version }}
+        path: spectrum/target/site/jacoco/

@@ -1,0 +1,24 @@
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+webDriver:
+  waits:
+    implicit: 5
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+  firefox:
+    args:
+      - -headless
+  edge:
+    args:
+      - --headless=new
+
+data:
+  folder: data
+  fqdn: io.github.giulong.spectrum.it.data.Data
+
+extent:
+  theme: DARK
+  fileName: report.html

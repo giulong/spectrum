@@ -1,0 +1,43 @@
+runtime:
+  profiles: local,second
+
+application:
+  baseUrl: it's in the configuration-second.yaml
+
+webDriver:
+  waits:
+    implicit: 5
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+
+data:
+  folder: data
+  fqdn: io.github.giulong.spectrum.it_testbook.data.Data
+
+extent:
+  theme: DARK
+  fileName: report.html
+
+testBook:
+  qualityGate:
+    condition: ${weightedSuccessful.percentage} > 60
+  parser:
+    yaml:
+      path: testbook.yaml
+  reporters:
+    - log: { }
+    - txt:
+        output: target/spectrum/testbook/testbook.txt
+    - html:
+        output: target/spectrum/testbook/testbook.html
+
+# these will fail. We use them to check log fail and verify a warning is logged
+eventsConsumers:
+  - slack:
+      events:
+        - primaryId: primary.*  # custom event by primaryId regex
+          reason: custom-event
+        - primaryId: primaryId  # custom event by reason regex
+          reason: .*condReas.*
