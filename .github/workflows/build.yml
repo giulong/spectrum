@@ -20,7 +20,7 @@ jobs:
         cache: maven
 
     - name: mvn install
-      run: mvn -B install -D allTests
+      run: mvn -B install -DallTests -DskipSign
 
     - name: Generate Jacoco Badge
       id: jacoco
