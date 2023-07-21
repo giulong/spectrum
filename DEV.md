@@ -32,3 +32,6 @@ The `cleanup` module takes care of this, but in case it's needed, you need to de
 * the `allTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to run: `mvn clean install -P chrome,firefox,edge -fae`.
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.
 
+## Workflow
+
+We use [GitFlow](http://datasift.github.io/gitflow/IntroducingGitFlow.html)
