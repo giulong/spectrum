@@ -354,20 +354,6 @@ root
 
 Spectrum tests can be run in parallel by leveraging [JUnit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution)
 
-# How to Build Spectrum
-
-## How to run Spectrum's Unit Tests
-
-Spectrum leverages `SpectrumSessionListener`, a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom)
-registered via the
-Service Loader mechanism. A file is copied into the `META-INF` folder during the `prepare-package` phase.
-You need to get rid of it while running Spectrum's own unit tests. You have a couple options, it's up to you to decide which to apply:
-
-* manually run a `mvn clean`
-* configure your IDE's JUnit configuration template to add it as a before-launch task to run `mvn clean`
-* manually delete the
-  file [target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener](spectrum/target/classes/META-INF/services/org.junit.platform.launcher.LauncherSessionListener)
-
 # Event Sourcing
 
 Spectrum leverages event sourcing, meaning throughout the execution it fires events at specific moments.
