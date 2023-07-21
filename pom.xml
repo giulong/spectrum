@@ -37,6 +37,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jacoco.outputDirectory>${project.reporting.outputDirectory}/jacoco</jacoco.outputDirectory>
+        <resourcesFolder>src/main/resources</resourcesFolder>
+        <launcherSessionListener>org.junit.platform.launcher.LauncherSessionListener</launcherSessionListener>
 
         <junit.version>5.9.2</junit.version>
         <jackson.version>2.15.0</jackson.version>
@@ -48,6 +50,7 @@
         <module>it</module>
         <module>it-testbook</module>
         <module>it-verifier</module>
+        <module>cleanup</module>
     </modules>
 
     <dependencies>
