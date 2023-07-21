@@ -35,6 +35,11 @@
         </license>
     </licenses>
 
+    <properties>
+        <maven.deploy.skip>false</maven.deploy.skip>
+        <maven.install.skip>false</maven.install.skip>
+    </properties>
+
     <build>
         <resources>
             <resource>
