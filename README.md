@@ -11,12 +11,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum-archetype.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum-archetype)
 TODO MAVEN BADGE FIX URL
 
-<div style="background:#0072b1; border-radius:4px; display:inline-block;  height:20px; cursor:pointer;">
-    <a href="https://www.linkedin.com/in/giuliolongfils/" style="text-decoration:none; color:#eee;">
-        <div style="vertical-align:top; background:#555; height: 100%; display: inline-block; border-bottom-left-radius:4px; border-top-left-radius:4px; padding:0 5px;">Giulio Longfils</div>
-        <img src="https://i.stack.imgur.com/gVE0j.png" alt="linkedin logo" style="vertical-align:sub; padding:2px 4px 2px 1px;"/>
-    </a>
-</div>
+[![LinkedIn](https://i.stack.imgur.com/gVE0j.png) Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/)
 
 Spectrum is a Java 17 and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests by automatically:
 
