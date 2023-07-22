@@ -559,6 +559,30 @@ Let's now see how to configure few consumers:
 >           reason: custom-event
 > ```
 
+### Mail
+
+You can leverage this consumer to send email notification. Spectrum uses [Simple Java Mail](https://www.simplejavamail.org/), 
+and you can configure it with the file `src/test/resources/simplejavamail.properties`, as specified in the [docs](https://www.simplejavamail.org/configuration.html#section-config-properties).
+
+For example, to send an email via GMail, you can use these properties by replacing placeholders with actual values:
+
+```properties
+simplejavamail.transportstrategy=SMTP_TLS
+simplejavamail.smtp.host=smtp.gmail.com
+simplejavamail.smtp.port=587
+simplejavamail.smtp.username=<YOUR GMAIL ADDRESS>
+simplejavamail.smtp.password=<YOUR GMAIL PASSWORD>
+simplejavamail.defaults.trustedhosts=smtp.gmail.com
+simplejavamail.defaults.subject=Spectrum Notification
+simplejavamail.defaults.to.name=<RECIPIENT NAME>
+simplejavamail.defaults.to.address=<RECIPIENT EMAIL ADDRESS>
+```
+
+Actual configurations of any email provider to be used are out of scope. For the provided snippet,
+check [Google's docs](https://support.google.com/accounts/answer/185833?p=InvalidSecondFactor) on how to generate an app password.
+
+Check Simple Java Mail's docs to see all the [available properties](https://www.simplejavamail.org/configuration.html#section-available-properties).
+
 ### Slack
 
 A few steps are needed to configure your Slack Workspace to receive notifications from Spectrum:
@@ -632,8 +656,6 @@ TODO check json schema url is accessible
 # TODO injected objects
 
 # TODO freemarker templates
-
-# TODO mail configuration
 
 # TODO env vars
 
