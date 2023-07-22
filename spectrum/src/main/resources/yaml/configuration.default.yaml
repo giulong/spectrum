@@ -48,7 +48,7 @@ webDriver:
   # Firefox capabilities. See: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
   firefox:
     args: [ ]
-    logLevel: INFO
+    logLevel: ERROR
     preferences:
       browser.download.folderList: 2
       browser.download.useDownloadDir: true
@@ -65,8 +65,8 @@ webDriver:
 
   # WebDriver's internal logging levels
   logs:
-    browser: INFO
-    driver: INFO
+    browser: SEVERE
+    driver: SEVERE
     performance: OFF
 
   # Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.
