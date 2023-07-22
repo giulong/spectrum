@@ -90,7 +90,6 @@ public abstract class EventsConsumer {
         try {
             consumes(event);
         } catch (Exception e) {
-            log.warn("Exception when consuming {}", event);
             log.error(e.getMessage(), e);
         }
     }

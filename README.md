@@ -13,12 +13,13 @@ TODO MAVEN BADGE FIX URL
 
 [![LinkedIn](https://i.stack.imgur.com/gVE0j.png) Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/)
 
-Spectrum is a Java 17 and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests by automatically:
+Spectrum is a Java and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests. Main features:
 
-* generating html reports
-* generating coverage by reading a testbook
-* providing out-of-the-box defaults to let you immediately run tests with no additional configuration needed
-* providing a human-readable and declarative configuration via yaml files
+* automatic html report generation
+* automatic coverage report generation by reading a testbook
+* automatic mail/slack notifications
+* out-of-the-box defaults provided to let you immediately run tests with no additional configuration
+* fully configurable providing human-readable and declarative yaml files
 
 Spectrum leverages [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
