@@ -65,11 +65,174 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
 > 💡 Tip<br/>
 > The default browser is `chrome`. If you want to use another one, you can switch via the `spectrum.browser` system property, setting its value to
-> `firefox`, `edge` ...
+> `firefox` or `edge`
 
 If you now run the test, you will find a html report generated in the `target/spectrum/reports` folder.
 
 TODO: examples
+
+# SpectrumTest
+
+Your test classes must extend [SpectrumTest](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumTest.java).
+As you might have noticed in the examples above, you need to provide a generic parameter when extending it.
+That is the `Data` type of your own. Be sure to check the [Data section](#data) below. In case you don't need any,
+you just need to set `Void` as generic.
+
+`SpectrumTest` extends [SpectrumEntity](#spectrumentity) and inherits its fields and methods.
+
+# SpectrumPage
+
+As per Selenium's best practices, you should leverage the [page object model](https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/)
+to represent the objects of the web pages you need to interact with.
+To fully leverage Spectrum, your pages should extend the [SpectrumPage](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumPage.java) class.
+
+`SpectrumPage` extends [SpectrumEntity](#spectrumentity) and inherits its fields and methods.
+
+Each `SpectrumPage` takes two generics:
+
+1. the page itself
+2. the `Data` type of your own, the same used as generic in your SpectrumTests.
+
+For example, assuming you need no data, this would be the signature of a page class named `WebAppPage`:
+
+```java
+import io.github.giulong.spectrum.SpectrumPage;
+
+public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
+    // ...
+}
+```
+
+## SpectrumPage Service Methods
+
+By extending `SpectrumPage`, you will inherit few service methods:
+
+### open
+
+You can specify an endpoint for your pages by annotating them like this:
+
+```java
+import io.github.giulong.spectrum.SpectrumPage;
+import io.github.giulong.spectrum.interfaces.Endpoint;
+
+@Endpoint("login")
+public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
+    // ...
+}
+```
+
+Then, in your tests, you can leverage the `open` method. Spectrum will combine your app's base url from the `configuration*.yaml` with the endpoint:
+
+```yaml
+# configuration.yaml
+application:
+  baseUrl: http://my-app.com
+```
+
+```java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    private WebAppPage webAppPage;
+
+    @Test
+    public void open() {
+        webAppPage.open();  // will open http://my-app.com/login
+    }
+}
+```
+
+Moreover, `open` will call internally the `waitForPageLoading` method.
+
+### waitForPageLoading
+
+This is a method that by default just logs a warning. If you need to check for custom conditions before considering a page fully loaded,
+you should override this method, so that calling `open` on pages will call your implementation automatically.
+
+For example, you could have a spinner shown by default when opening pages, and disappearing once the page is fully loaded.
+You should override the `waitForPageLoading` like this:
+
+```java
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
+
+public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
+
+    @FindBy(id = "spinner")
+    private WebElement spinner;
+
+    @Override
+    public WebAppPage waitForPageLoading() {
+        pageLoadWait.until(invisibilityOf(spinner));
+
+        return this;
+    }
+}
+```
+
+> 💡 Tip<br/>
+> Both the `open` and `waitForPageLoading` methods return the instance calling them.
+> This is meant to provide a [fluent api](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
+> You should write your service methods with this in mind.
+>
+> Check [FilesIT](it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
+> ```java
+> uploadPage
+>     .open()
+>     .upload(uploadPage.getFileUpload(), FILE_TO_UPLOAD)
+>     .getSubmit()
+>     .click();
+> ```
+
+### isLoaded
+
+This is a method to check if the caller page is loaded.
+It returns a boolean, which is true if the current url is equal to the app's base url combined with the page's endpoint.
+
+```java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    private WebAppPage webAppPage;
+
+    @Test
+    public void myTest() {
+        // assuming:
+        //  - base url in configuration.yaml is http://my-app.com
+        //  - webAppPage is annotated with @Endpoint("login")
+        //  
+        //  will be true if the current url in the browser is http://my-app.com/login
+        boolean loaded = webAppPage.isLoaded();
+    }
+}
+```
+
+# SpectrumEntity
+
+Parent class of both `SpectrumTest` and `SpectrumPage`. Whenever extending any of those, you will inherit its fields and methods
+
+## SpectrumEntity fields
+
+Spectrum takes care of resolving and injecting instances inside all the fields,
+so that you can directly use them in your tests/pages without caring about declaring nor instantiating them.
+
+| Field            | Description                                                                                                                                                                                                                   |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                            |
+| extentReports    | instance of the Extent Report                                                                                                                                                                                                 |
+| extentTest       | instance mapped to the part of the Extent Report that will represent the current test. You can use it to directly add info to the repo.                                                                                       |
+| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html)                                                                                           |
+| webDriver        | instance of the WebDriver running for the current test                                                                                                                                                                        |
+| implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.implicit` in the `configuration.yaml`        |
+| pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.pageLoadTimeout` in the `configuration.yaml` |
+| scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.scriptTimeout` in the `configuration.yaml`   |
+| downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.downloadTimeout` in the `configuration.yaml` |
+| eventsDispatcher | you can use it to fire custom events. Check the [Custom Events section](#custom-events)                                                                                                                                       |
+| data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                     |
+
+## SpectrumEntity methods
 
 # Configuration
 
@@ -184,6 +347,61 @@ Spectrum will replace the dollar-string with the first value found in this list:
 3. `defaultValue` (if provided)
 
 If the provided key can't be found, a warning will be raised. Both key name and default value can contain dots like in `${some.key:-default.value}`
+
+> 💡 Tip<br/>
+> This trick is widely used in the internal `configuration.default.yaml` to allow for variables to be read from outside.
+> For example, the profiles are set like this:
+> ```yaml
+> # internal configuration.default.yaml
+> runtime:
+>   profiles: ${spectrum.profiles:-local}
+> ```
+> This allows you to just run with `-Dspectrum.profiles=...` while having a default, but you can still explicitly set them in your `configuration.yaml`:
+> ```yaml
+> # your configuration.yaml
+> runtime:
+>   profiles: my-profile,another-one
+> ```
+> You can also decide to provide your own variable:
+> ```yaml
+> # your configuration.yaml
+> runtime:
+>   profiles: ${active-profiles:-local}
+> ```
+> This could be useful to create and leverage your own naming convention for env variables.
+>
+> Be sure to check the internal `configuration.default.yaml` to see which variables are already available.
+
+## Running on a Grid
+
+By default, browsers run in local. This is because the default value in the internal `configuration.default.yaml` is:
+
+```yaml
+runtime:
+  environment:
+    local: { }
+```
+
+To run on a remote grid, you just need to change that node, providing at least the grid url:
+
+```yaml
+runtime:
+  environment:
+    grid:
+      url: https://my-grid-url:4444/wd/hub
+      capabilities:
+        someCapability: its value
+        another: blah
+      localFileDetector: true
+```
+
+Where the params are:
+
+| Param             | Type                | Default   | Mandatory | Description                                                                                                                                                                           |
+|-------------------|---------------------|-----------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| url               | String              | null      | ✅         | url of the remote grid                                                                                                                                                                |
+| capabilities      | Map<String, String> | empty map | ❌         | additional webDriver capabilities to be added only when running on a grid                                                                                                             |
+| localFileDetector | boolean             | false     | ❌         | if true, allows to transfer files from the client machine to the remote server [docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector) |
 
 # Data
 
@@ -562,8 +780,9 @@ Let's now see how to configure few consumers:
 
 ### Mail
 
-You can leverage this consumer to send email notification. Spectrum uses [Simple Java Mail](https://www.simplejavamail.org/), 
-and you can configure it with the file `src/test/resources/simplejavamail.properties`, as specified in the [docs](https://www.simplejavamail.org/configuration.html#section-config-properties).
+You can leverage this consumer to send email notification. Spectrum uses [Simple Java Mail](https://www.simplejavamail.org/),
+and you can configure it with the file `src/test/resources/simplejavamail.properties`, as specified in
+the [docs](https://www.simplejavamail.org/configuration.html#section-config-properties).
 
 For example, to send an email via GMail, you can use these properties by replacing placeholders with actual values:
 
@@ -655,14 +874,8 @@ where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 TODO check json schema url is accessible
 
 # TODO injected objects
-
 # TODO freemarker templates
-
-# TODO env vars
-
-# TODO runtime environment
-
-# TODO SpectrumPage
+# TODO testbook
 
 # Honourable Mentions
 
