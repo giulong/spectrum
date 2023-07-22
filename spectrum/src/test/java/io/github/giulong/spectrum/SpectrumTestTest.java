@@ -3,7 +3,6 @@ package io.github.giulong.spectrum;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.interfaces.Endpoint;
-import io.github.giulong.spectrum.internals.EventsListener;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.types.DownloadWait;
 import io.github.giulong.spectrum.types.ImplicitWait;
@@ -62,9 +61,6 @@ public class SpectrumTestTest<T> {
     private ExtentTest extentTest;
 
     @Mock
-    private EventsListener eventsListener;
-
-    @Mock
     private Actions actions;
 
     @Mock
@@ -108,7 +104,6 @@ public class SpectrumTestTest<T> {
         assertEquals(scriptWait, spectrumTest.testPage.scriptWait);
         assertEquals(downloadWait, spectrumTest.testPage.downloadWait);
         assertEquals(extentTest, spectrumTest.testPage.extentTest);
-        assertEquals(eventsListener, spectrumTest.testPage.eventsListener);
         assertEquals(actions, spectrumTest.testPage.actions);
         assertEquals(data, spectrumTest.testPage.data);
     }
@@ -129,7 +124,6 @@ public class SpectrumTestTest<T> {
         assertEquals(scriptWait, spectrumTest.testPageWithoutEndpoint.scriptWait);
         assertEquals(downloadWait, spectrumTest.testPageWithoutEndpoint.downloadWait);
         assertEquals(extentTest, spectrumTest.testPageWithoutEndpoint.extentTest);
-        assertEquals(eventsListener, spectrumTest.testPageWithoutEndpoint.eventsListener);
         assertEquals(actions, spectrumTest.testPageWithoutEndpoint.actions);
         assertEquals(data, spectrumTest.testPageWithoutEndpoint.data);
     }

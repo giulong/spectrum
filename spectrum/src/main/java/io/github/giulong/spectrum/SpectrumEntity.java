@@ -5,7 +5,6 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.internals.EventsListener;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
@@ -47,9 +46,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected Actions actions;
-
-    @Shared
-    protected EventsListener eventsListener;
 
     @Shared
     protected WebDriver webDriver;
