@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 public class LogTestBookReporter extends TestBookReporter {
 
     @SuppressWarnings("FieldMayBeFinal")
-    private String template = "/testbook/template.txt";
+    private String template = "testbook/template.txt";
 
     @Override
     public void doOutputFrom(final String interpolatedTemplate) {

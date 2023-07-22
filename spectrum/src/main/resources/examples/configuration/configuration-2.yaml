@@ -4,10 +4,10 @@ application:
 testBook:
   reporters:  # Configuring some testbook reporters, providing custom templates and/or custom output destination
     - txt:
-        template: /testbook/template.txt
+        template: template.txt
     - log: { }
     - html:
-        template: /my-custom-template.html
+        template: my-custom-template.html
         output: some/path/testbook.html
 
 webDriver:
