@@ -634,7 +634,7 @@ A few steps are needed to configure your Slack Workspace to receive notification
    - slack:
        token: xoxb-***
        channel: C05***
-       template: /templates/slack-suite.json
+       template: slack-suite.json
        events:
          - reason: before
            tags: [ suite ]

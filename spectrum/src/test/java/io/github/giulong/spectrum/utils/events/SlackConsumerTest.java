@@ -76,7 +76,7 @@ class SlackConsumerTest {
         final String token = "token";
 
         when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.read("/templates/slack.json")).thenReturn(template);
+        when(fileUtils.readTemplate("slack.json")).thenReturn(template);
 
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
         when(freeMarkerWrapper.interpolate("slack", template, Map.of("event", event))).thenReturn(interpolatedTemplate);

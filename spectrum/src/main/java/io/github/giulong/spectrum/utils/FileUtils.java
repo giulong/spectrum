@@ -40,6 +40,10 @@ public final class FileUtils {
         return new Scanner(inputStream).useDelimiter("\\Z").next();
     }
 
+    public String readTemplate(final String file) {
+        return read(String.format("/templates/%s", file));
+    }
+
     @SneakyThrows
     public Properties readProperties(final String file) {
         log.debug("Reading properties file {}", file);

@@ -39,6 +39,25 @@ class FileUtilsTest {
         assertEquals(expected, fileUtils.read(file));
     }
 
+    public static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments("/test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
+                arguments("not-existing", ""));
+    }
+
+    @DisplayName("readTemplate should return the correct result")
+    @ParameterizedTest(name = "reading file {0} we expect {1}")
+    @MethodSource("readTemplateValuesProvider")
+    public void readTemplate(String file, String expected) {
+        assertEquals(expected, fileUtils.readTemplate(file));
+    }
+
+    public static Stream<Arguments> readTemplateValuesProvider() {
+        return Stream.of(
+                arguments("template-test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
+                arguments("not-existing", ""));
+    }
+
     @Test
     @DisplayName("readProperties should read the provided file and return the corresponding properties instance")
     public void readProperties() {
@@ -75,11 +94,5 @@ class FileUtilsTest {
                 arguments("fileName-{timestamp:dd-MM-yyyy_HH-mm-ss}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
                 arguments("fileName-{timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
         );
-    }
-
-    public static Stream<Arguments> valuesProvider() {
-        return Stream.of(
-                arguments("/test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
-                arguments("not-existing", ""));
     }
 }
