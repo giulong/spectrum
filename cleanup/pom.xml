@@ -12,15 +12,79 @@
 
     <artifactId>cleanup</artifactId>
 
+    <properties>
+        <spectrumMetaInfServicesFolder>../spectrum/target/classes/META-INF/services</spectrumMetaInfServicesFolder>
+    </properties>
+
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Copy LauncherSessionListener to "it" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../it/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Copy LauncherSessionListener to "it-testbook" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../it-testbook/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Copy LauncherSessionListener to "it-verifier" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../it-verifier/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>Clean LauncherSessionListener file of the spectrum module</id>
-                        <phase>verify</phase>
+                        <phase>clean</phase>
                         <goals>
                             <goal>clean</goal>
                         </goals>
@@ -28,9 +92,9 @@
                             <excludeDefaultDirectories>true</excludeDefaultDirectories>
                             <filesets>
                                 <fileset>
-                                    <directory>../spectrum/target/classes/META-INF/services</directory>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
                                     <includes>
-                                        <include>org.junit.platform.launcher.LauncherSessionListener</include>
+                                        <include>${launcherSessionListener}</include>
                                     </includes>
                                 </fileset>
                             </filesets>

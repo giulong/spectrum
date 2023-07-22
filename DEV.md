@@ -1,7 +1,7 @@
 # Development Readme
 
 This is a multi-module project. The reason behind this structure is that we need a way to run a bunch of e2e tests using the framework as a regular
-client would. So, we build the framework in its own module, and then we can include it as a regular dependencies in other modules.
+client would. So, we build the framework in its own module, and then we can include it as a regular dependency in other modules, dedicated to run e2e tests.
 
 These are the modules, in the order they're built:
 
@@ -18,13 +18,22 @@ In both the `it` and `it-testbook` modules, some tests are meant to fail for dem
 They will be checked later on by the `it-verifier` module.
 
 Spectrum leverages `SpectrumSessionListener`, a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom)
-registered via the Service Loader mechanism.
+registered via the Service Loader mechanism, to fully load itself.
 The [org.junit.platform.launcher.LauncherSessionListener](spectrum/src/main/resources/org.junit.platform.launcher.LauncherSessionListener)
 file is copied into the `META-INF/services` folder during the `prepare-package` phase.
 It's not placed already there since that would load the framework during its own unit tests, breaking them.
 
-In general, to be able to run Spectrum's unit tests, we need to delete that file from [spectrum/target/classes/META-INF/services](spectrum/target/classes/META-INF/services).
-The `cleanup` module takes care of this, but in case it's needed, you need to delete it manually.
+Outside the full maven build of the entire project, so to trigger single tests from the IDE, some conditions need to be satisfied.
+In general, to be able to run unit tests, we need to delete that file from [spectrum/target/classes/META-INF/services](spectrum/target/classes/META-INF/services),
+while we need to have it in modules that run e2e tests or both unit and e2e.
+To avoid manual operations, at the end of the full build, the `cleanup` module will execute the corresponding action for each module listed below.
+
+| Module      | Unit tests | E2E tests | Action                           |
+|-------------|------------|-----------|----------------------------------|
+| spectrum    | ✅          | ❌         | remove `SpectrumSessionListener` |
+| it          | ❌          | ✅         | add `SpectrumSessionListener`    |
+| it-testbook | ❌          | ✅         | add `SpectrumSessionListener`    |
+| it-verifier | ✅          | ✅         | add `SpectrumSessionListener`    |
 
 ## How to build the project
 
