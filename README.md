@@ -71,7 +71,14 @@ If you now run the test, you will find a html report generated in the `target/sp
 
 TODO: examples
 
-# SpectrumTest
+# SpectrumTest and SpectrumPage
+
+These are the two main entities you will need to know to fully leverage Spectrum:
+
+* your test classes must extend [SpectrumTest](#spectrumtest)
+* your test pages must extend [SpectrumPage](#spectrumpage)
+
+## SpectrumTest
 
 Your test classes must extend [SpectrumTest](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumTest.java).
 As you might have noticed in the examples above, you need to provide a generic parameter when extending it.
@@ -80,11 +87,39 @@ you just need to set `Void` as generic.
 
 `SpectrumTest` extends [SpectrumEntity](#spectrumentity) and inherits its fields and methods.
 
-# SpectrumPage
+Beyond having direct access to `webDriver`, `configuration`, `data`, and all the other inherited fields
+that you don't even need to declare or instantiate, by extending `SpectrumTest`, each `SpectrumPage` that you declare
+in your test class will automatically be initialised.
+
+```Java
+import io.github.giulong.spectrum.SpectrumTest;
+import org.junit.jupiter.api.Test;
+
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    // page class that extends SpectrumPage. 
+    // Simply declare it. Spectrum will initialise an instance and inject it
+    private MyPage myPage;
+
+    @Test
+    public void dummyTest() {
+
+        // getting direct access to both webDriver and configuration without declaring nor instantiating them.
+        // Spectrum does that for you.
+        // Here we're opening the landing page of the application
+        webDriver.get(configuration.getApplication().getBaseUrl());
+
+        // assuming in MyPage we have a WebElement named "button", now we're clicking on it
+        myPage.getButton().click();
+    }
+}
+```
+
+## SpectrumPage
 
 As per Selenium's best practices, you should leverage the [page object model](https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/)
 to represent the objects of the web pages you need to interact with.
-To fully leverage Spectrum, your pages should extend the [SpectrumPage](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumPage.java) class.
+To fully leverage Spectrum, your pages must extend the [SpectrumPage](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumPage.java) class.
 
 `SpectrumPage` extends [SpectrumEntity](#spectrumentity) and inherits its fields and methods.
 
@@ -103,128 +138,127 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 }
 ```
 
-## SpectrumPage Service Methods
+### SpectrumPage Service Methods
 
-By extending `SpectrumPage`, you will inherit few service methods:
+By extending `SpectrumPage`, you will inherit few service methods listed here:
 
-### open
+* `open`:
 
-You can specify an endpoint for your pages by annotating them like this:
+  You can specify an endpoint for your pages by annotating them like this:
 
-```java
-import io.github.giulong.spectrum.SpectrumPage;
-import io.github.giulong.spectrum.interfaces.Endpoint;
-
-@Endpoint("login")
-public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
-    // ...
-}
-```
-
-Then, in your tests, you can leverage the `open` method. Spectrum will combine your app's base url from the `configuration*.yaml` with the endpoint:
-
-```yaml
-# configuration.yaml
-application:
-  baseUrl: http://my-app.com
-```
-
-```java
-public class HelloWorldIT extends SpectrumTest<Void> {
-
-    private WebAppPage webAppPage;
-
-    @Test
-    public void open() {
-        webAppPage.open();  // will open http://my-app.com/login
+    ```java
+    import io.github.giulong.spectrum.SpectrumPage;
+    import io.github.giulong.spectrum.interfaces.Endpoint;
+    
+    @Endpoint("login")
+    public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
+        // ...
     }
-}
-```
+    ```
 
-Moreover, `open` will call internally the `waitForPageLoading` method.
+  Then, in your tests, you can leverage the `open` method. Spectrum will combine your app's base url from the `configuration*.yaml` with the endpoint:
 
-### waitForPageLoading
+    ```yaml
+    # configuration.yaml
+    application:
+      baseUrl: http://my-app.com
+    ```
 
-This is a method that by default just logs a warning. If you need to check for custom conditions before considering a page fully loaded,
-you should override this method, so that calling `open` on pages will call your implementation automatically.
-
-For example, you could have a spinner shown by default when opening pages, and disappearing once the page is fully loaded.
-You should override the `waitForPageLoading` like this:
-
-```java
-
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-
-import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
-
-public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
-
-    @FindBy(id = "spinner")
-    private WebElement spinner;
-
-    @Override
-    public WebAppPage waitForPageLoading() {
-        pageLoadWait.until(invisibilityOf(spinner));
-
-        return this;
+    ```java
+    public class HelloWorldIT extends SpectrumTest<Void> {
+    
+        private WebAppPage webAppPage;
+    
+        @Test
+        public void myTest() {
+            webAppPage.open();  // will open http://my-app.com/login
+        }
     }
-}
-```
+    ```
 
-> 💡 Tip<br/>
-> Both the `open` and `waitForPageLoading` methods return the instance calling them.
-> This is meant to provide a [fluent api](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
-> You should write your service methods with this in mind.
->
-> Check [FilesIT](it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
-> ```java
-> uploadPage
->     .open()
->     .upload(uploadPage.getFileUpload(), FILE_TO_UPLOAD)
->     .getSubmit()
->     .click();
-> ```
+  Moreover, `open` will call internally the `waitForPageLoading` method.
 
-### isLoaded
 
-This is a method to check if the caller page is loaded.
-It returns a boolean, which is true if the current url is equal to the app's base url combined with the page's endpoint.
+* `waitForPageLoading`:
 
-```java
-public class HelloWorldIT extends SpectrumTest<Void> {
+  This is a method that by default just logs a warning. If you need to check for custom conditions before considering a page fully loaded,
+  you should override this method, so that calling `open` on pages will call your implementation automatically.
 
-    private WebAppPage webAppPage;
+  For example, you could have a spinner shown by default when opening pages, and disappearing once the page is fully loaded.
+  You should override the `waitForPageLoading` like this:
 
-    @Test
-    public void myTest() {
-        // assuming:
-        //  - base url in configuration.yaml is http://my-app.com
-        //  - webAppPage is annotated with @Endpoint("login")
-        //  
-        //  will be true if the current url in the browser is http://my-app.com/login
-        boolean loaded = webAppPage.isLoaded();
+    ```java
+    
+    import org.openqa.selenium.WebElement;
+    import org.openqa.selenium.support.FindBy;
+    import org.openqa.selenium.support.ui.ExpectedConditions;
+    
+    import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
+    
+    public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
+    
+        @FindBy(id = "spinner")
+        private WebElement spinner;
+    
+        @Override
+        public WebAppPage waitForPageLoading() {
+            pageLoadWait.until(invisibilityOf(spinner));
+    
+            return this;
+        }
     }
-}
-```
+    ```
 
-# SpectrumEntity
+  > 💡 Tip<br/>
+  > Both the `open` and `waitForPageLoading` methods return the instance calling them.
+  > This is meant to provide a [fluent api](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
+  > You should write your service methods with this in mind.
+  >
+  > Check [FilesIT](it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
+  > ```java
+    > uploadPage
+    >     .open()
+    >     .upload(uploadPage.getFileUpload(), FILE_TO_UPLOAD)
+    >     .getSubmit()
+    >     .click();
+    > ```
 
-Parent class of both `SpectrumTest` and `SpectrumPage`. Whenever extending any of those, you will inherit its fields and methods
+* `isLoaded`:
 
-## SpectrumEntity fields
+  This is a method to check if the caller page is loaded.
+  It returns a boolean, which is true if the current url is equal to the app's base url combined with the page's endpoint.
 
-Spectrum takes care of resolving and injecting instances inside all the fields,
-so that you can directly use them in your tests/pages without caring about declaring nor instantiating them.
+    ```java
+    public class HelloWorldIT extends SpectrumTest<Void> {
+    
+        private WebAppPage webAppPage;
+    
+        @Test
+        public void myTest() {
+            // assuming:
+            //  - base url in configuration.yaml is http://my-app.com
+            //  - webAppPage is annotated with @Endpoint("login")
+            //  
+            //  will be true if the current url in the browser is http://my-app.com/login
+            boolean loaded = webAppPage.isLoaded();
+        }
+    }
+    ```
+
+## SpectrumEntity
+
+Parent class of both `SpectrumTest` and `SpectrumPage`. Whenever extending any of those, you will inherit its fields and methods.
+
+Spectrum takes care of resolving and injecting instances inside all the fields below,
+so you can directly use them in your tests/pages without caring about declaring nor instantiating them.
 
 | Field            | Description                                                                                                                                                                                                                   |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                            |
 | extentReports    | instance of the Extent Report                                                                                                                                                                                                 |
 | extentTest       | instance mapped to the part of the Extent Report that will represent the current test. You can use it to directly add info to the repo.                                                                                       |
-| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html)                                                                                           |
-| webDriver        | instance of the WebDriver running for the current test                                                                                                                                                                        |
+| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html), useful to simulate complex user gestures                                                 |
+| webDriver        | instance of the WebDriver running for the current test, configured in a declarative way via `configuration*.yaml`                                                                                                             |
 | implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.implicit` in the `configuration.yaml`        |
 | pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.pageLoadTimeout` in the `configuration.yaml` |
 | scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.scriptTimeout` in the `configuration.yaml`   |
@@ -874,7 +908,9 @@ where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 TODO check json schema url is accessible
 
 # TODO injected objects
+
 # TODO freemarker templates
+
 # TODO testbook
 
 # Honourable Mentions
