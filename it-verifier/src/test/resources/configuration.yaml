@@ -1,6 +1,6 @@
 webDriver:
   waits:
-    implicit: 5
+    implicit: 2
     downloadTimeout: 5
   chrome:
     args:
