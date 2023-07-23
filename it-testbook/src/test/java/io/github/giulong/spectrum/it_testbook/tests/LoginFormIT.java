@@ -7,13 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.openqa.selenium.By;
 
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.openqa.selenium.By.id;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 
 @DisplayName("Login Form")
@@ -27,7 +27,7 @@ public class LoginFormIT extends SpectrumTest<Data> {
     @MethodSource("valuesProvider")
     public void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {
         loginPage.open();
-        assertTrue(isNotPresent(By.id("flash")));
+        assertTrue(isNotPresent(id("flash")));
 
         loginPage
                 .getForm()

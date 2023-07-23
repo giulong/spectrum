@@ -43,6 +43,7 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
+import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @ExtendWith(MockitoExtension.class)
@@ -106,7 +107,7 @@ class SpectrumEntityTest {
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(path.toString());
-        when(webDriver.findElement(By.tagName("body"))).thenReturn(webElement);
+        when(webDriver.findElement(tagName("body"))).thenReturn(webElement);
         when(webElement.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
         return path;

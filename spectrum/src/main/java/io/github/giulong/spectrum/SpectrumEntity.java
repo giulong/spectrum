@@ -27,6 +27,7 @@ import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptur
 import static com.aventstack.extentreports.Status.*;
 import static java.util.Comparator.reverseOrder;
 import static java.util.UUID.randomUUID;
+import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
@@ -116,7 +117,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
 
         Files.createDirectories(screenshotPath.getParent());
-        Files.write(screenshotPath, webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES));
+        Files.write(screenshotPath, webDriver.findElement(tagName("body")).getScreenshotAs(BYTES));
 
         final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
         extentTest.log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
@@ -193,7 +194,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     public boolean isNotPresent(final By by) {
-        return webDriver.findElements(by).size() == 0;
+        final int total = webDriver.findElements(by).size();
+        log.debug("Found {} elements with By {}", total, by);
+        return total == 0;
     }
 
     public boolean hasClass(final WebElement webElement, final String className) {
