@@ -275,7 +275,7 @@ class SpectrumEntityTest {
     }
 
     @Test
-    @DisplayName("checkDownloadedFile should ")
+    @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one")
     public void checkDownloadedFile() throws IOException {
         final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
         final Path filesFolder = Files.createTempDirectory("filesFolder");
@@ -301,6 +301,28 @@ class SpectrumEntityTest {
 
         assertTrue(spectrumEntity.checkDownloadedFile(downloadedFile.getFileName().toString()));
         assertFalse(spectrumEntity.checkDownloadedFile(wrongDownloadedFile.getFileName().toString()));
+    }
+
+    @Test
+    @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one, with different names")
+    public void checkDownloadedFileDifferentName() throws IOException {
+        final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
+        final Path filesFolder = Files.createTempDirectory("filesFolder");
+        final Path downloadedFile = Files.createFile(Path.of(downloadsFolder + "/fakeFileDownloaded.txt"));
+        final Path fileToCheck = Files.createFile(Path.of(filesFolder + "/fakeFile.txt"));
+        Files.writeString(downloadedFile, "I'm an airplane!!!");
+        Files.writeString(fileToCheck, "I'm an airplane!!!");
+
+        downloadedFile.toFile().deleteOnExit();
+        fileToCheck.toFile().deleteOnExit();
+        downloadsFolder.toFile().deleteOnExit();
+        filesFolder.toFile().deleteOnExit();
+
+        when(configuration.getRuntime()).thenReturn(runtime);
+        when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder.toString());
+        when(runtime.getFilesFolder()).thenReturn(filesFolder.toString());
+
+        assertTrue(spectrumEntity.checkDownloadedFile(downloadedFile.getFileName().toString(), fileToCheck.getFileName().toString()));
     }
 
     @Test

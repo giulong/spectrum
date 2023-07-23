@@ -154,10 +154,10 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
-    public boolean checkDownloadedFile(final String file) {
+    public boolean checkDownloadedFile(final String downloadedFileName, final String fileToCheckName) {
         final Configuration.Runtime runtime = configuration.getRuntime();
-        final Path downloadedFile = Path.of(runtime.getDownloadsFolder(), file).toAbsolutePath();
-        final Path fileToCheck = Path.of(runtime.getFilesFolder(), file).toAbsolutePath();
+        final Path downloadedFile = Path.of(runtime.getDownloadsFolder(), downloadedFileName).toAbsolutePath();
+        final Path fileToCheck = Path.of(runtime.getFilesFolder(), fileToCheckName).toAbsolutePath();
 
         waitForDownloadOf(downloadedFile);
 
@@ -167,6 +167,10 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
                 {}
                 """, downloadedFile, fileToCheck);
         return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
+    }
+
+    public boolean checkDownloadedFile(final String file) {
+        return checkDownloadedFile(file, file);
     }
 
     @SneakyThrows
