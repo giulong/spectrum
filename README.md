@@ -142,7 +142,7 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 
 By extending `SpectrumPage`, you will inherit few service methods listed here:
 
-* `open`:
+* `open()`:
 
   You can specify an endpoint for your pages by annotating them like this:
 
@@ -176,10 +176,10 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
     }
     ```
 
-  Moreover, `open` will call internally the `waitForPageLoading` method.
+  Moreover, `open` will internally call the `waitForPageLoading` method.
 
 
-* `waitForPageLoading`:
+* `waitForPageLoading()`:
 
   This is a method that by default just logs a warning. If you need to check for custom conditions before considering a page fully loaded,
   you should override this method, so that calling `open` on pages will call your implementation automatically.
@@ -211,7 +211,7 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
 
   > 💡 Tip<br/>
   > Both the `open` and `waitForPageLoading` methods return the instance calling them.
-  > This is meant to provide a [fluent api](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
+  > This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
   > You should write your service methods with this in mind.
   >
   > Check [FilesIT](it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
@@ -223,7 +223,7 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
     >     .click();
     > ```
 
-* `isLoaded`:
+* `isLoaded()`:
 
   This is a method to check if the caller page is loaded.
   It returns a boolean, which is true if the current url is equal to the app's base url combined with the page's endpoint.
@@ -247,16 +247,17 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
 
 ## SpectrumEntity
 
-Parent class of both `SpectrumTest` and `SpectrumPage`. Whenever extending any of those, you will inherit its fields and methods.
+[SpectrumEntity](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumEntity.java) is the parent class of both `SpectrumTest` and `SpectrumPage`.
+Whenever extending any of those, you will inherit its fields and methods.
 
-Spectrum takes care of resolving and injecting instances inside all the fields below,
+Spectrum takes care of resolving and injecting all the fields below,
 so you can directly use them in your tests/pages without caring about declaring nor instantiating them.
 
 | Field            | Description                                                                                                                                                                                                                   |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                            |
 | extentReports    | instance of the Extent Report                                                                                                                                                                                                 |
-| extentTest       | instance mapped to the part of the Extent Report that will represent the current test. You can use it to directly add info to the repo.                                                                                       |
+| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to directly add info/screenshots programmatically.                                                                   |
 | actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html), useful to simulate complex user gestures                                                 |
 | webDriver        | instance of the WebDriver running for the current test, configured in a declarative way via `configuration*.yaml`                                                                                                             |
 | implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.implicit` in the `configuration.yaml`        |
@@ -266,7 +267,27 @@ so you can directly use them in your tests/pages without caring about declaring 
 | eventsDispatcher | you can use it to fire custom events. Check the [Custom Events section](#custom-events)                                                                                                                                       |
 | data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                     |
 
-## SpectrumEntity methods
+### SpectrumEntity Service Methods
+
+> ⚠️ Methods returning `T`<br/>
+> in the list below, the `T` return type means that method returns the caller instance, so you can leverage method chaining.
+
+* `T hover(WebElement)`: hovers on the provided WebElement, leveraging the `actions` field
+* `T screenshot()`: adds a screenshot at INFO level to the current test in the Extent Report
+* `T screenshotInfo(String)`: adds a screenshot with the provided message and INFO status to the current test in the Extent Report
+* `T screenshotWarning(String)`: adds a screenshot status with the provided message and WARN to the current test in the Extent Report
+* `T screenshotFail(String)`: adds a screenshot with the provided message and FAIL status to the current test in the Extent Report
+* `Media addScreenshotToReport(String, Status)`: adds a screenshot with the provided message and the provided status to the current test in the Extent Report
+* `void deleteDownloadsFolder()`: deletes the download folder (its path is provided in the `configuration*.yaml`)
+* `T waitForDownloadOf(Path)`: leverages the configurable `downloadWait` to check fluently if the file at the provided path is fully downloaded 
+* `boolean checkDownloadedFile(String)`: leverages the `waitForDownloadOf` method and then performs a SHA 256 checksum to check if it's what we expect. 
+* `WebElement clearAndSendKeys(WebElement, CharSequence)`: helper method to call Selenium's `clear` and `sendKeys` on the provided WebElement, which is then returned
+* `T upload(WebElement, String)`: uploads to the provided WebElement (usually an input field with `type="file"`) the file with the provided name, taken from the configurable `runtime.filesFolder`
+* `boolean isNotPresent(By)`: checks if no WebElement with the provided `by` is present in the current page
+* `boolean hasClass(WebElement, String)`: checks if the provided WebElement has the provided css class
+* `boolean hasClasses(WebElement, String...)`: checks if the provided WebElement has **all** the provided css classes
+
+TODO downloaded files: provide the file in the file folder
 
 # Configuration
 
@@ -555,8 +576,10 @@ You can see an example here:
 <img src="src/main/resources/images/ExtentReports-screenshot.png" alt="Extent Reports">
 
 > 💡 Tip<br/>
-> You can also provide your own Look&Feel by putting additional css rules in the `src/test/resources/css/report.css` file.
+> You can also provide your own *Look&Feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
 > Spectrum will automatically load and apply it to the Extent Report.
+
+TODO log in extent report
 
 # Project Structure
 
