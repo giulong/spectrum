@@ -279,15 +279,126 @@ so you can directly use them in your tests/pages without caring about declaring 
 * `T screenshotFail(String)`: adds a screenshot with the provided message and FAIL status to the current test in the Extent Report
 * `Media addScreenshotToReport(String, Status)`: adds a screenshot with the provided message and the provided status to the current test in the Extent Report
 * `void deleteDownloadsFolder()`: deletes the download folder (its path is provided in the `configuration*.yaml`)
-* `T waitForDownloadOf(Path)`: leverages the configurable `downloadWait` to check fluently if the file at the provided path is fully downloaded 
-* `boolean checkDownloadedFile(String)`: leverages the `waitForDownloadOf` method and then performs a SHA 256 checksum to check if it's what we expect. 
+* `T waitForDownloadOf(Path)`: leverages the configurable `downloadWait` to check fluently if the file at the provided path is fully downloaded
+* `boolean checkDownloadedFile(String, String)`: leverages the `waitForDownloadOf` method and then compares checksum of the two files provided. Check the [File Download section](#file-download)
+* `boolean checkDownloadedFile(String)`: leverages the `waitForDownloadOf` method and then compares checksum of the file provided. Check the [File Download section](#file-download)
 * `WebElement clearAndSendKeys(WebElement, CharSequence)`: helper method to call Selenium's `clear` and `sendKeys` on the provided WebElement, which is then returned
-* `T upload(WebElement, String)`: uploads to the provided WebElement (usually an input field with `type="file"`) the file with the provided name, taken from the configurable `runtime.filesFolder`
+* `T upload(WebElement, String)`: uploads to the provided WebElement (usually an input field with `type="file"`) the file with the provided name, taken from the
+  configurable `runtime.filesFolder`
 * `boolean isNotPresent(By)`: checks if no WebElement with the provided `by` is present in the current page
 * `boolean hasClass(WebElement, String)`: checks if the provided WebElement has the provided css class
 * `boolean hasClasses(WebElement, String...)`: checks if the provided WebElement has **all** the provided css classes
 
-TODO downloaded files: provide the file in the file folder
+# Common Use Cases
+
+Here there you can find how Spectrum helps you in few common use cases.
+
+## File Upload
+
+You can add files to be uploaded in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
+This is the default you can see in the internal `configuration.default.yaml`:
+
+```yaml
+runtime:
+  filesFolder: src/test/resources/files
+```
+
+If you have these files in the configured folder:
+
+```
+root
+└─ src
+  └─ test
+     └─ resources
+        └─ files
+           ├─ myFile.txt
+           └─ document.pdf
+```
+
+If in the web page there's an input field with `type="file"`, you can leverage the `upload` method directly in any of your tests/pages like this:
+
+```java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    private WebAppPage webAppPage;
+
+    @Test
+    public void myTest() {
+        WebElement fileUploadInput = webAppPage.getFileUploadInput();
+
+        // leveraging method chaining
+        webAppPage.open().upload(fileUploadInput, "myFile.txt");
+
+        // directly invoking the upload
+        upload(fileUploadInput, "document.pdf");
+    }
+}
+```
+
+> 💡 Example<br/>
+> Check the [FilesIT.upload() test](it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java) to see a real example
+
+## File Download
+
+Files are downloaded in the folder specified as `vars.downloadsFolder` in the `configuration*.yaml`.
+If needed, you should change this value, since this is used in several places, for example in all the browsers' capabilities.
+So, this is a useful way to avoid redundancy and to be able to change all the values with one key.
+
+When downloading a file from your application, you can leverage Spectrum to check if it's what you expected.
+Technically speaking, checking the file's content is beyond the goal of a Selenium test, which aims to check web applications, so its boundary is the browser.
+
+Given a file downloaded from the web app (so, in the `vars.downloadsFolder`),
+Spectrum helps checking it by comparing its SHA 256 checksum with the checksum of a file in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
+
+Let's explain this with an example. Let's say that:
+* you want to check a file downloaded with the name `downloadedFile.txt`
+* you rely on the default `filesFolder`, which is `src/test/resources/files`:
+
+You need to place an exact copy of that file in that folder:
+
+```
+root
+└─ src
+  └─ test
+     └─ resources
+        └─ files
+           └─ downloadedFile.txt
+```
+
+Now you can leverage the `checkDownloadedFile(String)` method like this:
+
+```java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    private WebAppPage webAppPage;
+
+    @Test
+    public void myTest() {
+        assertTrue(checkDownloadedFile("downloadedFile.txt"));
+    }
+}
+```
+
+If the files are the same, their checksum will match, and that assertion will pass.
+In case you need to check a file with a different name, for example if the web application is generating file names dynamically,
+you can leverage the overloaded `checkDownloadedFile(String, String)` method, which takes the names of both the downloaded file and the one to check:
+
+```java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    private WebAppPage webAppPage;
+
+    @Test
+    public void myTest() {
+        // the first file will be searched in the downloadsFolder
+        // the second file will be searched in the filesFolder
+        assertTrue(checkDownloadedFile("downloadedFile.txt", "fileToCheck.txt"));
+    }
+}
+```
+
+> 💡 Example<br/>
+> Check the [FilesIT.download() test](it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java) to see a real example
 
 # Configuration
 
@@ -331,6 +442,7 @@ Values in the most specific configuration file will take precedence over the oth
 > someList:
 >   - value1
 > ```
+
 >
 > ```yaml
 > # configuration-test.yaml
