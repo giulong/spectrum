@@ -61,3 +61,10 @@ GitHub workflows:
 | develop    | push      | [build](.github/workflows/build.yml)   |
 | feature/** | push      | [build](.github/workflows/build.yml)   |
 | main       | pr closed | [deploy](.github/workflows/deploy.yml) |
+
+# Third Party Libraries
+
+* [Extent Reports](https://www.extentreports.com/)
+* [FreeMarker](https://freemarker.apache.org/)
+* [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
+* [Simple Java Mail](https://www.simplejavamail.org/)

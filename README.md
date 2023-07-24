@@ -15,7 +15,7 @@ TODO MAVEN BADGE FIX URL
 
 Spectrum is a Java and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests. Main features:
 
-* automatic html report generation TODO internal anchor
+* automatic [html report](#html-report) generation
 * automatic coverage report generation by reading a [testbook](#testbook-coverage)
 * automatic [mail/slack notifications](#events-consumers)
 * out-of-the-box defaults provided to let you immediately run tests with no additional configuration
@@ -431,7 +431,7 @@ Furthermore, you can provide how many profile-specific configurations in the sam
 To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag,
 which is a comma separated list of profile names you want to activate.
 
-> **_Example:_**<br/>
+> 💡 Example<br/>
 > When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this order of precedence:
 > 1. configuration.default.yaml [Spectrum internal defaults]
 > 2. configuration.default.unix.yaml [Spectrum internal defaults for *nix, not read on Windows]
@@ -589,7 +589,7 @@ Spectrum embraces this by leveraging dedicated yaml files. This is completely op
 By default, you can create `data*.yaml` files under the `src/test/resources/data` folder.
 Data files will be loaded and merged following the same conventions of `configurations*.yaml` files.
 
-> **_Example:_**
+> 💡 Example<br/>
 > When running tests with `-Dspectrum.profiles=test`, Spectrum will merge these files in this order of precedence:
 > 1. data.yaml
 > 2. data-test.yaml
@@ -693,8 +693,11 @@ Logs are rotated daily, meaning the results of each execution occurred in the sa
 
 ## Html report
 
-Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/). By default, it will be produced under the `target/spectrum/reports` folder.
-You can see an example here:
+Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/).
+By default, it will be produced under the `target/spectrum/reports` folder.
+Check the `extent` node in the `configuration.default.yaml` to see how to customise it.
+
+You can see an example report here:
 
 <img src="src/main/resources/images/ExtentReports-screenshot.png" alt="Extent Reports">
 
@@ -702,7 +705,21 @@ You can see an example here:
 > You can also provide your own *Look&Feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
 > Spectrum will automatically load and apply it to the Extent Report.
 
-TODO log in extent report
+When running, the WebDriver is firing events that are automatically logged and added to the html report.
+Check the `webDriver.events` node in the `configuration.default.yaml` to see the defaults log levels and messages.
+
+You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
+For example, to add a screenshot with a message at INFO level to the `dummyTest`:
+
+```Java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    @Test
+    public void dummyTest() {
+        extentTest.screenshotInfo("Custom message");
+    }
+}
+```
 
 # Project Structure
 
@@ -918,8 +935,8 @@ Spectrum will proceed with inspecting the next consumer.
 
 Let's now see how to configure few consumers:
 
-> **_Example: reason and primaryId and secondaryId_**<br/>
-> We want to send a slack notification before and after every test, and an email just after:
+> 💡 Example: reason and primaryId and secondaryId<br/>
+> We want to send a Slack notification before and after every test, and an email just after:
 > ```yaml
 > eventsConsumers:
 >   - slack:
@@ -937,7 +954,7 @@ Let's now see how to configure few consumers:
 >           reason: after
 > ```
 
-> **_Example: reason and primaryId and secondaryId_**<br/>
+> 💡 Example: reason and primaryId and secondaryId<br/>
 > We want to send a mail notification if the whole suite fails:
 > ```yaml
 > eventsConsumers:
@@ -947,7 +964,7 @@ Let's now see how to configure few consumers:
 >           tags: [ suite ]
 > ```
 
-> **_Example: Custom event by primaryId and reason_**<br/>
+> 💡 Example: custom event by primaryId and reason<br/>
 > ```yaml
 > eventsConsumers:
 >   - slack:
@@ -956,7 +973,7 @@ Let's now see how to configure few consumers:
 >           reason: custom-event
 > ```
 
-### Mail
+### Mail Consumer
 
 You can leverage this consumer to send email notification. Spectrum uses [Simple Java Mail](https://www.simplejavamail.org/),
 and you can configure it with the file `src/test/resources/simplejavamail.properties`, as specified in
@@ -993,7 +1010,7 @@ Check Simple Java Mail's docs to see all the [available properties](https://www.
 >
 > If you want to provide a custom template there are two ways:
 > 1. provide a template with a custom name under `src/test/resources/templates``:
->   ```yaml
+     >   ```yaml
 >   mail:
 >     template: my-template.txt # The extension doesn't really matter.
 >     events:
@@ -1006,9 +1023,24 @@ Check Simple Java Mail's docs to see all the [available properties](https://www.
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
 > Otherwise, if you set many events on the same consumer, they will share the template.
 
-TODO attachments like testbook
+You can also specify a list of attachments, by providing:
+* the name they will have in the email
+* the path to the file
 
-### Slack
+For example, it's useful to send the html report and/or testbook when the suite is complete:
+```yaml
+mail:
+  events:
+    - reason: after
+      tags: [ suite ]
+  attachments:
+    - name: report
+      file: target/spectrum/reports/report.html
+    - name: testbook
+      file: target/spectrum/testbook/testbook.html
+```
+
+### Slack Consumer
 
 A few steps are needed to configure your Slack Workspace to receive notifications from Spectrum:
 
@@ -1078,12 +1110,13 @@ A few steps are needed to configure your Slack Workspace to receive notification
 > If you want to provide a custom template there are two ways:
 > 1. provide a template with a custom name under `src/test/resources/templates``:
      >   ```yaml
->   slack:
->     template: my-template.txt # The extension doesn't really matter.
->     events:
->       - reason: after
->         tags: [ test ]
->   ```  
+     > slack:
+     > template: my-template.txt # The extension doesn't really matter.
+     > events:
+     >
+- reason: after
+  > tags: [ test ]
+     >   ```  
 > 2. simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
 
 > 💡 Tip<br/>
@@ -1345,12 +1378,3 @@ testBook:
   reporters:
     - log: { }  # we just want the report to be logged
 ```
-
-# TODO extent report
-
-# Honourable Mentions
-
-* [Extent Reports](https://www.extentreports.com/)
-* [FreeMarker](https://freemarker.apache.org/)
-* [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
-* [Simple Java Mail](https://www.simplejavamail.org/)

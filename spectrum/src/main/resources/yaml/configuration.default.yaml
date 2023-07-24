@@ -23,7 +23,7 @@ extent:
   documentTitle: Spectrum Report  # Title of the html page
   reportFolder: target/spectrum/reports # Where to generate the report
   reportName: Spectrum Report   # Name shown in the header of the report
-  fileName: spectrum-report-{timestamp}.html
+  fileName: spectrum-report-{timestamp}.html  # you can use the {timestamp} placeholder, which will be resolved at runtime
   theme: STANDARD   # Theme used. Can be STANDARD or DARK
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
 
