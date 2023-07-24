@@ -15,14 +15,23 @@ TODO MAVEN BADGE FIX URL
 
 Spectrum is a Java and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests. Main features:
 
-* automatic html report generation
-* automatic coverage report generation by reading a testbook
-* automatic mail/slack notifications
+* automatic html report generation TODO internal anchor
+* automatic coverage report generation by reading a [testbook](#testbook-coverage)
+* automatic [mail/slack notifications](#events-consumers)
 * out-of-the-box defaults provided to let you immediately run tests with no additional configuration
-* fully configurable providing human-readable and declarative yaml files
+* fully configurable providing human-readable and [declarative yaml files](#configuration)
 
 Spectrum leverages [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
+
+## Glossary
+
+| Acronym | Meaning                                                                                                   |
+|---------|-----------------------------------------------------------------------------------------------------------|
+| AUT     | Application Under Test                                                                                    |
+| POM     | [Page Object Model](https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/) |
+| QG      | Quality Gate                                                                                              |
+| POJO    | Plain Old Java Object                                                                                     |
 
 ## Setup
 
@@ -106,7 +115,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
         // getting direct access to both webDriver and configuration without declaring nor instantiating them.
         // Spectrum does that for you.
-        // Here we're opening the landing page of the application
+        // Here we're opening the landing page of the AUT
         webDriver.get(configuration.getApplication().getBaseUrl());
 
         // assuming in MyPage we have a WebElement named "button", now we're clicking on it
@@ -156,7 +165,7 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
     }
     ```
 
-  Then, in your tests, you can leverage the `open` method. Spectrum will combine your app's base url from the `configuration*.yaml` with the endpoint:
+  Then, in your tests, you can leverage the `open` method. Spectrum will combine the AUT's base url from the `configuration*.yaml` with the endpoint:
 
     ```yaml
     # configuration.yaml
@@ -226,7 +235,7 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
 * `isLoaded()`:
 
   This is a method to check if the caller page is loaded.
-  It returns a boolean, which is true if the current url is equal to the app's base url combined with the page's endpoint.
+  It returns a boolean, which is true if the current url is equal to the AUT's base url combined with the page's endpoint.
 
     ```java
     public class HelloWorldIT extends SpectrumTest<Void> {
@@ -280,7 +289,8 @@ so you can directly use them in your tests/pages without caring about declaring 
 * `Media addScreenshotToReport(String, Status)`: adds a screenshot with the provided message and the provided status to the current test in the Extent Report
 * `void deleteDownloadsFolder()`: deletes the download folder (its path is provided in the `configuration*.yaml`)
 * `T waitForDownloadOf(Path)`: leverages the configurable `downloadWait` to check fluently if the file at the provided path is fully downloaded
-* `boolean checkDownloadedFile(String, String)`: leverages the `waitForDownloadOf` method and then compares checksum of the two files provided. Check the [File Download section](#file-download)
+* `boolean checkDownloadedFile(String, String)`: leverages the `waitForDownloadOf` method and then compares checksum of the two files provided. Check
+  the [File Download section](#file-download)
 * `boolean checkDownloadedFile(String)`: leverages the `waitForDownloadOf` method and then compares checksum of the file provided. Check the [File Download section](#file-download)
 * `WebElement clearAndSendKeys(WebElement, CharSequence)`: helper method to call Selenium's `clear` and `sendKeys` on the provided WebElement, which is then returned
 * `T upload(WebElement, String)`: uploads to the provided WebElement (usually an input field with `type="file"`) the file with the provided name, taken from the
@@ -344,13 +354,14 @@ Files are downloaded in the folder specified as `vars.downloadsFolder` in the `c
 If needed, you should change this value, since this is used in several places, for example in all the browsers' capabilities.
 So, this is a useful way to avoid redundancy and to be able to change all the values with one key.
 
-When downloading a file from your application, you can leverage Spectrum to check if it's what you expected.
+When downloading a file from the AUT, you can leverage Spectrum to check if it's what you expected.
 Technically speaking, checking the file's content is beyond the goal of a Selenium test, which aims to check web applications, so its boundary is the browser.
 
-Given a file downloaded from the web app (so, in the `vars.downloadsFolder`),
+Given a file downloaded from the AUT (so, in the `vars.downloadsFolder`),
 Spectrum helps checking it by comparing its SHA 256 checksum with the checksum of a file in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
 
 Let's explain this with an example. Let's say that:
+
 * you want to check a file downloaded with the name `downloadedFile.txt`
 * you rely on the default `filesFolder`, which is `src/test/resources/files`:
 
@@ -380,7 +391,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 If the files are the same, their checksum will match, and that assertion will pass.
-In case you need to check a file with a different name, for example if the web application is generating file names dynamically,
+In case you need to check a file with a different name, for example if the AUT is generating file names dynamically,
 you can leverage the overloaded `checkDownloadedFile(String, String)` method, which takes the names of both the downloaded file and the one to check:
 
 ```java
@@ -583,9 +594,9 @@ Data files will be loaded and merged following the same conventions of `configur
 > 1. data.yaml
 > 2. data-test.yaml
 
-For data files to be properly unmarshalled, you must create the corresponding *pojos* and set the fqdn of your parent data class in the configuration.yaml.
+For data files to be properly unmarshalled, you must create the corresponding POJOs and set the fqdn of your parent data class in the configuration.yaml.
 
-Let's see an example. Let's say we want to test the application with two users with two different roles (admin and guest).
+Let's see an example. Let's say we want to test the AUT with two users with two different roles (admin and guest).
 Both will have the same set of params, such as a name and a password to login.
 
 We need to take four steps:
@@ -603,7 +614,7 @@ We need to take four steps:
         password: pwd
     ```
 
-2. Create the *pojo* mapping the yaml above:
+2. Create the POJO mapping the yaml above:
 
     ```java
     package your.package_name;  // this must be set in the configuration.yaml. Keep reading below :)
@@ -656,7 +667,7 @@ We need to take four steps:
 This is just a simple example. Be sure to check the example repo for more complex use cases, such as data driven and parameterised tests.
 
 > 💡 Tip<br/>
-> For the sake of completeness, you can name the `Data` *pojo* as you prefer.
+> For the sake of completeness, you can name the `Data` POJO as you prefer.
 > You can name it `MySuperShinyWhatever.java` and have this as generic in you SpectrumTest(s):
 > `public class SomeIT extends SpectrumTest<MySuperShinyWhatever> {`
 >
@@ -736,9 +747,7 @@ root
 └─ pom.xml
 ```
 
-# Advanced Topics
-
-## Parallel Execution
+# Parallel Execution
 
 Spectrum tests can be run in parallel by leveraging [JUnit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution)
 
@@ -972,6 +981,33 @@ check [Google's docs](https://support.google.com/accounts/answer/185833?p=Invali
 
 Check Simple Java Mail's docs to see all the [available properties](https://www.simplejavamail.org/configuration.html#section-available-properties).
 
+> ⚠️ Mail Template<br/>
+> The default [mail.html template](spectrum/src/main/resources/templates/mail.html) is meant to be used to notify about each test result,
+> as per the snippet below. It might not be correctly interpolated if used on other events.
+> ```yaml
+> mail:
+>   events:
+>     - reason: after
+>       tags: [ test ]
+> ```
+>
+> If you want to provide a custom template there are two ways:
+> 1. provide a template with a custom name under `src/test/resources/templates``:
+>   ```yaml
+>   mail:
+>     template: my-template.txt # The extension doesn't really matter.
+>     events:
+>       - reason: after
+>         tags: [ test ]
+>   ```  
+> 2. simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the path.
+
+> 💡 Tip<br/>
+> You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
+> Otherwise, if you set many events on the same consumer, they will share the template.
+
+TODO attachments like testbook
+
 ### Slack
 
 A few steps are needed to configure your Slack Workspace to receive notifications from Spectrum:
@@ -1024,12 +1060,35 @@ A few steps are needed to configure your Slack Workspace to receive notification
        channel: C05***
        template: slack-suite.json
        events:
-         - reason: before
-           tags: [ suite ]
+         - reason: after
+           tags: [ test ]
    ```
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
-TODO slack template
+> ⚠️ Slack Template<br/>
+> The default [slack.json template](spectrum/src/main/resources/templates/slack.json) is meant to be used to notify about each test result,
+> as per the snippet below. It might not be correctly interpolated if used on other events.
+> ```yaml
+> slack:
+>   events:
+>     - reason: after
+>       tags: [ test ]
+> ```
+>
+> If you want to provide a custom template there are two ways:
+> 1. provide a template with a custom name under `src/test/resources/templates``:
+     >   ```yaml
+>   slack:
+>     template: my-template.txt # The extension doesn't really matter.
+>     events:
+>       - reason: after
+>         tags: [ test ]
+>   ```  
+> 2. simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
+
+> 💡 Tip<br/>
+> You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
+> Otherwise, if you set many events on the same consumer, they will share the template.
 
 # JSON Schema
 
@@ -1042,11 +1101,252 @@ where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 
 TODO check json schema url is accessible
 
-# TODO injected objects
+# TestBook (Coverage)
 
-# TODO freemarker templates
+Talking about coverage for E2E tests is not so straightforward. Coverage makes sense for unit tests, since they directly run against methods,
+so it's easy to check which lines were covered during the execution.
+On the other hand, E2E tests run against a long living instance of the AUT, with no visibility on the source code.
 
-# TODO testbook
+As E2E tests are tied to the business functionalities of the AUT, so should be their coverage.
+Spectrum helps you to keep track of which functionalities are covered by parsing a testbook, in which you can declare all the tests
+of your full suite. When running them, Spectrum will check which were executed and which not, generating a dedicated report in several formats.
+
+These are the information needed in a testbook:
+
+| Field      | Type   | Default | Mandatory | Description                                                                                     |
+|------------|--------|---------|-----------|-------------------------------------------------------------------------------------------------|
+| Class Name | String | null    | ✅         | enclosing class name                                                                            |
+| Test Name  | String | null    | ✅         | name of the test method                                                                         |
+| Weight     | int    | 1       | ❌         | optional number representing the importance of the related test, with regards to all the others |
+
+In short, we need to uniquely identify each test by their class name and method name.
+Method name alone is not enough, since there might be test methods with the same name in different classes.
+
+You can also give a weight to each test: you can give a higher weight to those functionalities that are more important or critical.
+In the report produced, tests will be also aggregated considering their weights. In this way, the final coverage percentage varies based on the weights,
+meaning critical functionalities will have a higher impact on the outcome.
+
+Additionally, you can set a Quality Gate, which is a boolean condition that will be evaluated to mark the suite as successful or not.
+
+These are the testbook parameters you need to configure:
+
+| Parameter                        | Description                                                                                 |
+|----------------------------------|---------------------------------------------------------------------------------------------|
+| [qualityGate](#quality-gate)     | object holding the condition to be evaluated to consider the execution successful or failed |
+| [parser](#testbook-parsers)      | object specifying the format of the testbook                                                |
+| [reporters](#testbook-reporters) | list of objects to specify which kind of report(s) to produce                               |
+
+## Quality Gate
+
+The QG node has only one property, which is the boolean condition to be evaluated:
+
+```yaml
+qualityGate:
+  condition: ${weightedSuccessful.percentage} > 60
+```
+
+This means that the execution is considered successful if at least 60% of the weighted tests are successful.
+
+The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org/), meaning you can write complex conditions using the variables
+briefly explained below. They're all put in the `vars` map in the [TestBook.java](spectrum/src/main/java/io/github/giulong/spectrum/utils/testbook/TestBook.java)
+(check the `mapVars()` method).
+
+> ⚠️ FreeMarker<br/>
+> Explaining how FreeMarker works, and how to take the most out of it, goes beyond the goal of this doc.
+> Please check its own [docs](https://freemarker.apache.org/).
+
+Generic variables:
+
+| Variable                                                                                               | Description                                                                         |
+|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| mappedTests                                                                                            | map of tests found in the provided testbook                                         |
+| unmappedTests                                                                                          | map of tests not found in the provided testbook                                     |
+| groupedMappedTests                                                                                     | like mappedTests, but grouped by class names                                        |
+| groupedUnmappedTests                                                                                   | like unmappedTests, but grouped by class names                                      |
+| [statistics](spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java) | object containing all the object reported in the tables below, plus additional ones |
+| [qg](spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/QualityGate.java)                | qualityGate node from `configuration*.yaml`                                         |
+| timestamp                                                                                              | when the testbook was generated                                                     |
+
+Each key in the lists below is an instance of the inner static class [Statistics](spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java),
+and it holds both a `total` int field and a `percentage` double field.
+For example, given the `successful` key here below, you can access:
+
+* ${successful.total}
+* ${successful.percentage}
+
+Statistics of tests mapped in the testbook:
+
+* successful
+* failed
+* aborted
+* disabled
+* notRun
+
+Statistics of tests, mapped or not in the provided testbook, based on their weights:
+
+* grandSuccessful
+* grandFailed
+* grandAborted
+* grandDisabled
+* grandNotRun
+
+Statistics of tests mapped in the testbook, based on their weights
+
+* weightedSuccessful
+* weightedFailed
+* weightedAborted
+* weightedDisabled
+* weightedNotRun
+
+Statistics of all tests, mapped or not in the testbook, based on their weights
+
+* grandWeightedSuccessful
+* grandWeightedFailed
+* grandWeightedAborted
+* grandWeightedDisabled
+* grandWeightedNotRun
+
+> 💡 Tip<br/>
+> It's hard to explain and grasp each of these vars. The best way is to:
+> 1. check the [default html template](spectrum/src/main/resources/testbook/template.html) and the [default txt template](spectrum/src/main/resources/testbook/template.txt)
+> 2. run your suite with the html reporter as explained below
+> 3. check the outcome
+
+## TestBook Parsers
+
+### Txt TestBook Parser
+
+You can provide a txt file where each line is in this format:
+
+`<CLASS NAME>::<TEST NAME>##<WEIGHT>`
+
+For example:
+
+```text
+test class::my test
+another class::another test
+another class::weighted test##123
+```
+
+### Csv TestBook Parser
+
+You can provide a csv file where each line is in this format:
+
+`<CLASS NAME>,<TEST NAME>,<WEIGHT>`
+
+For example:
+
+```text
+test class,my test
+another class,another test
+another class,weighted test,123
+```
+
+### Yaml TestBook Parser
+
+You can provide a yaml file where you have class names as keys in the root of the file. Each of those is mapped to a list of objects made of two fields:
+
+* name
+* weight (optional)
+
+For example:
+
+```yaml
+test class:
+  - name: my test
+
+another class:
+  - name: another test
+  - name: weighted test
+    weight: 123
+```
+
+## TestBook Reporters
+
+All the reporters below have default values for their parameter, which means you can just configure them as empty objects like:
+
+```yaml
+reporters:
+  - log: { }
+  - txt: { }
+  - html: { }
+```
+
+Of course, they're all optional: you can add just those you want.
+
+For each reporter:
+
+* values reported in the snippets below are the defaults (no need to provide them)
+* `template` is a path relative to `src/test/resources`
+* `output` parameter can contain the `{timestamp}` placeholder, which will be evaluated
+
+### Log TestBook Reporter
+
+```yaml
+log:
+  template: testbook/template.txt
+```
+
+### Txt TestBook Reporter
+
+```yaml
+txt:
+  template: testbook/template.txt
+  output: target/spectrum/testbook/testbook-{timestamp}.txt
+```
+
+### Html TestBook Reporter
+
+```yaml
+html:
+  template: testbook/template.html
+  output: target/spectrum/testbook/testbook-{timestamp}.html
+```
+
+## Full TestBook Examples
+
+```yaml
+testBook:
+  qualityGate:
+    condition: ${weightedSuccessful.percentage} > 60  # The execution is considered successful if at least 60% of the weighted tests are successful
+  parser:
+    yaml:
+      path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
+  reporters:
+    - log: { }  # the report will be logged
+    - txt:
+        output: target/spectrum/testbook/testbook.txt # a text report will be produced at this path
+    - html:
+        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
+```
+
+```yaml
+testBook:
+  qualityGate:
+    condition: ${weightedSuccessful.percentage} > 60  # The execution is considered successful if at least 60% of the weighted tests are successful
+  parser:
+    yaml:
+      path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
+  reporters:
+    - txt:
+        template: template.txt  # we want to produce a text report based on a custom template in src/test/resources
+    - html:
+        template: my-custom-template.html # src/test/resources/my-custom-template.html
+        output: some/path/testbook.html # a html report will be produced at this path
+```
+
+```yaml
+testBook:
+  qualityGate:
+    condition: ${weightedSuccessful.percentage} > 40 || ${failed} < 10  # We want the testbook to be marked as successful if we have at least 40% of successful weighted tests or less than 10 tests failed
+  parser:
+    txt:
+      path: testbook.txt # we provided the yaml testbook in src/test/resources/testbook.txt
+  reporters:
+    - log: { }  # we just want the report to be logged
+```
+
+# TODO extent report
 
 # Honourable Mentions
 
