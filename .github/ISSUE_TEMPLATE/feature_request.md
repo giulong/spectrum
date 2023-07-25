@@ -1,9 +1,9 @@
 ---
 name: Feature request
-about: Suggest an idea for this project
-title: ''
+about: Suggest an idea to improve Spectrum
+title: "[RFE] <Provide a short title>"
 labels: ''
-assignees: ''
+assignees: giulong
 
 ---
 
