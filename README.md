@@ -13,7 +13,8 @@ TODO MAVEN BADGE FIX URL
 
 [![LinkedIn](https://i.stack.imgur.com/gVE0j.png) Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/)
 
-Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of e2e tests. Main features:
+Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of e2e tests.
+Main features:
 
 * automatic [html report](#html-report) generation
 * automatic coverage report generation by reading a [testbook](#testbook-coverage)
@@ -307,6 +308,248 @@ so you can directly use them in your tests/pages without caring about declaring 
 * `boolean hasClass(WebElement, String)`: checks if the provided WebElement has the provided css class
 * `boolean hasClasses(WebElement, String...)`: checks if the provided WebElement has **all** the provided css classes
 
+# Configuration
+
+Spectrum is fully configurable and comes with default values which you can find in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml).
+Be sure to check it: each key is properly commented to clarify its purpose.
+
+> ⚠️ Running on *nix<br/>
+> When running on *nix, the [configuration.default.unix.yaml](spectrum/src/main/resources/yaml/configuration.default.unix.yaml) will be merged onto the base one
+> to set filesystem-specific values such as path separators.
+
+To customise these values, you can create the `src/test/resources/configuration.yaml` file in your project.
+
+> ⚠️ Files Extension<br/>
+> The extension must be `.yaml`. The shortened `.yml` won't work.
+
+Furthermore, you can provide how many profile-specific configurations in the same folder, by naming them
+`configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name.
+
+To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag,
+which is a comma separated list of profile names you want to activate.
+
+> 💡 Example<br/>
+> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this order of precedence:
+> 1. configuration.default.yaml [Spectrum internal defaults]
+> 2. configuration.default.unix.yaml [Spectrum internal defaults for *nix, not read on Windows]
+> 3. configuration.yaml
+> 4. configuration-test.yaml [A warning will be raised if not found, no errors]
+> 5. configuration-grid.yaml [A warning will be raised if not found, no errors]
+
+Values in the most specific configuration file will take precedence over the others.
+
+> 💡 Tip<br/>
+> There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base configuration.yaml,
+> while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`
+
+> ⚠️ Merging Lists<br/>
+> Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
+>
+> ```yaml
+> # configuration.yaml
+> someList:
+>   - value1
+> ```
+
+>
+> ```yaml
+> # configuration-test.yaml
+> someList:
+>   - value2
+> ```
+>
+> If you run with `-Dspectrum.profiles=test` both files will be loaded and lists will be merged, resulting in:
+>
+> ```yaml
+> someList:
+>   - value1
+>   - value2
+> ```
+
+> 💡 Tip<br/>
+> If you need different configurations for the same environment, instead of manually changing values in the configuration*.yaml, you should
+> provide different files and choose the right one with the `-Dspectrum.profiles` flag. <br/>
+> For example, if you need to be able to run from your local machine alternatively targeting a remote grid or executing browsers in local,
+> it's preferable to have something like these two files, where you change just the target runtime:
+> * configuration-local-local.yaml
+> * configuration-local-grid.yaml
+>
+> In this way, you don't need to change any configuration file. This is important, since configurations are versioned alongside your tests,
+> so you will avoid errors and will keep your scm history clean.
+> You need just to activate the right one by creating different run configurations in your IDE.
+
+> 💡 Tip<br/>
+> Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
+> so that everyone can provide its own configuration without interfering with others.
+
+> 💡 Example<br/>
+> Check these configurations to see an example of merging:
+> * [configuration.yaml](it-testbook/src/test/resources/configuration.yaml)
+> * [configuration-first.yaml](it-testbook/src/test/resources/configuration-first.yaml)
+> * [configuration-second.yaml](it-testbook/src/test/resources/configuration-second.yaml)
+>
+> The very first node of the base `configuration.yaml` linked above is setting the active profiles, instructing Spectrum to load the other two configurations,
+> and overriding the `application.baseUrl` accordingly:
+> ```yaml
+> runtime:
+>   profiles: local,second
+> ```
+
+## Vars node
+
+The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
+`vars` is a `Map<String, String>`, so you can define all the keys you need, naming them how you want.
+
+```yaml
+vars:
+  commonKey: some-value # commonKey is a name of your choice
+
+node:
+  property: ${commonKey} # Will be replaced with `some-value`
+
+anotherNode:
+  subNode:
+    key: ${commonKey} # Will be replaced with `some-value`
+```
+
+## Values interpolation
+
+Each non-object value in the configuration can be interpolated by placing a dollar-string like this:
+
+```yaml
+object:
+  key: ${key:-defaultValue}
+```
+
+Where the `:-` is the separator between the name of the key to search for and the default value in case the key is not found. The default value is optional: you can just
+have `${key}`
+
+Spectrum will replace the dollar-string with the first value found in this list:
+
+1. `key` in [vars node](#vars-node):
+    ```yaml
+    vars:
+      key: value 
+   ```
+2. system property named `key`
+3. `defaultValue` (if provided)
+
+If the provided key can't be found, a warning will be raised. Both key name and default value can contain dots like in `${some.key:-default.value}`
+
+> 💡 Tip<br/>
+> This trick is widely used in the internal `configuration.default.yaml` to allow for variables to be read from outside.
+> For example, the profiles are set like this:
+> ```yaml
+> # internal configuration.default.yaml
+> runtime:
+>   profiles: ${spectrum.profiles:-local}
+> ```
+> This allows you to just run with `-Dspectrum.profiles=...` while having a default, but you can still explicitly set them in your `configuration.yaml`:
+> ```yaml
+> # your configuration.yaml
+> runtime:
+>   profiles: my-profile,another-one
+> ```
+> You can also decide to provide your own variable:
+> ```yaml
+> # your configuration.yaml
+> runtime:
+>   profiles: ${active-profiles:-local}
+> ```
+> This could be useful to create and leverage your own naming convention for env variables.
+>
+> Be sure to check the internal `configuration.default.yaml` to see which variables are already available.
+
+## Running on a Grid
+
+By default, browsers run in local. This is because the default value in the internal `configuration.default.yaml` is:
+
+```yaml
+runtime:
+  environment:
+    local: { }
+```
+
+To run on a remote [grid](https://www.selenium.dev/documentation/grid/), you just need to change that node, providing at least the grid url:
+
+```yaml
+runtime:
+  environment:
+    grid:
+      url: https://my-grid-url:4444/wd/hub
+      capabilities:
+        someCapability: its value
+        another: blah
+      localFileDetector: true
+```
+
+Where the params are:
+
+| Param             | Type                | Default   | Mandatory | Description                                                                                                                                                                           |
+|-------------------|---------------------|-----------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| url               | String              | null      | ✅         | url of the remote grid                                                                                                                                                                |
+| capabilities      | Map<String, String> | empty map | ❌         | additional webDriver capabilities to be added only when running on a grid                                                                                                             |
+| localFileDetector | boolean             | false     | ❌         | if true, allows to transfer files from the client machine to the remote server [docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector) |
+
+# JSON Schema
+
+You can find the JSON Schema for the `configuration*.yaml` in the [spectrum-json-schemas repository](https://github.com/giulong/spectrum-json-schemas).
+
+If your IDE supports json schemas, be sure to pick the right one according to the version of Spectrum you are using.
+
+The path to the raw file is: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/<SPECTRUM VERSION>/Configuration.json`,
+where `<SPECTRUM VERSION>` must be replaced with the one you're using.
+
+TODO check json schema url is accessible
+
+# Automatically Generated Reports
+
+After each execution, Spectrum automatically produces two files:
+
+* [log](#log-file)
+* [html report](#html-report)
+
+## Log file
+
+The log file will contain the same information you see in the console. It will be produced by default under the `target/spectrum/logs` folder.
+
+It's generated using [Logback](https://logback.qos.ch/), and [here](spectrum/src/main/resources/logback.xml) you can find its configuration.
+Logs are rotated daily, meaning the results of each execution occurred in the same day will be appended to the same file.
+
+> 💡 Tip<br/>
+> By default, logs are generated using a colored pattern. In case the console you use doesn't support it (if you see weird characters at the beginning of each line),
+> you should deactivate colors by setting the `spectrum.log.colors` system properties to `false`.
+
+## Html report
+
+Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/).
+By default, it will be produced under the `target/spectrum/reports` folder.
+Check the `extent` node in the `configuration.default.yaml` to see how to customise it.
+
+You can see an example report here:
+
+<img src="src/main/resources/images/ExtentReports-screenshot.png" alt="Extent Reports">
+
+> 💡 Tip<br/>
+> You can also provide your own *Look&Feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
+> Spectrum will automatically load and apply it to the Extent Report.
+
+When running, the WebDriver is firing events that are automatically logged and added to the html report.
+Check the `webDriver.events` node in the `configuration.default.yaml` to see the defaults log levels and messages.
+
+You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
+For example, to add a screenshot with a message at INFO level to the `dummyTest`:
+
+```Java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    @Test
+    public void dummyTest() {
+        extentTest.screenshotInfo("Custom message");
+    }
+}
+```
+
 # Common Use Cases
 
 Here there you can find how Spectrum helps you in few common use cases.
@@ -419,189 +662,6 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > 💡 Example<br/>
 > Check the [FilesIT.download() test](it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java) to see a real example
 
-# Configuration
-
-Spectrum is fully configurable and comes with default values which you can find in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml).
-Be sure to check it: each key is properly commented to clarify its purpose.
-
-> ⚠️ Running on *nix<br/>
-> When running on *nix, the [configuration.default.unix.yaml](spectrum/src/main/resources/yaml/configuration.default.unix.yaml) will be merged onto the base one
-> to set filesystem-specific values such as path separators.
-
-To customise these values, you can create the `src/test/resources/configuration.yaml` file in your project.
-
-> ⚠️ Files Extension<br/>
-> The extension must be `.yaml`. The shortened `.yml` won't work.
-
-Furthermore, you can provide how many profile-specific configurations in the same folder, by naming them
-`configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name.
-
-To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag,
-which is a comma separated list of profile names you want to activate.
-
-> 💡 Example<br/>
-> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this order of precedence:
-> 1. configuration.default.yaml [Spectrum internal defaults]
-> 2. configuration.default.unix.yaml [Spectrum internal defaults for *nix, not read on Windows]
-> 3. configuration.yaml
-> 4. configuration-test.yaml [A warning will be raised if not found, no errors]
-> 5. configuration-grid.yaml [A warning will be raised if not found, no errors]
-
-Values in the most specific configuration file will take precedence over the others.
-
-> 💡 Tip<br/>
-> There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base configuration.yaml,
-> while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`
-
-> ⚠️ Merging Lists<br/>
-> Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
->
-> ```yaml
-> # configuration.yaml
-> someList:
->   - value1
-> ```
-
->
-> ```yaml
-> # configuration-test.yaml
-> someList:
->   - value2
-> ```
->
-> If you run with `-Dspectrum.profiles=test` both files will be loaded and lists will be merged, resulting in:
->
-> ```yaml
-> someList:
->   - value1
->   - value2
-> ```
-
-> 💡 Tip<br/>
-> If you need different configurations for the same environment, instead of manually changing values in the configuration*.yaml, you should
-> provide different files and choose the right one with the `-Dspectrum.profiles` flag. <br/>
-> For example, if you need to be able to run from your local machine alternatively targeting a remote grid or executing browsers in local,
-> it's preferable to have something like these two files, where you change just the target runtime:
-> * configuration-local-local.yaml
-> * configuration-local-grid.yaml
->
-> In this way, you don't need to change any configuration file. This is important, since configurations are versioned alongside your tests,
-> so you will avoid errors and will keep your scm history clean.
-> You need just to activate the right one by creating different run configurations in your IDE.
-
-> 💡 Tip<br/>
-> Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
-> so that everyone can provide its own configuration without interfering with others.
-
-> 💡 Example<br/>
-> Check these configurations to see an example of merging:
-> * [configuration.yaml](it-testbook/src/test/resources/configuration.yaml)
-> * [configuration-first.yaml](it-testbook/src/test/resources/configuration-first.yaml)
-> * [configuration-second.yaml](it-testbook/src/test/resources/configuration-second.yaml)
-> 
-> The very first node of the base `configuration.yaml` linked above is setting the active profiles, instructing Spectrum to load the other two configurations,
-> and overriding the `application.baseUrl` accordingly:
-> ```yaml
-> runtime:
->   profiles: local,second
-> ```
-
-## Vars node
-
-The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
-`vars` is a `Map<String, String>`, so you can define all the keys you need, naming them how you want.
-
-```yaml
-vars:
-  commonKey: some-value # commonKey is a name of your choice
-
-node:
-  property: ${commonKey} # Will be replaced with `some-value`
-
-anotherNode:
-  subNode:
-    key: ${commonKey} # Will be replaced with `some-value`
-```
-
-## Values interpolation
-
-Each non-object value in the configuration can be interpolated by placing a dollar-string like this:
-
-```yaml
-object:
-  key: ${key:-defaultValue}
-```
-
-Where the `:-` is the separator between the name of the key to search for and the default value in case the key is not found. The default value is optional: you can just
-have `${key}`
-
-Spectrum will replace the dollar-string with the first value found in this list:
-
-1. `key` in [vars node](#vars-node):
-    ```yaml
-    vars:
-      key: value 
-   ```
-2. system property named `key`
-3. `defaultValue` (if provided)
-
-If the provided key can't be found, a warning will be raised. Both key name and default value can contain dots like in `${some.key:-default.value}`
-
-> 💡 Tip<br/>
-> This trick is widely used in the internal `configuration.default.yaml` to allow for variables to be read from outside.
-> For example, the profiles are set like this:
-> ```yaml
-> # internal configuration.default.yaml
-> runtime:
->   profiles: ${spectrum.profiles:-local}
-> ```
-> This allows you to just run with `-Dspectrum.profiles=...` while having a default, but you can still explicitly set them in your `configuration.yaml`:
-> ```yaml
-> # your configuration.yaml
-> runtime:
->   profiles: my-profile,another-one
-> ```
-> You can also decide to provide your own variable:
-> ```yaml
-> # your configuration.yaml
-> runtime:
->   profiles: ${active-profiles:-local}
-> ```
-> This could be useful to create and leverage your own naming convention for env variables.
->
-> Be sure to check the internal `configuration.default.yaml` to see which variables are already available.
-
-## Running on a Grid
-
-By default, browsers run in local. This is because the default value in the internal `configuration.default.yaml` is:
-
-```yaml
-runtime:
-  environment:
-    local: { }
-```
-
-To run on a remote [grid](https://www.selenium.dev/documentation/grid/), you just need to change that node, providing at least the grid url:
-
-```yaml
-runtime:
-  environment:
-    grid:
-      url: https://my-grid-url:4444/wd/hub
-      capabilities:
-        someCapability: its value
-        another: blah
-      localFileDetector: true
-```
-
-Where the params are:
-
-| Param             | Type                | Default   | Mandatory | Description                                                                                                                                                                           |
-|-------------------|---------------------|-----------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| url               | String              | null      | ✅         | url of the remote grid                                                                                                                                                                |
-| capabilities      | Map<String, String> | empty map | ❌         | additional webDriver capabilities to be added only when running on a grid                                                                                                             |
-| localFileDetector | boolean             | false     | ❌         | if true, allows to transfer files from the client machine to the remote server [docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector) |
-
 # Data
 
 As a general best practice, test code should only contain the flow logic and assertions, while data should be kept outside.
@@ -698,54 +758,6 @@ This is just a simple example. Be sure to check the example repo for more comple
 > Check the [data.yaml](it/src/test/resources/data/data.yaml) and how it's used in the [LoginFormIT](it/src/test/java/io/github/giulong/spectrum/it/tests/LoginFormIT.java).
 > Look for the usage of `data.getUsers()` in that class.
 
-# Automatically Generated Reports
-
-After each execution, Spectrum automatically produces two files:
-
-* [log](#log-file)
-* [html report](#html-report)
-
-## Log file
-
-The log file will contain the same information you see in the console. It will be produced by default under the `target/spectrum/logs` folder.
-
-It's generated using [Logback](https://logback.qos.ch/), and [here](spectrum/src/main/resources/logback.xml) you can find its configuration.
-Logs are rotated daily, meaning the results of each execution occurred in the same day will be appended to the same file.
-
-> 💡 Tip<br/>
-> By default, logs are generated using a colored pattern. In case the console you use doesn't support it (if you see weird characters at the beginning of each line),
-> you should deactivate colors by setting the `spectrum.log.colors` system properties to `false`.
-
-## Html report
-
-Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/).
-By default, it will be produced under the `target/spectrum/reports` folder.
-Check the `extent` node in the `configuration.default.yaml` to see how to customise it.
-
-You can see an example report here:
-
-<img src="src/main/resources/images/ExtentReports-screenshot.png" alt="Extent Reports">
-
-> 💡 Tip<br/>
-> You can also provide your own *Look&Feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
-> Spectrum will automatically load and apply it to the Extent Report.
-
-When running, the WebDriver is firing events that are automatically logged and added to the html report.
-Check the `webDriver.events` node in the `configuration.default.yaml` to see the defaults log levels and messages.
-
-You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
-For example, to add a screenshot with a message at INFO level to the `dummyTest`:
-
-```Java
-public class HelloWorldIT extends SpectrumTest<Void> {
-
-    @Test
-    public void dummyTest() {
-        extentTest.screenshotInfo("Custom message");
-    }
-}
-```
-
 # Project Structure
 
 Let's see how your project will look like. Few assumptions for this example:
@@ -782,10 +794,10 @@ root
 |     |  └─ spectrum.log   # rotated daily
 |     |─ reports
 |     |  |─ screenshots    # folder where Extent Reports screenshots are saved
-|     |  └─ report.html    # by default the name will ends with the timestamp
+|     |  └─ report.html    # by default the name ends with the timestamp
 |     └─ testbook
-|        |─ testbook.html  # by default the name will ends with the timestamp
-|        └─ testbook.txt   # by default the name will ends with the timestamp
+|        |─ testbook.html  # by default the name ends with the timestamp
+|        └─ testbook.txt   # by default the name ends with the timestamp
 └─ pom.xml
 ```
 
@@ -1041,12 +1053,15 @@ Check Simple Java Mail's docs to see all the [available properties](https://www.
 > If you want to provide a custom template there are two ways:
 > 1. provide a template with a custom name under `src/test/resources/templates``:
      >   ```yaml
->   mail:
->     template: my-template.txt # The extension doesn't really matter.
->     events:
->       - reason: after
->         tags: [ test ]
->   ```  
+     > mail:
+     > template: my-template.txt # The extension doesn't really matter.
+     > events:
+     >
+
+- reason: after
+  > tags: [ test ]
+  >   ```  
+
 > 2. simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the path.
 
 > 💡 Tip<br/>
@@ -1054,10 +1069,12 @@ Check Simple Java Mail's docs to see all the [available properties](https://www.
 > Otherwise, if you set many events on the same consumer, they will share the template.
 
 You can also specify a list of attachments, by providing:
+
 * the name they will have in the email
 * the path to the file
 
 For example, it's useful to send the html report and/or testbook when the suite is complete:
+
 ```yaml
 mail:
   events:
@@ -1138,31 +1155,19 @@ A few steps are needed to configure your Slack Workspace to receive notification
 > ```
 >
 > If you want to provide a custom template there are two ways:
-> 1. provide a template with a custom name under `src/test/resources/templates``:
-     >   ```yaml
-     > slack:
-     > template: my-template.txt # The extension doesn't really matter.
-     > events:
-     >
-- reason: after
-  > tags: [ test ]
-     >   ```  
-> 2. simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
+> * provide a template with a custom name under `src/test/resources/templates`:
+> ```yaml
+> slack:
+>   template: my-template.txt # The extension doesn't really matter.
+>   events:
+>     - reason: after
+>       tags: [ test ]
+> ```
+>* simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
 
 > 💡 Tip<br/>
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
 > Otherwise, if you set many events on the same consumer, they will share the template.
-
-# JSON Schema
-
-You can find the JSON Schema for the `configuration*.yaml` in the [spectrum-json-schemas repository](https://github.com/giulong/spectrum-json-schemas).
-
-If your IDE supports json schemas, be sure to pick the right one according to the version of Spectrum you are using.
-
-The path to the raw file is: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/<SPECTRUM VERSION>/Configuration.json`,
-where `<SPECTRUM VERSION>` must be replaced with the one you're using.
-
-TODO check json schema url is accessible
 
 # TestBook (Coverage)
 
