@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 
 @DisplayName("Extent Report Verifier")
 public class ExtentReportVerifierIT extends SpectrumTest<Data> {
@@ -38,6 +40,7 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
+        pageLoadWait.until(elementToBeClickable(extentReportPage.getNoDisplayName()));
         extentReportPage.getNoDisplayName().click();
         assertTrue(extentReportPage.getScreenshotContainers().stream().anyMatch(webElement -> webElement.getText().equals("After checking the first checkbox")));
     }
