@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Extent Report Verifier")
 public class ExtentReportVerifierIT extends SpectrumTest<Data> {
@@ -36,6 +36,10 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(testLabels.get("loginTrue"), extentReportPage.getLoginTrue().getText());
         assertEquals(testLabels.get("noDisplayName"), extentReportPage.getNoDisplayName().getText());
         assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
+
+        // check screenshot was added programmatically with the screenshotInfo(String) method
+        extentReportPage.getNoDisplayName().click();
+        assertTrue(extentReportPage.getScreenshotContainers().stream().anyMatch(webElement -> webElement.getText().equals("After checking the first checkbox")));
     }
 
     private long countTestsWithStatus(final String status) {
