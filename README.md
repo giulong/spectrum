@@ -13,15 +13,15 @@ TODO MAVEN BADGE FIX URL
 
 [![LinkedIn](https://i.stack.imgur.com/gVE0j.png) Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/)
 
-Spectrum is a Java and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of E2E tests. Main features:
+Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of e2e tests. Main features:
 
 * automatic [html report](#html-report) generation
 * automatic coverage report generation by reading a [testbook](#testbook-coverage)
 * automatic [mail/slack notifications](#events-consumers)
-* out-of-the-box defaults provided to let you immediately run tests with no additional configuration
 * fully configurable providing human-readable and [declarative yaml files](#configuration)
+* out-of-the-box defaults to let you run tests with no additional configuration
 
-Spectrum leverages [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) extension model to initialise and inject all the needed objects
+Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
 
 ## Glossary
@@ -78,6 +78,10 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
 If you now run the test, you will find a html report generated in the `target/spectrum/reports` folder.
 
+> 💡 Tip<br/>
+> Spectrum is tested with itself, so in this repo you can find real examples of Spectrum e2e tests.
+> They're in the [it](it) and [it-testbook](it-testbook) modules. Throughout this doc, you will be pointed to specific examples.
+
 TODO: examples
 
 # SpectrumTest and SpectrumPage
@@ -124,6 +128,9 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
+> 💡 Example<br/>
+> Check the [tests](it/src/test/java/io/github/giulong/spectrum/it/pages) package to see real examples of SpectrumTests.
+
 ## SpectrumPage
 
 As per Selenium's best practices, you should leverage the [page object model](https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/)
@@ -146,6 +153,9 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
     // ...
 }
 ```
+
+> 💡 Example<br/>
+> Check the [pages](it/src/test/java/io/github/giulong/spectrum/it/pages) package to see real examples of SpectrumPages.
 
 ### SpectrumPage Service Methods
 
@@ -485,6 +495,19 @@ Values in the most specific configuration file will take precedence over the oth
 > Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
 > so that everyone can provide its own configuration without interfering with others.
 
+> 💡 Example<br/>
+> Check these configurations to see an example of merging:
+> * [configuration.yaml](it-testbook/src/test/resources/configuration.yaml)
+> * [configuration-first.yaml](it-testbook/src/test/resources/configuration-first.yaml)
+> * [configuration-second.yaml](it-testbook/src/test/resources/configuration-second.yaml)
+> 
+> The very first node of the base `configuration.yaml` linked above is setting the active profiles, instructing Spectrum to load the other two configurations,
+> and overriding the `application.baseUrl` accordingly:
+> ```yaml
+> runtime:
+>   profiles: local,second
+> ```
+
 ## Vars node
 
 The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
@@ -560,7 +583,7 @@ runtime:
     local: { }
 ```
 
-To run on a remote grid, you just need to change that node, providing at least the grid url:
+To run on a remote [grid](https://www.selenium.dev/documentation/grid/), you just need to change that node, providing at least the grid url:
 
 ```yaml
 runtime:
@@ -672,6 +695,10 @@ This is just a simple example. Be sure to check the example repo for more comple
 > `public class SomeIT extends SpectrumTest<MySuperShinyWhatever> {`
 >
 > That said, I don't really see any valid use case for this. Let me know if you see one.
+
+> 💡 Example<br/>
+> Check the [data.yaml](it/src/test/resources/data/data.yaml) and how it's used in the [LoginFormIT](it/src/test/java/io/github/giulong/spectrum/it/tests/LoginFormIT.java).
+> Look for the usage of `data.getUsers()` in that class.
 
 # Automatically Generated Reports
 
@@ -1136,11 +1163,11 @@ TODO check json schema url is accessible
 
 # TestBook (Coverage)
 
-Talking about coverage for E2E tests is not so straightforward. Coverage makes sense for unit tests, since they directly run against methods,
+Talking about coverage for e2e tests is not so straightforward. Coverage makes sense for unit tests, since they directly run against methods,
 so it's easy to check which lines were covered during the execution.
-On the other hand, E2E tests run against a long living instance of the AUT, with no visibility on the source code.
+On the other hand, e2e tests run against a long living instance of the AUT, with no visibility on the source code.
 
-As E2E tests are tied to the business functionalities of the AUT, so should be their coverage.
+As e2e tests are tied to the business functionalities of the AUT, so should be their coverage.
 Spectrum helps you to keep track of which functionalities are covered by parsing a testbook, in which you can declare all the tests
 of your full suite. When running them, Spectrum will check which were executed and which not, generating a dedicated report in several formats.
 
