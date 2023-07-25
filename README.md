@@ -82,8 +82,6 @@ If you now run the test, you will find a html report generated in the `target/sp
 > Spectrum is tested with itself, so in this repo you can find real examples of Spectrum e2e tests.
 > They're in the [it](it) and [it-testbook](it-testbook) modules. Throughout this doc, you will be pointed to specific examples.
 
-TODO: examples
-
 # SpectrumTest and SpectrumPage
 
 These are the two main entities you will need to know to fully leverage Spectrum:
@@ -918,6 +916,11 @@ public class HelloWorldIT extends SpectrumTest<Void> {
     }
 }
 ```
+
+> 💡 Example<br/>
+> Check the [DemoIT.events()](it/src/test/java/io/github/giulong/spectrum/it/tests/DemoIT.java) test to see how to fire custom events,
+> and the related [configuration.yaml](it/src/test/resources/configuration.yaml) to check how `eventsConsumers` are set, leveraging regex matches
+> (more on this below).
 
 ## Events Consumers
 
