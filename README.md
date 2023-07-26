@@ -7,8 +7,7 @@
 ![branches coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/branches.svg)
 [![badge-jdk](https://img.shields.io/badge/jdk-17-blue.svg)](https://www.oracle.com/java/technologies/javase-downloads.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum-archetype.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum-archetype)
-TODO MAVEN BADGE FIX URL
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
 
 Creator: [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/)
 
@@ -46,17 +45,28 @@ directly in your test classes, so that you can focus just on writing the logic t
 You should leverage the latest published version of the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) to create a new project.
 You can either use it via your IDE, or run this from command line:
 
-`mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DgroupId=<YOUR GROUP ID> -DartifactId=<YOUR ARTIFACT ID>`
+`mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION>`
 
-Needless to say that `<YOUR GROUP ID>` and `<YOUR ARTIFACT ID>` are placeholders that you need to replace with actual values.
+Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, and `<VERSION>` are placeholders that you need to replace with actual values.
 
 The project created will contain a demo test you can immediately run.
-If you don't want to leverage the archetype, you can manually add the Spectrum dependency to your project TODO maven link
+If you don't want to leverage the archetype, you can manually add the Spectrum dependency to your project: TODO maven link
+
+```xml
+
+<dependency>
+    <groupId>io.github.giulong</groupId>
+    <artifactId>spectrum</artifactId>
+    <version>LATEST</version>
+    <scope>test</scope>
+</dependency>
+```
 
 > ⚠️ Lombok Library<br/>
-> The demo test injected by the archetype uses [Lombok](https://projectlombok.org/) to generate getters. Lombok is internally used in Spectrum, and provided as a transitive dependency, so you can already use it. 
-> 
-Be sure to check its docs to understand how to configure it in your IDE.
+> The demo test injected by the archetype uses [Lombok](https://projectlombok.org/) to generate getters. Lombok is internally used in Spectrum, and provided as a transitive
+> dependency, so you can already use it.
+>
+> Be sure to check its docs to understand how to configure it in your IDE.
 > If you don't want to leverage it, you can safely write getters the old way.
 
 ### Test creation
@@ -444,7 +454,7 @@ Spectrum will replace the dollar-string with the first value found in this list:
     vars:
       key: value 
    ```
-2. system property named `key`
+2. system property named `key`: `-Dkey=value`
 3. `defaultValue` (if provided)
 
 If the provided key can't be found, a warning will be raised. Both key name and default value can contain dots like in `${some.key:-default.value}`
@@ -470,8 +480,15 @@ If the provided key can't be found, a warning will be raised. Both key name and 
 >   profiles: ${active-profiles:-local}
 > ```
 > This could be useful to create and leverage your own naming convention for env variables.
->
-> Be sure to check the internal `configuration.default.yaml` to see which variables are already available.
+
+These are the variables already available in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml).
+You can add your own and even override the default ones in your `configuration*.yaml`:
+
+| Variable          | Default Windows              | Default *nix                 |
+|-------------------|------------------------------|------------------------------|
+| spectrum.profiles | local                        | local                        |
+| spectrum.browser  | chrome                       | chrome                       |
+| downloadsFolder   | ${user.dir}\target\downloads | ${user.dir}/target/downloads |
 
 ## Running on a Grid
 
@@ -513,8 +530,6 @@ If your IDE supports json schemas, be sure to pick the right one according to th
 The path to the raw file is: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/<SPECTRUM VERSION>/Configuration.json`,
 where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 
-TODO check json schema url is accessible
-
 # Automatically Generated Reports
 
 After each execution, Spectrum produces two files:
@@ -550,11 +565,13 @@ You can see an example report here:
 <img src="src/main/resources/images/ExtentReports-screenshot.png" alt="Extent Reports">
 
 > 💡 Tip<br/>
-> You can also provide your own *Look&Feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
+> You can provide your own *look and feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
 > Spectrum will automatically load and apply it to the Extent Report.
 
+Upon a test failure, Spectrum adds a screenshot to the report automatically.
+
 You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
-For example, to add a screenshot with a message at INFO level to the `dummyTest`:
+For example, to add a screenshot with a message at `INFO` level to the `dummyTest`:
 
 ```Java
 public class HelloWorldIT extends SpectrumTest<Void> {
