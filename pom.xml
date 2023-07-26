@@ -44,9 +44,10 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <junit.version>5.9.2</junit.version>
-        <jackson.version>2.15.0</jackson.version>
-        <mockito.version>5.2.0</mockito.version>
+        <junit.version>5.10.0</junit.version>
+        <jackson.version>2.15.2</jackson.version>
+        <simplejavamail.version>8.1.3</simplejavamail.version>
+        <jsonschemagenerator.version>4.31.1</jsonschemagenerator.version>
     </properties>
 
     <modules>
@@ -62,7 +63,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.26</version>
+                <version>1.18.28</version>
             </dependency>
 
             <dependency>
@@ -83,7 +84,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
-                <version>1.9.1</version>
+                <version>1.10.0</version>
             </dependency>
 
             <dependency>
@@ -122,12 +123,12 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.4.6</version>
+                <version>1.4.8</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.janino</groupId>
                 <artifactId>janino</artifactId>
-                <version>3.1.9</version>
+                <version>3.1.10</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -144,43 +145,43 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.29.2</version>
+                <version>1.30.0</version>
             </dependency>
 
             <dependency>
                 <groupId>org.simplejavamail</groupId>
                 <artifactId>simple-java-mail</artifactId>
-                <version>8.1.1</version>
+                <version>${simplejavamail.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.simplejavamail</groupId>
                 <artifactId>authenticated-socks-module</artifactId>
-                <version>8.1.1</version>
+                <version>${simplejavamail.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.github.victools</groupId>
                 <artifactId>jsonschema-generator</artifactId>
-                <version>4.31.1</version>
+                <version>${jsonschemagenerator.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.github.victools</groupId>
                 <artifactId>jsonschema-module-jackson</artifactId>
-                <version>4.31.1</version>
+                <version>${jsonschemagenerator.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-inline</artifactId>
-                <version>${mockito.version}</version>
+                <version>5.2.0</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>${mockito.version}</version>
+                <version>5.4.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -204,7 +205,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>3.3.0</version>
                     <configuration>
                         <configLocation>checkstyle.xml</configLocation>
                         <consoleOutput>true</consoleOutput>
@@ -273,7 +274,7 @@
                 <plugin>
                     <groupId>com.github.victools</groupId>
                     <artifactId>jsonschema-maven-plugin</artifactId>
-                    <version>4.31.1</version>
+                    <version>${jsonschemagenerator.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
