@@ -5,13 +5,12 @@
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/giulong/spectrum/actions?query=branch%3Adevelop)
 ![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
 ![branches coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/branches.svg)
-
 [![badge-jdk](https://img.shields.io/badge/jdk-17-blue.svg)](https://www.oracle.com/java/technologies/javase-downloads.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum-archetype.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum-archetype)
 TODO MAVEN BADGE FIX URL
 
-[![LinkedIn](https://i.stack.imgur.com/gVE0j.png) Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/)
+Creator: [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/)
 
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of e2e tests.
 Main features:
@@ -76,6 +75,12 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > 💡 Tip<br/>
 > The default browser is `chrome`. If you want to use another one, you can switch via the `spectrum.browser` system property, setting its value to
 > `firefox` or `edge`
+
+> 💡 Tip<br/>
+> The default log level is `INFO`. If you want to change it, run with `-Dspectrum.log.level=<LEVEL>`,
+> for example:
+> * `-Dspectrum.log.level=DEBUG`
+> * `-Dspectrum.log.level=TRACE`
 
 If you now run the test, you will find a html report generated in the `target/spectrum/reports` folder.
 
