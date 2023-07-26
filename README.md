@@ -11,12 +11,13 @@
 TODO MAVEN BADGE FIX URL
 
 Creator: [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/)
-<hr/>
+
+---
 
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of e2e tests.
 Main features:
 
-* automatic [html report](#html-report) generation
+* automatic [log and html report](#automatically-generated-reports) generation
 * automatic coverage report generation by reading a [testbook](#testbook-coverage)
 * automatic [mail/slack notifications](#events-consumers)
 * fully configurable providing human-readable and [declarative yaml files](#configuration)
@@ -54,7 +55,8 @@ If you don't want to leverage the archetype, you can manually add the Spectrum d
 
 > ⚠️ Lombok Library<br/>
 > The demo test injected by the archetype uses [Lombok](https://projectlombok.org/) to generate getters. Lombok is internally used in Spectrum, and provided as a transitive dependency, so you can already use it. 
-> Be sure to check its docs to understand how to configure it in your IDE.
+> 
+Be sure to check its docs to understand how to configure it in your IDE.
 > If you don't want to leverage it, you can safely write getters the old way.
 
 ### Test creation
@@ -399,7 +401,7 @@ Values in the most specific configuration file will take precedence over the oth
 > * [configuration-first.yaml](it-testbook/src/test/resources/configuration-first.yaml)
 > * [configuration-second.yaml](it-testbook/src/test/resources/configuration-second.yaml)
 >
-> The very first node of the base `configuration.yaml` linked above is setting the active profiles, instructing Spectrum to load the other two configurations,
+> The very first node of the base `configuration.yaml` linked above sets the active profiles, instructing Spectrum to load the other two configurations,
 > and overriding the `application.baseUrl` accordingly:
 > ```yaml
 > runtime:
@@ -515,10 +517,16 @@ TODO check json schema url is accessible
 
 # Automatically Generated Reports
 
-After each execution, Spectrum automatically produces two files:
+After each execution, Spectrum produces two files:
 
 * [log](#log-file)
 * [html report](#html-report)
+
+The WebDriver fires events that are automatically logged and added to the html report.
+Check the `webDriver.events` node in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml) to see the defaults log levels and messages.
+
+Remember that the log level is set with `-Dspectrum.log.level` and defaults to `INFO`.
+Each event with a configured log level equal or higher than the one specified with `-Dspectrum.log.level` will be logged and added to the html report.
 
 ## Log file
 
@@ -535,7 +543,7 @@ Logs are rotated daily, meaning the results of each execution occurred in the sa
 
 Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/).
 By default, it will be produced under the `target/spectrum/reports` folder.
-Check the `extent` node in the `configuration.default.yaml` to see how to customise it.
+Check the `extent` node in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml) to see how to customise it.
 
 You can see an example report here:
 
@@ -544,9 +552,6 @@ You can see an example report here:
 > 💡 Tip<br/>
 > You can also provide your own *Look&Feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
 > Spectrum will automatically load and apply it to the Extent Report.
-
-When running, the WebDriver is firing events that are automatically logged and added to the html report.
-Check the `webDriver.events` node in the `configuration.default.yaml` to see the defaults log levels and messages.
 
 You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
 For example, to add a screenshot with a message at INFO level to the `dummyTest`:
