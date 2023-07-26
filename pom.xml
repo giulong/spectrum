@@ -47,7 +47,6 @@
         <junit.version>5.9.2</junit.version>
         <jackson.version>2.15.0</jackson.version>
         <mockito.version>5.2.0</mockito.version>
-        <lombok.version>1.18.26</lombok.version>
     </properties>
 
     <modules>
@@ -63,7 +62,7 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
+                <version>1.18.26</version>
             </dependency>
 
             <dependency>
@@ -230,13 +229,6 @@
                         <source>17</source>
                         <target>17</target>
                         <encoding>UTF-8</encoding>
-                        <annotationProcessorPaths>
-                            <path>
-                                <groupId>org.projectlombok</groupId>
-                                <artifactId>lombok</artifactId>
-                                <version>${lombok.version}</version>
-                            </path>
-                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
                 <plugin>

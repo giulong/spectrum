@@ -11,6 +11,7 @@
 TODO MAVEN BADGE FIX URL
 
 Creator: [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/)
+<hr/>
 
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of e2e tests.
 Main features:
@@ -50,6 +51,11 @@ Needless to say that `<YOUR GROUP ID>` and `<YOUR ARTIFACT ID>` are placeholders
 
 The project created will contain a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the Spectrum dependency to your project TODO maven link
+
+> ⚠️ Lombok Library<br/>
+> The demo test injected by the archetype uses [Lombok](https://projectlombok.org/) to generate getters. Lombok is internally used in Spectrum, and provided as a transitive dependency, so you can already use it. 
+> Be sure to check its docs to understand how to configure it in your IDE.
+> If you don't want to leverage it, you can safely write getters the old way.
 
 ### Test creation
 
@@ -720,11 +726,6 @@ We need to take four steps:
         }
     }
     ```
-
-   > ⚠️ Lombok Library<br/>
-   The example above uses [Lombok](https://projectlombok.org/) to generate getters. Lombok is internally used in Spectrum, and provided
-   as a transitive dependencies, so you can already use it. Be sure to check its docs to understand how to configure it in your IDE.
-   If you don't want to leverage it, you can safely write getters the old way.
 
    > 💡 Tip<br/>
    The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes each in its own java file.
