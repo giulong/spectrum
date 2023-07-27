@@ -5,7 +5,6 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.internals.EventsListener;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
@@ -28,6 +27,7 @@ import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptur
 import static com.aventstack.extentreports.Status.*;
 import static java.util.Comparator.reverseOrder;
 import static java.util.UUID.randomUUID;
+import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
@@ -47,9 +47,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected Actions actions;
-
-    @Shared
-    protected EventsListener eventsListener;
 
     @Shared
     protected WebDriver webDriver;
@@ -120,7 +117,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
 
         Files.createDirectories(screenshotPath.getParent());
-        Files.write(screenshotPath, webDriver.findElement(By.tagName("body")).getScreenshotAs(BYTES));
+        Files.write(screenshotPath, webDriver.findElement(tagName("body")).getScreenshotAs(BYTES));
 
         final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
         extentTest.log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
@@ -157,10 +154,10 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
-    public boolean checkDownloadedFile(final String file) {
+    public boolean checkDownloadedFile(final String downloadedFileName, final String fileToCheckName) {
         final Configuration.Runtime runtime = configuration.getRuntime();
-        final Path downloadedFile = Path.of(runtime.getDownloadsFolder(), file).toAbsolutePath();
-        final Path fileToCheck = Path.of(runtime.getFilesFolder(), file).toAbsolutePath();
+        final Path downloadedFile = Path.of(runtime.getDownloadsFolder(), downloadedFileName).toAbsolutePath();
+        final Path fileToCheck = Path.of(runtime.getFilesFolder(), fileToCheckName).toAbsolutePath();
 
         waitForDownloadOf(downloadedFile);
 
@@ -170,6 +167,10 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
                 {}
                 """, downloadedFile, fileToCheck);
         return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
+    }
+
+    public boolean checkDownloadedFile(final String file) {
+        return checkDownloadedFile(file, file);
     }
 
     @SneakyThrows
@@ -197,7 +198,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     public boolean isNotPresent(final By by) {
-        return webDriver.findElements(by).size() == 0;
+        final int total = webDriver.findElements(by).size();
+        log.debug("Found {} elements with By {}", total, by);
+        return total == 0;
     }
 
     public boolean hasClass(final WebElement webElement, final String className) {

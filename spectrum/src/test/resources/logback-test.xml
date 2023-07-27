@@ -9,6 +9,10 @@
         </encoder>
     </appender>
 
+    <logger name="io.netty" level="INFO"/>
+    <logger name="org.asynchttpclient" level="INFO"/>
+    <logger name="org.asynchttpclient.netty.handler.WebSocketHandler" level="ERROR"/>
+
     <root level="${spectrum.log.level:-INFO}">
         <appender-ref ref="STDOUT"/>
     </root>

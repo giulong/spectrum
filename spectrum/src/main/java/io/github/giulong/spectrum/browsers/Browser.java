@@ -26,7 +26,7 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
 
     public abstract void mergeGridCapabilitiesFrom(Map<String, String> gridCapabilities);
 
-    public WebDriver build(final Configuration configuration) {
+    public synchronized WebDriver build(final Configuration configuration) {
         final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
         buildCapabilitiesFrom(webDriverConfiguration);
 

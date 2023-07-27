@@ -66,6 +66,9 @@
                                         <spectrum.browser>chrome</spectrum.browser>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
+                                    <systemProperties>
+                                        <spectrum.log.level>DEBUG</spectrum.log.level>
+                                    </systemProperties>
                                 </configuration>
                             </execution>
                         </executions>

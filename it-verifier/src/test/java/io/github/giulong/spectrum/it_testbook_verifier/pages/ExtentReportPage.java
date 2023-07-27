@@ -42,4 +42,7 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
 
     @FindBy(id = "files-test-download")
     private WebElement download;
+
+    @FindBy(className = "screenshot-container")
+    private List<WebElement> screenshotContainers;
 }

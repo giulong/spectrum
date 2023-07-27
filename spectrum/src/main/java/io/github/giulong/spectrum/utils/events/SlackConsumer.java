@@ -19,7 +19,7 @@ public class SlackConsumer extends EventsConsumer {
     private static final FreeMarkerWrapper FREE_MARKER_WRAPPER = FreeMarkerWrapper.getInstance();
 
     @SuppressWarnings("FieldMayBeFinal")
-    private String template = "/templates/slack.json";
+    private String template = "slack.json";
 
     protected String channel;
 
@@ -27,7 +27,7 @@ public class SlackConsumer extends EventsConsumer {
 
     public void consumes(final Event event) throws SlackApiException, IOException {
         final Map<String, Object> vars = Map.of("event", event);
-        final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate("slack", FILE_UTILS.read(template), vars);
+        final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate("slack", FILE_UTILS.readTemplate(template), vars);
 
         Slack
                 .getInstance()

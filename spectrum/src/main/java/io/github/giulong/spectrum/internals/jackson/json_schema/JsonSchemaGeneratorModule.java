@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -47,8 +48,10 @@ public class JsonSchemaGeneratorModule implements Module {
                 .withSubtypeResolver(new PublicSubTypeResolver());
 
         final String jsonSchema = new SchemaGenerator(schemaGeneratorConfigBuilder.build()).generateSchema(Configuration.class).toString();
-        final String targetFolder = Path.of(JsonSchemaGeneratorModule.class.getProtectionDomain().getCodeSource().getLocation().getPath()).getParent().toString();
+        final URI targetFolderUri = JsonSchemaGeneratorModule.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        final String targetFolder = Path.of(targetFolderUri).getParent().toString();
         final Path jsonSchemaPath = Path.of(targetFolder, "json-schemas", "Configuration.json");
+
         //noinspection ResultOfMethodCallIgnored
         jsonSchemaPath.getParent().toFile().mkdirs();
         Files.writeString(jsonSchemaPath, jsonSchema);

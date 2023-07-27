@@ -15,7 +15,7 @@ public class Firefox extends Browser<FirefoxOptions, GeckoDriverService, GeckoDr
     }
 
     @Override
-    public synchronized void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration) {
+    public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration) {
         final Configuration.WebDriver.Firefox firefoxConfig = webDriverConfiguration.getFirefox();
 
         capabilities = new FirefoxOptions();

@@ -33,6 +33,6 @@ public abstract class TestBookReporter {
 
     public void flush(final TestBook testBook) {
         final String template = getTemplate();
-        doOutputFrom(FREE_MARKER_WRAPPER.interpolate(template, FILE_UTILS.read(template), testBook.getVars()));
+        doOutputFrom(FREE_MARKER_WRAPPER.interpolate(template, FILE_UTILS.read(String.format("/%s", template)), testBook.getVars()));
     }
 }

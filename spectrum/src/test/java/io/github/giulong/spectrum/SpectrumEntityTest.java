@@ -43,6 +43,7 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
+import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @ExtendWith(MockitoExtension.class)
@@ -106,7 +107,7 @@ class SpectrumEntityTest {
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(path.toString());
-        when(webDriver.findElement(By.tagName("body"))).thenReturn(webElement);
+        when(webDriver.findElement(tagName("body"))).thenReturn(webElement);
         when(webElement.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
         return path;
@@ -122,13 +123,12 @@ class SpectrumEntityTest {
                 .toList();
 
         // we're checking real size and names here, no mocks
-        assertEquals(12, actual.size());
+        assertEquals(11, actual.size());
         assertTrue(sharedFieldsNames.containsAll(List.of(
                 "configuration",
                 "extentReports",
                 "extentTest",
                 "actions",
-                "eventsListener",
                 "eventsDispatcher",
                 "webDriver",
                 "implicitWait",
@@ -275,7 +275,7 @@ class SpectrumEntityTest {
     }
 
     @Test
-    @DisplayName("checkDownloadedFile should ")
+    @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one")
     public void checkDownloadedFile() throws IOException {
         final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
         final Path filesFolder = Files.createTempDirectory("filesFolder");
@@ -301,6 +301,28 @@ class SpectrumEntityTest {
 
         assertTrue(spectrumEntity.checkDownloadedFile(downloadedFile.getFileName().toString()));
         assertFalse(spectrumEntity.checkDownloadedFile(wrongDownloadedFile.getFileName().toString()));
+    }
+
+    @Test
+    @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one, with different names")
+    public void checkDownloadedFileDifferentName() throws IOException {
+        final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
+        final Path filesFolder = Files.createTempDirectory("filesFolder");
+        final Path downloadedFile = Files.createFile(Path.of(downloadsFolder + "/fakeFileDownloaded.txt"));
+        final Path fileToCheck = Files.createFile(Path.of(filesFolder + "/fakeFile.txt"));
+        Files.writeString(downloadedFile, "I'm an airplane!!!");
+        Files.writeString(fileToCheck, "I'm an airplane!!!");
+
+        downloadedFile.toFile().deleteOnExit();
+        fileToCheck.toFile().deleteOnExit();
+        downloadsFolder.toFile().deleteOnExit();
+        filesFolder.toFile().deleteOnExit();
+
+        when(configuration.getRuntime()).thenReturn(runtime);
+        when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder.toString());
+        when(runtime.getFilesFolder()).thenReturn(filesFolder.toString());
+
+        assertTrue(spectrumEntity.checkDownloadedFile(downloadedFile.getFileName().toString(), fileToCheck.getFileName().toString()));
     }
 
     @Test

@@ -26,13 +26,13 @@ public class MailConsumer extends EventsConsumer {
     private static final Mailer MAILER = MailerBuilder.buildMailer();
 
     @SuppressWarnings("FieldMayBeFinal")
-    private String template = "/templates/mail.html";
+    private String template = "mail.html";
 
     protected List<Attachment> attachments;
 
     public void consumes(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
-        final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate("mail", FILE_UTILS.read(template), vars);
+        final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate("mail", FILE_UTILS.readTemplate(template), vars);
 
         MAILER.sendMail(
                 EmailBuilder

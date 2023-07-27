@@ -23,30 +23,30 @@ public class ItVerifierTest {
     @Test
     @DisplayName("chrome should have run with the correct results")
     public void verifyChrome() {
-        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-chrome.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED));
+        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-chrome.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED), "CHROME");
     }
 
     @Test
     @DisplayName("firefox should have run with the correct results")
     public void verifyFirefox() {
-        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-firefox.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED));
+        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-firefox.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED), "FIREFOX");
     }
 
     @Test
     @DisplayName("edge should have run with the correct results")
     public void verifyEdge() {
-        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-edge.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED));
+        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-edge.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED), "EDGE");
     }
 
     @Test
-    @DisplayName("log file should contain the warning saying an exception was thrown consuming the custom event")
+    @DisplayName("log file should contain the debug saying some consumer tried to consume the custom events")
     public void logFile() throws FileNotFoundException {
         final String logFile = new Scanner(BASE_DIR.resolve(Path.of("it-testbook", "target", "spectrum", "logs", "spectrum.log")).toFile()).useDelimiter("\\Z").next();
 
-        // we indirectly check that the slack handler tried to consume (and failed) the event with a regex in the primaryId
-        assertTrue(logFile.contains("Exception when consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=custom-event, result=null, context=null)"));
+        // we indirectly check that the slack handler tried to consume the event with a regex in the primaryId
+        assertTrue(logFile.contains("SlackConsumer is consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=custom-event, result=null, context=null)"));
 
-        // we indirectly check that the slack handler tried to consume (and failed) the event with a regex in the reason
-        assertTrue(logFile.contains("Exception when consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=secondReason, result=null, context=null)"));
+        // we indirectly check that the slack handler tried to consume the event with a regex in the reason
+        assertTrue(logFile.contains("SlackConsumer is consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=secondReason, result=null, context=null)"));
     }
 }

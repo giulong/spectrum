@@ -123,11 +123,11 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         f.set(this, spectrumPage);
 
         final String className = spectrumPageClass.getSimpleName();
-        log.debug("BeforeAll hook: injecting already resolved fields into an instance of {}", className);
+        log.debug("Injecting already resolved fields into an instance of {}", className);
 
         final Endpoint endpointAnnotation = spectrumPageClass.getAnnotation(Endpoint.class);
         final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";
-        log.debug("The endpoint of the page {} is '{}'", className, endpointValue);
+        log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         spectrumPage.endpoint = endpointValue;
 
         final List<Field> sharedFields = getSharedFields();
