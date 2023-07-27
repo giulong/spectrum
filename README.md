@@ -41,9 +41,12 @@ directly in your test classes, so that you can focus just on writing the logic t
 You should leverage the latest published version of the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) to create a new project.
 You can either use it via your IDE, or run this from command line:
 
-`mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION>`
+`mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION> -DoutputDirectory=<DESTINATION>`
 
-Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, and `<VERSION>` are placeholders that you need to replace with actual values.
+Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATION>` are placeholders that you need to replace with actual values.
+
+> ⚠️ Maven archetype:generate<br/>
+> If you want to tweak the behaviour of the above command, for example to generate the project in interactive mode, check the official [archetype:generate docs](https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html).
 
 The project created will contain a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the Spectrum dependency to your project: TODO maven link
