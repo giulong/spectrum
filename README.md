@@ -1456,6 +1456,10 @@ testBook:
     - log: { }  # we just want the report to be logged
 ```
 
+# Bugs Report and Feature Requests
+
+Found a bug? Want to request a new feature? Please [open an issue](https://github.com/giulong/spectrum/issues/new/choose).
+
 ---
 
 Creator: [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/)
