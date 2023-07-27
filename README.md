@@ -21,7 +21,7 @@ Main features:
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
 
-https://github.com/giulong/spectrum/assets/27963644/36a67c37-d932-49ff-a9c3-ca48315bdac5
+https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad893738c08
 
 ## Glossary
 
