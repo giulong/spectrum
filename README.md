@@ -14,7 +14,7 @@ Main features:
 
 * automatic [log and html report](#automatically-generated-reports) generation
 * automatic coverage report generation by reading a [testbook](#testbook-coverage)
-* automatic [mail/slack notifications](#events-consumers)
+* automatic [mail/slack notifications](#events-consumers) with reports as attachments
 * fully configurable providing human-readable and [declarative yaml files](#configuration)
 * out-of-the-box defaults to let you run tests with no additional configuration
 
@@ -839,13 +839,14 @@ performing the action it's supposed to (more in the [Events Consumers section](#
 Each [event](spectrum/src/main/java/io/github/giulong/spectrum/pojos/events/Event.java) defines a set of keys that consumers can use to define the events they want to be
 notified about:
 
-| Field Name  | Type                                                                          | Match |
-|-------------|-------------------------------------------------------------------------------|-------|
-| primaryId   | String                                                                        | regex |
-| secondaryId | String                                                                        | regex |
-| tags        | Set<String>                                                                   | exact |
-| reason      | String                                                                        | regex |
-| result      | [Result](spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java) | exact |
+| Field Name  | Type                                                                                                                                      | Match |
+|-------------|-------------------------------------------------------------------------------------------------------------------------------------------|-------|
+| primaryId   | String                                                                                                                                    | regex |
+| secondaryId | String                                                                                                                                    | regex |
+| tags        | Set<String>                                                                                                                               | exact |
+| reason      | String                                                                                                                                    | regex |
+| result      | [Result](spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java)                                                             | exact |
+| context     | [ExtensionContext](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ExtensionContext.html) | -     |
 
 Let's see them in detail:
 
@@ -906,6 +907,16 @@ Reason specifies why an event has been fired.
 ### Result
 
 This is the result of the executed test. Of course, this will be available only in events fired after tests execution, as per the table below.
+
+### Context
+
+The JUnit's ExtensionContext is attached to each event. It's not considered when matching events, but it can be useful
+in custom templates to access objects stored in it. For example, the default [slack.json template](spectrum/src/main/resources/templates/slack.json)
+uses it to print class and test names:
+
+```json
+"text": "*Name*\n*Class*: `${event.context.parent.get().displayName}`\n*Test*: `${event.context.displayName}`"
+```
 
 ---
 
@@ -1039,6 +1050,11 @@ Let's now see how to configure few consumers:
 >           reason: custom-event
 > ```
 
+> 💡 Tip<br/>
+> Consumers send notification using templates that leverage [FreeMarker](https://freemarker.apache.org/).
+> You can do the same in your custom templates, by accessing and evaluating all the event's fields directly in the template,
+> and apply logic, if needed.
+
 ### Mail Consumer
 
 You can leverage this consumer to send email notification. Spectrum uses [Simple Java Mail](https://www.simplejavamail.org/),
@@ -1075,18 +1091,15 @@ Check Simple Java Mail's docs to see all the [available properties](https://www.
 > ```
 >
 > If you want to provide a custom template there are two ways:
-> 1. provide a template with a custom name under `src/test/resources/templates``:
-     >   ```yaml
-     > mail:
-     > template: my-template.txt # The extension doesn't really matter.
-     > events:
-     >
-
-- reason: after
-  > tags: [ test ]
-  >   ```  
-
-> 2. simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the path.
+> * provide a template with a custom name under `src/test/resources/templates``:
+> ```yaml
+> mail:
+>   template: my-template.txt # The extension doesn't really matter.
+>   events:
+>     - reason: after
+>       tags: [ test ]
+> ```
+> * simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the path.
 
 > 💡 Tip<br/>
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
