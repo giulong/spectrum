@@ -51,7 +51,7 @@ Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATI
 > If you want to tweak the behaviour of the above command, for example to generate the project in interactive mode, check the official [archetype:generate docs](https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html).
 
 The project created will contain a demo test you can immediately run.
-If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://central.sonatype.com/search?q=g:io.github.giulong%20a:spectrum&smo=true) to your project:
+If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum) to your project:
 
 ```xml
 
