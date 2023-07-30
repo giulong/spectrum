@@ -563,7 +563,7 @@ Check the `extent` node in the [configuration.default.yaml](spectrum/src/main/re
 
 You can see an example report here:
 
-<img src="src/main/resources/images/ExtentReports-screenshot.png" alt="Extent Reports">
+![Extent Report](src/main/resources/images/ExtentReports-screenshot.png)
 
 > 💡 Tip<br/>
 > You can provide your own *look and feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
@@ -1232,7 +1232,7 @@ These are the information needed in a testbook:
 In short, we need to uniquely identify each test by their class name and method name.
 Method name alone is not enough, since there might be test methods with the same name in different classes.
 
-You can also give a weight to each test: you can give a higher weight to those functionalities that are more important or critical.
+You can also give a weight to each test: you can give a higher weight to those tests that are meant to check functionalities of the AUT that are more important or critical.
 In the report produced, tests will be also aggregated considering their weights. In this way, the final coverage percentage varies based on the weights,
 meaning critical functionalities will have a higher impact on the outcome.
 
@@ -1255,7 +1255,7 @@ qualityGate:
   condition: ${weightedSuccessful.percentage} > 60
 ```
 
-This means that the execution is considered successful if at least 60% of the weighted tests are successful.
+The example above means that the execution is considered successful if at least 60% of the weighted tests are successful.
 
 The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org/), meaning you can write complex conditions using the variables
 briefly explained below. They're all put in the `vars` map in the [TestBook.java](spectrum/src/main/java/io/github/giulong/spectrum/utils/testbook/TestBook.java)
@@ -1338,6 +1338,8 @@ another class::another test
 another class::weighted test##123
 ```
 
+The first and second rows above maps just a class name and a test name, while the third provides also an explicit weight.
+
 ### Csv TestBook Parser
 
 You can provide a csv file where each line is in this format:
@@ -1351,6 +1353,8 @@ test class,my test
 another class,another test
 another class,weighted test,123
 ```
+
+The first and second rows above maps just a class name and a test name, while the third provides also an explicit weight.
 
 ### Yaml TestBook Parser
 
@@ -1384,17 +1388,133 @@ reporters:
 
 Of course, they're all optional: you can add just those you want.
 
+Below you will find the output produced by the default internal template for each reporter.
+Those are the real outputs produced when running Spectrum's own e2e tests you can find in the [it-testbook](it-testbook) module.
+This means you can:
+* check the it_testbook's module [testbook.yaml](it-testbook/src/test/resources/testbook.yaml)
+* check the actual it_testbook's module [tests](it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests) and especially their `@DisplayName`
+* look at the produced reports shown below for each reporter
+
+If you want, you can provide a custom template of yours. As for all the other templates (such as those used in events consumers),
+you can leverage [FreeMarker](https://freemarker.apache.org/).
+
 For each reporter:
 
+* the snippets below will contain all the customisable parameters for each reporter
 * values reported in the snippets below are the defaults (no need to provide them)
 * `template` is a path relative to `src/test/resources`
-* `output` parameter can contain the `{timestamp}` placeholder, which will be evaluated
+* `output` is the path relative to the project's root, and might contain the `{timestamp}` placeholder 
 
 ### Log TestBook Reporter
 
 ```yaml
 log:
   template: testbook/template.txt
+```
+
+Here is the output produced by the default internal template:
+```text
+##########################################################################################################
+
+                                        SPECTRUM TESTBOOK RESULTS
+                                    Generated on: 30/07/2023 15:40:35
+
+##########################################################################################################
+
+STATISTICS
+----------------------------------------------------------------------------------------------------------
+Mapped Tests:                      4
+Unmapped Tests:                    8
+Grand Total:              4 + 8 = 12
+Total Weighted:                    7
+Grand Total Weighted:     7 + 8 = 15
+----------------------------------------------------------------------------------------------------------
+
+MAPPED WEIGHTED TESTS RATIO
+[Ratio of tests mapped in the TestBook, based on their weights]
+----------------------------------------------------------------------------------------------------------
+Successful:     0/7      0% <>
+Failed:         0/7      0% <>
+Aborted:        0/7      0% <>
+Disabled:       0/7      0% <>
+Not run:        7/7    100% <==================================================================>
+----------------------------------------------------------------------------------------------------------
+
+GRAND TOTAL WEIGHTED TESTS RATIO
+[Ratio of all tests, mapped or not, based on their weights]
+----------------------------------------------------------------------------------------------------------
+Successful:    6/15     40% <==========================>
+Failed:        1/15   6.67% <====>
+Aborted:       0/15      0% <>
+Disabled:      1/15   6.67% <====>
+Not run:       7/15  46.67% <===============================>
+----------------------------------------------------------------------------------------------------------
+
+MAPPED TESTS RATIO
+[Ratio of tests mapped in the TestBook]
+----------------------------------------------------------------------------------------------------------
+Successful:     0/4      0% <>
+Failed:         0/4      0% <>
+Aborted:        0/4      0% <>
+Disabled:       0/4      0% <>
+Not run:        4/4    100% <==================================================================>
+----------------------------------------------------------------------------------------------------------
+
+GRAND TOTAL TESTS RATIO
+[Ratio of tests, mapped or not, based on their weights]
+----------------------------------------------------------------------------------------------------------
+Successful:    6/12     50% <=================================>
+Failed:        1/12   8.33% <=====>
+Aborted:       0/12      0% <>
+Disabled:      1/12   8.33% <=====>
+Not run:       4/12  33.33% <======================>
+----------------------------------------------------------------------------------------------------------
+
+QUALITY GATE:
+----------------------------------------------------------------------------------------------------------
+| Condition: ${weightedSuccessful.percentage} > 60
+| Evaluated: 0 > 60
+| Result:    KO
+----------------------------------------------------------------------------------------------------------
+MAPPED TESTS:
+----------------------------------------------------------------------------------------------------------
+| Test Name                                                                        | Weight | Result     |
+| Hello World Selenium-------------------------------------------------------------|--------|------------|
+|   - Successful                                                                   |      1 | Not Run    |
+|   - This is my first selenium!                                                   |      2 | Not Run    |
+|   - another test                                                                 |      3 | Not Run    |
+----------------------------------------------------------------------------------------------------------
+| Test Name                                                                        | Weight | Result     |
+| Second Class---------------------------------------------------------------------|--------|------------|
+|   - skipped                                                                      |      1 | Not Run    |
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+UNMAPPED TESTS:
+----------------------------------------------------------------------------------------------------------
+| Test Name                                                                        | Weight | Result     |
+| Demo test------------------------------------------------------------------------|--------|------------|
+|   - Skipped Test                                                                 |      1 | Disabled   |
+|   - Sending custom events                                                        |      1 | Successful |
+|   - This one should fail for demonstration purposes                              |      1 | Failed     |
+----------------------------------------------------------------------------------------------------------
+| Test Name                                                                        | Weight | Result     |
+| Login Form leveraging the data.yaml----------------------------------------------|--------|------------|
+|   - with user giulio we expect login to be successful: false                     |      1 | Successful |
+|   - with user tom we expect login to be successful: true                         |      1 | Successful |
+----------------------------------------------------------------------------------------------------------
+| Test Name                                                                        | Weight | Result     |
+| Files Test-----------------------------------------------------------------------|--------|------------|
+|   - upload                                                                       |      1 | Successful |
+|   - download                                                                     |      1 | Successful |
+----------------------------------------------------------------------------------------------------------
+| Test Name                                                                        | Weight | Result     |
+| Checkbox Page--------------------------------------------------------------------|--------|------------|
+|   - testWithNoDisplayName()                                                      |      1 | Successful |
+----------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+
+##########################################################################################################
 ```
 
 ### Txt TestBook Reporter
@@ -1405,6 +1525,9 @@ txt:
   output: target/spectrum/testbook/testbook-{timestamp}.txt
 ```
 
+You can find the output file in: [Txt TestBook Reporter](src/main/resources/images/testbook.txt).
+It's the same that is logged, but saved to a dedicated file, so that you can send it as an attachment in an email, for example.
+
 ### Html TestBook Reporter
 
 ```yaml
@@ -1412,6 +1535,11 @@ html:
   template: testbook/template.html
   output: target/spectrum/testbook/testbook-{timestamp}.html
 ```
+
+You can find the output file in: [Html TestBook Reporter](src/main/resources/images/testbook.html).
+This is what it looks like when opened in a browser:
+
+![Html TestBook Reporter](src/main/resources/images/html-testbook.png)
 
 ## Full TestBook Examples
 
