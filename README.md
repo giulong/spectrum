@@ -561,6 +561,11 @@ Spectrum generates a html report using [Extent Reports](https://www.extentreport
 By default, it will be produced under the `target/spectrum/reports` folder.
 Check the `extent` node in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml) to see how to customise it.
 
+> 💡 Tip<br/>
+> The default file name of the produced html report contains a timestamp, which is useful to rotate them.
+> While developing, it could be useful to override the `extent.fileName` to have a fixed name. 
+> This way it will be overridden, so you can keep it open in a browser and just refresh the page after each execution.
+
 You can see an example report here:
 
 ![Extent Report](src/main/resources/images/ExtentReports-screenshot.png)
