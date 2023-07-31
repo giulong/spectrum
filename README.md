@@ -23,6 +23,9 @@ directly in your test classes, so that you can focus just on writing the logic t
 
 https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad893738c08
 
+> ⚠️ Eclipse IDE<br/>
+> The archetype injects a demo test that leverages Lombok. If you use Eclipse IDE, check [how to enable Lombok](https://projectlombok.org/setup/eclipse).
+
 ## Glossary
 
 | Acronym | Meaning                                                                                                   |
