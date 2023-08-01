@@ -21,7 +21,7 @@ Main features:
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
 
-https://youtu.be/mJsEs4Egv30
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mJsEs4Egv30" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 > ⚠️ Eclipse IDE<br/>
 > The archetype injects a demo test that leverages Lombok. If you use Eclipse IDE, check [how to enable Lombok](https://projectlombok.org/setup/eclipse).
