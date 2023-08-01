@@ -21,7 +21,7 @@ Main features:
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
 
-https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad893738c08
+![Spectrum Project Generation Tutorial](https://youtu.be/mJsEs4Egv30)
 
 > ⚠️ Eclipse IDE<br/>
 > The archetype injects a demo test that leverages Lombok. If you use Eclipse IDE, check [how to enable Lombok](https://projectlombok.org/setup/eclipse).
@@ -533,6 +533,10 @@ If your IDE supports json schemas, be sure to pick the right one according to th
 
 The path to the raw file is: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/<SPECTRUM VERSION>/Configuration.json`,
 where `<SPECTRUM VERSION>` must be replaced with the one you're using.
+
+> 💡 Tip<br/>
+> Example for version 1.0.0:
+> https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/1.0.0/Configuration.json
 
 # Automatically Generated Reports
 
