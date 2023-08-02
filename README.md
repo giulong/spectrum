@@ -1436,7 +1436,9 @@ This means you can:
 > ⚠️ it-testbook module's reports<br/>
 > The default templates have a "Mapped Tests" and "Unmapped Tests" sections at the bottom, 
 > in which tests are grouped by their classes.
+> 
 > As you will see from the reports produced below, the `testbook.yaml` used in the `it-testbook` module maps tests that are not present in the suite.
+> 
 > This means all those will be shown in the "Mapped Tests" as "Not Run", 
 > while all the tests actually executed will appear in the "Unmapped Tests" section with their respective results.
 
