@@ -426,7 +426,7 @@ webDriver:
 # Data models
 data:
   folder: data  # subfolder under src/test/resources where you will save your data*.yaml
-  fqdn: fqdn.placeholder  # you need to provide the fully qualified name of your Data class, meaning its package name AND class name. Check the examples repo.
+  fqdn: fqdn.placeholder  # you need to provide the fully qualified name of your Data class, meaning its package name AND class name.
 
 # FreeMarker template engine configuration. See https://freemarker.apache.org/
 freeMarker:
@@ -434,7 +434,7 @@ freeMarker:
   locale: US
   numberFormat: 0.##;; roundingMode=halfUp
 
-# Internal event consumers
+# Internal event consumers. Cannot be removed, modified, nor added from client side configuration*.yaml.
 eventsConsumers:
   - extentTest: # We need to add an entry to the Extent Report once each test is done
       events:
@@ -444,7 +444,7 @@ eventsConsumers:
       events:
         - reason: after
           tags: [ test ]
-  - browser: # We need to close the browser once each test is done
+  - browser: # We need to close the browser/webDriver once each test is done
       events:
         - reason: after
           tags: [ test ]

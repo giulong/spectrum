@@ -51,7 +51,8 @@ You can either use it via your IDE, or run this from command line:
 Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATION>` are placeholders that you need to replace with actual values.
 
 > ⚠️ Maven archetype:generate<br/>
-> If you want to tweak the behaviour of the above command, for example to generate the project in interactive mode, check the official [archetype:generate docs](https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html).
+> If you want to tweak the behaviour of the command above, for example to generate the project in interactive mode, check the
+> official [archetype:generate docs](https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html).
 
 The project created will contain a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum) to your project:
@@ -95,8 +96,10 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > to leverage the [default inclusions](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inclusion-exclusion.html) of the failsafe plugin.
 
 > 💡 Tip<br/>
-> The default browser is `chrome`. If you want to use another one, you can switch via the `spectrum.browser` system property, setting its value to
-> `firefox` or `edge`
+> The default browser is `chrome`. If you want to use another one, you can switch via the `-Dspectrum.browser` system property, setting its value to
+> `firefox` or `edge`:
+> * `-Dspectrum.browser=firefox`
+> * `-Dspectrum.browser=edge`
 
 > 💡 Tip<br/>
 > The default log level is `INFO`. If you want to change it, run with `-Dspectrum.log.level=<LEVEL>`,
@@ -143,8 +146,8 @@ public class HelloWorldIT extends SpectrumTest<Void> {
     @Test
     public void dummyTest() {
 
-        // getting direct access to both webDriver and configuration without declaring nor instantiating them.
-        // Spectrum does that for you.
+        // getting direct access to both webDriver and configuration without declaring
+        // nor instantiating them. Spectrum does that for you.
         // Here we're opening the landing page of the AUT
         webDriver.get(configuration.getApplication().getBaseUrl());
 
@@ -155,7 +158,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 > 💡 Example<br/>
-> Check the [tests](it/src/test/java/io/github/giulong/spectrum/it/pages) package to see real examples of SpectrumTests.
+> Check the [tests](it/src/test/java/io/github/giulong/spectrum/it/tests) package to see real examples of SpectrumTests.
 
 ## SpectrumPage
 
@@ -271,7 +274,7 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
 * `isLoaded()`:
 
   This is a method to check if the caller page is loaded.
-  It returns a boolean, which is true if the current url is equal to the AUT's base url combined with the page's endpoint.
+  It returns a boolean which is true if the current url is equal to the AUT's base url combined with the page's endpoint.
 
     ```java
     public class HelloWorldIT extends SpectrumTest<Void> {
@@ -302,7 +305,7 @@ so you can directly use them in your tests/pages without caring about declaring 
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                            |
 | extentReports    | instance of the Extent Report                                                                                                                                                                                                 |
-| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to directly add info/screenshots programmatically.                                                                   |
+| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                            |
 | actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html), useful to simulate complex user gestures                                                 |
 | webDriver        | instance of the WebDriver running for the current test, configured in a declarative way via `configuration*.yaml`                                                                                                             |
 | implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html) with the duration taken from the `webDriver.waits.implicit` in the `configuration.yaml`        |
@@ -330,7 +333,7 @@ so you can directly use them in your tests/pages without caring about declaring 
 * `boolean checkDownloadedFile(String)`: leverages the `waitForDownloadOf` method and then compares checksum of the file provided. Check the [File Download section](#file-download)
 * `WebElement clearAndSendKeys(WebElement, CharSequence)`: helper method to call Selenium's `clear` and `sendKeys` on the provided WebElement, which is then returned
 * `T upload(WebElement, String)`: uploads to the provided WebElement (usually an input field with `type="file"`) the file with the provided name, taken from the
-  configurable `runtime.filesFolder`
+  configurable `runtime.filesFolder`. Check the [File Upload section](#file-upload)
 * `boolean isNotPresent(By)`: checks if no WebElement with the provided `by` is present in the current page
 * `boolean hasClass(WebElement, String)`: checks if the provided WebElement has the provided css class
 * `boolean hasClasses(WebElement, String...)`: checks if the provided WebElement has **all** the provided css classes
@@ -359,9 +362,9 @@ which is a comma separated list of profile names you want to activate.
 > When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this order of precedence:
 > 1. configuration.default.yaml [Spectrum internal defaults]
 > 2. configuration.default.unix.yaml [Spectrum internal defaults for *nix, not read on Windows]
-> 3. configuration.yaml
-> 4. configuration-test.yaml [A warning will be raised if not found, no errors]
-> 5. configuration-grid.yaml [A warning will be raised if not found, no errors]
+> 3. configuration.yaml [Provided by you]
+> 4. configuration-test.yaml [Provided by you. A warning will be raised if not found, no errors]
+> 5. configuration-grid.yaml [Provided by you. A warning will be raised if not found, no errors]
 
 Values in the most specific configuration file will take precedence over the others.
 
@@ -407,12 +410,12 @@ Values in the most specific configuration file will take precedence over the oth
 
 > 💡 Tip<br/>
 > Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
-> so that everyone can provide its own configuration without interfering with others.
+> so that everyone can provide their own configuration without interfering with others.
 
 > 💡 Example<br/>
-> Check these configurations to see an example of merging:
+> Check the `application.baseUrl` node in these configurations used in Spectrum's own tests to see an example of merging:
 > * [configuration.yaml](it-testbook/src/test/resources/configuration.yaml)
-> * [configuration-first.yaml](it-testbook/src/test/resources/configuration-first.yaml)
+> * [configuration-first.yaml](it-testbook/src/test/resources/configuration-first.yaml) [Actually ignored, active profiles are `local` and `second`]
 > * [configuration-second.yaml](it-testbook/src/test/resources/configuration-second.yaml)
 >
 > The very first node of the base `configuration.yaml` linked above sets the active profiles, instructing Spectrum to load the other two configurations,
@@ -461,11 +464,12 @@ Spectrum will replace the dollar-string with the first value found in this list:
 2. system property named `key`: `-Dkey=value`
 3. `defaultValue` (if provided)
 
-If the provided key can't be found, a warning will be raised. Both key name and default value can contain dots like in `${some.key:-default.value}`
+If the provided key can't be found in any of these places, a warning will be raised.
+Both key name and default value might contain dots like in `${some.key:-default.value}`
 
 > 💡 Tip<br/>
-> This trick is widely used in the internal `configuration.default.yaml` to allow for variables to be read from outside.
-> For example, the profiles are set like this:
+> This trick is used in the internal `configuration.default.yaml` to allow for variables to be read from outside.
+> For example, profiles are set like this:
 > ```yaml
 > # internal configuration.default.yaml
 > runtime:
@@ -477,7 +481,7 @@ If the provided key can't be found, a warning will be raised. Both key name and 
 > runtime:
 >   profiles: my-profile,another-one
 > ```
-> You can also decide to provide your own variable:
+> You can also choose to provide your own variable:
 > ```yaml
 > # your configuration.yaml
 > runtime:
@@ -519,19 +523,23 @@ runtime:
 
 Where the params are:
 
-| Param             | Type                | Default   | Mandatory | Description                                                                                                                                                                           |
-|-------------------|---------------------|-----------|-----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| url               | String              | null      | ✅         | url of the remote grid                                                                                                                                                                |
-| capabilities      | Map<String, String> | empty map | ❌         | additional webDriver capabilities to be added only when running on a grid                                                                                                             |
-| localFileDetector | boolean             | false     | ❌         | if true, allows to transfer files from the client machine to the remote server [docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector) |
+| Param             | Type               | Default   | Mandatory | Description                                                                                                                                                                            |
+|-------------------|--------------------|-----------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| url               | String             | null      | ✅         | url of the remote grid                                                                                                                                                                 |
+| capabilities      | Map<String,String> | empty map | ❌         | additional webDriver capabilities to be added to browser-specific ones only when running on a grid                                                                                     |
+| localFileDetector | boolean            | false     | ❌         | if true, allows to transfer files from the client machine to the remote server. [Docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector) |
 
 # JSON Schema
 
+Json Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion.
 You can find the JSON Schema for the `configuration*.yaml` in the [spectrum-json-schemas repository](https://github.com/giulong/spectrum-json-schemas).
 
 If your IDE supports json schemas, be sure to pick the right one according to the version of Spectrum you are using.
 
-The path to the raw file is: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/<SPECTRUM VERSION>/Configuration.json`,
+The path to the raw file is:
+
+`https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/<SPECTRUM VERSION>/Configuration.json`
+
 where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 
 > 💡 Tip<br/>
@@ -551,6 +559,8 @@ Check the `webDriver.events` node in the [configuration.default.yaml](spectrum/s
 Remember that the log level is set with `-Dspectrum.log.level` and defaults to `INFO`.
 Each event with a configured log level equal or higher than the one specified with `-Dspectrum.log.level` will be logged and added to the html report.
 
+Needless to say, you can also log and add info and screenshots to html report programmatically.
+
 ## Log file
 
 The log file will contain the same information you see in the console. It will be produced by default under the `target/spectrum/logs` folder.
@@ -560,7 +570,7 @@ Logs are rotated daily, meaning the results of each execution occurred in the sa
 
 > 💡 Tip<br/>
 > By default, logs are generated using a colored pattern. In case the console you use doesn't support it (if you see weird characters at the beginning of each line),
-> you should deactivate colors by setting the `spectrum.log.colors` system properties to `false`.
+> you should deactivate colors by running with `-Dspectrum.log.colors=false`.
 
 ## Html report
 
@@ -569,9 +579,9 @@ By default, it will be produced under the `target/spectrum/reports` folder.
 Check the `extent` node in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml) to see how to customise it.
 
 > 💡 Tip<br/>
-> The default file name of the produced html report contains a timestamp, which is useful to rotate them.
-> While developing, it could be useful to override the `extent.fileName` to have a fixed name. 
-> This way it will be overridden, so you can keep it open in a browser and just refresh the page after each execution.
+> The default file name of the produced html report contains a timestamp, which is useful to always generate a new file.
+> While developing, it could be worth it to override the `extent.fileName` to have a fixed name.
+> This way the report will be overridden, so you can keep it open in a browser and just refresh the page after each execution.
 
 You can see an example report here:
 
@@ -598,7 +608,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
 # Common Use Cases
 
-Here there you can find how Spectrum helps you in few common use cases.
+Here you can find how Spectrum helps you in a few common use cases.
 
 ## File Upload
 
@@ -622,7 +632,7 @@ root
            └─ document.pdf
 ```
 
-If in the web page there's an input field with `type="file"`, you can leverage the `upload` method directly in any of your tests/pages like this:
+and in the web page there's an input field with `type="file"`, you can leverage the `upload` method directly in any of your tests/pages like this:
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -688,7 +698,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 If the files are the same, their checksum will match, and that assertion will pass.
-In case you need to check a file with a different name, for example if the AUT is generating file names dynamically,
+In case you need to check a file with a different name, for example if the AUT generates file names dynamically,
 you can leverage the overloaded `checkDownloadedFile(String, String)` method, which takes the names of both the downloaded file and the one to check:
 
 ```java
@@ -698,8 +708,9 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
     @Test
     public void myTest() {
-        // the first file will be searched in the downloadsFolder
-        // the second file will be searched in the filesFolder
+        // Parameters order matters:
+        //  - the first file will be searched in the downloadsFolder
+        //  - the second file will be searched in the filesFolder
         assertTrue(checkDownloadedFile("downloadedFile.txt", "fileToCheck.txt"));
     }
 }
@@ -710,7 +721,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
 # Data
 
-As a general best practice, test code should only contain the flow logic and assertions, while data should be kept outside.
+As a general best practice, test code should only contain flow logic and assertions, while data should be kept outside.
 Spectrum embraces this by leveraging dedicated yaml files. This is completely optional, you can run all your tests without any data file.
 
 By default, you can create `data*.yaml` files under the `src/test/resources/data` folder.
@@ -723,7 +734,7 @@ Data files will be loaded and merged following the same conventions of `configur
 
 For data files to be properly unmarshalled, you must create the corresponding POJOs and set the fqdn of your parent data class in the configuration.yaml.
 
-Let's see an example. Let's say we want to test the AUT with two users with two different roles (admin and guest).
+Let's see an example. Let's say we want to test the AUT with two users having two different roles (admin and guest).
 Both will have the same set of params, such as a name and a password to login.
 
 We need to take four steps:
@@ -763,30 +774,48 @@ We need to take four steps:
     ```
 
    > 💡 Tip<br/>
-   The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes each in its own java file.
+   The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own Java file.
 
-3. Make Spectrum aware of our Data class by providing its fqdn in the configuration.yaml:
+3. Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
 
     ```yaml
     # configuration.yaml    
     data:
-      fqdn: your.package_name.Data  # Form: <package_name>.<class name>
+      fqdn: your.package_name.Data  # Format: <package name>.<class name>
     ```
 
-4. Declare the Data class as generic in the SpectrumTest(s) that will use it:
+4. Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
 
     ```java
+    import io.github.giulong.spectrum.SpectrumTest;
+    import org.junit.jupiter.api.Test;
     import your.package_name.Data;
    
-    public class SomeIT extends SpectrumTest<Data> { // &larr; Mind the generic here
+    public class SomeIT extends SpectrumTest<Data> { // <-- Mind the generic here
         
+        @Test
         public void someTestMethod() {
-            data.getUsers().get("admin").getName(); // we can now use the data object leveraging its getters. No need to declare/instantiate the 'data' field: Spectrum is taking care of injecting it.
+            // We can now use the data object leveraging its getters.
+            // No need to declare/instantiate the 'data' field: Spectrum is taking care of injecting it.
+            // You can directly use it as it is here.
+            data.getUsers().get("admin").getName();
         }
     }
     ```
 
-This is just a simple example. Be sure to check the example repo for more complex use cases, such as data driven and parameterised tests.
+    ```java
+    import io.github.giulong.spectrum.SpectrumPage;
+    import your.package_name.Data;
+   
+    public class SomePage extends SpectrumPage<SomePage, Data> { // <-- Mind the generic here
+        
+        public void someServiceMethod() {
+            data.getUsers().get("admin").getName();
+        }
+    }
+    ```
+
+The `Data` generic must be specified only in those classes actually using it. There's no need to set it everywhere.
 
 > 💡 Tip<br/>
 > For the sake of completeness, you can name the `Data` POJO as you prefer.
@@ -794,53 +823,12 @@ This is just a simple example. Be sure to check the example repo for more comple
 > `public class SomeIT extends SpectrumTest<MySuperShinyWhatever> {`
 >
 > That said, I don't really see any valid use case for this. Let me know if you see one.
+> Probably, could be useful to have different Data classes to be used in different tests, so to have different and clearer names.
+> In this scenario, they could be loaded from different `configuration*.yaml`.
 
-> 💡 Example<br/>
+> 💡 Example: parameterized tests<br/>
 > Check the [data.yaml](it/src/test/resources/data/data.yaml) and how it's used in the [LoginFormIT](it/src/test/java/io/github/giulong/spectrum/it/tests/LoginFormIT.java).
 > Look for the usage of `data.getUsers()` in that class.
-
-# Project Structure
-
-Let's see how your project will look like. Few assumptions for this example:
-
-* you defined base values plus three profiles, each with its own set of Data:
-    * [base] &rarr; `configuration.yaml` + `data.yaml`
-    * local &rarr; `configuration-local.yaml` + `data-local.yaml`
-    * test &rarr; `configuration-test.yaml` + `data-test.yaml`
-    * uat &rarr; `configuration-uat.yaml` + `data-uat.yaml`
-* you configured the yaml testbook parser, which will read the `testbook.yaml`
-* you configured both a html and a txt testbook reporters, which will produce `testbook.html` and `testbook.txt` reports
-
-```
-root
-└─ src
-|  └─ test
-|     ├─ java
-|     |  └─ com.your.tests
-|     |     └─ ...
-|     └─ resources
-|        ├─ data
-|        |  ├─ data.yaml
-|        |  ├─ data-local.yaml
-|        |  ├─ data-test.yaml
-|        |  └─ data-uat.yaml
-|        ├─ configuration.yaml
-|        ├─ configuration-local.yaml
-|        ├─ configuration-test.yaml
-|        ├─ configuration-uat.yaml
-|        └─ testbook.yaml
-├─ target
-|  └─ spectrum
-|     |─ logs
-|     |  └─ spectrum.log   # rotated daily
-|     |─ reports
-|     |  |─ screenshots    # folder where Extent Reports screenshots are saved
-|     |  └─ report.html    # by default the name ends with the timestamp
-|     └─ testbook
-|        |─ testbook.html  # by default the name ends with the timestamp
-|        └─ testbook.txt   # by default the name ends with the timestamp
-└─ pom.xml
-```
 
 # Parallel Execution
 
@@ -854,16 +842,16 @@ Each consumer defines the events it's interested into. Whenever an event is fire
 performing the action it's supposed to (more in the [Events Consumers section](#events-consumers) below).
 
 Each [event](spectrum/src/main/java/io/github/giulong/spectrum/pojos/events/Event.java) defines a set of keys that consumers can use to define the events they want to be
-notified about:
+notified about. Most of them can be used in consumers with the type of match specified below:
 
-| Field Name  | Type                                                                                                                                      | Match |
-|-------------|-------------------------------------------------------------------------------------------------------------------------------------------|-------|
-| primaryId   | String                                                                                                                                    | regex |
-| secondaryId | String                                                                                                                                    | regex |
-| tags        | Set<String>                                                                                                                               | exact |
-| reason      | String                                                                                                                                    | regex |
-| result      | [Result](spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java)                                                             | exact |
-| context     | [ExtensionContext](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ExtensionContext.html) | -     |
+| Field Name                                | Type                                                                                                                                      | Match |
+|-------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|-------|
+| [primaryId](#primaryid-and-secondaryid)   | String                                                                                                                                    | regex |
+| [secondaryId](#primaryid-and-secondaryid) | String                                                                                                                                    | regex |
+| [tags](#tags)                             | Set\<String>                                                                                                                              | exact |
+| [reason](#reason)                         | String                                                                                                                                    | regex |
+| [result](#result)                         | [Result](spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java)                                                             | exact |
+| [context](#context)                       | [ExtensionContext](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ExtensionContext.html) | -     |
 
 Let's see them in detail:
 
@@ -871,8 +859,8 @@ Let's see them in detail:
 
 `primaryId` and `secondaryId` are strings through which you can identify each event. For example, for each test method, their value is:
 
-* `primaryId` &rarr; \<CLASS NAME> meaning the actual name of the test class
-* `secondaryId` &rarr; \<TEST NAME> meaning the actual name of the test method
+* `primaryId` &rarr; \<CLASS NAME>
+* `secondaryId` &rarr; \<TEST NAME>
 
 Let's see what they mean with an example. Given the following test:
 
@@ -889,7 +877,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 Spectrum will fire an event with:
 
 * `primaryId` &rarr; "HelloWorldIT"
-* `secondaryId` &rarr; "dummyTest()"
+* `secondaryId` &rarr; "dummyTest()" (Yes, the method name ends with the parenthesis)
 
 If the `@DisplayName` is provided for either the class and/or the method, those will be used. Given:
 
@@ -917,6 +905,17 @@ Tags are a set of strings used to group events together. For example, all test m
 This way, instead of attaching a consumer to a specific event (with primary and secondary id, for example) you can listen
 to all events tagged in a particular way, such as all the tests.
 
+> 💡 Example<br/>
+> Check the `eventsConsumers` in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml).
+> Internal consumers need to take actions after each test is done, meaning they listen to events tagged with "test":
+> ```yaml
+> eventsConsumers:
+>   - extentTest: # We need to add an entry to the Extent Report once each test is done
+>     events:
+>       - reason: after
+>         tags: [ test ]
+> ```
+
 ### Reason
 
 Reason specifies why an event has been fired.
@@ -942,18 +941,18 @@ uses it to print class and test names:
 Spectrum fires these events. The first column in the table below highlights the moment when that specific event is fired.
 The other columns are the event's keys, with blank values being nulls.
 
-| Event description                 | primaryId     | secondaryId  | tags       | reason | result                                                 |
-|-----------------------------------|---------------|--------------|------------|--------|--------------------------------------------------------|
-| Suite started                     |               |              | \[ suite ] | before |                                                        |
-| Suite ended                       |               |              | \[ suite ] | after  |                                                        |
-| Class started (JUnit's BeforeAll) | \<CLASS NAME> |              | \[ class ] | before |                                                        |
-| Class ended (JUnit's AfterAll)    | \<CLASS NAME> |              | \[ class ] | after  |                                                        |
-| Test started (JUnit's BeforeEach) | \<CLASS NAME> | \<TEST NAME> | \[ test ]  | before |                                                        |
-| Test ended (JUnit's AfterEach)    | \<CLASS NAME> | \<TEST NAME> | \[ test ]  | after  | NOT_RUN \| SUCCESSFUL \| FAILED \| ABORTED \| DISABLED |
+| When                              | primaryId     | secondaryId  | tags     | reason | result                                                 |
+|-----------------------------------|---------------|--------------|----------|--------|--------------------------------------------------------|
+| Suite started                     |               |              | \[suite] | before |                                                        |
+| Suite ended                       |               |              | \[suite] | after  |                                                        |
+| Class started (JUnit's BeforeAll) | \<CLASS NAME> |              | \[class] | before |                                                        |
+| Class ended (JUnit's AfterAll)    | \<CLASS NAME> |              | \[class] | after  |                                                        |
+| Test started (JUnit's BeforeEach) | \<CLASS NAME> | \<TEST NAME> | \[test]  | before |                                                        |
+| Test ended (JUnit's AfterEach)    | \<CLASS NAME> | \<TEST NAME> | \[test]  | after  | NOT_RUN \| SUCCESSFUL \| FAILED \| ABORTED \| DISABLED |
 
 > 💡 Tip<br/>
 > If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
-> you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like:
+> you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like "Dispatching event ...":
 > ```text
 > 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
 > 18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
@@ -1009,28 +1008,28 @@ Spectrum will proceed with inspecting the next consumer.
 > To match tags and result you need to provide the exact value.
 
 > ⚠️ Tags matchers condition<br/>
-> In the conditions above, "tags" means that the set of tags of the fired event and the set of tags of the consumer events must intersect.
+> In the conditions above, "tags" means that the set of tags of the fired event and the set of tags of the consumer event must intersect.
 > This means that they don't need to be all matching, it's enough to have at least one match among all the tags. Few examples:
 
-| Fired event's tags | Consumer event's tags | Match |
-|--------------------|-----------------------|-------|
-| \[ tag1, tag2 ]    | \[ tag1, tag2 ]       | ✅     |
-| \[ tag1, tag2 ]    | \[ tag2 ]             | ✅     |
-| \[ tag1 ]          | \[ tag1, tag2 ]       | ✅     |
-| \[ tag1, tag2 ]    | \[ tag666 ]           | ❌     |
+| Fired event's tags | Consumer event's tags | Match        |
+|--------------------|-----------------------|--------------|
+| \[ tag1, tag2 ]    | \[ tag1, tag2 ]       | ✅ tag1, tag2 |
+| \[ tag1, tag2 ]    | \[ tag2 ]             | ✅ tag2       |
+| \[ tag1 ]          | \[ tag1, tag2 ]       | ✅ tag1       |
+| \[ tag1, tag2 ]    | \[ tag666 ]           | ❌            |
 
 > ⚠️ Consumers exceptions<br/>
 > Each consumer handles events silently, meaning if any exception is thrown during the handling of an event,
-> that will be logged and the execution of the tests will continue without breaking. This is meant to avoid that something like a network issue
-> during the sending of an email can cause the whole suite to fail.
+> that will be logged and the execution of the tests will continue without breaking. This is meant to avoid that errors like network issues
+> when sending an email can cause the whole suite to fail.
 
 > 💡 Tip<br/>
-> You can configure how many consumers you need. Each consumer can listen to many events
+> You can configure how many consumers you need. Each consumer can listen to many events.
 
 Let's now see how to configure few consumers:
 
 > 💡 Example: reason and primaryId and secondaryId<br/>
-> We want to send a Slack notification before and after every test, and an email just after:
+> We want to send a Slack notification before and after a specific test, and an email just after:
 > ```yaml
 > eventsConsumers:
 >   - slack:
@@ -1048,7 +1047,7 @@ Let's now see how to configure few consumers:
 >           reason: after
 > ```
 
-> 💡 Example: reason and primaryId and secondaryId<br/>
+> 💡 Example: result and tags<br/>
 > We want to send a mail notification if the whole suite fails:
 > ```yaml
 > eventsConsumers:
@@ -1071,6 +1070,10 @@ Let's now see how to configure few consumers:
 > Consumers send notification using templates that leverage [FreeMarker](https://freemarker.apache.org/).
 > You can do the same in your custom templates, by accessing and evaluating all the event's fields directly in the template,
 > and apply logic, if needed.
+
+> 💡 Tip<br/>
+> You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
+> Otherwise, if you set many events on the same consumer, they will share the template.
 
 ### Mail Consumer
 
@@ -1108,7 +1111,7 @@ Check Simple Java Mail's docs to see all the [available properties](https://www.
 > ```
 >
 > If you want to provide a custom template there are two ways:
-> * provide a template with a custom name under `src/test/resources/templates``:
+> 1. provide a template with a custom name under `src/test/resources/templates`:
 > ```yaml
 > mail:
 >   template: my-template.txt # The extension doesn't really matter.
@@ -1116,7 +1119,7 @@ Check Simple Java Mail's docs to see all the [available properties](https://www.
 >     - reason: after
 >       tags: [ test ]
 > ```
-> * simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the path.
+> 2. simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
 
 > 💡 Tip<br/>
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
@@ -1141,11 +1144,33 @@ mail:
       file: target/spectrum/testbook/testbook.html
 ```
 
+> ⚠️ Mail Attachments<br/>
+> Mind that, like in the snippet above, attachments are specified at consumer level.
+> This means for all the events of a specific consumer, all the attachments will be sent.
+> If you need to send different sets of attachments, provide different consumers:
+> ```yaml
+> eventsConsumers:
+>   - mail:
+>       events:
+>         - reason: after
+>           tags: [ suite ]
+>       attachments:
+>         - name: report
+>           file: target/spectrum/reports/report.html
+>   - mail:
+>       events:
+>         - reason: after
+>           tags: [ class ]
+>       attachments:
+>         - name: attachment
+>           file: path/to/attachment
+> ```
+
 ### Slack Consumer
 
 A few steps are needed to configure your Slack Workspace to receive notifications from Spectrum:
 
-1. You need to create an app [from here](https://api.slack.com/apps) by following these steps:<br/><br/>
+1. You need to log in and create an app [from here](https://api.slack.com/apps) by following these steps:<br/><br/>
     1. click on the **Create New App** button:<br/><br/>
        ![slack-new-app.png](src/main/resources/images/slack-new-app.png)<br/><br/>
     2. choose to create it **from an app manifest**<br/><br/>
@@ -1193,8 +1218,8 @@ A few steps are needed to configure your Slack Workspace to receive notification
        channel: C05***
        template: slack-suite.json
        events:
-         - reason: after
-           tags: [ test ]
+         - reason: before
+           tags: [ suite ]
    ```
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
@@ -1217,11 +1242,11 @@ A few steps are needed to configure your Slack Workspace to receive notification
 >     - reason: after
 >       tags: [ test ]
 > ```
->* simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
+> * simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
+>
 
 > 💡 Tip<br/>
-> You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
-> Otherwise, if you set many events on the same consumer, they will share the template.
+> To test the slack handler works as expected, you can provide a simple `template.txt` with just an "Hello World from Spectrum" in it.
 
 # TestBook (Coverage)
 
@@ -1231,7 +1256,7 @@ On the other hand, e2e tests run against a long living instance of the AUT, with
 
 As e2e tests are tied to the business functionalities of the AUT, so should be their coverage.
 Spectrum helps you to keep track of which functionalities are covered by parsing a testbook, in which you can declare all the tests
-of your full suite. When running them, Spectrum will check which were executed and which not, generating a dedicated report in several formats.
+of your full suite. When running them, Spectrum will check which were actually executed and which not, generating a dedicated report in several formats of your choice.
 
 These are the information needed in a testbook:
 
@@ -1255,7 +1280,7 @@ These are the testbook parameters you need to configure:
 | Parameter                        | Description                                                                                 |
 |----------------------------------|---------------------------------------------------------------------------------------------|
 | [qualityGate](#quality-gate)     | object holding the condition to be evaluated to consider the execution successful or failed |
-| [parser](#testbook-parsers)      | object specifying the format of the testbook                                                |
+| [parser](#testbook-parsers)      | object specifying the format of the provided testbook                                       |
 | [reporters](#testbook-reporters) | list of objects to specify which kind of report(s) to produce                               |
 
 ## Quality Gate
@@ -1267,7 +1292,7 @@ qualityGate:
   condition: ${weightedSuccessful.percentage} > 60
 ```
 
-The example above means that the execution is considered successful if at least 60% of the weighted tests are successful.
+The example above means that the execution is considered successful if more than 60% of the weighted tests are successful.
 
 The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org/), meaning you can write complex conditions using the variables
 briefly explained below. They're all put in the `vars` map in the [TestBook.java](spectrum/src/main/java/io/github/giulong/spectrum/utils/testbook/TestBook.java)
@@ -1279,22 +1304,22 @@ briefly explained below. They're all put in the `vars` map in the [TestBook.java
 
 Generic variables:
 
-| Variable                                                                                               | Description                                                                         |
-|--------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
-| mappedTests                                                                                            | map of tests found in the provided testbook                                         |
-| unmappedTests                                                                                          | map of tests not found in the provided testbook                                     |
-| groupedMappedTests                                                                                     | like mappedTests, but grouped by class names                                        |
-| groupedUnmappedTests                                                                                   | like unmappedTests, but grouped by class names                                      |
-| [statistics](spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java) | object containing all the object reported in the tables below, plus additional ones |
-| [qg](spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/QualityGate.java)                | qualityGate node from `configuration*.yaml`                                         |
-| timestamp                                                                                              | when the testbook was generated                                                     |
+| Variable                                                                                               | Description                                                                        |
+|--------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| mappedTests                                                                                            | map of tests executed and found in the provided testbook                           |
+| unmappedTests                                                                                          | map of tests executed but not found in the provided testbook                       |
+| groupedMappedTests                                                                                     | like mappedTests, but grouped by class names                                       |
+| groupedUnmappedTests                                                                                   | like unmappedTests, but grouped by class names                                     |
+| [statistics](spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java) | object containing all the object reported in the lists below, plus additional ones |
+| [qg](spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/QualityGate.java)                | qualityGate node from `configuration*.yaml`                                        |
+| timestamp                                                                                              | when the testbook was generated                                                    |
 
 Each key in the lists below is an instance of the inner static class [Statistics](spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java),
 and it holds both a `total` int field and a `percentage` double field.
 For example, given the `successful` key here below, you can access:
 
-* ${successful.total}
-* ${successful.percentage}
+* `${successful.total}`
+* `${successful.percentage}`
 
 Statistics of tests mapped in the testbook:
 
@@ -1331,7 +1356,7 @@ Statistics of all tests, mapped or not in the testbook, based on their weights
 > 💡 Tip<br/>
 > It's hard to explain and grasp each of these vars. The best way is to:
 > 1. check the [default html template](spectrum/src/main/resources/testbook/template.html) and the [default txt template](spectrum/src/main/resources/testbook/template.txt)
-> 2. run your suite with the html reporter as explained below
+> 2. run your suite with the html reporter and/or the txt reporter as explained below
 > 3. check the outcome
 
 ## TestBook Parsers
@@ -1389,7 +1414,7 @@ another class:
 
 ## TestBook Reporters
 
-All the reporters below have default values for their parameter, which means you can just configure them as empty objects like:
+All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
 
 ```yaml
 reporters:
@@ -1403,9 +1428,17 @@ Of course, they're all optional: you can add just those you want.
 Below you will find the output produced by the default internal template for each reporter.
 Those are the real outputs produced when running Spectrum's own e2e tests you can find in the [it-testbook](it-testbook) module.
 This means you can:
+
 * check the it_testbook's module [testbook.yaml](it-testbook/src/test/resources/testbook.yaml)
 * check the actual it_testbook's module [tests](it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests) and especially their `@DisplayName`
 * look at the produced reports shown below for each reporter
+
+> ⚠️ it-testbook module's reports<br/>
+> The default templates have a "Mapped Tests" and "Unmapped Tests" sections at the bottom, 
+> in which tests are grouped by their classes.
+> As you will see from the reports produced below, the `testbook.yaml` used in the `it-testbook` module maps tests that are not present in the suite.
+> This means all those will be shown in the "Mapped Tests" as "Not Run", 
+> while all the tests actually executed will appear in the "Unmapped Tests" section with their respective results.
 
 If you want, you can provide a custom template of yours. As for all the other templates (such as those used in events consumers),
 you can leverage [FreeMarker](https://freemarker.apache.org/).
@@ -1415,7 +1448,7 @@ For each reporter:
 * the snippets below will contain all the customisable parameters for each reporter
 * values reported in the snippets below are the defaults (no need to provide them)
 * `template` is a path relative to `src/test/resources`
-* `output` is the path relative to the project's root, and might contain the `{timestamp}` placeholder 
+* `output` is the path relative to the project's root, and might contain the `{timestamp}` placeholder
 
 ### Log TestBook Reporter
 
@@ -1424,7 +1457,8 @@ log:
   template: testbook/template.txt
 ```
 
-Here is the output produced by the default internal template:
+Here is the output produced by the default internal template, for tests of the `it-testbook` module:
+
 ```text
 ##########################################################################################################
 
@@ -1537,8 +1571,9 @@ txt:
   output: target/spectrum/testbook/testbook-{timestamp}.txt
 ```
 
-You can find the output file in: [Txt TestBook Reporter](src/main/resources/images/testbook.txt).
+For the sake of completeness, the output file was manually copied [here](src/main/resources/images/testbook.txt).
 It's the same that is logged, but saved to a dedicated file, so that you can send it as an attachment in an email, for example.
+Or you can provide different templates to log a shorter report and send the full thing to a file, it's up to you!
 
 ### Html TestBook Reporter
 
@@ -1548,7 +1583,7 @@ html:
   output: target/spectrum/testbook/testbook-{timestamp}.html
 ```
 
-You can find the output file in: [Html TestBook Reporter](src/main/resources/images/testbook.html).
+For the sake of completeness, the output file was manually copied [here](src/main/resources/images/testbook.html).
 This is what it looks like when opened in a browser:
 
 ![Html TestBook Reporter](src/main/resources/images/html-testbook.png)
@@ -1558,7 +1593,7 @@ This is what it looks like when opened in a browser:
 ```yaml
 testBook:
   qualityGate:
-    condition: ${weightedSuccessful.percentage} > 60  # The execution is considered successful if at least 60% of the weighted tests are successful
+    condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
     yaml:
       path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
@@ -1573,7 +1608,7 @@ testBook:
 ```yaml
 testBook:
   qualityGate:
-    condition: ${weightedSuccessful.percentage} > 60  # The execution is considered successful if at least 60% of the weighted tests are successful
+    condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
     yaml:
       path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
@@ -1588,12 +1623,55 @@ testBook:
 ```yaml
 testBook:
   qualityGate:
-    condition: ${weightedSuccessful.percentage} > 40 || ${failed} < 10  # We want the testbook to be marked as successful if we have at least 40% of successful weighted tests or less than 10 tests failed
+    condition: ${weightedSuccessful.percentage} > 40 || ${failed} < 10  # We want the testbook to be marked as successful if we have at least 40% of successful weighted tests or less than 10 tests (not considering their weights!!) failed
   parser:
     txt:
       path: testbook.txt # we provided the yaml testbook in src/test/resources/testbook.txt
   reporters:
     - log: { }  # we just want the report to be logged
+```
+
+# Project Structure
+
+Let's see how your project will look like. Few assumptions for this example:
+
+* you defined base values plus three profiles, each with its own set of Data:
+    * [base] &rarr; `configuration.yaml` + `data.yaml`
+    * local &rarr; `configuration-local.yaml` + `data-local.yaml`
+    * test &rarr; `configuration-test.yaml` + `data-test.yaml`
+    * uat &rarr; `configuration-uat.yaml` + `data-uat.yaml`
+* you configured the yaml testbook parser, which will read the `testbook.yaml`
+* you configured both a html and a txt testbook reporters, which will produce `testbook.html` and `testbook.txt` reports
+
+```
+root
+└─ src
+|  └─ test
+|     ├─ java
+|     |  └─ com.your.tests
+|     |     └─ ...
+|     └─ resources
+|        ├─ data
+|        |  ├─ data.yaml
+|        |  ├─ data-local.yaml
+|        |  ├─ data-test.yaml
+|        |  └─ data-uat.yaml
+|        ├─ configuration.yaml
+|        ├─ configuration-local.yaml
+|        ├─ configuration-test.yaml
+|        ├─ configuration-uat.yaml
+|        └─ testbook.yaml
+├─ target
+|  └─ spectrum
+|     |─ logs
+|     |  └─ spectrum.log   # rotated daily
+|     |─ reports
+|     |  |─ screenshots    # folder where Extent Reports screenshots are saved
+|     |  └─ report.html    # by default the name ends with the timestamp
+|     └─ testbook
+|        |─ testbook.html  # by default the name ends with the timestamp
+|        └─ testbook.txt   # by default the name ends with the timestamp
+└─ pom.xml
 ```
 
 # Bugs Report and Feature Requests
