@@ -44,9 +44,9 @@ public class ItVerifierTest {
         final String logFile = new Scanner(BASE_DIR.resolve(Path.of("it-testbook", "target", "spectrum", "logs", "spectrum.log")).toFile()).useDelimiter("\\Z").next();
 
         // we indirectly check that the slack handler tried to consume the event with a regex in the primaryId
-        assertTrue(logFile.contains("SlackConsumer is consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=custom-event, result=null, context=null)"));
+        assertTrue(logFile.contains("SlackConsumer is consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=custom-event, result=null)"));
 
         // we indirectly check that the slack handler tried to consume the event with a regex in the reason
-        assertTrue(logFile.contains("SlackConsumer is consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=secondReason, result=null, context=null)"));
+        assertTrue(logFile.contains("SlackConsumer is consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=secondReason, result=null)"));
     }
 }

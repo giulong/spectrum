@@ -21,5 +21,6 @@ public class Event {
     private Result result;
 
     @JsonIgnore
+    @ToString.Exclude
     private ExtensionContext context;
 }

@@ -943,11 +943,11 @@ The other columns are the event's keys, with blank values being nulls.
 > If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
 > you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like:
 > ```text
-> 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
-> 18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
+> 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
+> 18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
 > 18:00:05.081 T EventsConsumer            | reasonMatches: false
 > 18:00:05.081 T EventsConsumer            | resultMatches: false
-> 18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
+> 18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
 > 18:00:05.081 T EventsConsumer            | reasonMatches: false
 > 18:00:05.081 T EventsConsumer            | resultMatches: false
 > ```
