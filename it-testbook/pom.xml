@@ -49,6 +49,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <systemPropertyVariables>
+                        <spectrum.data.password>SuperSecretPassword!</spectrum.data.password>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -75,12 +80,10 @@
                                 <configuration>
                                     <reportNameSuffix>chrome</reportNameSuffix>
                                     <systemPropertyVariables>
+                                        <spectrum.log.level>DEBUG</spectrum.log.level>
                                         <spectrum.browser>chrome</spectrum.browser>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
-                                    <systemProperties>
-                                        <spectrum.log.level>DEBUG</spectrum.log.level>
-                                    </systemProperties>
                                 </configuration>
                             </execution>
                         </executions>

@@ -1,7 +1,7 @@
 users:
   tom:
     name: tomsmith
-    password: SuperSecretPassword!
+    password: ${spectrum.data.password}
   giulio:
     name: Giulio Longfils
     password: pwd
