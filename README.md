@@ -444,15 +444,15 @@ anotherNode:
 
 ## Values interpolation
 
-Each non-object value in the configuration can be interpolated by placing a dollar-string like this:
+Each non-object value in the configuration can be interpolated with a dollar-string like this:
 
 ```yaml
 object:
   key: ${key:-defaultValue}
 ```
 
-Where the `:-` is the separator between the name of the key to search for and the default value in case the key is not found. The default value is optional: you can just
-have `${key}`
+Where the `:-` is the separator between the name of the key to search for and the default value to use in case the key is not found. The default value is optional: you can just
+have `${key}`.
 
 Spectrum will replace the dollar-string with the first value found in this list:
 
@@ -462,7 +462,8 @@ Spectrum will replace the dollar-string with the first value found in this list:
       key: value 
    ```
 2. system property named `key`: `-Dkey=value`
-3. `defaultValue` (if provided)
+3. environment variable named `key`
+4. `defaultValue` (if provided)
 
 If the provided key can't be found in any of these places, a warning will be raised.
 Both key name and default value might contain dots like in `${some.key:-default.value}`
@@ -954,11 +955,11 @@ The other columns are the event's keys, with blank values being nulls.
 > If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
 > you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like "Dispatching event ...":
 > ```text
-> 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
-> 18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
+> 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
+> 18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
 > 18:00:05.081 T EventsConsumer            | reasonMatches: false
 > 18:00:05.081 T EventsConsumer            | resultMatches: false
-> 18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null, context=null)
+> 18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
 > 18:00:05.081 T EventsConsumer            | reasonMatches: false
 > 18:00:05.081 T EventsConsumer            | resultMatches: false
 > ```

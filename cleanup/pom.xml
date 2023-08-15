@@ -20,6 +20,14 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
@@ -84,7 +92,7 @@
                 <executions>
                     <execution>
                         <id>Clean LauncherSessionListener file of the spectrum module</id>
-                        <phase>clean</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>clean</goal>
                         </goals>

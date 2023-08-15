@@ -21,7 +21,10 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
             final String varName = matcher.group("varName");
             final String placeholder = matcher.group("placeholder");
             final String defaultValue = matcher.group("defaultValue");
-            final String systemProperty = System.getProperty(varName, placeholder);
+            final String envVar = System.getenv(varName);
+            final String envVarOrPlaceholder = envVar != null ? envVar : placeholder;
+            final String systemProperty = System.getProperty(varName, envVarOrPlaceholder);
+
             interpolatedValue = interpolatedValue.replace(placeholder, VARS.getOrDefault(varName, systemProperty));
 
             if (value.equals(interpolatedValue)) {
