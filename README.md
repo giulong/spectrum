@@ -444,7 +444,7 @@ anotherNode:
 
 ## Values interpolation
 
-Each non-object value in the configuration can be interpolated with a dollar-string like this:
+Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml`  can be interpolated with a dollar-string like this:
 
 ```yaml
 object:
