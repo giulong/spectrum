@@ -438,15 +438,15 @@ anotherNode:
 
 ## Values interpolation
 
-Each non-object value in the configuration can be interpolated by placing a dollar-string like this:
+Each non-object value in the configuration can be interpolated with a dollar-string like this:
 
 ```yaml
 object:
   key: ${key:-defaultValue}
 ```
 
-Where the `:-` is the separator between the name of the key to search for and the default value in case the key is not found. The default value is optional: you can just
-have `${key}`
+Where the `:-` is the separator between the name of the key to search for and the default value to use in case the key is not found. The default value is optional: you can just
+have `${key}`.
 
 Spectrum will replace the dollar-string with the first value found in this list:
 
@@ -456,7 +456,8 @@ Spectrum will replace the dollar-string with the first value found in this list:
       key: value 
    ```
 2. system property named `key`: `-Dkey=value`
-3. `defaultValue` (if provided)
+3. environment variable named `key`
+4. `defaultValue` (if provided)
 
 If the provided key can't be found, a warning will be raised. Both key name and default value can contain dots like in `${some.key:-default.value}`
 
