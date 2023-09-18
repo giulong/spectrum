@@ -17,7 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.aventstack.extentreports.Status.*;
+import static com.aventstack.extentreports.Status.PASS;
+import static com.aventstack.extentreports.Status.SKIP;
 import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -82,6 +83,12 @@ class ExtentTestConsumerTest {
         when(store.getOrComputeIfAbsent(eq(EXTENT_TEST), functionArgumentCaptor.capture(), eq(ExtentTest.class))).thenReturn(extentTest);
     }
 
+    private ExtentTest verifyAndGetExtentTest() {
+        verify(store).getOrComputeIfAbsent(eq(EXTENT_TEST), functionArgumentCaptor.capture(), eq(ExtentTest.class));
+        Function<String, ExtentTest> function = functionArgumentCaptor.getValue();
+        return function.apply("value");
+    }
+
     @DisplayName("testDisabled should create the test in the report and delegate to finalizeTest")
     @ParameterizedTest(name = "with method {0} we expect {1}")
     @CsvSource({
@@ -96,8 +103,9 @@ class ExtentTestConsumerTest {
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
 
         extentTestConsumer.consumes(event);
-        verify(extentTest).skip(skipMarkupArgumentCaptor.capture());
+        final ExtentTest extentTest = verifyAndGetExtentTest();
 
+        verify(extentTest).skip(skipMarkupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text transparent'>Skipped: " + expected + "</span>", skipMarkupArgumentCaptor.getValue().getMarkup());
     }
 
@@ -107,9 +115,11 @@ class ExtentTestConsumerTest {
         addStubs();
         when(context.getRequiredTestInstance()).thenReturn(spectrumTest);
         when(context.getExecutionException()).thenReturn(Optional.of(exception));
-
         when(event.getResult()).thenReturn(FAILED);
+
         extentTestConsumer.consumes(event);
+        final ExtentTest extentTest = verifyAndGetExtentTest();
+
         verify(extentTest).fail(exception);
         verify(spectrumTest).screenshotFail("<span class='badge white-text red'>TEST FAILED</span>");
     }
@@ -123,6 +133,7 @@ class ExtentTestConsumerTest {
 
         extentTestConsumer.consumes(event);
 
+        final ExtentTest extentTest = verifyAndGetExtentTest();
         verify(extentTest).log(eq(PASS), markupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text transparent'>END TEST</span>", markupArgumentCaptor.getValue().getMarkup());
     }

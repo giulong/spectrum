@@ -83,7 +83,7 @@ public final class YamlUtils {
             return null;
         }
 
-        log.debug("Reading node '{}' of internal file '{}' onto an instance of {}", node, file, clazz.getSimpleName());
+        log.debug("Reading node '{}' of {} file '{}' onto an instance of {}", node, internal ? "internal" : "client", file, clazz.getSimpleName());
         final JsonNode root = yamlMapper.readTree(YamlUtils.class.getClassLoader().getResource(file));
         return yamlMapper.convertValue(root.at(node), clazz);
     }

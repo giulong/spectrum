@@ -14,6 +14,8 @@ webDriver:
   edge:
     args:
       - --headless=new
+    capabilities:
+      binary: /usr/bin/microsoft-edge
 
 data:
   folder: data
