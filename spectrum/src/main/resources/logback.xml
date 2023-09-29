@@ -34,6 +34,7 @@
 
     <logger name="io.netty" level="INFO"/>
     <logger name="org.asynchttpclient" level="INFO"/>
+    <logger name="org.openqa.selenium.remote.http.DumpHttpExchangeFilter" level="OFF"/>
 
     <root level="${spectrum.log.level:-INFO}">
         <appender-ref ref="STDOUT"/>
