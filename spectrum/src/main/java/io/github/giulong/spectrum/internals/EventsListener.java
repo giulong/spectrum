@@ -115,7 +115,6 @@ public class EventsListener implements WebDriverListener {
     @Generated
     public void onError(final Object target, final Method method, final Object[] args, final InvocationTargetException e) {
         log(events.getOnError(), target, method, Arrays.toString(args), e.getMessage());
-        log.error(e.getMessage(), e);
     }
 
     @Override
