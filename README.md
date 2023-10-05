@@ -38,7 +38,7 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 ## Setup
 
 > ⚠️ JDK<br/>
-> Since Spectrum is compiled with a jdk 17, you need a jdk 17+ to be able to run your tests.
+> Since Spectrum is compiled with a jdk 17, you need a [jdk 17+](https://jdk.java.net/java-se-ri/17) to be able to run your tests.
 > If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
 ### Spectrum Archetype
