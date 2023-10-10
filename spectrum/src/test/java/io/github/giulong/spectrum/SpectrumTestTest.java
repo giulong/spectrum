@@ -96,7 +96,7 @@ public class SpectrumTestTest<T> {
         assertEquals(spectrumTest.testPage, actual);
         assertThat(spectrumTest.testPage, instanceOf(FakeSpectrumPage.class));
 
-        assertEquals("blah", spectrumTest.testPage.endpoint);
+        assertEquals("blah", spectrumTest.testPage.getEndpoint());
 
         assertEquals(webDriver, spectrumTest.testPage.webDriver);
         assertEquals(implicitWait, spectrumTest.testPage.implicitWait);
@@ -116,7 +116,7 @@ public class SpectrumTestTest<T> {
         assertEquals(spectrumTest.testPageWithoutEndpoint, actual);
         assertThat(spectrumTest.testPageWithoutEndpoint, instanceOf(FakeSpectrumPageWithoutEndpoint.class));
 
-        assertEquals("", spectrumTest.testPageWithoutEndpoint.endpoint);
+        assertEquals("", spectrumTest.testPageWithoutEndpoint.getEndpoint());
 
         assertEquals(webDriver, spectrumTest.testPageWithoutEndpoint.webDriver);
         assertEquals(implicitWait, spectrumTest.testPageWithoutEndpoint.implicitWait);
