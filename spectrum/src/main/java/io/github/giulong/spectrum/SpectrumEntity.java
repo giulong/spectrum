@@ -9,9 +9,7 @@ import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -117,7 +115,13 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
 
         Files.createDirectories(screenshotPath.getParent());
-        Files.write(screenshotPath, webDriver.findElement(tagName("body")).getScreenshotAs(BYTES));
+
+        try {
+            Files.write(screenshotPath, webDriver.findElement(tagName("body")).getScreenshotAs(BYTES));
+        } catch (WebDriverException e) {
+            log.debug("Falling back to non-element screenshot due to: {}", e.getMessage());
+            Files.write(screenshotPath, ((TakesScreenshot) webDriver).getScreenshotAs(BYTES));
+        }
 
         final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
         extentTest.log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);

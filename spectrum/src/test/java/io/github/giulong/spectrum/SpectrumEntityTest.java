@@ -17,10 +17,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -212,6 +209,34 @@ class SpectrumEntityTest {
         assertEquals(screenshotPath.getParent().toString(), SCREEN_SHOT_FOLDER);
         assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(webElement).getScreenshotAs(BYTES);
+        verify(extentTest).log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenShot);
+    }
+
+    @Test
+    @DisplayName("addScreenshotToReport should fall back to taking a screenshot of the visible page if an exception is thrown")
+    public void addScreenshotToReportException() throws IOException {
+        final String exceptionMessage = "exceptionMessage";
+        final Path reportsFolder = Files.createTempDirectory("reportsFolder");
+        REPORTS_FOLDERS.add(reportsFolder);
+
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getReportFolder()).thenReturn(reportsFolder.toString());
+        when(webDriver.findElement(tagName("body"))).thenThrow(new WebDriverException(exceptionMessage));
+        when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
+
+        final String msg = "msg";
+        final Status status = INFO;
+        final Media screenShot = spectrumEntity.addScreenshotToReport(msg, status);
+
+        assertNotNull(screenShot);
+
+        final String screenShotName = screenShot.getPath();
+        final Path screenshotPath = Path.of(screenShotName);
+        final Path fullScreenShotPath = Path.of(reportsFolder.toString(), screenShotName);
+
+        assertTrue(Files.exists(fullScreenShotPath));
+        assertEquals(screenshotPath.getParent().toString(), SCREEN_SHOT_FOLDER);
+        assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(extentTest).log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenShot);
     }
 
