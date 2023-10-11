@@ -162,7 +162,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     protected String getReportsPathFrom(final String reportFolder, final String fileName) {
         final String resolvedFileName = fileUtils.interpolateTimestampFrom(fileName);
-        return Path.of(reportFolder, resolvedFileName).toString().replace("\\", "/");
+        return Path.of(reportFolder, resolvedFileName).toAbsolutePath().toString().replace("\\", "/");
     }
 
     protected void initEventsDispatcher() {
