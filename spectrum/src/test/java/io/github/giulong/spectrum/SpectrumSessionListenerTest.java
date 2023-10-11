@@ -160,7 +160,7 @@ class SpectrumSessionListenerTest {
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(Path.of(reportFolder, fileName).toString().replace("\\", "/"), context.arguments().get(0));
+            assertEquals(Path.of(reportFolder, fileName).toAbsolutePath().toString().replace("\\", "/"), context.arguments().get(0));
             when(mock.config()).thenReturn(extentSparkReporterConfig);
         });
 
@@ -478,7 +478,7 @@ class SpectrumSessionListenerTest {
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(Path.of(reportFolder, fileName).toString().replace("\\", "/"), context.arguments().get(0));
+            assertEquals(Path.of(reportFolder, fileName).toAbsolutePath().toString().replace("\\", "/"), context.arguments().get(0));
             when(mock.config()).thenReturn(extentSparkReporterConfig);
         });
 
@@ -513,7 +513,7 @@ class SpectrumSessionListenerTest {
         when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
 
         final String actual = spectrumSessionListener.getReportsPathFrom(reportFolder, fileName);
-        assertTrue(actual.matches(Path.of(expected).toString().replace("\\", "/")));
+        assertTrue(actual.matches(Path.of(expected).toAbsolutePath().toString().replace("\\", "/")));
     }
 
     @Test
