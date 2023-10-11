@@ -201,10 +201,14 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
-    public boolean isNotPresent(final By by) {
+    public boolean isPresent(final By by) {
         final int total = webDriver.findElements(by).size();
         log.debug("Found {} elements with By {}", total, by);
-        return total == 0;
+        return total > 0;
+    }
+
+    public boolean isNotPresent(final By by) {
+        return !isPresent(by);
     }
 
     public boolean hasClass(final WebElement webElement, final String className) {

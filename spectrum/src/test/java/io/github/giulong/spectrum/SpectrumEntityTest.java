@@ -384,6 +384,22 @@ class SpectrumEntityTest {
         verify(webElement).sendKeys(Path.of(System.getProperty("user.dir"), filesFolder, fileName).toString());
     }
 
+    @DisplayName("isPresent should return true if the element located by the provided By is in the dom")
+    @ParameterizedTest(name = "with list {0} we expect {1}")
+    @MethodSource("isPresentProvider")
+    public void isPresent(final List<WebElement> webElements, final boolean expected) {
+        when(webDriver.findElements(by)).thenReturn(webElements);
+
+        assertEquals(expected, spectrumEntity.isPresent(by));
+    }
+
+    public static Stream<Arguments> isPresentProvider() {
+        return Stream.of(
+                arguments(List.of(), false),
+                arguments(List.of(mock(WebElement.class)), true)
+        );
+    }
+
     @DisplayName("isNotPresent should return true if the element located by the provided By is not in the dom")
     @ParameterizedTest(name = "with list {0} we expect {1}")
     @MethodSource("isNotPresentProvider")
