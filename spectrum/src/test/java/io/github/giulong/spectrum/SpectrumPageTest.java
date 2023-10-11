@@ -41,7 +41,7 @@ class SpectrumPageTest {
     @DisplayName("open should get the configured base url and wait for the page to be loaded")
     public void open() {
         final String url = "url";
-        spectrumPage.endpoint = endpoint;
+        spectrumPage.setEndpoint(endpoint);
 
         when(configuration.getApplication()).thenReturn(application);
         when(application.getBaseUrl()).thenReturn(url);
@@ -60,7 +60,7 @@ class SpectrumPageTest {
     @ParameterizedTest(name = "with page url {0} and current url {1} we expect {2}")
     @MethodSource("valuesProvider")
     public void isLoaded(final String pageUrl, final String currentUrl, final boolean expected) {
-        spectrumPage.endpoint = endpoint;
+        spectrumPage.setEndpoint(endpoint);
 
         when(webDriver.getCurrentUrl()).thenReturn(currentUrl + endpoint);
         when(configuration.getApplication()).thenReturn(application);

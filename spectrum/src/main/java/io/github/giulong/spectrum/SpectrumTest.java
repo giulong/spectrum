@@ -128,7 +128,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         final Endpoint endpointAnnotation = spectrumPageClass.getAnnotation(Endpoint.class);
         final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
-        spectrumPage.endpoint = endpointValue;
+        spectrumPage.setEndpoint(endpointValue);
 
         final List<Field> sharedFields = getSharedFields();
         final Map<String, Field> targetFieldsMap = sharedFields
