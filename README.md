@@ -334,6 +334,7 @@ so you can directly use them in your tests/pages without caring about declaring 
 * `WebElement clearAndSendKeys(WebElement, CharSequence)`: helper method to call Selenium's `clear` and `sendKeys` on the provided WebElement, which is then returned
 * `T upload(WebElement, String)`: uploads to the provided WebElement (usually an input field with `type="file"`) the file with the provided name, taken from the
   configurable `runtime.filesFolder`. Check the [File Upload section](#file-upload)
+* `boolean isPresent(By)`: checks if the WebElement with the provided `by` is present in the current page
 * `boolean isNotPresent(By)`: checks if no WebElement with the provided `by` is present in the current page
 * `boolean hasClass(WebElement, String)`: checks if the provided WebElement has the provided css class
 * `boolean hasClasses(WebElement, String...)`: checks if the provided WebElement has **all** the provided css classes
