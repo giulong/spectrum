@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -48,6 +49,9 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
         log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), buildVersionLine()));
 
         parseConfiguration();

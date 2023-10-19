@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -44,6 +45,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("SpectrumSessionListener")
 class SpectrumSessionListenerTest {
 
+    private static MockedStatic<SLF4JBridgeHandler> slf4JBridgeHandlerMockedStatic;
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;
     private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
@@ -102,6 +104,7 @@ class SpectrumSessionListenerTest {
     @BeforeEach
     public void beforeEach() {
         osName = System.getProperty("os.name");
+        slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
         yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
@@ -110,6 +113,7 @@ class SpectrumSessionListenerTest {
 
     @AfterEach
     public void afterEach() {
+        slf4JBridgeHandlerMockedStatic.close();
         fileUtilsMockedStatic.close();
         yamlUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
@@ -196,6 +200,9 @@ class SpectrumSessionListenerTest {
         assertEquals(configuration, SpectrumSessionListener.getConfiguration());
         assertEquals(2, mappedTests.size());
         mappedTests.values().stream().map(TestBookTest::getResult).forEach(result -> assertEquals(NOT_RUN, result));
+
+        slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::removeHandlersForRootLogger);
+        slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::install);
 
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
