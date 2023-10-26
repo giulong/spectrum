@@ -16,7 +16,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
         @Type(value = GridEnvironment.class, name = "grid"),
 })
 public abstract class Environment {
-    public abstract void setupFrom(Browser<?, ?, ?> browser, RemoteWebDriverBuilder webDriverBuilder);
+    public abstract WebDriver setupFrom(Browser<?, ?, ?> browser, RemoteWebDriverBuilder webDriverBuilder);
 
-    public abstract void finalizeSetupOf(WebDriver webDriver);
+    public abstract void shutdown();
 }

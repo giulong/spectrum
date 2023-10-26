@@ -21,17 +21,21 @@ public class GridEnvironment extends Environment {
     protected boolean localFileDetector;
 
     @Override
-    public void setupFrom(final Browser<?, ?, ?> browser, final RemoteWebDriverBuilder webDriverBuilder) {
+    public WebDriver setupFrom(final Browser<?, ?, ?> browser, final RemoteWebDriverBuilder webDriverBuilder) {
         log.info("Running on grid at {}", url);
 
         browser.mergeGridCapabilitiesFrom(capabilities);
-        webDriverBuilder.address(url);
+        final RemoteWebDriver webDriver = (RemoteWebDriver) webDriverBuilder.address(url).build();
+
+        if (localFileDetector) {
+            webDriver.setFileDetector(new LocalFileDetector());
+        }
+
+        return webDriver;
     }
 
     @Override
-    public void finalizeSetupOf(final WebDriver webDriver) {
-        if (localFileDetector) {
-            ((RemoteWebDriver) webDriver).setFileDetector(new LocalFileDetector());
-        }
+    public void shutdown() {
+        log.debug("Nothing to shutdown in a grid environment");
     }
 }

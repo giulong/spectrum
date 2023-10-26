@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.utils.events;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.webdrivers.LocalEnvironment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +41,9 @@ class BrowserConsumerTest {
     @Mock
     private Browser<?, ?, ?> browser;
 
+    @Mock
+    private LocalEnvironment environment;
+
     @InjectMocks
     private BrowserConsumer browserConsumer;
 
@@ -52,9 +56,11 @@ class BrowserConsumerTest {
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(browser).when(runtime).getBrowser();
+        doReturn(environment).when(runtime).getEnvironment();
 
         browserConsumer.consumes(event);
 
         verify(browser).shutdown();
+        verify(environment).shutdown();
     }
 }
