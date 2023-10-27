@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.webdrivers;
 
 import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
@@ -16,6 +17,7 @@ import java.util.Map;
 @Getter
 public class GridEnvironment extends Environment {
 
+    @JsonSchemaTypes(String.class)
     protected URL url;
     protected final Map<String, String> capabilities = new HashMap<>();
     protected boolean localFileDetector;
