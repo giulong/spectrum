@@ -4,6 +4,9 @@ on:
   push:
     branches: [ "develop", "feature/**" ]
 
+env:
+  EDGE_BINARY: /usr/bin/microsoft-edge
+
 jobs:
   build:
     name: Build
