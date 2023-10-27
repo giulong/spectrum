@@ -11,7 +11,7 @@ import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
 @Slf4j
 public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
 
-    public static final Pattern PATTERN = Pattern.compile("(?<placeholder>\\$\\{(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~.:/\\\\]+))?})");
+    public static final Pattern PATTERN = Pattern.compile("(?<placeholder>\\$\\{(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~.:/\\\\]*))?})");
 
     String interpolate(final String value, final String currentName) {
         final Matcher matcher = PATTERN.matcher(value);
