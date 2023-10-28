@@ -14,6 +14,7 @@ import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -74,7 +75,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     @SuppressWarnings("checkstyle:ParameterNumber")
     public void beforeEach(final Configuration configuration, final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait,
                            final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final ExtentTest extentTest,
-                           final Actions actions, final EventsDispatcher eventsDispatcher, final Data data) {
+                           final Actions actions, final EventsDispatcher eventsDispatcher, final TestInfo testInfo, final Data data) {
         this.configuration = configuration;
         this.webDriver = webDriver;
         this.implicitWait = implicitWait;
@@ -85,6 +86,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.extentTest = extentTest;
         this.actions = actions;
         this.eventsDispatcher = eventsDispatcher;
+        this.testInfo = testInfo;
         this.data = data;
 
         initPages();

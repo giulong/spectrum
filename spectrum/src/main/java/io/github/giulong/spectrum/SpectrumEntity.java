@@ -9,6 +9,7 @@ import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.TestInfo;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -65,6 +66,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     protected EventsDispatcher eventsDispatcher;
 
     @Shared
+    protected TestInfo testInfo;
+
+    @Shared
     protected Data data;
 
     protected List<Field> getSharedFields() {
@@ -112,7 +116,13 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     @SneakyThrows
     public Media addScreenshotToReport(final String msg, final Status status) {
         final String fileName = String.format("%s.png", randomUUID());
-        final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
+        final Path screenshotPath = Path.of(
+                        configuration.getExtent().getReportFolder(),
+                        SCREEN_SHOT_FOLDER,
+                        testInfo.getTestClass().orElseThrow().getSimpleName(),
+                        testInfo.getTestMethod().orElseThrow().getName(),
+                        fileName)
+                .toAbsolutePath();
 
         Files.createDirectories(screenshotPath.getParent());
 
@@ -123,7 +133,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
             Files.write(screenshotPath, ((TakesScreenshot) webDriver).getScreenshotAs(BYTES));
         }
 
-        final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
+        final Media screenshot = createScreenCaptureFromPath(screenshotPath.toString()).build();
         extentTest.log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
 
         return screenshot;

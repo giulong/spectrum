@@ -4,9 +4,11 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.pojos.Configuration;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -29,11 +31,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.Status.*;
 import static io.github.giulong.spectrum.SpectrumEntity.SCREEN_SHOT_FOLDER;
+import static java.io.File.separator;
 import static java.util.Comparator.reverseOrder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -47,6 +51,8 @@ import static org.openqa.selenium.OutputType.BYTES;
 @DisplayName("SpectrumEntity")
 class SpectrumEntityTest {
 
+    private static final String CLASS_NAME = "String";
+    private static final String METHOD_NAME = "afterAll";
     private static final String UUID_REGEX = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
     private static final List<Path> REPORTS_FOLDERS = new ArrayList<>();
 
@@ -64,6 +70,9 @@ class SpectrumEntityTest {
 
     @Mock
     private ExtentTest extentTest;
+
+    @Mock
+    private TestInfo testInfo;
 
     @Mock(extraInterfaces = TakesScreenshot.class)
     private WebDriver webDriver;
@@ -98,7 +107,8 @@ class SpectrumEntityTest {
         });
     }
 
-    private Path addScreenshotToReportStubs() throws IOException {
+    @SneakyThrows
+    private Path addScreenshotToReportStubs() {
         final Path path = Files.createTempDirectory("reportsFolder");
         REPORTS_FOLDERS.add(path);
 
@@ -106,6 +116,8 @@ class SpectrumEntityTest {
         when(extent.getReportFolder()).thenReturn(path.toString());
         when(webDriver.findElement(tagName("body"))).thenReturn(webElement);
         when(webElement.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
+        when(testInfo.getTestClass()).thenReturn(Optional.of(String.class));
+        when(testInfo.getTestMethod()).thenReturn(Optional.of(getClass().getMethod(METHOD_NAME)));
 
         return path;
     }
@@ -120,7 +132,7 @@ class SpectrumEntityTest {
                 .toList();
 
         // we're checking real size and names here, no mocks
-        assertEquals(11, actual.size());
+        assertEquals(12, actual.size());
         assertTrue(sharedFieldsNames.containsAll(List.of(
                 "configuration",
                 "extentReports",
@@ -132,6 +144,7 @@ class SpectrumEntityTest {
                 "pageLoadWait",
                 "scriptWait",
                 "downloadWait",
+                "testInfo",
                 "data"
         )));
     }
@@ -146,7 +159,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("screenshot should delegate to addScreenshotToReport")
-    public void screenshot() throws IOException {
+    public void screenshot() {
         addScreenshotToReportStubs();
 
         assertEquals(spectrumEntity, spectrumEntity.screenshot());
@@ -157,7 +170,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("infoWithScreenshot should delegate to addScreenshotToReport")
-    public void infoWithScreenshot() throws IOException {
+    public void infoWithScreenshot() {
         final String msg = "msg";
         addScreenshotToReportStubs();
 
@@ -169,7 +182,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("warningWithScreenshot should delegate to addScreenshotToReport")
-    public void warningWithScreenshot() throws IOException {
+    public void warningWithScreenshot() {
         final String msg = "msg";
         addScreenshotToReportStubs();
 
@@ -181,7 +194,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("failWithScreenshot should delegate to addScreenshotToReport")
-    public void failWithScreenshot() throws IOException {
+    public void failWithScreenshot() {
         final String msg = "msg";
         addScreenshotToReportStubs();
 
@@ -193,8 +206,8 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("addScreenshotToReport should add the provided message to the report, at the provided status level and attaching a screenshot")
-    public void addScreenshotToReport() throws IOException {
-        final Path reportsFolder = addScreenshotToReportStubs();
+    public void addScreenshotToReport() {
+        addScreenshotToReportStubs();
         final String msg = "msg";
         final Status status = INFO;
         final Media screenShot = spectrumEntity.addScreenshotToReport(msg, status);
@@ -203,10 +216,9 @@ class SpectrumEntityTest {
 
         final String screenShotName = screenShot.getPath();
         final Path screenshotPath = Path.of(screenShotName);
-        final Path fullScreenShotPath = Path.of(reportsFolder.toString(), screenShotName);
 
-        assertTrue(Files.exists(fullScreenShotPath));
-        assertEquals(screenshotPath.getParent().toString(), SCREEN_SHOT_FOLDER);
+        assertTrue(Files.exists(screenshotPath));
+        assertTrue(screenshotPath.getParent().toString().endsWith(SCREEN_SHOT_FOLDER + separator + CLASS_NAME + separator + METHOD_NAME));
         assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(webElement).getScreenshotAs(BYTES);
         verify(extentTest).log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenShot);
@@ -214,7 +226,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("addScreenshotToReport should fall back to taking a screenshot of the visible page if an exception is thrown")
-    public void addScreenshotToReportException() throws IOException {
+    public void addScreenshotToReportException() throws IOException, NoSuchMethodException {
         final String exceptionMessage = "exceptionMessage";
         final Path reportsFolder = Files.createTempDirectory("reportsFolder");
         REPORTS_FOLDERS.add(reportsFolder);
@@ -223,6 +235,8 @@ class SpectrumEntityTest {
         when(extent.getReportFolder()).thenReturn(reportsFolder.toString());
         when(webDriver.findElement(tagName("body"))).thenThrow(new WebDriverException(exceptionMessage));
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
+        when(testInfo.getTestClass()).thenReturn(Optional.of(String.class));
+        when(testInfo.getTestMethod()).thenReturn(Optional.of(getClass().getMethod(METHOD_NAME)));
 
         final String msg = "msg";
         final Status status = INFO;
@@ -232,10 +246,9 @@ class SpectrumEntityTest {
 
         final String screenShotName = screenShot.getPath();
         final Path screenshotPath = Path.of(screenShotName);
-        final Path fullScreenShotPath = Path.of(reportsFolder.toString(), screenShotName);
 
-        assertTrue(Files.exists(fullScreenShotPath));
-        assertEquals(screenshotPath.getParent().toString(), SCREEN_SHOT_FOLDER);
+        assertTrue(Files.exists(screenshotPath));
+        assertTrue(screenshotPath.getParent().toString().endsWith(SCREEN_SHOT_FOLDER + separator + CLASS_NAME + separator + METHOD_NAME));
         assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
         verify(extentTest).log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenShot);
     }
