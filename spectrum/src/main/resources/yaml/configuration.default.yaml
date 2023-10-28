@@ -72,52 +72,40 @@ webDriver:
   # Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.
   events:
     beforeAnyCall:
-      level: OFF
       message: About to call method %2$s with args %3$s on target %1$s
     afterAnyCall:
-      level: OFF
       message: Called method method %2$s with args %3$s on target %1$s with result %4$s
     onError:
       level: DEBUG
       message: Got a %4$s calling method %2$s with args %3$s on target %1$s
     beforeAnyWebDriverCall:
-      level: OFF
       message: About to call %2$s with args %3$s
     afterAnyWebDriverCall:
-      level: OFF
       message: Called %2$s with args %3$s with result %4$s
     beforeGet:
       level: INFO
       message: About to get <a href="%2$s" target="_blank">%2$s</a>
     afterGet:
-      level: OFF
       message: Got <a href="%2$s" target="_blank">%2$s</a>
     beforeGetCurrentUrl:
-      level: OFF
       message: About to get current url
     afterGetCurrentUrl:
-      level: OFF
       message: Got current url with result %1$s
     beforeGetTitle:
-      level: OFF
       message: About to get title
     afterGetTitle:
-      level: OFF
       message: Got title %2$s
     beforeFindElement:
       level: DEBUG
       message: About to find element %2$s
     afterFindElement:
-      level: OFF
       message: Element %2$s is %3$s
     beforeFindElements:
       level: DEBUG
       message: About to find elements %2$s
     afterFindElements:
-      level: OFF
       message: Elements %2$s are %3$s
     beforeGetPageSource:
-      level: OFF
       message: About to get page source
     afterGetPageSource:
       level: DEBUG
@@ -126,106 +114,86 @@ webDriver:
       level: DEBUG
       message: About to close
     afterClose:
-      level: OFF
       message: Closed
     beforeQuit:
       level: DEBUG
       message: About to quit
     afterQuit:
-      level: OFF
       message: Done quitting
     beforeGetWindowHandles:
       level: DEBUG
       message: About to get window handles
     afterGetWindowHandles:
-      level: OFF
       message: Got window handles %2$s
     beforeGetWindowHandle:
       level: DEBUG
       message: About to get window handle
     afterGetWindowHandle:
-      level: OFF
       message: Got window handle %2$s
     beforeExecuteScript:
       level: DEBUG
       message: About to execute script %2$s with args %3$s
     afterExecuteScript:
-      level: OFF
       message: Result of script %2$s with args %3$s is %4$s
     beforeExecuteAsyncScript:
       level: DEBUG
       message: About to execute async script %2$s with args %3$s
     afterExecuteAsyncScript:
-      level: OFF
       message: Result of async script %2$s with args %3$s is %4$s
     beforePerform:
       level: DEBUG
       message: About to perform actions %2$s
     afterPerform:
-      level: OFF
       message: Performed actions %2$s
     beforeResetInputState:
-      level: OFF
       message: About to reset input state
     afterResetInputState:
-      level: OFF
       message: Done resetting input state
     beforeAnyWebElementCall:
-      level: OFF
       message: About to call %2$s with args %3$s on %1$s
     afterAnyWebElementCall:
-      level: OFF
       message: Result of call %2$s with args %3$s on %1$s is %4$s
     beforeClick:
       level: INFO
       message: Clicking on %1$s
     afterClick:
-      level: OFF
       message: Clicked on %1$s
     beforeSubmit:
       level: INFO
       message: Submitting %1$s
     afterSubmit:
-      level: OFF
       message: Submitted %1$s
     beforeSendKeys:
       level: INFO
       message: Sending keys %2$s to %1$s
     afterSendKeys:
-      level: OFF
       message: Sent keys %2$s to %1$s
     beforeClear:
       level: DEBUG
       message: Clearing %1$s
     afterClear:
-      level: OFF
       message: Cleared %1$s
     beforeGetTagName:
-      level: OFF
       message: Getting tag name of %1$s
     afterGetTagName:
       level: INFO
       message: Tag name of %1$s is %2$s
     beforeGetAttribute:
-      level: OFF
       message: Getting attribute %2$s of %1$s
     afterGetAttribute:
       level: INFO
       message: Attribute %2$s of %1$s is %3$s
     beforeIsSelected:
-      level: OFF
       message: Checking if %1$s is selected
     afterIsSelected:
       level: INFO
       message: Element %1$s is selected? %2$s
     beforeIsEnabled:
-      level: OFF
       message: Checking if %1$s is enabled
     afterIsEnabled:
       level: INFO
       message: Element %1$s is enabled? %2$s
     beforeGetText:
-      level: OFF
       message: Getting text of %1$s
     afterGetText:
       level: INFO
@@ -234,178 +202,140 @@ webDriver:
       level: DEBUG
       message: About to find element %2$s inside %1$s
     afterFindWebElement:
-      level: OFF
       message: Element %2$s inside %1$s is %3$s
     beforeFindWebElements:
       level: DEBUG
       message: About to find elements %2$s inside %1$s
     afterFindWebElements:
-      level: OFF
       message: Elements %2$s inside %1$s are %3$s
     beforeIsDisplayed:
-      level: OFF
       message: Checking if %1$s is displayed
     afterIsDisplayed:
       level: INFO
       message: Element %1$s is displayed? %2$s
     beforeGetLocation:
-      level: OFF
       message: Getting location of %1$s
     afterGetLocation:
       level: INFO
       message: Location of %1$s is %2$s
     beforeGetSize:
-      level: OFF
       message: Getting size of %1$s
     afterGetSize:
       level: INFO
       message: Size of %1$s is %2$s
     beforeGetCssValue:
-      level: OFF
       message: Getting css property %2$s of element %1$s
     afterGetCssValue:
       level: INFO
       message: Css property %2$s of element %1$s is %3$s
     beforeAnyNavigationCall:
-      level: OFF
       message: Calling navigation method %2$s with args %3$s
     afterAnyNavigationCall:
-      level: OFF
       message: Navigation method %2$s with args %3$s led to %4$s
     beforeTo:
       level: INFO
       message: Navigating to %2$s
     afterTo:
-      level: OFF
       message: Navigated to %2$s
     beforeBack:
       level: INFO
       message: Going back
     afterBack:
-      level: OFF
       message: Went back
     beforeForward:
       level: INFO
       message: Going forward
     afterForward:
-      level: OFF
       message: Went forward
     beforeRefresh:
       level: INFO
       message: Refreshing page
     afterRefresh:
-      level: OFF
       message: Page refreshed
     beforeAnyAlertCall:
-      level: OFF
       message: Calling alert method %2$s with args %3$s
     afterAnyAlertCall:
-      level: OFF
       message: Alert method %2$s with args %3$s resulted in %4$s
     beforeAccept:
       level: INFO
       message: Accepting alert
     afterAccept:
-      level: OFF
       message: Alert accepted
     beforeDismiss:
       level: INFO
       message: Dismissing alert
     afterDismiss:
-      level: OFF
       message: Alert dismissed
     beforeAnyOptionsCall:
-      level: OFF
       message: Calling options method %2$s with args %3$s
     afterAnyOptionsCall:
-      level: OFF
       message: Options method %2$s with args %3$s resulted in %4$s
     beforeAddCookie:
       level: TRACE
       message: Adding cookie %2$s
     afterAddCookie:
-      level: OFF
       message: Added cookie %2$s
     beforeDeleteCookieNamed:
       level: TRACE
       message: Deleting cookie named %2$s
     afterDeleteCookieNamed:
-      level: OFF
       message: Cookie named %2$s deleted
     beforeDeleteCookie:
       level: TRACE
       message: Deleting cookie %2$s
     afterDeleteCookie:
-      level: OFF
       message: Cookie %2$s deleted
     beforeDeleteAllCookies:
       level: TRACE
       message: Deleting all cookies
     afterDeleteAllCookies:
-      level: OFF
       message: All cookies deleted
     beforeGetCookies:
       level: TRACE
       message: Getting cookies
     afterGetCookies:
-      level: OFF
       message: Cookies are %2$s
     beforeGetCookieNamed:
       level: TRACE
       message: Getting cookie named %2$s
     afterGetCookieNamed:
-      level: OFF
       message: Cookie named %2$s is %3$s
     beforeAnyTimeoutsCall:
-      level: OFF
       message: About to reach timeout on method %2$s with args %3$s
     afterAnyTimeoutsCall:
-      level: OFF
       message: Got timeout on method %2$s with args %3$s and result %4$s
     beforeImplicitlyWait:
-      level: OFF
       message: Waiting for %2$s
     afterImplicitlyWait:
-      level: OFF
       message: Waited for %2$s
     beforeSetScriptTimeout:
-      level: OFF
       message: Setting script timeout to %2$s
     afterSetScriptTimeout:
-      level: OFF
       message: Script timeout set to %2$s
     beforePageLoadTimeout:
-      level: OFF
       message: About to reach page load timeout of %2$s
     afterPageLoadTimeout:
-      level: OFF
       message: Reached page load timeout of %2$s
     beforeAnyWindowCall:
-      level: OFF
       message: Calling window method %2$s with args %3$s
     afterAnyWindowCall:
-      level: OFF
       message: Window method %2$s with args %3$s resulted in %4$s
     beforeGetWindowSize:
-      level: OFF
       message: Getting size of window %1$s
     afterGetWindowSize:
       level: INFO
       message: Size of window %1$s is %2$s
     beforeSetSize:
-      level: OFF
       message: Settings size to %2$s
     afterSetSize:
       level: INFO
       message: Set size to %2$s
     beforeGetPosition:
-      level: OFF
       message: Getting window position
     afterGetPosition:
       level: INFO
       message: Window position is %2$s
     beforeSetPosition:
-      level: OFF
       message: Setting window position to %2$s
     afterSetPosition:
       level: INFO
@@ -414,13 +344,11 @@ webDriver:
       level: DEBUG
       message: Maximizing window
     afterMaximize:
-      level: OFF
       message: Window maximized
     beforeFullscreen:
       level: DEBUG
       message: Setting fullscreen
     afterFullscreen:
-      level: OFF
       message: Window set to fullscreen
 
 # Data models

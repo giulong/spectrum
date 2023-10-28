@@ -16,7 +16,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
-@SuppressWarnings("unused")
+import static ch.qos.logback.classic.Level.OFF;
+
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 @Getter
 public class Configuration {
 
@@ -238,7 +240,7 @@ public class Configuration {
 
         @Getter
         public static class Event {
-            private ch.qos.logback.classic.Level level;
+            private ch.qos.logback.classic.Level level = OFF;
             private String message;
         }
     }
