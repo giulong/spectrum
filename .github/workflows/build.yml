@@ -25,15 +25,15 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
 
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+      - name: Compile project
+        run: ./mvnw -B package -DskipTests -DskipSign
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v2
@@ -54,7 +54,7 @@ jobs:
           cache: maven
 
       - name: mvn install
-        run: mvn -B install -DallTests -DskipSign
+        run: ./mvnw -B install -DallTests -DskipSign
 
       - name: Generate Jacoco Badge
         id: jacoco
