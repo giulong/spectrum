@@ -37,12 +37,14 @@ To avoid manual operations, at the end of the full build, the `cleanup` module w
 
 ## How to build the project
 
-`mvn clean install -DallTests -DskipSign -fae`
+You can leverage the maven wrapper bundled in this repo:
+
+`./mvnw clean install -DallTests -DskipSign -fae`
 
 * `clean` is needed to delete old reports and avoid the `it-verifier` module checks outdated ones.
 * `install` will copy the built framework (jar) in your local maven repo, so that you can use it locally in other projects.
 * the `allTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
-  run: `mvn clean install -P chrome,firefox,edge -fae`.
+  run: `./mvnw clean install -P chrome,firefox,edge -fae`.
 * the `skipSign` skips signing the artifact with a gpg key.
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.
 
