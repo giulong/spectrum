@@ -6,6 +6,7 @@ on:
 
 env:
   EDGE_BINARY: /usr/bin/microsoft-edge
+  MAVEN_ARGS: -Dmaven.plugin.validation=BRIEF
 
 jobs:
   analyze:
