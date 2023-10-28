@@ -158,7 +158,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.32.0</version>
+                <version>1.34.0</version>
             </dependency>
 
             <dependency>
