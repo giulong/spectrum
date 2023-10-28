@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.it_testbook_verifier.data;
+package io.github.giulong.spectrum.it_verifier.data;
 
 import lombok.Getter;
 

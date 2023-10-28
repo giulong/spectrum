@@ -8,4 +8,4 @@ webDriver:
 
 data:
   folder: data
-  fqdn: io.github.giulong.spectrum.it_testbook_verifier.data.Data
+  fqdn: io.github.giulong.spectrum.it_verifier.data.Data

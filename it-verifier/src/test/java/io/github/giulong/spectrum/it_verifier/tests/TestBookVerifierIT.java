@@ -1,8 +1,8 @@
-package io.github.giulong.spectrum.it_testbook_verifier.tests;
+package io.github.giulong.spectrum.it_verifier.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it_testbook_verifier.data.Data;
-import io.github.giulong.spectrum.it_testbook_verifier.pages.TestBookPage;
+import io.github.giulong.spectrum.it_verifier.data.Data;
+import io.github.giulong.spectrum.it_verifier.pages.TestBookPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
