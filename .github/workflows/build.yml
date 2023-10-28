@@ -41,7 +41,7 @@ jobs:
         with:
           category: "/language:${{matrix.language}}"
 
-      - name: Generate Jacoco Badge
+      - name: Generate JaCoCo Badge
         id: jacoco
         uses: cicirello/jacoco-badge-generator@v2
         with:
@@ -53,7 +53,7 @@ jobs:
           echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
           echo "branches = ${{ steps.jacoco.outputs.branches }}"
 
-      - name: Commit and push
+      - name: Commit and push JaCoCo Badge
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           cd .github/badges
@@ -67,7 +67,7 @@ jobs:
             git push --set-upstream origin actions/badges
           fi
 
-      - name: Upload Jacoco coverage report
+      - name: Upload JaCoCo coverage report
         uses: actions/upload-artifact@v3
         with:
           name: jacoco-report
