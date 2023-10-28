@@ -70,16 +70,16 @@ public class Configuration {
         @Getter
         public static class Waits {
 
-            @JsonSchemaTypes({int.class})
+            @JsonSchemaTypes(int.class)
             private Duration implicit;
 
-            @JsonSchemaTypes({int.class})
+            @JsonSchemaTypes(int.class)
             private Duration pageLoadTimeout;
 
-            @JsonSchemaTypes({int.class})
+            @JsonSchemaTypes(int.class)
             private Duration downloadTimeout;
 
-            @JsonSchemaTypes({int.class})
+            @JsonSchemaTypes(int.class)
             private Duration scriptTimeout;
         }
 
@@ -105,13 +105,13 @@ public class Configuration {
         @Getter
         public static class Logs {
 
-            @JsonSchemaTypes({String.class})
+            @JsonSchemaTypes(String.class)
             private Level browser;
 
-            @JsonSchemaTypes({String.class})
+            @JsonSchemaTypes(String.class)
             private Level driver;
 
-            @JsonSchemaTypes({String.class})
+            @JsonSchemaTypes(String.class)
             private Level performance;
         }
 
@@ -253,7 +253,7 @@ public class Configuration {
     public static class FreeMarker {
         private String version;
 
-        @JsonSchemaTypes({String.class})
+        @JsonSchemaTypes(String.class)
         private Locale locale;
 
         private String numberFormat;

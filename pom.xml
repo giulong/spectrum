@@ -49,11 +49,13 @@
         <simplejavamail.version>8.1.3</simplejavamail.version>
         <jsonschemagenerator.version>4.31.1</jsonschemagenerator.version>
         <slf4j.version>2.0.9</slf4j.version>
+        <selenium.version>4.14.1</selenium.version>
     </properties>
 
     <modules>
         <module>spectrum</module>
         <module>it</module>
+        <module>it-grid</module>
         <module>it-testbook</module>
         <module>it-verifier</module>
         <module>cleanup</module>
@@ -112,7 +114,12 @@
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
-                <version>4.14.1</version>
+                <version>${selenium.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.seleniumhq.selenium</groupId>
+                <artifactId>selenium-grid</artifactId>
+                <version>${selenium.version}</version>
             </dependency>
 
             <dependency>

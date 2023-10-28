@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.webdrivers;
 
 import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
@@ -16,22 +17,27 @@ import java.util.Map;
 @Getter
 public class GridEnvironment extends Environment {
 
+    @JsonSchemaTypes(String.class)
     protected URL url;
     protected final Map<String, String> capabilities = new HashMap<>();
     protected boolean localFileDetector;
 
     @Override
-    public void setupFrom(final Browser<?, ?, ?> browser, final RemoteWebDriverBuilder webDriverBuilder) {
+    public WebDriver setupFrom(final Browser<?, ?, ?> browser, final RemoteWebDriverBuilder webDriverBuilder) {
         log.info("Running on grid at {}", url);
 
         browser.mergeGridCapabilitiesFrom(capabilities);
-        webDriverBuilder.address(url);
+        final RemoteWebDriver webDriver = (RemoteWebDriver) webDriverBuilder.address(url).build();
+
+        if (localFileDetector) {
+            webDriver.setFileDetector(new LocalFileDetector());
+        }
+
+        return webDriver;
     }
 
     @Override
-    public void finalizeSetupOf(final WebDriver webDriver) {
-        if (localFileDetector) {
-            ((RemoteWebDriver) webDriver).setFileDetector(new LocalFileDetector());
-        }
+    public void shutdown() {
+        log.debug("Nothing to shutdown in a grid environment");
     }
 }
