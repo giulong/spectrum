@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="PATTERN" value="%d{HH:mm:ss.SSS} %.-1level %-25logger{0} | %msg%nopex%n"/>
+    <property name="COLOR_PATTERN" value="%highlight(${PATTERN})"/>
+    <property name="FILE_PATH" value="${spectrum.log.path:-target/spectrum/logs}"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${COLOR_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${FILE_PATH}/spectrum.log</file>
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="io.netty" level="INFO"/>
+    <logger name="org.asynchttpclient" level="INFO"/>
+    <logger name="org.asynchttpclient.netty.handler.WebSocketHandler" level="ERROR"/>
+
+    <root level="${spectrum.log.level:-INFO}">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

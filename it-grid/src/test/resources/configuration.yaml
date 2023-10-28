@@ -1,0 +1,19 @@
+runtime:
+  environment:
+    grid:
+      url: http://localhost:4444/wd/hub
+
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+webDriver:
+  waits:
+    implicit: 2
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+
+extent:
+  theme: DARK
+  fileName: report.html
