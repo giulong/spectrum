@@ -6,25 +6,15 @@ on:
 
 env:
   EDGE_BINARY: /usr/bin/microsoft-edge
-  MAVEN_ARGS: -Dmaven.plugin.validation=BRIEF
 
 jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
     permissions: write-all
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'java-kotlin' ]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v2
-        with:
-          languages: ${{ matrix.language }}
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -34,12 +24,7 @@ jobs:
           cache: maven
 
       - name: mvn install
-        run: ./mvnw -B install -DallTests -DskipSign
-
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v2
-        with:
-          category: "/language:${{matrix.language}}"
+        run: ./mvnw -B install -DallTests -DskipSign -Dmaven.plugin.validation=BRIEF
 
       - name: Generate JaCoCo Badge
         id: jacoco
