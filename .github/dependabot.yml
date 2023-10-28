@@ -1,0 +1,9 @@
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+    assignees: [ "giulong" ]
+    open-pull-requests-limit: 100
+    target-branch: develop
