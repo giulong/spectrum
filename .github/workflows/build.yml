@@ -2,7 +2,10 @@ name: Build
 
 on:
   push:
-    branches: [ "develop", "feature/**" ]
+    branches: [ "develop", "feature/**", "bugfix/**" ]
+
+env:
+  EDGE_BINARY: /usr/bin/microsoft-edge
 
 jobs:
   build:

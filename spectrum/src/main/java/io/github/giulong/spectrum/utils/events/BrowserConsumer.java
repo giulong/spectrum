@@ -12,13 +12,14 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class BrowserConsumer extends EventsConsumer {
 
     public void consumes(final Event event) {
-        event
+        final Configuration.Runtime runtime = event
                 .getContext()
                 .getRoot()
                 .getStore(GLOBAL)
                 .get(CONFIGURATION, Configuration.class)
-                .getRuntime()
-                .getBrowser()
-                .shutdown();
+                .getRuntime();
+
+        runtime.getBrowser().shutdown();
+        runtime.getEnvironment().shutdown();
     }
 }

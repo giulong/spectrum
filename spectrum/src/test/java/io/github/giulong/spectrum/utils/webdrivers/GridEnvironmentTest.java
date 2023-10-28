@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -17,7 +16,10 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GridEnvironment")
@@ -35,38 +37,41 @@ class GridEnvironmentTest {
     @InjectMocks
     private GridEnvironment gridEnvironment;
 
-    @Test
-    @DisplayName("buildFrom should configure a remote webDriver")
-    public void buildFrom() throws MalformedURLException {
+    private void commonStubs() throws MalformedURLException {
         final URL url = URI.create("http://url").toURL();
 
         gridEnvironment.url = url;
         gridEnvironment.capabilities.put("one", "value");
-        gridEnvironment.setupFrom(browser, webDriverBuilder);
+
+        when(webDriverBuilder.address(url)).thenReturn(webDriverBuilder);
+        when(webDriverBuilder.build()).thenReturn(webDriver);
+    }
+
+    @Test
+    @DisplayName("setupFrom should configure a remote webDriver and return an instance of WebDriver")
+    public void setupFrom() throws MalformedURLException {
+        commonStubs();
+
+        assertEquals(webDriver, gridEnvironment.setupFrom(browser, webDriverBuilder));
 
         verify(browser).mergeGridCapabilitiesFrom(Map.of("one", "value"));
-        verify(webDriverBuilder).address(url);
     }
 
     @Test
-    @DisplayName("finalizeSetupOf with localFileDetector should set the file detector on the webdriver")
-    public void finalizeSetupOfTrue() {
+    @DisplayName("setupFrom should configure a remote webDriver with localFileDetector and return an instance of WebDriver")
+    public void setupFromLocalFileDetector() throws MalformedURLException {
+        commonStubs();
         gridEnvironment.localFileDetector = true;
 
-        MockedConstruction<LocalFileDetector> mockedConstruction = mockConstruction(LocalFileDetector.class);
+        assertEquals(webDriver, gridEnvironment.setupFrom(browser, webDriverBuilder));
 
-        gridEnvironment.finalizeSetupOf(webDriver);
-        verify(webDriver).setFileDetector(mockedConstruction.constructed().get(0));
-
-        mockedConstruction.close();
+        verify(browser).mergeGridCapabilitiesFrom(Map.of("one", "value"));
+        verify(webDriver).setFileDetector(any(LocalFileDetector.class));
     }
 
     @Test
-    @DisplayName("finalizeSetupOf with no localFileDetector should do nothing")
-    public void finalizeSetupOfFalse() {
-        gridEnvironment.localFileDetector = false;
-
-        gridEnvironment.finalizeSetupOf(webDriver);
-        verify(webDriver, never()).setFileDetector(any());
+    @DisplayName("shutdown should do nothing for a remoteWebDriver")
+    public void shutdown() {
+        gridEnvironment.shutdown();
     }
 }
