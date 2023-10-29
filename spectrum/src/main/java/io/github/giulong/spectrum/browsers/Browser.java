@@ -2,16 +2,16 @@ package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.ThreadGuard;
 
 import java.util.Map;
 
+@Getter
 @Slf4j
 public abstract class Browser<T extends AbstractDriverOptions<?>, U extends DriverService, V extends DriverService.Builder<U, V>> {
 
@@ -23,7 +23,7 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
 
     public abstract void buildCapabilitiesFrom(Configuration.WebDriver webDriverConfiguration);
 
-    public abstract void mergeGridCapabilitiesFrom(Map<String, String> gridCapabilities);
+    public abstract T mergeGridCapabilitiesFrom(Map<String, String> gridCapabilities);
 
     public synchronized WebDriver build(final Configuration configuration) {
         final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
@@ -32,11 +32,9 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
         final Environment environment = configuration.getRuntime().getEnvironment();
         capabilities.setAcceptInsecureCerts(true);
 
-        final RemoteWebDriverBuilder webDriverBuilder = RemoteWebDriver.builder().oneOf(capabilities);
-        final WebDriver webDriver = environment.setupFrom(this, webDriverBuilder);
-        log.debug("Capabilities: {}", capabilities.toJson());
-
+        final WebDriver webDriver = environment.setupFrom(this);
         final Configuration.WebDriver.Waits waits = webDriverConfiguration.getWaits();
+
         webDriver
                 .manage()
                 .timeouts()
@@ -45,6 +43,7 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
                 .scriptTimeout(waits.getScriptTimeout());
 
         WEB_DRIVER_THREAD_LOCAL.set(ThreadGuard.protect(webDriver));
+        log.debug("Capabilities: {}", capabilities.toJson());
 
         return WEB_DRIVER_THREAD_LOCAL.get();
     }

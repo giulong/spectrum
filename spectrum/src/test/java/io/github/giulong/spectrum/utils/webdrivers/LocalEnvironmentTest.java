@@ -1,17 +1,17 @@
 package io.github.giulong.spectrum.utils.webdrivers;
 
 import io.github.giulong.spectrum.browsers.Browser;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -23,8 +23,13 @@ import static org.mockito.Mockito.*;
 @DisplayName("LocalEnvironment")
 class LocalEnvironmentTest {
 
+    private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
+
     @Mock
-    private Browser<?, ?, ?> browser;
+    private Browser<ChromeOptions, ?, ?> browser;
+
+    @Mock
+    private ChromeOptions chromeOptions;
 
     @Mock
     private ChromeDriverService.Builder chromeDriverServiceBuilder;
@@ -46,20 +51,29 @@ class LocalEnvironmentTest {
 
     @BeforeEach
     public void beforeEach() {
+        remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
         DRIVER_SERVICE_THREAD_LOCAL.remove();
+    }
+
+    @AfterEach
+    public void afterEach() {
+        remoteWebDriverMockedStatic.close();
     }
 
     @Test
     @DisplayName("setupFrom should set the driver service and return an instance of WebDriver")
     public void setupFromDownload() {
+        when(browser.getCapabilities()).thenReturn(chromeOptions);
         doReturn(chromeDriverServiceBuilder).when(browser).getDriverServiceBuilder();
         when(chromeDriverServiceBuilder.withLogOutput(System.out)).thenReturn(chromeDriverServiceBuilder);
+        when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
         when(webDriverBuilder.withDriverService(driverServiceArgumentCaptor.capture())).thenReturn(webDriverBuilder);
+        when(webDriverBuilder.oneOf(chromeOptions)).thenReturn(webDriverBuilder);
         when(webDriverBuilder.build()).thenReturn(webDriver);
 
         final DriverService threadLocalDriverService = DRIVER_SERVICE_THREAD_LOCAL.get();
 
-        assertEquals(webDriver, localEnvironment.setupFrom(browser, webDriverBuilder));
+        assertEquals(webDriver, localEnvironment.setupFrom(browser));
         assertEquals(driverServiceArgumentCaptor.getValue(), threadLocalDriverService);
     }
 

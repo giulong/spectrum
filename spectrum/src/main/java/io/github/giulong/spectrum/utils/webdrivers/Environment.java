@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.giulong.spectrum.browsers.Browser;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
@@ -16,7 +15,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
         @Type(value = GridEnvironment.class, name = "grid"),
 })
 public abstract class Environment {
-    public abstract WebDriver setupFrom(Browser<?, ?, ?> browser, RemoteWebDriverBuilder webDriverBuilder);
+    public abstract WebDriver setupFrom(Browser<?, ?, ?> browser);
 
     public abstract void shutdown();
 }
