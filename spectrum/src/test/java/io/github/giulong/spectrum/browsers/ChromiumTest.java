@@ -14,6 +14,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import java.util.Map;
 import java.util.logging.Level;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 
@@ -56,11 +57,14 @@ class ChromiumTest {
     }
 
     @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities")
+    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
     public void mergeGridCapabilitiesFrom() {
+        final String key = "one";
+        final String value = "value";
         chrome.capabilities = chromeOptions;
 
-        chrome.mergeGridCapabilitiesFrom(Map.of("one", "value"));
-        verify(chromeOptions).setCapability("one", "value");
+        final ChromeOptions actual = chrome.mergeGridCapabilitiesFrom(Map.of(key, value));
+        verify(chromeOptions).setCapability(key, value);
+        assertEquals(actual, chromeOptions);
     }
 }

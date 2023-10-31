@@ -76,12 +76,16 @@ class FirefoxTest {
     }
 
     @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities")
+    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
     public void mergeGridCapabilitiesFrom() {
+        final String key = "one";
+        final String value = "value";
+
         firefox.capabilities = firefoxOptions;
 
-        firefox.mergeGridCapabilitiesFrom(Map.of("one", "value"));
-        verify(firefoxOptions).setCapability("one", "value");
+        final FirefoxOptions actual = firefox.mergeGridCapabilitiesFrom(Map.of(key, value));
+        verify(firefoxOptions).setCapability(key, value);
+        assertEquals(actual, firefoxOptions);
     }
 
     @DisplayName("addPreference should add the correct preference based on the value type")

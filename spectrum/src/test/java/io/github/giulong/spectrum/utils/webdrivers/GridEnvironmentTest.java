@@ -1,12 +1,16 @@
 package io.github.giulong.spectrum.utils.webdrivers;
 
 import io.github.giulong.spectrum.browsers.Browser;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
@@ -18,24 +22,38 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("GridEnvironment")
 class GridEnvironmentTest {
 
+    private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
+
     @Mock
     private RemoteWebDriverBuilder webDriverBuilder;
 
     @Mock
-    private Browser<?, ?, ?> browser;
+    private Browser<ChromeOptions, ?, ?> browser;
 
     @Mock
     private RemoteWebDriver webDriver;
 
+    @Mock
+    private ChromeOptions chromeOptions;
+
     @InjectMocks
     private GridEnvironment gridEnvironment;
+
+    @BeforeEach
+    public void beforeEach() {
+        remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        remoteWebDriverMockedStatic.close();
+    }
 
     private void commonStubs() throws MalformedURLException {
         final URL url = URI.create("http://url").toURL();
@@ -43,8 +61,11 @@ class GridEnvironmentTest {
         gridEnvironment.url = url;
         gridEnvironment.capabilities.put("one", "value");
 
-        when(webDriverBuilder.address(url)).thenReturn(webDriverBuilder);
         when(webDriverBuilder.build()).thenReturn(webDriver);
+        when(browser.mergeGridCapabilitiesFrom(gridEnvironment.capabilities)).thenReturn(chromeOptions);
+        when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
+        when(webDriverBuilder.address(url)).thenReturn(webDriverBuilder);
+        when(webDriverBuilder.oneOf(chromeOptions)).thenReturn(webDriverBuilder);
     }
 
     @Test
@@ -52,7 +73,7 @@ class GridEnvironmentTest {
     public void setupFrom() throws MalformedURLException {
         commonStubs();
 
-        assertEquals(webDriver, gridEnvironment.setupFrom(browser, webDriverBuilder));
+        assertEquals(webDriver, gridEnvironment.setupFrom(browser));
 
         verify(browser).mergeGridCapabilitiesFrom(Map.of("one", "value"));
     }
@@ -63,7 +84,7 @@ class GridEnvironmentTest {
         commonStubs();
         gridEnvironment.localFileDetector = true;
 
-        assertEquals(webDriver, gridEnvironment.setupFrom(browser, webDriverBuilder));
+        assertEquals(webDriver, gridEnvironment.setupFrom(browser));
 
         verify(browser).mergeGridCapabilitiesFrom(Map.of("one", "value"));
         verify(webDriver).setFileDetector(any(LocalFileDetector.class));

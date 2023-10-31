@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -23,11 +22,14 @@ public class GridEnvironment extends Environment {
     protected boolean localFileDetector;
 
     @Override
-    public WebDriver setupFrom(final Browser<?, ?, ?> browser, final RemoteWebDriverBuilder webDriverBuilder) {
+    public WebDriver setupFrom(final Browser<?, ?, ?> browser) {
         log.info("Running on grid at {}", url);
 
-        browser.mergeGridCapabilitiesFrom(capabilities);
-        final RemoteWebDriver webDriver = (RemoteWebDriver) webDriverBuilder.address(url).build();
+        final RemoteWebDriver webDriver = (RemoteWebDriver) RemoteWebDriver
+                .builder()
+                .oneOf(browser.mergeGridCapabilitiesFrom(capabilities))
+                .address(url)
+                .build();
 
         if (localFileDetector) {
             webDriver.setFileDetector(new LocalFileDetector());

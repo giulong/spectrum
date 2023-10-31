@@ -21,7 +21,9 @@ public abstract class Chromium<T extends ChromiumOptions<T>, U extends DriverSer
     }
 
     @Override
-    public void mergeGridCapabilitiesFrom(final Map<String, String> gridCapabilities) {
+    public T mergeGridCapabilitiesFrom(final Map<String, String> gridCapabilities) {
         gridCapabilities.forEach(this.capabilities::setCapability);
+
+        return capabilities;
     }
 }
