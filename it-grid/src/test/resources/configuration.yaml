@@ -2,6 +2,8 @@ runtime:
   environment:
     grid:
       url: http://localhost:4444/wd/hub
+      capabilities:
+        my:token: 6c85-xxxx-xxxx
 
 application:
   baseUrl: https://the-internet.herokuapp.com/

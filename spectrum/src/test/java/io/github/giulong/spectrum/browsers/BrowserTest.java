@@ -15,8 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.support.ThreadGuard;
 
 import java.time.Duration;
@@ -32,7 +30,6 @@ import static org.mockito.Mockito.*;
 @DisplayName("Browser")
 class BrowserTest {
 
-    private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
     private MockedStatic<ThreadGuard> threadGuardMockedStatic;
 
     private MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction;
@@ -88,9 +85,6 @@ class BrowserTest {
     @Mock
     private Environment environment;
 
-    @Mock
-    private RemoteWebDriverBuilder webDriverBuilder;
-
     @InjectMocks
     private Chrome browser;
 
@@ -98,14 +92,12 @@ class BrowserTest {
     public void beforeEach() {
         WEB_DRIVER_THREAD_LOCAL.remove();
 
-        remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
     }
 
     @AfterEach
     public void afterEach() {
-        remoteWebDriverMockedStatic.close();
         threadGuardMockedStatic.close();
         loggingPreferencesMockedConstruction.close();
     }
@@ -124,10 +116,7 @@ class BrowserTest {
         when(logs.getPerformance()).thenReturn(performanceLevel);
         when(chromeConfig.getCapabilities()).thenReturn(Map.of("one", "value"));
 
-        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
-            when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
-            when(webDriverBuilder.oneOf(mock)).thenReturn(webDriverBuilder);
-        });
+        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class);
 
         when(waits.getImplicit()).thenReturn(implicitDuration);
         when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);
@@ -140,7 +129,7 @@ class BrowserTest {
         when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
         when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
         when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
-        when(environment.setupFrom(browser, webDriverBuilder)).thenReturn(webDriver);
+        when(environment.setupFrom(browser)).thenReturn(webDriver);
 
         when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
 
