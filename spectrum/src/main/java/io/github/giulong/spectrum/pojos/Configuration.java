@@ -37,6 +37,7 @@ public class Configuration {
         private String profiles;
 
         @JsonSerialize(using = ToStringSerializer.class)
+        @JsonSchemaTypes(String.class)
         private Browser<?, ?, ?> browser;
         private Environment environment;
         private String filesFolder;
