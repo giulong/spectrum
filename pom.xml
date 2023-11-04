@@ -49,7 +49,7 @@
         <simplejavamail.version>8.3.1</simplejavamail.version>
         <jsonschemagenerator.version>4.32.0</jsonschemagenerator.version>
         <slf4j.version>2.0.9</slf4j.version>
-        <selenium.version>4.14.1</selenium.version>
+        <selenium.version>4.15.0</selenium.version>
     </properties>
 
     <modules>
