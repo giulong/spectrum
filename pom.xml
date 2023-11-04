@@ -260,10 +260,11 @@
                     <version>3.2.1</version>
                     <configuration>
                         <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
+                        <reportsDirectory>${reportsDirectory}</reportsDirectory>
+                        <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
                             <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
                         </systemPropertyVariables>
-                        <reportsDirectory>${reportsDirectory}</reportsDirectory>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -273,6 +274,7 @@
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <failIfNoTests>true</failIfNoTests>
+                        <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
                             <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
                             <junit.jupiter.execution.parallel.mode.default>same_thread</junit.jupiter.execution.parallel.mode.default>
