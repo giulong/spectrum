@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.4.3</revision>
+        <revision>1.4.4</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jacoco.outputDirectory>${project.reporting.outputDirectory}/jacoco</jacoco.outputDirectory>
@@ -49,7 +49,7 @@
         <simplejavamail.version>8.3.1</simplejavamail.version>
         <jsonschemagenerator.version>4.32.0</jsonschemagenerator.version>
         <slf4j.version>2.0.9</slf4j.version>
-        <selenium.version>4.14.1</selenium.version>
+        <selenium.version>4.15.0</selenium.version>
     </properties>
 
     <modules>
@@ -158,7 +158,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.34.0</version>
+                <version>1.35.0</version>
             </dependency>
 
             <dependency>
@@ -185,12 +185,6 @@
                 <scope>provided</scope>
             </dependency>
 
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-inline</artifactId>
-                <version>5.2.0</version>
-                <scope>test</scope>
-            </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
@@ -266,10 +260,11 @@
                     <version>3.2.1</version>
                     <configuration>
                         <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
+                        <reportsDirectory>${reportsDirectory}</reportsDirectory>
+                        <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
                             <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
                         </systemPropertyVariables>
-                        <reportsDirectory>${reportsDirectory}</reportsDirectory>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -279,6 +274,7 @@
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <failIfNoTests>true</failIfNoTests>
+                        <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
                             <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
                             <junit.jupiter.execution.parallel.mode.default>same_thread</junit.jupiter.execution.parallel.mode.default>

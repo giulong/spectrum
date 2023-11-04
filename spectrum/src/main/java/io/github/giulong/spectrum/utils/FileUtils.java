@@ -30,14 +30,16 @@ public final class FileUtils {
 
     public String read(final String file) {
         log.debug("Reading file {}", file);
-        InputStream inputStream = FileUtils.class.getResourceAsStream(file);
+        final InputStream inputStream = FileUtils.class.getResourceAsStream(file);
 
         if (inputStream == null) {
             log.warn("File {} not found.", file);
             return "";
         }
 
-        return new Scanner(inputStream).useDelimiter("\\Z").next();
+        try (final Scanner scanner = new Scanner(inputStream)) {
+            return scanner.useDelimiter("\\Z").next();
+        }
     }
 
     public String readTemplate(final String file) {
