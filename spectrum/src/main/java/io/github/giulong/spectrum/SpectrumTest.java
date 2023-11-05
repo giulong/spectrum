@@ -72,7 +72,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     protected List<SpectrumPage<?, Data>> spectrumPages;
 
     @BeforeEach
-    @SuppressWarnings("checkstyle:ParameterNumber")
+    @SuppressWarnings({"checkstyle:ParameterNumber", "JUnitMalformedDeclaration"})
     public void beforeEach(final Configuration configuration, final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait,
                            final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final ExtentTest extentTest,
                            final Actions actions, final EventsDispatcher eventsDispatcher, final TestInfo testInfo, final Data data) {
