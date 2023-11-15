@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.utils.video.Recording;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
@@ -59,6 +60,14 @@ public class Configuration {
         private String fileName;
         private String theme;
         private String timeStampFormat;
+        private Video video;
+
+        @Getter
+        public static class Video {
+            private Recording recording;
+            private int width;
+            private int height;
+        }
     }
 
     @Getter

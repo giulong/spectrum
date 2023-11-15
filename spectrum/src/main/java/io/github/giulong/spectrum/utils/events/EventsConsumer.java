@@ -19,6 +19,7 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = ExtentTestConsumer.class, name = "extentTest"),
         @JsonSubTypes.Type(value = BrowserConsumer.class, name = "browser"),
         @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),
+        @JsonSubTypes.Type(value = VideoConsumer.class, name = "video"),
 })
 @Getter
 @Slf4j

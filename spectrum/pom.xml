@@ -137,6 +137,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jcodec</groupId>
+            <artifactId>jcodec-javase</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.github.victools</groupId>
             <artifactId>jsonschema-generator</artifactId>
             <scope>provided</scope>

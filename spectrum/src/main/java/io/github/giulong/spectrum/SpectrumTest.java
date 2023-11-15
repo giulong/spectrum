@@ -6,24 +6,28 @@ import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.types.DownloadWait;
 import io.github.giulong.spectrum.types.ImplicitWait;
 import io.github.giulong.spectrum.types.PageLoadWait;
 import io.github.giulong.spectrum.types.ScriptWait;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.video.VideoEncoder;
+import io.github.giulong.spectrum.utils.video.ScreenshotWatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.function.Function;
 
 import static java.util.Arrays.asList;
@@ -49,6 +53,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final ExtentTestResolver EXTENT_TEST_RESOLVER = new ExtentTestResolver();
 
     @RegisterExtension
+    public static final TestDataResolver TEST_DATA_RESOLVER = new TestDataResolver();
+
+    @RegisterExtension
     public static final WebDriverResolver WEB_DRIVER_RESOLVER = new WebDriverResolver();
 
     @RegisterExtension
@@ -67,15 +74,26 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
 
     @RegisterExtension
+    public static final ScreenshotQueueResolver SCREENSHOT_QUEUE_RESOLVER = new ScreenshotQueueResolver();
+
+    @RegisterExtension
+    public static final ScreenshotWatcherResolver SCREENSHOT_WATCHER_RESOLVER = new ScreenshotWatcherResolver();
+
+    @RegisterExtension
+    public static final VideoEncoderResolver VIDEO_ENCODER_RESOLVER = new VideoEncoderResolver();
+
+    @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
     protected List<SpectrumPage<?, Data>> spectrumPages;
 
     @BeforeEach
-    @SuppressWarnings({"checkstyle:ParameterNumber", "JUnitMalformedDeclaration"})
-    public void beforeEach(final Configuration configuration, final WebDriver webDriver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait,
-                           final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final ExtentTest extentTest,
-                           final Actions actions, final EventsDispatcher eventsDispatcher, final TestInfo testInfo, final Data data) {
+    @SuppressWarnings({"checkstyle:ParameterNumber", "JUnitMalformedDeclaration", "unused"})
+    public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver webDriver,
+                           final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
+                           final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher,
+                           final BlockingQueue<File> screenshotQueue, final ScreenshotWatcher screenshotWatcher, final VideoEncoder videoEncoder,
+                           final Data data) {
         this.configuration = configuration;
         this.webDriver = webDriver;
         this.implicitWait = implicitWait;
@@ -86,7 +104,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.extentTest = extentTest;
         this.actions = actions;
         this.eventsDispatcher = eventsDispatcher;
-        this.testInfo = testInfo;
+        this.testData = testData;
         this.data = data;
 
         initPages();
