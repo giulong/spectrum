@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.video.Recording;
+import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.video.VideoEncoder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,10 +59,7 @@ class VideoEncoderResolverTest {
     private Configuration.Extent extent;
 
     @Mock
-    private Configuration.Extent.Video video;
-
-    @Mock
-    private Recording recording;
+    private Video video;
 
     @Mock
     private TestData testData;
@@ -90,9 +87,8 @@ class VideoEncoderResolverTest {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getVideo()).thenReturn(video);
-        when(video.getRecording()).thenReturn(recording);
-        when(recording.isDisabled()).thenReturn(false);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(false);
         when(extent.getReportFolder()).thenReturn(REPORTS_FOLDER);
 
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
@@ -126,10 +122,8 @@ class VideoEncoderResolverTest {
     public void resolveParameterDisabled() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getVideo()).thenReturn(video);
-        when(video.getRecording()).thenReturn(recording);
-        when(recording.isDisabled()).thenReturn(true);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(true);
 
         assertNull(videoEncoderResolver.resolveParameter(parameterContext, extensionContext));
         verify(store, never()).put(eq(VIDEO_ENCODER), any(VideoEncoder.class));

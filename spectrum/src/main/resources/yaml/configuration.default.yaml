@@ -6,7 +6,7 @@ vars:
 runtime:
   profiles: ${spectrum.profiles:-local} # profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
   browser: ${spectrum.browser:-chrome}  # browser to use
-  environment:  # Runtime environment. Can be local or grid
+  environment: # Runtime environment. Can be local or grid
     local: { }
   filesFolder: src/test/resources/files # folder where you will store files to be checked against downloaded ones
   downloadsFolder: ${downloadsFolder}
@@ -18,6 +18,10 @@ application:
 # TestBook (coverage)
 testBook: null
 
+# Execution video recording
+video:
+  frames: [ ] # by default, nothing is recorded
+
 # Extent Report configuration
 extent:
   documentTitle: Spectrum Report  # Title of the html page
@@ -26,9 +30,6 @@ extent:
   fileName: spectrum-report-{timestamp}.html  # you can use the {timestamp} placeholder, which will be resolved at runtime
   theme: STANDARD   # Theme used. Can be STANDARD or DARK
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
-  video:
-    recording:
-      none: { }
 
 # WebDriver configuration
 webDriver:

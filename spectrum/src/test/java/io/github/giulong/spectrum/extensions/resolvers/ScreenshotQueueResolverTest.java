@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
-import io.github.giulong.spectrum.utils.video.Recording;
+import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,13 +46,7 @@ class ScreenshotQueueResolverTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.Extent extent;
-
-    @Mock
-    private Configuration.Extent.Video video;
-
-    @Mock
-    private Recording recording;
+    private Video video;
 
     @InjectMocks
     private ScreenshotQueueResolver screenshotQueueResolver;
@@ -64,10 +58,8 @@ class ScreenshotQueueResolverTest {
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getVideo()).thenReturn(video);
-        when(video.getRecording()).thenReturn(recording);
-        when(recording.isDisabled()).thenReturn(false);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(false);
 
         //noinspection rawtypes
         MockedConstruction<LinkedBlockingQueue> blockingQueueMockedConstruction = mockConstruction(LinkedBlockingQueue.class);
@@ -88,10 +80,8 @@ class ScreenshotQueueResolverTest {
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getVideo()).thenReturn(video);
-        when(video.getRecording()).thenReturn(recording);
-        when(recording.isDisabled()).thenReturn(true);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(true);
 
         assertNull(screenshotQueueResolver.resolveParameter(parameterContext, extensionContext));
 

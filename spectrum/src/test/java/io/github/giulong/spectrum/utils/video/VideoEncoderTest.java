@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.video;
 
-import io.github.giulong.spectrum.pojos.Configuration;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.jcodec.api.awt.AWTSequenceEncoder;
@@ -80,7 +79,7 @@ class VideoEncoderTest {
     private Dimension size;
 
     @Mock
-    private Configuration.Extent.Video video;
+    private Video video;
 
     private VideoEncoder videoEncoder;
 

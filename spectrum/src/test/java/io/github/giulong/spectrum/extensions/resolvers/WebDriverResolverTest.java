@@ -1,8 +1,11 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import com.aventstack.extentreports.ExtentTest;
+import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.internals.EventsListener;
 import io.github.giulong.spectrum.pojos.Configuration;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +23,9 @@ import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static io.github.giulong.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
@@ -72,6 +78,15 @@ class WebDriverResolverTest {
     @Mock
     private EventsListener eventsListener;
 
+    @Mock
+    private ExtentTest extentTest;
+
+    @Mock
+    private Video video;
+
+    @Mock
+    private TestData testData;
+
     @InjectMocks
     private WebDriverResolver webDriverResolver;
 
@@ -87,7 +102,7 @@ class WebDriverResolverTest {
 
     @Test
     @DisplayName("resolveParameter should return the instance of the webdriver decorated with the default event listener")
-    public void resolveParameterEventListener() {
+    public void resolveParameter() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
@@ -98,8 +113,15 @@ class WebDriverResolverTest {
         when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
         when(webDriverConfiguration.getEvents()).thenReturn(events);
 
+        when(store.get(EXTENT_TEST, ExtentTest.class)).thenReturn(extentTest);
+        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(configuration.getVideo()).thenReturn(video);
+
         when(EventsListener.builder()).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.store(store)).thenReturn(eventsListenerBuilder);
+        when(eventsListenerBuilder.extentTest(extentTest)).thenReturn(eventsListenerBuilder);
+        when(eventsListenerBuilder.video(video)).thenReturn(eventsListenerBuilder);
+        when(eventsListenerBuilder.testData(testData)).thenReturn(eventsListenerBuilder);
+        when(eventsListenerBuilder.webDriver(webDriver)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.events(events)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.build()).thenReturn(eventsListener);
 
@@ -111,7 +133,7 @@ class WebDriverResolverTest {
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         });
         WebDriver actual = webDriverResolver.resolveParameter(parameterContext, extensionContext);
-        verify(store).put(WebDriverResolver.WEB_DRIVER, decoratedWebDriver);
+        verify(store).put(WEB_DRIVER, decoratedWebDriver);
 
         assertEquals(decoratedWebDriver, actual);
 

@@ -2,8 +2,8 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.video.Recording;
 import io.github.giulong.spectrum.utils.video.ScreenshotWatcher;
+import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,13 +50,7 @@ class ScreenshotWatcherResolverTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.Extent extent;
-
-    @Mock
-    private Configuration.Extent.Video video;
-
-    @Mock
-    private Recording recording;
+    private Video video;
 
     @Mock
     private TestData testData;
@@ -78,10 +72,8 @@ class ScreenshotWatcherResolverTest {
     public void resolveParameter() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getVideo()).thenReturn(video);
-        when(video.getRecording()).thenReturn(recording);
-        when(recording.isDisabled()).thenReturn(false);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(false);
 
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getScreenshotFolderPath()).thenReturn(Path.of(SCREENSHOT_FOLDER));
@@ -108,10 +100,8 @@ class ScreenshotWatcherResolverTest {
     public void resolveParameterDisabled() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getVideo()).thenReturn(video);
-        when(video.getRecording()).thenReturn(recording);
-        when(recording.isDisabled()).thenReturn(true);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(true);
 
         assertNull(screenshotWatcherResolver.resolveParameter(parameterContext, extensionContext));
         verify(store, never()).put(eq(SCREENSHOT_WATCHER), any(ScreenshotWatcher.class));

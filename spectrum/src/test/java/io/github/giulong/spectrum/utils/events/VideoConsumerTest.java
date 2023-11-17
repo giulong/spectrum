@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.video.Recording;
+import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.video.VideoEncoder;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,13 +34,7 @@ class VideoConsumerTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.Extent extent;
-
-    @Mock
-    private Configuration.Extent.Video video;
-
-    @Mock
-    private Recording recording;
+    private Video video;
 
     @Mock
     private VideoEncoder videoEncoder;
@@ -54,10 +48,8 @@ class VideoConsumerTest {
         when(event.getContext()).thenReturn(extensionContext);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getVideo()).thenReturn(video);
-        when(video.getRecording()).thenReturn(recording);
-        when(recording.isDisabled()).thenReturn(false);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(false);
         when(store.get(VIDEO_ENCODER, VideoEncoder.class)).thenReturn(videoEncoder);
 
         videoConsumer.consumes(event);
@@ -70,10 +62,8 @@ class VideoConsumerTest {
         when(event.getContext()).thenReturn(extensionContext);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getVideo()).thenReturn(video);
-        when(video.getRecording()).thenReturn(recording);
-        when(recording.isDisabled()).thenReturn(true);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(true);
 
         videoConsumer.consumes(event);
         verify(videoEncoder, never()).done();

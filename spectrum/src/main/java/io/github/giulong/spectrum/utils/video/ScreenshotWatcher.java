@@ -18,16 +18,16 @@ public class ScreenshotWatcher extends Thread {
     private final BlockingQueue<File> blockingQueue;
     private final WatchService watchService;
     private final Path screenshotFolderPath;
-    private final Recording recording;
+    private final Video video;
 
     private byte[] lastFrameDigest;
 
     @SneakyThrows
-    public ScreenshotWatcher(final BlockingQueue<File> blockingQueue, final Path screenshotFolderPath, final WatchService watchService, final Recording recording) {
+    public ScreenshotWatcher(final BlockingQueue<File> blockingQueue, final Path screenshotFolderPath, final WatchService watchService, final Video video) {
         this.blockingQueue = blockingQueue;
         this.screenshotFolderPath = screenshotFolderPath;
         this.watchService = watchService;
-        this.recording = recording;
+        this.video = video;
 
         log.debug("Registering watcher for ENTRY_CREATE at {}", screenshotFolderPath);
         screenshotFolderPath.register(watchService, ENTRY_CREATE);
@@ -43,7 +43,7 @@ public class ScreenshotWatcher extends Thread {
             for (WatchEvent<?> watchEvent : watchKey.pollEvents()) {
                 final File screenshot = screenshotFolderPath.resolve(watchEvent.context().toString()).toFile();
 
-                if (recording.records(screenshot.getName()) && isNewFrame(screenshot)) {
+                if (video.shouldRecord(screenshot.getName()) && isNewFrame(screenshot)) {
                     blockingQueue.add(screenshot);
                     log.debug("Produced: {}", screenshot);
                 }

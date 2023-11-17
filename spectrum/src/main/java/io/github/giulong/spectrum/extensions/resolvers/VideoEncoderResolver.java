@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.video.VideoEncoder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,9 @@ public class VideoEncoderResolver extends TypeBasedParameterResolver<VideoEncode
     public VideoEncoder resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         log.debug("Resolving {}", VIDEO_ENCODER);
         final ExtensionContext.Store store = context.getStore(GLOBAL);
-        final Configuration.Extent extent = store.get(CONFIGURATION, Configuration.class).getExtent();
-        if (extent.getVideo().getRecording().isDisabled()) {
+        final Configuration configuration = store.get(CONFIGURATION, Configuration.class);
+        final Video video = configuration.getVideo();
+        if (video.isDisabled()) {
             log.debug("Video is disabled. Skipping resolution");
             return null;
         }
@@ -41,11 +43,11 @@ public class VideoEncoderResolver extends TypeBasedParameterResolver<VideoEncode
         final TestData testData = store.get(TEST_DATA, TestData.class);
         final String className = testData.getClassName();
         final String methodName = testData.getMethodName();
-        final Path videoPath = getVideoPathForCurrentTest(extent.getReportFolder(), className, methodName);
+        final Path videoPath = getVideoPathForCurrentTest(configuration.getExtent().getReportFolder(), className, methodName);
         final WebDriver webDriver = store.get(WEB_DRIVER, WebDriver.class);
         @SuppressWarnings("unchecked")
         final BlockingQueue<File> screenshotsQueue = (BlockingQueue<File>) store.get(SCREENSHOT_QUEUE, BlockingQueue.class);
-        final VideoEncoder videoEncoder = new VideoEncoder(screenshotsQueue, className, methodName, videoPath.toFile(), extent.getVideo(), webDriver);
+        final VideoEncoder videoEncoder = new VideoEncoder(screenshotsQueue, className, methodName, videoPath.toFile(), video, webDriver);
 
         videoEncoder.start();
         store.put(VIDEO_ENCODER, videoEncoder);

@@ -18,8 +18,7 @@ public class VideoConsumer extends EventsConsumer {
 
     public void consumes(final Event event) {
         final ExtensionContext.Store store = event.getContext().getStore(GLOBAL);
-        final Configuration.Extent extent = store.get(CONFIGURATION, Configuration.class).getExtent();
-        if (extent.getVideo().getRecording().isDisabled()) {
+        if (store.get(CONFIGURATION, Configuration.class).getVideo().isDisabled()) {
             log.debug("Video is disabled. Returning");
             return;
         }

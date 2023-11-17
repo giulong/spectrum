@@ -49,6 +49,9 @@ class ScreenshotWatcherTest {
     @Mock
     private File screenshot;
 
+    @Mock
+    private Video video;
+
     @InjectMocks
     private ScreenshotWatcher screenshotWatcher;
 
@@ -84,6 +87,8 @@ class ScreenshotWatcherTest {
         when(watchEvent2.context()).thenReturn(context2);
         when(screenshotFolderPath.resolve(context1)).thenReturn(path1);
         when(screenshotFolderPath.resolve(context2)).thenReturn(path2);
+        when(video.shouldRecord(path1.toFile().getName())).thenReturn(true);
+        when(video.shouldRecord(path2.toFile().getName())).thenReturn(false);
 
         //noinspection CallToThreadRun
         screenshotWatcher.run();

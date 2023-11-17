@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.video.Video;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -22,8 +23,8 @@ public class ScreenshotQueueResolver extends TypeBasedParameterResolver<Blocking
     @Override
     public BlockingQueue<File> resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         log.debug("Resolving {}", SCREENSHOT_QUEUE);
-        final Configuration.Extent extent = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getExtent();
-        if (extent.getVideo().getRecording().isDisabled()) {
+        final Video video = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getVideo();
+        if (video.isDisabled()) {
             log.debug("Video is disabled. Skipping resolution");
             return null;
         }

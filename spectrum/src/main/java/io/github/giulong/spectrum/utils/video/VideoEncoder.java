@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.video;
 
-import io.github.giulong.spectrum.pojos.Configuration;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jcodec.api.awt.AWTSequenceEncoder;
@@ -22,21 +21,23 @@ public class VideoEncoder extends Thread {
     private final BlockingQueue<File> blockingQueue;
     private final String className;
     private final String methodName;
+    private final File file;
     private final AWTSequenceEncoder encoder;
-    private final Configuration.Extent.Video video;
+    private final Video video;
     private final Dimension dimension;
 
     private boolean stopSignal;
 
     @SneakyThrows
     public VideoEncoder(final BlockingQueue<File> blockingQueue, final String className, final String methodName,
-                        final File videoFile, final Configuration.Extent.Video video, final WebDriver webDriver) {
+                        final File file, final Video video, final WebDriver webDriver) {
         this.blockingQueue = blockingQueue;
         this.className = className;
         this.methodName = methodName;
-        this.encoder = AWTSequenceEncoder.createSequenceEncoder(videoFile, 1);
+        this.file = file;
         this.video = video;
         this.dimension = chooseDimensionFor(webDriver);
+        this.encoder = AWTSequenceEncoder.createSequenceEncoder(file, 1);
     }
 
     protected Dimension chooseDimensionFor(final WebDriver webDriver) {
