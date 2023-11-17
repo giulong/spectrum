@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils.video;
 
-import io.github.giulong.spectrum.ReflectionUtils;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.enums.Frame;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.video;
 
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.jcodec.api.awt.AWTSequenceEncoder;
@@ -102,9 +103,8 @@ class VideoEncoderTest {
 
     @Test
     @DisplayName("chooseDimensionFor should return a new Dimension based on webdriver dimension")
-    public void chooseDimensionFor() throws NoSuchFieldException, IllegalAccessException {
-        final Field dimension = VideoEncoder.class.getDeclaredField("dimension");
-        dimension.setAccessible(true);
+    public void chooseDimensionFor() throws IllegalAccessException {
+        final Field dimension = ReflectionUtils.getField("dimension", videoEncoder);
 
         videoEncoder.chooseDimensionFor(webDriver);
         assertEquals(EVEN_WIDTH, ((Dimension) dimension.get(videoEncoder)).getWidth());
@@ -127,8 +127,7 @@ class VideoEncoderTest {
         when(size.getWidth()).thenReturn(WIDTH);
         when(size.getHeight()).thenReturn(HEIGHT);
 
-        final Field dimension = VideoEncoder.class.getDeclaredField("dimension");
-        dimension.setAccessible(true);
+        final Field dimension = ReflectionUtils.getField("dimension", videoEncoder);
 
         videoEncoder.chooseDimensionFor(webDriver);
         assertEquals(EVEN_WIDTH, ((Dimension) dimension.get(videoEncoder)).getWidth());
@@ -244,9 +243,8 @@ class VideoEncoderTest {
 
     @Test
     @DisplayName("done should set the stop signal to true and join the thread")
-    public void done() throws NoSuchFieldException, IllegalAccessException {
-        final Field stopSignal = VideoEncoder.class.getDeclaredField("stopSignal");
-        stopSignal.setAccessible(true);
+    public void done() throws IllegalAccessException {
+        final Field stopSignal = ReflectionUtils.getField("stopSignal", videoEncoder);
 
         videoEncoder.done();
 

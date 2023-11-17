@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.video;
 
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -100,13 +101,11 @@ class ScreenshotWatcherTest {
     @DisplayName("isNewFrame should return if the provided screenshot is new")
     @ParameterizedTest(name = "with digest equals to last one {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void isNewFrame(final byte[] lastFrameDigest, final boolean expected) throws NoSuchFieldException, IllegalAccessException {
+    public void isNewFrame(final byte[] lastFrameDigest, final boolean expected) throws IllegalAccessException {
         final Path path = isNewFrameStubs();
         when(screenshot.toPath()).thenReturn(path);
-
-        final Field lastFrameDigestField = ScreenshotWatcher.class.getDeclaredField("lastFrameDigest");
-        lastFrameDigestField.setAccessible(true);
-        lastFrameDigestField.set(screenshotWatcher, lastFrameDigest);
+        final Field lastFrameDigestField = ReflectionUtils.getField("lastFrameDigest", screenshotWatcher);
+        ReflectionUtils.setField(lastFrameDigestField, screenshotWatcher, lastFrameDigest);
 
         assertEquals(expected, screenshotWatcher.isNewFrame(screenshot));
         assertArrayEquals(new byte[]{-84, -101, -4, -117, -46, -98, 10, -68, -51, 127, 64, -87, 51, 9, -1, 13, -39, 103, -126, 71, -121, -84, -51, 110, 113, -124, 119, -71, -51, 73, -75, 100}, (byte[]) lastFrameDigestField.get(screenshotWatcher));

@@ -6,14 +6,11 @@ import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.pojos.Configuration;
-import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.types.DownloadWait;
-import io.github.giulong.spectrum.types.ImplicitWait;
-import io.github.giulong.spectrum.types.PageLoadWait;
-import io.github.giulong.spectrum.types.ScriptWait;
+import io.github.giulong.spectrum.types.*;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import io.github.giulong.spectrum.utils.video.VideoEncoder;
 import io.github.giulong.spectrum.utils.video.ScreenshotWatcher;
+import io.github.giulong.spectrum.utils.video.VideoEncoder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,13 +23,10 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.function.Function;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 @Slf4j
 public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Data>, Data> {
@@ -131,40 +125,27 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     }
 
     @SneakyThrows
-    public SpectrumPage<?, Data> initPage(final Field f) {
-        log.debug("Initializing page {}", f.getName());
+    public SpectrumPage<?, Data> initPage(final Field spectrumPageField) {
+        log.debug("Initializing page {}", spectrumPageField.getName());
 
         @SuppressWarnings("unchecked")
-        final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) f.getType().getDeclaredConstructor().newInstance();
+        final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
         @SuppressWarnings("unchecked")
         final Class<SpectrumPage<?, Data>> spectrumPageClass = (Class<SpectrumPage<?, Data>>) spectrumPage.getClass();
-
-        f.setAccessible(true);
-        f.set(this, spectrumPage);
+        ReflectionUtils.setField(spectrumPageField, this, spectrumPage);
 
         final String className = spectrumPageClass.getSimpleName();
         log.debug("Injecting already resolved fields into an instance of {}", className);
 
         final Endpoint endpointAnnotation = spectrumPageClass.getAnnotation(Endpoint.class);
         final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";
+
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         spectrumPage.setEndpoint(endpointValue);
+        getSharedFields().forEach(sharedField -> ReflectionUtils.copyField(sharedField, this, sharedField, spectrumPage));
 
-        final List<Field> sharedFields = getSharedFields();
-        final Map<String, Field> targetFieldsMap = sharedFields
-                .stream()
-                .collect(toMap(Field::getName, Function.identity()));
-
-        sharedFields.forEach(s -> setSharedField(spectrumPage, s, targetFieldsMap));
         PageFactory.initElements(webDriver, spectrumPage);
 
         return spectrumPage;
-    }
-
-    @SneakyThrows
-    protected void setSharedField(final SpectrumPage<?, Data> spectrumPage, final Field spectrumTestField, final Map<String, Field> spectrumPageFieldsMap) {
-        final Field spectrumPageField = spectrumPageFieldsMap.get(spectrumTestField.getName());
-        spectrumPageField.setAccessible(true);
-        spectrumPageField.set(spectrumPage, spectrumTestField.get(this));
     }
 }

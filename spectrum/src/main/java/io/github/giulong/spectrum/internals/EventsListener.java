@@ -65,7 +65,7 @@ public class EventsListener implements WebDriverListener {
     }
 
     @SneakyThrows
-    public Path recordVideoFrameFor(final WebDriver webDriver, final TestData testData, final Frame frame) {
+    public Path record(final Frame frame) {
         final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", frame.getValue(), randomUUID()));
 
         if (video.shouldRecord(screenshotPath.getFileName().toString())) {
@@ -87,7 +87,7 @@ public class EventsListener implements WebDriverListener {
                     final String noTagsMessage = message.replaceAll(TAG, "");
 
                     log.trace(noTagsMessage);
-                    recordVideoFrameFor(webDriver, testData, frame);
+                    record(frame);
                     extentTest.info(message);
                 }
             }
@@ -97,7 +97,7 @@ public class EventsListener implements WebDriverListener {
                     final String noTagsMessage = message.replaceAll(TAG, "");
 
                     log.debug(noTagsMessage);
-                    recordVideoFrameFor(webDriver, testData, frame);
+                    record(frame);
                     extentTest.info(message);
                 }
             }
@@ -107,7 +107,7 @@ public class EventsListener implements WebDriverListener {
                     final String noTagsMessage = message.replaceAll(TAG, "");
 
                     log.info(noTagsMessage);
-                    recordVideoFrameFor(webDriver, testData, frame);
+                    record(frame);
                     extentTest.info(message);
                 }
             }
@@ -117,7 +117,7 @@ public class EventsListener implements WebDriverListener {
                     final String noTagsMessage = message.replaceAll(TAG, "");
 
                     log.warn(noTagsMessage);
-                    recordVideoFrameFor(webDriver, testData, frame);
+                    record(frame);
                     extentTest.warning(createLabel(message, YELLOW));
                 }
             }

@@ -146,7 +146,7 @@ class EventsListenerTest {
     @DisplayName("recordVideoFrameFor should take a webdriver screenshot")
     public void recordVideoFrameFor() {
         final Path path = recordViewFrameForStubs();
-        final Path screenshotPath = eventsListener.recordVideoFrameFor(webDriver, testData, AUTO_AFTER);
+        final Path screenshotPath = eventsListener.record(AUTO_AFTER);
 
         assertEquals(path, screenshotPath.getParent());
         assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
@@ -161,7 +161,7 @@ class EventsListenerTest {
         when(testData.getScreenshotFolderPath()).thenReturn(path);
         when(video.shouldRecord(path.resolve(anyString()).getFileName().toString())).thenReturn(false);
 
-        assertNull(eventsListener.recordVideoFrameFor(webDriver, testData, AUTO_AFTER));
+        assertNull(eventsListener.record(AUTO_AFTER));
     }
 
     @Test
