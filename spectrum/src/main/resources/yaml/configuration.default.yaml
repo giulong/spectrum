@@ -327,7 +327,7 @@ webDriver:
     beforeGetWindowSize:
       message: Getting size of window %1$s
     afterGetWindowSize:
-      level: INFO
+      level: TRACE
       message: Size of window %1$s is %2$s
     beforeSetSize:
       message: Settings size to %2$s
