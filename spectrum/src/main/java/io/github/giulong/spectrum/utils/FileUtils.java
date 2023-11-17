@@ -37,7 +37,7 @@ public final class FileUtils {
             return "";
         }
 
-        try (final Scanner scanner = new Scanner(inputStream)) {
+        try (Scanner scanner = new Scanner(inputStream)) {
             return scanner.useDelimiter("\\Z").next();
         }
     }
