@@ -5,6 +5,7 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
@@ -90,7 +91,7 @@ class SpectrumSessionListenerTest {
     private EventsDispatcher eventsDispatcher;
 
     @Mock
-    private Properties properties;
+    private SpectrumProperties spectrumProperties;
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
@@ -168,16 +169,15 @@ class SpectrumSessionListenerTest {
             when(mock.config()).thenReturn(extentSparkReporterConfig);
         });
 
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.readProperties("/spectrum.properties")).thenReturn(properties);
         when(fileUtils.read("/banner.txt")).thenReturn(banner);
-        when(properties.getProperty("version")).thenReturn(version);
+        when(spectrumProperties.getVersion()).thenReturn(version);
         when(configuration.getTestBook()).thenReturn(testBook);
         when(testBook.getMappedTests()).thenReturn(mappedTests);
         when(testBook.getParser()).thenReturn(testBookParser);
         when(testBookParser.parse()).thenReturn(tests);
 
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
+        when(yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class)).thenReturn(spectrumProperties);
         when(yamlUtils.readInternalNode(PROFILE_NODE, CONFIGURATION_YAML, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultProfile");
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
@@ -246,9 +246,9 @@ class SpectrumSessionListenerTest {
     @ParameterizedTest(name = "with version {0} we expect {1}")
     @MethodSource("buildVersionLineValuesProvider")
     public void buildVersionLine(final String version, final String expected) {
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.readProperties("/spectrum.properties")).thenReturn(properties);
-        when(properties.getProperty("version")).thenReturn(version);
+        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
+        when(yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class)).thenReturn(spectrumProperties);
+        when(spectrumProperties.getVersion()).thenReturn(version);
 
         final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
         assertEquals(expected, spectrumSessionListener.buildVersionLine());

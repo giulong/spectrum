@@ -10,7 +10,6 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
-import java.util.Properties;
 import java.util.stream.Stream;
 
 import static java.lang.System.lineSeparator;
@@ -56,20 +55,6 @@ class FileUtilsTest {
         return Stream.of(
                 arguments("template-test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
                 arguments("not-existing", ""));
-    }
-
-    @Test
-    @DisplayName("readProperties should read the provided file and return the corresponding properties instance")
-    public void readProperties() {
-        Properties actual = fileUtils.readProperties("/test.properties");
-        assertEquals(1, actual.size());
-        assertEquals("value", actual.getProperty("key"));
-    }
-
-    @Test
-    @DisplayName("readProperties should throw an exception if the provided file doesn't exist")
-    public void readPropertiesNotExisting() {
-        assertThrows(RuntimeException.class, () -> fileUtils.readProperties("/not-existing"));
     }
 
     @Test
