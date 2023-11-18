@@ -21,7 +21,6 @@ public class VideoEncoder extends Thread {
     private final BlockingQueue<File> blockingQueue;
     private final String className;
     private final String methodName;
-    private final File file;
     private final AWTSequenceEncoder encoder;
     private final Video video;
     private final Dimension dimension;
@@ -34,7 +33,6 @@ public class VideoEncoder extends Thread {
         this.blockingQueue = blockingQueue;
         this.className = className;
         this.methodName = methodName;
-        this.file = file;
         this.video = video;
         this.dimension = chooseDimensionFor(webDriver);
         this.encoder = AWTSequenceEncoder.createSequenceEncoder(file, 1);

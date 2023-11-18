@@ -9,9 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
@@ -20,6 +18,8 @@ import java.nio.file.Path;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -29,11 +29,12 @@ import static org.mockito.Mockito.*;
 @DisplayName("TestDataResolver")
 class TestDataResolverTest {
 
-    private static MockedStatic<TestData> testDataMockedStatic;
-
+    private static final String UUID_REGEX = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.mp4";
     private static final String REPORTS_FOLDER = "reportsFolder";
     private static final String CLASS_NAME = "className";
     private static final String METHOD_NAME = "methodName";
+
+    private static MockedStatic<TestData> testDataMockedStatic;
 
     @Mock
     private ParameterContext parameterContext;
@@ -62,6 +63,9 @@ class TestDataResolverTest {
     @Mock
     private TestData testData;
 
+    @Captor
+    private ArgumentCaptor<Path> pathArgumentCaptor;
+
     @InjectMocks
     private TestDataResolver testDataResolver;
 
@@ -84,6 +88,8 @@ class TestDataResolverTest {
         final String className = clazz.getSimpleName();
         final String methodName = "resolveParameter";
         final Path path = Path.of(REPORTS_FOLDER, "screenshots", className, methodName).toAbsolutePath();
+        final Path videoFolderPath = Path.of(REPORTS_FOLDER, "videos", className, methodName).toAbsolutePath();
+
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
@@ -97,11 +103,16 @@ class TestDataResolverTest {
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(testDataBuilder.screenshotFolderPath(path)).thenReturn(testDataBuilder);
+        when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
 
         final TestData actual = testDataResolver.resolveParameter(parameterContext, extensionContext);
+        final Path videoPath = pathArgumentCaptor.getValue();
 
         assertTrue(Files.exists(path));
+        assertEquals(videoFolderPath, videoPath.getParent());
+        assertThat(videoPath.getFileName().toString(), matchesPattern(UUID_REGEX));
+        assertTrue(Files.exists(videoFolderPath));
         assertEquals(testData, actual);
         verify(store).put(TEST_DATA, actual);
     }
@@ -112,6 +123,17 @@ class TestDataResolverTest {
         final Path path = Path.of(REPORTS_FOLDER, "screenshots", CLASS_NAME, METHOD_NAME).toAbsolutePath();
         assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(REPORTS_FOLDER, CLASS_NAME, METHOD_NAME));
 
+        assertTrue(Files.exists(path));
+    }
+
+    @Test
+    @DisplayName("getVideoPathForCurrentTest should return the path for the current test and create the directories")
+    public void getVideoPathForCurrentTest() {
+        final Path path = Path.of(REPORTS_FOLDER, "videos", CLASS_NAME, METHOD_NAME).toAbsolutePath();
+        final Path actual = testDataResolver.getVideoPathForCurrentTest(REPORTS_FOLDER, CLASS_NAME, METHOD_NAME);
+
+        assertEquals(path, actual.getParent());
+        assertThat(actual.getFileName().toString(), matchesPattern(UUID_REGEX));
         assertTrue(Files.exists(path));
     }
 }

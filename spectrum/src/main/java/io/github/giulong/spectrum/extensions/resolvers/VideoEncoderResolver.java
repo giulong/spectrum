@@ -4,7 +4,6 @@ import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.video.VideoEncoder;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebDriver;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.concurrent.BlockingQueue;
 
@@ -21,7 +19,6 @@ import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResol
 import static io.github.giulong.spectrum.extensions.resolvers.ScreenshotQueueResolver.SCREENSHOT_QUEUE;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
-import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -43,7 +40,7 @@ public class VideoEncoderResolver extends TypeBasedParameterResolver<VideoEncode
         final TestData testData = store.get(TEST_DATA, TestData.class);
         final String className = testData.getClassName();
         final String methodName = testData.getMethodName();
-        final Path videoPath = getVideoPathForCurrentTest(configuration.getExtent().getReportFolder(), className, methodName);
+        final Path videoPath = testData.getVideoPath();
         final WebDriver webDriver = store.get(WEB_DRIVER, WebDriver.class);
         @SuppressWarnings("unchecked")
         final BlockingQueue<File> screenshotsQueue = (BlockingQueue<File>) store.get(SCREENSHOT_QUEUE, BlockingQueue.class);
@@ -53,12 +50,5 @@ public class VideoEncoderResolver extends TypeBasedParameterResolver<VideoEncode
         store.put(VIDEO_ENCODER, videoEncoder);
 
         return videoEncoder;
-    }
-
-    @SneakyThrows
-    public Path getVideoPathForCurrentTest(final String reportsFolder, final String className, final String methodName) {
-        final Path path = Path.of(reportsFolder, "videos", className, methodName).toAbsolutePath();
-        Files.createDirectories(path);
-        return path.resolve(String.format("%s.mp4", randomUUID()));
     }
 }

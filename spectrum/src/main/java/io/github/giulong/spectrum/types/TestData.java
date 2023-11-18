@@ -11,4 +11,5 @@ public class TestData {
     private String className;
     private String methodName;
     private Path screenshotFolderPath;
+    private Path videoPath;
 }

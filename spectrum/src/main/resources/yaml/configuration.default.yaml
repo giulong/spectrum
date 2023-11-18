@@ -21,6 +21,12 @@ testBook: null
 # Execution video recording
 video:
   frames: [ ] # by default, nothing is recorded
+  width: 0  # width of the video. A value of 0 means the actual browser size will be used
+  height: 0 # height of the video. A value of 0 means the actual browser size will be used
+  extentTest:
+    attach: true # by default, the video (if recorded) is attached to the extent report
+    width: 320 # width of the video in the extent report
+    height: 240 # height of the video in the extent report
 
 # Extent Report configuration
 extent:

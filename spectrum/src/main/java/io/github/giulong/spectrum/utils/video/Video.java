@@ -12,6 +12,7 @@ public class Video {
     private List<Frame> frames;
     private int width;
     private int height;
+    private ExtentTest extentTest;
 
     public boolean isDisabled() {
         return frames.isEmpty();
@@ -22,5 +23,12 @@ public class Video {
                 .stream()
                 .map(Frame::getValue)
                 .anyMatch(frameName::startsWith);
+    }
+
+    @Getter
+    public static class ExtentTest {
+        private boolean attach;
+        private int width;
+        private int height;
     }
 }

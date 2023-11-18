@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -28,11 +29,13 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final String className = context.getRequiredTestClass().getSimpleName();
         final String methodName = context.getRequiredTestMethod().getName();
         final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, className, methodName);
+        final Path videoPath = getVideoPathForCurrentTest(reportFolder, className, methodName);
         final TestData testData = TestData
                 .builder()
                 .className(className)
                 .methodName(methodName)
                 .screenshotFolderPath(screenshotFolderPath)
+                .videoPath(videoPath)
                 .build();
 
         context.getStore(GLOBAL).put(TEST_DATA, testData);
@@ -44,5 +47,12 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final Path path = Path.of(reportsFolder, "screenshots", className, methodName).toAbsolutePath();
         Files.createDirectories(path);
         return path;
+    }
+
+    @SneakyThrows
+    public Path getVideoPathForCurrentTest(final String reportsFolder, final String className, final String methodName) {
+        final Path path = Path.of(reportsFolder, "videos", className, methodName).toAbsolutePath();
+        Files.createDirectories(path);
+        return path.resolve(String.format("%s.mp4", randomUUID()));
     }
 }
