@@ -574,6 +574,10 @@ Logs are rotated daily, meaning the results of each execution occurred in the sa
 > By default, logs are generated using a colored pattern. In case the console you use doesn't support it (if you see weird characters at the beginning of each line),
 > you should deactivate colors by running with `-Dspectrum.log.colors=false`.
 
+> 💡 Tip<br/>
+> You can provide your own log configuration by adding the `src/test/resources/logback-test.xml`.
+> This file will completely override the one provided by Spectrum
+
 ## Html report
 
 Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/).
