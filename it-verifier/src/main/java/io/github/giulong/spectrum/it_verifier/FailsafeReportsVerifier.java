@@ -89,7 +89,7 @@ public class FailsafeReportsVerifier {
     @Getter
     @JsonIgnoreProperties(ignoreUnknown = true)
     @SuppressWarnings("unused")
-    private static class Report {
+    public static class Report {
         private int completed;
         private int errors;
         private int failures;

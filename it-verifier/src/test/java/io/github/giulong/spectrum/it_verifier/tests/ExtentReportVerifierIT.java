@@ -13,6 +13,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@SuppressWarnings("unused")
 @DisplayName("Extent Report Verifier")
 @Slf4j
 public class ExtentReportVerifierIT extends SpectrumTest<Data> {
