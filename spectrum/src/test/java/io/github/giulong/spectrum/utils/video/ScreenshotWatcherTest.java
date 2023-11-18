@@ -21,13 +21,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ScreenshotWatcher")
 class ScreenshotWatcherTest {
+
+    private static final byte[] oldFrameDigest = new byte[]{-84, -101, -4, -117, -46, -98, 10, -68, -51, 127, 64, -87, 51, 9, -1, 13, -39, 103, -126, 71, -121, -84, -51, 110, 113, -124, 119, -71, -51, 73, -75, 100};
 
     @Mock
     private LinkedBlockingQueue<File> blockingQueue;
@@ -98,6 +101,36 @@ class ScreenshotWatcherTest {
         verify(blockingQueue, never()).add(path2.toFile());
     }
 
+    @DisplayName("run should not add a new element to the blocking queue")
+    @ParameterizedTest(name = "with shouldRecord {0} and is new screenshot {1}")
+    @MethodSource("runValuesProvider")
+    public void runNoScreenshot(final boolean shouldRecord, final byte[] lastFrameDigest) throws InterruptedException, IOException {
+        final Path path = Files.createTempFile("not-new", ".txt");
+        Files.writeString(path, "I'm an airplane!!!");
+        final String context = "not-new.jpg";
+        ReflectionUtils.setField("lastFrameDigest", screenshotWatcher, lastFrameDigest);
+
+        when(watchService.take()).thenReturn(watchKey);
+        when(watchKey.isValid()).thenReturn(true).thenReturn(false);
+        when(watchKey.pollEvents()).thenReturn(List.of(watchEvent1));
+        when(watchEvent1.context()).thenReturn(context);
+        when(screenshotFolderPath.resolve(context)).thenReturn(path);
+        when(video.shouldRecord(path.toFile().getName())).thenReturn(shouldRecord);
+
+        //noinspection CallToThreadRun
+        screenshotWatcher.run();
+
+        verifyNoInteractions(blockingQueue);
+    }
+
+    public static Stream<Arguments> runValuesProvider() {
+        return Stream.of(
+                arguments(false, new byte[]{}),
+                arguments(false, oldFrameDigest),
+                arguments(true, oldFrameDigest)
+        );
+    }
+
     @DisplayName("isNewFrame should return if the provided screenshot is new")
     @ParameterizedTest(name = "with digest equals to last one {0} we expect {1}")
     @MethodSource("valuesProvider")
@@ -108,13 +141,13 @@ class ScreenshotWatcherTest {
         ReflectionUtils.setField(lastFrameDigestField, screenshotWatcher, lastFrameDigest);
 
         assertEquals(expected, screenshotWatcher.isNewFrame(screenshot));
-        assertArrayEquals(new byte[]{-84, -101, -4, -117, -46, -98, 10, -68, -51, 127, 64, -87, 51, 9, -1, 13, -39, 103, -126, 71, -121, -84, -51, 110, 113, -124, 119, -71, -51, 73, -75, 100}, (byte[]) lastFrameDigestField.get(screenshotWatcher));
+        assertArrayEquals(oldFrameDigest, (byte[]) lastFrameDigestField.get(screenshotWatcher));
     }
 
     public static Stream<Arguments> valuesProvider() throws IOException {
         return Stream.of(
                 arguments(null, true),
-                arguments(new byte[]{-84, -101, -4, -117, -46, -98, 10, -68, -51, 127, 64, -87, 51, 9, -1, 13, -39, 103, -126, 71, -121, -84, -51, 110, 113, -124, 119, -71, -51, 73, -75, 100}, false)
+                arguments(oldFrameDigest, false)
         );
     }
 }
