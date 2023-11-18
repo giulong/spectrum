@@ -200,7 +200,7 @@ class ExtentTestResolverTest {
 
     public static Stream<Arguments> noVideoValuesProvider() {
         return Stream.of(
-                arguments(true, false),
+                arguments(false, false),
                 arguments(true, false),
                 arguments(true, true)
         );
