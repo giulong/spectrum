@@ -58,9 +58,9 @@ public class EventsListener implements WebDriverListener {
 
     protected List<String> parse(final Object[] args) {
         return Arrays.stream(args)
-                .map(arg -> (arg instanceof WebElement)
+                .map(arg -> String.format("&nbsp;<code>%s</code>", arg instanceof WebElement
                         ? extractSelectorFrom((WebElement) arg)
-                        : String.valueOf(arg))
+                        : arg))
                 .toList();
     }
 

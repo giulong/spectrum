@@ -53,7 +53,7 @@ class EventsListenerTest {
 
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
-    private final String tagsMessage = "message <div>" + arg + "</div>";
+    private final String tagsMessage = "message <div>&nbsp;<code>" + arg + "</code></div>";
 
     @Mock
     private ExtensionContext.Store store;
@@ -126,11 +126,11 @@ class EventsListenerTest {
     public void parse() {
         final String s = "string";
         final List<String> expected = Arrays.asList(
-                "id: message",
-                s,
-                "null",
-                "css selector: #gettotal -> tag name: button",
-                "css selector: #get1-.total -> tag name: button"
+                "&nbsp;<code>id: message</code>",
+                "&nbsp;<code>" + s + "</code>",
+                "&nbsp;<code>null</code>",
+                "&nbsp;<code>css selector: #gettotal -> tag name: button</code>",
+                "&nbsp;<code>css selector: #get1-.total -> tag name: button</code>"
         );
 
         when(webElement1.toString()).thenReturn("[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]");
