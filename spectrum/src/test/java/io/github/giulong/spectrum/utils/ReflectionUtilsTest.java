@@ -26,6 +26,16 @@ class ReflectionUtilsTest {
     }
 
     @Test
+    @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object")
+    public void getFieldValue() {
+        final String fieldName = "fieldString";
+        final String value = "value";
+        final Dummy dummy = new Dummy(value);
+
+        assertEquals(value, ReflectionUtils.getFieldValue(fieldName, dummy));
+    }
+
+    @Test
     @DisplayName("setField should set the field with the provided name on the provided object with the provided value")
     public void setFieldString() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";

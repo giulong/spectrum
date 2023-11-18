@@ -69,6 +69,7 @@ webDriver:
 
   # WebDriver's internal logging levels
   logs:
+    level: DEBUG  # The level at which webDriver's logs will be logged
     browser: SEVERE
     driver: SEVERE
     performance: OFF

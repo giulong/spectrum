@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.webdrivers;
 
 import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.pojos.Configuration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +43,9 @@ class GridEnvironmentTest {
     @Mock
     private ChromeOptions chromeOptions;
 
+    @Mock
+    private Configuration configuration;
+
     @InjectMocks
     private GridEnvironment gridEnvironment;
 
@@ -73,7 +77,7 @@ class GridEnvironmentTest {
     public void setupFrom() throws MalformedURLException {
         commonStubs();
 
-        assertEquals(webDriver, gridEnvironment.setupFrom(browser));
+        assertEquals(webDriver, gridEnvironment.setupFrom(configuration, browser));
 
         verify(browser).mergeGridCapabilitiesFrom(Map.of("one", "value"));
     }
@@ -84,7 +88,7 @@ class GridEnvironmentTest {
         commonStubs();
         gridEnvironment.localFileDetector = true;
 
-        assertEquals(webDriver, gridEnvironment.setupFrom(browser));
+        assertEquals(webDriver, gridEnvironment.setupFrom(configuration, browser));
 
         verify(browser).mergeGridCapabilitiesFrom(Map.of("one", "value"));
         verify(webDriver).setFileDetector(any(LocalFileDetector.class));

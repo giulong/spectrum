@@ -18,6 +18,11 @@ public final class ReflectionUtils {
     }
 
     @SneakyThrows
+    public static Object getFieldValue(final String fieldName, final Object object) {
+        return getField(fieldName, object).get(object);
+    }
+
+    @SneakyThrows
     public static void setField(final String fieldName, final Object object, final Object value) {
         final Field field = object.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);

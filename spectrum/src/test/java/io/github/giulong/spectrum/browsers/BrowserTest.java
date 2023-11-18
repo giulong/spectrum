@@ -129,7 +129,7 @@ class BrowserTest {
         when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
         when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
         when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
-        when(environment.setupFrom(browser)).thenReturn(webDriver);
+        when(environment.setupFrom(configuration, browser)).thenReturn(webDriver);
 
         when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
 

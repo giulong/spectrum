@@ -111,6 +111,9 @@ public class Configuration {
         public static class Logs {
 
             @JsonSchemaTypes(String.class)
+            private org.slf4j.event.Level level;
+
+            @JsonSchemaTypes(String.class)
             private Level browser;
 
             @JsonSchemaTypes(String.class)
