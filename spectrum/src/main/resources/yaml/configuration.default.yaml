@@ -9,21 +9,21 @@ runtime:
   environment: # Runtime environment. Can be local or grid
     local: { }
   filesFolder: src/test/resources/files # folder where you will store files to be checked against downloaded ones
-  downloadsFolder: ${downloadsFolder}
+  downloadsFolder: ${downloadsFolder} # destination folder for files downloaded during the execution
 
 # Application under test
 application:
-  baseUrl: http://localhost:8080
+  baseUrl: http://localhost:8080  # Application's under test base url
 
 # TestBook (coverage)
 testBook: null
 
 # Execution video recording
 video:
-  frames: [ ] # by default, nothing is recorded
+  frames: [ ] # Kind of frames to be added to the video. By default, nothing is recorded
   width: 0  # width of the video. A value of 0 means the actual browser size will be used
   height: 0 # height of the video. A value of 0 means the actual browser size will be used
-  extentTest:
+  extentTest: # Properties of the video tag inside the extent report
     attach: true # by default, the video (if recorded) is attached to the extent report
     width: 320 # width of the video in the extent report
     height: 240 # height of the video in the extent report
@@ -33,17 +33,17 @@ extent:
   documentTitle: Spectrum Report  # Title of the html page
   reportFolder: target/spectrum/reports # Where to generate the report
   reportName: Spectrum Report   # Name shown in the header of the report
-  fileName: spectrum-report-{timestamp}.html  # you can use the {timestamp} placeholder, which will be resolved at runtime
+  fileName: spectrum-report-{timestamp}.html  # Name of the report file. you can use the {timestamp} placeholder, which will be resolved at runtime
   theme: STANDARD   # Theme used. Can be STANDARD or DARK
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
 
 # WebDriver configuration
 webDriver:
   waits:
-    implicit: 0    # Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found.
-    pageLoadTimeout: 10   # Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet.
-    scriptTimeout: 10   # Seconds that Selenium waits before throwing a ScriptTimeoutException.
-    downloadTimeout: 15   # FluentWait injected in test classes/pages that you can use on file download.
+    implicit: 0    # Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found
+    pageLoadTimeout: 10   # Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet
+    scriptTimeout: 10   # Seconds that Selenium waits before throwing a ScriptTimeoutException
+    downloadTimeout: 15   # FluentWait injected in test classes/pages that you can use on file download
 
   # Chrome capabilities. See: https://chromedriver.chromium.org/capabilities
   chrome:
@@ -75,12 +75,12 @@ webDriver:
 
   # WebDriver's internal logging levels
   logs:
-    level: DEBUG  # The level at which webDriver's logs will be logged
+    level: DEBUG  # The level at which webDriver's logs will be logged in Spectrum (execution) logs
     browser: SEVERE
     driver: SEVERE
     performance: OFF
 
-  # Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite. Specify a level among OFF, TRACE, DEBUG, INFO, WARN.
+  # Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite. Specify a level among OFF, TRACE, DEBUG, INFO, WARN
   events:
     beforeAnyCall:
       message: About to call method %2$s with args %3$s on target %1$s
@@ -364,8 +364,8 @@ webDriver:
 
 # Data models
 data:
-  folder: data  # subfolder under src/test/resources where you will save your data*.yaml
-  fqdn: fqdn.placeholder  # you need to provide the fully qualified name of your Data class, meaning its package name AND class name.
+  folder: data  # subfolder under src/test/resources where to find your data*.yaml
+  fqdn: fqdn.placeholder  # you need to provide the fully qualified name of your Data class, meaning its package name AND class name
 
 # FreeMarker template engine configuration. See https://freemarker.apache.org/
 freeMarker:
@@ -373,7 +373,7 @@ freeMarker:
   locale: US
   numberFormat: 0.##;; roundingMode=halfUp
 
-# Internal event consumers. Cannot be removed, modified, nor added from client side configuration*.yaml.
+# Internal events consumers. Cannot be removed, modified, nor added from client side configuration*.yaml, as lists' elements are appended when merging yaml files. You can add yours
 eventsConsumers:
   - extentTest: # We need to add an entry to the Extent Report once each test is done
       events:

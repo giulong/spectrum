@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static com.github.victools.jsonschema.generator.Option.FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT;
 import static com.github.victools.jsonschema.generator.Option.MAP_VALUES_AS_ADDITIONAL_PROPERTIES;
+import static com.github.victools.jsonschema.module.jackson.JacksonOption.FLATTENED_ENUMS_FROM_JSONVALUE;
 import static com.github.victools.jsonschema.module.jackson.JacksonOption.SKIP_SUBTYPE_LOOKUP;
 import static java.util.stream.Collectors.toList;
 
@@ -34,7 +35,7 @@ public class JsonSchemaGeneratorModule implements Module {
     @Override
     public void applyToConfigBuilder(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
         schemaGeneratorConfigBuilder
-                .with(new JacksonModule(SKIP_SUBTYPE_LOOKUP))
+                .with(new JacksonModule(SKIP_SUBTYPE_LOOKUP, FLATTENED_ENUMS_FROM_JSONVALUE))
                 .with(FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT)
                 .with(MAP_VALUES_AS_ADDITIONAL_PROPERTIES);
 
@@ -82,7 +83,6 @@ public class JsonSchemaGeneratorModule implements Module {
     }
 
     private static class PublicSubTypeResolver extends JsonSubTypesResolver {
-
         public List<ResolvedType> lookUpSubtypesFromAnnotation(final ResolvedType declaredType, final JsonSubTypes subtypesAnnotation, final TypeContext context) {
             return Optional
                     .ofNullable(super.lookUpSubtypesFromAnnotation(declaredType, subtypesAnnotation, context))

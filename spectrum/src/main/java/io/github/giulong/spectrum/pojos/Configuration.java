@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.pojos;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.browsers.Browser;
@@ -23,69 +24,126 @@ import static ch.qos.logback.classic.Level.OFF;
 @Getter
 public class Configuration {
 
+    @JsonPropertyDescription("Common vars to interpolate other String values in the configuration")
     private Map<String, String> vars;
+
+    @JsonPropertyDescription("Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server")
     private Runtime runtime;
+
+    @JsonPropertyDescription("Application under test")
     private Application application;
+
+    @JsonPropertyDescription("Execution video recording")
     private Video video;
+
+    @JsonPropertyDescription("Extent Report configuration")
     private Extent extent;
+
+    @JsonPropertyDescription("WebDriver configuration")
     private WebDriver webDriver;
+
+    @JsonPropertyDescription("Data models")
     private Data data;
 
+    @JsonPropertyDescription("TestBook (coverage)")
     @JsonSerialize(using = ToStringSerializer.class)
     private TestBook testBook;
+
+    @JsonPropertyDescription("FreeMarker template engine configuration. See https://freemarker.apache.org/")
     private FreeMarker freeMarker;
+
+    @JsonPropertyDescription("Events consumers, such as those to send email notifications, for example")
     private List<EventsConsumer> eventsConsumers;
 
     @Getter
     public static class Runtime {
+
+        @JsonPropertyDescription("profiles to be activated. By default, it's 'local'")
         private String profiles;
 
         @JsonSerialize(using = ToStringSerializer.class)
         @JsonSchemaTypes(String.class)
+        @JsonPropertyDescription("browser to use")
         private Browser<?, ?, ?> browser;
+
+        @JsonPropertyDescription("Runtime environment. Can be local or grid")
         private Environment environment;
+
+        @JsonPropertyDescription("folder where you will store files to be checked against downloaded ones")
         private String filesFolder;
+
+        @JsonPropertyDescription("destination folder for files downloaded during the execution")
         private String downloadsFolder;
     }
 
     @Getter
     public static class Application {
+
+        @JsonPropertyDescription("Application's under test base url")
         private String baseUrl;
     }
 
     @Getter
     public static class Extent {
+
+        @JsonPropertyDescription("Title of the html page")
         private String documentTitle;
+
+        @JsonPropertyDescription("Where to generate the report")
         private String reportFolder;
+
+        @JsonPropertyDescription("Name shown in the header of the report")
         private String reportName;
+
+        @JsonPropertyDescription("Name of the report file .You can use the {timestamp} placeholder, which will be resolved at runtime")
         private String fileName;
+
+        @JsonPropertyDescription("Theme used. Can be STANDARD or DARK")
         private String theme;
+
+        @JsonPropertyDescription("Timestamp of each test's start-time and end-time")
         private String timeStampFormat;
     }
 
     @Getter
     public static class WebDriver {
+
+        @JsonPropertyDescription("WebDriver's fluent waits")
         private Waits waits;
+
+        @JsonPropertyDescription("Chrome capabilities. See: https://chromedriver.chromium.org/capabilities")
         private Chrome chrome;
+
+        @JsonPropertyDescription("Firefox capabilities. See: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions")
         private Firefox firefox;
+
+        @JsonPropertyDescription("Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options")
         private Edge edge;
+
+        @JsonPropertyDescription("WebDriver's internal logging levels")
         private Logs logs;
+
+        @JsonPropertyDescription("Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite")
         private Events events;
 
         @Getter
         public static class Waits {
 
+            @JsonPropertyDescription("Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found")
             @JsonSchemaTypes(int.class)
             private Duration implicit;
 
+            @JsonPropertyDescription("Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet")
             @JsonSchemaTypes(int.class)
             private Duration pageLoadTimeout;
 
-            @JsonSchemaTypes(int.class)
-            private Duration downloadTimeout;
-
+            @JsonPropertyDescription("Seconds that Selenium waits before throwing a ScriptTimeoutException")
             @JsonSchemaTypes(int.class)
             private Duration scriptTimeout;
+
+            @JsonPropertyDescription("FluentWait injected in test classes/pages that you can use on file download")
+            @JsonSchemaTypes(int.class)
+            private Duration downloadTimeout;
         }
 
         @Getter
@@ -110,6 +168,7 @@ public class Configuration {
         @Getter
         public static class Logs {
 
+            @JsonPropertyDescription("The level at which webDriver's logs will be logged in Spectrum (execution) logs")
             @JsonSchemaTypes(String.class)
             private org.slf4j.event.Level level;
 
@@ -246,14 +305,22 @@ public class Configuration {
 
         @Getter
         public static class Event {
+
+            @JsonPropertyDescription("Level at which this event will be logged")
             private ch.qos.logback.classic.Level level = OFF;
+
+            @JsonPropertyDescription("Message to be logged upon receiving this event")
             private String message;
         }
     }
 
     @Getter
     public static class Data {
+
+        @JsonPropertyDescription("subfolder under src/test/resources where to find your data*.yaml")
         private String folder;
+
+        @JsonPropertyDescription("you need to provide the fully qualified name of your Data class, meaning its package name AND class name")
         private String fqdn;
     }
 
