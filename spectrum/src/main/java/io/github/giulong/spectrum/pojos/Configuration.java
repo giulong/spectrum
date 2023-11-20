@@ -103,6 +103,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Timestamp of each test's start-time and end-time")
         private String timeStampFormat;
+
+        @JsonPropertyDescription("Regex to extract the WebElement's selector, when the webDriver fires an event")
+        private String locatorRegex;
     }
 
     @Getter

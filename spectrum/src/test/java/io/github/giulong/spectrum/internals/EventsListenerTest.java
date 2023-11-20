@@ -31,6 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static ch.qos.logback.classic.Level.*;
@@ -53,7 +55,7 @@ class EventsListenerTest {
 
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
-    private final String tagsMessage = "message <div>&nbsp;<code>" + arg + "</code></div>";
+    private final String tagsMessage = "message <div><code>" + arg + "</code></div>";
 
     @Mock
     private ExtensionContext.Store store;
@@ -82,6 +84,12 @@ class EventsListenerTest {
     @Mock
     private Video video;
 
+    @Mock
+    private Pattern locatorPattern;
+
+    @Mock
+    private Matcher matcher;
+
     @Captor
     private ArgumentCaptor<Markup> markupArgumentCaptor;
 
@@ -109,7 +117,10 @@ class EventsListenerTest {
     @ParameterizedTest(name = "with WebElement {0} we expect {1}")
     @MethodSource("valuesProvider")
     public void extractSelectorFrom(final String fullWebElement, final String expected) {
+        when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
         when(webElement1.toString()).thenReturn(fullWebElement);
+        when(matcher.find()).thenReturn(true).thenReturn(false);
+        when(matcher.group(1)).thenReturn(expected);
         assertEquals(expected, eventsListener.extractSelectorFrom(webElement1));
     }
 
@@ -122,22 +133,51 @@ class EventsListenerTest {
     }
 
     @Test
+    @DisplayName("extractSelectorFrom should extract just the relevant info from the webElement")
+    public void extractSelectorFromNoMatch() {
+        final String fullWebElement = "fullWebElement";
+
+        when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
+        when(webElement1.toString()).thenReturn(fullWebElement);
+        when(matcher.find()).thenReturn(false);
+        assertEquals("", eventsListener.extractSelectorFrom(webElement1));
+    }
+
+    @Test
     @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list, and using String.valueOf to avoid NPEs")
     public void parse() {
+        final String webElement1ToString = "[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]";
+        final String webElement2ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]";
+        final String webElement3ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]";
+        final String expected1 = "id: message";
+        final String expected2 = "css selector: #gettotal -> tag name: button";
+        final String expected3 = "css selector: #get1-.total -> tag name: button";
+
         final String s = "string";
         final List<String> expected = Arrays.asList(
-                "&nbsp;<code>id: message</code>",
-                "&nbsp;<code>" + s + "</code>",
-                "&nbsp;<code>null</code>",
-                "&nbsp;<code>css selector: #gettotal -> tag name: button</code>",
-                "&nbsp;<code>css selector: #get1-.total -> tag name: button</code>"
+                "<code>id: message</code>",
+                "<code>" + s + "</code>",
+                "<code>null</code>",
+                "<code>css selector: #gettotal -> tag name: button</code>",
+                "<code>css selector: #get1-.total -> tag name: button</code>"
         );
 
-        when(webElement1.toString()).thenReturn("[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]");
-        when(webElement2.toString()).thenReturn("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]");
-        when(webElement3.toString()).thenReturn("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]");
+        when(webElement1.toString()).thenReturn(webElement1ToString);
+        when(webElement2.toString()).thenReturn(webElement2ToString);
+        when(webElement3.toString()).thenReturn(webElement3ToString);
+        when(locatorPattern.matcher(webElement1ToString)).thenReturn(matcher);
+        when(locatorPattern.matcher(webElement2ToString)).thenReturn(matcher);
+        when(locatorPattern.matcher(webElement3ToString)).thenReturn(matcher);
+        when(matcher.find())
+                .thenReturn(true).thenReturn(false)
+                .thenReturn(true).thenReturn(false)
+                .thenReturn(true).thenReturn(false);
+        when(matcher.group(1))
+                .thenReturn(expected1)
+                .thenReturn(expected2)
+                .thenReturn(expected3);
 
-        final Object[] args = new Object[] { webElement1, s, null, webElement2, webElement3 };
+        final Object[] args = new Object[]{webElement1, s, null, webElement2, webElement3};
 
         assertEquals(expected, eventsListener.parse(args));
     }

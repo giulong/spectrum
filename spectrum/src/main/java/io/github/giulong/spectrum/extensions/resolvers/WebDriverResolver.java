@@ -13,6 +13,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
+import java.util.regex.Pattern;
+
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -32,6 +34,7 @@ public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
         final WebDriver webDriver = configuration.getRuntime().getBrowser().build(configuration);
         final WebDriverListener eventListener = EventsListener.builder()
+                .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
                 .extentTest(store.get(EXTENT_TEST, ExtentTest.class))
                 .video(configuration.getVideo())
                 .testData(store.get(TEST_DATA, TestData.class))

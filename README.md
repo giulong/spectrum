@@ -612,6 +612,32 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
+Selenium doesn't provide any way to get a webElement's locator, by design. So, Spectrum extracts the locator from the `webElement.toString()`.
+You can leverage the `extent.locatorRegex` property to extract the important bits
+out of it, **using the capturing group** (the one specified in parentheses).
+
+For example, this could be the full `toString()` for a webElement having `id = login`:
+
+```
+[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: login]
+```
+
+The regex in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml) is:
+
+```
+locatorRegex: .*\s->\s([\w:\s\-.#]+)
+```
+
+which extracts just this (mind the capturing group above):
+
+```
+id: login
+```
+
+The one below is the outcome in the Extent report, and in logs as well, which is definitely more readable than having the original full `toString()`:
+
+![extent locator](src/main/resources/images/extent-locator.jpg)
+
 # Common Use Cases
 
 Here you can find how Spectrum helps you in a few common use cases.
@@ -619,7 +645,7 @@ Here you can find how Spectrum helps you in a few common use cases.
 ## File Upload
 
 You can add files to be uploaded in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
-This is the default you can see in the internal `configuration.default.yaml`:
+This is the default you can see in the internal [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml):
 
 ```yaml
 runtime:

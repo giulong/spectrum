@@ -22,7 +22,7 @@ video:
     - manual
 
 extent:
-  theme: DARK
+  #theme: DARK
   fileName: report.html
 
 testBook:

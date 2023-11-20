@@ -35,9 +35,9 @@ import static org.openqa.selenium.OutputType.BYTES;
 @Builder
 public class EventsListener implements WebDriverListener {
 
-    private static final Pattern LOCATOR_PATTERN = Pattern.compile("\\s->\\s(?<locator>[\\w:\\s\\-.#]+)");
     private static final String TAG = "<.*?>";
 
+    private Pattern locatorPattern;
     private ExtentTest extentTest;
     private Video video;
     private TestData testData;
@@ -46,11 +46,11 @@ public class EventsListener implements WebDriverListener {
 
     protected String extractSelectorFrom(final WebElement webElement) {
         final String fullWebElement = webElement.toString();
-        final Matcher matcher = LOCATOR_PATTERN.matcher(fullWebElement);
+        final Matcher matcher = locatorPattern.matcher(fullWebElement);
 
         final List<String> locators = new ArrayList<>();
         while (matcher.find()) {
-            locators.add(matcher.group("locator"));
+            locators.add(matcher.group(1));
         }
 
         return String.join(" -> ", locators);
@@ -58,7 +58,7 @@ public class EventsListener implements WebDriverListener {
 
     protected List<String> parse(final Object[] args) {
         return Arrays.stream(args)
-                .map(arg -> String.format("&nbsp;<code>%s</code>", arg instanceof WebElement
+                .map(arg -> String.format("<code>%s</code>", arg instanceof WebElement
                         ? extractSelectorFrom((WebElement) arg)
                         : arg))
                 .toList();

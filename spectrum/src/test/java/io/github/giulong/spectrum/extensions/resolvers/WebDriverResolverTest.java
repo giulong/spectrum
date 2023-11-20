@@ -22,6 +22,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
+import java.util.regex.Pattern;
+
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -35,6 +37,7 @@ import static org.mockito.Mockito.*;
 class WebDriverResolverTest {
 
     private static MockedStatic<EventsListener> eventsListenerMockedStatic;
+    private static MockedStatic<Pattern> patternMockedStatic;
 
     @Mock
     private ParameterContext parameterContext;
@@ -82,10 +85,16 @@ class WebDriverResolverTest {
     private ExtentTest extentTest;
 
     @Mock
+    private Configuration.Extent extentConfiguration;
+
+    @Mock
     private Video video;
 
     @Mock
     private TestData testData;
+
+    @Mock
+    private Pattern pattern;
 
     @InjectMocks
     private WebDriverResolver webDriverResolver;
@@ -93,16 +102,20 @@ class WebDriverResolverTest {
     @BeforeEach
     public void beforeEach() {
         eventsListenerMockedStatic = mockStatic(EventsListener.class);
+        patternMockedStatic = mockStatic(Pattern.class);
     }
 
     @AfterEach
     public void afterEach() {
         eventsListenerMockedStatic.close();
+        patternMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return the instance of the webdriver decorated with the default event listener")
     public void resolveParameter() {
+        final String locatorRegex = "locatorRegex";
+
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
@@ -112,12 +125,16 @@ class WebDriverResolverTest {
         when(browser.build(configuration)).thenReturn(webDriver);
         when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
         when(webDriverConfiguration.getEvents()).thenReturn(events);
+        when(configuration.getExtent()).thenReturn(extentConfiguration);
+        when(extentConfiguration.getLocatorRegex()).thenReturn(locatorRegex);
+        when(Pattern.compile(locatorRegex)).thenReturn(pattern);
 
         when(store.get(EXTENT_TEST, ExtentTest.class)).thenReturn(extentTest);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(configuration.getVideo()).thenReturn(video);
 
         when(EventsListener.builder()).thenReturn(eventsListenerBuilder);
+        when(eventsListenerBuilder.locatorPattern(pattern)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.extentTest(extentTest)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.video(video)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.testData(testData)).thenReturn(eventsListenerBuilder);
