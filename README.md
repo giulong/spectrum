@@ -12,6 +12,7 @@
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of e2e tests.
 Main features:
 
+* automatic [execution video](#automatic-execution-video-generation) generation
 * automatic [log and html report](#automatically-generated-reports) generation
 * automatic coverage report generation by reading a [testbook](#testbook-coverage)
 * automatic [mail/slack notifications](#events-consumers) with reports as attachments
@@ -548,6 +549,58 @@ where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 > Example for version 1.0.0:
 > https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/1.0.0/Configuration.json
 
+# Automatic Execution Video Generation
+
+It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/). By default, this is disabled, so you need to explicitly activate this feature
+in your `configuration.yaml`. Check the `video` node in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml) for all the available parameters along with their details.
+
+To be precise, the video is generated from screenshots taken during the execution.
+You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
+
+| Frame      | Description                                                                                                                        |
+|------------|------------------------------------------------------------------------------------------------------------------------------------|
+| autoBefore | Screenshots taken **before** an event happening in the WebDriver                                                                   |
+| autoAfter  | Screenshots taken **after** an event happening in the WebDriver                                                                    |
+| manual     | Screenshots programmatically taken by you by invoking one of the [SpectrumEntity Service Methods](#spectrumentity-service-methods) |
+
+> ⚠️ Auto screenshots<br/>
+> Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level 
+> and the `webDriver.events` settings. For example, if running with the default `INFO` log level and the configuration below,
+> no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
+> ```yaml
+> webDriver:
+>   events:
+>     beforeClick:
+>       level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
+>       message: Clicking on %1$s
+> ```
+
+> 💡 Tip<br/>
+> Setting both `autoBefore` and `autoAfter` is likely to be useless. Let's consider this flow:
+> 1. screenshot: before click
+> 2. click event
+> 3. **---> screenshot: after click**
+> 4. **---> screenshot: before set text**
+> 5. set text in input field
+> 6. screenshot: after set text
+> 
+> The screenshots at bullets 3 and 4 will be equal, and, for performance reason, the second will be discarded.
+
+The video will be saved in the `<extent.reportFolder>/videos/<CLASS NAME>/<TEST NAME>` folder (`extent.reportFolder` is `target` by default)
+and attached to the Extent Report as well. 
+
+Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the internal [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml)):
+
+```yaml
+video:
+  frames:
+    - autoAfter
+    - manual
+  extentTest:
+    width: 640  # we want a bigger video tag in the report
+    height: 480
+```
+
 # Automatically Generated Reports
 
 After each execution, Spectrum produces two files:
@@ -621,8 +674,8 @@ For example, for a field annotated like this:
 
 ```java
 @FindBys({
-    @FindBy(id = "checkboxes"),
-    @FindBy(tagName = "input")
+        @FindBy(id = "checkboxes"),
+        @FindBy(tagName = "input")
 })
 private List<WebElement> checkboxes;
 ```
@@ -1479,12 +1532,12 @@ This means you can:
 * look at the produced reports shown below for each reporter
 
 > ⚠️ it-testbook module's reports<br/>
-> The default templates have a "Mapped Tests" and "Unmapped Tests" sections at the bottom, 
+> The default templates have a "Mapped Tests" and "Unmapped Tests" sections at the bottom,
 > in which tests are grouped by their classes.
-> 
+>
 > As you will see from the reports produced below, the `testbook.yaml` used in the `it-testbook` module maps tests that are not present in the suite.
-> 
-> This means all those will be shown in the "Mapped Tests" as "Not Run", 
+>
+> This means all those will be shown in the "Mapped Tests" as "Not Run",
 > while all the tests actually executed will appear in the "Unmapped Tests" section with their respective results.
 
 If you want, you can provide a custom template of yours. As for all the other templates (such as those used in events consumers),
@@ -1714,6 +1767,7 @@ root
 |     |  └─ spectrum.log   # rotated daily
 |     |─ reports
 |     |  |─ screenshots    # folder where Extent Reports screenshots are saved
+|     |  |─ videos         # folder where videos are saved
 |     |  └─ report.html    # by default the name ends with the timestamp
 |     └─ testbook
 |        |─ testbook.html  # by default the name ends with the timestamp
