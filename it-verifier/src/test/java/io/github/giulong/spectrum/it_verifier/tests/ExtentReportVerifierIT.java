@@ -6,12 +6,12 @@ import io.github.giulong.spectrum.it_verifier.pages.ExtentReportPage;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 
 import java.nio.file.Path;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
 @DisplayName("Extent Report Verifier")
@@ -40,6 +40,15 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(testLabels.get("loginTrue"), extentReportPage.getLoginTrue().getText());
         assertEquals(testLabels.get("noDisplayName"), extentReportPage.getNoDisplayName().getText());
         assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
+
+        assertTrue(isPresent(By.id("video-checkbox-page-testwithnodisplayname()")));
+        assertTrue(isPresent(By.id("video-files-test-upload")));
+        assertTrue(isPresent(By.id("video-demo-test-sending-custom-events")));
+        assertTrue(isPresent(By.id("video-demo-test-this-one-should-fail-for-demonstration-purposes")));
+        assertTrue(isPresent(By.id("video-login-form-leveraging-the-data.yaml-with-user-giulio-we-expect-login-to-be-successful:-false")));
+        assertTrue(isPresent(By.id("video-login-form-leveraging-the-data.yaml-with-user-tom-we-expect-login-to-be-successful:-true")));
+        assertTrue(isPresent(By.id("video-files-test-download")));
+        assertFalse(isPresent(By.id("video-demo-test-skipped-test")));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());
