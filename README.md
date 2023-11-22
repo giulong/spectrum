@@ -612,31 +612,44 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
+### Custom locators
+
 Selenium doesn't provide any way to get a webElement's locator, by design. So, Spectrum extracts the locator from the `webElement.toString()`.
 You can leverage the `extent.locatorRegex` property to extract the important bits
-out of it, **using the capturing group** (the one specified in parentheses).
+out of it, **using the capturing group** (the one wrapped by parentheses).
+For example, for a field annotated like this:
 
-For example, this could be the full `toString()` for a webElement having `id = login`:
+```java
+@FindBys({
+    @FindBy(id = "checkboxes"),
+    @FindBy(tagName = "input")
+})
+private List<WebElement> checkboxes;
+```
 
-```
-[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: login]
-```
+this would be the full `toString()`:
+
+![extent locator full](src/main/resources/images/extent-locator-full.jpg)
 
 The regex in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml) is:
 
 ```
-locatorRegex: .*\s->\s([\w:\s\-.#]+)
+locatorRegex: \s->\s([\w:\s\-.#]+)
 ```
 
 which extracts just this (mind the capturing group above):
 
-```
-id: login
-```
-
-The one below is the outcome in the Extent report, and in logs as well, which is definitely more readable than having the original full `toString()`:
-
 ![extent locator](src/main/resources/images/extent-locator.jpg)
+
+For example, if you want to shrink it even more, you could add this as `extent.locatorRegex` in your `configuration.yaml`:
+
+```
+locatorRegex: \s->[\w\s]+:\s([()^\w\s\-.#]+)
+```
+
+and you'd see this:
+
+![extent locator custom](src/main/resources/images/extent-locator-custom.jpg)
 
 # Common Use Cases
 

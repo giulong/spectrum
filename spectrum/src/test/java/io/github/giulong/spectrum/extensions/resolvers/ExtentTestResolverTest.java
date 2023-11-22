@@ -108,6 +108,16 @@ class ExtentTestResolverTest {
     }
 
     @Test
+    @DisplayName("buildTestIdFrom should return the class and test names, taken from the provided context, combined in kebab case")
+    public void buildTestIdFrom() {
+        when(extensionContext.getDisplayName()).thenReturn(displayName);
+        when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getDisplayName()).thenReturn(className);
+
+        assertEquals(transformedTestName, ExtentTestResolver.buildTestIdFrom(extensionContext));
+    }
+
+    @Test
     @DisplayName("transformInKebabCase should return the provided string with spaces replaced by dashes and in lowercase")
     public void transformInKebabCase() {
         assertEquals("some-composite-string", ExtentTestResolver.transformInKebabCase("Some Composite STRING"));
@@ -154,7 +164,7 @@ class ExtentTestResolverTest {
 
         ExtentTest actual = extentTestResolver.resolveParameter(parameterContext, extensionContext);
 
-        verify(extentTest).info(String.format("<video controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", width, height, videoPath));
+        verify(extentTest).info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", transformedTestName, width, height, videoPath));
 
         ArgumentCaptor<Markup> markupArgumentCaptor = ArgumentCaptor.forClass(Markup.class);
         verify(extentTest).info(markupArgumentCaptor.capture());

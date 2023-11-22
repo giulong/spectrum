@@ -30,9 +30,16 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> {
     public static ExtentTest createExtentTestFrom(final ExtensionContext context) {
         final String className = context.getParent().orElseThrow().getDisplayName();
         final String testName = context.getDisplayName();
+        final String testId = buildTestIdFrom(context);
 
-        return SpectrumSessionListener.getExtentReports()
-                .createTest(String.format("<div id=\"%s-%s\">%s</div>%s", transformInKebabCase(className), transformInKebabCase(testName), className, testName));
+        return SpectrumSessionListener.getExtentReports().createTest(String.format("<div id=\"%s\">%s</div>%s", testId, className, testName));
+    }
+
+    protected static String buildTestIdFrom(final ExtensionContext context) {
+        final String className = context.getParent().orElseThrow().getDisplayName();
+        final String testName = context.getDisplayName();
+
+        return String.format("%s-%s", transformInKebabCase(className), transformInKebabCase(testName));
     }
 
     protected static String transformInKebabCase(final String string) {
@@ -59,8 +66,9 @@ public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> {
             final int width = videoExtentTest.getWidth();
             final int height = videoExtentTest.getHeight();
             final Path src = store.get(TEST_DATA, TestData.class).getVideoPath();
+            final String testId = buildTestIdFrom(context);
 
-            extentTest.info(String.format("<video controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", width, height, src));
+            extentTest.info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", testId, width, height, src));
         }
 
         extentTest.info(createLabel("START TEST", getColorOf(INFO)));
