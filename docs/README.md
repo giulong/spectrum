@@ -34,6 +34,7 @@ directly in your test classes, so that you can focus just on writing the logic t
 You should leverage the latest published version of the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) to create a new project.
 You can either use it via your IDE, or run this from command line:
 
+{% include codeHeader.html %}
 ```shell
 mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION> -DoutputDirectory=<DESTINATION>
 ```
