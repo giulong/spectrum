@@ -1,12 +1,3 @@
-![Spectrum logo](../src/main/resources/images/spectrum-logo.png)
-
-[![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/giulong/spectrum/actions?query=branch%3Adevelop)
-![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
-![branches coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/branches.svg)
-[![badge-jdk](https://img.shields.io/badge/jdk-17-blue.svg)](https://www.oracle.com/java/technologies/javase-downloads.html)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
-
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/) and [Selenium 4](https://www.selenium.dev/) framework that aims to simplify the writing of e2e tests.
 Main features:
 
@@ -19,8 +10,6 @@ Main features:
 
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
-
-https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad893738c08
 
 > ⚠️ <b>Eclipse IDE</b><br/>
 > The archetype injects a demo test that leverages Lombok. If you use Eclipse IDE, check [how to enable Lombok](https://projectlombok.org/setup/eclipse).
@@ -257,19 +246,19 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
     }
     ```
 
-  > 💡 <b>Tip</b><br/>
-  > Both the `open` and `waitForPageLoading` methods return the instance calling them.
-  > This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
-  > You should write your service methods with this in mind.
-  >
-  > Check [FilesIT](../it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
-  > ```java
-  > uploadPage
-  >     .open()
-  >     .upload(uploadPage.getFileUpload(), FILE_TO_UPLOAD)
-  >     .getSubmit()
-  >     .click();
-  > ```
+💡 <b>Tip</b><br/>
+Both the `open` and `waitForPageLoading` methods return the instance calling them.
+This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
+You should write your service methods with this in mind.
+Check [FilesIT](../it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
+
+```java
+uploadPage
+        .open()
+        .upload(uploadPage.getFileUpload(),FILE_TO_UPLOAD)
+        .getSubmit()
+        .click();
+```
 
 * `isLoaded()`:
 
@@ -373,29 +362,28 @@ Values in the most specific configuration file will take precedence over the oth
 > There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base configuration.yaml,
 > while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`
 
-> ⚠️ <b>Merging Lists</b><br/>
-> Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
->
-> ```yaml
-> # configuration.yaml
-> someList:
->   - value1
-> ```
+⚠️ <b>Merging Lists</b><br/>
+Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
 
->
-> ```yaml
-> # configuration-test.yaml
-> someList:
->   - value2
-> ```
->
-> If you run with `-Dspectrum.profiles=test` both files will be loaded and lists will be merged, resulting in:
->
-> ```yaml
-> someList:
->   - value1
->   - value2
-> ```
+```yaml
+# configuration.yaml
+someList:
+  - value1
+```
+
+```yaml
+# configuration-test.yaml
+someList:
+  - value2
+```
+
+If you run with `-Dspectrum.profiles=test` both files will be loaded and lists will be merged, resulting in:
+
+```yaml
+someList:
+  - value1
+  - value2
+```
 
 > 💡 <b>Tip</b><br/>
 > If you need different configurations for the same environment, instead of manually changing values in the configuration*.yaml, you should
@@ -421,10 +409,11 @@ Values in the most specific configuration file will take precedence over the oth
 >
 > The very first node of the base `configuration.yaml` linked above sets the active profiles, instructing Spectrum to load the other two configurations,
 > and overriding the `application.baseUrl` accordingly:
-> ```yaml
-> runtime:
->   profiles: local,second
-> ```
+
+  ```yaml
+  runtime:
+    profiles: local,second
+  ```
 
 ## Vars node
 
@@ -567,13 +556,14 @@ You can specify which screenshots to be used as frames providing one or more of 
 > Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
 > and the `webDriver.events` settings. For example, if running with the default `INFO` log level and the configuration below,
 > no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
-> ```yaml
-> webDriver:
->   events:
->     beforeClick:
->       level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
->       message: Clicking on %1$s
-> ```
+
+  ```yaml
+  webDriver:
+    events:
+      beforeClick:
+        level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
+        message: Clicking on %1$s
+  ```
 
 > 💡 <b>Tip</b><br/>
 > Setting both `autoBefore` and `autoAfter` is likely to be useless. Let's consider this flow:
@@ -981,6 +971,7 @@ Spectrum will fire an event with:
 If the `@DisplayName` is provided for either the class and/or the method, those will be used. Given:
 
 ```java
+
 @DisplayName("Class display name")
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -1039,14 +1030,14 @@ uses it to print class and test names:
 Spectrum fires these events. The first column in the table below highlights the moment when that specific event is fired.
 The other columns are the event's keys, with blank values being nulls.
 
-| When                              | primaryId     | secondaryId  | tags     | reason | result                                                 |
-|-----------------------------------|---------------|--------------|----------|--------|--------------------------------------------------------|
-| Suite started                     |               |              | \[suite] | before |                                                        |
-| Suite ended                       |               |              | \[suite] | after  |                                                        |
-| Class started (JUnit's BeforeAll) | \<CLASS NAME> |              | \[class] | before |                                                        |
-| Class ended (JUnit's AfterAll)    | \<CLASS NAME> |              | \[class] | after  |                                                        |
-| Test started (JUnit's BeforeEach) | \<CLASS NAME> | \<TEST NAME> | \[test]  | before |                                                        |
-| Test ended (JUnit's AfterEach)    | \<CLASS NAME> | \<TEST NAME> | \[test]  | after  | NOT_RUN \| SUCCESSFUL \| FAILED \| ABORTED \| DISABLED |
+| When                      | primaryId     | secondaryId  | tags     | reason | result                                                 |
+|---------------------------|---------------|--------------|----------|--------|--------------------------------------------------------|
+| Suite started             |               |              | \[suite] | before |                                                        |
+| Suite ended               |               |              | \[suite] | after  |                                                        |
+| Class started (BeforeAll) | \<CLASS NAME> |              | \[class] | before |                                                        |
+| Class ended (AfterAll)    | \<CLASS NAME> |              | \[class] | after  |                                                        |
+| Test started (BeforeEach) | \<CLASS NAME> | \<TEST NAME> | \[test]  | before |                                                        |
+| Test ended (AfterEach)    | \<CLASS NAME> | \<TEST NAME> | \[test]  | after  | NOT_RUN \| SUCCESSFUL \| FAILED \| ABORTED \| DISABLED |
 
 > 💡 <b>Tip</b><br/>
 > If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
@@ -1066,6 +1057,7 @@ The other columns are the event's keys, with blank values being nulls.
 Since `eventsDispatcher` is injected in every `SpectrumTest` and `SpectrumPage`, you can programmatically send custom events and listen to them:
 
 ```java
+
 @DisplayName("Class display name")
 public class HelloWorldIT extends SpectrumTest<Void> {
 
