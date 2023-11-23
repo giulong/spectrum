@@ -34,7 +34,7 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 | AUT     | Application Under Test                                                                                    |
 | POM     | [Page Object Model](https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/) |
 | QG      | Quality Gate                                                                                              |
-| POJO    | Plain Old Java Object                                                                                     |
+| POJO    | Plain Old java Object                                                                                     |
 
 ## Setup
 
@@ -59,7 +59,6 @@ The project created will contain a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum) to your project:
 
 ```xml
-
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
@@ -79,7 +78,7 @@ If you don't want to leverage the archetype, you can manually add the [Spectrum 
 
 In general, all you need to do is create a **JUnit 5** test class and make it extend the `SpectrumTest` class:
 
-```Java
+```java
 import io.github.giulong.spectrum.SpectrumTest;
 import org.junit.jupiter.api.Test;
 
@@ -134,7 +133,7 @@ Beyond having direct access to `webDriver`, `configuration`, `data`, and all the
 that you don't even need to declare or instantiate, by extending `SpectrumTest`, each `SpectrumPage` that you declare
 in your test class will automatically be initialised.
 
-```Java
+```java
 import io.github.giulong.spectrum.SpectrumTest;
 import org.junit.jupiter.api.Test;
 
@@ -655,7 +654,7 @@ Upon a test failure, Spectrum adds a screenshot to the report automatically.
 You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
 For example, to add a screenshot with a message at `INFO` level to the `dummyTest`:
 
-```Java
+```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
     @Test
@@ -872,7 +871,7 @@ We need to take four steps:
     ```
 
    > 💡 Tip<br/>
-   The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own Java file.
+   The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own java file.
 
 3. Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
 
@@ -962,7 +961,7 @@ Let's see them in detail:
 
 Let's see what they mean with an example. Given the following test:
 
-```Java
+```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
     @Test
@@ -979,7 +978,7 @@ Spectrum will fire an event with:
 
 If the `@DisplayName` is provided for either the class and/or the method, those will be used. Given:
 
-```Java
+```java
 
 @DisplayName("Class display name")
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -1065,7 +1064,7 @@ The other columns are the event's keys, with blank values being nulls.
 
 Since `eventsDispatcher` is injected in every `SpectrumTest` and `SpectrumPage`, you can programmatically send custom events and listen to them:
 
-```Java
+```java
 
 @DisplayName("Class display name")
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -1175,7 +1174,7 @@ Let's now see how to configure few consumers:
 
 ### Mail Consumer
 
-You can leverage this consumer to send email notification. Spectrum uses [Simple Java Mail](https://www.simplejavamail.org/),
+You can leverage this consumer to send email notification. Spectrum uses [Simple java Mail](https://www.simplejavamail.org/),
 and you can configure it with the file `src/test/resources/simplejavamail.properties`, as specified in
 the [docs](https://www.simplejavamail.org/configuration.html#section-config-properties).
 
@@ -1196,7 +1195,7 @@ simplejavamail.defaults.to.address=<RECIPIENT EMAIL ADDRESS>
 Actual configurations of any email provider to be used are out of scope. For the provided snippet,
 check [Google's docs](https://support.google.com/accounts/answer/185833?p=InvalidSecondFactor) on how to generate an app password.
 
-Check Simple Java Mail's docs to see all the [available properties](https://www.simplejavamail.org/configuration.html#section-available-properties).
+Check Simple java Mail's docs to see all the [available properties](https://www.simplejavamail.org/configuration.html#section-available-properties).
 
 > ⚠️ Mail Template<br/>
 > The default [mail.html template](spectrum/src/main/resources/templates/mail.html) is meant to be used to notify about each test result,
