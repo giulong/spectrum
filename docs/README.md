@@ -1,4 +1,4 @@
-<img src="../src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">
+![Spectrum logo](../src/main/resources/images/spectrum-logo.png)
 
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/giulong/spectrum/actions?query=branch%3Adevelop)
 ![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
@@ -36,7 +36,7 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 
 ## Setup
 
-> ⚠️ <b>JDK<br/>
+> ⚠️ <b>JDK</b><br/>
 > Since Spectrum is compiled with a jdk 17, you need a [jdk 17+](https://jdk.java.net/java-se-ri/17) to be able to run your tests.
 > If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
@@ -545,8 +545,7 @@ The path to the raw file is:
 where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 
 > 💡 <b>Tip</b><br/>
-> Example for version 1.0.0:
-> https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/1.0.0/Configuration.json
+> Example for version 1.0.0: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/1.0.0/Configuration.json`
 
 # Automatic Execution Video Generation
 
@@ -590,18 +589,18 @@ You can specify which screenshots to be used as frames providing one or more of 
 The video will be saved in the `<extent.reportFolder>/videos/<CLASS NAME>/<TEST NAME>` folder (`extent.reportFolder` is `target` by default)
 and attached to the Extent Report as well.
 
-Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
-internal [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml)):
-
-```yaml
-video:
-  frames:
-    - autoAfter
-    - manual
-  extentTest:
-    width: 640  # we want a bigger video tag in the report
-    height: 480
-```
+> 💡 <b>Video Configuration Example</b><br/>
+> Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
+> internal [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml)):
+> ```yaml
+> video:
+>   frames:
+>     - autoAfter
+>     - manual
+>   extentTest:
+>     width: 640  # we want a bigger video tag in the report
+>     height: 480
+> ```
 
 # Automatically Generated Reports
 
