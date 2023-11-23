@@ -246,19 +246,19 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
     }
     ```
 
-💡 <b>Tip</b><br/>
-Both the `open` and `waitForPageLoading` methods return the instance calling them.
-This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
-You should write your service methods with this in mind.
-Check [FilesIT](../it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
+  💡 <b>Tip</b><br/>
+  Both the `open` and `waitForPageLoading` methods return the instance calling them.
+  This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface), so that you can rely on method chaining.
+  You should write your service methods with this in mind.
+  Check [FilesIT](../it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
 
-```java
-uploadPage
-        .open()
-        .upload(uploadPage.getFileUpload(),FILE_TO_UPLOAD)
-        .getSubmit()
-        .click();
-```
+    ```java
+    uploadPage
+            .open()
+            .upload(uploadPage.getFileUpload(),FILE_TO_UPLOAD)
+            .getSubmit()
+            .click();
+    ```
 
 * `isLoaded()`:
 
@@ -409,11 +409,10 @@ someList:
 >
 > The very first node of the base `configuration.yaml` linked above sets the active profiles, instructing Spectrum to load the other two configurations,
 > and overriding the `application.baseUrl` accordingly:
-
-  ```yaml
-  runtime:
-    profiles: local,second
-  ```
+> ```yaml
+> runtime:
+>   profiles: local,second
+> ```
 
 ## Vars node
 
@@ -556,14 +555,13 @@ You can specify which screenshots to be used as frames providing one or more of 
 > Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
 > and the `webDriver.events` settings. For example, if running with the default `INFO` log level and the configuration below,
 > no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
-
-  ```yaml
-  webDriver:
-    events:
-      beforeClick:
-        level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
-        message: Clicking on %1$s
-  ```
+> ```yaml
+> webDriver:
+>   events:
+>     beforeClick:
+>       level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
+>       message: Clicking on %1$s
+> ```
 
 > 💡 <b>Tip</b><br/>
 > Setting both `autoBefore` and `autoAfter` is likely to be useless. Let's consider this flow:
