@@ -644,7 +644,7 @@ Check the `extent` node in the [configuration.default.yaml](spectrum/src/main/re
 
 You can see an example report here:
 
-![Extent Report](src/main/resources/images/ExtentReports-screenshot.png)
+![Extent Report](docs/images/extent-screenshot.png)
 
 > 💡 Tip<br/>
 > You can provide your own *look and feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
@@ -682,7 +682,7 @@ private List<WebElement> checkboxes;
 
 this would be the full `toString()`:
 
-![extent locator full](src/main/resources/images/extent-locator-full.jpg)
+![extent locator full](docs/images/extent-locator-full.jpg)
 
 The regex in the [configuration.default.yaml](spectrum/src/main/resources/yaml/configuration.default.yaml) is:
 
@@ -692,7 +692,7 @@ locatorRegex: \s->\s([\w:\s\-.#]+)
 
 which extracts just this (mind the capturing group above):
 
-![extent locator](src/main/resources/images/extent-locator.jpg)
+![extent locator](docs/images/extent-locator.jpg)
 
 For example, if you want to shrink it even more, you could add this as `extent.locatorRegex` in your `configuration.yaml`:
 
@@ -702,7 +702,7 @@ locatorRegex: \s->[\w\s]+:\s([()^\w\s\-.#]+)
 
 and you'd see this:
 
-![extent locator custom](src/main/resources/images/extent-locator-custom.jpg)
+![extent locator custom](docs/images/extent-locator-custom.jpg)
 
 # Common Use Cases
 
@@ -1270,9 +1270,9 @@ A few steps are needed to configure your Slack Workspace to receive notification
 
 1. You need to log in and create an app [from here](https://api.slack.com/apps) by following these steps:<br/><br/>
     1. click on the **Create New App** button:<br/><br/>
-       ![slack-new-app.png](src/main/resources/images/slack-new-app.png)<br/><br/>
+       ![slack-new-app.png](docs/images/slack-new-app.png)<br/><br/>
     2. choose to create it **from an app manifest**<br/><br/>
-       ![slack-manifest.png](src/main/resources/images/slack-manifest.png)<br/><br/>
+       ![slack-manifest.png](docs/images/slack-manifest.png)<br/><br/>
     3. Select your workspace, delete the default yaml manifest and copy this one:<br/><br/>
        ```yaml
        display_information:
@@ -1297,18 +1297,18 @@ A few steps are needed to configure your Slack Workspace to receive notification
     4. Click on **Next** and then **Create**<br/><br/>
 2. You should have been redirected to the **Basic Information** page of the newly created app. From there:<br/><br/>
     1. Install the app to Workspace:<br/><br/>
-       ![slack-install-to-workspace.png](src/main/resources/images/slack-install-to-workspace.png)<br/><br/>
+       ![slack-install-to-workspace.png](docs/images/slack-install-to-workspace.png)<br/><br/>
     2. Choose the channel where you want to receive the notifications and click **Allow**:<br/><br/>
-       ![slack-channel.png](src/main/resources/images/slack-channel.png)<br/><br/>
+       ![slack-channel.png](docs/images/slack-channel.png)<br/><br/>
 3. Go in the **OAuth & Permissions** page and copy the **Bot User OAuth Token**. You will need this in the `configuration*.yaml` (see last bullet)<br/><br/>
-   ![slack-token.png](src/main/resources/images/slack-token.png)<br/><br/>
+   ![slack-token.png](docs/images/slack-token.png)<br/><br/>
 4. In Slack:<br/><br/>
     1. open the channel you chose in the previous steps and invite the Spectrum app by sending this message: `/invite @Spectrum`. You should see this after sending it:<br/><br/>
-       ![slack-add-app.png](src/main/resources/images/slack-add-app.png)<br/><br/>
+       ![slack-add-app.png](docs/images/slack-add-app.png)<br/><br/>
     2. right-click on the channel you chose in the previous steps and select **View channel details**:<br/><br/>
-       ![slack-channel-details.png](src/main/resources/images/slack-channel-details.png)<br/><br/>
+       ![slack-channel-details.png](docs/images/slack-channel-details.png)<br/><br/>
     3. copy the **Channel ID** from the details overlay:<br/><br/>
-       ![slack-channel-id.png](src/main/resources/images/slack-channel-id.png)<br/><br/>
+       ![slack-channel-id.png](docs/images/slack-channel-id.png)<br/><br/>
 5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:<br/><br/>
    ```yaml
    - slack:
@@ -1686,7 +1686,7 @@ html:
 For the sake of completeness, the output file was manually copied [here](src/main/resources/images/testbook.html).
 This is what it looks like when opened in a browser:
 
-![Html TestBook Reporter](src/main/resources/images/html-testbook.png)
+![Html TestBook Reporter](docs/images/html-testbook.png)
 
 ## Full TestBook Examples
 
