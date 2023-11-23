@@ -3,6 +3,14 @@
 
 @import "{{ site.theme }}";
 
+header > h1 {
+    text-transform: capitalize;
+}
+
 div.wrapper {
     width: 1024px;
+}
+
+tbody tr td:first-child {
+    font-weight: bold;
 }
