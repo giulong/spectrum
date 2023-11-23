@@ -15,6 +15,10 @@ tbody tr td:first-child {
     font-weight: bold;
 }
 
+tbody tr:nth-child(odd) {
+  background-color: rgba(0,0,0,0.06);
+}
+
 blockquote {
     font-style: normal;
 }
