@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils.video;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Frame;
+import lombok.Generated;
 import lombok.Getter;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class Video {
     }
 
     @Getter
+    @Generated
     public static class ExtentTest {
 
         @JsonPropertyDescription("Whether to attach the video or not to the extent report. True by default")
