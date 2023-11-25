@@ -67,7 +67,7 @@ jobs:
         uses: actions/jekyll-build-pages@v1
         with:
           source: docs/
-          destination: docs/_site
+          destination: ./_site
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
