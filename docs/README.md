@@ -48,8 +48,8 @@ Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATI
 The project created will contain a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum) to your project:
 
+{% include codeHeader.html %}
 ```xml
-
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
@@ -69,6 +69,7 @@ If you don't want to leverage the archetype, you can manually add the [Spectrum 
 
 In general, all you need to do is create a **JUnit 5** test class and make it extend the `SpectrumTest` class:
 
+{% include codeHeader.html %}
 ```java
 import io.github.giulong.spectrum.SpectrumTest;
 import org.junit.jupiter.api.Test;
@@ -104,6 +105,7 @@ If you now run the test, you will find a html report generated in the `target/sp
 > Spectrum is tested with itself, so in this repo you can find real examples of Spectrum e2e tests.
 > They're in the [it](../it) and [it-testbook](../it-testbook) modules. Throughout this doc, you will be pointed to specific examples.
 
+---
 # SpectrumTest and SpectrumPage
 
 These are the two main entities you will need to know to fully leverage Spectrum:
@@ -124,6 +126,7 @@ Beyond having direct access to `webDriver`, `configuration`, `data`, and all the
 that you don't even need to declare or instantiate, by extending `SpectrumTest`, each `SpectrumPage` that you declare
 in your test class will automatically be initialised.
 
+{% include codeHeader.html %}
 ```java
 import io.github.giulong.spectrum.SpectrumTest;
 import org.junit.jupiter.api.Test;
@@ -166,6 +169,7 @@ Each `SpectrumPage` takes two generics:
 
 For example, assuming you need no data, this would be the signature of a page class named `WebAppPage`:
 
+{% include codeHeader.html %}
 ```java
 import io.github.giulong.spectrum.SpectrumPage;
 
@@ -185,38 +189,40 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
 
   You can specify an endpoint for your pages by annotating them like this:
 
-    ```java
-    import io.github.giulong.spectrum.SpectrumPage;
-    import io.github.giulong.spectrum.interfaces.Endpoint;
-    
-    @Endpoint("login")
-    public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
-        // ...
-    }
-    ```
+{% include codeHeader.html %}
+```java
+import io.github.giulong.spectrum.SpectrumPage;
+import io.github.giulong.spectrum.interfaces.Endpoint;
+
+@Endpoint("login")
+public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
+    // ...
+}
+```
 
   Then, in your tests, you can leverage the `open` method. Spectrum will combine the AUT's base url from the `configuration*.yaml` with the endpoint:
 
-    ```yaml
-    # configuration.yaml
-    application:
-      baseUrl: http://my-app.com
-    ```
+{% include codeHeader.html %}
+```yaml
+# configuration.yaml
+application:
+  baseUrl: http://my-app.com
+```
 
-    ```java
-    public class HelloWorldIT extends SpectrumTest<Void> {
-    
-        private WebAppPage webAppPage;
-    
-        @Test
-        public void myTest() {
-            webAppPage.open();  // will open http://my-app.com/login
-        }
+{% include codeHeader.html %}
+```java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    private WebAppPage webAppPage;
+
+    @Test
+    public void myTest() {
+        webAppPage.open();  // will open http://my-app.com/login
     }
-    ```
+}
+```
 
   Moreover, `open` will internally call the `waitForPageLoading` method.
-
 
 * `waitForPageLoading()`:
 
@@ -226,26 +232,27 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
   For example, you could have a spinner shown by default when opening pages, and disappearing once the page is fully loaded.
   You should override the `waitForPageLoading` like this:
 
-    ```java
-    import org.openqa.selenium.WebElement;
-    import org.openqa.selenium.support.FindBy;
-    import org.openqa.selenium.support.ui.ExpectedConditions;
-    
-    import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
-    
-    public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
-    
-        @FindBy(id = "spinner")
-        private WebElement spinner;
-    
-        @Override
-        public WebAppPage waitForPageLoading() {
-            pageLoadWait.until(invisibilityOf(spinner));
-    
-            return this;
-        }
+{% include codeHeader.html %}
+```java
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOf;
+
+public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
+
+    @FindBy(id = "spinner")
+    private WebElement spinner;
+
+    @Override
+    public WebAppPage waitForPageLoading() {
+        pageLoadWait.until(invisibilityOf(spinner));
+
+        return this;
     }
-    ```
+}
+```
 
   💡 <b>Tip</b><br/>
   Both the `open` and `waitForPageLoading` methods return the instance calling them.
@@ -253,35 +260,37 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
   You should write your service methods with this in mind.
   Check [FilesIT](../it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java) for an example:
 
-    ```java
-    uploadPage
-            .open()
-            .upload(uploadPage.getFileUpload(),FILE_TO_UPLOAD)
-            .getSubmit()
-            .click();
-    ```
+{% include codeHeader.html %}
+```java
+uploadPage
+        .open()
+        .upload(uploadPage.getFileUpload(),FILE_TO_UPLOAD)
+        .getSubmit()
+        .click();
+```
 
 * `isLoaded()`:
 
   This is a method to check if the caller page is loaded.
   It returns a boolean which is true if the current url is equal to the AUT's base url combined with the page's endpoint.
 
-    ```java
-    public class HelloWorldIT extends SpectrumTest<Void> {
-    
-        private WebAppPage webAppPage;
-    
-        @Test
-        public void myTest() {
-            // assuming:
-            //  - base url in configuration.yaml is http://my-app.com
-            //  - webAppPage is annotated with @Endpoint("login")
-            //  
-            //  will be true if the current url in the browser is http://my-app.com/login
-            boolean loaded = webAppPage.isLoaded();
-        }
+{% include codeHeader.html %}
+```java
+public class HelloWorldIT extends SpectrumTest<Void> {
+
+    private WebAppPage webAppPage;
+
+    @Test
+    public void myTest() {
+        // assuming:
+        //  - base url in configuration.yaml is http://my-app.com
+        //  - webAppPage is annotated with @Endpoint("login")
+        //  
+        //  will be true if the current url in the browser is http://my-app.com/login
+        boolean loaded = webAppPage.isLoaded();
     }
-    ```
+}
+```
 
 ## SpectrumEntity
 
@@ -329,6 +338,7 @@ so you can directly use them in your tests/pages without caring about declaring 
 * `boolean hasClass(WebElement, String)`: checks if the provided WebElement has the provided css class
 * `boolean hasClasses(WebElement, String...)`: checks if the provided WebElement has **all** the provided css classes
 
+---
 # Configuration
 
 Spectrum is fully configurable and comes with default values which you can find in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml).
@@ -366,12 +376,14 @@ Values in the most specific configuration file will take precedence over the oth
 ⚠️ <b>Merging Lists</b><br/>
 Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
 
+{% include codeHeader.html %}
 ```yaml
 # configuration.yaml
 someList:
   - value1
 ```
 
+{% include codeHeader.html %}
 ```yaml
 # configuration-test.yaml
 someList:
@@ -380,6 +392,7 @@ someList:
 
 If you run with `-Dspectrum.profiles=test` both files will be loaded and lists will be merged, resulting in:
 
+{% include codeHeader.html %}
 ```yaml
 someList:
   - value1
@@ -410,16 +423,19 @@ someList:
 >
 > The very first node of the base `configuration.yaml` linked above sets the active profiles, instructing Spectrum to load the other two configurations,
 > and overriding the `application.baseUrl` accordingly:
-> ```yaml
-> runtime:
->   profiles: local,second
-> ```
+
+{% include codeHeader.html %}
+```yaml
+runtime:
+  profiles: local,second
+```
 
 ## Vars node
 
 The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
 `vars` is a `Map<String, String>`, so you can define all the keys you need, naming them how you want.
 
+{% include codeHeader.html %}
 ```yaml
 vars:
   commonKey: some-value # commonKey is a name of your choice
@@ -436,6 +452,7 @@ anotherNode:
 
 Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml`  can be interpolated with a dollar-string like this:
 
+{% include codeHeader.html %}
 ```yaml
 object:
   key: ${key:-defaultValue}
@@ -447,10 +464,12 @@ have `${key}`.
 Spectrum will replace the dollar-string with the first value found in this list:
 
 1. `key` in [vars node](#vars-node):
+
+    {% include codeHeader.html %}
     ```yaml
     vars:
-      key: value 
-   ```
+    key: value 
+    ```
 2. system property named `key`: `-Dkey=value`
 3. environment variable named `key`
 4. `defaultValue` (if provided)
@@ -461,23 +480,29 @@ Both key name and default value might contain dots like in `${some.key:-default.
 > 💡 <b>Tip</b><br/>
 > This trick is used in the internal `configuration.default.yaml` to allow for variables to be read from outside.
 > For example, profiles are set like this:
-> ```yaml
-> # internal configuration.default.yaml
-> runtime:
->   profiles: ${spectrum.profiles:-local}
-> ```
+
+{% include codeHeader.html %}
+```yaml
+# internal configuration.default.yaml
+runtime:
+  profiles: ${spectrum.profiles:-local}
+```
 > This allows you to just run with `-Dspectrum.profiles=...` while having a default, but you can still explicitly set them in your `configuration.yaml`:
-> ```yaml
-> # your configuration.yaml
-> runtime:
->   profiles: my-profile,another-one
-> ```
+
+{% include codeHeader.html %}
+```yaml
+# your configuration.yaml
+runtime:
+  profiles: my-profile,another-one
+```
 > You can also choose to provide your own variable:
-> ```yaml
-> # your configuration.yaml
-> runtime:
->   profiles: ${active-profiles:-local}
-> ```
+
+{% include codeHeader.html %}
+```yaml
+# your configuration.yaml
+runtime:
+  profiles: ${active-profiles:-local}
+```
 > This could be useful to create and leverage your own naming convention for env variables.
 
 These are the variables already available in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml).
@@ -493,6 +518,7 @@ You can add your own and even override the default ones in your `configuration*.
 
 By default, browsers run in local. This is because the default value in the internal `configuration.default.yaml` is:
 
+{% include codeHeader.html %}
 ```yaml
 runtime:
   environment:
@@ -501,6 +527,7 @@ runtime:
 
 To run on a remote [grid](https://www.selenium.dev/documentation/grid/), you just need to change that node, providing at least the grid url:
 
+{% include codeHeader.html %}
 ```yaml
 runtime:
   environment:
@@ -520,6 +547,7 @@ Where the params are:
 | capabilities      | Map<String,String> | empty map | ❌         | additional webDriver capabilities to be added to browser-specific ones only when running on a grid                                                                                     |
 | localFileDetector | boolean            | false     | ❌         | if true, allows to transfer files from the client machine to the remote server. [Docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector) |
 
+---
 # JSON Schema
 
 Json Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion.
@@ -536,6 +564,7 @@ where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 > 💡 <b>Tip</b><br/>
 > Example for version 1.0.0: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/1.0.0/Configuration.json`
 
+---
 # Automatic Execution Video Generation
 
 It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/). By default, this is disabled, so you need to
@@ -556,13 +585,15 @@ You can specify which screenshots to be used as frames providing one or more of 
 > Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
 > and the `webDriver.events` settings. For example, if running with the default `INFO` log level and the configuration below,
 > no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
-> ```yaml
-> webDriver:
->   events:
->     beforeClick:
->       level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
->       message: Clicking on %1$s
-> ```
+
+{% include codeHeader.html %}
+```yaml
+webDriver:
+  events:
+    beforeClick:
+      level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
+      message: Clicking on %1$s
+```
 
 > 💡 <b>Tip</b><br/>
 > Setting both `autoBefore` and `autoAfter` is likely to be useless. Let's consider this flow:
@@ -581,16 +612,19 @@ and attached to the Extent Report as well.
 > 💡 <b>Video Configuration Example</b><br/>
 > Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
 > internal [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml)):
-> ```yaml
-> video:
->   frames:
->     - autoAfter
->     - manual
->   extentTest:
->     width: 640  # we want a bigger video tag in the report
->     height: 480
-> ```
 
+{% include codeHeader.html %}
+```yaml
+video:
+  frames:
+    - autoAfter
+    - manual
+  extentTest:
+    width: 640  # we want a bigger video tag in the report
+    height: 480
+```
+
+---
 # Automatically Generated Reports
 
 After each execution, Spectrum produces two files:
@@ -645,6 +679,7 @@ Upon a test failure, Spectrum adds a screenshot to the report automatically.
 You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
 For example, to add a screenshot with a message at `INFO` level to the `dummyTest`:
 
+{% include codeHeader.html %}
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -662,6 +697,7 @@ You can leverage the `extent.locatorRegex` property to extract the important bit
 out of it, **using the capturing group** (the one wrapped by parentheses).
 For example, for a field annotated like this:
 
+{% include codeHeader.html %}
 ```java
 @FindBys({
         @FindBy(id = "checkboxes"),
@@ -676,6 +712,7 @@ this would be the full `toString()`:
 
 The regex in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml) is:
 
+{% include codeHeader.html %}
 ```yaml
 locatorRegex: \s->\s([\w:\s\-.#]+)
 ```
@@ -686,6 +723,7 @@ which extracts just this (mind the capturing group above):
 
 For example, if you want to shrink it even more, you could add this as `extent.locatorRegex` in your `configuration.yaml`:
 
+{% include codeHeader.html %}
 ```yaml
 locatorRegex: \s->[\w\s]+:\s([()^\w\s\-.#]+)
 ```
@@ -694,6 +732,7 @@ and you'd see this:
 
 ![extent locator custom](images/extent-locator-custom.jpg)
 
+---
 # Common Use Cases
 
 Here you can find how Spectrum helps you in a few common use cases.
@@ -703,6 +742,7 @@ Here you can find how Spectrum helps you in a few common use cases.
 You can add files to be uploaded in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
 This is the default you can see in the internal [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml):
 
+{% include codeHeader.html %}
 ```yaml
 runtime:
   filesFolder: src/test/resources/files
@@ -710,6 +750,7 @@ runtime:
 
 If you have these files in the configured folder:
 
+{% include codeHeader.html %}
 ```text
 root
 └─ src
@@ -722,6 +763,7 @@ root
 
 and in the web page there's an input field with `type="file"`, you can leverage the `upload` method directly in any of your tests/pages like this:
 
+{% include codeHeader.html %}
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -762,6 +804,7 @@ Let's explain this with an example. Let's say that:
 
 You need to place an exact copy of that file in that folder:
 
+{% include codeHeader.html %}
 ```text
 root
 └─ src
@@ -773,6 +816,7 @@ root
 
 Now you can leverage the `checkDownloadedFile(String)` method like this:
 
+{% include codeHeader.html %}
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -789,6 +833,7 @@ If the files are the same, their checksum will match, and that assertion will pa
 In case you need to check a file with a different name, for example if the AUT generates file names dynamically,
 you can leverage the overloaded `checkDownloadedFile(String, String)` method, which takes the names of both the downloaded file and the one to check:
 
+{% include codeHeader.html %}
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -807,6 +852,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > 💡 <b>Example</b><br/>
 > Check the [FilesIT.download() test](../it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java) to see a real example
 
+---
 # Data
 
 As a general best practice, test code should only contain flow logic and assertions, while data should be kept outside.
@@ -828,6 +874,8 @@ Both will have the same set of params, such as a name and a password to login.
 We need to take four steps:
 
 1. Create the yaml describing this scenario:
+    
+    {% include codeHeader.html %}
 
     ```yaml
     # data.yaml
@@ -842,30 +890,31 @@ We need to take four steps:
 
 2. Create the POJO mapping the yaml above:
 
-    ```java
-    package your.package_name;  // this must be set in the configuration.yaml. Keep reading below :)
-    
-    import lombok.Getter;
-    import java.util.Map;
-    
+{% include codeHeader.html %}
+```java
+package your.package_name;  // this must be set in the configuration.yaml. Keep reading below :)
+
+import lombok.Getter;
+import java.util.Map;
+
+@Getter
+public class Data {
+
+    private Map<String, User> users;
+
     @Getter
-    public class Data {
-    
-        private Map<String, User> users;
-    
-        @Getter
-        public static class User {
-            private String name;
-            private String password;
-        }
+    public static class User {
+        private String name;
+        private String password;
     }
-    ```
+}
+```
 
    > 💡 <b>Tip</b><br/>
    The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own java file.
 
 3. Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
-
+    {% include codeHeader.html %}
     ```yaml
     # configuration.yaml    
     data:
@@ -873,7 +922,7 @@ We need to take four steps:
     ```
 
 4. Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
-
+   {% include codeHeader.html %}
     ```java
     import io.github.giulong.spectrum.SpectrumTest;
     import org.junit.jupiter.api.Test;
@@ -891,6 +940,7 @@ We need to take four steps:
     }
     ```
 
+   {% include codeHeader.html %}
     ```java
     import io.github.giulong.spectrum.SpectrumPage;
     import your.package_name.Data;
@@ -918,10 +968,12 @@ The `Data` generic must be specified only in those classes actually using it. Th
 > Check the [data.yaml](../it/src/test/resources/data/data.yaml) and how it's used in the [LoginFormIT](../it/src/test/java/io/github/giulong/spectrum/it/tests/LoginFormIT.java).
 > Look for the usage of `data.getUsers()` in that class.
 
+---
 # Parallel Execution
 
 Spectrum tests can be run in parallel by leveraging [JUnit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution)
 
+---
 # Event Sourcing
 
 Spectrum leverages event sourcing, meaning throughout the execution it fires events at specific moments.
@@ -952,6 +1004,7 @@ Let's see them in detail:
 
 Let's see what they mean with an example. Given the following test:
 
+{% include codeHeader.html %}
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -969,8 +1022,8 @@ Spectrum will fire an event with:
 
 If the `@DisplayName` is provided for either the class and/or the method, those will be used. Given:
 
+{% include codeHeader.html %}
 ```java
-
 @DisplayName("Class display name")
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -996,13 +1049,15 @@ to all events tagged in a particular way, such as all the tests.
 > 💡 <b>Example</b><br/>
 > Check the `eventsConsumers` in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml).
 > Internal consumers need to take actions after each test is done, meaning they listen to events tagged with "test":
-> ```yaml
-> eventsConsumers:
->   - extentTest: # We need to add an entry to the Extent Report once each test is done
->     events:
->       - reason: after
->         tags: [ test ]
-> ```
+
+{% include codeHeader.html %}
+```yaml
+eventsConsumers:
+  - extentTest: # We need to add an entry to the Extent Report once each test is done
+    events:
+      - reason: after
+        tags: [ test ]
+```
 
 ### Reason
 
@@ -1018,6 +1073,7 @@ The JUnit's ExtensionContext is attached to each event. It's not considered when
 in custom templates to access objects stored in it. For example, the default [slack.json template](../spectrum/src/main/resources/templates/slack.json)
 uses it to print class and test names:
 
+{% include codeHeader.html %}
 ```json
 "text": "*Name*\n*Class*: `${event.context.parent.get().displayName}`\n*Test*: `${event.context.displayName}`"
 ```
@@ -1041,20 +1097,23 @@ The other columns are the event's keys, with blank values being nulls.
 > 💡 <b>Tip</b><br/>
 > If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
 > you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like "Dispatching event ...":
-> ```text
-> 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
-> 18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
-> 18:00:05.081 T EventsConsumer            | reasonMatches: false
-> 18:00:05.081 T EventsConsumer            | resultMatches: false
-> 18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
-> 18:00:05.081 T EventsConsumer            | reasonMatches: false
-> 18:00:05.081 T EventsConsumer            | resultMatches: false
-> ```
+
+{% include codeHeader.html %}
+```text
+18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
+18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
+18:00:05.081 T EventsConsumer            | reasonMatches: false
+18:00:05.081 T EventsConsumer            | resultMatches: false
+18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
+18:00:05.081 T EventsConsumer            | reasonMatches: false
+18:00:05.081 T EventsConsumer            | resultMatches: false
+```
 
 ## Custom Events
 
 Since `eventsDispatcher` is injected in every `SpectrumTest` and `SpectrumPage`, you can programmatically send custom events and listen to them:
 
+{% include codeHeader.html %}
 ```java
 
 @DisplayName("Class display name")
@@ -1118,41 +1177,47 @@ Let's now see how to configure few consumers:
 
 > 💡 <b>Example: reason and primaryId and secondaryId</b><br/>
 > We want to send a Slack notification before and after a specific test, and an email just after:
-> ```yaml
-> eventsConsumers:
->   - slack:
->       events:
->         - primaryId: Class Name 
->           secondaryId: test name 
->           reason: before
->         - primaryId: Class Name 
->           secondaryId: test name 
->           reason: after
->   - mail:
->       events:
->         - primaryId: Class Name 
->           secondaryId: test name 
->           reason: after
-> ```
+
+{% include codeHeader.html %}
+```yaml
+eventsConsumers:
+  - slack:
+      events:
+        - primaryId: Class Name 
+          secondaryId: test name 
+          reason: before
+        - primaryId: Class Name 
+          secondaryId: test name 
+          reason: after
+  - mail:
+      events:
+        - primaryId: Class Name 
+          secondaryId: test name 
+          reason: after
+```
 
 > 💡 <b>Example: result and tags</b><br/>
 > We want to send a mail notification if the whole suite fails:
-> ```yaml
-> eventsConsumers:
->   - mail:
->       events:
->         - result: FAILED
->           tags: [ suite ]
-> ```
+
+{% include codeHeader.html %}
+```yaml
+eventsConsumers:
+  - mail:
+      events:
+        - result: FAILED
+          tags: [ suite ]
+```
 
 > 💡 <b>Example: custom event by primaryId and reason</b><br/>
-> ```yaml
-> eventsConsumers:
->   - slack:
->       events:
->         - primaryId: primary.*  # every event which primaryId is starting with "primary" 
->           reason: custom-event
-> ```
+
+{% include codeHeader.html %}
+```yaml
+eventsConsumers:
+  - slack:
+      events:
+        - primaryId: primary.*  # every event which primaryId is starting with "primary" 
+          reason: custom-event
+```
 
 > 💡 <b>Tip</b><br/>
 > Consumers send notification using templates that leverage [FreeMarker](https://freemarker.apache.org/).
@@ -1171,6 +1236,7 @@ the [docs](https://www.simplejavamail.org/configuration.html#section-config-prop
 
 For example, to send an email via GMail, you can use these properties by replacing placeholders with actual values:
 
+{% include codeHeader.html %}
 ```properties
 simplejavamail.transportstrategy=SMTP_TLS
 simplejavamail.smtp.host=smtp.gmail.com
@@ -1191,22 +1257,26 @@ Check Simple java Mail's docs to see all the [available properties](https://www.
 > ⚠️ <b>Mail Template</b><br/>
 > The default [mail.html template](../spectrum/src/main/resources/templates/mail.html) is meant to be used to notify about each test result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
-> ```yaml
-> mail:
->   events:
->     - reason: after
->       tags: [ test ]
-> ```
+
+{% include codeHeader.html %}
+```yaml
+mail:
+  events:
+    - reason: after
+      tags: [ test ]
+```
 >
 > If you want to provide a custom template there are two ways:
 > 1. provide a template with a custom name under `src/test/resources/templates`:
-> ```yaml
-> mail:
->   template: my-template.txt # The extension doesn't really matter.
->   events:
->     - reason: after
->       tags: [ test ]
-> ```
+
+{% include codeHeader.html %}
+```yaml
+mail:
+  template: my-template.txt # The extension doesn't really matter.
+  events:
+    - reason: after
+      tags: [ test ]
+```
 > 2. simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
 
 > 💡 <b>Tip</b><br/>
@@ -1220,6 +1290,7 @@ You can also specify a list of attachments, by providing:
 
 For example, it's useful to send the html report and/or testbook when the suite is complete:
 
+{% include codeHeader.html %}
 ```yaml
 mail:
   events:
@@ -1236,23 +1307,25 @@ mail:
 > Mind that, like in the snippet above, attachments are specified at consumer level.
 > This means for all the events of a specific consumer, all the attachments will be sent.
 > If you need to send different sets of attachments, provide different consumers:
-> ```yaml
-> eventsConsumers:
->   - mail:
->       events:
->         - reason: after
->           tags: [ suite ]
->       attachments:
->         - name: report
->           file: target/spectrum/reports/report.html
->   - mail:
->       events:
->         - reason: after
->           tags: [ class ]
->       attachments:
->         - name: attachment
->           file: path/to/attachment
-> ```
+
+{% include codeHeader.html %}
+```yaml
+eventsConsumers:
+  - mail:
+      events:
+        - reason: after
+          tags: [ suite ]
+      attachments:
+        - name: report
+          file: target/spectrum/reports/report.html
+  - mail:
+      events:
+        - reason: after
+          tags: [ class ]
+      attachments:
+        - name: attachment
+          file: path/to/attachment
+```
 
 ### Slack Consumer
 
@@ -1264,6 +1337,8 @@ A few steps are needed to configure your Slack Workspace to receive notification
     2. choose to create it **from an app manifest**<br/><br/>
        ![slack-manifest.png](images/slack-manifest.png)<br/><br/>
     3. Select your workspace, delete the default yaml manifest and copy this one:<br/><br/>
+       
+        {% include codeHeader.html %}
        ```yaml
        display_information:
          name: Spectrum
@@ -1300,6 +1375,7 @@ A few steps are needed to configure your Slack Workspace to receive notification
     3. copy the **Channel ID** from the details overlay:<br/><br/>
        ![slack-channel-id.png](images/slack-channel-id.png)<br/><br/>
 5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:<br/><br/>
+   {% include codeHeader.html %}
    ```yaml
    - slack:
        token: xoxb-***
@@ -1314,28 +1390,33 @@ A few steps are needed to configure your Slack Workspace to receive notification
 > ⚠️ <b>Slack Template</b><br/>
 > The default [slack.json template](../spectrum/src/main/resources/templates/slack.json) is meant to be used to notify about each test result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
-> ```yaml
-> slack:
->   events:
->     - reason: after
->       tags: [ test ]
-> ```
+
+{% include codeHeader.html %}
+```yaml
+slack:
+  events:
+    - reason: after
+      tags: [ test ]
+```
 >
 > If you want to provide a custom template there are two ways:
 > * provide a template with a custom name under `src/test/resources/templates`:
-> ```yaml
-> slack:
->   template: my-template.txt # The extension doesn't really matter.
->   events:
->     - reason: after
->       tags: [ test ]
-> ```
+
+{% include codeHeader.html %}
+```yaml
+slack:
+  template: my-template.txt # The extension doesn't really matter.
+  events:
+    - reason: after
+      tags: [ test ]
+```
 > * simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
 >
 
 > 💡 <b>Tip</b><br/>
 > To test the slack handler works as expected, you can provide a simple `template.txt` with just an "Hello World from Spectrum" in it.
 
+---
 # TestBook (Coverage)
 
 Talking about coverage for e2e tests is not so straightforward. Coverage makes sense for unit tests, since they directly run against methods,
@@ -1375,6 +1456,7 @@ These are the testbook parameters you need to configure:
 
 The QG node has only one property, which is the boolean condition to be evaluated:
 
+{% include codeHeader.html %}
 ```yaml
 qualityGate:
   condition: ${weightedSuccessful.percentage} > 60
@@ -1457,6 +1539,7 @@ You can provide a txt file where each line is in this format:
 
 For example:
 
+{% include codeHeader.html %}
 ```text
 test class::my test
 another class::another test
@@ -1473,6 +1556,7 @@ You can provide a csv file where each line is in this format:
 
 For example:
 
+{% include codeHeader.html %}
 ```text
 test class,my test
 another class,another test
@@ -1490,6 +1574,7 @@ You can provide a yaml file where you have class names as keys in the root of th
 
 For example:
 
+{% include codeHeader.html %}
 ```yaml
 test class:
   - name: my test
@@ -1504,6 +1589,7 @@ another class:
 
 All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
 
+{% include codeHeader.html %}
 ```yaml
 reporters:
   - log: { }
@@ -1542,6 +1628,7 @@ For each reporter:
 
 ### Log TestBook Reporter
 
+{% include codeHeader.html %}
 ```yaml
 log:
   template: testbook/template.txt
@@ -1549,6 +1636,7 @@ log:
 
 Here is the output produced by the default internal template, for tests of the `it-testbook` module:
 
+{% include codeHeader.html %}
 ```text
 ##########################################################################################################
 
@@ -1655,6 +1743,7 @@ UNMAPPED TESTS:
 
 ### Txt TestBook Reporter
 
+{% include codeHeader.html %}
 ```yaml
 txt:
   template: testbook/template.txt
@@ -1667,6 +1756,7 @@ Or you can provide different templates to log a shorter report and send the full
 
 ### Html TestBook Reporter
 
+{% include codeHeader.html %}
 ```yaml
 html:
   template: testbook/template.html
@@ -1680,6 +1770,7 @@ This is what it looks like when opened in a browser:
 
 ## Full TestBook Examples
 
+{% include codeHeader.html %}
 ```yaml
 testBook:
   qualityGate:
@@ -1695,6 +1786,7 @@ testBook:
         output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
 ```
 
+{% include codeHeader.html %}
 ```yaml
 testBook:
   qualityGate:
@@ -1710,6 +1802,7 @@ testBook:
         output: some/path/testbook.html # a html report will be produced at this path
 ```
 
+{% include codeHeader.html %}
 ```yaml
 testBook:
   qualityGate:
@@ -1721,6 +1814,7 @@ testBook:
     - log: { }  # we just want the report to be logged
 ```
 
+---
 # Project Structure
 
 Let's see how your project will look like. Few assumptions for this example:
@@ -1733,6 +1827,7 @@ Let's see how your project will look like. Few assumptions for this example:
 * you configured the yaml testbook parser, which will read the `testbook.yaml`
 * you configured both a html and a txt testbook reporters, which will produce `testbook.html` and `testbook.txt` reports
 
+{% include codeHeader.html %}
 ```text
 root
 └─ src
@@ -1765,6 +1860,7 @@ root
 └─ pom.xml
 ```
 
+---
 # Bugs Report and Feature Requests
 
 Found a bug? Want to request a new feature? Please [open an issue](https://github.com/giulong/spectrum/issues/new/choose).

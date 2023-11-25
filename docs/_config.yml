@@ -1,1 +1,7 @@
+title: Spectrum
+description: Java Selenium 4 Framework
+url: https://giulong.github.io
+baseurl: /spectrum
+github_username: giulong
+repository: giulong/spectrum
 theme: jekyll-theme-modernist

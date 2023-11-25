@@ -1,25 +1,14 @@
-// This assumes that you're using Rouge; if not, update the selector
-const codeBlocks = document.querySelectorAll('.code-header + .highlighter-rouge');
-const copyCodeButtons = document.querySelectorAll('.copy-code-button');
+const copyHeaders = document.querySelectorAll('.copy-header');
+const copyButtons = document.querySelectorAll('.copy-button');
 
-copyCodeButtons.forEach((copyCodeButton, index) => {
-  const code = codeBlocks[index].innerText;
+copyButtons.forEach((copyButton, index) => {
+  const code = copyHeaders[index].parentElement.nextElementSibling.innerText;
 
-  copyCodeButton.addEventListener('click', () => {
-    // Copy the code to the user's clipboard
+  copyButton.addEventListener('click', () => {
     window.navigator.clipboard.writeText(code);
+    const copyText = copyButton.querySelectorAll('.copy-text')[0];
+    copyText.style.display = 'inline';
 
-    // Update the button text visually
-    const { innerText: originalText } = copyCodeButton;
-    copyCodeButton.innerText = 'Copied!';
-
-    // (Optional) Toggle a class for styling the button
-    copyCodeButton.classList.add('copied');
-
-    // After 2 seconds, reset the button to its initial UI
-    setTimeout(() => {
-      copyCodeButton.innerText = originalText;
-      copyCodeButton.classList.remove('copied');
-    }, 2000);
+    setTimeout(() => copyText.style.display = 'none', 2000);
   });
 });

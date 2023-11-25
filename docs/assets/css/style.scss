@@ -5,10 +5,19 @@
 
 header > h1 {
     text-transform: capitalize;
+    font-size: 36px;
+}
+
+hr {
+    margin: 20px 14px 20px;
 }
 
 div.wrapper {
     width: 1024px;
+}
+
+p, ul, ol, table, dl, h1, h2, h3 {
+    margin: 20px 0;
 }
 
 tbody tr td:first-child {
@@ -16,9 +25,38 @@ tbody tr td:first-child {
 }
 
 tbody tr:nth-child(odd) {
-  background-color: rgba(0,0,0,0.06);
+    background-color: rgba(0,0,0,0.06);
 }
 
 blockquote {
     font-style: normal;
+    margin: 20px -20px 5px;
+    padding: 1px 20px 1px 40px;
+}
+
+span.copy-header {
+    display: block;
+    padding: 6px 10px 4px;
+    margin: 0 -20px -60px;
+    text-align: right;
+}
+
+button.copy-button {
+    z-index: 1;
+    position: sticky;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #ccc;
+    padding: 3px 5px;
+}
+
+img {
+    cursor: zoom-in;
+}
+
+img.copy-icon {
+    cursor: pointer;
+    width: 16px;
+    vertical-align: bottom;
 }
