@@ -64,9 +64,17 @@ GitHub workflows:
 | feature/** | push      | [build](.github/workflows/build.yml)   |
 | main       | pr closed | [deploy](.github/workflows/deploy.yml) |
 
+# How to build the docs locally
+
+Follow the instructions on [Testing your GitHub Pages site locally with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll).
+
+Once everything is setup and working locally, move unders the `docs` folder
+and run Jekyll with `bundle exec jekyll serve --config _config.yml,_config_local.yml`
+
 # Third Party Libraries
 
 * [Extent Reports](https://www.extentreports.com/)
 * [FreeMarker](https://freemarker.apache.org/)
 * [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
 * [Simple Java Mail](https://www.simplejavamail.org/)
+* [JCodec](https://www.jcodec.org/)
