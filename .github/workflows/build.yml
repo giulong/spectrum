@@ -68,6 +68,8 @@ jobs:
         with:
           source: docs/
           destination: ./_site
+      - name: Upload GitHub Pages Artifact
+        uses: actions/upload-pages-artifact@v2
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
