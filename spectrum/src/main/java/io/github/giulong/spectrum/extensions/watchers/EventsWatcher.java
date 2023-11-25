@@ -2,7 +2,6 @@ package io.github.giulong.spectrum.extensions.watchers;
 
 import io.github.giulong.spectrum.SpectrumSessionListener;
 import io.github.giulong.spectrum.enums.Result;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.*;
 
 import java.util.Optional;
@@ -11,7 +10,6 @@ import java.util.Set;
 import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 
-@Slf4j
 public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
 
     @Override

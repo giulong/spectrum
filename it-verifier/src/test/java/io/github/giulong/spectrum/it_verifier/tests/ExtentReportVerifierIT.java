@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.it_verifier.tests;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it_verifier.data.Data;
 import io.github.giulong.spectrum.it_verifier.pages.ExtentReportPage;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
@@ -15,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
 @DisplayName("Extent Report Verifier")
-@Slf4j
 public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
     private ExtentReportPage extentReportPage;
