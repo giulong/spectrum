@@ -12,9 +12,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     permissions: write-all
-    environment:
-      name: github-pages
-      url: ${{steps.deployment.outputs.page_url}}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -60,16 +57,3 @@ jobs:
         with:
           name: jacoco-report
           path: spectrum/target/site/jacoco/
-
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v3
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: docs/
-          destination: ./_site
-      - name: Upload GitHub Pages Artifact
-        uses: actions/upload-pages-artifact@v2
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
