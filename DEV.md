@@ -68,8 +68,10 @@ GitHub workflows:
 
 Follow the instructions on [Testing your GitHub Pages site locally with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll).
 
-Once everything is setup and working locally, move unders the `docs` folder
-and run Jekyll with `bundle exec jekyll serve --config _config.yml,_config_local.yml`
+Once everything is setup and working locally, move under the `docs` folder
+and run Jekyll with `bundle exec jekyll serve --config _config.yml,_config_local.yml`.
+
+Browse the docs at http://127.0.0.1:4000/spectrum/
 
 # Third Party Libraries
 
