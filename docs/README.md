@@ -111,7 +111,8 @@ If you now run the test, you will find a html report generated in the `target/sp
 
 > 💡 <b>Tip</b><br/>
 > Spectrum is tested with itself, so in this repo you can find real examples of Spectrum e2e tests.
-> They're in the [it](../it) and [it-testbook](../it-testbook){:target="_blank"} modules. Throughout this doc, you will be pointed to specific examples.
+> They're in the [it]({{ site.github.repository_url }}/it) and [it-testbook]({{ site.github.repository_url }}/it-testbook){:target="_blank"} modules. Throughout this doc, you will
+> be pointed to specific examples.
 
 ---
 
@@ -124,7 +125,7 @@ These are the two main entities you will need to know to fully leverage Spectrum
 
 ## SpectrumTest
 
-Your test classes must extend [SpectrumTest](../spectrum/src/main/java/io/github/giulong/spectrum/SpectrumTest.java){:target="_blank"}.
+Your test classes must extend [SpectrumTest]({{ site.github.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/SpectrumTest.java){:target="_blank"}.
 As you might have noticed in the examples above, you need to provide a generic parameter when extending it.
 That is the `Data` type of your own. Be sure to check the [Data section](#data) below. In case you don't need any,
 you just need to set `Void` as generic.
@@ -162,14 +163,15 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 > 💡 <b>Example</b><br/>
-> Check the [tests](../it/src/test/java/io/github/giulong/spectrum/it/tests){:target="_blank"} package to see real examples of SpectrumTests.
+> Check the [tests]({{ site.github.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests){:target="_blank"} package to see real examples of SpectrumTests.
 
 ## SpectrumPage
 
 As per Selenium's best practices, you should leverage the [page object model](https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/){:target="_
 blank"}
 to represent the objects of the web pages you need to interact with.
-To fully leverage Spectrum, your pages must extend the [SpectrumPage](../spectrum/src/main/java/io/github/giulong/spectrum/SpectrumPage.java){:target="_blank"} class.
+To fully leverage Spectrum, your pages must extend the [SpectrumPage]({{ site.github.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/SpectrumPage.java){:
+target="_blank"} class.
 
 `SpectrumPage` extends [SpectrumEntity](#spectrumentity) and inherits its fields and methods.
 
@@ -191,7 +193,7 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 ```
 
 > 💡 <b>Example</b><br/>
-> Check the [pages](../it/src/test/java/io/github/giulong/spectrum/it/pages){:target="_blank"} package to see real examples of SpectrumPages.
+> Check the [pages]({{ site.github.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/pages){:target="_blank"} package to see real examples of SpectrumPages.
 
 ### SpectrumPage Service Methods
 
@@ -274,7 +276,7 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 Both the `open` and `waitForPageLoading` methods return the instance calling them.
 This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface){:target="_blank"}, so that you can rely on method chaining.
 You should write your service methods with this in mind.
-Check [FilesIT](../it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java){:target="_blank"} for an example:
+Check [FilesIT]({{ site.github.repository_url }}/it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java){:target="_blank"} for an example:
 
 {% include codeHeader.html %}
 
@@ -312,7 +314,8 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
 ## SpectrumEntity
 
-[SpectrumEntity](../spectrum/src/main/java/io/github/giulong/spectrum/SpectrumEntity.java){:target="_blank"} is the parent class of both `SpectrumTest` and `SpectrumPage`.
+[SpectrumEntity]({{ site.github.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/SpectrumEntity.java){:target="_blank"} is the parent class of
+both `SpectrumTest` and `SpectrumPage`.
 Whenever extending any of those, you will inherit its fields and methods.
 
 Spectrum takes care of resolving and injecting all the fields below,
@@ -361,11 +364,12 @@ so you can directly use them in your tests/pages without caring about declaring 
 # Configuration
 
 Spectrum is fully configurable and comes with default values which you can find in
-the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+the [configuration.default.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 Be sure to check it: each key is properly commented to clarify its purpose.
 
 > ⚠️ <b>Running on *nix</b><br/>
-> When running on *nix, the [configuration.default.unix.yaml](../spectrum/src/main/resources/yaml/configuration.default.unix.yaml){:target="_blank"} will be merged onto the base
+> When running on *nix, the [configuration.default.unix.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.unix.yaml){:target="_blank"}
+> will be merged onto the base
 > one
 > to set filesystem-specific values such as path separators.
 
@@ -441,9 +445,10 @@ someList:
 
 > 💡 <b>Example</b><br/>
 > Check the `application.baseUrl` node in these configurations used in Spectrum's own tests to see an example of merging:
-> * [configuration.yaml](../it-testbook/src/test/resources/configuration.yaml){:target="_blank"}
-> * [configuration-first.yaml](../it-testbook/src/test/resources/configuration-first.yaml){:target="_blank"} [Actually ignored, active profiles are `local` and `second`]
-> * [configuration-second.yaml](../it-testbook/src/test/resources/configuration-second.yaml){:target="_blank"}
+> * [configuration.yaml]({{ site.github.repository_url }}/it-testbook/src/test/resources/configuration.yaml){:target="_blank"}
+> * [configuration-first.yaml]({{ site.github.repository_url }}/it-testbook/src/test/resources/configuration-first.yaml){:target="_
+    blank"} [Actually ignored, active profiles are `local` and `second`]
+> * [configuration-second.yaml]({{ site.github.repository_url }}/it-testbook/src/test/resources/configuration-second.yaml){:target="_blank"}
 >
 > The very first node of the base `configuration.yaml` linked above sets the active profiles, instructing Spectrum to load the other two configurations,
 > and overriding the `application.baseUrl` accordingly:
@@ -538,7 +543,8 @@ runtime:
 
 > This could be useful to create and leverage your own naming convention for env variables.
 
-These are the variables already available in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+These are the variables already available in the [configuration.default.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
+target="_blank"}.
 You can add your own and even override the default ones in your `configuration*.yaml`:
 
 | Variable          | Default Windows              | Default *nix                 |
@@ -607,7 +613,8 @@ where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
 so you need to
 explicitly activate this feature
-in your `configuration.yaml`. Check the `video` node in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} for all
+in your `configuration.yaml`. Check the `video` node in the [configuration.default.yaml]({{ site.github.repository_url
+}}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} for all
 the available
 parameters along with their details.
 
@@ -651,7 +658,7 @@ and attached to the Extent Report as well.
 
 > 💡 <b>Video Configuration Example</b><br/>
 > Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
-> internal [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}):
+> internal [configuration.default.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}):
 
 {% include codeHeader.html %}
 
@@ -675,7 +682,8 @@ After each execution, Spectrum produces two files:
 * [html report](#html-report)
 
 The WebDriver fires events that are automatically logged and added to the html report.
-Check the `webDriver.events` node in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} to see the defaults log
+Check the `webDriver.events` node in the [configuration.default.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_
+blank"} to see the defaults log
 levels and messages.
 
 Remember that the log level is set with `-Dspectrum.log.level` and defaults to `INFO`.
@@ -687,7 +695,8 @@ Needless to say, you can also log and add info and screenshots to html report pr
 
 The log file will contain the same information you see in the console. It will be produced by default under the `target/spectrum/logs` folder.
 
-It's generated using [Logback](https://logback.qos.ch/){:target="_blank"}, and [here](../spectrum/src/main/resources/logback.xml){:target="_blank"} you can find its configuration.
+It's generated using [Logback](https://logback.qos.ch/){:target="_blank"}, and [here]({{ site.github.repository_url }}/spectrum/src/main/resources/logback.xml){:target="_blank"}
+you can find its configuration.
 Logs are rotated daily, meaning the results of each execution occurred in the same day will be appended to the same file.
 
 > 💡 <b>Tip</b><br/>
@@ -702,7 +711,8 @@ Logs are rotated daily, meaning the results of each execution occurred in the sa
 
 Spectrum generates a html report using [Extent Reports](https://www.extentreports.com/){:target="_blank"}.
 By default, it will be produced under the `target/spectrum/reports` folder.
-Check the `extent` node in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} to see how to customise it.
+Check the `extent` node in the [configuration.default.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} to see
+how to customise it.
 
 > 💡 <b>Tip</b><br/>
 > The default file name of the produced html report contains a timestamp, which is useful to always generate a new file.
@@ -755,7 +765,7 @@ this would be the full `toString()`:
 
 ![extent locator full](images/extent-locator-full.jpg)
 
-The regex in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} is:
+The regex in the [configuration.default.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} is:
 
 {% include codeHeader.html %}
 
@@ -788,7 +798,8 @@ Here you can find how Spectrum helps you in a few common use cases.
 ## File Upload
 
 You can add files to be uploaded in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
-This is the default you can see in the internal [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+This is the default you can see in the internal [configuration.default.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
+target="_blank"}:
 
 {% include codeHeader.html %}
 
@@ -834,7 +845,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 > 💡 <b>Example</b><br/>
-> Check the [FilesIT.upload() test](../it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java){:target="_blank"} to see a real example
+> Check the [FilesIT.upload() test]({{ site.github.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java){:target="_blank"} to see a real example
 
 ## File Download
 
@@ -904,7 +915,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 > 💡 <b>Example</b><br/>
-> Check the [FilesIT.download() test](../it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java){:target="_blank"} to see a real example
+> Check the [FilesIT.download() test]({{ site.github.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java){:target="_blank"} to see a real example
 
 ---
 
@@ -928,10 +939,8 @@ Both will have the same set of params, such as a name and a password to login.
 
 We need to take four steps:
 
-1. Create the yaml describing this scenario:
-
+* Create the yaml describing this scenario:
    {% include codeHeader.html %}
-
     ```yaml
     # data.yaml
     users:
@@ -943,7 +952,7 @@ We need to take four steps:
         password: pwd
     ```
 
-2. Create the POJO mapping the yaml above:
+* Create the POJO mapping the yaml above:
 
 {% include codeHeader.html %}
 
@@ -970,15 +979,16 @@ public class Data {
 > 💡 <b>Tip</b><br/>
 > The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own java file.
 
-3. Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
-   {% include codeHeader.html %}
-    ```yaml
-    # configuration.yaml    
-    data:
-      fqdn: your.package_name.Data  # Format: <package name>.<class name>
-    ```
+* Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
+   
+{% include codeHeader.html %}
+```yaml
+# configuration.yaml    
+data:
+  fqdn: your.package_name.Data  # Format: <package name>.<class name>
+```
 
-4. Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
+* Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
    {% include codeHeader.html %}
     ```java
     import io.github.giulong.spectrum.SpectrumTest;
@@ -1022,8 +1032,8 @@ The `Data` generic must be specified only in those classes actually using it. Th
 > In this scenario, they could be loaded from different `configuration*.yaml`.
 
 > 💡 <b>Example: parameterized tests</b><br/>
-> Check the [data.yaml](../it/src/test/resources/data/data.yaml){:target="_blank"} and how it's used in
-> the [LoginFormIT](../it/src/test/java/io/github/giulong/spectrum/it/tests/LoginFormIT.java){:target="_blank"}.
+> Check the [data.yaml]({{ site.github.repository_url }}/it/src/test/resources/data/data.yaml){:target="_blank"} and how it's used in
+> the [LoginFormIT]({{ site.github.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/LoginFormIT.java){:target="_blank"}.
 > Look for the usage of `data.getUsers()` in that class.
 
 ---
@@ -1042,7 +1052,8 @@ These events are sent in broadcast to a list of consumers.
 Each consumer defines the events it's interested into. Whenever an event is fired, any consumer interested into that is notified,
 performing the action it's supposed to (more in the [Events Consumers section](#events-consumers) below).
 
-Each [event](../spectrum/src/main/java/io/github/giulong/spectrum/pojos/events/Event.java){:target="_blank"} defines a set of keys that consumers can use to define the events they
+Each [event]({{ site.github.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/events/Event.java){:target="_blank"} defines a set of keys that consumers can
+use to define the events they
 want to be
 notified about. Most of them can be used in consumers with the type of match specified below:
 
@@ -1052,7 +1063,7 @@ notified about. Most of them can be used in consumers with the type of match spe
 | [secondaryId](#primaryid-and-secondaryid) | String                                                                                                                                                      | regex |
 | [tags](#tags)                             | Set\<String>                                                                                                                                                | exact |
 | [reason](#reason)                         | String                                                                                                                                                      | regex |
-| [result](#result)                         | [Result](../spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java){:target="_blank"}                                                          | exact |
+| [result](#result)                         | [Result]({{ site.github.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java){:target="_blank"}                            | exact |
 | [context](#context)                       | [ExtensionContext](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ExtensionContext.html){:target="_blank"} | -     |
 
 Let's see them in detail:
@@ -1112,7 +1123,7 @@ This way, instead of attaching a consumer to a specific event (with primary and 
 to all events tagged in a particular way, such as all the tests.
 
 > 💡 <b>Example</b><br/>
-> Check the `eventsConsumers` in the [configuration.default.yaml](../spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+> Check the `eventsConsumers` in the [configuration.default.yaml]({{ site.github.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 > Internal consumers need to take actions after each test is done, meaning they listen to events tagged with "test":
 
 {% include codeHeader.html %}
@@ -1136,7 +1147,8 @@ This is the result of the executed test. Of course, this will be available only 
 ### Context
 
 The JUnit's ExtensionContext is attached to each event. It's not considered when matching events, but it can be useful
-in custom templates to access objects stored in it. For example, the default [slack.json template](../spectrum/src/main/resources/templates/slack.json){:target="_blank"}
+in custom templates to access objects stored in it. For example, the default [slack.json template]({{ site.github.repository_url
+}}/spectrum/src/main/resources/templates/slack.json){:target="_blank"}
 uses it to print class and test names:
 
 {% include codeHeader.html %}
@@ -1199,7 +1211,8 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > 💡 <b>Example</b><br/>
 > Check the [DemoIT.events()]({{ site.baseurl }}{{ post.url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/DemoIT.java){:target="_blank"} test to see how to fire custom
 > events,
-> and the related [configuration.yaml]({{ site.github.url }}/it/src/test/resources/configuration.yaml){:target="_blank"} to check how `eventsConsumers` are set, leveraging regex matches
+> and the related [configuration.yaml]({{ site.github.url }}/it/src/test/resources/configuration.yaml){:target="_blank"} to check how `eventsConsumers` are set, leveraging regex
+> matches
 > (more on this below).
 
 ## Events Consumers
@@ -1329,7 +1342,8 @@ check [Google's docs](https://support.google.com/accounts/answer/185833?p=Invali
 Check Simple java Mail's docs to see all the [available properties](https://www.simplejavamail.org/configuration.html#section-available-properties){:target="_blank"}.
 
 > ⚠️ <b>Mail Template</b><br/>
-> The default [mail.html template](../spectrum/src/main/resources/templates/mail.html){:target="_blank"} is meant to be used to notify about each test result,
+> The default [mail.html template]({{ site.github.repository_url }}/spectrum/src/main/resources/templates/mail.html){:target="_blank"} is meant to be used to notify about each test
+> result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
 
 {% include codeHeader.html %}
@@ -1343,7 +1357,7 @@ mail:
 
 >
 > If you want to provide a custom template there are two ways:
-> 1. provide a template with a custom name under `src/test/resources/templates`:
+> * provide a template with a custom name under `src/test/resources/templates`:
 
 {% include codeHeader.html %}
 
@@ -1355,7 +1369,7 @@ mail:
       tags: [ test ]
 ```
 
-> 2. simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
+> * simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
 
 > 💡 <b>Tip</b><br/>
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
@@ -1411,13 +1425,12 @@ eventsConsumers:
 
 A few steps are needed to configure your Slack Workspace to receive notifications from Spectrum:
 
-1. You need to log in and create an app [from here](https://api.slack.com/apps){:target="_blank"} by following these steps:<br/><br/>
+1. You need to log in and create an app [from here](https://api.slack.com/apps){:target="_blank"} by following these steps:
     1. click on the **Create New App** button:<br/><br/>
-       ![slack-new-app.png](images/slack-new-app.png)<br/><br/>
+       ![slack-new-app.png](images/slack-new-app.png)
     2. choose to create it **from an app manifest**<br/><br/>
-       ![slack-manifest.png](images/slack-manifest.png)<br/><br/>
+       ![slack-manifest.png](images/slack-manifest.png)
     3. Select your workspace, delete the default yaml manifest and copy this one:<br/><br/>
-
        {% include codeHeader.html %}
        ```yaml
        display_information:
@@ -1440,21 +1453,21 @@ A few steps are needed to configure your Slack Workspace to receive notification
          token_rotation_enabled: false
        ```
     4. Click on **Next** and then **Create**<br/><br/>
-2. You should have been redirected to the **Basic Information** page of the newly created app. From there:<br/><br/>
+2. You should have been redirected to the **Basic Information** page of the newly created app. From there:
     1. Install the app to Workspace:<br/><br/>
-       ![slack-install-to-workspace.png](images/slack-install-to-workspace.png)<br/><br/>
+       ![slack-install-to-workspace.png](images/slack-install-to-workspace.png)
     2. Choose the channel where you want to receive the notifications and click **Allow**:<br/><br/>
-       ![slack-channel.png](images/slack-channel.png)<br/><br/>
-3. Go in the **OAuth & Permissions** page and copy the **Bot User OAuth Token**. You will need this in the `configuration*.yaml` (see last bullet)<br/><br/>
-   ![slack-token.png](images/slack-token.png)<br/><br/>
-4. In Slack:<br/><br/>
+       ![slack-channel.png](images/slack-channel.png)
+3. Go in the **OAuth & Permissions** page and copy the **Bot User OAuth Token**. You will need this in the `configuration*.yaml` (see last bullet)
+   ![slack-token.png](images/slack-token.png)
+4. In Slack:
     1. open the channel you chose in the previous steps and invite the Spectrum app by sending this message: `/invite @Spectrum`. You should see this after sending it:<br/><br/>
-       ![slack-add-app.png](images/slack-add-app.png)<br/><br/>
+       ![slack-add-app.png](images/slack-add-app.png)
     2. right-click on the channel you chose in the previous steps and select **View channel details**:<br/><br/>
-       ![slack-channel-details.png](images/slack-channel-details.png)<br/><br/>
+       ![slack-channel-details.png](images/slack-channel-details.png)
     3. copy the **Channel ID** from the details overlay:<br/><br/>
-       ![slack-channel-id.png](images/slack-channel-id.png)<br/><br/>
-5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:<br/><br/>
+       ![slack-channel-id.png](images/slack-channel-id.png)
+5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:
    {% include codeHeader.html %}
    ```yaml
    - slack:
@@ -1468,7 +1481,8 @@ A few steps are needed to configure your Slack Workspace to receive notification
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
 > ⚠️ <b>Slack Template</b><br/>
-> The default [slack.json template](../spectrum/src/main/resources/templates/slack.json){:target="_blank"} is meant to be used to notify about each test result,
+> The default [slack.json template]({{ site.github.repository_url }}/spectrum/src/main/resources/templates/slack.json){:target="_blank"} is meant to be used to notify about each
+> test result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
 
 {% include codeHeader.html %}
@@ -1551,7 +1565,8 @@ qualityGate:
 The example above means that the execution is considered successful if more than 60% of the weighted tests are successful.
 
 The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org/){:target="_blank"}, meaning you can write complex conditions using the variables
-briefly explained below. They're all put in the `vars` map in the [TestBook.java](../spectrum/src/main/java/io/github/giulong/spectrum/utils/testbook/TestBook.java){:target="_
+briefly explained below. They're all put in the `vars` map in the [TestBook.java]({{ site.github.repository_url
+}}/spectrum/src/main/java/io/github/giulong/spectrum/utils/testbook/TestBook.java){:target="_
 blank"}
 (check the `mapVars()` method).
 
@@ -1561,17 +1576,18 @@ blank"}
 
 Generic variables:
 
-| Variable                                                                                                                    | Description                                                                        |
-|-----------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| mappedTests                                                                                                                 | map of tests executed and found in the provided testbook                           |
-| unmappedTests                                                                                                               | map of tests executed but not found in the provided testbook                       |
-| groupedMappedTests                                                                                                          | like mappedTests, but grouped by class names                                       |
-| groupedUnmappedTests                                                                                                        | like unmappedTests, but grouped by class names                                     |
-| [statistics](../spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:target="_blank"} | object containing all the object reported in the lists below, plus additional ones |
-| [qg](../spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/QualityGate.java){:target="_blank"}                | qualityGate node from `configuration*.yaml`                                        |
-| timestamp                                                                                                                   | when the testbook was generated                                                    |
+| Variable                                                                                                                                                  | Description                                                                        |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| mappedTests                                                                                                                                               | map of tests executed and found in the provided testbook                           |
+| unmappedTests                                                                                                                                             | map of tests executed but not found in the provided testbook                       |
+| groupedMappedTests                                                                                                                                        | like mappedTests, but grouped by class names                                       |
+| groupedUnmappedTests                                                                                                                                      | like unmappedTests, but grouped by class names                                     |
+| [statistics]({{ site.github.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:target="_blank"} | object containing all the object reported in the lists below, plus additional ones |
+| [qg]({{ site.github.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/QualityGate.java){:target="_blank"}                | qualityGate node from `configuration*.yaml`                                        |
+| timestamp                                                                                                                                                 | when the testbook was generated                                                    |
 
-Each key in the lists below is an instance of the inner static class [Statistics](../spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:
+Each key in the lists below is an instance of the inner static class [Statistics]({{ site.github.repository_url
+}}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:
 target="_blank"},
 and it holds both a `total` int field and a `percentage` double field.
 For example, given the `successful` key here below, you can access:
@@ -1613,8 +1629,8 @@ Statistics of all tests, mapped or not in the testbook, based on their weights
 
 > 💡 <b>Tip</b><br/>
 > It's hard to explain and grasp each of these vars. The best way is to:
-> 1. check the [default html template](../spectrum/src/main/resources/testbook/template.html){:target="_blank"} and
-     the [default txt template](../spectrum/src/main/resources/testbook/template.txt){:target="_blank"}
+> 1. check the [default html template]({{ site.github.repository_url }}/spectrum/src/main/resources/testbook/template.html){:target="_blank"} and
+     the [default txt template]({{ site.github.repository_url }}/spectrum/src/main/resources/testbook/template.txt){:target="_blank"}
 > 2. run your suite with the html reporter and/or the txt reporter as explained below
 > 3. check the outcome
 
@@ -1693,11 +1709,12 @@ reporters:
 Of course, they're all optional: you can add just those you want.
 
 Below you will find the output produced by the default internal template for each reporter.
-Those are the real outputs produced when running Spectrum's own e2e tests you can find in the [it-testbook](../it-testbook){:target="_blank"} module.
+Those are the real outputs produced when running Spectrum's own e2e tests you can find in the [it-testbook]({{ site.github.repository_url }}/it-testbook){:target="_blank"} module.
 This means you can:
 
-* check the it_testbook's module [testbook.yaml](../it-testbook/src/test/resources/testbook.yaml){:target="_blank"}
-* check the actual it_testbook's module [tests](../it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests){:target="_blank"} and especially their `@DisplayName`
+* check the it_testbook's module [testbook.yaml]({{ site.github.repository_url }}/it-testbook/src/test/resources/testbook.yaml){:target="_blank"}
+* check the actual it_testbook's module [tests]({{ site.github.repository_url }}/it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests){:target="_blank"} and
+  especially their `@DisplayName`
 * look at the produced reports shown below for each reporter
 
 > ⚠️ <b>it-testbook module's reports</b><br/>
@@ -1846,7 +1863,7 @@ txt:
   output: target/spectrum/testbook/testbook-{timestamp}.txt
 ```
 
-For the sake of completeness, the output file was manually copied [here](../src/main/resources/images/testbook.txt){:target="_blank"}.
+For the sake of completeness, the output file was manually copied [here]({{ site.github.repository_url }}/src/main/resources/images/testbook.txt){:target="_blank"}.
 It's the same that is logged, but saved to a dedicated file, so that you can send it as an attachment in an email, for example.
 Or you can provide different templates to log a shorter report and send the full thing to a file, it's up to you!
 
@@ -1860,7 +1877,7 @@ html:
   output: target/spectrum/testbook/testbook-{timestamp}.html
 ```
 
-For the sake of completeness, the output file was manually copied [here](../src/main/resources/images/testbook.html){:target="_blank"}.
+For the sake of completeness, the output file was manually copied [here]({{ site.github.repository_url }}/src/main/resources/images/testbook.html){:target="_blank"}.
 This is what it looks like when opened in a browser:
 
 ![Html TestBook Reporter](images/html-testbook.png)
