@@ -310,6 +310,7 @@ public class Configuration {
         public static class Event {
 
             @JsonPropertyDescription("Level at which this event will be logged")
+            @JsonSchemaTypes(String.class)
             private ch.qos.logback.classic.Level level = OFF;
 
             @JsonPropertyDescription("Message to be logged upon receiving this event")
