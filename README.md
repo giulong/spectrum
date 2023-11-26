@@ -64,6 +64,8 @@ Here's a quick overview of the project created by the archetype, along with the 
 ![LoginFormIT](src/main/resources/images/login-form-it.jpg)
 ![Extent Report](src/main/resources/images/login-form-it-extent-report.jpg)
 
+https://github.com/giulong/spectrum/assets/27963644/187e237c-7db1-494b-8a3b-5839565ae0b0
+
 For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/)
 
 ## License
