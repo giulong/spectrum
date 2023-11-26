@@ -52,15 +52,14 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 
 > ⚠️ JDK<br/>
 > Since Spectrum is compiled with a jdk 17, you need a [jdk 17+](https://jdk.java.net/java-se-ri/17) to be able to run your tests.
-> If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
 1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) via your IDE or by running this (replacing `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATION>` with actual values):
 
     `mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION> -DoutputDirectory=<DESTINATION>`
 2. Run the `src/test/java/<PACKAGE NAME>/tests/LoginFormIT` demo test injected by the archetype. You will see an instance of Chrome starting.
-3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` html report.
+3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` html report with the execution video attached.
 
-Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:
+Here's a quick overview of the project created by the archetype, along with the report and video generated after the first execution:
 
 ![LoginFormIT](src/main/resources/images/login-form-it.jpg)
 ![Extent Report](src/main/resources/images/login-form-it-extent-report.jpg)
