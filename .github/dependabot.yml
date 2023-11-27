@@ -6,4 +6,4 @@ updates:
       interval: weekly
     assignees: [ "giulong" ]
     open-pull-requests-limit: 100
-    target-branch: dependabot
+    target-branch: develop
