@@ -672,6 +672,11 @@ video:
     height: 480
 ```
 
+> ⚠️ <b>Video Frame Rate</b><br/>
+> Since the execution video is made up of screenshots, for performance reason it has a fixed rate of 1 frame per second.
+> This allows to avoid encoding the same frame multiple times.<br/>
+> The consequence is that the video recorded does **NOT** replicate the actual timing of the test execution.
+
 ---
 
 # Automatically Generated Reports
@@ -1988,3 +1993,5 @@ Found a bug? Want to request a new feature? Please [open an issue](https://githu
 ---
 
 Creator: [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/){:target="_blank"}
+
+If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏
