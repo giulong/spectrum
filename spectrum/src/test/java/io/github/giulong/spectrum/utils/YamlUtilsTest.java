@@ -51,6 +51,12 @@ class YamlUtilsTest {
     }
 
     @Test
+    @DisplayName("readProperties should return an instance of the provided class deserializing the provided properties file")
+    public void readProperties() {
+        assertEquals("value", yamlUtils.readProperties("test.properties", TestYaml.class).getKey());
+    }
+
+    @Test
     @DisplayName("readNode should return null if the provided client file doesn't exist")
     public void readNotExistingClientNode() {
         assertNull(yamlUtils.readNode("/objectKey", "not-existing", TestYaml.ObjectKey.class, false));

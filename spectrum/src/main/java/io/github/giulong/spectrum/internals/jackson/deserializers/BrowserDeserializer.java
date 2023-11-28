@@ -12,7 +12,9 @@ public class BrowserDeserializer extends InterpolatedDeserializer<Browser<?, ?, 
 
     @Override
     public Browser<?, ?, ?> deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
-        final String interpolatedValue = interpolate(jsonParser.getValueAsString(), jsonParser.currentName());
+        final String value = jsonParser.getValueAsString();
+        final String interpolatedValue = interpolate(value, jsonParser.currentName());
+        log.trace("Deserializing browser from value {} -> {}", value, interpolatedValue);
 
         return switch (interpolatedValue) {
             case "chrome" -> new Chrome();

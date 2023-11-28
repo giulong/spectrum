@@ -1,8 +1,5 @@
 package io.github.giulong.spectrum.utils.testbook.parsers;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class TxtTestBookParser extends SimpleTestBookParser {
 
     @Override

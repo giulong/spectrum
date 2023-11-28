@@ -32,7 +32,7 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
         final Environment environment = configuration.getRuntime().getEnvironment();
         capabilities.setAcceptInsecureCerts(true);
 
-        final WebDriver webDriver = environment.setupFrom(this);
+        final WebDriver webDriver = environment.setupFrom(configuration, this);
         final Configuration.WebDriver.Waits waits = webDriverConfiguration.getWaits();
 
         webDriver

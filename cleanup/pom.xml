@@ -67,6 +67,24 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>Copy LauncherSessionListener to "it-grid" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../it-grid/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>Copy LauncherSessionListener to "it-verifier" module's classes</id>
                         <phase>clean</phase>
                         <goals>

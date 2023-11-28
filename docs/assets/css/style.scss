@@ -1,0 +1,85 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+header > h1 {
+    text-transform: capitalize;
+    font-size: 36px;
+}
+
+hr {
+    margin: 20px 14px 20px;
+}
+
+.wrapper {
+    width: 1024px;
+}
+
+@media print, screen and (max-width: 1024px) { body { padding: 0; }
+  .wrapper { border-radius: 0; box-shadow: none; width: 100%; }
+  footer { border-radius: 0; padding: 20px; width: auto; }
+  footer p { float: none; margin: 0; }
+  footer p + p { float: none; } }
+@media print, screen and (max-width: 580px) { header ul { display: none; }
+  header p.view { display: block; }
+  header p { width: 100%; } }
+@media print { header p.view a small:before { content: 'at https://github.com/'; } }
+header > h1 { text-transform: capitalize; font-size: 36px; }
+
+p, ul, ol, table, dl, h1 {
+    margin: 20px 0;
+}
+
+h2, h3, h4 {
+    margin-top: 25px;
+}
+
+tbody tr td:first-child {
+    font-weight: bold;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: rgba(0,0,0,0.06);
+}
+
+blockquote {
+    font-style: normal;
+    margin: 25px -20px -10px;
+    padding: 1px 20px 1px 40px;
+}
+
+span.copy-header {
+    display: block;
+    padding: 28px 16px 4px;
+    margin: 0 -20px -64px;
+    text-align: right;
+}
+
+blockquote + p > span.copy-header {
+    padding: 6px 16px 4px;
+}
+
+button.copy-button {
+    z-index: 1;
+    position: sticky;
+    background: transparent;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #ccc;
+    padding: 3px 5px;
+}
+
+a {
+    color: #06d;
+}
+
+img {
+    cursor: zoom-in;
+}
+
+img.copy-icon {
+    cursor: pointer;
+    width: 16px;
+    vertical-align: bottom;
+}

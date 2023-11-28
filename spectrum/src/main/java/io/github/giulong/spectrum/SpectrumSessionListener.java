@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
@@ -75,8 +76,8 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     }
 
     protected String buildVersionLine() {
-        final Properties spectrumProperties = fileUtils.readProperties("/spectrum.properties");
-        final String version = String.format("Version: %s", spectrumProperties.getProperty("version"));
+        final SpectrumProperties spectrumProperties = yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class);
+        final String version = String.format("Version: %s", spectrumProperties.getVersion());
         final int wrappingSpacesLeft = (BANNER_LINE_LENGTH - version.length()) / 2;
         final int wrappingSpacesRight = version.length() % 2 == 0 ? wrappingSpacesLeft : wrappingSpacesLeft + 1;
         return String.format("#%" + wrappingSpacesLeft + "s%s%" + wrappingSpacesRight + "s#", " ", version, " ");

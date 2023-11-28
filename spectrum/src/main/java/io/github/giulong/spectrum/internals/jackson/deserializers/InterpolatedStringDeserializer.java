@@ -11,6 +11,9 @@ public class InterpolatedStringDeserializer extends InterpolatedDeserializer<Str
 
     @Override
     public String deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
-        return interpolate(jsonParser.getValueAsString(), jsonParser.currentName());
+        final String value = jsonParser.getValueAsString();
+        log.trace("Deserializing String from value {}", value);
+
+        return interpolate(value, jsonParser.currentName());
     }
 }

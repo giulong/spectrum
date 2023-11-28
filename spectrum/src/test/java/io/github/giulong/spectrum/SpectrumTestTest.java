@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.types.DownloadWait;
 import io.github.giulong.spectrum.types.ImplicitWait;
 import io.github.giulong.spectrum.types.PageLoadWait;
@@ -11,6 +12,8 @@ import io.github.giulong.spectrum.types.ScriptWait;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.video.VideoEncoder;
+import io.github.giulong.spectrum.utils.video.ScreenshotWatcher;
 import lombok.Getter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +26,9 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
+
+import java.io.File;
+import java.util.concurrent.BlockingQueue;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -71,6 +77,18 @@ public class SpectrumTestTest<T> {
 
     @Mock
     private ExtentReports extentReports;
+
+    @Mock
+    private TestData testData;
+
+    @Mock
+    private BlockingQueue<File> screenshotQueue;
+
+    @Mock
+    private ScreenshotWatcher screenshotWatcher;
+
+    @Mock
+    private VideoEncoder videoEncoder;
 
     @InjectMocks
     private FakeChild<T> childTest;
@@ -145,7 +163,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
-        childTest.beforeEach(configuration, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, extentTest, actions, eventsDispatcher, data);
+        childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, actions, eventsDispatcher, screenshotQueue, screenshotWatcher, videoEncoder, data);
 
         assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.webDriver);
@@ -157,6 +175,7 @@ public class SpectrumTestTest<T> {
         assertEquals(extentTest, spectrumTest.extentTest);
         assertEquals(actions, spectrumTest.actions);
         assertEquals(eventsDispatcher, spectrumTest.eventsDispatcher);
+        assertEquals(testData, spectrumTest.testData);
         assertEquals(data, spectrumTest.data);
 
         // initPages

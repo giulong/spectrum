@@ -1,14 +1,12 @@
 package io.github.giulong.spectrum.utils;
 
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,26 +28,20 @@ public final class FileUtils {
 
     public String read(final String file) {
         log.debug("Reading file {}", file);
-        InputStream inputStream = FileUtils.class.getResourceAsStream(file);
+        final InputStream inputStream = FileUtils.class.getResourceAsStream(file);
 
         if (inputStream == null) {
             log.warn("File {} not found.", file);
             return "";
         }
 
-        return new Scanner(inputStream).useDelimiter("\\Z").next();
+        try (Scanner scanner = new Scanner(inputStream)) {
+            return scanner.useDelimiter("\\Z").next();
+        }
     }
 
     public String readTemplate(final String file) {
         return read(String.format("/templates/%s", file));
-    }
-
-    @SneakyThrows
-    public Properties readProperties(final String file) {
-        log.debug("Reading properties file {}", file);
-        final Properties properties = new Properties();
-        properties.load(FileUtils.class.getResourceAsStream(file));
-        return properties;
     }
 
     public String interpolate(final String file, final Map<String, String> vars) {

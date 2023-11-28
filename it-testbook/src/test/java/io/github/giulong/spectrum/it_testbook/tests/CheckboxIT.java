@@ -9,6 +9,7 @@ import org.openqa.selenium.WebElement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("unused")
 @DisplayName("Checkbox Page")
 public class CheckboxIT extends SpectrumTest<Void> {
 
@@ -21,11 +22,13 @@ public class CheckboxIT extends SpectrumTest<Void> {
         webDriver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
+        screenshot();
         landingPage.getCheckboxLink().click();
 
         final WebElement firstCheckbox = checkboxPage.getCheckboxes().get(0);
         final WebElement secondCheckbox = checkboxPage.getCheckboxes().get(1);
 
+        screenshot();
         assertFalse(firstCheckbox.isSelected());
         assertTrue(secondCheckbox.isSelected());
 

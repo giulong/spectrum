@@ -11,6 +11,9 @@ public class InterpolatedBooleanDeserializer extends InterpolatedDeserializer<Bo
 
     @Override
     public Boolean deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
-        return Boolean.parseBoolean(interpolate(jsonParser.getValueAsString(), jsonParser.currentName()));
+        final String value = jsonParser.getValueAsString();
+        log.trace("Deserializing Boolean from value {}", value);
+
+        return Boolean.parseBoolean(interpolate(value, jsonParser.currentName()));
     }
 }

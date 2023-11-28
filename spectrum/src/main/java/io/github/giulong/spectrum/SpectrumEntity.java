@@ -6,6 +6,7 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
+import static io.github.giulong.spectrum.enums.Frame.MANUAL;
 import static java.util.Comparator.reverseOrder;
 import static java.util.UUID.randomUUID;
 import static org.openqa.selenium.By.tagName;
@@ -31,7 +33,6 @@ import static org.openqa.selenium.OutputType.BYTES;
 @Slf4j
 public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
-    public static final String SCREEN_SHOT_FOLDER = "screenshots";
     public static final String HASH_ALGORITHM = "SHA-256";
 
     @Shared
@@ -45,6 +46,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected Actions actions;
+
+    @Shared
+    protected TestData testData;
 
     @Shared
     protected WebDriver webDriver;
@@ -111,10 +115,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @SneakyThrows
     public Media addScreenshotToReport(final String msg, final Status status) {
-        final String fileName = String.format("%s.png", randomUUID());
-        final Path screenshotPath = Path.of(configuration.getExtent().getReportFolder(), SCREEN_SHOT_FOLDER, fileName).toAbsolutePath();
-
-        Files.createDirectories(screenshotPath.getParent());
+        final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", MANUAL.getValue(), randomUUID()));
 
         try {
             Files.write(screenshotPath, webDriver.findElement(tagName("body")).getScreenshotAs(BYTES));
@@ -123,7 +124,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
             Files.write(screenshotPath, ((TakesScreenshot) webDriver).getScreenshotAs(BYTES));
         }
 
-        final Media screenshot = createScreenCaptureFromPath(Path.of(SCREEN_SHOT_FOLDER, fileName).toString()).build();
+        final Media screenshot = createScreenCaptureFromPath(screenshotPath.toString()).build();
         extentTest.log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
 
         return screenshot;
