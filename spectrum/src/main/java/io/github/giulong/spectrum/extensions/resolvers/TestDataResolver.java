@@ -24,12 +24,13 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
     @Override
     public TestData resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         log.debug("Resolving {}", TEST_DATA);
-        final Configuration.Extent extent = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getExtent();
+        final Configuration configuration = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class);
+        final Configuration.Extent extent = configuration.getExtent();
         final String reportFolder = extent.getReportFolder();
         final String className = context.getRequiredTestClass().getSimpleName();
         final String methodName = context.getRequiredTestMethod().getName();
         final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, className, methodName);
-        final Path videoPath = getVideoPathForCurrentTest(reportFolder, className, methodName);
+        final Path videoPath = getVideoPathForCurrentTest(configuration, reportFolder, className, methodName);
         final TestData testData = TestData
                 .builder()
                 .className(className)
@@ -50,7 +51,12 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
     }
 
     @SneakyThrows
-    public Path getVideoPathForCurrentTest(final String reportsFolder, final String className, final String methodName) {
+    public Path getVideoPathForCurrentTest(final Configuration configuration, final String reportsFolder, final String className, final String methodName) {
+        if (configuration.getVideo().isDisabled()) {
+            log.trace("Video disabled: avoiding video folder creation");
+            return null;
+        }
+
         final Path path = Path.of(reportsFolder, "videos", className, methodName).toAbsolutePath();
         Files.createDirectories(path);
         return path.resolve(String.format("%s.mp4", randomUUID()));
