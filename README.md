@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
 
-<br /><br />
+<br />
 <img src="src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">
 
 <br/>
@@ -75,6 +75,8 @@ Distributed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) 
 ## Contacts
 
 [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)
+
+If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
 
 ## Acknowledgments
 
