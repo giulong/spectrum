@@ -248,19 +248,34 @@
                 <artifactId>jsonschema-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>internal json schema</id>
                         <phase>install</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                        <configuration>
+                            <modules>
+                                <module>
+                                    <className>io.github.giulong.spectrum.internals.jackson.json_schema.JsonSchemaInternalGeneratorModule</className>
+                                </module>
+                            </modules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>public json schema</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <modules>
+                                <module>
+                                    <className>io.github.giulong.spectrum.internals.jackson.json_schema.JsonSchemaGeneratorModule</className>
+                                </module>
+                            </modules>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <modules>
-                        <module>
-                            <className>io.github.giulong.spectrum.internals.jackson.json_schema.JsonSchemaGeneratorModule</className>
-                        </module>
-                    </modules>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
