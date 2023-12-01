@@ -510,7 +510,8 @@ If the provided key can't be found in any of these places, a warning will be rai
 Both key name and default value might contain dots like in `${some.key:-default.value}`
 
 > 💡 <b>Tip</b><br/>
-> This trick is used in the internal `configuration.default.yaml` to allow for variables to be read from outside.
+> This trick is used in the internal internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"})
+> to allow for variables to be read from outside.
 > For example, profiles are set like this:
 
 {% include codeHeader.html %}
@@ -555,7 +556,8 @@ You can add your own and even override the default ones in your `configuration*.
 
 ## Running on a Grid
 
-By default, browsers run in local. This is because the default value in the internal `configuration.default.yaml` is:
+By default, browsers run in local. This is because the default value in the internal internal [configuration.default.yaml]({{ site.repository_url
+}}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}) is:
 
 {% include codeHeader.html %}
 
@@ -611,12 +613,9 @@ where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 # Automatic Execution Video Generation
 
 It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
-so you need to
-explicitly activate this feature
-in your `configuration.yaml`. Check the `video` node in the [configuration.default.yaml]({{ site.repository_url
-}}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} for all
-the available
-parameters along with their details.
+so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"})
+for all the available parameters along with their details.
 
 To be precise, the video is generated from screenshots taken during the execution.
 You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
@@ -945,7 +944,7 @@ Both will have the same set of params, such as a name and a password to login.
 We need to take four steps:
 
 * Create the yaml describing this scenario:
-   {% include codeHeader.html %}
+  {% include codeHeader.html %}
     ```yaml
     # data.yaml
     users:
@@ -985,8 +984,9 @@ public class Data {
 > The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own java file.
 
 * Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
-   
+
 {% include codeHeader.html %}
+
 ```yaml
 # configuration.yaml    
 data:
@@ -994,7 +994,7 @@ data:
 ```
 
 * Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
-   {% include codeHeader.html %}
+  {% include codeHeader.html %}
     ```java
     import io.github.giulong.spectrum.SpectrumTest;
     import org.junit.jupiter.api.Test;
@@ -1012,7 +1012,7 @@ data:
     }
     ```
 
-   {% include codeHeader.html %}
+  {% include codeHeader.html %}
     ```java
     import io.github.giulong.spectrum.SpectrumPage;
     import your.package_name.Data;
@@ -1068,7 +1068,7 @@ notified about. Most of them can be used in consumers with the type of match spe
 | [secondaryId](#primaryid-and-secondaryid) | String                                                                                                                                                      | regex |
 | [tags](#tags)                             | Set\<String>                                                                                                                                                | exact |
 | [reason](#reason)                         | String                                                                                                                                                      | regex |
-| [result](#result)                         | [Result]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java){:target="_blank"}                            | exact |
+| [result](#result)                         | [Result]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java){:target="_blank"}                                   | exact |
 | [context](#context)                       | [ExtensionContext](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ExtensionContext.html){:target="_blank"} | -     |
 
 Let's see them in detail:
@@ -1581,21 +1581,19 @@ blank"}
 
 Generic variables:
 
-| Variable                                                                                                                                                  | Description                                                                        |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| mappedTests                                                                                                                                               | map of tests executed and found in the provided testbook                           |
-| unmappedTests                                                                                                                                             | map of tests executed but not found in the provided testbook                       |
-| groupedMappedTests                                                                                                                                        | like mappedTests, but grouped by class names                                       |
-| groupedUnmappedTests                                                                                                                                      | like unmappedTests, but grouped by class names                                     |
+| Variable                                                                                                                                           | Description                                                                        |
+|----------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| mappedTests                                                                                                                                        | map of tests executed and found in the provided testbook                           |
+| unmappedTests                                                                                                                                      | map of tests executed but not found in the provided testbook                       |
+| groupedMappedTests                                                                                                                                 | like mappedTests, but grouped by class names                                       |
+| groupedUnmappedTests                                                                                                                               | like unmappedTests, but grouped by class names                                     |
 | [statistics]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:target="_blank"} | object containing all the object reported in the lists below, plus additional ones |
 | [qg]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/QualityGate.java){:target="_blank"}                | qualityGate node from `configuration*.yaml`                                        |
-| timestamp                                                                                                                                                 | when the testbook was generated                                                    |
+| timestamp                                                                                                                                          | when the testbook was generated                                                    |
 
-Each key in the lists below is an instance of the inner static class [Statistics]({{ site.repository_url
-}}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:
-target="_blank"},
-and it holds both a `total` int field and a `percentage` double field.
-For example, given the `successful` key here below, you can access:
+Each key in the lists below is an instance of the inner static class
+[Statistics]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:target="_blank"},
+and it holds both a `total` int field and a `percentage` double field. For example, given the `successful` key here below, you can access:
 
 * `${successful.total}`
 * `${successful.percentage}`
@@ -1723,13 +1721,13 @@ This means you can:
 * look at the produced reports shown below for each reporter
 
 > ⚠️ <b>it-testbook module's reports</b><br/>
-> The default templates have a "Mapped Tests" and "Unmapped Tests" sections at the bottom,
+> The default templates have a `Mapped Tests` and `Unmapped Tests` sections at the bottom,
 > in which tests are grouped by their classes.
 >
 > As you will see from the reports produced below, the `testbook.yaml` used in the `it-testbook` module maps tests that are not present in the suite.
 >
-> This means all those will be shown in the "Mapped Tests" as "Not Run",
-> while all the tests actually executed will appear in the "Unmapped Tests" section with their respective results.
+> This means all those will be shown in the `Mapped Tests` as `Not Run`,
+> while all the tests actually executed will appear in the `Unmapped Tests` section with their respective results.
 
 If you want, you can provide a custom template of yours. As for all the other templates (such as those used in events consumers),
 you can leverage [FreeMarker](https://freemarker.apache.org/){:target="_blank"}.
@@ -1887,12 +1885,47 @@ This is what it looks like when opened in a browser:
 
 ![Html TestBook Reporter](images/html-testbook.png)
 
+## Default TestBook
+
+The one below is the testBook in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+As you can see, it has a quality gate already set, as well as a yaml parser and log and html reporters.
+
+{% include codeHeader.html %}
+
+```yaml
+# internal configuration.default.yaml
+testBook:
+  enabled: false
+  qualityGate:
+    condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
+  parser:
+    yaml:
+      path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
+  reporters:
+    - log: { }  # the report will be logged
+    - html:
+        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
+```
+
+It's disabled by default. To activate it with no additional settings, you just need to set this in your `configuration.yaml`:
+
+{% include codeHeader.html %}
+
+```yaml
+testBook:
+  enabled: true
+```
+
+> ⚠️ <b>Enabling testBook</b><br/>
+> Remember the `enabled: true` flag must be explicitly set, otherwise the testBook won't be considered.
+
 ## Full TestBook Examples
 
 {% include codeHeader.html %}
 
 ```yaml
 testBook:
+  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -1910,6 +1943,7 @@ testBook:
 
 ```yaml
 testBook:
+  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -1927,6 +1961,7 @@ testBook:
 
 ```yaml
 testBook:
+  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 40 || ${failed} < 10  # We want the testbook to be marked as successful if we have at least 40% of successful weighted tests or less than 10 tests (not considering their weights!!) failed
   parser:

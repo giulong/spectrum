@@ -4,28 +4,31 @@ import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import io.github.giulong.spectrum.utils.testbook.reporters.TestBookReporter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.enums.Result.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("TestBook")
@@ -34,10 +37,22 @@ class TestBookUnitTest {
     private MockedStatic<TestBookReporter> testBookReporterMockedStatic;
 
     @Mock
+    private TestBookTest test;
+
+    @Mock
+    private TestBookParser testBookParser;
+
+    @Mock
     private TestBookReporter reporter1;
 
     @Mock
     private TestBookReporter reporter2;
+
+    @Mock
+    private TestBookStatistics statistics;
+
+    @Mock
+    private TestBookTest actualTest;
 
     @InjectMocks
     private TestBook testBook;
@@ -45,6 +60,7 @@ class TestBookUnitTest {
     @BeforeEach
     public void beforeEach() {
         testBookReporterMockedStatic = mockStatic(TestBookReporter.class);
+        testBook.setEnabled(false);
     }
 
     @AfterEach
@@ -88,6 +104,108 @@ class TestBookUnitTest {
         assertSame(grandTotalWeightedCount.get(ABORTED), vars.get("grandWeightedAborted"));
         assertSame(grandTotalWeightedCount.get(DISABLED), vars.get("grandWeightedDisabled"));
         assertSame(grandTotalWeightedCount.get(NOT_RUN), vars.get("grandWeightedNotRun"));
+    }
+
+    @Test
+    @DisplayName("parse should initialise the testbook")
+    public void parse() {
+        final TestBookTest test1 = TestBookTest.builder()
+                .className("test 1")
+                .testName("one")
+                .build();
+
+        final TestBookTest test2 = TestBookTest.builder()
+                .className("another test")
+                .testName("another")
+                .build();
+        final List<TestBookTest> tests = List.of(test1, test2);
+
+        when(testBookParser.parse()).thenReturn(tests);
+
+        testBook.setEnabled(true);
+        testBook.parse();
+
+        assertEquals(2, testBook.getMappedTests().size());
+        testBook.getMappedTests().values().stream().map(TestBookTest::getResult).forEach(result -> assertEquals(NOT_RUN, result));
+    }
+
+    @Test
+    @DisplayName("parse should do nothing if not enabled")
+    public void parseNull() {
+        testBook.setEnabled(false);
+        testBook.parse();
+
+        verify(testBookParser, never()).parse();
+    }
+
+    @DisplayName("updateGroupedTests should add the provided test to the provided map of grouped tests")
+    @ParameterizedTest(name = "with className {0} and grouped tests {1}")
+    @MethodSource("valuesProvider")
+    public void updateGroupedTests(final String className, final Map<String, Set<TestBookTest>> groupedTests) {
+        testBook.getGroupedMappedTests().clear();
+        testBook.getGroupedMappedTests().putAll(groupedTests);
+        testBook.updateGroupedTests(groupedTests, className, test);
+
+        assertTrue(groupedTests.get(className).contains(test));
+    }
+
+    public static Stream<Arguments> valuesProvider() throws IOException {
+        return Stream.of(
+                arguments("className", new HashMap<>()),
+                arguments("className", new HashMap<>() {{
+                    put("className", new HashSet<>());
+                }})
+        );
+    }
+
+    @Test
+    @DisplayName("updateWithResult should do nothing if no testBook is provided")
+    public void consumeTestBookNull() {
+        testBook.updateWithResult(null, null, FAILED);
+
+        verifyNoInteractions(statistics);
+    }
+
+    @Test
+    @DisplayName("updateWithResult should update the testbook with the currently unmapped test")
+    public void updateWithResultUnmapped() {
+        final Result result = FAILED;
+        final String className = "className";
+        final String testName = "testName";
+
+        testBook.setEnabled(true);
+        testBook.updateWithResult(className, testName, FAILED);
+
+        final TestBookTest unmappedTest = testBook.getUnmappedTests().get(String.format("%s %s", className, testName));
+        assertEquals(className, unmappedTest.getClassName());
+        assertEquals(testName, unmappedTest.getTestName());
+        assertEquals(result, unmappedTest.getResult());
+        assertEquals(1, testBook.getStatistics().getGrandTotalCount().get(result).getTotal().get());
+        assertEquals(1, testBook.getStatistics().getGrandTotalWeightedCount().get(result).getTotal().get());
+        assertTrue(testBook.getGroupedUnmappedTests().get(className).contains(unmappedTest));
+    }
+
+    @Test
+    @DisplayName("updateWithResult should update the testbook with the currently finished test")
+    public void updateWithResult() {
+        final Result result = FAILED;
+        final String className = "className";
+        final String testName = "testName";
+        final String fullName = String.format("%s %s", className, testName);
+        final int weight = 789;
+
+        when(actualTest.getWeight()).thenReturn(weight);
+
+        testBook.getMappedTests().put(fullName, actualTest);
+        testBook.setEnabled(true);
+        testBook.updateWithResult(className, testName, FAILED);
+
+        verify(actualTest).setResult(result);
+        assertEquals(1, testBook.getStatistics().getTotalCount().get(result).getTotal().get());
+        assertEquals(weight, testBook.getStatistics().getTotalWeightedCount().get(result).getTotal().get());
+        assertEquals(1, testBook.getStatistics().getGrandTotalCount().get(result).getTotal().get());
+        assertEquals(weight, testBook.getStatistics().getGrandTotalWeightedCount().get(result).getTotal().get());
+        assertTrue(testBook.getGroupedMappedTests().get(className).contains(actualTest));
     }
 
     @Test
@@ -142,6 +260,7 @@ class TestBookUnitTest {
         statistics.get(ABORTED).getTotal().set(totalAborted);
         statistics.get(DISABLED).getTotal().set(totalDisabled);
 
+        testBook.setEnabled(true);
         testBook.flush(total, statistics);
 
         assertEquals((double) totalSuccessful / total * 100, statistics.get(SUCCESSFUL).getPercentage().get());
@@ -153,13 +272,14 @@ class TestBookUnitTest {
     }
 
     @Test
-    @DisplayName("flush should")
+    @DisplayName("flush should flush all reporters")
     public void flushAll() {
         testBook.setReporters(List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
 
+        testBook.setEnabled(true);
         testBook.flush();
 
         assertEquals(3, testBook.getStatistics().getGrandTotal().get());
@@ -176,5 +296,31 @@ class TestBookUnitTest {
         testBookReporterMockedStatic.verify(() -> TestBookReporter.evaluateQualityGateStatusFrom(testBook));
         verify(reporter1).flush(testBook);
         verify(reporter2).flush(testBook);
+    }
+
+    @Test
+    @DisplayName("flush should do nothing if the testBook is disabled")
+    public void flushAllDisabled() {
+        testBook.setReporters(List.of(reporter1, reporter2));
+        testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
+        testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
+        testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
+
+        testBook.setEnabled(false);
+        testBook.flush();
+
+        assertEquals(0, testBook.getStatistics().getGrandTotal().get());
+        assertEquals(0, testBook.getStatistics().getTotalWeighted().get());
+        assertEquals(0, testBook.getStatistics().getGrandTotalWeighted().get());
+
+        // since NOT_RUN total is set in the overloaded flush method, we can assert it to indirectly check that method is called
+        assertEquals(0, testBook.getStatistics().getTotalCount().get(NOT_RUN).getTotal().get());
+        assertEquals(0, testBook.getStatistics().getGrandTotalCount().get(NOT_RUN).getTotal().get());
+        assertEquals(0, testBook.getStatistics().getTotalWeightedCount().get(NOT_RUN).getTotal().get());
+        assertEquals(0, testBook.getStatistics().getGrandTotalWeightedCount().get(NOT_RUN).getTotal().get());
+
+        testBookReporterMockedStatic.verifyNoInteractions();
+        verifyNoInteractions(reporter1);
+        verifyNoInteractions(reporter2);
     }
 }

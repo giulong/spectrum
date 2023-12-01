@@ -16,7 +16,17 @@ application:
   baseUrl: http://localhost:8080  # Application's under test base url
 
 # TestBook (coverage)
-testBook: null
+testBook:
+  enabled: false
+  qualityGate:
+    condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
+  parser:
+    yaml:
+      path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
+  reporters:
+    - log: { }  # the report will be logged
+    - html:
+        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
 
 # Execution video recording
 video:

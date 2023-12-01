@@ -26,17 +26,10 @@ extent:
   fileName: report.html
 
 testBook:
-  qualityGate:
-    condition: ${weightedSuccessful.percentage} > 60
-  parser:
-    yaml:
-      path: testbook.yaml
+  enabled: true
   reporters:
-    - log: { }
     - txt:
         output: target/spectrum/testbook/testbook.txt
-    - html:
-        output: target/spectrum/testbook/testbook.html
 
 # these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
 eventsConsumers:

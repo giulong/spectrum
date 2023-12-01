@@ -17,11 +17,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static io.github.giulong.spectrum.enums.Result.*;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
 
 @Getter
 @Setter
 @Slf4j
 public class TestBook {
+
+    private boolean enabled;
 
     private QualityGate qualityGate;
 
@@ -63,6 +67,69 @@ public class TestBook {
                 });
     }
 
+    public void parse() {
+        if (!enabled) {
+            log.debug("TestBook disabled. Skipping parse");
+            return;
+        }
+
+        final List<TestBookTest> tests = parser.parse();
+
+        mappedTests.putAll(tests
+                .stream()
+                .collect(toMap(test -> String.format("%s %s", test.getClassName(), test.getTestName()), identity())));
+
+        tests.forEach(test -> updateGroupedTests(groupedMappedTests, test.getClassName(), test));
+    }
+
+    protected void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
+        final Set<TestBookTest> tests = groupedTests.getOrDefault(className, new HashSet<>());
+        tests.add(test);
+        groupedTests.put(className, tests);
+    }
+
+    public void updateWithResult(final String className, final String testName, final Result result) {
+        if (!enabled) {
+            log.debug("TestBook disabled. Skipping consumer");
+            return;
+        }
+
+        final String fullName = String.format("%s %s", className, testName);
+
+        statistics.getGrandTotalCount().get(result).getTotal().incrementAndGet();
+
+        if (mappedTests.containsKey(fullName)) {
+            log.debug("Setting TestBook result {} for test '{}'", result, fullName);
+            final TestBookTest actualTest = mappedTests.get(fullName);
+            final int weight = actualTest.getWeight();
+
+            actualTest.setResult(result);
+            statistics.getTotalCount().get(result).getTotal().incrementAndGet();
+            statistics.getTotalWeightedCount().get(result).getTotal().addAndGet(weight);
+            statistics.getGrandTotalWeightedCount().get(result).getTotal().addAndGet(weight);
+            updateGroupedTests(groupedMappedTests, className, actualTest);
+        } else {
+            final TestBookTest unmappedTest = TestBookTest.builder()
+                    .className(className)
+                    .testName(testName)
+                    .result(result)
+                    .build();
+
+            log.debug("Setting TestBook result {} for unmapped test '{}'", result, unmappedTest);
+            unmappedTests.put(fullName, unmappedTest);
+            statistics.getGrandTotalWeightedCount().get(result).getTotal().incrementAndGet();
+            updateGroupedTests(groupedUnmappedTests, className, unmappedTest);
+        }
+    }
+
+    public int getWeightedTotalOf(final Map<String, TestBookTest> tests) {
+        return tests
+                .values()
+                .stream()
+                .map(TestBookTest::getWeight)
+                .reduce(0, Integer::sum);
+    }
+
     public void mapVars() {
         final Map<Result, Statistics> totalCount = statistics.getTotalCount();
         final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
@@ -98,36 +165,12 @@ public class TestBook {
         vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
     }
 
-    public int getWeightedTotalOf(final Map<String, TestBookTest> tests) {
-        return tests
-                .values()
-                .stream()
-                .map(TestBookTest::getWeight)
-                .reduce(0, Integer::sum);
-    }
-
-    public void flush(final int total, final Map<Result, Statistics> map) {
-        final Statistics successful = map.get(SUCCESSFUL);
-        final Statistics failed = map.get(FAILED);
-        final Statistics aborted = map.get(ABORTED);
-        final Statistics disabled = map.get(DISABLED);
-        final Statistics notRun = map.get(NOT_RUN);
-
-        final double totalSuccessful = successful.getTotal().doubleValue();
-        final double totalFailed = failed.getTotal().doubleValue();
-        final double totalAborted = aborted.getTotal().doubleValue();
-        final double totalDisabled = disabled.getTotal().doubleValue();
-        final double totalNotRun = total - totalSuccessful - totalFailed - totalAborted - totalDisabled;
-
-        successful.getPercentage().set(totalSuccessful / total * 100);
-        failed.getPercentage().set(totalFailed / total * 100);
-        aborted.getPercentage().set(totalAborted / total * 100);
-        disabled.getPercentage().set(totalDisabled / total * 100);
-        notRun.getPercentage().set(totalNotRun / total * 100);
-        notRun.getTotal().set((int) totalNotRun);
-    }
-
     public void flush() {
+        if (!enabled) {
+            log.debug("Testbook disabled. Skipping flush");
+            return;
+        }
+
         log.debug("Updating testBook percentages");
 
         final int testsTotal = mappedTests.size();
@@ -147,5 +190,26 @@ public class TestBook {
         mapVars();
         TestBookReporter.evaluateQualityGateStatusFrom(this);
         reporters.forEach(reporter -> reporter.flush(this));
+    }
+
+    protected void flush(final int total, final Map<Result, Statistics> map) {
+        final Statistics successful = map.get(SUCCESSFUL);
+        final Statistics failed = map.get(FAILED);
+        final Statistics aborted = map.get(ABORTED);
+        final Statistics disabled = map.get(DISABLED);
+        final Statistics notRun = map.get(NOT_RUN);
+
+        final double totalSuccessful = successful.getTotal().doubleValue();
+        final double totalFailed = failed.getTotal().doubleValue();
+        final double totalAborted = aborted.getTotal().doubleValue();
+        final double totalDisabled = disabled.getTotal().doubleValue();
+        final double totalNotRun = total - totalSuccessful - totalFailed - totalAborted - totalDisabled;
+
+        successful.getPercentage().set(totalSuccessful / total * 100);
+        failed.getPercentage().set(totalFailed / total * 100);
+        aborted.getPercentage().set(totalAborted / total * 100);
+        disabled.getPercentage().set(totalDisabled / total * 100);
+        notRun.getPercentage().set(totalNotRun / total * 100);
+        notRun.getTotal().set((int) totalNotRun);
     }
 }
