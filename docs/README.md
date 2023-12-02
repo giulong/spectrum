@@ -649,7 +649,7 @@ webDriver:
 > 4. **&rarr; screenshot: before set text**
 > 5. set text in input field
 > 6. screenshot: after set text
-> 
+>
 > There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
 > If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard duplicate frames.
 
