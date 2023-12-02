@@ -1,0 +1,32 @@
+name: Docs
+
+on:
+  push:
+    branches: [ "docs/**" ]
+
+jobs:
+  deploy:
+    name: Docs
+    runs-on: ubuntu-latest
+    permissions: write-all
+    environment:
+      name: github-pages
+      url: ${{steps.deployment.outputs.page_url}}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v3
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: docs/
+          destination: ./_site
+
+      - name: Upload GitHub Pages Artifact
+        uses: actions/upload-pages-artifact@v2
+
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
