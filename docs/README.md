@@ -642,15 +642,16 @@ webDriver:
 ```
 
 > 💡 <b>Tip</b><br/>
-> Setting both `autoBefore` and `autoAfter` is likely to be useless. Let's consider this flow:
+> Setting both `autoBefore` and `autoAfter` is likely to be useless. In this flow, screenshots at bullets 3 and 4 will be equal:
 > 1. screenshot: before click
 > 2. click event
-> 3. **---> screenshot: after click**
-> 4. **---> screenshot: before set text**
+> 3. **&rarr; screenshot: after click**
+> 4. **&rarr; screenshot: before set text**
 > 5. set text in input field
 > 6. screenshot: after set text
->
-> The screenshots at bullets 3 and 4 will be equal, and, for performance reason, the second will be discarded.
+> 
+> There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
+> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard duplicate frames.
 
 The video will be saved in the `<extent.reportFolder>/videos/<CLASS NAME>/<TEST NAME>` folder (`extent.reportFolder` is `target` by default)
 and attached to the Extent Report as well.
