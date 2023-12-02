@@ -157,3 +157,24 @@ img.copy-icon {
     width: 16px;
     vertical-align: bottom;
 }
+
+#topButton {
+    display: none;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    z-index: 99;
+    border: 1px solid #444;
+    outline: none;
+    background-color: #3A3C42;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+#topButton:hover {
+    background-color: #555;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
+}

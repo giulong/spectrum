@@ -5,6 +5,7 @@ const resultsContainer = document.getElementById('results-container');
 const noResult = document.createElement('li');
 const searchContainerTop = searchContainer.getBoundingClientRect().top - 5;
 const section = document.querySelectorAll('section')[0];
+const topButton = document.getElementById("topButton");
 
 noResult.innerText = 'No results'
 noResult.setAttribute('id', 'no-results');
@@ -36,9 +37,11 @@ function stickyHeader() {
     if (window.pageYOffset > searchContainerTop) {
         searchContainer.classList.add('sticky');
         section.classList.add('sticky-section');
+        topButton.style.display = 'block';
     } else {
         searchContainer.classList.remove('sticky');
         section.classList.remove('sticky-section');
+        topButton.style.display = 'none';
     }
 }
 
