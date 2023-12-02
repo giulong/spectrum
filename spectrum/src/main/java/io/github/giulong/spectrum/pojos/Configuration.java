@@ -172,16 +172,16 @@ public class Configuration {
         public static class Logs {
 
             @JsonPropertyDescription("The level at which webDriver's logs will be logged in Spectrum (execution) logs")
-            @JsonSchemaTypes(String.class)
+            @JsonSchemaTypes(value = String.class, valueList = {"ERROR", "WARN", "INFO", "DEBUG", "TRACE"})
             private org.slf4j.event.Level level;
 
-            @JsonSchemaTypes(String.class)
+            @JsonSchemaTypes(value = String.class, valueList = {"OFF", "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST", "ALL"})
             private Level browser;
 
-            @JsonSchemaTypes(String.class)
+            @JsonSchemaTypes(value = String.class, valueList = {"OFF", "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST", "ALL"})
             private Level driver;
 
-            @JsonSchemaTypes(String.class)
+            @JsonSchemaTypes(value = String.class, valueList = {"OFF", "SEVERE", "WARNING", "INFO", "CONFIG", "FINE", "FINER", "FINEST", "ALL"})
             private Level performance;
         }
 
@@ -310,7 +310,7 @@ public class Configuration {
         public static class Event {
 
             @JsonPropertyDescription("Level at which this event will be logged")
-            @JsonSchemaTypes(String.class)
+            @JsonSchemaTypes(value = String.class, valueList = {"OFF", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL"})
             private ch.qos.logback.classic.Level level = OFF;
 
             @JsonPropertyDescription("Message to be logged upon receiving this event")

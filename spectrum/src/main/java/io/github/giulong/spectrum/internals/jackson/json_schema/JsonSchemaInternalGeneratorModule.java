@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.internals.jackson.json_schema;
 
 import com.fasterxml.classmate.ResolvedType;
-import com.github.victools.jsonschema.generator.*;
+import com.github.victools.jsonschema.generator.FieldScope;
 import com.github.victools.jsonschema.generator.Module;
+import com.github.victools.jsonschema.generator.SchemaGenerator;
+import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.module.jackson.JacksonModule;
 import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.pojos.Configuration;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 import java.net.URI;
 import java.nio.file.Files;
@@ -21,7 +22,6 @@ import static com.github.victools.jsonschema.generator.Option.MAP_VALUES_AS_ADDI
 import static com.github.victools.jsonschema.module.jackson.JacksonOption.FLATTENED_ENUMS_FROM_JSONVALUE;
 import static com.github.victools.jsonschema.module.jackson.JacksonOption.SKIP_SUBTYPE_LOOKUP;
 
-@Slf4j
 public class JsonSchemaInternalGeneratorModule implements Module {
 
     @Override
@@ -32,6 +32,7 @@ public class JsonSchemaInternalGeneratorModule implements Module {
 
         schemaGeneratorConfigBuilder
                 .forFields()
+                .withEnumResolver(this::enumValuesResolver)
                 .withTargetTypeOverridesResolver(this::multipleTypesResolver);
 
         schemaGeneratorConfigBuilder
@@ -51,6 +52,18 @@ public class JsonSchemaInternalGeneratorModule implements Module {
         //noinspection ResultOfMethodCallIgnored
         jsonSchemaPath.getParent().toFile().mkdirs();
         Files.writeString(jsonSchemaPath, jsonSchema);
+    }
+
+    private List<String> enumValuesResolver(final FieldScope field) {
+        final JsonSchemaTypes jsonSchemaTypes = field.getAnnotationConsideringFieldAndGetterIfSupported(JsonSchemaTypes.class);
+
+        if (jsonSchemaTypes == null || jsonSchemaTypes.valueList().length == 0) {
+            return null;
+        }
+
+        return Arrays
+                .stream(jsonSchemaTypes.valueList())
+                .toList();
     }
 
     private List<ResolvedType> multipleTypesResolver(final FieldScope field) {
