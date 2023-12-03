@@ -1,7 +1,7 @@
 # Development Readme
 
 This is a multi-module project. The reason behind this structure is that we need a way to run a bunch of e2e tests using the framework as a regular
-client would. So, we build the framework in its own module, and then we can include it as a regular dependency in other modules, dedicated to run e2e tests.
+client would. So, we build the framework in its own module, and then we can include it as a regular dependency in other modules dedicated to run e2e tests.
 
 These are the modules, in the order they're built:
 
@@ -9,22 +9,26 @@ These are the modules, in the order they're built:
 spectrum-aggregate (parent pom)
 |─ spectrum (framework)
 |─ it (run the same e2e suite with all the browsers, no testbook)
+|─ it-grid (run the same e2e suite as the it modules, pointing to a local embedded grid)
 |─ it-testbook (run a bunch of tests with a testbook)
 |─ it-verifier (verifying results of the it modules)
 └─ cleanup
 ```
 
-In both the `it` and `it-testbook` modules, some tests are meant to fail for demonstration purposes. The module's build will not fail.
-They will be checked later on by the `it-verifier` module.
+In all the modules, some tests are meant to fail for demonstration purposes.
+The module's build will not fail: they will be checked later on by the `it-verifier` module.
 
-Spectrum leverages `SpectrumSessionListener`, a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom)
+Spectrum leverages [SpectrumSessionListener](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumSessionListener.java),
+a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom)
 registered via the Service Loader mechanism, to fully load itself.
 The [org.junit.platform.launcher.LauncherSessionListener](spectrum/src/main/resources/org.junit.platform.launcher.LauncherSessionListener)
 file is copied into the `META-INF/services` folder during the `prepare-package` phase.
 It's not placed already there since that would load the framework during its own unit tests, breaking them.
 
 Outside the full maven build of the entire project, so to trigger single tests from the IDE, some conditions need to be satisfied.
-In general, to be able to run unit tests, we need to delete that file from [spectrum/target/classes/META-INF/services](spectrum/target/classes/META-INF/services),
+In general, to be able to run unit tests, we need to delete
+the [org.junit.platform.launcher.LauncherSessionListener](spectrum/src/main/resources/org.junit.platform.launcher.LauncherSessionListener)
+from [spectrum/target/classes/META-INF/services](spectrum/target/classes/META-INF/services),
 while we need to have it in modules that run e2e tests or both unit and e2e.
 To avoid manual operations, at the end of the full build, the `cleanup` module will execute the corresponding action for each module listed below.
 
@@ -32,6 +36,7 @@ To avoid manual operations, at the end of the full build, the `cleanup` module w
 |-------------|------------|-----------|----------------------------------|
 | spectrum    | ✅          | ❌         | remove `SpectrumSessionListener` |
 | it          | ❌          | ✅         | add `SpectrumSessionListener`    |
+| it-grid     | ❌          | ✅         | add `SpectrumSessionListener`    |
 | it-testbook | ❌          | ✅         | add `SpectrumSessionListener`    |
 | it-verifier | ✅          | ✅         | add `SpectrumSessionListener`    |
 
@@ -41,12 +46,25 @@ You can leverage the maven wrapper bundled in this repo:
 
 `./mvnw clean install -DallTests -DskipSign -fae`
 
-* `clean` is needed to delete old reports and avoid the `it-verifier` module checks outdated ones.
-* `install` will copy the built framework (jar) in your local maven repo, so that you can use it locally in other projects.
+Where:
+
+* `clean` is needed to avoid the `it-verifier` module checks outdated reports of previous builds.
+* `install` will copy the built framework (jar) in your local maven repo, so that you can use it locally in other projects/modules.
 * the `allTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
   run: `./mvnw clean install -P chrome,firefox,edge -fae`.
-* the `skipSign` skips signing the artifact with a gpg key.
+* the `skipSign` skips signing the artifact with a gpg key. That's needed in GitHub actions to publish
+  on [Ossrh](https://s01.oss.sonatype.org/content/repositories/releases/io/github/giulong/spectrum/).
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.
+
+If you need a fresh local build of just the framework's jar to use it locally, you can run this:
+
+`./mvnw install -DskipTests -DskipSign -fae -pl spectrum`
+
+Where:
+
+* `clean` is not needed, the artifact will be overridden.
+* `skipTests` will skip the unit tests.
+* `-pl spectrum` will build just the framework module.
 
 ## Workflow
 
@@ -62,18 +80,21 @@ GitHub workflows:
 |------------|-----------|----------------------------------------|
 | develop    | push      | [build](.github/workflows/build.yml)   |
 | feature/** | push      | [build](.github/workflows/build.yml)   |
+| docs/**    | push      | [build](.github/workflows/docs.yml)    |
 | main       | pr closed | [deploy](.github/workflows/deploy.yml) |
 
-# How to build the docs locally
+## How to build the docs locally
 
-Follow the instructions on [Testing your GitHub Pages site locally with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll).
+Follow the instructions
+on [Testing your GitHub Pages site locally with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll).
 
-Once everything is setup and working locally, move under the `docs` folder
-and run Jekyll with `bundle exec jekyll serve --config _config.yml,_config_local.yml`.
+Once everything is setup and working locally, run Jekyll under the `docs` folder with:
 
-Browse the docs at http://127.0.0.1:4000/spectrum/
+`cd docs && bundle exec jekyll serve --config _config.yml,_config_local.yml`
 
-# Third Party Libraries
+Then, browse the docs at http://127.0.0.1:4000/spectrum/
+
+## Third Party Libraries
 
 * [Extent Reports](https://www.extentreports.com/)
 * [FreeMarker](https://freemarker.apache.org/)

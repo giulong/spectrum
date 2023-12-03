@@ -78,6 +78,10 @@ Distributed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) 
 
 If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
 
+## Local development
+
+If you're interested in building this repo locally, check out the [DEV readme](DEV.md).
+
 ## Acknowledgments
 
 Spectrum leverages these libraries/frameworks you should definitely check out!
