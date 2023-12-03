@@ -29,6 +29,7 @@
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contacts">Contacts</a></li>
+    <li><a href="#local-development">Local Development</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
