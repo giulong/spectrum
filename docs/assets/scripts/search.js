@@ -1,3 +1,5 @@
+const header = document.getElementsByTagName('header')[0];
+const wrapper = document.getElementsByClassName('wrapper')[0];
 const paragraphs = Array.from(document.querySelectorAll('h1, h2, h3, h4')).map(p => p.innerText.toLowerCase());
 const searchContainer = document.getElementById('search-container');
 const searchInput = document.getElementById('search-input');
@@ -28,6 +30,7 @@ document.addEventListener('keydown', evt => {
 });
 
 window.onscroll = function() { stickyHeader() };
+window.onresize = function() { stickyHeader() };
 
 function highlight() {
     searchInput.classList.add('shadow');
@@ -35,11 +38,13 @@ function highlight() {
 
 function stickyHeader() {
     if (window.pageYOffset > searchContainerTop) {
-        searchContainer.classList.add('sticky');
+        header.classList.add('sticky');
+        header.style.width = wrapper.offsetWidth - 40 + 'px';
         section.classList.add('sticky-section');
         topButton.style.display = 'block';
     } else {
-        searchContainer.classList.remove('sticky');
+        header.classList.remove('sticky');
+        header.style.width = 'auto';
         section.classList.remove('sticky-section');
         topButton.style.display = 'none';
     }
@@ -64,7 +69,7 @@ function navigateTo(anchor) {
     hideResults();
 
     location.href = '#' + anchor;
-    window.scrollBy(0, -80);
+    window.scrollBy(0, -75);
 }
 
 function search() {
