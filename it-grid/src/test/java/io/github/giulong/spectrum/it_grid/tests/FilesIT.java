@@ -6,11 +6,9 @@ import io.github.giulong.spectrum.it_grid.pages.DownloadPage;
 import io.github.giulong.spectrum.it_grid.pages.UploadPage;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.grid.Main;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -36,11 +34,6 @@ public class FilesIT extends SpectrumTest<Void> {
     private DownloadPage downloadPage;
 
     private UploadPage uploadPage;
-
-    @BeforeAll
-    public static void beforeAll() {
-        Main.main(new String[]{"standalone"});
-    }
 
     @Test
     @DisplayName("download")

@@ -15,7 +15,7 @@ public class ItVerifierTest {
 
     private static final FailsafeReportsVerifier FAILSAFE_REPORTS_VERIFIER = FailsafeReportsVerifier.getInstance();
     private static final Path BASE_DIR = Path.of(System.getProperty("user.dir")).getParent();
-    
+
     private static final int COMPLETED = 8;
     private static final int ERRORS = 1;
     private static final int FAILURES = 0;
@@ -24,19 +24,19 @@ public class ItVerifierTest {
     @Test
     @DisplayName("chrome should have run with the correct results")
     public void verifyChrome() {
-        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-chrome.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED), "CHROME");
+        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre("it", "chrome", COMPLETED, ERRORS, FAILURES, SKIPPED), "CHROME");
     }
 
     @Test
     @DisplayName("firefox should have run with the correct results")
     public void verifyFirefox() {
-        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-firefox.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED), "FIREFOX");
+        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre("it", "firefox", COMPLETED, ERRORS, FAILURES, SKIPPED), "FIREFOX");
     }
 
     @Test
     @DisplayName("edge should have run with the correct results")
     public void verifyEdge() {
-        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre(Path.of("it", "target", "failsafe-reports", "failsafe-edge.xml"), COMPLETED, ERRORS, FAILURES, SKIPPED), "EDGE");
+        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre("it", "edge", COMPLETED, ERRORS, FAILURES, SKIPPED), "EDGE");
     }
 
     @Test
