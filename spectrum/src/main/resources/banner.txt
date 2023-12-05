@@ -16,6 +16,6 @@
 #    ╚═╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝ ╚══╝╚══╝  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝    #
 #                                                                                      #
 %s
-#      Please consider giving a GitHub star: https://github.com/giulong/spectrum       #
+#       Please consider giving a GitHub star: https://github.com/giulong/spectrum      #
 #                                                                                      #
 ########################################################################################
