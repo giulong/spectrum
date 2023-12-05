@@ -41,12 +41,14 @@ function stickyHeader() {
         header.classList.add('sticky');
         header.style.width = wrapper.offsetWidth - 40 + 'px';
         section.classList.add('sticky-section');
-        topButton.style.display = 'block';
+        topButton.style.visibility = 'visible';
+        topButton.style.opacity = '1';
     } else {
         header.classList.remove('sticky');
         header.style.width = 'auto';
         section.classList.remove('sticky-section');
-        topButton.style.display = 'none';
+        topButton.style.visibility = 'hidden';
+        topButton.style.opacity = '0';
     }
 }
 

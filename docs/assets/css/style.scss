@@ -7,6 +7,7 @@ header > h1 {
     text-transform: capitalize;
     font-size: 36px;
     display: inline-block;
+    transition: font-size .05s;
 }
 
 #search-container {
@@ -193,7 +194,9 @@ img.copy-icon {
 }
 
 #topButton {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility .1s, opacity .1s linear;
     position: fixed;
     bottom: 15px;
     right: 15px;
