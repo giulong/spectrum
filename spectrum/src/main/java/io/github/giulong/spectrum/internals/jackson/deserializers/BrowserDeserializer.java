@@ -3,12 +3,22 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import io.github.giulong.spectrum.browsers.*;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+import static lombok.AccessLevel.PRIVATE;
+
 @Slf4j
+@NoArgsConstructor(access = PRIVATE)
 public class BrowserDeserializer extends InterpolatedDeserializer<Browser<?, ?, ?>> {
+
+    private static final BrowserDeserializer INSTANCE = new BrowserDeserializer();
+
+    public static BrowserDeserializer getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public Browser<?, ?, ?> deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {

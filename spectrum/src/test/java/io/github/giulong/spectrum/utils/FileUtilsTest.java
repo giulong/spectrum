@@ -28,6 +28,7 @@ class FileUtilsTest {
     @Test
     @DisplayName("getInstance should return the singleton")
     public void getInstance() {
+        //noinspection EqualsWithItself
         assertSame(FileUtils.getInstance(), FileUtils.getInstance());
     }
 

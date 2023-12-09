@@ -36,7 +36,7 @@ You should leverage the latest published version of the [Spectrum Archetype](htt
 new project.
 You can either use it via your IDE, or run this from command line:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```shell
 mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION> -DoutputDirectory=<DESTINATION>
@@ -52,7 +52,7 @@ The project created will contain a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"} to your
 project:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```xml
 
@@ -76,7 +76,7 @@ project:
 
 In general, all you need to do is create a **JUnit 5** test class and make it extend the `SpectrumTest` class:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 import io.github.giulong.spectrum.SpectrumTest;
@@ -136,7 +136,7 @@ Beyond having direct access to `webDriver`, `configuration`, `data`, and all the
 that you don't even need to declare or instantiate, by extending `SpectrumTest`, each `SpectrumPage` that you declare
 in your test class will automatically be initialised.
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 import io.github.giulong.spectrum.SpectrumTest;
@@ -182,7 +182,7 @@ Each `SpectrumPage` takes two generics:
 
 For example, assuming you need no data, this would be the signature of a page class named `WebAppPage`:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 import io.github.giulong.spectrum.SpectrumPage;
@@ -203,7 +203,7 @@ By extending `SpectrumPage`, you will inherit few service methods listed here:
 
   You can specify an endpoint for your pages by annotating them like this:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 import io.github.giulong.spectrum.SpectrumPage;
@@ -217,7 +217,7 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 
 Then, in your tests, you can leverage the `open` method. Spectrum will combine the AUT's base url from the `configuration*.yaml` with the endpoint:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 # configuration.yaml
@@ -225,7 +225,7 @@ application:
   baseUrl: http://my-app.com
 ```
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -249,7 +249,7 @@ Moreover, `open` will internally call the `waitForPageLoading` method.
   For example, you could have a spinner shown by default when opening pages, and disappearing once the page is fully loaded.
   You should override the `waitForPageLoading` like this:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 import org.openqa.selenium.WebElement;
@@ -278,7 +278,7 @@ This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_int
 You should write your service methods with this in mind.
 Check [FilesIT]({{ site.repository_url }}/it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java){:target="_blank"} for an example:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 uploadPage
@@ -293,7 +293,7 @@ uploadPage
   This is a method to check if the caller page is loaded.
   It returns a boolean which is true if the current url is equal to the AUT's base url combined with the page's endpoint.
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -401,7 +401,7 @@ Values in the most specific configuration file will take precedence over the oth
 ⚠️ <b>Merging Lists</b><br/>
 Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 # configuration.yaml
@@ -409,7 +409,7 @@ someList:
   - value1
 ```
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 # configuration-test.yaml
@@ -419,7 +419,7 @@ someList:
 
 If you run with `-Dspectrum.profiles=test` both files will be loaded and lists will be merged, resulting in:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 someList:
@@ -453,7 +453,7 @@ someList:
 > The very first node of the base `configuration.yaml` linked above sets the active profiles, instructing Spectrum to load the other two configurations,
 > and overriding the `application.baseUrl` accordingly:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 runtime:
@@ -465,7 +465,7 @@ runtime:
 The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
 `vars` is a `Map<String, String>`, so you can define all the keys you need, naming them how you want.
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 vars:
@@ -481,39 +481,103 @@ anotherNode:
 
 ## Values interpolation
 
-Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml`  can be interpolated with a dollar-string like this:
+Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml`  can be interpolated with a dollar-string
+in one of these two ways, depending on the type needed as result. Let's suppose we have a variable named `key = 123`:
 
-{% include codeHeader.html %}
+| Needed type | Interpolation key | Result | Behaviour if not found                                       |
+|-------------|-------------------|--------|--------------------------------------------------------------|
+| String      | `${key}`          | '123'  | The placeholder `${key}` is returned and a warning is raised |
+| Numeric     | `$<key>`          | 123    | 0 is returned                                                |
+
+Let's clarify this with an example where you run behind a proxy. You could store the proxy port as a common variable,
+and then interpolate it in each browser's preferences with the proper type:
+
+{% include copyCode.html %}
 
 ```yaml
-object:
-  key: ${key:-defaultValue}
+vars:
+  proxyHost: my-proxy.com
+  proxyPort: 8080
+
+webDriver:
+  chrome:
+    args:
+      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
+  firefox:
+    preferences:
+      network.proxy.type: 1
+      network.proxy.http: ${proxyHost}
+      network.proxy.http_port: $<proxyPort> # proxyPort interpolated as number, since Firefox requires this preference to be numeric
+      network.proxy.ssl: ${proxyHost}
+      network.proxy.ssl_port: $<proxyPort>
 ```
 
-Where the `:-` is the separator between the name of the key to search for and the default value to use in case the key is not found. The default value is optional: you can just
-have `${key}`.
+This is the full syntax for values interpolation, where '`:-`' is the separator
+between the name of the key to search for and the default value to use in case that key is not found:
 
-Spectrum will replace the dollar-string with the first value found in this list:
+{% include copyCode.html %}
+
+```yaml
+# String example
+object:
+  myVar: ${key:-defaultValue}
+```
+
+{% include copyCode.html %}
+
+```yaml
+# Number example
+object:
+  myVar: $<key:-defaultValue>
+```
+
+> ⚠️ <b>Default value</b><br/>
+> The default value is optional: you can have just `${key}` or `$<key>`. Mind that the default value for numeric interpolation
+> **must resolve to a number**! If a string is provided, like in the line below, 0 is returned.
+>
+> `$<key:-someStringDefault>` &rarr; will return 0 in case `key` is not found.
+
+Spectrum will interpolate the dollar-string with the first value found in this list:
 
 1. `key` in [vars node](#vars-node):
 
-   {% include codeHeader.html %}
+   {% include copyCode.html %}
     ```yaml
     vars:
-    key: value 
+      key: value 
     ```
 2. system property named `key`: `-Dkey=value`
 3. environment variable named `key`
 4. `defaultValue` (if provided)
 
-If the provided key can't be found in any of these places, a warning will be raised.
 Both key name and default value might contain dots like in `${some.key:-default.value}`
 
+> ⚠️ <b>Combined keys</b><br/>
+> It's possible to interpolate multiple **string** values in the same key, for example:
+>
+> `${key:-default}-something_else-${anotherVar}`
+>
+> It doesn't make any sense to do the same with numeric interpolation, since the result would be a string. These are **not** valid:
+>
+> * `${key:-default}-something_else-$<anotherVar>`
+> * `$<key:-default>$<anotherVar>`
+>
+> If you need to combine strings and numbers, rely on string interpolation only. It doesn't matter if the original value of these
+> variables is a number. The composed result will always be a string, so use string interpolation only:
+>
+> * `${key:-default}-something_else-${anotherVar}`
+> * `${key:-default}${anotherVar}`
+>
+> This is the same thing you saw in the proxy example above, where `proxyPort` is a number which gets interpolated as a string:
+>
+> `--proxy-server=${proxyHost}:${proxyPort}`
+
 > 💡 <b>Tip</b><br/>
-> This trick is used in the internal `configuration.default.yaml` to allow for variables to be read from outside.
+> This trick is used in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
+> to allow for variables to be read from outside.
 > For example, profiles are set like this:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 # internal configuration.default.yaml
@@ -523,7 +587,7 @@ runtime:
 
 > This allows you to just run with `-Dspectrum.profiles=...` while having a default, but you can still explicitly set them in your `configuration.yaml`:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 # your configuration.yaml
@@ -531,17 +595,15 @@ runtime:
   profiles: my-profile,another-one
 ```
 
-> You can also choose to provide your own variable:
+> You can also choose to provide your own variable, which could be useful to create and leverage your own naming convention for env variables.
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 # your configuration.yaml
 runtime:
   profiles: ${active-profiles:-local}
 ```
-
-> This could be useful to create and leverage your own naming convention for env variables.
 
 These are the variables already available in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
 target="_blank"}.
@@ -555,9 +617,10 @@ You can add your own and even override the default ones in your `configuration*.
 
 ## Running on a Grid
 
-By default, browsers run in local. This is because the default value in the internal `configuration.default.yaml` is:
+By default, browsers run in local. This is because the default value in the internal internal [configuration.default.yaml]({{ site.repository_url
+}}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}) is:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 runtime:
@@ -567,7 +630,7 @@ runtime:
 
 To run on a remote [grid](https://www.selenium.dev/documentation/grid/){:target="_blank"}, you just need to change that node, providing at least the grid url:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 runtime:
@@ -590,6 +653,60 @@ Where the params are:
 
 ---
 
+## Running Behind a Proxy
+
+In case you're running behind a proxy, you can see the
+[ProxyIT]({{ site.repository_url }}/it-grid/src/test/java/io/github/giulong/spectrum/it_grid/tests/ProxyIT.java){:target="_blank"}
+test in the `it-grid` module. For completeness, let's report it here as well. 
+
+The test is very simple. We're just checking that a domain in the proxy's bypass list is reachable, while others are not:
+
+{% include copyCode.html %}
+
+```java
+
+@Test
+@DisplayName("should prove that connections towards domains in the proxy bypass list are allowed, while others are not reachable")
+public void proxyShouldAllowOnlyCertainDomains() {
+    webDriver.get("https://the-internet.herokuapp.com");    // OK
+    assertThrows(WebDriverException.class, () -> webDriver.get("https://www.google.com"));  // NOT REACHABLE
+}
+```
+
+Regarding the proxy, these are the relevant part of its
+[configuration.yaml]({{ site.repository_url }}/it-grid/src/test/resources/configuration.yaml){:target="_blank"},
+where you can see how to configure a proxy server for every browser.
+
+Mind that this is just an example. Its only purpose is to show how to configure a proxy and prove it's working, leveraging the domain bypass list:
+there's no proxy actually running, so every domain which is not bypassed would throw an exception.
+
+{% include copyCode.html %}
+
+```yaml
+vars:
+  proxyHost: not-existing-proxy.com
+  proxyPort: 8080
+  proxyBypass: '*.herokuapp.com'
+
+webDriver:
+  chrome:
+    args:
+      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
+      - --proxy-bypass-list=${proxyBypass}
+  firefox:
+    preferences:
+      network.proxy.type: 1
+      network.proxy.http: ${proxyHost}
+      network.proxy.http_port: $<proxyPort> # proxyPort interpolated as number, since Firefox requires this preference to be numeric
+      network.proxy.ssl: ${proxyHost}
+      network.proxy.ssl_port: $<proxyPort>
+      network.proxy.no_proxies_on: ${proxyBypass}
+  edge:
+    args:
+      - --proxy-server=${proxyHost}:${proxyPort}
+      - --proxy-bypass-list=${proxyBypass}
+```
+
 # JSON Schema
 
 Json Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion.
@@ -611,12 +728,9 @@ where `<SPECTRUM VERSION>` must be replaced with the one you're using.
 # Automatic Execution Video Generation
 
 It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
-so you need to
-explicitly activate this feature
-in your `configuration.yaml`. Check the `video` node in the [configuration.default.yaml]({{ site.repository_url
-}}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} for all
-the available
-parameters along with their details.
+so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"})
+for all the available parameters along with their details.
 
 To be precise, the video is generated from screenshots taken during the execution.
 You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
@@ -632,7 +746,7 @@ You can specify which screenshots to be used as frames providing one or more of 
 > and the `webDriver.events` settings. For example, if running with the default `INFO` log level and the configuration below,
 > no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 webDriver:
@@ -643,15 +757,16 @@ webDriver:
 ```
 
 > 💡 <b>Tip</b><br/>
-> Setting both `autoBefore` and `autoAfter` is likely to be useless. Let's consider this flow:
+> Setting both `autoBefore` and `autoAfter` is likely to be useless. In this flow, screenshots at bullets 3 and 4 will be equal:
 > 1. screenshot: before click
 > 2. click event
-> 3. **---> screenshot: after click**
-> 4. **---> screenshot: before set text**
+> 3. **&rarr; screenshot: after click**
+> 4. **&rarr; screenshot: before set text**
 > 5. set text in input field
 > 6. screenshot: after set text
 >
-> The screenshots at bullets 3 and 4 will be equal, and, for performance reason, the second will be discarded.
+> There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
+> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard duplicate frames.
 
 The video will be saved in the `<extent.reportFolder>/videos/<CLASS NAME>/<TEST NAME>` folder (`extent.reportFolder` is `target` by default)
 and attached to the Extent Report as well.
@@ -660,7 +775,7 @@ and attached to the Extent Report as well.
 > Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
 > internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}):
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 video:
@@ -671,6 +786,11 @@ video:
     width: 640  # we want a bigger video tag in the report
     height: 480
 ```
+
+> ⚠️ <b>Video Frame Rate</b><br/>
+> Since the execution video is made up of screenshots, for performance reason it has a fixed rate of 1 frame per second.
+> This allows to avoid encoding the same frame multiple times.<br/>
+> The consequence is that the video recorded does **NOT** replicate the actual timing of the test execution.
 
 ---
 
@@ -732,7 +852,7 @@ Upon a test failure, Spectrum adds a screenshot to the report automatically.
 You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
 For example, to add a screenshot with a message at `INFO` level to the `dummyTest`:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -751,9 +871,10 @@ You can leverage the `extent.locatorRegex` property to extract the important bit
 out of it, **using the capturing group** (the one wrapped by parentheses).
 For example, for a field annotated like this:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
+
 @FindBys({
         @FindBy(id = "checkboxes"),
         @FindBy(tagName = "input")
@@ -767,7 +888,7 @@ this would be the full `toString()`:
 
 The regex in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} is:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 locatorRegex: \s->\s([\w:\s\-.#]+)
@@ -779,7 +900,7 @@ which extracts just this (mind the capturing group above):
 
 For example, if you want to shrink it even more, you could add this as `extent.locatorRegex` in your `configuration.yaml`:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 locatorRegex: \s->[\w\s]+:\s([()^\w\s\-.#]+)
@@ -801,7 +922,7 @@ You can add files to be uploaded in the folder specified in the `runtime.filesFo
 This is the default you can see in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
 target="_blank"}:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 runtime:
@@ -810,7 +931,7 @@ runtime:
 
 If you have these files in the configured folder:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```text
 root
@@ -824,7 +945,7 @@ root
 
 and in the web page there's an input field with `type="file"`, you can leverage the `upload` method directly in any of your tests/pages like this:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -866,7 +987,7 @@ Let's explain this with an example. Let's say that:
 
 You need to place an exact copy of that file in that folder:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```text
 root
@@ -879,7 +1000,7 @@ root
 
 Now you can leverage the `checkDownloadedFile(String)` method like this:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -897,7 +1018,7 @@ If the files are the same, their checksum will match, and that assertion will pa
 In case you need to check a file with a different name, for example if the AUT generates file names dynamically,
 you can leverage the overloaded `checkDownloadedFile(String, String)` method, which takes the names of both the downloaded file and the one to check:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -940,7 +1061,7 @@ Both will have the same set of params, such as a name and a password to login.
 We need to take four steps:
 
 * Create the yaml describing this scenario:
-   {% include codeHeader.html %}
+  {% include copyCode.html %}
     ```yaml
     # data.yaml
     users:
@@ -954,7 +1075,7 @@ We need to take four steps:
 
 * Create the POJO mapping the yaml above:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 package your.package_name;  // this must be set in the configuration.yaml. Keep reading below :)
@@ -980,8 +1101,9 @@ public class Data {
 > The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own java file.
 
 * Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
-   
-{% include codeHeader.html %}
+
+{% include copyCode.html %}
+
 ```yaml
 # configuration.yaml    
 data:
@@ -989,7 +1111,7 @@ data:
 ```
 
 * Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
-   {% include codeHeader.html %}
+  {% include copyCode.html %}
     ```java
     import io.github.giulong.spectrum.SpectrumTest;
     import org.junit.jupiter.api.Test;
@@ -1007,7 +1129,7 @@ data:
     }
     ```
 
-   {% include codeHeader.html %}
+  {% include copyCode.html %}
     ```java
     import io.github.giulong.spectrum.SpectrumPage;
     import your.package_name.Data;
@@ -1063,7 +1185,7 @@ notified about. Most of them can be used in consumers with the type of match spe
 | [secondaryId](#primaryid-and-secondaryid) | String                                                                                                                                                      | regex |
 | [tags](#tags)                             | Set\<String>                                                                                                                                                | exact |
 | [reason](#reason)                         | String                                                                                                                                                      | regex |
-| [result](#result)                         | [Result]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java){:target="_blank"}                            | exact |
+| [result](#result)                         | [Result]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java){:target="_blank"}                                   | exact |
 | [context](#context)                       | [ExtensionContext](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ExtensionContext.html){:target="_blank"} | -     |
 
 Let's see them in detail:
@@ -1077,7 +1199,7 @@ Let's see them in detail:
 
 Let's see what they mean with an example. Given the following test:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -1096,7 +1218,7 @@ Spectrum will fire an event with:
 
 If the `@DisplayName` is provided for either the class and/or the method, those will be used. Given:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 
@@ -1126,7 +1248,7 @@ to all events tagged in a particular way, such as all the tests.
 > Check the `eventsConsumers` in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 > Internal consumers need to take actions after each test is done, meaning they listen to events tagged with "test":
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 eventsConsumers:
@@ -1151,7 +1273,7 @@ in custom templates to access objects stored in it. For example, the default [sl
 }}/spectrum/src/main/resources/templates/slack.json){:target="_blank"}
 uses it to print class and test names:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```json
 "text": "*Name*\n*Class*: `${event.context.parent.get().displayName}`\n*Test*: `${event.context.displayName}`"
@@ -1177,7 +1299,7 @@ The other columns are the event's keys, with blank values being nulls.
 > If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
 > you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like "Dispatching event ...":
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```text
 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
@@ -1193,7 +1315,7 @@ The other columns are the event's keys, with blank values being nulls.
 
 Since `eventsDispatcher` is injected in every `SpectrumTest` and `SpectrumPage`, you can programmatically send custom events and listen to them:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```java
 
@@ -1261,7 +1383,7 @@ Let's now see how to configure few consumers:
 > 💡 <b>Example: reason and primaryId and secondaryId</b><br/>
 > We want to send a Slack notification before and after a specific test, and an email just after:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 eventsConsumers:
@@ -1283,7 +1405,7 @@ eventsConsumers:
 > 💡 <b>Example: result and tags</b><br/>
 > We want to send a mail notification if the whole suite fails:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 eventsConsumers:
@@ -1295,7 +1417,7 @@ eventsConsumers:
 
 > 💡 <b>Example: custom event by primaryId and reason</b><br/>
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 eventsConsumers:
@@ -1322,7 +1444,7 @@ the [docs](https://www.simplejavamail.org/configuration.html#section-config-prop
 
 For example, to send an email via GMail, you can use these properties by replacing placeholders with actual values:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```properties
 simplejavamail.transportstrategy=SMTP_TLS
@@ -1346,7 +1468,7 @@ Check Simple java Mail's docs to see all the [available properties](https://www.
 > result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 mail:
@@ -1359,7 +1481,7 @@ mail:
 > If you want to provide a custom template there are two ways:
 > * provide a template with a custom name under `src/test/resources/templates`:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 mail:
@@ -1382,7 +1504,7 @@ You can also specify a list of attachments, by providing:
 
 For example, it's useful to send the html report and/or testbook when the suite is complete:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 mail:
@@ -1401,7 +1523,7 @@ mail:
 > This means for all the events of a specific consumer, all the attachments will be sent.
 > If you need to send different sets of attachments, provide different consumers:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 eventsConsumers:
@@ -1431,7 +1553,7 @@ A few steps are needed to configure your Slack Workspace to receive notification
     2. choose to create it **from an app manifest**<br/><br/>
        ![slack-manifest.png](images/slack-manifest.png)
     3. Select your workspace, delete the default yaml manifest and copy this one:<br/><br/>
-       {% include codeHeader.html %}
+       {% include copyCode.html %}
        ```yaml
        display_information:
          name: Spectrum
@@ -1468,7 +1590,7 @@ A few steps are needed to configure your Slack Workspace to receive notification
     3. copy the **Channel ID** from the details overlay:<br/><br/>
        ![slack-channel-id.png](images/slack-channel-id.png)
 5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:
-   {% include codeHeader.html %}
+   {% include copyCode.html %}
    ```yaml
    - slack:
        token: xoxb-***
@@ -1485,7 +1607,7 @@ A few steps are needed to configure your Slack Workspace to receive notification
 > test result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 slack:
@@ -1498,7 +1620,7 @@ slack:
 > If you want to provide a custom template there are two ways:
 > * provide a template with a custom name under `src/test/resources/templates`:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 slack:
@@ -1555,7 +1677,7 @@ These are the testbook parameters you need to configure:
 
 The QG node has only one property, which is the boolean condition to be evaluated:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 qualityGate:
@@ -1576,21 +1698,19 @@ blank"}
 
 Generic variables:
 
-| Variable                                                                                                                                                  | Description                                                                        |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
-| mappedTests                                                                                                                                               | map of tests executed and found in the provided testbook                           |
-| unmappedTests                                                                                                                                             | map of tests executed but not found in the provided testbook                       |
-| groupedMappedTests                                                                                                                                        | like mappedTests, but grouped by class names                                       |
-| groupedUnmappedTests                                                                                                                                      | like unmappedTests, but grouped by class names                                     |
+| Variable                                                                                                                                           | Description                                                                        |
+|----------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------|
+| mappedTests                                                                                                                                        | map of tests executed and found in the provided testbook                           |
+| unmappedTests                                                                                                                                      | map of tests executed but not found in the provided testbook                       |
+| groupedMappedTests                                                                                                                                 | like mappedTests, but grouped by class names                                       |
+| groupedUnmappedTests                                                                                                                               | like unmappedTests, but grouped by class names                                     |
 | [statistics]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:target="_blank"} | object containing all the object reported in the lists below, plus additional ones |
 | [qg]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/QualityGate.java){:target="_blank"}                | qualityGate node from `configuration*.yaml`                                        |
-| timestamp                                                                                                                                                 | when the testbook was generated                                                    |
+| timestamp                                                                                                                                          | when the testbook was generated                                                    |
 
-Each key in the lists below is an instance of the inner static class [Statistics]({{ site.repository_url
-}}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:
-target="_blank"},
-and it holds both a `total` int field and a `percentage` double field.
-For example, given the `successful` key here below, you can access:
+Each key in the lists below is an instance of the inner static class
+[Statistics]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/testbook/TestBookStatistics.java){:target="_blank"},
+and it holds both a `total` int field and a `percentage` double field. For example, given the `successful` key here below, you can access:
 
 * `${successful.total}`
 * `${successful.percentage}`
@@ -1644,7 +1764,7 @@ You can provide a txt file where each line is in this format:
 
 For example:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```text
 test class::my test
@@ -1662,7 +1782,7 @@ You can provide a csv file where each line is in this format:
 
 For example:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```text
 test class,my test
@@ -1681,7 +1801,7 @@ You can provide a yaml file where you have class names as keys in the root of th
 
 For example:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 test class:
@@ -1697,7 +1817,7 @@ another class:
 
 All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 reporters:
@@ -1718,13 +1838,13 @@ This means you can:
 * look at the produced reports shown below for each reporter
 
 > ⚠️ <b>it-testbook module's reports</b><br/>
-> The default templates have a "Mapped Tests" and "Unmapped Tests" sections at the bottom,
+> The default templates have a `Mapped Tests` and `Unmapped Tests` sections at the bottom,
 > in which tests are grouped by their classes.
 >
 > As you will see from the reports produced below, the `testbook.yaml` used in the `it-testbook` module maps tests that are not present in the suite.
 >
-> This means all those will be shown in the "Mapped Tests" as "Not Run",
-> while all the tests actually executed will appear in the "Unmapped Tests" section with their respective results.
+> This means all those will be shown in the `Mapped Tests` as `Not Run`,
+> while all the tests actually executed will appear in the `Unmapped Tests` section with their respective results.
 
 If you want, you can provide a custom template of yours. As for all the other templates (such as those used in events consumers),
 you can leverage [FreeMarker](https://freemarker.apache.org/){:target="_blank"}.
@@ -1738,7 +1858,7 @@ For each reporter:
 
 ### Log TestBook Reporter
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 log:
@@ -1747,7 +1867,7 @@ log:
 
 Here is the output produced by the default internal template, for tests of the `it-testbook` module:
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```text
 ##########################################################################################################
@@ -1855,7 +1975,7 @@ UNMAPPED TESTS:
 
 ### Txt TestBook Reporter
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 txt:
@@ -1869,7 +1989,7 @@ Or you can provide different templates to log a shorter report and send the full
 
 ### Html TestBook Reporter
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 html:
@@ -1882,12 +2002,47 @@ This is what it looks like when opened in a browser:
 
 ![Html TestBook Reporter](images/html-testbook.png)
 
-## Full TestBook Examples
+## Default TestBook
 
-{% include codeHeader.html %}
+The one below is the testBook in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+As you can see, it has a quality gate already set, as well as a yaml parser and log and html reporters.
+
+{% include copyCode.html %}
+
+```yaml
+# internal configuration.default.yaml
+testBook:
+  enabled: false
+  qualityGate:
+    condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
+  parser:
+    yaml:
+      path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
+  reporters:
+    - log: { }  # the report will be logged
+    - html:
+        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
+```
+
+It's disabled by default. To activate it with no additional settings, you just need to set this in your `configuration.yaml`:
+
+{% include copyCode.html %}
 
 ```yaml
 testBook:
+  enabled: true
+```
+
+> ⚠️ <b>Enabling testBook</b><br/>
+> Remember the `enabled: true` flag must be explicitly set, otherwise the testBook won't be considered.
+
+## Full TestBook Examples
+
+{% include copyCode.html %}
+
+```yaml
+testBook:
+  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -1901,10 +2056,11 @@ testBook:
         output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
 ```
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 testBook:
+  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -1918,10 +2074,11 @@ testBook:
         output: some/path/testbook.html # a html report will be produced at this path
 ```
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```yaml
 testBook:
+  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 40 || ${failed} < 10  # We want the testbook to be marked as successful if we have at least 40% of successful weighted tests or less than 10 tests (not considering their weights!!) failed
   parser:
@@ -1945,7 +2102,7 @@ Let's see how your project will look like. Few assumptions for this example:
 * you configured the yaml testbook parser, which will read the `testbook.yaml`
 * you configured both a html and a txt testbook reporters, which will produce `testbook.html` and `testbook.txt` reports
 
-{% include codeHeader.html %}
+{% include copyCode.html %}
 
 ```text
 root
@@ -1988,3 +2145,5 @@ Found a bug? Want to request a new feature? Please [open an issue](https://githu
 ---
 
 Creator: [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/){:target="_blank"}
+
+If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏

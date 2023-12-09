@@ -6,14 +6,12 @@ import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterCo
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
-import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.YamlUtils;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
-import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,13 +27,13 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumSessionListener.*;
-import static io.github.giulong.spectrum.enums.Result.NOT_RUN;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -71,12 +69,6 @@ class SpectrumSessionListenerTest {
 
     @Mock
     private TestBook testBook;
-
-    @Mock
-    private TestBookParser testBookParser;
-
-    @Mock
-    private TestBookTest test;
 
     @Mock
     private LauncherSession launcherSession;
@@ -130,18 +122,6 @@ class SpectrumSessionListenerTest {
         final String profileConfiguration = String.format("configuration-%s.yaml", profile);
         final String banner = "banner";
         final String version = "version";
-        final Map<String, TestBookTest> mappedTests = new HashMap<>();
-        final TestBookTest test1 = TestBookTest.builder()
-                .className("test 1")
-                .testName("one")
-                .build();
-
-        final TestBookTest test2 = TestBookTest.builder()
-                .className("another test")
-                .testName("another")
-                .build();
-        final List<TestBookTest> tests = List.of(test1, test2);
-
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
         final String reportName = "reportName";
@@ -172,9 +152,6 @@ class SpectrumSessionListenerTest {
         when(fileUtils.read("/banner.txt")).thenReturn(banner);
         when(spectrumProperties.getVersion()).thenReturn(version);
         when(configuration.getTestBook()).thenReturn(testBook);
-        when(testBook.getMappedTests()).thenReturn(mappedTests);
-        when(testBook.getParser()).thenReturn(testBookParser);
-        when(testBookParser.parse()).thenReturn(tests);
 
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         when(yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class)).thenReturn(spectrumProperties);
@@ -197,9 +174,7 @@ class SpectrumSessionListenerTest {
         SpectrumSessionListener.eventsDispatcher = eventsDispatcher;
         spectrumSessionListener.launcherSessionOpened(launcherSession);
 
-        assertEquals(configuration, SpectrumSessionListener.getConfiguration());
-        assertEquals(2, mappedTests.size());
-        mappedTests.values().stream().map(TestBookTest::getResult).forEach(result -> assertEquals(NOT_RUN, result));
+        verify(testBook).parse();
 
         slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::removeHandlersForRootLogger);
         slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::install);
@@ -260,22 +235,6 @@ class SpectrumSessionListenerTest {
                 arguments("0.0.1", "#                                    Version: 0.0.1                                    #"),
                 arguments("0.0.1-SNAPSHOT", "#                               Version: 0.0.1-SNAPSHOT                                #")
         );
-    }
-
-    @Test
-    @DisplayName("launcherSessionClosed should check if the testbook is not null")
-    public void launcherSessionClosedTestBookNull() {
-        when(configuration.getTestBook()).thenReturn(null);
-
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-        SpectrumSessionListener.configuration = configuration;
-        SpectrumSessionListener.extentReports = extentReports;
-        SpectrumSessionListener.eventsDispatcher = eventsDispatcher;
-        spectrumSessionListener.launcherSessionClosed(launcherSession);
-
-        verify(testBook, never()).flush();
-        verify(extentReports).flush();
-        verify(eventsDispatcher).fire(AFTER, Set.of(SUITE));
     }
 
     @Test
@@ -401,63 +360,6 @@ class SpectrumSessionListenerTest {
                 arguments(Map.of("one", "one"), Map.of("two", "two"), null, Map.of("one", "one", "two", "two")),
                 arguments(Map.of("one", "one"), null, Map.of("three", "three"), Map.of("one", "one", "three", "three")),
                 arguments(Map.of("one", "one"), Map.of("two", "two"), Map.of("three", "three"), Map.of("one", "one", "two", "two", "three", "three"))
-        );
-    }
-
-    @Test
-    @DisplayName("parseTestBook should initialise the testbook")
-    public void parseTestBook() {
-        final Map<String, TestBookTest> mappedTests = new HashMap<>();
-        final TestBookTest test1 = TestBookTest.builder()
-                .className("test 1")
-                .testName("one")
-                .build();
-
-        final TestBookTest test2 = TestBookTest.builder()
-                .className("another test")
-                .testName("another")
-                .build();
-        final List<TestBookTest> tests = List.of(test1, test2);
-
-        when(configuration.getTestBook()).thenReturn(testBook);
-        when(testBook.getMappedTests()).thenReturn(mappedTests);
-        when(testBook.getParser()).thenReturn(testBookParser);
-        when(testBookParser.parse()).thenReturn(tests);
-
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-        SpectrumSessionListener.configuration = configuration;
-        spectrumSessionListener.parseTestBook();
-
-        assertEquals(2, mappedTests.size());
-        mappedTests.values().stream().map(TestBookTest::getResult).forEach(result -> assertEquals(NOT_RUN, result));
-    }
-
-    @Test
-    @DisplayName("parseTestBook should do nothing if not provided in the configuration.yaml")
-    public void parseTestBookNull() {
-        when(configuration.getTestBook()).thenReturn(null);
-
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-        SpectrumSessionListener.configuration = configuration;
-        spectrumSessionListener.parseTestBook();
-    }
-
-    @DisplayName("updateGroupedTests should add the provided test to the provided map of grouped tests")
-    @ParameterizedTest(name = "with className {0} and grouped tests {1}")
-    @MethodSource("valuesProvider")
-    public void updateGroupedTests(final String className, final Map<String, Set<TestBookTest>> groupedTests) {
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-        spectrumSessionListener.updateGroupedTests(groupedTests, className, test);
-
-        assertTrue(groupedTests.get(className).contains(test));
-    }
-
-    public static Stream<Arguments> valuesProvider() throws IOException {
-        return Stream.of(
-                arguments("className", new HashMap<>()),
-                arguments("className", new HashMap<>() {{
-                    put("className", new HashSet<>());
-                }})
         );
     }
 

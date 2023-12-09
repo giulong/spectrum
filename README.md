@@ -1,22 +1,26 @@
 <div align="center">
 
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/giulong/spectrum/actions?query=branch%3Adevelop)
-![coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/jacoco.svg)
-![branches coverage](https://github.com/giulong/spectrum/blob/actions/badges/.github/badges/branches.svg)
+[![coverage](https://giulong.github.io/spectrum/badges/jacoco.svg)](https://giulong.github.io/spectrum/jacoco/)
 [![badge-jdk](https://img.shields.io/badge/jdk-17-blue.svg)](https://www.oracle.com/java/technologies/javase-downloads.html)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
 
-<br /><br />
+<br />
 <img src="src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">
 
 <br/>
+<br/>
 <div>
-<a href="https://giulong.github.io/spectrum/">Full Docs</a>
+<a href="https://giulong.github.io/spectrum/" target="_blank">Full Docs</a>
 ·
-<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E">Report Bug</a>
+<a href="https://giulong.github.io/spectrum/apidocs/" target="_blank">Javadoc</a>
 ·
-<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E">Request Feature</a>
+<a href="https://giulong.github.io/spectrum/jacoco/" target="_blank">Coverage</a>
+·
+<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E" target="_blank">Report Bug</a>
+·
+<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E" target="_blank">Request Feature</a>
 
 </div>
 </div>
@@ -29,6 +33,7 @@
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contacts">Contacts</a></li>
+    <li><a href="#local-development">Local Development</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
@@ -75,6 +80,12 @@ Distributed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) 
 ## Contacts
 
 [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)
+
+If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
+
+## Local development
+
+If you're interested in building this repo locally, check out the [DEV readme](DEV.md).
 
 ## Acknowledgments
 

@@ -40,3 +40,5 @@ docs/.sass-cache
 docs/.jekyll-cache
 docs/.jekyll-metadata
 docs/vendor
+docs/jacoco
+docs/apidocs

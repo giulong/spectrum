@@ -6,6 +6,105 @@
 header > h1 {
     text-transform: capitalize;
     font-size: 36px;
+    display: inline-block;
+    transition: font-size .05s;
+}
+
+#search-container {
+    width: 300px;
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99;
+}
+
+header.sticky {
+    position: fixed;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%);
+    z-index: 99;
+}
+
+header.sticky > h1 {    // smaller title
+    font-size: 20px;
+}
+
+header.sticky > p { // hiding the description
+    display: none;
+}
+
+header.sticky > #search-container { //search bar closer to the top
+    top: 10px;
+}
+
+header.sticky > ul {
+    top: 8px;
+}
+
+section.sticky-section {
+    padding-top: 107px;
+}
+
+.shadow {
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
+}
+
+#search-input {
+    width: 300px;
+    border: 1px solid #aaa;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 5px;
+    font: 14px/1.5 Lato, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background: #eee;
+}
+
+#results-container {
+    width: 309px;
+    margin-top: 0;
+    border: 1px solid #aaa;
+    border-top: 0;
+    border-radius: 0 0 8px 8px;
+    background: #fff;
+    display: none;
+    padding: 0;
+    background: #eee;
+    top: 34px;
+    right: inherit;
+    height: auto;
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    text-overflow: ellipsis;
+}
+
+#results-container:before {
+    background: none;
+    box-shadow: none;
+}
+
+.search-result, #no-results {
+    list-style: none;
+    text-align: left;
+    padding: 2px 5px;
+    cursor: pointer;
+    text-transform: capitalize;
+    width: auto;
+    height: auto;
+    float: inherit;
+    border: none;
+}
+
+#no-results {
+    cursor: default;
+}
+
+.search-result:hover {
+    background: #C6EAFA;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 hr {
@@ -16,16 +115,26 @@ hr {
     width: 1024px;
 }
 
-@media print, screen and (max-width: 1024px) { body { padding: 0; }
-  .wrapper { border-radius: 0; box-shadow: none; width: 100%; }
-  footer { border-radius: 0; padding: 20px; width: auto; }
-  footer p { float: none; margin: 0; }
-  footer p + p { float: none; } }
-@media print, screen and (max-width: 580px) { header ul { display: none; }
-  header p.view { display: block; }
-  header p { width: 100%; } }
-@media print { header p.view a small:before { content: 'at https://github.com/'; } }
-header > h1 { text-transform: capitalize; font-size: 36px; }
+@media print, screen and (max-width: 1024px) {
+    .wrapper { border-radius: 0; box-shadow: none; width: 100%; }
+}
+@media print, screen and (max-width: 700px) {
+    #search-container { left: 60%; }
+    #search-input { width: 240px; }
+    #results-container { width: 249px; }
+}
+@media print, screen and (max-width: 580px) {
+    header ul { display: none; }
+    header p.view { display: block; }
+    header p { width: 100%; }
+    #search-container { width: 180px; transform: inherit; top: 20px; right: 10%; left: unset; }
+    #results-container { width: 210px; left: 0; }
+    header.sticky > #search-container { right: 0%; left: unset; }
+    #search-input { width: 200px; }
+}
+@media print {
+    header p.view a small:before { content: 'at https://github.com/'; }
+}
 
 p, ul, ol, table, dl, h1 {
     margin: 20px 0;
@@ -82,4 +191,27 @@ img.copy-icon {
     cursor: pointer;
     width: 16px;
     vertical-align: bottom;
+}
+
+#topButton {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility .1s, opacity .1s linear;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    z-index: 99;
+    border: 1px solid #444;
+    outline: none;
+    background-color: #3A3C42;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+#topButton:hover {
+    background-color: #555;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
 }

@@ -39,6 +39,7 @@ class FreeMarkerWrapperTest {
     @Test
     @DisplayName("getInstance should return the singleton")
     public void getInstance() {
+        //noinspection EqualsWithItself
         assertSame(FreeMarkerWrapper.getInstance(), FreeMarkerWrapper.getInstance());
     }
 

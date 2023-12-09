@@ -49,6 +49,13 @@ class BrowserDeserializerTest {
         VARS.clear();
     }
 
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        //noinspection EqualsWithItself
+        assertSame(BrowserDeserializer.getInstance(), BrowserDeserializer.getInstance());
+    }
+
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")

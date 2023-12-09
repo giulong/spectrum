@@ -238,7 +238,7 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${jacoco.outputDirectory}</outputDirectory>
+                            <outputDirectory>${project.parent.basedir}/${jacoco.outputDirectory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -248,19 +248,34 @@
                 <artifactId>jsonschema-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>internal json schema</id>
                         <phase>install</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                        <configuration>
+                            <modules>
+                                <module>
+                                    <className>io.github.giulong.spectrum.internals.jackson.json_schema.JsonSchemaInternalGeneratorModule</className>
+                                </module>
+                            </modules>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>public json schema</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <modules>
+                                <module>
+                                    <className>io.github.giulong.spectrum.internals.jackson.json_schema.JsonSchemaGeneratorModule</className>
+                                </module>
+                            </modules>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <modules>
-                        <module>
-                            <className>io.github.giulong.spectrum.internals.jackson.json_schema.JsonSchemaGeneratorModule</className>
-                        </module>
-                    </modules>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -312,9 +327,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.6.3</version>
                 <configuration>
                     <additionalJOption>-Xdoclint:none</additionalJOption>
+                    <destDir>${project.parent.basedir}/${docs.folder}/apidocs</destDir>
                 </configuration>
                 <executions>
                     <execution>

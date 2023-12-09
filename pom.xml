@@ -33,10 +33,11 @@
     </licenses>
 
     <properties>
-        <revision>1.5.0</revision>
+        <revision>1.5.1</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <jacoco.outputDirectory>${project.reporting.outputDirectory}/jacoco</jacoco.outputDirectory>
+        <docs.folder>docs</docs.folder>
+        <jacoco.outputDirectory>${docs.folder}/jacoco</jacoco.outputDirectory>
         <resourcesFolder>src/main/resources</resourcesFolder>
         <launcherSessionListener>org.junit.platform.launcher.LauncherSessionListener</launcherSessionListener>
 
@@ -46,7 +47,7 @@
 
         <junit.version>5.10.1</junit.version>
         <jackson.version>2.16.0</jackson.version>
-        <simplejavamail.version>8.3.2</simplejavamail.version>
+        <simplejavamail.version>8.3.3</simplejavamail.version>
         <jsonschemagenerator.version>4.33.0</jsonschemagenerator.version>
         <slf4j.version>2.0.9</slf4j.version>
         <selenium.version>4.15.0</selenium.version>
@@ -136,7 +137,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.4.12</version>
+                <version>1.4.14</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.janino</groupId>
@@ -199,7 +200,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>5.7.0</version>
+                <version>5.8.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -310,6 +311,16 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>${jacoco.outputDirectory}</directory>
+                            <includes>
+                                <include>**</include>
+                            </includes>
+                        </fileset>
+                    </filesets>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

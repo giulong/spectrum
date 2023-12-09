@@ -39,12 +39,13 @@ public final class YamlUtils {
             .setDefaultMergeable(true)
             .registerModules(
                     new JavaTimeModule(),
-                    new SimpleModule().addDeserializer(String.class, new InterpolatedStringDeserializer()),
-                    new SimpleModule().addDeserializer(boolean.class, new InterpolatedBooleanDeserializer()),
-                    new SimpleModule().addDeserializer(java.util.logging.Level.class, new UtilLogLevelDeserializer()),
-                    new SimpleModule().addDeserializer(Level.class, new LogbackLogLevelDeserializer()),
-                    new SimpleModule().addDeserializer(Duration.class, new DurationDeserializer()),
-                    new SimpleModule().addDeserializer(Browser.class, new BrowserDeserializer())
+                    new SimpleModule().addDeserializer(Object.class, InterpolatedObjectDeserializer.getInstance()),
+                    new SimpleModule().addDeserializer(String.class, InterpolatedStringDeserializer.getInstance()),
+                    new SimpleModule().addDeserializer(boolean.class, InterpolatedBooleanDeserializer.getInstance()),
+                    new SimpleModule().addDeserializer(java.util.logging.Level.class, UtilLogLevelDeserializer.getInstance()),
+                    new SimpleModule().addDeserializer(Level.class, LogbackLogLevelDeserializer.getInstance()),
+                    new SimpleModule().addDeserializer(Duration.class, DurationDeserializer.getInstance()),
+                    new SimpleModule().addDeserializer(Browser.class, BrowserDeserializer.getInstance())
             );
 
     private final ObjectWriter writer = new YAMLMapper()
