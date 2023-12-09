@@ -27,7 +27,7 @@ class UtilLogLevelDeserializerTest {
     private DeserializationContext deserializationContext;
 
     @InjectMocks
-    private UtilLogLevelDeserializer UtilLogLevelDeserializer;
+    private UtilLogLevelDeserializer utilLogLevelDeserializer;
 
     @Test
     @DisplayName("getInstance should return the singleton")
@@ -42,6 +42,6 @@ class UtilLogLevelDeserializerTest {
         String value = "INFO";
         when(jsonParser.getValueAsString()).thenReturn(value);
 
-        assertEquals(INFO, UtilLogLevelDeserializer.deserialize(jsonParser, deserializationContext));
+        assertEquals(INFO, utilLogLevelDeserializer.deserialize(jsonParser, deserializationContext));
     }
 }
