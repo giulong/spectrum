@@ -31,7 +31,7 @@ jobs:
         uses: cicirello/jacoco-badge-generator@v2
         with:
           generate-branches-badge: true
-          jacoco-csv-file: spectrum/target/site/jacoco/jacoco.csv
+          jacoco-csv-file: docs/jacoco/jacoco.csv
           coverage-label: Coverage
           branches-label: Branches
           intervals: 95 87.5 75 67.5 60 0
