@@ -33,7 +33,7 @@ jobs:
           cache: maven
 
       - name: Spectrum unit tests and JaCoCo reports
-        run: ./mvnw -B test -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
+        run: ./mvnw -B test -Djacoco.outputDirectory=./_site/jacoco -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
 
       - name: Upload GitHub Pages Artifact
         uses: actions/upload-pages-artifact@v2
