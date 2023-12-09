@@ -30,9 +30,10 @@ import static org.mockito.Mockito.*;
 class TestDataResolverTest {
 
     private static final String UUID_REGEX = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.mp4";
-    private static final String REPORTS_FOLDER = "reportsFolder";
     private static final String CLASS_NAME = "className";
     private static final String METHOD_NAME = "methodName";
+
+    private Path reportsFolder;
 
     private static MockedStatic<TestData> testDataMockedStatic;
 
@@ -75,8 +76,8 @@ class TestDataResolverTest {
     @BeforeEach
     public void beforeEach() throws IOException {
         testDataMockedStatic = mockStatic(TestData.class);
-        final Path path = Files.createTempDirectory(REPORTS_FOLDER);
-        path.toFile().deleteOnExit();
+        reportsFolder = Files.createTempDirectory("reportsFolder");
+        reportsFolder.toFile().deleteOnExit();
     }
 
     @AfterEach
@@ -90,15 +91,15 @@ class TestDataResolverTest {
         final Class<String> clazz = String.class;
         final String className = clazz.getSimpleName();
         final String methodName = "resolveParameter";
-        final Path path = Path.of(REPORTS_FOLDER, "screenshots", className, methodName).toAbsolutePath();
-        final Path videoFolderPath = Path.of(REPORTS_FOLDER, "videos", className, methodName).toAbsolutePath();
+        final Path path = reportsFolder.resolve(Path.of("screenshots", className, methodName));
+        final Path videoFolderPath = reportsFolder.resolve(Path.of("videos", className, methodName));
 
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getReportFolder()).thenReturn(REPORTS_FOLDER);
+        when(extent.getReportFolder()).thenReturn(reportsFolder.toString());
         doReturn(String.class).when(extensionContext).getRequiredTestClass();
         when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(configuration.getVideo()).thenReturn(video);
@@ -125,8 +126,8 @@ class TestDataResolverTest {
     @Test
     @DisplayName("getScreenshotFolderPathForCurrentTest should return the path for the current test and create the dirs")
     public void getScreenshotFolderPathForCurrentTest() {
-        final Path path = Path.of(REPORTS_FOLDER, "screenshots", CLASS_NAME, METHOD_NAME).toAbsolutePath();
-        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(REPORTS_FOLDER, CLASS_NAME, METHOD_NAME));
+        final Path path = reportsFolder.resolve(Path.of("screenshots", CLASS_NAME, METHOD_NAME));
+        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(reportsFolder.toString(), CLASS_NAME, METHOD_NAME));
 
         assertTrue(Files.exists(path));
     }
@@ -137,8 +138,8 @@ class TestDataResolverTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
-        final Path path = Path.of(REPORTS_FOLDER, "videos", CLASS_NAME, METHOD_NAME).toAbsolutePath();
-        final Path actual = testDataResolver.getVideoPathForCurrentTest(configuration, REPORTS_FOLDER, CLASS_NAME, METHOD_NAME);
+        final Path path = reportsFolder.resolve(Path.of("videos", CLASS_NAME, METHOD_NAME));
+        final Path actual = testDataResolver.getVideoPathForCurrentTest(configuration, reportsFolder.toString(), CLASS_NAME, METHOD_NAME);
 
         assertEquals(path, actual.getParent());
         assertThat(actual.getFileName().toString(), matchesPattern(UUID_REGEX));
@@ -151,6 +152,6 @@ class TestDataResolverTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(true);
 
-        assertNull(testDataResolver.getVideoPathForCurrentTest(configuration, REPORTS_FOLDER, CLASS_NAME, METHOD_NAME));
+        assertNull(testDataResolver.getVideoPathForCurrentTest(configuration, reportsFolder.toString(), CLASS_NAME, METHOD_NAME));
     }
 }
