@@ -5,6 +5,9 @@ on:
     branches: [ "main" ]
     types: [ closed ]
 
+env:
+  DOCS_FOLDER: docs
+
 jobs:
   deploy:
     if: github.event.pull_request.merged
@@ -15,7 +18,8 @@ jobs:
       name: github-pages
       url: ${{steps.deployment.outputs.page_url}}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - id: install-secret-key
         name: Install gpg secret key
@@ -54,6 +58,25 @@ jobs:
           user-email: giuliolongfils@gmail.com
           target-branch: main
           target-directory: ${{ env.version }}
+
+      - name: Spectrum submodule package
+        run: ./mvnw -B package -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
+
+      - name: Generate JaCoCo Badge
+        id: jacoco
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          jacoco-csv-file: ${{ env.DOCS_FOLDER }}/jacoco/jacoco.csv
+          branches-label: Branches
+          badges-directory: ${{ env.DOCS_FOLDER }}/badges
+          intervals: 95 87.5 75 67.5 60 0
+          fail-if-coverage-less-than: 0.9
+          fail-if-branches-less-than: 0.9
+
+      - name: Log coverage percentage
+        run: |
+          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
+          echo "branches = ${{ steps.jacoco.outputs.branches }}"
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v3

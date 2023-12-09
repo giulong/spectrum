@@ -34,7 +34,6 @@ jobs:
         uses: cicirello/jacoco-badge-generator@v2
         with:
           jacoco-csv-file: ${{ env.DOCS_FOLDER }}/jacoco/jacoco.csv
-          coverage-label: Coverage
           branches-label: Branches
           badges-directory: ${{ env.DOCS_FOLDER }}/badges
           intervals: 95 87.5 75 67.5 60 0
