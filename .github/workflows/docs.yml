@@ -23,8 +23,8 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Spectrum unit tests and JaCoCo reports
-        run: ./mvnw -B test -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
+      - name: Spectrum submodule package
+        run: ./mvnw -B package -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v3
