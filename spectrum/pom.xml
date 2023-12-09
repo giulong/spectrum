@@ -330,6 +330,7 @@
                 <version>3.6.3</version>
                 <configuration>
                     <additionalJOption>-Xdoclint:none</additionalJOption>
+                    <destDir>${project.parent.basedir}/${docs.folder}/apidocs</destDir>
                 </configuration>
                 <executions>
                     <execution>
