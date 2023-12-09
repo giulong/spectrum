@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,6 +28,13 @@ class DurationDeserializerTest {
 
     @InjectMocks
     private DurationDeserializer durationDeserializer;
+
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        //noinspection EqualsWithItself
+        assertSame(DurationDeserializer.getInstance(), DurationDeserializer.getInstance());
+    }
 
     @Test
     @DisplayName("deserialize should return the duration in seconds from the provided string")

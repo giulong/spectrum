@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -12,12 +13,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
+import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
+@NoArgsConstructor(access = PRIVATE)
 public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
 
+    private static final InterpolatedObjectDeserializer INSTANCE = new InterpolatedObjectDeserializer();
     private static final Pattern INT_PATTERN = Pattern.compile("(?<placeholder>\\$<(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~.:/\\\\]*))?>)");
     private static final Pattern NUMBER = Pattern.compile("-?\\d+(.\\d+|,\\d+)?");
+
+    public static InterpolatedObjectDeserializer getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public Object deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {

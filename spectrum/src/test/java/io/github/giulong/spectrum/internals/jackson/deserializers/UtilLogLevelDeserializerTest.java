@@ -13,6 +13,7 @@ import java.io.IOException;
 
 import static java.util.logging.Level.INFO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,7 +27,14 @@ class UtilLogLevelDeserializerTest {
     private DeserializationContext deserializationContext;
 
     @InjectMocks
-    private io.github.giulong.spectrum.internals.jackson.deserializers.UtilLogLevelDeserializer UtilLogLevelDeserializer;
+    private UtilLogLevelDeserializer UtilLogLevelDeserializer;
+
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        //noinspection EqualsWithItself
+        assertSame(UtilLogLevelDeserializer.getInstance(), UtilLogLevelDeserializer.getInstance());
+    }
 
     @Test
     @DisplayName("deserialize should return the log level from the provided string")

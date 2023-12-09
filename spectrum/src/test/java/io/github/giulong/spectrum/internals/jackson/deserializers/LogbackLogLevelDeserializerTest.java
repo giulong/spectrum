@@ -3,8 +3,8 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 import ch.qos.logback.classic.Level;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import io.github.giulong.spectrum.internals.jackson.deserializers.LogbackLogLevelDeserializer;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import static ch.qos.logback.classic.Level.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +34,13 @@ class LogbackLogLevelDeserializerTest {
 
     @InjectMocks
     private LogbackLogLevelDeserializer logbackLogLevelDeserializer;
+
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        //noinspection EqualsWithItself
+        assertSame(LogbackLogLevelDeserializer.getInstance(), LogbackLogLevelDeserializer.getInstance());
+    }
 
     @DisplayName("deserialize should return the Logback level from the provided string")
     @ParameterizedTest(name = "with value {0} we expect {1}")

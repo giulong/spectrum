@@ -23,6 +23,7 @@ import static com.fasterxml.jackson.databind.node.JsonNodeType.STRING;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.Mockito.mockStatic;
@@ -69,6 +70,13 @@ class InterpolatedObjectDeserializerTest {
     @AfterAll
     public static void afterAll() {
         VARS.clear();
+    }
+
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        //noinspection EqualsWithItself
+        assertSame(InterpolatedObjectDeserializer.getInstance(), InterpolatedObjectDeserializer.getInstance());
     }
 
     @Test
