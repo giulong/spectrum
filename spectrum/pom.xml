@@ -238,7 +238,7 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${jacoco.outputDirectory}</outputDirectory>
+                            <outputDirectory>${project.parent.basedir}/${jacoco.outputDirectory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
