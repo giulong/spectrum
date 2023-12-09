@@ -16,15 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup GitHub Pages
-        uses: actions/configure-pages@v3
-
-      - name: Build with Jekyll
-        uses: actions/jekyll-build-pages@v1
-        with:
-          source: docs/
-          destination: ./_site
-
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -33,7 +24,16 @@ jobs:
           cache: maven
 
       - name: Spectrum unit tests and JaCoCo reports
-        run: ./mvnw -B test -Djacoco.outputDirectory=./_site/jacoco -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
+        run: ./mvnw -B test -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
+
+      - name: Setup GitHub Pages
+        uses: actions/configure-pages@v3
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: docs/
+          destination: ./_site
 
       - name: Upload GitHub Pages Artifact
         uses: actions/upload-pages-artifact@v2
