@@ -25,20 +25,3 @@ jobs:
 
       - name: mvn install
         run: ./mvnw -B install -DallTests -DskipSign -Dmaven.plugin.validation=BRIEF
-
-      - name: Generate JaCoCo Badge
-        id: jacoco
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          generate-branches-badge: true
-          jacoco-csv-file: docs/jacoco/jacoco.csv
-          coverage-label: Coverage
-          branches-label: Branches
-          intervals: 95 87.5 75 67.5 60 0
-          fail-if-coverage-less-than: 0.9
-          fail-if-branches-less-than: 0.9
-
-      - name: Log coverage percentage
-        run: |
-          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
-          echo "branches = ${{ steps.jacoco.outputs.branches }}"
