@@ -33,10 +33,10 @@ jobs:
         id: jacoco
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          jacoco-csv-file: $DOCS_FOLDER/jacoco/jacoco.csv
+          jacoco-csv-file: ${{ env.DOCS_FOLDER }}/jacoco/jacoco.csv
           coverage-label: Coverage
           branches-label: Branches
-          badges-directory: $DOCS_FOLDER/badges
+          badges-directory: ${{ env.DOCS_FOLDER }}/badges
           intervals: 95 87.5 75 67.5 60 0
           fail-if-coverage-less-than: 0.9
           fail-if-branches-less-than: 0.9
@@ -52,7 +52,7 @@ jobs:
       - name: Build with Jekyll
         uses: actions/jekyll-build-pages@v1
         with:
-          source: $DOCS_FOLDER/
+          source: ${{ env.DOCS_FOLDER }}/
           destination: ./_site
 
       - name: Upload GitHub Pages Artifact

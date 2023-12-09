@@ -10,6 +10,7 @@
 <img src="src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">
 
 <br/>
+<br/>
 <div>
 <a href="https://giulong.github.io/spectrum/" target="_blank">Full Docs</a>
 ·
