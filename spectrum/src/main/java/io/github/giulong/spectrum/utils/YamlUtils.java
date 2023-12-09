@@ -39,7 +39,8 @@ public final class YamlUtils {
             .setDefaultMergeable(true)
             .registerModules(
                     new JavaTimeModule(),
-                    new SimpleModule().addDeserializer(String.class, new InterpolatedStringDeserializer()),
+                    new SimpleModule().addDeserializer(Object.class, new InterpolatedObjectDeserializer()),
+                    new SimpleModule().addDeserializer(String.class, InterpolatedStringDeserializer.getInstance()),
                     new SimpleModule().addDeserializer(boolean.class, new InterpolatedBooleanDeserializer()),
                     new SimpleModule().addDeserializer(java.util.logging.Level.class, new UtilLogLevelDeserializer()),
                     new SimpleModule().addDeserializer(Level.class, new LogbackLogLevelDeserializer()),

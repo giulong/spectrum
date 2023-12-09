@@ -481,36 +481,99 @@ anotherNode:
 
 ## Values interpolation
 
-Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml`  can be interpolated with a dollar-string like this:
+Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml`  can be interpolated with a dollar-string
+in one of these two ways, depending on the type needed as result. Let's suppose we have a variable named `key = 123`:
+
+| Needed type | Interpolation key | Result | Behaviour if not found                                       |
+|-------------|-------------------|--------|--------------------------------------------------------------|
+| String      | `${key}`          | '123'  | The placeholder `${key}` is returned and a warning is raised |
+| Numeric     | `$<key>`          | 123    | 0 is returned                                                |
+
+Let's clarify this with an example where you run behind a proxy. You could store the proxy port as a common variable,
+and then interpolate it in each browser's preferences with the proper type:
 
 {% include copyCode.html %}
 
 ```yaml
-object:
-  key: ${key:-defaultValue}
+vars:
+  proxyHost: my-proxy.com
+  proxyPort: 8080
+
+webDriver:
+  chrome:
+    args:
+      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
+  firefox:
+    preferences:
+      network.proxy.type: 1
+      network.proxy.http: ${proxyHost}
+      network.proxy.http_port: $<proxyPort> # proxyPort interpolated as number, since Firefox requires this preference to be numeric
+      network.proxy.ssl: ${proxyHost}
+      network.proxy.ssl_port: $<proxyPort>
 ```
 
-Where the `:-` is the separator between the name of the key to search for and the default value to use in case the key is not found. The default value is optional: you can just
-have `${key}`.
+This is the full syntax for values interpolation, where '`:-`' is the separator
+between the name of the key to search for and the default value to use in case that key is not found:
 
-Spectrum will replace the dollar-string with the first value found in this list:
+{% include copyCode.html %}
+
+```yaml
+# String example
+object:
+  myVar: ${key:-defaultValue}
+```
+
+{% include copyCode.html %}
+
+```yaml
+# Number example
+object:
+  myVar: $<key:-defaultValue>
+```
+
+> ⚠️ <b>Default value</b><br/>
+> The default value is optional: you can have just `${key}` or `$<key>`. Mind that the default value for numeric interpolation
+> **must resolve to a number**! If a string is provided, like in the line below, 0 is returned.
+>
+> `$<key:-someStringDefault>` &rarr; will return 0 in case `key` is not found.
+
+Spectrum will interpolate the dollar-string with the first value found in this list:
 
 1. `key` in [vars node](#vars-node):
 
    {% include copyCode.html %}
     ```yaml
     vars:
-    key: value 
+      key: value 
     ```
 2. system property named `key`: `-Dkey=value`
 3. environment variable named `key`
 4. `defaultValue` (if provided)
 
-If the provided key can't be found in any of these places, a warning will be raised.
 Both key name and default value might contain dots like in `${some.key:-default.value}`
 
+> ⚠️ <b>Combined keys</b><br/>
+> It's possible to interpolate multiple **string** values in the same key, for example:
+>
+> `${key:-default}-something_else-${anotherVar}`
+>
+> It doesn't make any sense to do the same with numeric interpolation, since the result would be a string. These are **not** valid:
+>
+> * `${key:-default}-something_else-$<anotherVar>`
+> * `$<key:-default>$<anotherVar>`
+>
+> If you need to combine strings and numbers, rely on string interpolation only. It doesn't matter if the original value of these
+> variables is a number. The composed result will always be a string, so use string interpolation only:
+>
+> * `${key:-default}-something_else-${anotherVar}`
+> * `${key:-default}${anotherVar}`
+>
+> This is the same thing you saw in the proxy example above, where `proxyPort` is a number which gets interpolated as a string:
+>
+> `--proxy-server=${proxyHost}:${proxyPort}`
+
 > 💡 <b>Tip</b><br/>
-> This trick is used in the internal internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"})
+> This trick is used in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 > to allow for variables to be read from outside.
 > For example, profiles are set like this:
 
@@ -532,7 +595,7 @@ runtime:
   profiles: my-profile,another-one
 ```
 
-> You can also choose to provide your own variable:
+> You can also choose to provide your own variable, which could be useful to create and leverage your own naming convention for env variables.
 
 {% include copyCode.html %}
 
@@ -541,8 +604,6 @@ runtime:
 runtime:
   profiles: ${active-profiles:-local}
 ```
-
-> This could be useful to create and leverage your own naming convention for env variables.
 
 These are the variables already available in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
 target="_blank"}.
@@ -591,6 +652,60 @@ Where the params are:
 | localFileDetector | boolean            | false     | ❌         | if true, allows to transfer files from the client machine to the remote server. [Docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector){:target="_blank"} |
 
 ---
+
+## Running Behind a Proxy
+
+In case you're running behind a proxy, you can see the
+[ProxyIT]({{ site.repository_url }}/it-grid/src/test/java/io/github/giulong/spectrum/it_grid/tests/ProxyIT.java){:target="_blank"}
+test in the `it-grid` module. For completeness, let's report it here as well. 
+
+The test is very simple. We're just checking that a domain in the proxy's bypass list is reachable, while others are not:
+
+{% include copyCode.html %}
+
+```java
+
+@Test
+@DisplayName("should prove that connections towards domains in the proxy bypass list are allowed, while others are not reachable")
+public void proxyShouldAllowOnlyCertainDomains() {
+    webDriver.get("https://the-internet.herokuapp.com");    // OK
+    assertThrows(WebDriverException.class, () -> webDriver.get("https://www.google.com"));  // NOT REACHABLE
+}
+```
+
+Regarding the proxy, these are the relevant part of its
+[configuration.yaml]({{ site.repository_url }}/it-grid/src/test/resources/configuration.yaml){:target="_blank"},
+where you can see how to configure a proxy server for every browser.
+
+Mind that this is just an example. Its only purpose is to show how to configure a proxy and prove it's working, leveraging the domain bypass list:
+there's no proxy actually running, so every domain which is not bypassed would throw an exception.
+
+{% include copyCode.html %}
+
+```yaml
+vars:
+  proxyHost: not-existing-proxy.com
+  proxyPort: 8080
+  proxyBypass: '*.herokuapp.com'
+
+webDriver:
+  chrome:
+    args:
+      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
+      - --proxy-bypass-list=${proxyBypass}
+  firefox:
+    preferences:
+      network.proxy.type: 1
+      network.proxy.http: ${proxyHost}
+      network.proxy.http_port: $<proxyPort> # proxyPort interpolated as number, since Firefox requires this preference to be numeric
+      network.proxy.ssl: ${proxyHost}
+      network.proxy.ssl_port: $<proxyPort>
+      network.proxy.no_proxies_on: ${proxyBypass}
+  edge:
+    args:
+      - --proxy-server=${proxyHost}:${proxyPort}
+      - --proxy-bypass-list=${proxyBypass}
+```
 
 # JSON Schema
 
@@ -759,6 +874,7 @@ For example, for a field annotated like this:
 {% include copyCode.html %}
 
 ```java
+
 @FindBys({
         @FindBy(id = "checkboxes"),
         @FindBy(tagName = "input")

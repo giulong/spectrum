@@ -2,9 +2,7 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -19,12 +17,15 @@ import java.util.stream.Stream;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("InterpolatedStringDeserializer")
 class InterpolatedStringDeserializerTest {
+
+    private static final String VAR_IN_ENV = "varInEnv";
 
     @Mock
     private JsonParser jsonParser;
@@ -35,19 +36,27 @@ class InterpolatedStringDeserializerTest {
     @InjectMocks
     private InterpolatedStringDeserializer interpolatedStringDeserializer;
 
-    private static final String varInEnv = "varInEnv";
+    @BeforeAll
+    public static void beforeAll() {
+        VARS.put("varInEnv", VAR_IN_ENV);
+    }
 
     @AfterAll
     public static void afterAll() {
         VARS.clear();
     }
 
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        //noinspection EqualsWithItself
+        assertSame(InterpolatedStringDeserializer.getInstance(), InterpolatedStringDeserializer.getInstance());
+    }
+
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
     public void deserialize(final String value, final String expected) throws IOException {
-        VARS.put("varInEnv", varInEnv);
-
         when(jsonParser.getValueAsString()).thenReturn(value);
         when(jsonParser.currentName()).thenReturn("not important");
 
@@ -59,11 +68,12 @@ class InterpolatedStringDeserializerTest {
                 arguments("value", "value"),
                 arguments("${not.set:-local}", "local"),
                 arguments("${notSet:-local}", "local"),
+                arguments("${notSet:-local}-something_else-${varInEnv}", "local-something_else-" + VAR_IN_ENV),
                 arguments("${notSet:-local.dots}", "local.dots"),
                 arguments("${notSet:-}", ""),
-                arguments("${varInEnv:-local}", varInEnv),
-                arguments("${varInEnv}", varInEnv),
-                arguments("${varInEnv:-~/local}", varInEnv),
+                arguments("${varInEnv:-local}", VAR_IN_ENV),
+                arguments("${varInEnv}", VAR_IN_ENV),
+                arguments("${varInEnv:-~/local}", VAR_IN_ENV),
                 arguments("${not.set}", "${not.set}"),
                 arguments("${notSet}", "${notSet}")
         );

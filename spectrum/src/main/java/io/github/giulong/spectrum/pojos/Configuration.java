@@ -25,7 +25,7 @@ import static ch.qos.logback.classic.Level.OFF;
 public class Configuration {
 
     @JsonPropertyDescription("Common vars to interpolate other String values in the configuration")
-    private Map<String, String> vars;
+    private Map<String, Object> vars;
 
     @JsonPropertyDescription("Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server")
     private Runtime runtime;

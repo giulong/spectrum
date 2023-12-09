@@ -1,6 +1,6 @@
 vars:
   proxyHost: not-existing-proxy.com
-  proxyPort: '8080'
+  proxyPort: 8080
   proxyBypass: '*.herokuapp.com'
 
 runtime:
@@ -20,7 +20,7 @@ webDriver:
   chrome:
     args:
       - --headless=new
-      - --proxy-server=${proxyHost}:${proxyPort}
+      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
       - --proxy-bypass-list=${proxyBypass}
   firefox:
     args:
@@ -28,9 +28,9 @@ webDriver:
     preferences:
       network.proxy.type: 1
       network.proxy.http: ${proxyHost}
-      network.proxy.http_port: 8080
+      network.proxy.http_port: $<proxyPort> # proxyPort interpolated as number, since Firefox requires this preference to be numeric
       network.proxy.ssl: ${proxyHost}
-      network.proxy.ssl_port: 8080
+      network.proxy.ssl_port: $<proxyPort>
       network.proxy.no_proxies_on: ${proxyBypass}
   edge:
     args:
