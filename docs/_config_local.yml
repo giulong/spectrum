@@ -1,6 +1,6 @@
 title: Spectrum
 description: Java Selenium 4 Framework
-url: https://giulong.github.io
 baseurl: /spectrum
 github_username: giulong
 repository: giulong/spectrum
+docs_url: http://127.0.0.1:4000/spectrum
