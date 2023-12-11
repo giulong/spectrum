@@ -2,7 +2,7 @@
 ---
 (async () => {
     const jsonSchemasBody = document.getElementById('json-schemas-body');
-    const response = await fetch('https://api.github.com/repos/giulong/spectrum/contents/docs/json-schemas?ref=docs/json-schemas');
+    const response = await fetch('https://api.github.com/repos/giulong/spectrum/contents/docs/json-schemas');
     const json = await response.json();
     const rows = json
         .map(jsonSchema => {
