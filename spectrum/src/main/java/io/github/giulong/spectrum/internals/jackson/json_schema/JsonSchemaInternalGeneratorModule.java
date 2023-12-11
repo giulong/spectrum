@@ -25,6 +25,7 @@ import static com.github.victools.jsonschema.module.jackson.JacksonOption.SKIP_S
 public class JsonSchemaInternalGeneratorModule implements Module {
 
     @Override
+    @SneakyThrows
     public void applyToConfigBuilder(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
         schemaGeneratorConfigBuilder
                 .with(new JacksonModule(SKIP_SUBTYPE_LOOKUP, FLATTENED_ENUMS_FROM_JSONVALUE))
@@ -39,15 +40,15 @@ public class JsonSchemaInternalGeneratorModule implements Module {
                 .forTypesInGeneral()
                 .withSubtypeResolver(new JsonSubTypesResolver());
 
-        writeSchema(schemaGeneratorConfigBuilder, "ConfigurationInternal.json");
+        final URI classesFolderUri = JsonSchemaInternalGeneratorModule.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        final String targetFolder = Path.of(classesFolderUri).getParent().toString();
+
+        writeSchema(schemaGeneratorConfigBuilder, Path.of(targetFolder, "json-schemas", "ConfigurationInternal-schema.json"));
     }
 
     @SneakyThrows
-    protected void writeSchema(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder, final String name) {
+    protected void writeSchema(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder, final Path jsonSchemaPath) {
         final String jsonSchema = new SchemaGenerator(schemaGeneratorConfigBuilder.build()).generateSchema(Configuration.class).toString();
-        final URI targetFolderUri = JsonSchemaInternalGeneratorModule.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        final String targetFolder = Path.of(targetFolderUri).getParent().toString();
-        final Path jsonSchemaPath = Path.of(targetFolder, "json-schemas", name);
 
         //noinspection ResultOfMethodCallIgnored
         jsonSchemaPath.getParent().toFile().mkdirs();

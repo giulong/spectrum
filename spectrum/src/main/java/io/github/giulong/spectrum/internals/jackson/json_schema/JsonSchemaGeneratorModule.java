@@ -8,10 +8,16 @@ import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.TypeContext;
 import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
 import io.github.giulong.spectrum.internals.jackson.views.Views;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 
+import java.io.FileReader;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule {
 
+    @SneakyThrows
     @Override
     public void applyToConfigBuilder(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
         super.applyToConfigBuilder(schemaGeneratorConfigBuilder);
@@ -33,7 +40,16 @@ public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule
                 .forTypesInGeneral()
                 .withSubtypeResolver(new PublicSubTypeResolver());
 
-        writeSchema(schemaGeneratorConfigBuilder, "Configuration.json");
+        final Model model = new MavenXpp3Reader().read(new FileReader("pom.xml"));
+        final String version = model.getProperties().getProperty("revision");
+        final Path jsonSchemaPath = Path.of(System.getProperty("user.dir"), "docs", "json-schemas", version, "Configuration-schema.json");
+
+        if (Files.exists(jsonSchemaPath)) {
+            log.warn("Trying to override the json schema for version {}. Need to bump Spectrum's version first! Skipping schema generation...", version);
+            return;
+        }
+
+        writeSchema(schemaGeneratorConfigBuilder, jsonSchemaPath);
     }
 
     private static boolean isInternal(final AnnotatedElement annotatedElement) {

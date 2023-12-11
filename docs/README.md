@@ -657,7 +657,7 @@ Where the params are:
 
 In case you're running behind a proxy, you can see the
 [ProxyIT]({{ site.repository_url }}/it-grid/src/test/java/io/github/giulong/spectrum/it_grid/tests/ProxyIT.java){:target="_blank"}
-test in the `it-grid` module. For completeness, let's report it here as well. 
+test in the `it-grid` module. For completeness, let's report it here as well.
 
 The test is very simple. We're just checking that a domain in the proxy's bypass list is reachable, while others are not:
 
@@ -709,19 +709,16 @@ webDriver:
 
 # JSON Schema
 
-Json Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion.
-You can find the JSON Schema for the `configuration*.yaml` in the [spectrum-json-schemas repository](https://github.com/giulong/spectrum-json-schemas){:target="_blank"}.
-
-If your IDE supports json schemas, be sure to pick the right one according to the version of Spectrum you are using.
-
-The path to the raw file is:
-
-`https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/<SPECTRUM VERSION>/Configuration.json`
-
-where `<SPECTRUM VERSION>` must be replaced with the one you're using.
+JSON Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion
+and a non-blocking validation (just warnings).
+This is the list of the available schemas, be sure to pick the right one according to the version of Spectrum you are using.
 
 > 💡 <b>Tip</b><br/>
-> Example for version 1.0.0: `https://raw.githubusercontent.com/giulong/spectrum-json-schemas/main/1.0.0/Configuration.json`
+> You can either download the file or copy the path to reference it in your IDE. Check how to configure JSON Schema for
+> [IntelliJ Idea](https://www.jetbrains.com/help/idea/json.html#ws_json_schema_add_custom){:target="_blank"}
+> and [VSCode](https://code.visualstudio.com/docs/languages/json#_json-schemas-and-settings){:target="_blank"}
+
+{% include jsonSchemas.html %}
 
 ---
 
