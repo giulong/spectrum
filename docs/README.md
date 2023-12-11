@@ -711,23 +711,14 @@ webDriver:
 
 JSON Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion
 and a non-blocking validation (just warnings).
-You can find the JSON Schema of each version hosted [here]({{ site.docs_url }}/{{ site.json_schemas_endpoint }}){:target="_blank"},
-be sure to pick the right one according to the version of Spectrum you are using.
-
-The path to the raw file, where `<SPECTRUM VERSION>` must be replaced with the one you're using, is:
-{% include copyCode.html %}
-
-```text
-{{ site.docs_url }}{{ site.json_schemas_endpoint }}<SPECTRUM VERSION>/Configuration.json
-```
+This is the list of the available schemas, be sure to pick the right one according to the version of Spectrum you are using.
 
 > 💡 <b>Tip</b><br/>
-> Example for version 1.0.0 &rarr; `{{ site.docs_url }}{{ site.json_schemas_endpoint }}1.0.0/Configuration.json`
-
-> 💡 <b>Tip</b><br/>
-> Check how to configure JSON Schema for
+> You can either download the file or copy the path to reference it in your IDE. Check how to configure JSON Schema for
 > [IntelliJ Idea](https://www.jetbrains.com/help/idea/json.html#ws_json_schema_add_custom){:target="_blank"}
 > and [VSCode](https://code.visualstudio.com/docs/languages/json#_json-schemas-and-settings){:target="_blank"}
+
+{% include jsonSchemas.html %}
 
 ---
 

@@ -43,7 +43,7 @@ public class JsonSchemaInternalGeneratorModule implements Module {
         final URI classesFolderUri = JsonSchemaInternalGeneratorModule.class.getProtectionDomain().getCodeSource().getLocation().toURI();
         final String targetFolder = Path.of(classesFolderUri).getParent().toString();
 
-        writeSchema(schemaGeneratorConfigBuilder, Path.of(targetFolder, "json-schemas", "ConfigurationInternal.json"));
+        writeSchema(schemaGeneratorConfigBuilder, Path.of(targetFolder, "json-schemas", "ConfigurationInternal-schema.json"));
     }
 
     @SneakyThrows

@@ -42,7 +42,7 @@ public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule
 
         final Model model = new MavenXpp3Reader().read(new FileReader("pom.xml"));
         final String version = model.getProperties().getProperty("revision");
-        final Path jsonSchemaPath = Path.of(System.getProperty("user.dir"), "docs", "json-schemas", version, "Configuration.json");
+        final Path jsonSchemaPath = Path.of(System.getProperty("user.dir"), "docs", "json-schemas", version, "Configuration-schema.json");
 
         if (Files.exists(jsonSchemaPath)) {
             log.warn("Trying to override the json schema for version {}. Need to bump Spectrum's version first! Skipping schema generation...", version);
