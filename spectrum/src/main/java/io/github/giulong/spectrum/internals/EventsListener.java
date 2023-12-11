@@ -178,7 +178,7 @@ public class EventsListener implements WebDriverListener {
 
     @Override
     @Generated
-    public void afterGetCurrentUrl(final String result, final WebDriver driver) {
+    public void afterGetCurrentUrl(final WebDriver driver, final String result) {
         log(AUTO_AFTER, events.getAfterGetCurrentUrl(), result, driver);
     }
 
