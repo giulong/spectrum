@@ -23,10 +23,6 @@ testBook:
   parser:
     yaml:
       path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
-  reporters:
-    - log: { }  # the report will be logged
-    - html:
-        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
 
 # Execution video recording
 video:
