@@ -21,4 +21,12 @@ class LogTestBookReporterTest {
 
         // no verifications/assertions needed
     }
+
+    @Test
+    @DisplayName("cleanupOldReports should do nothing")
+    public void cleanupOldReports() {
+        testBookReporter.cleanupOldReports();
+
+        // no verifications/assertions needed
+    }
 }

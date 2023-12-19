@@ -243,8 +243,6 @@ class SpectrumEntityTest {
     @ParameterizedTest(name = "with value {0}")
     @MethodSource("valuesProvider")
     public void deleteDownloadsFolder(final Path downloadsFolder) {
-        downloadsFolder.toFile().deleteOnExit();
-
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder.toString());
 
@@ -252,6 +250,8 @@ class SpectrumEntityTest {
 
         assertNotNull(downloadsFolder.toFile());
         assertEquals(0, Objects.requireNonNull(downloadsFolder.toFile().list()).length);
+        //noinspection ResultOfMethodCallIgnored
+        downloadsFolder.toFile().delete();
     }
 
     public static Stream<Arguments> valuesProvider() throws IOException {

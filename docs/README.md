@@ -1851,7 +1851,7 @@ For each reporter:
 * the snippets below will contain all the customisable parameters for each reporter
 * values reported in the snippets below are the defaults (no need to provide them)
 * `template` is a path relative to `src/test/resources`
-* `output` is the path relative to the project's root, and might contain the `{timestamp}` placeholder
+* `output` is the path relative to the project's root, and might contain the `${timestamp}` placeholder
 
 ### Log TestBook Reporter
 
@@ -1977,7 +1977,7 @@ UNMAPPED TESTS:
 ```yaml
 txt:
   template: testbook/template.txt
-  output: target/spectrum/testbook/testbook-{timestamp}.txt
+  output: target/spectrum/testbook/testbook-${timestamp}.txt
 ```
 
 For the sake of completeness, the output file was manually copied [here]({{ site.repository_url }}/src/main/resources/images/testbook.txt){:target="_blank"}.
@@ -1991,7 +1991,7 @@ Or you can provide different templates to log a shorter report and send the full
 ```yaml
 html:
   template: testbook/template.html
-  output: target/spectrum/testbook/testbook-{timestamp}.html
+  output: target/spectrum/testbook/testbook-${timestamp}.html
 ```
 
 For the sake of completeness, the output file was manually copied [here]({{ site.repository_url }}/src/main/resources/images/testbook.html){:target="_blank"}.

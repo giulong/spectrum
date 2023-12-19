@@ -6,6 +6,7 @@ import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterCo
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
+import io.github.giulong.spectrum.utils.ExtentReporter;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.YamlUtils;
@@ -36,7 +37,6 @@ import java.util.stream.Stream;
 import static io.github.giulong.spectrum.SpectrumSessionListener.*;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -44,6 +44,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("SpectrumSessionListener")
 class SpectrumSessionListenerTest {
 
+    private static MockedStatic<ExtentReporter> extentReportsWrapperMockedStatic;
     private static MockedStatic<SLF4JBridgeHandler> slf4JBridgeHandlerMockedStatic;
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;
     private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;
@@ -51,6 +52,12 @@ class SpectrumSessionListenerTest {
     private static MockedStatic<EventsDispatcher> eventsDispatcherMockedStatic;
 
     private String osName;
+
+    @Mock
+    private ExtentReporter.ExtentReporterBuilder extentReporterBuilder;
+
+    @Mock
+    private ExtentReporter extentReporter;
 
     @Mock
     private FileUtils fileUtils;
@@ -97,6 +104,7 @@ class SpectrumSessionListenerTest {
     @BeforeEach
     public void beforeEach() {
         osName = System.getProperty("os.name");
+        extentReportsWrapperMockedStatic = mockStatic(ExtentReporter.class);
         slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
         yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
@@ -106,6 +114,7 @@ class SpectrumSessionListenerTest {
 
     @AfterEach
     public void afterEach() {
+        extentReportsWrapperMockedStatic.close();
         slf4JBridgeHandlerMockedStatic.close();
         fileUtilsMockedStatic.close();
         yamlUtilsMockedStatic.close();
@@ -141,9 +150,13 @@ class SpectrumSessionListenerTest {
         when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read("/css/report.css")).thenReturn(css);
-        when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
 
-        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
+        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class, (mock, context) -> {
+            when(ExtentReporter.builder()).thenReturn(extentReporterBuilder);
+            when(extentReporterBuilder.extent(extent)).thenReturn(extentReporterBuilder);
+            when(extentReporterBuilder.build()).thenReturn(extentReporter);
+        });
+
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
             assertEquals(Path.of(reportFolder, fileName).toAbsolutePath().toString().replace("\\", "/"), context.arguments().get(0));
             when(mock.config()).thenReturn(extentSparkReporterConfig);
@@ -188,6 +201,8 @@ class SpectrumSessionListenerTest {
         verify(extentSparkReporterConfig).setTheme(Theme.DARK);
         verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
         verify(extentSparkReporterConfig).setCss(css);
+
+        verify(extentReporter).cleanupOldReports();
 
         final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
         verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
@@ -383,9 +398,13 @@ class SpectrumSessionListenerTest {
         when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read("/css/report.css")).thenReturn(css);
-        when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
 
-        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
+        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class, (mock, context) -> {
+            when(ExtentReporter.builder()).thenReturn(extentReporterBuilder);
+            when(extentReporterBuilder.extent(extent)).thenReturn(extentReporterBuilder);
+            when(extentReporterBuilder.build()).thenReturn(extentReporter);
+        });
+
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
             assertEquals(Path.of(reportFolder, fileName).toAbsolutePath().toString().replace("\\", "/"), context.arguments().get(0));
             when(mock.config()).thenReturn(extentSparkReporterConfig);
@@ -401,6 +420,8 @@ class SpectrumSessionListenerTest {
         verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
         verify(extentSparkReporterConfig).setCss(css);
 
+        verify(extentReporter).cleanupOldReports();
+
         final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
         verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
         assertEquals(extentReports, SpectrumSessionListener.getExtentReports());
@@ -409,21 +430,21 @@ class SpectrumSessionListenerTest {
         extentReportsMockedConstruction.close();
     }
 
-    @Test
-    @DisplayName("getReportsPathFrom should return the full path of the report")
-    public void getReportsPathFrom() {
-        final String reportFolder = "reportFolder";
-        final String fileName = "fileName";
-        final String expected = reportFolder + "/" + fileName;
-
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-
-        when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
-
-        final String actual = spectrumSessionListener.getReportsPathFrom(reportFolder, fileName);
-        assertTrue(actual.matches(Path.of(expected).toAbsolutePath().toString().replace("\\", "/")));
-    }
+    //@Test
+    //@DisplayName("getReportsPathFrom should return the full path of the report")
+    //public void getReportsPathFrom() {
+    //    final String reportFolder = "reportFolder";
+    //    final String fileName = "fileName";
+    //    final String expected = reportFolder + "/" + fileName;
+//
+    //    when(FileUtils.getInstance()).thenReturn(fileUtils);
+    //    final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
+//
+    //    when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
+//
+    //    //final String actual = spectrumSessionListener.getReportsPathFrom(reportFolder, fileName);
+    //    //assertTrue(actual.matches(Path.of(expected).toAbsolutePath().toString().replace("\\", "/")));
+    //}
 
     @Test
     @DisplayName("initEventsDispatcher should build the events dispatcher with all the event consumers configured")

@@ -9,5 +9,5 @@ public class HtmlTestBookReporter extends FileTestBookReporter {
     private String template = "testbook/template.html";
 
     @SuppressWarnings("FieldMayBeFinal")
-    private String output = "target/spectrum/testbook/testbook-{timestamp}.html";
+    private String output = "target/spectrum/testbook/testbook-${timestamp}.html";
 }

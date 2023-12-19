@@ -27,12 +27,15 @@ public abstract class TestBookReporter {
 
     public abstract void doOutputFrom(String interpolatedTemplate);
 
+    public abstract void cleanupOldReports();
+
     public static void evaluateQualityGateStatusFrom(final TestBook testBook) {
         testBook.getVars().put("qgStatus", FREE_MARKER_WRAPPER.interpolate("qgStatus", testBook.getQualityGate().getCondition(), testBook.getVars()));
     }
 
     public void flush(final TestBook testBook) {
         final String template = getTemplate();
+        cleanupOldReports();
         doOutputFrom(FREE_MARKER_WRAPPER.interpolate(template, FILE_UTILS.read(String.format("/%s", template)), testBook.getVars()));
     }
 }

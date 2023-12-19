@@ -14,4 +14,9 @@ public class LogTestBookReporter extends TestBookReporter {
     public void doOutputFrom(final String interpolatedTemplate) {
         log.info("\n{}", interpolatedTemplate);
     }
+
+    @Override
+    public void cleanupOldReports() {
+        log.debug("NoOp cleanupOldReports");
+    }
 }

@@ -16,8 +16,9 @@ import java.util.stream.Stream;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
 
@@ -77,6 +78,17 @@ class InterpolatedStringDeserializerTest {
                 arguments("${not.set}", "${not.set}"),
                 arguments("${notSet}", "${notSet}")
         );
+    }
+
+    @Test
+    @DisplayName("deserialize should interpolate the timestamp")
+    public void deserializeTimestamp() throws IOException {
+        final String value = "value-${timestamp}";
+
+        when(jsonParser.getValueAsString()).thenReturn(value);
+        when(jsonParser.currentName()).thenReturn("not important");
+
+        assertThat(interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext), matchesPattern("value-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}"));
     }
 
     @Test

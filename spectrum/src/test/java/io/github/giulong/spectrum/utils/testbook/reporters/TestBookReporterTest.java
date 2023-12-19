@@ -54,12 +54,14 @@ class TestBookReporterTest {
         testBookReporter.flush(testBook);
 
         assertTrue(testBookReporter.doOutputCalled);
+        assertTrue(testBookReporter.cleanupOldReportsCalled);
     }
 
     @Getter
     private static class DummyTestBookReporter extends TestBookReporter {
 
         private boolean doOutputCalled;
+        private boolean cleanupOldReportsCalled;
 
         @Override
         public String getTemplate() {
@@ -69,6 +71,11 @@ class TestBookReporterTest {
         @Override
         public void doOutputFrom(String interpolatedTemplate) {
             doOutputCalled = true;
+        }
+
+        @Override
+        public void cleanupOldReports() {
+            cleanupOldReportsCalled = true;
         }
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.utils.Retention;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -95,7 +96,7 @@ public class Configuration {
         @JsonPropertyDescription("Name shown in the header of the report")
         private String reportName;
 
-        @JsonPropertyDescription("Name of the report file .You can use the {timestamp} placeholder, which will be resolved at runtime")
+        @JsonPropertyDescription("Name of the report file .You can use the ${timestamp} placeholder, which will be resolved at runtime")
         private String fileName;
 
         @JsonPropertyDescription("Theme used. Can be STANDARD or DARK")
@@ -106,6 +107,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Regex to extract the WebElement's selector, when the webDriver fires an event")
         private String locatorRegex;
+
+        @JsonPropertyDescription("Retention rules configuration")
+        private Retention retention;
     }
 
     @Getter

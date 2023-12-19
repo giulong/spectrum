@@ -24,12 +24,19 @@ video:
 extent:
   theme: DARK
   fileName: report.html
+  retention:
+    total: 3
 
 testBook:
   enabled: true
   reporters:
+    - log: { } # the report will be logged
+    - html:
+        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
     - txt:
         output: target/spectrum/testbook/testbook.txt
+        retention:
+          total: 2
 
 # these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
 eventsConsumers:

@@ -9,5 +9,5 @@ public class TxtTestBookReporter extends FileTestBookReporter {
     private String template = "testbook/template.txt";
 
     @SuppressWarnings("FieldMayBeFinal")
-    private String output = "target/spectrum/testbook/testbook-{timestamp}.txt";
+    private String output = "target/spectrum/testbook/testbook-${timestamp}.txt";
 }

@@ -9,6 +9,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -76,9 +79,57 @@ class FileUtilsTest {
     public static Stream<Arguments> fileNamesProvider() {
         return Stream.of(
                 arguments("fileName.html", "fileName.html"),
-                arguments("fileName-{timestamp}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
-                arguments("fileName-{timestamp:dd-MM-yyyy_HH-mm-ss}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
-                arguments("fileName-{timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
+                arguments("fileName-${timestamp}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
+                arguments("fileName-${timestamp:dd-MM-yyyy_HH-mm-ss}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
+                arguments("fileName-${timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
         );
+    }
+
+    @DisplayName("getExtensionOf should return the extension of the provided fileName")
+    @ParameterizedTest(name = "with fileName {0} we expect {1}")
+    @MethodSource("getExtensionOfValuesProvider")
+    public void getExtensionOf(final String fileName, final String expected) {
+        assertEquals(expected, fileUtils.getExtensionOf(fileName));
+    }
+
+    public static Stream<Arguments> getExtensionOfValuesProvider() {
+        return Stream.of(
+                arguments("fileName.abc", "abc"),
+                arguments("fileName", "fileName"),
+                arguments("fileName.", "")
+        );
+    }
+
+    @DisplayName("removeExtensionFrom should return the provided fileName without the extension")
+    @ParameterizedTest(name = "with fileName {0} we expect {1}")
+    @MethodSource("removeExtensionFromValuesProvider")
+    public void removeExtensionFrom(final String fileName, final String expected) {
+        assertEquals(expected, fileUtils.removeExtensionFrom(fileName));
+    }
+
+    public static Stream<Arguments> removeExtensionFromValuesProvider() {
+        return Stream.of(
+                arguments("fileName.abc", "fileName"),
+                arguments("fileName", "fileName"),
+                arguments("fileName.", "fileName")
+        );
+    }
+
+    @DisplayName("deleteDownloadsFolder should delete and recreate the downloads folder")
+    @ParameterizedTest(name = "with value {0} which is existing? {1}")
+    @MethodSource("deleteDownloadsFolderValuesProvider")
+    public void deleteDownloadsFolder(final Path directory, final boolean existing) {
+        directory.toFile().deleteOnExit();
+        assertEquals(existing, Files.exists(directory));
+
+        fileUtils.deleteDirectory(directory);
+
+        assertFalse(Files.exists(directory));
+    }
+
+    public static Stream<Arguments> deleteDownloadsFolderValuesProvider() throws IOException {
+        return Stream.of(
+                arguments(Path.of("abc not existing"), false),
+                arguments(Files.createTempDirectory("downloadsFolder"), true));
     }
 }

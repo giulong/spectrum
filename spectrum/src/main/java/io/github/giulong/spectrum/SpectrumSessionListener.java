@@ -5,6 +5,7 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
+import io.github.giulong.spectrum.utils.ExtentReporter;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.YamlUtils;
@@ -116,7 +117,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     protected void initExtentReports() {
         final Configuration.Extent extent = configuration.getExtent();
-        final String reportPath = getReportsPathFrom(extent.getReportFolder(), extent.getFileName());
+        final String reportPath = Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath().toString().replace("\\", "/");
         final String reportName = extent.getReportName();
         final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
 
@@ -128,13 +129,12 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
         extentReports = new ExtentReports();
         extentReports.attachReporter(sparkReporter);
+        final ExtentReporter extentReporter = ExtentReporter.builder()
+                .extent(extent)
+                .build();
+        extentReporter.cleanupOldReports();
 
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
-    }
-
-    protected String getReportsPathFrom(final String reportFolder, final String fileName) {
-        final String resolvedFileName = fileUtils.interpolateTimestampFrom(fileName);
-        return Path.of(reportFolder, resolvedFileName).toAbsolutePath().toString().replace("\\", "/");
     }
 
     protected void initEventsDispatcher() {
