@@ -36,6 +36,12 @@ class RetentionTest {
     private Retention retention;
 
     @Test
+    @DisplayName("the default total retention should be Integer.MAX_VALUE")
+    public void defaultRetention() {
+        assertEquals(Integer.MAX_VALUE, retention.getTotal());
+    }
+
+    @Test
     @DisplayName("deleteOldArtifactsFrom should delete files if there are more reports than the total allowed")
     public void deleteOldArtifactsFrom() {
         final int total = 2;
