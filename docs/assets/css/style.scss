@@ -3,13 +3,6 @@
 
 @import "{{ site.theme }}";
 
-header > h1 {
-    text-transform: capitalize;
-    font-size: 36px;
-    display: inline-block;
-    transition: font-size .05s;
-}
-
 #search-container {
     width: 300px;
     position: absolute;
@@ -27,8 +20,8 @@ header.sticky {
     z-index: 99;
 }
 
-header.sticky > h1 {    // smaller title
-    font-size: 20px;
+header.sticky > img#spectrum-logo {    // smaller logo
+    width: 12%;
 }
 
 header.sticky > p { // hiding the description
@@ -37,6 +30,10 @@ header.sticky > p { // hiding the description
 
 header.sticky > #search-container { //search bar closer to the top
     top: 10px;
+}
+
+header > ul {
+    top: 28px;
 }
 
 header.sticky > ul {
@@ -118,11 +115,13 @@ hr {
 @media print, screen and (max-width: 1024px) {
     .wrapper { border-radius: 0; box-shadow: none; width: 100%; }
 }
-@media print, screen and (max-width: 700px) {
+
+@media print, screen and (max-width: 885px) {
     #search-container { left: 60%; }
     #search-input { width: 240px; }
     #results-container { width: 249px; }
 }
+
 @media print, screen and (max-width: 580px) {
     header ul { display: none; }
     header p.view { display: block; }
@@ -132,6 +131,7 @@ hr {
     header.sticky > #search-container { right: 0%; left: unset; }
     #search-input { width: 200px; }
 }
+
 @media print {
     header p.view a small:before { content: 'at https://github.com/'; }
 }
@@ -185,6 +185,12 @@ a {
 
 img {
     cursor: zoom-in;
+}
+
+img#spectrum-logo {
+    width: 30%;
+    cursor: default;
+    transition: width .05s;
 }
 
 img.copy-icon {
