@@ -838,7 +838,7 @@ how to customise it.
 
 You can see an example report here:
 
-![Extent Report](images/extent-screenshot.png)
+![Extent Report](assets/images/extent-screenshot.png)
 
 > 💡 <b>Tip</b><br/>
 > You can provide your own *look and feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
@@ -881,7 +881,7 @@ private List<WebElement> checkboxes;
 
 this would be the full `toString()`:
 
-![extent locator full](images/extent-locator-full.jpg)
+![extent locator full](assets/images/extent-locator-full.jpg)
 
 The regex in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} is:
 
@@ -893,7 +893,7 @@ locatorRegex: \s->\s([\w:\s\-.#]+)
 
 which extracts just this (mind the capturing group above):
 
-![extent locator](images/extent-locator.jpg)
+![extent locator](assets/images/extent-locator.jpg)
 
 For example, if you want to shrink it even more, you could add this as `extent.locatorRegex` in your `configuration.yaml`:
 
@@ -905,7 +905,7 @@ locatorRegex: \s->[\w\s]+:\s([()^\w\s\-.#]+)
 
 and you'd see this:
 
-![extent locator custom](images/extent-locator-custom.jpg)
+![extent locator custom](assets/images/extent-locator-custom.jpg)
 
 ---
 
@@ -1546,9 +1546,9 @@ A few steps are needed to configure your Slack Workspace to receive notification
 
 1. You need to log in and create an app [from here](https://api.slack.com/apps){:target="_blank"} by following these steps:
     1. click on the **Create New App** button:<br/><br/>
-       ![slack-new-app.png](images/slack-new-app.png)
+       ![slack-new-app.png](assets/images/slack-new-app.png)
     2. choose to create it **from an app manifest**<br/><br/>
-       ![slack-manifest.png](images/slack-manifest.png)
+       ![slack-manifest.png](assets/images/slack-manifest.png)
     3. Select your workspace, delete the default yaml manifest and copy this one:<br/><br/>
        {% include copyCode.html %}
        ```yaml
@@ -1574,18 +1574,18 @@ A few steps are needed to configure your Slack Workspace to receive notification
     4. Click on **Next** and then **Create**<br/><br/>
 2. You should have been redirected to the **Basic Information** page of the newly created app. From there:
     1. Install the app to Workspace:<br/><br/>
-       ![slack-install-to-workspace.png](images/slack-install-to-workspace.png)
+       ![slack-install-to-workspace.png](assets/images/slack-install-to-workspace.png)
     2. Choose the channel where you want to receive the notifications and click **Allow**:<br/><br/>
-       ![slack-channel.png](images/slack-channel.png)
+       ![slack-channel.png](assets/images/slack-channel.png)
 3. Go in the **OAuth & Permissions** page and copy the **Bot User OAuth Token**. You will need this in the `configuration*.yaml` (see last bullet)
-   ![slack-token.png](images/slack-token.png)
+   ![slack-token.png](assets/images/slack-token.png)
 4. In Slack:
     1. open the channel you chose in the previous steps and invite the Spectrum app by sending this message: `/invite @Spectrum`. You should see this after sending it:<br/><br/>
-       ![slack-add-app.png](images/slack-add-app.png)
+       ![slack-add-app.png](assets/images/slack-add-app.png)
     2. right-click on the channel you chose in the previous steps and select **View channel details**:<br/><br/>
-       ![slack-channel-details.png](images/slack-channel-details.png)
+       ![slack-channel-details.png](assets/images/slack-channel-details.png)
     3. copy the **Channel ID** from the details overlay:<br/><br/>
-       ![slack-channel-id.png](images/slack-channel-id.png)
+       ![slack-channel-id.png](assets/images/slack-channel-id.png)
 5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:
    {% include copyCode.html %}
    ```yaml
@@ -1997,7 +1997,7 @@ html:
 For the sake of completeness, the output file was manually copied [here]({{ site.repository_url }}/src/main/resources/images/testbook.html){:target="_blank"}.
 This is what it looks like when opened in a browser:
 
-![Html TestBook Reporter](images/html-testbook.png)
+![Html TestBook Reporter](assets/images/html-testbook.png)
 
 ## Default TestBook
 
