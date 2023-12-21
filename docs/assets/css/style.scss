@@ -4,6 +4,9 @@
 @import "{{ site.theme }}";
 
 #left-menu {
+    visibility: visible;
+    opacity: 1;
+    transition: visibility .05s, opacity .05s linear;
     position: fixed;
     top: 0;
     left: 0;
@@ -14,11 +17,12 @@
 }
 
 #left-menu ul {
-    padding-left: 10px;
+    list-style: none;
     overflow-x: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    margin-top: 5px;
+    padding: 0;
+    margin: 0;
 }
 
 #left-menu li.h1 {
@@ -26,24 +30,41 @@
 }
 
 #left-menu li.h2 {
-    margin-left: 15px;
+    padding-left: 15px;
     font-size: 14px;
 }
 
 #left-menu li.h3 {
-    margin-left: 30px;
+    padding-left: 30px;
     font-size: 13px;
 }
 
 #left-menu li.h4 {
-    margin-left: 30px;
+    padding-left: 30px;
     font-size: 12px;
+}
+
+.toc-element {
+    cursor: pointer;
+    text-transform: capitalize;
+    padding-left: 10px;
+}
+
+.toc-element.h1 {
+    background-color: rgba(0,0,0,0.06);
+}
+
+.toc-element:hover {
+    background: #C6EAFA;
 }
 
 #toc-title {
     text-align: center;
     font-weight: bold;
-    margin-top: 10px;
+    padding: 10px;
+    font-size: 18px;
+    background: linear-gradient(#DDFBFC, #C6EAFA);
+    border-bottom: 1px solid #B2D2E1;
 }
 
 #search-container {
@@ -157,6 +178,7 @@ hr {
 
 @media print, screen and (max-width: 1650px) {
     #left-menu { display: none; }
+    #toggle-toc-button { display: none; }
 }
 
 @media print, screen and (max-width: 1024px) {
@@ -182,6 +204,8 @@ hr {
 @media print {
     header p.view a small:before { content: 'at https://github.com/'; }
     #left-menu { display: none; }
+    #toggle-toc-button { display: none; }
+    #topButton { display: none; }
 }
 
 p, ul, ol, table, dl, h1 {
@@ -265,7 +289,23 @@ img.copy-icon {
     font-size: 14px;
 }
 
-#topButton:hover {
+#topButton:hover, #toggleTocButton:hover {
     background-color: #555;
     box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
+}
+
+#toggle-toc-button {
+    position: fixed;
+    bottom: 15px;
+    left: 315px;
+    z-index: 99;
+    border: 1px solid #444;
+    outline: none;
+    background-color: #3A3C42;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: left .05s linear;
 }
