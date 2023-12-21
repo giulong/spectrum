@@ -34,6 +34,7 @@ window.onresize = function() { stickyHeader() };
 
 function highlight() {
     searchInput.classList.add('shadow');
+    resultsContainer.classList.add('shadow');
 }
 
 function stickyHeader() {
