@@ -1980,7 +1980,7 @@ txt:
   output: target/spectrum/testbook/testbook-${timestamp}.txt
 ```
 
-For the sake of completeness, the output file was manually copied [here]({{ site.repository_url }}/src/main/resources/images/testbook.txt){:target="_blank"}.
+For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.txt){:target="_blank"}.
 It's the same that is logged, but saved to a dedicated file, so that you can send it as an attachment in an email, for example.
 Or you can provide different templates to log a shorter report and send the full thing to a file, it's up to you!
 
@@ -1994,7 +1994,7 @@ html:
   output: target/spectrum/testbook/testbook-${timestamp}.html
 ```
 
-For the sake of completeness, the output file was manually copied [here]({{ site.repository_url }}/src/main/resources/images/testbook.html){:target="_blank"}.
+For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.html){:target="_blank"}.
 This is what it looks like when opened in a browser:
 
 ![Html TestBook Reporter](assets/images/html-testbook.png)
