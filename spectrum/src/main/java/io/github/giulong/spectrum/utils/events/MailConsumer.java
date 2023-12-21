@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.events;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.pojos.events.Attachment;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.FileUtils;
@@ -26,8 +27,10 @@ public class MailConsumer extends EventsConsumer {
     private static final Mailer MAILER = MailerBuilder.buildMailer();
 
     @SuppressWarnings("FieldMayBeFinal")
+    @JsonPropertyDescription("Template to be used when creating the message")
     private String template = "mail.html";
 
+    @JsonPropertyDescription("List of attachments to add to the email")
     protected List<Attachment> attachments;
 
     public void consumes(final Event event) {

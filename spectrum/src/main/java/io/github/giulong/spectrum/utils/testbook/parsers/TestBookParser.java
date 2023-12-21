@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.testbook.parsers;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -22,6 +23,7 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @Setter
 public abstract class TestBookParser {
 
+    @JsonPropertyDescription("Path of the testBook")
     protected String path;
 
     public abstract List<TestBookTest> parse();

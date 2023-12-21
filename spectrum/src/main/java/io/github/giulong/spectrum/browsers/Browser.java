@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.browsers;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
 import lombok.Getter;
@@ -17,6 +18,7 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
 
     protected static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
 
+    @JsonPropertyDescription("WebDriver's specific capabilities")
     protected T capabilities;
 
     public abstract DriverService.Builder<U, V> getDriverServiceBuilder();

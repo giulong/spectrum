@@ -155,20 +155,34 @@ public class Configuration {
 
         @Getter
         public static class Chrome {
+
+            @JsonPropertyDescription("Chrome's args")
             private List<String> args;
+
+            @JsonPropertyDescription("Chrome's capabilities")
             private Map<String, Object> capabilities;
         }
 
         @Getter
         public static class Firefox {
+
+            @JsonPropertyDescription("Firefox's args")
             private List<String> args;
+
+            @JsonPropertyDescription("Firefox's log level. See https://firefox-source-docs.mozilla.org/testing/geckodriver/TraceLogs.html")
             private FirefoxDriverLogLevel logLevel;
+
+            @JsonPropertyDescription("Firefox's preferences")
             private Map<String, Object> preferences;
         }
 
         @Getter
         public static class Edge {
+
+            @JsonPropertyDescription("Edge's args")
             private List<String> args;
+
+            @JsonPropertyDescription("Edge's capabilities")
             private Map<String, Object> capabilities;
         }
 
@@ -334,11 +348,15 @@ public class Configuration {
 
     @Getter
     public static class FreeMarker {
+
+        @JsonPropertyDescription("FreeMarker version. See https://freemarker.apache.org/docs/app_versions.html")
         private String version;
 
         @JsonSchemaTypes(String.class)
+        @JsonPropertyDescription("Locale to be used. See https://freemarker.apache.org/docs/ref_directive_setting.html")
         private Locale locale;
 
+        @JsonPropertyDescription("Number format to be used. See https://freemarker.apache.org/docs/ref_directive_setting.html")
         private String numberFormat;
     }
 }

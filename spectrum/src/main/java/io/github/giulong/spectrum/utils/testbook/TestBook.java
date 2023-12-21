@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.testbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
@@ -25,12 +26,16 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 public class TestBook {
 
+    @JsonPropertyDescription("Enables the testBook")
     private boolean enabled;
 
+    @JsonPropertyDescription("Quality Gate to be evaluated to consider the execution successful")
     private QualityGate qualityGate;
 
+    @JsonPropertyDescription("Object specifying the kind of testBook provided")
     private TestBookParser parser;
 
+    @JsonPropertyDescription("List of testBook reporters that will produce the execution report in specific formats")
     private List<TestBookReporter> reporters;
 
     @JsonIgnore
