@@ -770,8 +770,13 @@ webDriver:
 > There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
 > If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard duplicate frames.
 
-The video will be saved in the `<extent.reportFolder>/videos/<CLASS NAME>/<TEST NAME>` folder (`extent.reportFolder` is `target` by default)
-and attached to the Extent Report as well.
+The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>` 
+folder and attached to the Extent Report as well, where:
+
+* `extent.reportFolder` &rarr; `target/spectrum/reports` by default
+* `extent.fileName` &rarr; `spectrum-report-${timestamp}.html` by default
+* `CLASS NAME` &rarr; the test class' simple name
+* `TEST NAME` &rarr; the test method's name
 
 > 💡 <b>Video Configuration Example</b><br/>
 > Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
