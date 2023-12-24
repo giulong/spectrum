@@ -1,15 +1,8 @@
 package io.github.giulong.spectrum;
 
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
-import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
-import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.YamlUtils;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
@@ -22,13 +15,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.platform.launcher.LauncherSession;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,9 +46,6 @@ class SpectrumSessionListenerTest {
     private String osName;
 
     @Mock
-    private ExtentReporter.ExtentReporterBuilder extentReporterBuilder;
-
-    @Mock
     private ExtentReporter extentReporter;
 
     @Mock
@@ -72,16 +61,10 @@ class SpectrumSessionListenerTest {
     private Configuration.Extent extent;
 
     @Mock
-    private ExtentSparkReporterConfig extentSparkReporterConfig;
-
-    @Mock
     private TestBook testBook;
 
     @Mock
     private LauncherSession launcherSession;
-
-    @Mock
-    private ExtentReports extentReports;
 
     @Mock
     private EventsDispatcher.EventsDispatcherBuilder eventsDispatcherBuilder;
@@ -101,9 +84,19 @@ class SpectrumSessionListenerTest {
     @Mock
     private Configuration.FreeMarker freeMarker;
 
+    @InjectMocks
+    private SpectrumSessionListener spectrumSessionListener;
+
     @BeforeEach
     public void beforeEach() {
         osName = System.getProperty("os.name");
+        ReflectionUtils.setField("yamlUtils", spectrumSessionListener, yamlUtils);
+        ReflectionUtils.setField("fileUtils", spectrumSessionListener, fileUtils);
+        ReflectionUtils.setField("freeMarkerWrapper", spectrumSessionListener, freeMarkerWrapper);
+        ReflectionUtils.setField("extentReporter", spectrumSessionListener, extentReporter);
+        ReflectionUtils.setField("configuration", spectrumSessionListener, configuration);
+        ReflectionUtils.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
+
         extentReportsWrapperMockedStatic = mockStatic(ExtentReporter.class);
         slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
@@ -131,40 +124,16 @@ class SpectrumSessionListenerTest {
         final String profileConfiguration = String.format("configuration-%s.yaml", profile);
         final String banner = "banner";
         final String version = "version";
-        final String reportFolder = "reportFolder";
-        final String fileName = "fileName";
-        final String reportName = "reportName";
-        final String documentTitle = "documentTitle";
-        final String theme = "DARK";
-        final String timeStampFormat = "timeStampFormat";
-        final String css = "css";
 
         System.setProperty("os.name", "Win");
 
         when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getReportFolder()).thenReturn(reportFolder);
-        when(extent.getFileName()).thenReturn(fileName);
-        when(extent.getReportName()).thenReturn(reportName);
-        when(extent.getDocumentTitle()).thenReturn(documentTitle);
-        when(extent.getTheme()).thenReturn(theme);
-        when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.read("/css/report.css")).thenReturn(css);
-
-        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class, (mock, context) -> {
-            when(ExtentReporter.builder()).thenReturn(extentReporterBuilder);
-            when(extentReporterBuilder.extent(extent)).thenReturn(extentReporterBuilder);
-            when(extentReporterBuilder.build()).thenReturn(extentReporter);
-        });
-
-        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(Path.of(reportFolder, fileName).toAbsolutePath().toString().replace("\\", "/"), context.arguments().get(0));
-            when(mock.config()).thenReturn(extentSparkReporterConfig);
-        });
 
         when(fileUtils.read("/banner.txt")).thenReturn(banner);
         when(spectrumProperties.getVersion()).thenReturn(version);
         when(configuration.getTestBook()).thenReturn(testBook);
+
+        when(extentReporter.setupFrom(extent)).thenReturn(extentReporter);
 
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         when(yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class)).thenReturn(spectrumProperties);
@@ -181,10 +150,6 @@ class SpectrumSessionListenerTest {
         when(eventsDispatcherBuilder.consumers(consumers)).thenReturn(eventsDispatcherBuilder);
         when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
 
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-        SpectrumSessionListener.configuration = configuration;
-        SpectrumSessionListener.extentReports = extentReports;
-        SpectrumSessionListener.eventsDispatcher = eventsDispatcher;
         spectrumSessionListener.launcherSessionOpened(launcherSession);
 
         verify(testBook).parse();
@@ -196,22 +161,9 @@ class SpectrumSessionListenerTest {
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
         verify(freeMarkerWrapper).setupFrom(freeMarker);
 
-        verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
-        verify(extentSparkReporterConfig).setReportName(reportName);
-        verify(extentSparkReporterConfig).setTheme(Theme.DARK);
-        verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
-        verify(extentSparkReporterConfig).setCss(css);
-
-        verify(extentReporter).cleanupOldReports();
-
-        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
-        verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
-        assertEquals(extentReports, SpectrumSessionListener.getExtentReports());
+        verify(extentReporter).cleanupOldReports(extent);
 
         assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
-
-        extentSparkReporterMockedConstruction.close();
-        extentReportsMockedConstruction.close();
 
         verify(eventsDispatcher).fire(BEFORE, Set.of(SUITE));
     }
@@ -221,14 +173,10 @@ class SpectrumSessionListenerTest {
     public void launcherSessionClosed() {
         when(configuration.getTestBook()).thenReturn(testBook);
 
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-        SpectrumSessionListener.configuration = configuration;
-        SpectrumSessionListener.extentReports = extentReports;
-        SpectrumSessionListener.eventsDispatcher = eventsDispatcher;
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
         verify(testBook).flush();
-        verify(extentReports).flush();
+        verify(extentReporter).flush();
         verify(eventsDispatcher).fire(AFTER, Set.of(SUITE));
     }
 
@@ -240,7 +188,6 @@ class SpectrumSessionListenerTest {
         when(yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class)).thenReturn(spectrumProperties);
         when(spectrumProperties.getVersion()).thenReturn(version);
 
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
         assertEquals(expected, spectrumSessionListener.buildVersionLine());
     }
 
@@ -271,7 +218,6 @@ class SpectrumSessionListenerTest {
 
         when(yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class)).thenReturn(configuration);
 
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
         spectrumSessionListener.parseConfiguration();
 
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
@@ -300,7 +246,6 @@ class SpectrumSessionListenerTest {
 
         when(yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class)).thenReturn(configuration);
 
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
         spectrumSessionListener.parseConfiguration();
 
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
@@ -315,7 +260,6 @@ class SpectrumSessionListenerTest {
     @MethodSource("profilesValuesProvider")
     public void parseProfiles(final String profile, final String defaultProfile, final List<String> expected) {
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
 
         when(yamlUtils.readInternalNode(PROFILE_NODE, CONFIGURATION_YAML, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn(defaultProfile);
@@ -340,7 +284,6 @@ class SpectrumSessionListenerTest {
 
         System.setProperty("os.name", "Win");
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
 
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(defaultVars);
         when(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).thenReturn(vars);
@@ -358,7 +301,6 @@ class SpectrumSessionListenerTest {
 
         System.setProperty("os.name", "nix");
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
 
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(defaultVars);
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class)).thenReturn(defaultVars);
@@ -379,78 +321,8 @@ class SpectrumSessionListenerTest {
     }
 
     @Test
-    @DisplayName("initExtentReports should initialize and return the ExtentReports by reading it config")
-    public void initExtentReports() {
-        final String reportFolder = "reportFolder";
-        final String fileName = "fileName";
-        final String reportName = "reportName";
-        final String documentTitle = "documentTitle";
-        final String theme = "DARK";
-        final String timeStampFormat = "timeStampFormat";
-        final String css = "css";
-
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getReportFolder()).thenReturn(reportFolder);
-        when(extent.getFileName()).thenReturn(fileName);
-        when(extent.getReportName()).thenReturn(reportName);
-        when(extent.getDocumentTitle()).thenReturn(documentTitle);
-        when(extent.getTheme()).thenReturn(theme);
-        when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.read("/css/report.css")).thenReturn(css);
-
-        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class, (mock, context) -> {
-            when(ExtentReporter.builder()).thenReturn(extentReporterBuilder);
-            when(extentReporterBuilder.extent(extent)).thenReturn(extentReporterBuilder);
-            when(extentReporterBuilder.build()).thenReturn(extentReporter);
-        });
-
-        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(Path.of(reportFolder, fileName).toAbsolutePath().toString().replace("\\", "/"), context.arguments().get(0));
-            when(mock.config()).thenReturn(extentSparkReporterConfig);
-        });
-
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-        SpectrumSessionListener.configuration = configuration;
-        spectrumSessionListener.initExtentReports();
-
-        verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
-        verify(extentSparkReporterConfig).setReportName(reportName);
-        verify(extentSparkReporterConfig).setTheme(Theme.DARK);
-        verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
-        verify(extentSparkReporterConfig).setCss(css);
-
-        verify(extentReporter).cleanupOldReports();
-
-        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
-        verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
-        assertEquals(extentReports, SpectrumSessionListener.getExtentReports());
-
-        extentSparkReporterMockedConstruction.close();
-        extentReportsMockedConstruction.close();
-    }
-
-    //@Test
-    //@DisplayName("getReportsPathFrom should return the full path of the report")
-    //public void getReportsPathFrom() {
-    //    final String reportFolder = "reportFolder";
-    //    final String fileName = "fileName";
-    //    final String expected = reportFolder + "/" + fileName;
-//
-    //    when(FileUtils.getInstance()).thenReturn(fileUtils);
-    //    final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-//
-    //    when(fileUtils.interpolateTimestampFrom(fileName)).thenReturn(fileName);
-//
-    //    //final String actual = spectrumSessionListener.getReportsPathFrom(reportFolder, fileName);
-    //    //assertTrue(actual.matches(Path.of(expected).toAbsolutePath().toString().replace("\\", "/")));
-    //}
-
-    @Test
     @DisplayName("initEventsDispatcher should build the events dispatcher with all the event consumers configured")
     public void initEventsDispatcher() {
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-
         when(configuration.getEventsConsumers()).thenReturn(consumers);
         when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
         when(eventsDispatcherBuilder.consumers(consumers)).thenReturn(eventsDispatcherBuilder);
@@ -466,8 +338,6 @@ class SpectrumSessionListenerTest {
     @ParameterizedTest(name = "with OS {0} we expect {1}")
     @MethodSource("isUnixValuesProvider")
     public void isUnix(final String osName, final boolean expected) {
-        final SpectrumSessionListener spectrumSessionListener = new SpectrumSessionListener();
-
         System.setProperty("os.name", osName);
 
         assertEquals(expected, spectrumSessionListener.isUnix());

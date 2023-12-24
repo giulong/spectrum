@@ -1,7 +1,8 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentReports;
-import io.github.giulong.spectrum.SpectrumSessionListener;
+import io.github.giulong.spectrum.utils.ExtentReporter;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +24,10 @@ import static org.mockito.Mockito.*;
 @DisplayName("ExtentReportsResolver")
 class ExtentReportsResolverTest {
 
-    private static MockedStatic<SpectrumSessionListener> spectrumSessionListenerMockedStatic;
+    private static MockedStatic<ExtentReporter> extentReporterMockedStatic;
+
+    @Mock
+    private ExtentReporter extentReporter;
 
     @Mock
     private ParameterContext parameterContext;
@@ -51,18 +55,19 @@ class ExtentReportsResolverTest {
 
     @BeforeEach
     public void beforeEach() {
-        spectrumSessionListenerMockedStatic = mockStatic(SpectrumSessionListener.class);
+        ReflectionUtils.setField("extentReporter", extentReportsResolver, extentReporter);
+        extentReporterMockedStatic = mockStatic(ExtentReporter.class);
     }
 
     @AfterEach
     public void afterEach() {
-        spectrumSessionListenerMockedStatic.close();
+        extentReporterMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return the ExtentReports from SpectrumSessionListener")
     public void resolveParameter() {
-        when(SpectrumSessionListener.getExtentReports()).thenReturn(extentReports);
+        when(extentReporter.getExtentReports()).thenReturn(extentReports);
 
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);

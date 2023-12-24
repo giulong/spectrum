@@ -1,44 +1,22 @@
 package io.github.giulong.spectrum.utils.events;
 
-import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.fasterxml.jackson.annotation.JsonView;
-import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.ExtentReporter;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.extension.ExtensionContext;
-
-import static com.aventstack.extentreports.Status.SKIP;
-import static com.aventstack.extentreports.markuputils.ExtentColor.RED;
-import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
-import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.*;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 @JsonView(Internal.class)
 public class ExtentTestConsumer extends EventsConsumer {
 
+    private final ExtentReporter extentReporter = ExtentReporter.getInstance();
+
     public void consumes(final Event event) {
-        final ExtensionContext context = event.getContext();
         final Status status = event.getResult().getStatus();
-        final ExtentTest extentTest = context.getStore(GLOBAL).getOrComputeIfAbsent(EXTENT_TEST, e -> createExtentTestFrom(context), ExtentTest.class);
 
-        switch (status) {
-            case SKIP -> {
-                final String disabledValue = context.getRequiredTestMethod().getAnnotation(Disabled.class).value();
-                final String reason = "".equals(disabledValue) ? "no reason" : disabledValue;
-                extentTest.skip(createLabel("Skipped: " + reason, getColorOf(SKIP)));
-            }
-            case FAIL -> {
-                final SpectrumTest<?> spectrumTest = (SpectrumTest<?>) context.getRequiredTestInstance();
-                extentTest.fail(context.getExecutionException().orElse(new RuntimeException("Test Failed with no exception")));
-                spectrumTest.screenshotFail(createLabel("TEST FAILED", RED).getMarkup());
-            }
-            default -> extentTest.log(status, createLabel("END TEST", getColorOf(status)));
-        }
-
+        extentReporter.logTestEnd(event.getContext(), status);
         log.info(String.format("END execution of '%s -> %s': %s", event.getPrimaryId(), event.getSecondaryId(), status.name()));
     }
 }

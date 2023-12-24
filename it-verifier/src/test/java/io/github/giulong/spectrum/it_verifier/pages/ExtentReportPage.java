@@ -19,28 +19,28 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     })
     private List<WebElement> testViewTests;
 
-    @FindBy(id = "demo-test-skipped-test")
+    @FindBy(id = "demoit-skipped-test")
     private WebElement skippedTest;
 
-    @FindBy(id = "files-test-upload")
+    @FindBy(id = "filesit-upload")
     private WebElement upload;
 
-    @FindBy(id = "demo-test-sending-custom-events")
+    @FindBy(id = "demoit-sending-custom-events")
     private WebElement customEvents;
 
-    @FindBy(id = "demo-test-this-one-should-fail-for-demonstration-purposes")
+    @FindBy(id = "demoit-this-one-should-fail-for-demonstration-purposes")
     private WebElement fail;
 
-    @FindBy(id = "login-form-leveraging-the-data.yaml-with-user-giulio-we-expect-login-to-be-successful:-false")
+    @FindBy(id = "loginformit-with-user-giulio-we-expect-login-to-be-successful:-false")
     private WebElement loginFalse;
 
-    @FindBy(id = "login-form-leveraging-the-data.yaml-with-user-tom-we-expect-login-to-be-successful:-true")
+    @FindBy(id = "loginformit-with-user-tom-we-expect-login-to-be-successful:-true")
     private WebElement loginTrue;
 
-    @FindBy(id = "checkbox-page-testwithnodisplayname()")
+    @FindBy(id = "checkboxit-testwithnodisplayname()")
     private WebElement noDisplayName;
 
-    @FindBy(id = "files-test-download")
+    @FindBy(id = "filesit-download")
     private WebElement download;
 
     @FindBy(className = "screenshot-container")

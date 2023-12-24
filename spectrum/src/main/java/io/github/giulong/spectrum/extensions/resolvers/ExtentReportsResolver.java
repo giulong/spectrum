@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentReports;
-import io.github.giulong.spectrum.SpectrumSessionListener;
+import io.github.giulong.spectrum.utils.ExtentReporter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -15,6 +15,8 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
 
     public static final String EXTENT_REPORTS = "extentReports";
 
+    private final ExtentReporter extentReporter = ExtentReporter.getInstance();
+
     @Override
     public ExtentReports resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
@@ -22,7 +24,7 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
         return rootStore.getOrComputeIfAbsent(EXTENT_REPORTS, e -> {
             log.debug("Resolving {}", EXTENT_REPORTS);
 
-            final ExtentReports extentReports = SpectrumSessionListener.getExtentReports();
+            final ExtentReports extentReports = extentReporter.getExtentReports();
             rootStore.put(EXTENT_REPORTS, extentReports);
             return extentReports;
         }, ExtentReports.class);

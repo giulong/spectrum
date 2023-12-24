@@ -39,14 +39,14 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(testLabels.get("noDisplayName"), extentReportPage.getNoDisplayName().getText());
         assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
 
-        assertTrue(isPresent(By.id("video-checkbox-page-testwithnodisplayname()")));
-        assertTrue(isPresent(By.id("video-files-test-upload")));
-        assertTrue(isPresent(By.id("video-demo-test-sending-custom-events")));
-        assertTrue(isPresent(By.id("video-demo-test-this-one-should-fail-for-demonstration-purposes")));
-        assertTrue(isPresent(By.id("video-login-form-leveraging-the-data.yaml-with-user-giulio-we-expect-login-to-be-successful:-false")));
-        assertTrue(isPresent(By.id("video-login-form-leveraging-the-data.yaml-with-user-tom-we-expect-login-to-be-successful:-true")));
-        assertTrue(isPresent(By.id("video-files-test-download")));
-        assertFalse(isPresent(By.id("video-demo-test-skipped-test")));
+        assertTrue(isPresent(By.id("video-checkboxit-testwithnodisplayname()")));
+        assertTrue(isPresent(By.id("video-filesit-upload")));
+        assertTrue(isPresent(By.id("video-demoit-sending-custom-events")));
+        assertTrue(isPresent(By.id("video-demoit-this-one-should-fail-for-demonstration-purposes")));
+        assertTrue(isPresent(By.id("video-loginformit-with-user-giulio-we-expect-login-to-be-successful:-false")));
+        assertTrue(isPresent(By.id("video-loginformit-with-user-tom-we-expect-login-to-be-successful:-true")));
+        assertTrue(isPresent(By.id("video-filesit-download")));
+        assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());

@@ -1,8 +1,5 @@
 package io.github.giulong.spectrum;
 
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.utils.ExtentReporter;
@@ -16,7 +13,6 @@ import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.nio.file.Path;
 import java.util.*;
 
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
@@ -35,12 +31,10 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
+    private final ExtentReporter extentReporter = ExtentReporter.getInstance();
 
     @Getter
     protected static Configuration configuration;
-
-    @Getter
-    protected static ExtentReports extentReports;
 
     @Getter
     protected static EventsDispatcher eventsDispatcher;
@@ -54,7 +48,13 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
         parseConfiguration();
         configuration.getTestBook().parse();
-        initExtentReports();
+
+        final Configuration.Extent extent = configuration.getExtent();
+
+        extentReporter
+                .setupFrom(extent)
+                .cleanupOldReports(extent);
+
         initEventsDispatcher();
 
         freeMarkerWrapper.setupFrom(configuration.getFreeMarker());
@@ -64,7 +64,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     @Override
     public void launcherSessionClosed(final LauncherSession session) {
         configuration.getTestBook().flush();
-        extentReports.flush();
+        extentReporter.flush();
         eventsDispatcher.fire(AFTER, Set.of(SUITE));
     }
 
@@ -113,28 +113,6 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
         VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
         VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
-    }
-
-    protected void initExtentReports() {
-        final Configuration.Extent extent = configuration.getExtent();
-        final String reportPath = Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath().toString().replace("\\", "/");
-        final String reportName = extent.getReportName();
-        final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
-
-        sparkReporter.config().setDocumentTitle(extent.getDocumentTitle());
-        sparkReporter.config().setReportName(reportName);
-        sparkReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
-        sparkReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
-        sparkReporter.config().setCss(fileUtils.read("/css/report.css"));
-
-        extentReports = new ExtentReports();
-        extentReports.attachReporter(sparkReporter);
-        final ExtentReporter extentReporter = ExtentReporter.builder()
-                .extent(extent)
-                .build();
-        extentReporter.cleanupOldReports();
-
-        log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
     }
 
     protected void initEventsDispatcher() {

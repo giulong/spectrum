@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -47,6 +48,9 @@ class TestDataResolverTest {
 
     @Mock
     private ExtensionContext extensionContext;
+
+    @Mock
+    private ExtensionContext parentContext;
 
     @Mock
     private ExtensionContext rootContext;
@@ -97,7 +101,10 @@ class TestDataResolverTest {
     public void resolveParameter() throws NoSuchMethodException {
         final Class<String> clazz = String.class;
         final String className = clazz.getSimpleName();
+        final String classDisplayName = "classDisplayName";
         final String methodName = "resolveParameter";
+        final String methodDisplayName = "methodDisplayName";
+        final String testId = "string-methoddisplayname";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
         final Path path = reportsFolder.resolve(Path.of(fileNameWithoutExtension, "screenshots", className, methodName));
@@ -120,7 +127,13 @@ class TestDataResolverTest {
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
+        when(extensionContext.getDisplayName()).thenReturn(methodDisplayName);
+        when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.methodDisplayName(methodDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.screenshotFolderPath(path)).thenReturn(testDataBuilder);
         when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
@@ -165,5 +178,11 @@ class TestDataResolverTest {
     @DisplayName("getVideoPathForCurrentTest should return null if video is disabled")
     public void getVideoPathForCurrentTestDisabled() {
         assertNull(testDataResolver.getVideoPathForCurrentTest(true, reportsFolder.toString(), "extentFileName", CLASS_NAME, METHOD_NAME));
+    }
+
+    @Test
+    @DisplayName("transformInKebabCase should return the provided string with spaces replaced by dashes and in lowercase")
+    public void transformInKebabCase() {
+        assertEquals("some-composite-string", TestDataResolver.transformInKebabCase("Some Composite STRING"));
     }
 }

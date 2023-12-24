@@ -32,6 +32,9 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final String reportFolder = extent.getReportFolder();
         final String className = context.getRequiredTestClass().getSimpleName();
         final String methodName = context.getRequiredTestMethod().getName();
+        final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
+        final String methodDisplayName = context.getDisplayName();
+        final String testId = buildTestIdFrom(className, methodDisplayName);
         final String fileName = fileUtils.removeExtensionFrom(extent.getFileName());
         final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, className, methodName);
         final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, className, methodName);
@@ -39,6 +42,9 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
                 .builder()
                 .className(className)
                 .methodName(methodName)
+                .classDisplayName(classDisplayName)
+                .methodDisplayName(methodDisplayName)
+                .testId(testId)
                 .screenshotFolderPath(screenshotFolderPath)
                 .videoPath(videoPath)
                 .build();
@@ -64,5 +70,13 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final Path path = Path.of(reportsFolder, extentFileName, "videos", className, methodName).toAbsolutePath();
         Files.createDirectories(path);
         return path.resolve(String.format("%s.mp4", randomUUID()));
+    }
+
+    public static String buildTestIdFrom(final String className, final String testName) {
+        return String.format("%s-%s", transformInKebabCase(className), transformInKebabCase(testName));
+    }
+
+    protected static String transformInKebabCase(final String string) {
+        return string.replaceAll("\\s", "-").toLowerCase();
     }
 }
