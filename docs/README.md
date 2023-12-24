@@ -725,8 +725,6 @@ This is the list of the available schemas, be sure to pick the right one accordi
 
 # Automatic Execution Video Generation
 
-![Video](https://github.com/giulong/spectrum/assets/27963644/187e237c-7db1-494b-8a3b-5839565ae0b0)
-
 It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
 so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml{:target="_blank"})
