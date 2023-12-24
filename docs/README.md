@@ -617,8 +617,9 @@ You can add your own and even override the default ones in your `configuration*.
 
 ## Running on a Grid
 
-By default, browsers run in local. This is because the default value in the internal internal [configuration.default.yaml]({{ site.repository_url
-}}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}) is:
+By default, browsers run in local. This is because the default value in the internal 
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml{:target="_blank"})
+is:
 
 {% include copyCode.html %}
 
@@ -724,10 +725,16 @@ This is the list of the available schemas, be sure to pick the right one accordi
 
 # Automatic Execution Video Generation
 
+![Video](https://github.com/giulong/spectrum/assets/27963644/187e237c-7db1-494b-8a3b-5839565ae0b0)
+
 It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
 so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
-[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"})
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml{:target="_blank"})
 for all the available parameters along with their details.
+
+The video is attached to the extent report as the very first element:
+
+![Video Extent Report](assets/images/video-extent-report.jpg)
 
 To be precise, the video is generated from screenshots taken during the execution.
 You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
