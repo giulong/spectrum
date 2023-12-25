@@ -7,7 +7,7 @@ import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Getter;
@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
 @Getter
-public class ExtentReporter {
+public class ExtentReporter implements SessionHook {
 
     private static final ExtentReporter INSTANCE = new ExtentReporter();
 
@@ -48,7 +48,11 @@ public class ExtentReporter {
         return INSTANCE;
     }
 
-    public ExtentReporter setupFrom(final Configuration.Extent extent) {
+    @Override
+    public void sessionOpenedFrom(final Configuration configuration) {
+        log.debug("Session opened hook");
+
+        final Configuration.Extent extent = configuration.getExtent();
         final String reportPath = Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath().toString().replace("\\", "/");
         final String reportName = extent.getReportName();
         final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
@@ -64,7 +68,13 @@ public class ExtentReporter {
 
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
 
-        return this;
+        cleanupOldReports(extent);
+    }
+
+    @Override
+    public void sessionClosed() {
+        log.debug("Session closed hook");
+        extentReports.flush();
     }
 
     @SneakyThrows
@@ -157,10 +167,5 @@ public class ExtentReporter {
             }
             default -> extentTest.log(status, createLabel("END TEST", getColorOf(status)));
         }
-    }
-
-    public void flush() {
-        log.debug("Flushing extent report");
-        extentReports.flush();
     }
 }

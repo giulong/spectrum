@@ -8,7 +8,6 @@ import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.*;
@@ -46,6 +45,9 @@ class ExtentReporterTest {
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private static MockedStatic<Path> pathMockedStatic;
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;
+
+    @Mock
+    private Configuration configuration;
 
     @Mock
     private ExtentSparkReporterConfig extentSparkReporterConfig;
@@ -145,63 +147,7 @@ class ExtentReporterTest {
         fileUtilsMockedStatic.close();
     }
 
-    @Test
-    @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
-        //noinspection EqualsWithItself
-        assertSame(ExtentReporter.getInstance(), ExtentReporter.getInstance());
-    }
-
-    @Test
-    @DisplayName("setupFrom should init the extent reports")
-    public void setupFrom() {
-        final String reportFolder = "reportFolder";
-        final String fileName = "fileName";
-        final String reportName = "reportName";
-        final String documentTitle = "documentTitle";
-        final String theme = "DARK";
-        final String timeStampFormat = "timeStampFormat";
-        final String css = "css";
-        final String absolutePathToString = "absolute\\Path\\To\\String";
-        final String absolutePathToStringReplaced = "absolute/Path/To/String";
-
-        when(extent.getReportFolder()).thenReturn(reportFolder);
-        when(extent.getFileName()).thenReturn(fileName);
-        when(Path.of(reportFolder, fileName)).thenReturn(path);
-        when(path.toAbsolutePath()).thenReturn(absolutePath);
-        when(absolutePath.toString()).thenReturn(absolutePathToString);
-        when(extent.getReportName()).thenReturn(reportName);
-        when(extent.getDocumentTitle()).thenReturn(documentTitle);
-        when(extent.getTheme()).thenReturn(theme);
-        when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.read("/css/report.css")).thenReturn(css);
-
-        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
-
-        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(absolutePathToStringReplaced, context.arguments().get(0));
-            when(mock.config()).thenReturn(extentSparkReporterConfig);
-        });
-
-        assertEquals(extentReporter, extentReporter.setupFrom(extent));
-
-        verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
-        verify(extentSparkReporterConfig).setReportName(reportName);
-        verify(extentSparkReporterConfig).setTheme(DARK);
-        verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
-        verify(extentSparkReporterConfig).setCss(css);
-
-        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
-        verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
-
-        extentSparkReporterMockedConstruction.close();
-        extentReportsMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("cleanupOldReports should delete the proper number of old reports and the corresponding directories")
-    public void cleanupOldReports() {
+    private void cleanupOldReportsStubs() {
         final int total = 123;
         final String reportFolder = "reportFolder";
         final String file1Name = "file1Name";
@@ -233,6 +179,81 @@ class ExtentReporterTest {
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.removeExtensionFrom(file1Name)).thenReturn(directory1Name);
         when(fileUtils.removeExtensionFrom(file2Name)).thenReturn(directory2Name);
+    }
+
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        //noinspection EqualsWithItself
+        assertSame(ExtentReporter.getInstance(), ExtentReporter.getInstance());
+    }
+
+    @Test
+    @DisplayName("sessionOpenedFrom should init the extent report and cleanup old ones")
+    public void sessionOpenedFrom() {
+        final String reportFolder = "reportFolder";
+        final String fileName = "fileName";
+        final String reportName = "reportName";
+        final String documentTitle = "documentTitle";
+        final String theme = "DARK";
+        final String timeStampFormat = "timeStampFormat";
+        final String css = "css";
+        final String absolutePathToString = "absolute\\Path\\To\\String";
+        final String absolutePathToStringReplaced = "absolute/Path/To/String";
+
+        cleanupOldReportsStubs();
+
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getReportFolder()).thenReturn(reportFolder);
+        when(extent.getFileName()).thenReturn(fileName);
+        when(Path.of(reportFolder, fileName)).thenReturn(path);
+        when(path.toAbsolutePath()).thenReturn(absolutePath);
+        when(absolutePath.toString()).thenReturn(absolutePathToString);
+        when(extent.getReportName()).thenReturn(reportName);
+        when(extent.getDocumentTitle()).thenReturn(documentTitle);
+        when(extent.getTheme()).thenReturn(theme);
+        when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
+        when(FileUtils.getInstance()).thenReturn(fileUtils);
+        when(fileUtils.read("/css/report.css")).thenReturn(css);
+
+        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
+
+        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
+            assertEquals(absolutePathToStringReplaced, context.arguments().get(0));
+            when(mock.config()).thenReturn(extentSparkReporterConfig);
+        });
+
+        extentReporter.sessionOpenedFrom(configuration);
+
+        verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
+        verify(extentSparkReporterConfig).setReportName(reportName);
+        verify(extentSparkReporterConfig).setTheme(DARK);
+        verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
+        verify(extentSparkReporterConfig).setCss(css);
+
+        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
+        verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
+
+        extentSparkReporterMockedConstruction.close();
+        extentReportsMockedConstruction.close();
+
+        // cleanupOldReports
+        verify(fileUtils).deleteDirectory(directory1Path);
+        verify(fileUtils).deleteDirectory(directory2Path);
+    }
+
+    @Test
+    @DisplayName("sessionClosed should just flush the extent report")
+    public void sessionClosed() {
+        extentReporter.sessionClosed();
+
+        verify(extentReports).flush();
+    }
+
+    @Test
+    @DisplayName("cleanupOldReports should delete the proper number of old reports and the corresponding directories")
+    public void cleanupOldReports() {
+        cleanupOldReportsStubs();
 
         extentReporter.cleanupOldReports(extent);
 
@@ -351,14 +372,6 @@ class ExtentReporterTest {
         final ExtentTest extentTest = verifyAndGetExtentTest();
         verify(extentTest).log(eq(PASS), markupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text green'>END TEST</span>", markupArgumentCaptor.getValue().getMarkup());
-    }
-
-    @Test
-    @DisplayName("flush should just flush the extent report")
-    public void flush() {
-        extentReporter.flush();
-
-        verify(extentReports).flush();
     }
 
     @Disabled

@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.it_testbook;
 
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.YamlUtils;
 import io.github.giulong.spectrum.utils.testbook.reporters.FileTestBookReporter;

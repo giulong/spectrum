@@ -1,16 +1,19 @@
-package io.github.giulong.spectrum.pojos;
+package io.github.giulong.spectrum.utils;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.utils.Retention;
+import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
+import lombok.Generated;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 import java.time.Duration;
@@ -20,10 +23,15 @@ import java.util.Map;
 import java.util.logging.Level;
 
 import static ch.qos.logback.classic.Level.OFF;
+import static lombok.AccessLevel.PRIVATE;
 
 @SuppressWarnings({"unused", "FieldMayBeFinal"})
 @Getter
-public class Configuration {
+@Slf4j
+@NoArgsConstructor(access = PRIVATE)
+public class Configuration implements SessionHook {
+
+    private static final Configuration INSTANCE = new Configuration();
 
     @JsonPropertyDescription("Common vars to interpolate other String values in the configuration")
     private Map<String, Object> vars;
@@ -56,7 +64,24 @@ public class Configuration {
     @JsonPropertyDescription("Events consumers, such as those to send email notifications, for example")
     private List<EventsConsumer> eventsConsumers;
 
+    public static Configuration getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void sessionOpened() {
+        log.debug("Session opened hook");
+        testBook.parse();
+    }
+
+    @Override
+    public void sessionClosed() {
+        log.debug("Session closed hook");
+        testBook.flush();
+    }
+
     @Getter
+    @Generated
     public static class Runtime {
 
         @JsonPropertyDescription("profiles to be activated. By default, it's 'local'")
@@ -78,6 +103,7 @@ public class Configuration {
     }
 
     @Getter
+    @Generated
     public static class Application {
 
         @JsonPropertyDescription("Application's under test base url")
@@ -85,6 +111,7 @@ public class Configuration {
     }
 
     @Getter
+    @Generated
     public static class Extent {
 
         @JsonPropertyDescription("Title of the html page")
@@ -113,6 +140,7 @@ public class Configuration {
     }
 
     @Getter
+    @Generated
     public static class WebDriver {
 
         @JsonPropertyDescription("WebDriver's fluent waits")
@@ -134,6 +162,7 @@ public class Configuration {
         private Events events;
 
         @Getter
+        @Generated
         public static class Waits {
 
             @JsonPropertyDescription("Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found")
@@ -154,6 +183,7 @@ public class Configuration {
         }
 
         @Getter
+        @Generated
         public static class Chrome {
 
             @JsonPropertyDescription("Chrome's args")
@@ -164,6 +194,7 @@ public class Configuration {
         }
 
         @Getter
+        @Generated
         public static class Firefox {
 
             @JsonPropertyDescription("Firefox's args")
@@ -177,6 +208,7 @@ public class Configuration {
         }
 
         @Getter
+        @Generated
         public static class Edge {
 
             @JsonPropertyDescription("Edge's args")
@@ -187,6 +219,7 @@ public class Configuration {
         }
 
         @Getter
+        @Generated
         public static class Logs {
 
             @JsonPropertyDescription("The level at which webDriver's logs will be logged in Spectrum (execution) logs")
@@ -204,6 +237,7 @@ public class Configuration {
         }
 
         @Getter
+        @Generated
         public static class Events {
             private Event beforeAnyCall;
             private Event afterAnyCall;
@@ -325,6 +359,7 @@ public class Configuration {
         }
 
         @Getter
+        @Generated
         public static class Event {
 
             @JsonPropertyDescription("Level at which this event will be logged")
@@ -337,9 +372,10 @@ public class Configuration {
     }
 
     @Getter
+    @Generated
     public static class Data {
 
-        @JsonPropertyDescription("subfolder under src/test/resources where to find your data*.yaml")
+        @JsonPropertyDescription("sub-folder under src/test/resources where to find your data*.yaml")
         private String folder;
 
         @JsonPropertyDescription("you need to provide the fully qualified name of your Data class, meaning its package name AND class name")
@@ -347,6 +383,7 @@ public class Configuration {
     }
 
     @Getter
+    @Generated
     public static class FreeMarker {
 
         @JsonPropertyDescription("FreeMarker version. See https://freemarker.apache.org/docs/app_versions.html")

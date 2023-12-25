@@ -1,11 +1,9 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import io.github.giulong.spectrum.utils.testbook.TestBook;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,11 +21,9 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumSessionListener.*;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
@@ -36,6 +32,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("SpectrumSessionListener")
 class SpectrumSessionListenerTest {
 
+    private static MockedStatic<Configuration> configurationMockedStatic;
     private static MockedStatic<ExtentReporter> extentReportsWrapperMockedStatic;
     private static MockedStatic<SLF4JBridgeHandler> slf4JBridgeHandlerMockedStatic;
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;
@@ -58,16 +55,7 @@ class SpectrumSessionListenerTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.Extent extent;
-
-    @Mock
-    private TestBook testBook;
-
-    @Mock
     private LauncherSession launcherSession;
-
-    @Mock
-    private EventsDispatcher.EventsDispatcherBuilder eventsDispatcherBuilder;
 
     @Mock
     private EventsDispatcher eventsDispatcher;
@@ -77,12 +65,6 @@ class SpectrumSessionListenerTest {
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
-
-    @Mock
-    private List<EventsConsumer> consumers;
-
-    @Mock
-    private Configuration.FreeMarker freeMarker;
 
     @InjectMocks
     private SpectrumSessionListener spectrumSessionListener;
@@ -97,6 +79,7 @@ class SpectrumSessionListenerTest {
         ReflectionUtils.setField("configuration", spectrumSessionListener, configuration);
         ReflectionUtils.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
 
+        configurationMockedStatic = mockStatic(Configuration.class);
         extentReportsWrapperMockedStatic = mockStatic(ExtentReporter.class);
         slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
@@ -107,6 +90,7 @@ class SpectrumSessionListenerTest {
 
     @AfterEach
     public void afterEach() {
+        configurationMockedStatic.close();
         extentReportsWrapperMockedStatic.close();
         slf4JBridgeHandlerMockedStatic.close();
         fileUtilsMockedStatic.close();
@@ -127,57 +111,41 @@ class SpectrumSessionListenerTest {
 
         System.setProperty("os.name", "Win");
 
-        when(configuration.getExtent()).thenReturn(extent);
-
         when(fileUtils.read("/banner.txt")).thenReturn(banner);
         when(spectrumProperties.getVersion()).thenReturn(version);
-        when(configuration.getTestBook()).thenReturn(testBook);
-
-        when(extentReporter.setupFrom(extent)).thenReturn(extentReporter);
 
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         when(yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class)).thenReturn(spectrumProperties);
         when(yamlUtils.readInternalNode(PROFILE_NODE, CONFIGURATION_YAML, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultProfile");
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
-        when(yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class)).thenReturn(configuration);
 
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
-        when(configuration.getFreeMarker()).thenReturn(freeMarker);
-
-        when(configuration.getEventsConsumers()).thenReturn(consumers);
-        when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
-        when(eventsDispatcherBuilder.consumers(consumers)).thenReturn(eventsDispatcherBuilder);
-        when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
+        when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
 
         spectrumSessionListener.launcherSessionOpened(launcherSession);
-
-        verify(testBook).parse();
 
         slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::removeHandlersForRootLogger);
         slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::install);
 
+        verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
-        verify(freeMarkerWrapper).setupFrom(freeMarker);
 
-        verify(extentReporter).cleanupOldReports(extent);
-
-        assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
-
-        verify(eventsDispatcher).fire(BEFORE, Set.of(SUITE));
+        verify(configuration).sessionOpened();
+        verify(extentReporter).sessionOpenedFrom(configuration);
+        verify(freeMarkerWrapper).sessionOpenedFrom(configuration);
+        verify(eventsDispatcher).sessionOpenedFrom(configuration);
     }
 
     @Test
     @DisplayName("launcherSessionClosed should flush the testbook and the extent report")
     public void launcherSessionClosed() {
-        when(configuration.getTestBook()).thenReturn(testBook);
-
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
-        verify(testBook).flush();
-        verify(extentReporter).flush();
-        verify(eventsDispatcher).fire(AFTER, Set.of(SUITE));
+        verify(configuration).sessionClosed();
+        verify(extentReporter).sessionClosed();
+        verify(eventsDispatcher).sessionClosed();
     }
 
     @DisplayName("buildVersionLine should build the fixed-length line with the version to put in the logged banner")
@@ -216,14 +184,11 @@ class SpectrumSessionListenerTest {
         // parseVars
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
 
-        when(yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class)).thenReturn(configuration);
-
         spectrumSessionListener.parseConfiguration();
 
+        verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
-
-        assertEquals(configuration, SpectrumSessionListener.getConfiguration());
     }
 
     @Test
@@ -244,15 +209,12 @@ class SpectrumSessionListenerTest {
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class)).thenReturn(Map.of("one", "one"));
 
-        when(yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class)).thenReturn(configuration);
-
         spectrumSessionListener.parseConfiguration();
 
+        verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
-
-        assertEquals(configuration, SpectrumSessionListener.getConfiguration());
     }
 
     @DisplayName("parseProfiles should parse the profile node from both the internal configuration.yaml and the base configuration.yaml and return the merged value")
@@ -318,20 +280,6 @@ class SpectrumSessionListenerTest {
                 arguments(Map.of("one", "one"), null, Map.of("three", "three"), Map.of("one", "one", "three", "three")),
                 arguments(Map.of("one", "one"), Map.of("two", "two"), Map.of("three", "three"), Map.of("one", "one", "two", "two", "three", "three"))
         );
-    }
-
-    @Test
-    @DisplayName("initEventsDispatcher should build the events dispatcher with all the event consumers configured")
-    public void initEventsDispatcher() {
-        when(configuration.getEventsConsumers()).thenReturn(consumers);
-        when(EventsDispatcher.builder()).thenReturn(eventsDispatcherBuilder);
-        when(eventsDispatcherBuilder.consumers(consumers)).thenReturn(eventsDispatcherBuilder);
-        when(eventsDispatcherBuilder.build()).thenReturn(eventsDispatcher);
-
-        SpectrumSessionListener.configuration = configuration;
-        spectrumSessionListener.initEventsDispatcher();
-
-        assertEquals(eventsDispatcher, SpectrumSessionListener.getEventsDispatcher());
     }
 
     @DisplayName("isUnix should check the OS")
