@@ -372,7 +372,7 @@ webDriver:
 
 # Data models
 data:
-  folder: data  # subfolder under src/test/resources where to find your data*.yaml
+  folder: data  # sub-folder under src/test/resources where to find your data*.yaml
   fqdn: fqdn.placeholder  # you need to provide the fully qualified name of your Data class, meaning its package name AND class name
 
 # FreeMarker template engine configuration. See https://freemarker.apache.org/
