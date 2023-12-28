@@ -11,7 +11,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
-import io.github.giulong.spectrum.internals.jackson.views.Views;
+import io.github.giulong.spectrum.internals.jackson.views.Views.Public;
 import io.github.giulong.spectrum.pojos.DynamicDeserializersConfiguration;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -30,6 +30,7 @@ public final class YamlUtils {
     private static final YamlUtils INSTANCE = new YamlUtils();
     private static final Path RESOURCES = Path.of("src", "test", "resources");
 
+    private final ClassLoader classLoader = YamlUtils.class.getClassLoader();
     private final ObjectMapper propertiesMapper = new JavaPropsMapper();
 
     private final ObjectMapper yamlMapper = new YAMLMapper()
@@ -96,14 +97,13 @@ public final class YamlUtils {
         return false;
     }
 
-    @SneakyThrows
     public <T> T read(final String file, final Class<T> clazz, final boolean internal) {
         if (notExists(file, internal)) {
             return null;
         }
 
         log.debug("Reading {} file '{}' onto an instance of {}", internal ? "internal" : "client", file, clazz.getSimpleName());
-        return yamlMapper.readValue(YamlUtils.class.getClassLoader().getResource(file), clazz);
+        return read(yamlMapper, file, clazz);
     }
 
     public <T> T read(final String file, final Class<T> clazz) {
@@ -114,10 +114,9 @@ public final class YamlUtils {
         return read(file, clazz, true);
     }
 
-    @SneakyThrows
     public <T> T readProperties(final String file, final Class<T> clazz) {
         log.debug("Reading properties file '{}' onto an instance of {}", file, clazz.getSimpleName());
-        return propertiesMapper.readValue(YamlUtils.class.getClassLoader().getResource(file), clazz);
+        return read(propertiesMapper, file, clazz);
     }
 
     @SneakyThrows
@@ -127,7 +126,7 @@ public final class YamlUtils {
         }
 
         log.debug("Reading node '{}' of {} file '{}' onto an instance of {}", node, internal ? "internal" : "client", file, clazz.getSimpleName());
-        final JsonNode root = yamlMapper.readTree(YamlUtils.class.getClassLoader().getResource(file));
+        final JsonNode root = yamlMapper.readTree(classLoader.getResource(file));
         return yamlMapper.convertValue(root.at(node), clazz);
     }
 
@@ -142,8 +141,10 @@ public final class YamlUtils {
     @SneakyThrows
     public <T> T readDynamicDeserializable(final String configFile, final Class<T> clazz, final JsonNode jsonNode) {
         log.debug("Reading dynamic conf file '{}' onto an instance of {}", configFile, clazz.getSimpleName());
-        final T t = dynamicConfYamlMapper.readValue(YamlUtils.class.getClassLoader().getResource(configFile), clazz);
-        return dynamicConfYamlMapper.readerForUpdating(t).readValue(jsonNode);
+        final T t = read(dynamicConfYamlMapper, configFile, clazz);
+        return dynamicConfYamlMapper
+                .readerForUpdating(t)
+                .readValue(jsonNode);
     }
 
     @SneakyThrows
@@ -155,13 +156,23 @@ public final class YamlUtils {
         }
 
         log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), file);
-        yamlMapper.readerForUpdating(t).withView(Views.Public.class).readValue(YamlUtils.class.getClassLoader().getResource(file));
+        yamlMapper
+                .readerForUpdating(t)
+                .withView(Public.class)
+                .readValue(classLoader.getResource(file));
     }
 
     @SneakyThrows
     public <T> void updateWithInternalFile(final T t, final String file) {
         log.debug("Updating the instance of {} with internal file '{}'", t.getClass().getSimpleName(), file);
-        yamlMapper.readerForUpdating(t).readValue(YamlUtils.class.getClassLoader().getResource(file));
+        yamlMapper
+                .readerForUpdating(t)
+                .readValue(classLoader.getResource(file));
+    }
+
+    @SneakyThrows
+    public <T> T read(final ObjectMapper objectMapper, final String fileName, final Class<T> clazz) {
+        return objectMapper.readValue(classLoader.getResource(fileName), clazz);
     }
 
     @SneakyThrows
