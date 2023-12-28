@@ -33,8 +33,11 @@ public abstract class FileTestBookReporter extends TestBookReporter {
         final String extension = FILE_UTILS.getExtensionOf(output);
         log.info("{} testBooks to keep: {}", extension, retention.getTotal());
 
-        final Path folder = Path.of(FILE_UTILS.interpolateTimestampFrom(output)).getParent();
-        final File[] folderContent = folder.toFile().listFiles();
+        final File[] folderContent = Path
+                .of(output)
+                .getParent()
+                .toFile()
+                .listFiles();
 
         if (folderContent == null) {
             return;
@@ -53,7 +56,7 @@ public abstract class FileTestBookReporter extends TestBookReporter {
     @Override
     @SneakyThrows
     public void doOutputFrom(final String interpolatedTemplate) {
-        final Path outputPath = Path.of(FILE_UTILS.interpolateTimestampFrom(output));
+        final Path outputPath = Path.of(output);
         Files.createDirectories(outputPath.getParent());
         Files.write(outputPath, interpolatedTemplate.getBytes());
     }
