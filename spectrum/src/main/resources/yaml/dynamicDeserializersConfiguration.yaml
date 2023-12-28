@@ -1,0 +1,5 @@
+dynamicDeserializers:
+  - clazz: io.github.giulong.spectrum.utils.testbook.reporters.HtmlTestBookReporter
+    configFile: yaml/dynamic/htmlTestBookReporter.yaml
+  - clazz: io.github.giulong.spectrum.utils.testbook.reporters.TxtTestBookReporter
+    configFile: yaml/dynamic/txtTestBookReporter.yaml

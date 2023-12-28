@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.testbook.reporters;
 
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.Retention;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,17 +14,15 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.regex.Pattern;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("TxtTestBookReporter")
-class TxtTestBookReporterTest {
+@DisplayName("FileTestBookReporter")
+class FileTestBookReporterTest {
 
-    private static final Pattern PATTERN = Pattern.compile(".*[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.txt");
+    private static final String OUTPUT = "output.abc";
 
     private MockedStatic<Path> pathMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
@@ -63,6 +62,7 @@ class TxtTestBookReporterTest {
 
     @BeforeEach
     public void beforeEach() {
+        ReflectionUtils.setParentField("output", testBookReporter, testBookReporter.getClass().getSuperclass(), OUTPUT);
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
     }
@@ -77,9 +77,9 @@ class TxtTestBookReporterTest {
     @DisplayName("cleanupOldReports should delete the proper number of old reports and the corresponding directories")
     public void cleanupOldReports() {
         final int total = 123;
-        final String file1Name = "file1Name.txt";
-        final String file2Name = "file2Name.txt";
-        final String file3Name = "file2Name.notMatching";
+        final String file1Name = "file1Name.abc";
+        final String file2Name = "file2Name.abc";
+        final String file3Name = "file3Name.notMatching";
         final long lastModified = 1L;
 
         when(retention.getTotal()).thenReturn(total);
@@ -101,7 +101,7 @@ class TxtTestBookReporterTest {
 
         testBookReporter.cleanupOldReports();
 
-        assertThat(stringArgumentCaptor.getValue(), matchesPattern(PATTERN));
+        assertEquals(OUTPUT, stringArgumentCaptor.getValue());
 
         verify(retention).deleteOldArtifactsFrom(List.of(file1, file2));
     }
@@ -120,7 +120,7 @@ class TxtTestBookReporterTest {
 
         testBookReporter.cleanupOldReports();
 
-        assertThat(stringArgumentCaptor.getValue(), matchesPattern(PATTERN));
+        assertEquals(OUTPUT, stringArgumentCaptor.getValue());
 
         verifyNoMoreInteractions(retention);
     }
@@ -137,7 +137,7 @@ class TxtTestBookReporterTest {
         filesMockedStatic.verify(() -> Files.createDirectories(parentPath));
         filesMockedStatic.verify(() -> {
             Files.write(path, interpolatedTemplate.getBytes());
-            assertThat(stringArgumentCaptor.getValue(), matchesPattern(PATTERN));
+            assertEquals(OUTPUT, stringArgumentCaptor.getValue());
         });
     }
 }

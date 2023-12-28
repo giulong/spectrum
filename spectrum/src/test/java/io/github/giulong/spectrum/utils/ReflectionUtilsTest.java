@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ReflectionUtils")
@@ -60,6 +60,18 @@ class ReflectionUtilsTest {
     }
 
     @Test
+    @DisplayName("setParentField should set the provided field of a superclass on the provided object with the provided value")
+    public void setParentField() throws NoSuchFieldException, IllegalAccessException {
+        final String fieldName = "parentField";
+        final String value = "value";
+        final Dummy dummy = new Dummy();
+        final Field parentField = DummyParent.class.getDeclaredField(fieldName);
+
+        ReflectionUtils.setParentField(fieldName, dummy, DummyParent.class, value);
+        assertEquals(value, parentField.get(dummy));
+    }
+
+    @Test
     @DisplayName("copyField should copy the provided field")
     public void copyField() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";
@@ -76,12 +88,17 @@ class ReflectionUtilsTest {
     @SuppressWarnings("unused")
     @AllArgsConstructor
     @NoArgsConstructor
-    private static class Dummy {
+    private static class Dummy extends DummyParent {
         private String fieldString;
     }
 
     @SuppressWarnings("unused")
     private static class DummySecond {
         private String fieldString;
+    }
+
+    @SuppressWarnings("unused")
+    private static class DummyParent {
+        private String parentField;
     }
 }

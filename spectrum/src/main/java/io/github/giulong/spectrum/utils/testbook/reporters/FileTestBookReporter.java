@@ -19,15 +19,17 @@ import static java.util.Comparator.comparingLong;
 @SuppressWarnings("unused")
 public abstract class FileTestBookReporter extends TestBookReporter {
 
-    @SuppressWarnings("FieldMayBeFinal")
-    @JsonPropertyDescription("Retention rules configuration")
-    private Retention retention = new Retention();
+    @JsonPropertyDescription("Path to the template to be used, relative to src/test/resources")
+    private String template;
 
-    public abstract String getOutput();
+    @JsonPropertyDescription("Where to produce the output, relative to the root of the project")
+    private String output;
+
+    @JsonPropertyDescription("Retention rules configuration")
+    private Retention retention;
 
     @Override
     public void cleanupOldReports() {
-        final String output = getOutput();
         final String extension = FILE_UTILS.getExtensionOf(output);
         log.info("{} testBooks to keep: {}", extension, retention.getTotal());
 
@@ -51,7 +53,7 @@ public abstract class FileTestBookReporter extends TestBookReporter {
     @Override
     @SneakyThrows
     public void doOutputFrom(final String interpolatedTemplate) {
-        final Path outputPath = Path.of(FILE_UTILS.interpolateTimestampFrom(getOutput()));
+        final Path outputPath = Path.of(FILE_UTILS.interpolateTimestampFrom(output));
         Files.createDirectories(outputPath.getParent());
         Files.write(outputPath, interpolatedTemplate.getBytes());
     }

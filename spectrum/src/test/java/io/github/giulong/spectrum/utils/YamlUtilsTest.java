@@ -1,5 +1,8 @@
 package io.github.giulong.spectrum.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import io.github.giulong.spectrum.TestYaml;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +11,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Objects;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
@@ -25,6 +29,38 @@ class YamlUtilsTest {
     public void getInstance() {
         //noinspection EqualsWithItself
         assertSame(YamlUtils.getInstance(), YamlUtils.getInstance());
+    }
+
+    @Test
+    @DisplayName("on construction, all the dynamic deserializers should be registered on the yamlMapper, while not on the dynamicConfYamlMapper")
+    public void construction() {
+        assertEquals(Set.of(), yamlUtils.getPropertiesMapper().getRegisteredModuleIds());
+
+        assertEquals(Set.of(
+                "jackson-datatype-jsr310",
+                "InterpolatedObjectDeserializer",
+                "InterpolatedStringDeserializer",
+                "InterpolatedBooleanDeserializer",
+                "UtilLogLevelDeserializer",
+                "LogbackLogLevelDeserializer",
+                "DurationDeserializer",
+                "BrowserDeserializer",
+                "ClassDeserializer",
+                "HtmlTestBookReporter",
+                "TxtTestBookReporter"
+        ), yamlUtils.getYamlMapper().getRegisteredModuleIds());
+
+        assertEquals(Set.of(
+                "jackson-datatype-jsr310",
+                "InterpolatedObjectDeserializer",
+                "InterpolatedStringDeserializer",
+                "InterpolatedBooleanDeserializer",
+                "UtilLogLevelDeserializer",
+                "LogbackLogLevelDeserializer",
+                "DurationDeserializer"
+        ), yamlUtils.getDynamicConfYamlMapper().getRegisteredModuleIds());
+
+        assertFalse(yamlUtils.getWriter().isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
     }
 
     @Test
@@ -82,9 +118,21 @@ class YamlUtilsTest {
     }
 
     @Test
+    @DisplayName("readDynamicDeserializable should read the internal dynamic deserializable configuration provided, and merge the jsonNode provided on the created instance")
+    public void readDynamicDeserializable() {
+        final JsonNode jsonNode = JsonNodeFactory.instance
+                .objectNode()
+                .put("key", "merged");
+
+        final TestYaml mergedYaml = yamlUtils.readDynamicDeserializable("test.yaml", TestYaml.class, jsonNode);
+        assertEquals("merged", mergedYaml.getKey());
+        assertEquals("objectValue", mergedYaml.getObjectKey().getObjectField());
+    }
+
+    @Test
     @DisplayName("updateWithFile should update the provided instance with the file provided, reading only public fields")
     public void updateWithFile() {
-        TestYaml testYaml = TestYaml.builder()
+        final TestYaml testYaml = TestYaml.builder()
                 .key("original")
                 .internalKey(TestYaml.InternalKey.builder().field("field").build())
                 .build();
@@ -97,7 +145,7 @@ class YamlUtilsTest {
     @Test
     @DisplayName("updateWithFile should do nothing if the provided file doesn't exist")
     public void updateWithNotExistingFile() {
-        TestYaml testYaml = TestYaml.builder().key("original").build();
+        final TestYaml testYaml = TestYaml.builder().key("original").build();
 
         yamlUtils.updateWithFile(testYaml, "not-existing");
         assertEquals("original", testYaml.getKey());
@@ -106,7 +154,7 @@ class YamlUtilsTest {
     @Test
     @DisplayName("updateWithInternalFile should update the provided instance with the internal file provided")
     public void updateWithInternalFile() {
-        TestYaml testYaml = TestYaml.builder().key("original").build();
+        final TestYaml testYaml = TestYaml.builder().key("original").build();
 
         yamlUtils.updateWithInternalFile(testYaml, "test.yaml");
         assertEquals("value", testYaml.getKey());

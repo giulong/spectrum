@@ -1,0 +1,4 @@
+html:
+  template: testbook/template.html
+  output: target/spectrum/testbook/testbook-${timestamp}.html
+  retention: { }

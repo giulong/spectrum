@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
 import ch.qos.logback.classic.Level;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -11,7 +12,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
 import io.github.giulong.spectrum.internals.jackson.views.Views;
-import lombok.NoArgsConstructor;
+import io.github.giulong.spectrum.pojos.DynamicDeserializersConfiguration;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,18 +22,13 @@ import java.nio.file.Path;
 import java.time.Duration;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
-import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
-@NoArgsConstructor(access = PRIVATE)
+@Getter
 public final class YamlUtils {
 
     private static final YamlUtils INSTANCE = new YamlUtils();
     private static final Path RESOURCES = Path.of("src", "test", "resources");
-
-    public static YamlUtils getInstance() {
-        return INSTANCE;
-    }
 
     private final ObjectMapper propertiesMapper = new JavaPropsMapper();
 
@@ -39,19 +36,55 @@ public final class YamlUtils {
             .setDefaultMergeable(true)
             .registerModules(
                     new JavaTimeModule(),
-                    new SimpleModule().addDeserializer(Object.class, InterpolatedObjectDeserializer.getInstance()),
-                    new SimpleModule().addDeserializer(String.class, InterpolatedStringDeserializer.getInstance()),
-                    new SimpleModule().addDeserializer(boolean.class, InterpolatedBooleanDeserializer.getInstance()),
-                    new SimpleModule().addDeserializer(java.util.logging.Level.class, UtilLogLevelDeserializer.getInstance()),
-                    new SimpleModule().addDeserializer(Level.class, LogbackLogLevelDeserializer.getInstance()),
-                    new SimpleModule().addDeserializer(Duration.class, DurationDeserializer.getInstance()),
-                    new SimpleModule().addDeserializer(Browser.class, BrowserDeserializer.getInstance())
+                    buildModuleFor(Object.class, InterpolatedObjectDeserializer.getInstance()),
+                    buildModuleFor(String.class, InterpolatedStringDeserializer.getInstance()),
+                    buildModuleFor(boolean.class, InterpolatedBooleanDeserializer.getInstance()),
+                    buildModuleFor(java.util.logging.Level.class, UtilLogLevelDeserializer.getInstance()),
+                    buildModuleFor(Level.class, LogbackLogLevelDeserializer.getInstance()),
+                    buildModuleFor(Duration.class, DurationDeserializer.getInstance()),
+                    buildModuleFor(Browser.class, BrowserDeserializer.getInstance()),
+                    buildModuleFor(Class.class, ClassDeserializer.getInstance())
+            );
+
+    private final ObjectMapper dynamicConfYamlMapper = new YAMLMapper()
+            .setDefaultMergeable(true)
+            .registerModules(
+                    new JavaTimeModule(),
+                    buildModuleFor(Object.class, InterpolatedObjectDeserializer.getInstance()),
+                    buildModuleFor(String.class, InterpolatedStringDeserializer.getInstance()),
+                    buildModuleFor(boolean.class, InterpolatedBooleanDeserializer.getInstance()),
+                    buildModuleFor(java.util.logging.Level.class, UtilLogLevelDeserializer.getInstance()),
+                    buildModuleFor(Level.class, LogbackLogLevelDeserializer.getInstance()),
+                    buildModuleFor(Duration.class, DurationDeserializer.getInstance())
             );
 
     private final ObjectWriter writer = new YAMLMapper()
             .configure(FAIL_ON_EMPTY_BEANS, false)
             .registerModules(new JavaTimeModule())
             .writerWithDefaultPrettyPrinter();
+
+    private YamlUtils() {
+        readInternal("yaml/dynamicDeserializersConfiguration.yaml", DynamicDeserializersConfiguration.class)
+                .getDynamicDeserializers()
+                .stream()
+                .map(DynamicDeserializer.class::cast)
+                .peek(deserializer -> log.trace("Registering dynamic deserializer module {}", deserializer.getClazz().getSimpleName()))
+                .forEach(deserializer -> {
+                    final Class<?> clazz = deserializer.getClazz();
+                    //noinspection unchecked
+                    yamlMapper.registerModule(new SimpleModule(clazz.getSimpleName()).addDeserializer(clazz, deserializer));
+                });
+    }
+
+    public static YamlUtils getInstance() {
+        return INSTANCE;
+    }
+
+    @SuppressWarnings("rawtypes")
+    public SimpleModule buildModuleFor(final Class<?> clazz, final JsonDeserializer jsonDeserializer) {
+        //noinspection unchecked
+        return new SimpleModule(jsonDeserializer.getClass().getSimpleName()).addDeserializer(clazz, jsonDeserializer);
+    }
 
     public boolean notExists(final String file, final boolean internal) {
         final Path path = Path.of(file);
@@ -104,6 +137,13 @@ public final class YamlUtils {
 
     public <T> T readInternalNode(final String node, final String file, final Class<T> clazz) {
         return readNode(node, file, clazz, true);
+    }
+
+    @SneakyThrows
+    public <T> T readDynamicDeserializable(final String configFile, final Class<T> clazz, final JsonNode jsonNode) {
+        log.debug("Reading dynamic conf file '{}' onto an instance of {}", configFile, clazz.getSimpleName());
+        final T t = dynamicConfYamlMapper.readValue(YamlUtils.class.getClassLoader().getResource(configFile), clazz);
+        return dynamicConfYamlMapper.readerForUpdating(t).readValue(jsonNode);
     }
 
     @SneakyThrows
