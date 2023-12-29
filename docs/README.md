@@ -1653,7 +1653,7 @@ slack:
 
 ---
 
-# TestBook (Coverage)
+# TestBook - Coverage
 
 Talking about coverage for e2e tests is not so straightforward. Coverage makes sense for unit tests, since they directly run against methods,
 so it's easy to check which lines were covered during the execution.

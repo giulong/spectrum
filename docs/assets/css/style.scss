@@ -216,6 +216,20 @@ h2, h3, h4 {
     margin-top: 25px;
 }
 
+h1, h2, h3, h4 {
+    cursor: pointer;
+}
+
+h1:hover::after, h2:hover::after, h3:hover::after, h4:hover::after {
+    content: url('../images/permalink-icon.png');
+    margin-left: 4px;
+}
+
+h3:hover::after, h4:hover::after {
+    position: relative;
+    top: 2px;
+}
+
 tbody tr td:first-child {
     font-weight: bold;
 }
