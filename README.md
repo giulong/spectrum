@@ -31,7 +31,6 @@
   <ol>
     <li><a href="#about">About</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#license">License</a></li>
     <li><a href="#contacts">Contacts</a></li>
     <li><a href="#local-development">Local Development</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -40,14 +39,17 @@
 
 ## About
 
-Spectrum is a **JUnit 5** and **Selenium 4** framework that aims to simplify the writing of e2e tests providing these features:
+Spectrum is a **JUnit 5** and **Selenium 4** framework that aims to simplify the writing of e2e tests providing these features automatically:
 
-* automatic **log and html report** generation
-* automatic **execution video** generation
-* automatic **coverage report** generation by reading a **testbook**
-* automatic **mail/slack notifications** with reports as attachments
-* fully configurable providing human-readable and **declarative yaml files**
-* **out-of-the-box defaults** to let you run tests with no additional configuration
+* **Webdriver** instantiation
+* **Log and html report** generation
+* **Execution video** generation
+* **Coverage report** generation by reading a **testbook**
+* **Mail/Slack notifications** with reports as attachments
+
+Spectrum manages all the boilerplate code to get these features, allowing you to focus on test logic.
+* It is fully configurable via a **declarative yaml file**
+* It provides **out-of-the-box defaults** to let you run tests with no additional configuration
 
 ## Getting Started
 
@@ -58,9 +60,9 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 > ⚠️ JDK<br/>
 > Since Spectrum is compiled with a jdk 17, you need a [jdk 17+](https://jdk.java.net/java-se-ri/17) to be able to run your tests.
 
-1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) via your IDE or by running this (replacing `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATION>` with actual values):
+1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) via your IDE or by running this in a terminal and providing values when prompted:
 
-    `mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION> -DoutputDirectory=<DESTINATION>`
+   `mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST`
 2. Run the `src/test/java/<PACKAGE NAME>/tests/LoginFormIT` demo test injected by the archetype. You will see an instance of Chrome starting.
 3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` html report with the execution video attached.
 
@@ -73,19 +75,17 @@ https://github.com/giulong/spectrum/assets/27963644/187e237c-7db1-494b-8a3b-5839
 
 For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/)
 
-## License
-
-Distributed under the [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) License. See [LICENSE](LICENSE) for more information.
-
 ## Contacts
 
-[Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)
+| Creator         | GitHub ![github logo](src/main/resources/images/github-mark.png) | Linkedin ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)      | Email ![gmail logo](src/main/resources/images/gmail-icon.png) |
+|-----------------|------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------------------------------------|
+| Giulio Longfils | [giulong](https://github.com/giulong)                            | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)   |
 
-If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
+> If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
 
 ## Local development
 
-If you're interested in building this repo locally, check out the [DEV readme](DEV.md).
+If you're interested in building Spectrum locally, check out the [DEV readme](DEV.md)
 
 ## Acknowledgments
 
