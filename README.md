@@ -12,15 +12,15 @@
 <br/>
 <br/>
 <div>
-<a href="https://giulong.github.io/spectrum/" target="_blank">Full Docs</a>
+<a href="https://giulong.github.io/spectrum/">Full Docs</a>
 ·
-<a href="https://giulong.github.io/spectrum/apidocs/" target="_blank">Javadoc</a>
+<a href="https://giulong.github.io/spectrum/apidocs/">Javadoc</a>
 ·
-<a href="https://giulong.github.io/spectrum/jacoco/" target="_blank">Coverage</a>
+<a href="https://giulong.github.io/spectrum/jacoco/">Coverage</a>
 ·
-<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E" target="_blank">Report Bug</a>
+<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E">Report Bug</a>
 ·
-<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E" target="_blank">Request Feature</a>
+<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E">Request Feature</a>
 
 </div>
 </div>

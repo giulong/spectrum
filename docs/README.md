@@ -64,6 +64,14 @@ project:
 </dependency>
 ```
 
+> ⚠️ <b>Spectrum version</b><br/>
+> The snippet above references the `LATEST` version just to be ready to use. 
+> Nevertheless, it's highly recommended to use the explicit version you can find in 
+> [Maven central](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"}.
+> 
+> With `LATEST`, if a new version which introduces breaking changes is published, your next build would 
+> download it and potentially fail.
+
 > ⚠️ <b>Lombok Library</b><br/>
 > The demo test injected by the archetype uses [Lombok](https://projectlombok.org/){:target="_blank"} to generate getters. Lombok is internally used in Spectrum, and provided as a
 > transitive
@@ -617,7 +625,7 @@ You can add your own and even override the default ones in your `configuration*.
 
 ## Running on a Grid
 
-By default, browsers run in local. This is because the default value in the internal 
+By default, browsers run in local. This is because the default value in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml{:target="_blank"})
 is:
 
@@ -770,7 +778,7 @@ webDriver:
 > There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
 > If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard duplicate frames.
 
-The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>` 
+The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>`
 folder and attached to the Extent Report as well, where:
 
 * `extent.reportFolder` &rarr; `target/spectrum/reports` by default
@@ -2012,7 +2020,7 @@ This is what it looks like when opened in a browser:
 ## Default TestBook
 
 The one below is the testBook in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
-As you can see, it has a quality gate already set, as well as a yaml parser and log and html reporters.
+As you can see, it has a quality gate already set, as well as a yaml parser but no reporters.
 
 {% include copyCode.html %}
 
@@ -2025,19 +2033,19 @@ testBook:
   parser:
     yaml:
       path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
-  reporters:
-    - log: { }  # the report will be logged
-    - html:
-        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
 ```
 
-It's disabled by default. To activate it with no additional settings, you just need to set this in your `configuration.yaml`:
+It's disabled by default. You need to enable it in your `configuration.yaml`, while providing the reporters you want:
 
 {% include copyCode.html %}
 
 ```yaml
 testBook:
   enabled: true
+  reporters:
+    - log: { }  # the report will be logged
+    - html:
+        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
 ```
 
 > ⚠️ <b>Enabling testBook</b><br/>
@@ -2108,6 +2116,7 @@ Let's see how your project will look like. Few assumptions for this example:
     * uat &rarr; `configuration-uat.yaml` + `data-uat.yaml`
 * you configured the yaml testbook parser, which will read the `testbook.yaml`
 * you configured both a html and a txt testbook reporters, which will produce `testbook.html` and `testbook.txt` reports
+* you configured the extent report to have a fixed name with: `extent.fileName: report.html`
 
 {% include copyCode.html %}
 
@@ -2134,8 +2143,9 @@ root
 |     |─ logs
 |     |  └─ spectrum.log   # rotated daily
 |     |─ reports
-|     |  |─ screenshots    # folder where Extent Reports screenshots are saved
-|     |  |─ videos         # folder where videos are saved
+|     |  |─ report         # each report file (report.html in this example) has an associated folder
+|     |  |  |─ screenshots    # folder where Extent Reports screenshots are saved
+|     |  |  └─ videos         # folder where videos are saved
 |     |  └─ report.html    # by default the name ends with the timestamp
 |     └─ testbook
 |        |─ testbook.html  # by default the name ends with the timestamp
@@ -2147,10 +2157,19 @@ root
 
 # Bugs Report and Feature Requests
 
-Found a bug? Want to request a new feature? Please [open an issue](https://github.com/giulong/spectrum/issues/new/choose){:target="_blank"}.
+Found a bug? Want to request a new feature? Just follow these links and provide the requested details:
+
+* [Report Bug](https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E){:target="_blank"}
+* [Request Feature](https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E){:target="_blank"}
+
+If you're not sure about what to ask, or for anything else related to Spectrum, you can also choose a proper [discussion category](https://github.com/giulong/spectrum/discussions/new/choose){:target="_blank"}.
 
 ---
 
-Creator: [Giulio Longfils ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)](https://www.linkedin.com/in/giuliolongfils/){:target="_blank"}
+# Contacts
 
-If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏
+| Creator         | GitHub ![github logo](assets/images/github-mark.png)    | Linkedin ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)                        | Email ![gmail logo](assets/images/gmail-icon.png)           |
+|-----------------|---------------------------------------------------------|----------------------------------------------------------------------------------|-------------------------------------------------------------|
+| Giulio Longfils | [giulong](https://github.com/giulong){:target="_blank"} | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/){:target="_blank"} | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
+
+> If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏
