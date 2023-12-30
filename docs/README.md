@@ -2105,6 +2105,18 @@ testBook:
 
 ---
 
+# Cache
+
+Spectrum caches a `metadata.json` file to store some cross-executions metadata, such as the last successful executions.
+This is purely internal implementation and you should never edit that file manually.
+Still, you can specify its location via the `runtime.cacheFolder` parameter in your `configuration.yaml`.
+
+The default value, as you can see in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
+is `${user.home}/.cache/spectrum`
+
+---
+
 # Project Structure
 
 Let's see how your project will look like. Few assumptions for this example:

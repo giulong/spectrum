@@ -4,12 +4,13 @@ vars:
 
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:
-  profiles: ${spectrum.profiles:-local} # profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
-  browser: ${spectrum.browser:-chrome}  # browser to use
+  profiles: ${spectrum.profiles:-local} # Profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
+  browser: ${spectrum.browser:-chrome}  # Browser to use
   environment: # Runtime environment. Can be local or grid
     local: { }
-  filesFolder: src/test/resources/files # folder where you will store files to be checked against downloaded ones
-  downloadsFolder: ${downloadsFolder} # destination folder for files downloaded during the execution
+  filesFolder: src/test/resources/files # Folder where you will store files to be checked against downloaded ones
+  downloadsFolder: ${downloadsFolder} # Destination folder for files downloaded during the execution
+  cacheFolder: ${user.home}/.cache/spectrum # Cache folder for storing Spectrum internal cross-executions data
 
 # Application under test
 application:

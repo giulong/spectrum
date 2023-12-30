@@ -88,4 +88,12 @@ public final class FileUtils {
                     .forEach(f -> log.trace("File '{}' deleted? {}", f, f.delete()));
         }
     }
+
+    @SneakyThrows
+    public void write(final Path path, final String content) {
+        final boolean foldersCreated = path.getParent().toFile().mkdirs();
+        log.trace("Folders created? {}. Writing {} to file {}", foldersCreated, content, path);
+
+        Files.write(path, content.getBytes());
+    }
 }

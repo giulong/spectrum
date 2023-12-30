@@ -1,11 +1,7 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
-import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.YamlUtils;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.LauncherSession;
@@ -31,6 +27,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
     private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
     private final Configuration configuration = Configuration.getInstance();
+    private final Metadata metadata = Metadata.getInstance();
 
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
@@ -52,6 +49,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         configuration.sessionClosed();
         extentReporter.sessionClosedFrom(configuration);
         eventsDispatcher.sessionClosed();
+        metadata.sessionClosedFrom(configuration);
     }
 
     protected String buildVersionLine() {

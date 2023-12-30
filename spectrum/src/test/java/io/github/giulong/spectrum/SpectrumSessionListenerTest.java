@@ -66,6 +66,9 @@ class SpectrumSessionListenerTest {
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
 
+    @Mock
+    private Metadata metadata;
+
     @InjectMocks
     private SpectrumSessionListener spectrumSessionListener;
 
@@ -78,6 +81,7 @@ class SpectrumSessionListenerTest {
         ReflectionUtils.setField("extentReporter", spectrumSessionListener, extentReporter);
         ReflectionUtils.setField("configuration", spectrumSessionListener, configuration);
         ReflectionUtils.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
+        ReflectionUtils.setField("metadata", spectrumSessionListener, metadata);
 
         configurationMockedStatic = mockStatic(Configuration.class);
         extentReportsWrapperMockedStatic = mockStatic(ExtentReporter.class);
@@ -146,6 +150,7 @@ class SpectrumSessionListenerTest {
         verify(configuration).sessionClosed();
         verify(extentReporter).sessionClosedFrom(configuration);
         verify(eventsDispatcher).sessionClosed();
+        verify(metadata).sessionClosedFrom(configuration);
     }
 
     @DisplayName("buildVersionLine should build the fixed-length line with the version to put in the logged banner")

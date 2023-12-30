@@ -176,7 +176,7 @@ public final class YamlUtils {
     }
 
     @SneakyThrows
-    public String write(Object object) {
+    public String write(final Object object) {
         return writer.writeValueAsString(object);
     }
 }

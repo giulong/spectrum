@@ -84,22 +84,25 @@ public class Configuration implements SessionHook {
     @Generated
     public static class Runtime {
 
-        @JsonPropertyDescription("profiles to be activated. By default, it's 'local'")
+        @JsonPropertyDescription("Profiles to be activated. By default, it's 'local'")
         private String profiles;
 
         @JsonSerialize(using = ToStringSerializer.class)
         @JsonSchemaTypes(String.class)
-        @JsonPropertyDescription("browser to use")
+        @JsonPropertyDescription("Browser to use")
         private Browser<?, ?, ?> browser;
 
         @JsonPropertyDescription("Runtime environment. Can be local or grid")
         private Environment environment;
 
-        @JsonPropertyDescription("folder where you will store files to be checked against downloaded ones")
+        @JsonPropertyDescription("Folder where you will store files to be checked against downloaded ones")
         private String filesFolder;
 
-        @JsonPropertyDescription("destination folder for files downloaded during the execution")
+        @JsonPropertyDescription("Destination folder for files downloaded during the execution")
         private String downloadsFolder;
+
+        @JsonPropertyDescription("Cache folder for storing Spectrum internal cross-executions data")
+        private String cacheFolder;
     }
 
     @Getter

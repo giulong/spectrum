@@ -7,8 +7,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,6 +22,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("FileUtils")
@@ -115,10 +118,10 @@ class FileUtilsTest {
         );
     }
 
-    @DisplayName("deleteDownloadsFolder should delete and recreate the downloads folder")
+    @DisplayName("deleteDirectory should delete and recreate the provided folder")
     @ParameterizedTest(name = "with value {0} which is existing? {1}")
-    @MethodSource("deleteDownloadsFolderValuesProvider")
-    public void deleteDownloadsFolder(final Path directory, final boolean existing) {
+    @MethodSource("deleteDirectoryValuesProvider")
+    public void deleteDirectory(final Path directory, final boolean existing) {
         directory.toFile().deleteOnExit();
         assertEquals(existing, Files.exists(directory));
 
@@ -127,9 +130,29 @@ class FileUtilsTest {
         assertFalse(Files.exists(directory));
     }
 
-    public static Stream<Arguments> deleteDownloadsFolderValuesProvider() throws IOException {
+    public static Stream<Arguments> deleteDirectoryValuesProvider() throws IOException {
         return Stream.of(
                 arguments(Path.of("abc not existing"), false),
                 arguments(Files.createTempDirectory("downloadsFolder"), true));
+    }
+
+    @Test
+    @DisplayName("write should write the provided content to a file in the provided path, creating the parent folders if needed")
+    public void write() {
+        final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
+        final Path path = mock(Path.class);
+        final Path parentPath = mock(Path.class);
+        final File file = mock(File.class);
+        final String content = "content";
+
+        when(path.getParent()).thenReturn(parentPath);
+        when(parentPath.toFile()).thenReturn(file);
+
+        fileUtils.write(path, content);
+
+        verify(file).mkdirs();
+        filesMockedStatic.verify(() -> Files.write(path, content.getBytes()));
+
+        filesMockedStatic.close();
     }
 }
