@@ -189,7 +189,7 @@ class ExtentReporterTest {
     }
 
     @Test
-    @DisplayName("sessionOpenedFrom should init the extent report and cleanup old ones")
+    @DisplayName("sessionOpenedFrom should init the extent report")
     public void sessionOpenedFrom() {
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
@@ -200,8 +200,6 @@ class ExtentReporterTest {
         final String css = "css";
         final String absolutePathToString = "absolute\\Path\\To\\String";
         final String absolutePathToStringReplaced = "absolute/Path/To/String";
-
-        cleanupOldReportsStubs();
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(reportFolder);
@@ -236,18 +234,21 @@ class ExtentReporterTest {
 
         extentSparkReporterMockedConstruction.close();
         extentReportsMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("sessionClosedFrom should flush the extent report and cleanup old ones")
+    public void sessionClosedFrom() {
+        cleanupOldReportsStubs();
+        when(configuration.getExtent()).thenReturn(extent);
+
+        extentReporter.sessionClosedFrom(configuration);
+
+        verify(extentReports).flush();
 
         // cleanupOldReports
         verify(fileUtils).deleteDirectory(directory1Path);
         verify(fileUtils).deleteDirectory(directory2Path);
-    }
-
-    @Test
-    @DisplayName("sessionClosed should just flush the extent report")
-    public void sessionClosed() {
-        extentReporter.sessionClosed();
-
-        verify(extentReports).flush();
     }
 
     @Test

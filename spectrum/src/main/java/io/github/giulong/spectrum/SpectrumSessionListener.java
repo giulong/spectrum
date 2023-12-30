@@ -50,7 +50,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     @Override
     public void launcherSessionClosed(final LauncherSession session) {
         configuration.sessionClosed();
-        extentReporter.sessionClosed();
+        extentReporter.sessionClosedFrom(configuration);
         eventsDispatcher.sessionClosed();
     }
 

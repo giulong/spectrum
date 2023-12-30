@@ -44,7 +44,7 @@ class RetentionTest {
     @Test
     @DisplayName("deleteOldArtifactsFrom should delete files if there are more reports than the total allowed")
     public void deleteOldArtifactsFrom() {
-        final int total = 2;
+        final int total = 1;
         final List<File> files = List.of(file1, file2, file3);
 
         ReflectionUtils.setField("total", retention, total);

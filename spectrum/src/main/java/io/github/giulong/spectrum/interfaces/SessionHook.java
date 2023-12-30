@@ -16,4 +16,8 @@ public interface SessionHook {
     @Generated
     default void sessionClosed() {
     }
+
+    @Generated
+    default void sessionClosedFrom(Configuration configuration) {
+    }
 }

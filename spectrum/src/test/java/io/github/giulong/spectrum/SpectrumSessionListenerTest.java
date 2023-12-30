@@ -144,7 +144,7 @@ class SpectrumSessionListenerTest {
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
         verify(configuration).sessionClosed();
-        verify(extentReporter).sessionClosed();
+        verify(extentReporter).sessionClosedFrom(configuration);
         verify(eventsDispatcher).sessionClosed();
     }
 

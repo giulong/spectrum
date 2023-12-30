@@ -21,10 +21,10 @@ public class Retention {
 
     public int deleteOldArtifactsFrom(final List<File> files) {
         final int currentCount = files.size();
-        final int toKeep = clamp(total - 1, 0, currentCount);
+        final int toKeep = clamp(total, 0, currentCount);
         final int toDelete = max(0, currentCount - toKeep);
 
-        log.debug("Reports to keep: {}. Reports already present: {} -> {} will be kept, {} will be deleted, 1 is being generated", total, currentCount, toKeep, toDelete);
+        log.debug("Reports to keep: {}. Reports already present: {} -> {} will be kept, {} will be deleted", total, currentCount, toKeep, toDelete);
 
         for (int i = 0; i < toDelete; i++) {
             final File file = files.get(i);

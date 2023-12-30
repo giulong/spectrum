@@ -67,14 +67,13 @@ public class ExtentReporter implements SessionHook {
         extentReports.attachReporter(sparkReporter);
 
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
-
-        cleanupOldReports(extent);
     }
 
     @Override
-    public void sessionClosed() {
+    public void sessionClosedFrom(final Configuration configuration) {
         log.debug("Session closed hook");
         extentReports.flush();
+        cleanupOldReports(configuration.getExtent());
     }
 
     @SneakyThrows
