@@ -4,6 +4,7 @@ import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import io.github.giulong.spectrum.utils.testbook.reporters.TestBookReporter;
 import org.junit.jupiter.api.AfterEach;
@@ -60,7 +61,6 @@ class TestBookUnitTest {
     @BeforeEach
     public void beforeEach() {
         testBookReporterMockedStatic = mockStatic(TestBookReporter.class);
-        testBook.setEnabled(false);
     }
 
     @AfterEach
@@ -122,7 +122,7 @@ class TestBookUnitTest {
 
         when(testBookParser.parse()).thenReturn(tests);
 
-        testBook.setEnabled(true);
+        ReflectionUtils.setField("enabled", testBook, true);
         testBook.parse();
 
         assertEquals(2, testBook.getMappedTests().size());
@@ -132,7 +132,6 @@ class TestBookUnitTest {
     @Test
     @DisplayName("parse should do nothing if not enabled")
     public void parseNull() {
-        testBook.setEnabled(false);
         testBook.parse();
 
         verify(testBookParser, never()).parse();
@@ -173,7 +172,7 @@ class TestBookUnitTest {
         final String className = "className";
         final String testName = "testName";
 
-        testBook.setEnabled(true);
+        ReflectionUtils.setField("enabled", testBook, true);
         testBook.updateWithResult(className, testName, FAILED);
 
         final TestBookTest unmappedTest = testBook.getUnmappedTests().get(String.format("%s %s", className, testName));
@@ -197,7 +196,7 @@ class TestBookUnitTest {
         when(actualTest.getWeight()).thenReturn(weight);
 
         testBook.getMappedTests().put(fullName, actualTest);
-        testBook.setEnabled(true);
+        ReflectionUtils.setField("enabled", testBook, true);
         testBook.updateWithResult(className, testName, FAILED);
 
         verify(actualTest).setResult(result);
@@ -260,7 +259,7 @@ class TestBookUnitTest {
         statistics.get(ABORTED).getTotal().set(totalAborted);
         statistics.get(DISABLED).getTotal().set(totalDisabled);
 
-        testBook.setEnabled(true);
+        ReflectionUtils.setField("enabled", testBook, true);
         testBook.flush(total, statistics);
 
         assertEquals((double) totalSuccessful / total * 100, statistics.get(SUCCESSFUL).getPercentage().get());
@@ -274,12 +273,12 @@ class TestBookUnitTest {
     @Test
     @DisplayName("flush should flush all reporters")
     public void flushAll() {
-        testBook.setReporters(List.of(reporter1, reporter2));
+        ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
 
-        testBook.setEnabled(true);
+        ReflectionUtils.setField("enabled", testBook, true);
         testBook.flush();
 
         assertEquals(3, testBook.getStatistics().getGrandTotal().get());
@@ -301,12 +300,11 @@ class TestBookUnitTest {
     @Test
     @DisplayName("flush should do nothing if the testBook is disabled")
     public void flushAllDisabled() {
-        testBook.setReporters(List.of(reporter1, reporter2));
+        ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
 
-        testBook.setEnabled(false);
         testBook.flush();
 
         assertEquals(0, testBook.getStatistics().getGrandTotal().get());

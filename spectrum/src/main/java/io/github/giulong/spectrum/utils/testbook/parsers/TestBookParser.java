@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.List;
 
@@ -20,7 +19,6 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
         @Type(value = CsvTestBookParser.class, name = "csv"),
 })
 @Getter
-@Setter
 public abstract class TestBookParser {
 
     @JsonPropertyDescription("Path of the testBook")

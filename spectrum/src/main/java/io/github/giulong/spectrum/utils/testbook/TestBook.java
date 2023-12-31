@@ -10,7 +10,6 @@ import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import io.github.giulong.spectrum.utils.testbook.reporters.TestBookReporter;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -22,8 +21,8 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 @Getter
-@Setter
 @Slf4j
+@SuppressWarnings("unused")
 public class TestBook {
 
     @JsonPropertyDescription("Enables the testBook")
