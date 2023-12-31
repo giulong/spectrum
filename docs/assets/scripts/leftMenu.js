@@ -23,9 +23,11 @@ function buildLeftMenu() {
 function toggleToc() {
     if (getComputedStyle(leftMenu).opacity == 1) {
         leftMenu.style.opacity = 0;
+        leftMenu.style.visibility = 'hidden';
         toggleTocButton.style.left = '15px';
     } else {
         leftMenu.style.opacity = 1;
+        leftMenu.style.visibility = 'visible';
         toggleTocButton.style.left = '315px';
     }
 }
