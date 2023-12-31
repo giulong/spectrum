@@ -4,6 +4,7 @@ import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.summary.Summary;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +13,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherSession;
+import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -58,6 +61,9 @@ class SpectrumSessionListenerTest {
     private LauncherSession launcherSession;
 
     @Mock
+    private Launcher launcher;
+
+    @Mock
     private EventsDispatcher eventsDispatcher;
 
     @Mock
@@ -65,6 +71,12 @@ class SpectrumSessionListenerTest {
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
+
+    @Mock
+    private Summary summary;
+
+    @Mock
+    private SummaryGeneratingListener summaryGeneratingListener;
 
     @Mock
     private Metadata metadata;
@@ -127,6 +139,10 @@ class SpectrumSessionListenerTest {
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
         when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
 
+        when(launcherSession.getLauncher()).thenReturn(launcher);
+        when(configuration.getSummary()).thenReturn(summary);
+        when(summary.getSummaryGeneratingListener()).thenReturn(summaryGeneratingListener);
+
         spectrumSessionListener.launcherSessionOpened(launcherSession);
 
         slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::removeHandlersForRootLogger);
@@ -136,6 +152,7 @@ class SpectrumSessionListenerTest {
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
 
+        verify(launcher).registerTestExecutionListeners(summaryGeneratingListener);
         verify(configuration).sessionOpened();
         verify(extentReporter).sessionOpenedFrom(configuration);
         verify(freeMarkerWrapper).sessionOpenedFrom(configuration);

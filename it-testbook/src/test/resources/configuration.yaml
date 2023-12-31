@@ -21,6 +21,10 @@ video:
     - autoAfter
     - manual
 
+summary:
+  reporters:
+    - log: { }
+
 extent:
   theme: DARK
   fileName: report.html

@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.utils.summary.Summary;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,6 +18,9 @@ class ConfigurationTest {
 
     @Mock
     private TestBook testBook;
+
+    @Mock
+    private Summary summary;
 
     @InjectMocks
     private Configuration configuration;
@@ -42,5 +46,6 @@ class ConfigurationTest {
         configuration.sessionClosed();
 
         verify(testBook).flush();
+        verify(summary).sessionClosed();
     }
 }

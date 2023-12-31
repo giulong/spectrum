@@ -1,0 +1,18 @@
+<#assign
+    pad = 15
+    total = summary.testsSucceededCount + summary.testsFailedCount + summary.testsAbortedCount + summary.testsSkippedCount
+>
+
+#####################################
+#          EXECUTION SUMMARY        #
+# --------------------------------- #
+# Successful tests: ${summary.testsSucceededCount?left_pad(pad)} #
+# Failed tests    : ${summary.testsFailedCount?left_pad(pad)} #
+# Aborted tests   : ${summary.testsAbortedCount?left_pad(pad)} #
+# Skipped tests   : ${summary.testsSkippedCount?left_pad(pad)} #
+# --------------------------------- #
+# TOTAL TESTS     : ${total?left_pad(pad)} #
+# --------------------------------- #
+# Started at:  ${summary.timeStarted?number_to_datetime?left_pad(pad)} #
+# Ended at:    ${summary.timeFinished?number_to_datetime?left_pad(pad)} #
+#####################################

@@ -7,6 +7,7 @@ import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
+import io.github.giulong.spectrum.utils.summary.Summary;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
@@ -45,6 +46,9 @@ public class Configuration implements SessionHook {
     @JsonPropertyDescription("Execution video recording")
     private Video video;
 
+    @JsonPropertyDescription("Execution summary")
+    private Summary summary;
+
     @JsonPropertyDescription("Extent Report configuration")
     private Extent extent;
 
@@ -78,6 +82,7 @@ public class Configuration implements SessionHook {
     public void sessionClosed() {
         log.debug("Session closed hook");
         testBook.flush();
+        summary.sessionClosed();
     }
 
     @Getter

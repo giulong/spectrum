@@ -35,6 +35,10 @@ video:
     width: 320 # width of the video in the extent report
     height: 240 # height of the video in the extent report
 
+# Execution summary
+summary:
+  reporters: [ ] # List of reporters that will produce the summary in specific formats
+
 # Extent Report configuration
 extent:
   documentTitle: Spectrum Report  # Title of the html page

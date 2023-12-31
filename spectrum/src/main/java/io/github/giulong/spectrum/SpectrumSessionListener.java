@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.LauncherSession;
@@ -37,6 +37,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), buildVersionLine()));
 
         parseConfiguration();
+        session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
 
         configuration.sessionOpened();
         extentReporter.sessionOpenedFrom(configuration);
