@@ -3,12 +3,14 @@ package io.github.giulong.spectrum.utils.testbook;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.interfaces.Reportable;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
-import io.github.giulong.spectrum.utils.testbook.reporters.TestBookReporter;
+import io.github.giulong.spectrum.utils.reporters.Reporter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +25,7 @@ import static java.util.stream.Collectors.toMap;
 @Getter
 @Slf4j
 @SuppressWarnings("unused")
-public class TestBook {
+public class TestBook implements Reportable {
 
     @JsonPropertyDescription("Enables the testBook")
     private boolean enabled;
@@ -35,7 +37,7 @@ public class TestBook {
     private TestBookParser parser;
 
     @JsonPropertyDescription("List of testBook reporters that will produce the execution report in specific formats")
-    private List<TestBookReporter> reporters;
+    private List<Reporter> reporters;
 
     @JsonIgnore
     private final Map<String, TestBookTest> mappedTests = new HashMap<>();
@@ -167,6 +169,7 @@ public class TestBook {
         vars.put("grandWeightedAborted", grandTotalWeightedCount.get(ABORTED));
         vars.put("grandWeightedDisabled", grandTotalWeightedCount.get(DISABLED));
         vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
+        vars.put("qgStatus", FreeMarkerWrapper.getInstance().interpolate("qgStatus", qualityGate.getCondition(), vars));
     }
 
     public void flush() {
@@ -192,7 +195,6 @@ public class TestBook {
         flush(weightedTestsGrandTotal, statistics.getGrandTotalWeightedCount());
 
         mapVars();
-        TestBookReporter.evaluateQualityGateStatusFrom(this);
         reporters.forEach(reporter -> reporter.flush(this));
     }
 

@@ -23,7 +23,11 @@ video:
 
 summary:
   reporters:
-    - log: { }
+    - log:
+        template: templates/summary.txt
+    - file:
+        template: templates/summary.txt
+        output: target/spectrum/summary/summary.html
 
 extent:
   theme: DARK
@@ -34,10 +38,13 @@ extent:
 testBook:
   enabled: true
   reporters:
-    - log: { } # the report will be logged
-    - html:
+    - log: # the report will be logged
+        template: templates/testbook.txt
+    - file:
+        template: templates/testbook.html
         output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
-    - txt:
+    - file:
+        template: templates/testbook.txt
         output: target/spectrum/testbook/testbook.txt
         retention:
           total: 2

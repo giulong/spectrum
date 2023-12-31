@@ -3,9 +3,7 @@ package io.github.giulong.spectrum.it_testbook;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.YamlUtils;
-import io.github.giulong.spectrum.utils.testbook.reporters.FileTestBookReporter;
-import io.github.giulong.spectrum.utils.testbook.reporters.HtmlTestBookReporter;
-import io.github.giulong.spectrum.utils.testbook.reporters.TxtTestBookReporter;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.LauncherSession;
@@ -40,8 +38,8 @@ public class TestBookSessionListener implements LauncherSessionListener {
     public void launcherSessionOpened(final LauncherSession session) {
         final Configuration configuration = yamlUtils.readInternal("configuration.yaml", Configuration.class);
         final Configuration.Extent extent = configuration.getExtent();
-        final FileTestBookReporter htmlTestBookReporter = getReporterFrom(configuration, HtmlTestBookReporter.class);
-        final FileTestBookReporter txtTestBookReporter = getReporterFrom(configuration, TxtTestBookReporter.class);
+        final FileReporter htmlTestBookReporter = getTestBookReporterFrom(configuration, "html");
+        final FileReporter txtTestBookReporter = getTestBookReporterFrom(configuration, "txt");
 
         extentReportsDirectory = Path.of("target/spectrum/reports");
         htmlTestBooksDirectory = Path.of(htmlTestBookReporter.getOutput()).getParent();
@@ -131,12 +129,13 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .forEach(fileUtils::deleteDirectory);
     }
 
-    private FileTestBookReporter getReporterFrom(final Configuration configuration, final Class<? extends FileTestBookReporter> clazz) {
-        return (FileTestBookReporter) configuration
+    private FileReporter getTestBookReporterFrom(final Configuration configuration, final String extension) {
+        return (FileReporter) configuration
                 .getTestBook()
                 .getReporters()
                 .stream()
-                .filter(testBookReporter -> testBookReporter.getClass().equals(clazz))
+                .filter(reporter -> reporter instanceof FileReporter)
+                .filter(reporter -> FileUtils.getInstance().getExtensionOf(reporter.getTemplate()).equals(extension))
                 .findFirst()
                 .orElseThrow();
     }

@@ -1,11 +1,10 @@
-package io.github.giulong.spectrum.utils.summary;
+package io.github.giulong.spectrum.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import io.github.giulong.spectrum.interfaces.Reportable;
 import io.github.giulong.spectrum.interfaces.SessionHook;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.summary.reporters.SummaryReporter;
+import io.github.giulong.spectrum.utils.reporters.Reporter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
@@ -17,7 +16,7 @@ import java.util.Map;
 @Getter
 @Slf4j
 @SuppressWarnings("unused")
-public class Summary implements SessionHook {
+public class Summary implements SessionHook, Reportable {
 
     @JsonIgnore
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
@@ -29,7 +28,7 @@ public class Summary implements SessionHook {
     private final SummaryGeneratingListener summaryGeneratingListener = new SummaryGeneratingListener();
 
     @JsonPropertyDescription("List of reporters that will produce the summary in specific formats")
-    private List<SummaryReporter> reporters;
+    private List<Reporter> reporters;
 
     @JsonIgnore
     private final Map<String, Object> vars = new HashMap<>();

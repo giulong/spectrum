@@ -1,6 +1,6 @@
-package io.github.giulong.spectrum.utils.summary.reporters;
+package io.github.giulong.spectrum.utils.reporters;
 
-import io.github.giulong.spectrum.utils.summary.Summary;
+import io.github.giulong.spectrum.utils.testbook.TestBook;
 import lombok.Getter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,29 +15,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("SummaryReporter")
-class SummaryReporterTest {
+@DisplayName("Reporter")
+class ReporterTest {
 
     @Mock
-    private Summary summary;
+    private TestBook testBook;
 
     @InjectMocks
-    private DummySummaryReporter summaryReporter;
+    private DummyReporter reporter;
 
     @Test
-    @DisplayName("flush should call the doOutputFrom method with the template interpolated with summary in vars")
+    @DisplayName("flush should call the doOutputFrom method with the template interpolated with the testbook vars")
     public void flush() {
         final Map<String, Object> vars = Map.of();
 
-        when(summary.getVars()).thenReturn(vars);
-        summaryReporter.flush(summary);
+        when(testBook.getVars()).thenReturn(vars);
+        reporter.flush(testBook);
 
-        assertTrue(summaryReporter.doOutputCalled);
-        assertTrue(summaryReporter.cleanupOldReportsCalled);
+        assertTrue(reporter.doOutputCalled);
+        assertTrue(reporter.cleanupOldReportsCalled);
     }
 
     @Getter
-    private static class DummySummaryReporter extends SummaryReporter {
+    private static class DummyReporter extends Reporter {
 
         private boolean doOutputCalled;
         private boolean cleanupOldReportsCalled;

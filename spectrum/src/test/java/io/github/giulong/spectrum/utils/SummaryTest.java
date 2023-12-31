@@ -1,9 +1,6 @@
-package io.github.giulong.spectrum.utils.summary;
+package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
-import io.github.giulong.spectrum.utils.summary.reporters.SummaryReporter;
+import io.github.giulong.spectrum.utils.reporters.Reporter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,10 +29,10 @@ class SummaryTest {
     private FileUtils fileUtils;
 
     @Mock
-    private SummaryReporter reporter1;
+    private Reporter reporter1;
 
     @Mock
-    private SummaryReporter reporter2;
+    private Reporter reporter2;
 
     @Mock
     private SummaryGeneratingListener summaryGeneratingListener;

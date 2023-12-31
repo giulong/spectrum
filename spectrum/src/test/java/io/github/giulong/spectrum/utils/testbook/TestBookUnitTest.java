@@ -1,12 +1,14 @@
 package io.github.giulong.spectrum.utils.testbook;
 
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
-import io.github.giulong.spectrum.utils.testbook.reporters.TestBookReporter;
+import io.github.giulong.spectrum.utils.reporters.Reporter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +37,13 @@ import static org.mockito.Mockito.*;
 @DisplayName("TestBook")
 class TestBookUnitTest {
 
-    private MockedStatic<TestBookReporter> testBookReporterMockedStatic;
+    private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
+
+    private final String condition = "condition";
+    private final String interpolatedQgStatus = "interpolatedQgStatus";
+
+    @Mock
+    private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
     private TestBookTest test;
@@ -44,10 +52,10 @@ class TestBookUnitTest {
     private TestBookParser testBookParser;
 
     @Mock
-    private TestBookReporter reporter1;
+    private Reporter reporter1;
 
     @Mock
-    private TestBookReporter reporter2;
+    private Reporter reporter2;
 
     @Mock
     private TestBookStatistics statistics;
@@ -55,17 +63,20 @@ class TestBookUnitTest {
     @Mock
     private TestBookTest actualTest;
 
+    @Mock
+    private QualityGate qualityGate;
+
     @InjectMocks
     private TestBook testBook;
 
     @BeforeEach
     public void beforeEach() {
-        testBookReporterMockedStatic = mockStatic(TestBookReporter.class);
+        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
     }
 
     @AfterEach
     public void afterEach() {
-        testBookReporterMockedStatic.close();
+        freeMarkerWrapperMockedStatic.close();
     }
 
     private void mapVarsAssertions() {
@@ -76,13 +87,14 @@ class TestBookUnitTest {
         final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
         final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
 
-        assertEquals(27, vars.size());
+        assertEquals(28, vars.size());
         assertSame(testBook.getMappedTests(), vars.get("mappedTests"));
         assertSame(testBook.getUnmappedTests(), vars.get("unmappedTests"));
         assertSame(testBook.getGroupedMappedTests(), vars.get("groupedMappedTests"));
         assertSame(testBook.getGroupedUnmappedTests(), vars.get("groupedUnmappedTests"));
         assertSame(testBook.getStatistics(), vars.get("statistics"));
         assertSame(testBook.getQualityGate(), vars.get("qg"));
+        assertEquals(interpolatedQgStatus, vars.get("qgStatus"));
         assertThat(vars.get("timestamp").toString(), matchesPattern("\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}:\\d{2}"));
         assertSame(totalCount.get(SUCCESSFUL), vars.get("successful"));
         assertSame(totalCount.get(FAILED), vars.get("failed"));
@@ -210,6 +222,10 @@ class TestBookUnitTest {
     @Test
     @DisplayName("mapVars should put all the needed vars to interpolate templates correctly")
     public void mapVars() {
+        when(qualityGate.getCondition()).thenReturn(condition);
+        when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
+        when(freeMarkerWrapper.interpolate("qgStatus", condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
+
         testBook.mapVars();
         mapVarsAssertions();
     }
@@ -278,6 +294,10 @@ class TestBookUnitTest {
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
 
+        when(qualityGate.getCondition()).thenReturn(condition);
+        when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
+        when(freeMarkerWrapper.interpolate("qgStatus", condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
+
         ReflectionUtils.setField("enabled", testBook, true);
         testBook.flush();
 
@@ -292,7 +312,6 @@ class TestBookUnitTest {
         assertEquals(6, testBook.getStatistics().getGrandTotalWeightedCount().get(NOT_RUN).getTotal().get());
 
         mapVarsAssertions();
-        testBookReporterMockedStatic.verify(() -> TestBookReporter.evaluateQualityGateStatusFrom(testBook));
         verify(reporter1).flush(testBook);
         verify(reporter2).flush(testBook);
     }
@@ -317,7 +336,7 @@ class TestBookUnitTest {
         assertEquals(0, testBook.getStatistics().getTotalWeightedCount().get(NOT_RUN).getTotal().get());
         assertEquals(0, testBook.getStatistics().getGrandTotalWeightedCount().get(NOT_RUN).getTotal().get());
 
-        testBookReporterMockedStatic.verifyNoInteractions();
+        //testBookReporterMockedStatic.verifyNoInteractions();
         verifyNoInteractions(reporter1);
         verifyNoInteractions(reporter2);
     }

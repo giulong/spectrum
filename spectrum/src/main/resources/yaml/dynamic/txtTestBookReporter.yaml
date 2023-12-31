@@ -1,4 +1,0 @@
-txt:
-  template: testbook/template.txt
-  output: target/spectrum/testbook/testbook-${timestamp}.txt
-  retention: { }

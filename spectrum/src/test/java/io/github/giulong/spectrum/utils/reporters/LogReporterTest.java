@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.utils.summary.reporters;
+package io.github.giulong.spectrum.utils.reporters;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,17 +7,17 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("LogSummaryReporter")
-class LogSummaryReporterTest {
+@DisplayName("LogReporter")
+class LogReporterTest {
 
     @InjectMocks
-    private LogSummaryReporter summaryReporter;
+    private LogReporter logReporter;
 
     @Test
     @DisplayName("doOutputFrom should just log the interpolated template")
     public void doOutputFrom() {
         final String interpolatedTemplate = "interpolatedTemplate";
-        summaryReporter.doOutputFrom(interpolatedTemplate);
+        logReporter.doOutputFrom(interpolatedTemplate);
 
         // no verifications/assertions needed
     }
@@ -25,7 +25,7 @@ class LogSummaryReporterTest {
     @Test
     @DisplayName("cleanupOldReports should do nothing")
     public void cleanupOldReports() {
-        summaryReporter.cleanupOldReports();
+        logReporter.cleanupOldReports();
 
         // no verifications/assertions needed
     }

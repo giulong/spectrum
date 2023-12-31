@@ -1,10 +1,10 @@
-package io.github.giulong.spectrum.utils.summary.reporters;
+package io.github.giulong.spectrum.utils.reporters;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import io.github.giulong.spectrum.interfaces.Reportable;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.summary.Summary;
 import lombok.Getter;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
@@ -12,10 +12,11 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 
 @JsonTypeInfo(use = NAME, include = WRAPPER_OBJECT)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = LogSummaryReporter.class, name = "log"),
+        @JsonSubTypes.Type(value = LogReporter.class, name = "log"),
+        @JsonSubTypes.Type(value = FileReporter.class, name = "file"),
 })
 @Getter
-public abstract class SummaryReporter {
+public abstract class Reporter {
 
     protected static final FileUtils FILE_UTILS = FileUtils.getInstance();
 
@@ -27,9 +28,9 @@ public abstract class SummaryReporter {
 
     public abstract void cleanupOldReports();
 
-    public void flush(final Summary summary) {
+    public void flush(final Reportable reportable) {
         final String template = getTemplate();
-        doOutputFrom(FREE_MARKER_WRAPPER.interpolate(template, FILE_UTILS.read(String.format("/%s", template)), summary.getVars()));
+        doOutputFrom(FREE_MARKER_WRAPPER.interpolate(template, FILE_UTILS.read(String.format("/%s", template)), reportable.getVars()));
         cleanupOldReports();
     }
 }

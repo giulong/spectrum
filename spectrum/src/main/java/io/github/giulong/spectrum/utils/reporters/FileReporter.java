@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.utils.testbook.reporters;
+package io.github.giulong.spectrum.utils.reporters;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.utils.Retention;
@@ -17,7 +17,7 @@ import static java.util.Comparator.comparingLong;
 @Slf4j
 @Getter
 @SuppressWarnings("unused")
-public abstract class FileTestBookReporter extends TestBookReporter {
+public class FileReporter extends Reporter {
 
     @JsonPropertyDescription("Path to the template to be used, relative to src/test/resources")
     private String template;
@@ -26,7 +26,7 @@ public abstract class FileTestBookReporter extends TestBookReporter {
     private String output;
 
     @JsonPropertyDescription("Retention rules configuration")
-    private Retention retention;
+    private final Retention retention = new Retention();
 
     @Override
     public void cleanupOldReports() {

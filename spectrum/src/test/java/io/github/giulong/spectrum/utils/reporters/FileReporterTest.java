@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.utils.testbook.reporters;
+package io.github.giulong.spectrum.utils.reporters;
 
 import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.Retention;
@@ -19,8 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("FileTestBookReporter")
-class FileTestBookReporterTest {
+@DisplayName("FileReporter")
+class FileReporterTest {
 
     private static final String OUTPUT = "output.abc";
 
@@ -58,11 +58,12 @@ class FileTestBookReporterTest {
     private ArgumentCaptor<String> stringArgumentCaptor;
 
     @InjectMocks
-    private TxtTestBookReporter testBookReporter;
+    private FileReporter fileReporter;
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setParentField("output", testBookReporter, testBookReporter.getClass().getSuperclass(), OUTPUT);
+        ReflectionUtils.setField("output", fileReporter, OUTPUT);
+        ReflectionUtils.setField("retention", fileReporter, retention);
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
     }
@@ -99,7 +100,7 @@ class FileTestBookReporterTest {
         when(file1.lastModified()).thenReturn(lastModified);
         when(file2.lastModified()).thenReturn(lastModified);
 
-        testBookReporter.cleanupOldReports();
+        fileReporter.cleanupOldReports();
 
         assertEquals(OUTPUT, stringArgumentCaptor.getValue());
 
@@ -118,7 +119,7 @@ class FileTestBookReporterTest {
         when(parentPath.toFile()).thenReturn(folder);
         when(folder.listFiles()).thenReturn(null);
 
-        testBookReporter.cleanupOldReports();
+        fileReporter.cleanupOldReports();
 
         assertEquals(OUTPUT, stringArgumentCaptor.getValue());
 
@@ -133,7 +134,7 @@ class FileTestBookReporterTest {
         when(Path.of(stringArgumentCaptor.capture())).thenReturn(path);
         when(path.getParent()).thenReturn(parentPath);
 
-        testBookReporter.doOutputFrom(interpolatedTemplate);
+        fileReporter.doOutputFrom(interpolatedTemplate);
         filesMockedStatic.verify(() -> Files.createDirectories(parentPath));
         filesMockedStatic.verify(() -> {
             Files.write(path, interpolatedTemplate.getBytes());
