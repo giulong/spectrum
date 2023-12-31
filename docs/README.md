@@ -2033,6 +2033,7 @@ testBook:
   parser:
     yaml:
       path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
+  reporters: [ ] # List of testBook reporters that will produce the execution report in specific formats
 ```
 
 It's disabled by default. You need to enable it in your `configuration.yaml`, while providing the reporters you want:
