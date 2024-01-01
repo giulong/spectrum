@@ -23,10 +23,8 @@ video:
 
 summary:
   reporters:
-    - log:
-        template: templates/summary.txt
+    - log: { }
     - html:
-        template: templates/summary.txt
         output: target/spectrum/summary/summary.html
 
 extent:

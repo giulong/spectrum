@@ -1,0 +1,4 @@
+txt:
+  template: templates/summary.txt
+  output: target/spectrum/summary/summary-${timestamp}.txt
+  retention: { }

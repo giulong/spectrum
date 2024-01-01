@@ -3,14 +3,14 @@ package io.github.giulong.spectrum.utils.testbook;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Result;
-import io.github.giulong.spectrum.interfaces.Reportable;
+import io.github.giulong.spectrum.interfaces.reports.Reportable;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
+import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
-import io.github.giulong.spectrum.utils.reporters.Reporter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +37,7 @@ public class TestBook implements Reportable {
     private TestBookParser parser;
 
     @JsonPropertyDescription("List of testBook reporters that will produce the execution report in specific formats")
-    private List<Reporter> reporters;
+    private List<CanReportTestBook> reporters;
 
     @JsonIgnore
     private final Map<String, TestBookTest> mappedTests = new HashMap<>();

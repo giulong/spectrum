@@ -130,11 +130,12 @@ public class TestBookSessionListener implements LauncherSessionListener {
     }
 
     private FileReporter getTestBookReporterFrom(final Configuration configuration, final String extension) {
-        return (FileReporter) configuration
+        return configuration
                 .getTestBook()
                 .getReporters()
                 .stream()
                 .filter(reporter -> reporter instanceof FileReporter)
+                .map(FileReporter.class::cast)
                 .filter(reporter -> FileUtils.getInstance().getExtensionOf(reporter.getTemplate()).equals(extension))
                 .findFirst()
                 .orElseThrow();

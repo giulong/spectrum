@@ -2,9 +2,9 @@ package io.github.giulong.spectrum.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.github.giulong.spectrum.interfaces.Reportable;
+import io.github.giulong.spectrum.interfaces.reports.Reportable;
 import io.github.giulong.spectrum.interfaces.SessionHook;
-import io.github.giulong.spectrum.utils.reporters.Reporter;
+import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
@@ -28,7 +28,7 @@ public class Summary implements SessionHook, Reportable {
     private final SummaryGeneratingListener summaryGeneratingListener = new SummaryGeneratingListener();
 
     @JsonPropertyDescription("List of reporters that will produce the summary in specific formats")
-    private List<Reporter> reporters;
+    private List<CanReportSummary> reporters;
 
     @JsonIgnore
     private final Map<String, Object> vars = new HashMap<>();

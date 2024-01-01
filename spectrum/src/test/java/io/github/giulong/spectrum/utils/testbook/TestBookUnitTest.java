@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.utils.testbook;
 
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.ReflectionUtils;
-import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import io.github.giulong.spectrum.utils.reporters.Reporter;
+import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,10 +52,10 @@ class TestBookUnitTest {
     @Mock
     private TestBookParser testBookParser;
 
-    @Mock
+    @Mock(extraInterfaces = CanReportTestBook.class)
     private Reporter reporter1;
 
-    @Mock
+    @Mock(extraInterfaces = CanReportTestBook.class)
     private Reporter reporter2;
 
     @Mock

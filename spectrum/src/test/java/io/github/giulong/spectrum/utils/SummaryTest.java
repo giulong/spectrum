@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import io.github.giulong.spectrum.utils.reporters.Reporter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,10 +29,10 @@ class SummaryTest {
     @Mock
     private FileUtils fileUtils;
 
-    @Mock
+    @Mock(extraInterfaces = CanReportSummary.class)
     private Reporter reporter1;
 
-    @Mock
+    @Mock(extraInterfaces = CanReportSummary.class)
     private Reporter reporter2;
 
     @Mock

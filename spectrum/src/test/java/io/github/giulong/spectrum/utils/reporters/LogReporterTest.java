@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class LogReporterTest {
 
     @InjectMocks
-    private LogReporter logReporter;
+    private DummyLogReporter logReporter;
 
     @Test
     @DisplayName("doOutputFrom should just log the interpolated template")
@@ -29,4 +29,6 @@ class LogReporterTest {
 
         // no verifications/assertions needed
     }
+
+    private static class DummyLogReporter extends LogReporter {}
 }

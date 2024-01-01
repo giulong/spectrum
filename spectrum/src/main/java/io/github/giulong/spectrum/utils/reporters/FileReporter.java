@@ -1,6 +1,8 @@
 package io.github.giulong.spectrum.utils.reporters;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
+import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
 import io.github.giulong.spectrum.utils.Retention;
 import lombok.Generated;
 import lombok.Getter;
@@ -63,10 +65,18 @@ public abstract class FileReporter extends Reporter {
     }
 
     @Generated
-    public static class TxtReporter extends FileReporter {
-    }
+    @SuppressWarnings("checkstyle:WhitespaceAround")
+    public static class TxtTestBookReporter extends FileReporter implements CanReportTestBook {}
 
     @Generated
-    public static class HtmlReporter extends FileReporter {
-    }
+    @SuppressWarnings("checkstyle:WhitespaceAround")
+    public static class HtmlTestBookReporter extends FileReporter implements CanReportTestBook {}
+
+    @Generated
+    @SuppressWarnings("checkstyle:WhitespaceAround")
+    public static class TxtSummaryReporter extends FileReporter implements CanReportSummary {}
+
+    @Generated
+    @SuppressWarnings("checkstyle:WhitespaceAround")
+    public static class HtmlSummaryReporter extends FileReporter implements CanReportSummary {}
 }
