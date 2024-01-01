@@ -58,12 +58,12 @@ class FileReporterTest {
     private ArgumentCaptor<String> stringArgumentCaptor;
 
     @InjectMocks
-    private FileReporter fileReporter;
+    private DummyFileReporter fileReporter;
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("output", fileReporter, OUTPUT);
-        ReflectionUtils.setField("retention", fileReporter, retention);
+        ReflectionUtils.setParentField("output", fileReporter, fileReporter.getClass().getSuperclass(), OUTPUT);
+        ReflectionUtils.setParentField("retention", fileReporter, fileReporter.getClass().getSuperclass(), retention);
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
     }
@@ -140,5 +140,8 @@ class FileReporterTest {
             Files.write(path, interpolatedTemplate.getBytes());
             assertEquals(OUTPUT, stringArgumentCaptor.getValue());
         });
+    }
+
+    private static class DummyFileReporter extends FileReporter {
     }
 }

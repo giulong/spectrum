@@ -45,7 +45,10 @@ class YamlUtilsTest {
                 "LogbackLogLevelDeserializer",
                 "DurationDeserializer",
                 "BrowserDeserializer",
-                "ClassDeserializer"
+                "ClassDeserializer",
+                "LogReporter",
+                "TxtReporter",
+                "HtmlReporter"
         ), yamlUtils.getYamlMapper().getRegisteredModuleIds());
 
         assertEquals(Set.of(

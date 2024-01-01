@@ -1,1 +1,7 @@
-dynamicDeserializers: [ ]
+dynamicDeserializers:
+  - clazz: io.github.giulong.spectrum.utils.reporters.LogReporter
+    configFile: yaml/dynamic/logReporter.yaml
+  - clazz: io.github.giulong.spectrum.utils.reporters.FileReporter$TxtReporter
+    configFile: yaml/dynamic/txtReporter.yaml
+  - clazz: io.github.giulong.spectrum.utils.reporters.FileReporter$HtmlReporter
+    configFile: yaml/dynamic/htmlReporter.yaml

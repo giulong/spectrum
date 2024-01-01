@@ -13,7 +13,8 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @JsonTypeInfo(use = NAME, include = WRAPPER_OBJECT)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = LogReporter.class, name = "log"),
-        @JsonSubTypes.Type(value = FileReporter.class, name = "file"),
+        @JsonSubTypes.Type(value = FileReporter.TxtReporter.class, name = "txt"),
+        @JsonSubTypes.Type(value = FileReporter.HtmlReporter.class, name = "html"),
 })
 @Getter
 public abstract class Reporter {
