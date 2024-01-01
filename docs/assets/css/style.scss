@@ -15,34 +15,47 @@ body {
     width: 300px;
     height: calc(100% - 90px);
     background: linear-gradient(#fafafa, #DEDEDE 700px);
-    overflow-y: auto;
     border-radius: 8px;
 }
 
-#left-menu ul {
+#toc-title {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    font-size: 18px;
+    color: #266eb7;
+    background: linear-gradient(#DDFBFC, #C6EAFA);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom: 1px solid #B2D2E1;
+    cursor: default;
+}
+
+#toc-list {
     list-style: none;
     overflow-x: hidden;
+    height: calc(100% - 47px); // we subtract the toc-title height
     white-space: nowrap;
     text-overflow: ellipsis;
     padding: 0;
     margin: 0;
 }
 
-#left-menu li.h1 {
+#toc-list .h1 {
     font-weight: bold;
 }
 
-#left-menu li.h2 {
+#toc-list .h2 {
     padding-left: 15px;
     font-size: 14px;
 }
 
-#left-menu li.h3 {
+#toc-list .h3 {
     padding-left: 30px;
     font-size: 13px;
 }
 
-#left-menu li.h4 {
+#toc-list .h4 {
     padding-left: 30px;
     font-size: 12px;
 }
@@ -61,13 +74,9 @@ body {
     background: #C6EAFA;
 }
 
-#toc-title {
-    text-align: center;
-    font-weight: bold;
-    padding: 10px;
-    font-size: 18px;
-    background: linear-gradient(#DDFBFC, #C6EAFA);
-    border-bottom: 1px solid #B2D2E1;
+.toc-element:last-child:hover {
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
 }
 
 #search-container {
