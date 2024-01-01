@@ -1,5 +1,6 @@
 <#assign
     pad = 15
+    datesPad = 20
     total = summary.testsSucceededCount + summary.testsFailedCount + summary.testsAbortedCount + summary.testsSkippedCount
 >
 
@@ -13,6 +14,6 @@
 # --------------------------------- #
 # TOTAL TESTS     : ${total?left_pad(pad)} #
 # --------------------------------- #
-# Started at:  ${summary.timeStarted?number_to_datetime?left_pad(pad)} #
-# Ended at:    ${summary.timeFinished?number_to_datetime?left_pad(pad)} #
+# Started at:  ${summary.timeStarted?number_to_datetime?left_pad(datesPad)} #
+# Ended at:    ${summary.timeFinished?number_to_datetime?left_pad(datesPad)} #
 #####################################
