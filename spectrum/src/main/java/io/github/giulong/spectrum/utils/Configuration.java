@@ -74,13 +74,13 @@ public class Configuration implements SessionHook {
     @Override
     public void sessionOpened() {
         log.debug("Session opened hook");
-        testBook.parse();
+        testBook.sessionOpened();
     }
 
     @Override
     public void sessionClosed() {
         log.debug("Session closed hook");
-        testBook.flush();
+        testBook.sessionClosed();
         summary.sessionClosed();
     }
 

@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.utils.testbook;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.Reportable;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
@@ -25,7 +26,7 @@ import static java.util.stream.Collectors.toMap;
 @Getter
 @Slf4j
 @SuppressWarnings("unused")
-public class TestBook implements Reportable {
+public class TestBook implements SessionHook, Reportable {
 
     @JsonPropertyDescription("Enables the testBook")
     private boolean enabled;
@@ -73,7 +74,8 @@ public class TestBook implements Reportable {
                 });
     }
 
-    public void parse() {
+    @Override
+    public void sessionOpened() {
         if (!enabled) {
             log.debug("TestBook disabled. Skipping parse");
             return;
@@ -86,6 +88,33 @@ public class TestBook implements Reportable {
                 .collect(toMap(test -> String.format("%s %s", test.getClassName(), test.getTestName()), identity())));
 
         tests.forEach(test -> updateGroupedTests(groupedMappedTests, test.getClassName(), test));
+    }
+
+    @Override
+    public void sessionClosed() {
+        if (!enabled) {
+            log.debug("Testbook disabled. Skipping flush");
+            return;
+        }
+
+        log.debug("Updating testBook percentages");
+
+        final int testsTotal = mappedTests.size();
+        final int unmappedTestsTotal = unmappedTests.size();
+        final int weightedTestsTotal = getWeightedTotalOf(mappedTests);
+        final int weightedTestsGrandTotal = weightedTestsTotal + getWeightedTotalOf(unmappedTests);
+
+        statistics.getGrandTotal().set(testsTotal + unmappedTestsTotal);
+        statistics.getTotalWeighted().set(weightedTestsTotal);
+        statistics.getGrandTotalWeighted().set(weightedTestsGrandTotal);
+
+        flush(testsTotal, statistics.getTotalCount());
+        flush(testsTotal + unmappedTestsTotal, statistics.getGrandTotalCount());
+        flush(weightedTestsTotal, statistics.getTotalWeightedCount());
+        flush(weightedTestsGrandTotal, statistics.getGrandTotalWeightedCount());
+
+        mapVars();
+        reporters.forEach(reporter -> reporter.flush(this));
     }
 
     protected void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
@@ -170,32 +199,6 @@ public class TestBook implements Reportable {
         vars.put("grandWeightedDisabled", grandTotalWeightedCount.get(DISABLED));
         vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
         vars.put("qgStatus", FreeMarkerWrapper.getInstance().interpolate("qgStatus", qualityGate.getCondition(), vars));
-    }
-
-    public void flush() {
-        if (!enabled) {
-            log.debug("Testbook disabled. Skipping flush");
-            return;
-        }
-
-        log.debug("Updating testBook percentages");
-
-        final int testsTotal = mappedTests.size();
-        final int unmappedTestsTotal = unmappedTests.size();
-        final int weightedTestsTotal = getWeightedTotalOf(mappedTests);
-        final int weightedTestsGrandTotal = weightedTestsTotal + getWeightedTotalOf(unmappedTests);
-
-        statistics.getGrandTotal().set(testsTotal + unmappedTestsTotal);
-        statistics.getTotalWeighted().set(weightedTestsTotal);
-        statistics.getGrandTotalWeighted().set(weightedTestsGrandTotal);
-
-        flush(testsTotal, statistics.getTotalCount());
-        flush(testsTotal + unmappedTestsTotal, statistics.getGrandTotalCount());
-        flush(weightedTestsTotal, statistics.getTotalWeightedCount());
-        flush(weightedTestsGrandTotal, statistics.getGrandTotalWeightedCount());
-
-        mapVars();
-        reporters.forEach(reporter -> reporter.flush(this));
     }
 
     protected void flush(final int total, final Map<Result, Statistics> map) {

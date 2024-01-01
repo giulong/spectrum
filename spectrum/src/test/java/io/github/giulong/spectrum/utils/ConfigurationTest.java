@@ -32,19 +32,19 @@ class ConfigurationTest {
     }
 
     @Test
-    @DisplayName("sessionOpened should parse the testbook")
+    @DisplayName("sessionOpened should call the same method on summary and testbook")
     public void sessionOpened() {
         configuration.sessionOpened();
 
-        verify(testBook).parse();
+        verify(testBook).sessionOpened();
     }
 
     @Test
-    @DisplayName("sessionClosed should flush the testbook")
+    @DisplayName("sessionClosed should call the same method on summary and testbook")
     public void sessionClosed() {
         configuration.sessionClosed();
 
-        verify(testBook).flush();
+        verify(testBook).sessionClosed();
         verify(summary).sessionClosed();
     }
 }

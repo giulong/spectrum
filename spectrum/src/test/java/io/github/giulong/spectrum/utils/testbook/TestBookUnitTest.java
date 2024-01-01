@@ -136,7 +136,7 @@ class TestBookUnitTest {
         when(testBookParser.parse()).thenReturn(tests);
 
         ReflectionUtils.setField("enabled", testBook, true);
-        testBook.parse();
+        testBook.sessionOpened();
 
         assertEquals(2, testBook.getMappedTests().size());
         testBook.getMappedTests().values().stream().map(TestBookTest::getResult).forEach(result -> assertEquals(NOT_RUN, result));
@@ -145,7 +145,7 @@ class TestBookUnitTest {
     @Test
     @DisplayName("parse should do nothing if not enabled")
     public void parseNull() {
-        testBook.parse();
+        testBook.sessionOpened();
 
         verify(testBookParser, never()).parse();
     }
@@ -300,7 +300,7 @@ class TestBookUnitTest {
         when(freeMarkerWrapper.interpolate("qgStatus", condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
 
         ReflectionUtils.setField("enabled", testBook, true);
-        testBook.flush();
+        testBook.sessionClosed();
 
         assertEquals(3, testBook.getStatistics().getGrandTotal().get());
         assertEquals(1, testBook.getStatistics().getTotalWeighted().get());
@@ -325,7 +325,7 @@ class TestBookUnitTest {
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
 
-        testBook.flush();
+        testBook.sessionClosed();
 
         assertEquals(0, testBook.getStatistics().getGrandTotal().get());
         assertEquals(0, testBook.getStatistics().getTotalWeighted().get());
