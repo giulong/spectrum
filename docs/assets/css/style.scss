@@ -3,17 +3,20 @@
 
 @import "{{ site.theme }}";
 
+body {
+    padding: 20px 0;
+}
+
 #left-menu {
-    visibility: visible;
-    opacity: 1;
-    transition: visibility .05s, opacity .05s linear;
+    transition: width .05s, opacity .05s;
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 20px;
+    left: 10px;
     width: 300px;
-    height: 100%;
+    height: calc(100% - 90px);
     background: linear-gradient(#fafafa, #DEDEDE 700px);
     overflow-y: auto;
+    border-radius: 8px;
 }
 
 #left-menu ul {
@@ -84,7 +87,7 @@ header.sticky {
     z-index: 99;
 }
 
-header.sticky > img#spectrum-logo {    // smaller logo
+header.sticky > img#spectrum-logo { // smaller logo
     width: 12%;
 }
 
@@ -92,7 +95,7 @@ header.sticky > p { // hiding the description
     display: none;
 }
 
-header.sticky > #search-container { //search bar closer to the top
+header.sticky > #search-container { // search bar closer to the top
     top: 10px;
 }
 
@@ -105,7 +108,7 @@ header.sticky > ul {
 }
 
 section.sticky-section {
-    padding-top: 107px;
+    padding-top: 137px;
 }
 
 .shadow {
@@ -176,7 +179,7 @@ hr {
     width: 1024px;
 }
 
-@media print, screen and (max-width: 1650px) {
+@media print, screen and (max-width: 1670px) {
     #left-menu { display: none; }
     #toggle-toc-button { display: none; }
 }
@@ -311,7 +314,8 @@ img.copy-icon {
 #toggle-toc-button {
     position: fixed;
     bottom: 15px;
-    left: 315px;
+    left: 10px;
+    width: 300px;
     z-index: 99;
     border: 1px solid #444;
     outline: none;
@@ -321,7 +325,7 @@ img.copy-icon {
     padding: 10px;
     border-radius: 5px;
     font-size: 14px;
-    transition: left .05s linear;
+    transition: width .05s linear;
 }
 
 ::-webkit-scrollbar {

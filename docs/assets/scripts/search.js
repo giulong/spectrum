@@ -28,8 +28,8 @@ document.addEventListener('keydown', evt => {
     }
 });
 
-window.onscroll = function() { stickyHeader() };
-window.onresize = function() { stickyHeader() };
+window.onscroll = () => stickyHeader();
+window.onresize = () => stickyHeader();
 
 function setUpAnchors() {
     location.href = location.hash ? location.hash : '#spectrum';
