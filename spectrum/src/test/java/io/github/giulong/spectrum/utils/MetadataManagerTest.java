@@ -12,13 +12,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Path;
 
-import static io.github.giulong.spectrum.utils.Metadata.FILE_NAME;
+import static io.github.giulong.spectrum.utils.MetadataProducer.FILE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Metadata")
-class MetadataTest {
+class MetadataProducerTest {
 
     private static MockedStatic<Path> pathMockedStatic;
 
@@ -41,14 +41,14 @@ class MetadataTest {
     private Configuration.Runtime runtime;
 
     @InjectMocks
-    private Metadata metadata;
+    private MetadataProducer metadataProducer;
 
     @BeforeEach
     public void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
 
-        ReflectionUtils.setField("jsonUtils", metadata, jsonUtils);
-        ReflectionUtils.setField("fileUtils", metadata, fileUtils);
+        ReflectionUtils.setField("jsonUtils", metadataProducer, jsonUtils);
+        ReflectionUtils.setField("fileUtils", metadataProducer, fileUtils);
     }
 
     @AfterEach
@@ -60,7 +60,7 @@ class MetadataTest {
     @DisplayName("getInstance should return the singleton")
     public void getInstance() {
         //noinspection EqualsWithItself
-        assertSame(Metadata.getInstance(), Metadata.getInstance());
+        assertSame(MetadataProducer.getInstance(), MetadataProducer.getInstance());
     }
 
     @Test
@@ -73,9 +73,9 @@ class MetadataTest {
         when(runtime.getCacheFolder()).thenReturn(cacheFolder);
         when(Path.of(cacheFolder)).thenReturn(path);
         when(path.resolve(FILE_NAME)).thenReturn(filePath);
-        when(jsonUtils.write(metadata)).thenReturn(content);
+        when(jsonUtils.write(metadataProducer)).thenReturn(content);
 
-        metadata.sessionClosedFrom(configuration);
+        metadataProducer.sessionClosedFrom(configuration);
 
 
         verify(fileUtils).write(filePath, content);
