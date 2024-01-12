@@ -11,14 +11,21 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.File;
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("JsonUtils")
 class JsonUtilsTest {
+
+    @Mock
+    private File file;
 
     @Mock
     private JsonMapper jsonMapper;
@@ -40,6 +47,26 @@ class JsonUtilsTest {
     public void getInstance() {
         //noinspection EqualsWithItself
         assertSame(JsonUtils.getInstance(), JsonUtils.getInstance());
+    }
+
+    @Test
+    @DisplayName("read should deserialize the provided file onto an instance of the provided class")
+    public void read() throws IOException {
+        final String expected = "expected";
+        when(file.exists()).thenReturn(true);
+        when(jsonMapper.readValue(file, String.class)).thenReturn(expected);
+
+        assertEquals(expected, jsonUtils.readOrEmpty(file, String.class));
+    }
+
+    @Test
+    @DisplayName("read should deserialize an empty json onto an instance of the provided class when the provided file doesn't exist")
+    public void readNotExisting() throws IOException {
+        final String expected = "expected";
+        when(file.exists()).thenReturn(false);
+        when(jsonMapper.readValue(eq("{}"), eq(String.class))).thenReturn(expected);
+
+        assertEquals(expected, jsonUtils.readOrEmpty(file, String.class));
     }
 
     @Test

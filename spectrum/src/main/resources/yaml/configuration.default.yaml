@@ -39,6 +39,7 @@ video:
 # Execution summary
 summary:
   reporters: [ ] # List of reporters that will produce the summary in specific formats
+  condition: ${successfulPercentage} == 100
 
 # Extent Report configuration
 extent:

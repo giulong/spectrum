@@ -55,7 +55,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
         extentTotalRetention = extent.getRetention().getTotal();
         assertEquals(3, extentTotalRetention);
         txtTestBookTotalRetention = txtTestBookReporter.getRetention().getTotal();
-        assertEquals(2, txtTestBookTotalRetention);
+        assertEquals(3, txtTestBookTotalRetention);
 
         createDirectories(fakeExtentReportsDirectories, extentReportsDirectory);
         createFiles(fakeExtentReports, extentReportsDirectory);

@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -25,6 +27,13 @@ public final class JsonUtils {
 
     public static JsonUtils getInstance() {
         return INSTANCE;
+    }
+
+    @SneakyThrows
+    public <T> T readOrEmpty(final File file, final Class<T> clazz) {
+        return file.exists()
+                ? jsonMapper.readValue(file, clazz)
+                : jsonMapper.readValue("{}", clazz);
     }
 
     @SneakyThrows

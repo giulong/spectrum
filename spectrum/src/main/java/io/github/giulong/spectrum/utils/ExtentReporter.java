@@ -8,6 +8,7 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Getter;
@@ -36,11 +37,12 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
 @Getter
-public class ExtentReporter implements SessionHook {
+public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     private static final ExtentReporter INSTANCE = new ExtentReporter();
 
     private final FileUtils fileUtils = FileUtils.getInstance();
+    private final Configuration configuration = Configuration.getInstance();
 
     private ExtentReports extentReports;
 
@@ -53,7 +55,7 @@ public class ExtentReporter implements SessionHook {
         log.debug("Session opened hook");
 
         final Configuration.Extent extent = configuration.getExtent();
-        final String reportPath = Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath().toString().replace("\\", "/");
+        final String reportPath = getReportPathFrom(extent).toString().replace("\\", "/");
         final String reportName = extent.getReportName();
         final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
 
@@ -74,6 +76,26 @@ public class ExtentReporter implements SessionHook {
         log.debug("Session closed hook");
         extentReports.flush();
         cleanupOldReports(configuration.getExtent());
+    }
+
+    @Override
+    public Retention getRetention() {
+        return configuration.getExtent().getRetention();
+    }
+
+    @Override
+    public void produceMetadata() {
+        final MetadataManager metadataManager = MetadataManager.getInstance();
+        final File file = getReportPathFrom(configuration.getExtent()).toFile();
+        final int maxSize = getRetention().getSuccessful();
+        final FixedSizeQueue<File> queue = metadataManager.getSuccessfulQueueOf(this);
+
+        log.debug("Adding metadata '{}'. Current size: {}, max capacity: {}", file, queue.size(), maxSize);
+        queue
+                .shrinkTo(maxSize - 1)
+                .add(file);
+
+        metadataManager.setSuccessfulQueueOf(this, queue);
     }
 
     @SneakyThrows
@@ -98,7 +120,7 @@ public class ExtentReporter implements SessionHook {
                 .filter(File::isDirectory)
                 .toList();
 
-        final int toDelete = retention.deleteOldArtifactsFrom(files);
+        final int toDelete = retention.deleteOldArtifactsFrom(files, this);
 
         for (int i = 0; i < toDelete; i++) {
             final String directoryName = fileUtils.removeExtensionFrom(files.get(i).getName());
@@ -110,6 +132,10 @@ public class ExtentReporter implements SessionHook {
                     .map(File::toPath)
                     .ifPresent(fileUtils::deleteDirectory);
         }
+    }
+
+    public Path getReportPathFrom(final Configuration.Extent extent) {
+        return Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath();
     }
 
     public ExtentTest createExtentTestFrom(final TestData testData) {

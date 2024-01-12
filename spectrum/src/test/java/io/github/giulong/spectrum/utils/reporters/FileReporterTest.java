@@ -1,5 +1,7 @@
 package io.github.giulong.spectrum.utils.reporters;
 
+import io.github.giulong.spectrum.utils.FixedSizeQueue;
+import io.github.giulong.spectrum.utils.MetadataManager;
 import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.Retention;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +15,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -26,12 +30,16 @@ class FileReporterTest {
 
     private MockedStatic<Path> pathMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
+    private MockedStatic<MetadataManager> metadataManagerMockedStatic;
 
     @Mock
     private Path path;
 
     @Mock
     private Path parentPath;
+
+    @Mock
+    private Path absolutePath;
 
     @Mock
     private File folder;
@@ -52,6 +60,12 @@ class FileReporterTest {
     private File directory2;
 
     @Mock
+    private MetadataManager metadataManager;
+
+    @Mock
+    private FixedSizeQueue<File> fileFixedSizeQueue;
+
+    @Mock
     private Retention retention;
 
     @Captor
@@ -64,14 +78,17 @@ class FileReporterTest {
     public void beforeEach() {
         ReflectionUtils.setParentField("output", fileReporter, fileReporter.getClass().getSuperclass(), OUTPUT);
         ReflectionUtils.setParentField("retention", fileReporter, fileReporter.getClass().getSuperclass(), retention);
+        ReflectionUtils.setParentField("metadataManager", fileReporter, fileReporter.getClass().getSuperclass(), metadataManager);
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
+        metadataManagerMockedStatic = mockStatic(MetadataManager.class);
     }
 
     @AfterEach
     public void afterEach() {
         pathMockedStatic.close();
         filesMockedStatic.close();
+        metadataManagerMockedStatic.close();
     }
 
     @Test
@@ -104,7 +121,7 @@ class FileReporterTest {
 
         assertEquals(OUTPUT, stringArgumentCaptor.getValue());
 
-        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2));
+        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2), fileReporter);
     }
 
     @Test
@@ -142,6 +159,25 @@ class FileReporterTest {
         });
     }
 
-    private static class DummyFileReporter extends FileReporter {
+    @Test
+    @DisplayName("produceMetadata should shrink the queue in the provided metadata bound to the given namespace, and add the new element to it")
+    public void produceMetadata() {
+        final String namespace = "namespace";
+        final int retentionSuccessful = 123;
+        final Map<String, FixedSizeQueue<File>> reports = new HashMap<>(Map.of(namespace, fileFixedSizeQueue));
+
+        when(Path.of(stringArgumentCaptor.capture())).thenReturn(path);
+        when(path.toAbsolutePath()).thenReturn(absolutePath);
+        when(absolutePath.toFile()).thenReturn(file1);
+        when(retention.getSuccessful()).thenReturn(retentionSuccessful);
+        when(metadataManager.getSuccessfulQueueOf(fileReporter)).thenReturn(fileFixedSizeQueue);
+        when(fileFixedSizeQueue.shrinkTo(retentionSuccessful - 1)).thenReturn(fileFixedSizeQueue);
+
+        fileReporter.produceMetadata();
+
+        verify(fileFixedSizeQueue).add(file1);
+        assertEquals(fileFixedSizeQueue, reports.get(namespace));
     }
+
+    private static class DummyFileReporter extends FileReporter {}
 }

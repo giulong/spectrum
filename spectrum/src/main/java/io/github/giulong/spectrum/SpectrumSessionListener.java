@@ -27,7 +27,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
     private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
     private final Configuration configuration = Configuration.getInstance();
-    private final Metadata metadata = Metadata.getInstance();
+    private final MetadataManager metadataManager = MetadataManager.getInstance();
 
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
@@ -40,6 +40,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
 
         configuration.sessionOpened();
+        metadataManager.sessionOpenedFrom(configuration);
         extentReporter.sessionOpenedFrom(configuration);
         freeMarkerWrapper.sessionOpenedFrom(configuration);
         eventsDispatcher.sessionOpenedFrom(configuration);
@@ -50,7 +51,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         configuration.sessionClosed();
         extentReporter.sessionClosedFrom(configuration);
         eventsDispatcher.sessionClosed();
-        metadata.sessionClosedFrom(configuration);
+        metadataManager.sessionClosedFrom(configuration);
     }
 
     protected String buildVersionLine() {

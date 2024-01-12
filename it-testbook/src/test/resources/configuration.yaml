@@ -39,10 +39,13 @@ testBook:
     - log: { } # the report will be logged
     - html:
         output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
+        retention:
+          successful: 2
     - txt:
         output: target/spectrum/testbook/testbook.txt
         retention:
-          total: 2
+          total: 3
+          successful: 2
 
 # these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
 eventsConsumers:

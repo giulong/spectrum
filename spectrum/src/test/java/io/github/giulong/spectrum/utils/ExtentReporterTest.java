@@ -22,6 +22,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -45,6 +48,7 @@ class ExtentReporterTest {
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private static MockedStatic<Path> pathMockedStatic;
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;
+    private MockedStatic<MetadataManager> metadataManagerMockedStatic;
 
     @Mock
     private Configuration configuration;
@@ -107,6 +111,9 @@ class ExtentReporterTest {
     private RuntimeException exception;
 
     @Mock
+    private FixedSizeQueue<File> fileFixedSizeQueue;
+
+    @Mock
     private ExtensionContext context;
 
     @Mock
@@ -117,6 +124,9 @@ class ExtentReporterTest {
 
     @Mock
     private SpectrumTest<?> spectrumTest;
+
+    @Mock
+    private MetadataManager metadataManager;
 
     @Captor
     private ArgumentCaptor<Function<String, ExtentTest>> functionArgumentCaptor;
@@ -133,10 +143,12 @@ class ExtentReporterTest {
     @BeforeEach
     public void beforeEach() {
         ReflectionUtils.setField("fileUtils", extentReporter, fileUtils);
+        ReflectionUtils.setField("configuration", extentReporter, configuration);
         testDataMockedStatic = mockStatic(TestData.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         pathMockedStatic = mockStatic(Path.class);
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
+        metadataManagerMockedStatic = mockStatic(MetadataManager.class);
     }
 
     @AfterEach
@@ -145,6 +157,7 @@ class ExtentReporterTest {
         freeMarkerWrapperMockedStatic.close();
         pathMockedStatic.close();
         fileUtilsMockedStatic.close();
+        metadataManagerMockedStatic.close();
     }
 
     private void cleanupOldReportsStubs() {
@@ -174,7 +187,7 @@ class ExtentReporterTest {
         when(directory1.toPath()).thenReturn(directory1Path);
         when(directory2.toPath()).thenReturn(directory2Path);
 
-        when(retention.deleteOldArtifactsFrom(anyList())).thenReturn(2);
+        when(retention.deleteOldArtifactsFrom(List.of(file1, file2), extentReporter)).thenReturn(2);
 
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.removeExtensionFrom(file1Name)).thenReturn(directory1Name);
@@ -260,6 +273,59 @@ class ExtentReporterTest {
 
         verify(fileUtils).deleteDirectory(directory1Path);
         verify(fileUtils).deleteDirectory(directory2Path);
+    }
+
+    @Test
+    @DisplayName("getRetention should return the extent's retention")
+    public void getRetention() {
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getRetention()).thenReturn(retention);
+
+        assertEquals(retention, extentReporter.getRetention());
+    }
+
+    @Test
+    @DisplayName("produceMetadata should shrink the queue in the provided metadata bound to the given namespace, and add the new element to it")
+    public void produceMetadata() {
+        final String reportFolder = "reportFolder";
+        final String fileName = "fileName";
+        final String namespace = "namespace";
+        final int retentionSuccessful = 123;
+        final Map<String, FixedSizeQueue<File>> reports = new HashMap<>(Map.of(namespace, fileFixedSizeQueue));
+
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getRetention()).thenReturn(retention);
+
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getReportFolder()).thenReturn(reportFolder);
+        when(extent.getFileName()).thenReturn(fileName);
+        when(Path.of(reportFolder, fileName)).thenReturn(path);
+        when(path.toAbsolutePath()).thenReturn(absolutePath);
+        when(absolutePath.toFile()).thenReturn(file1);
+        when(retention.getSuccessful()).thenReturn(retentionSuccessful);
+
+        when(MetadataManager.getInstance()).thenReturn(metadataManager);
+        when(metadataManager.getSuccessfulQueueOf(extentReporter)).thenReturn(fileFixedSizeQueue);
+        when(fileFixedSizeQueue.shrinkTo(retentionSuccessful - 1)).thenReturn(fileFixedSizeQueue);
+
+        extentReporter.produceMetadata();
+
+        verify(fileFixedSizeQueue).add(file1);
+        assertEquals(fileFixedSizeQueue, reports.get(namespace));
+    }
+
+    @Test
+    @DisplayName("getReportPathFrom should return the absolute path resulting from the composition of extent's report folder and filename")
+    public void getReportPathFrom() {
+        final String reportFolder = "reportFolder";
+        final String fileName = "fileName";
+
+        when(extent.getReportFolder()).thenReturn(reportFolder);
+        when(extent.getFileName()).thenReturn(fileName);
+        when(Path.of(reportFolder, fileName)).thenReturn(path);
+        when(path.toAbsolutePath()).thenReturn(absolutePath);
+
+        assertEquals(absolutePath, extentReporter.getReportPathFrom(extent));
     }
 
     @Test

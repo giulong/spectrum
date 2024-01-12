@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
+import org.mvel2.MVEL;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -35,6 +36,9 @@ public class Summary implements SessionHook, Reportable {
     @JsonPropertyDescription("List of reporters that will produce the summary in specific formats")
     private List<CanReportSummary> reporters;
 
+    @JsonPropertyDescription("Condition to be evaluated. If true, the execution is successful")
+    private String condition;
+
     @JsonIgnore
     private final Map<String, Object> vars = new HashMap<>();
 
@@ -54,6 +58,7 @@ public class Summary implements SessionHook, Reportable {
         final long minutes = MILLISECONDS.toMinutes(duration) % 60;
         final long seconds = MILLISECONDS.toSeconds(duration) % 60;
 
+        // TODO leverage global vars in order to allow having the same condition as in testbook
         vars.put("summary", summary);
         vars.put("duration", String.format("%02d:%02d:%02d", hours, minutes, seconds));
         vars.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
@@ -64,5 +69,15 @@ public class Summary implements SessionHook, Reportable {
         vars.put("disabledPercentage", (double) disabled / total * 100);
 
         reporters.forEach(reporter -> reporter.flush(this));
+    }
+
+    @JsonIgnore
+    public boolean isExecutionSuccessful() {
+        final TestExecutionSummary summary = summaryGeneratingListener.getSummary();
+        final String interpolatedCondition = freeMarkerWrapper.interpolate("summaryCondition", condition, vars);
+        final boolean executionSuccessful = Boolean.parseBoolean(String.valueOf(MVEL.eval(interpolatedCondition, vars)));
+
+        log.info("Execution successful? {}", executionSuccessful);
+        return executionSuccessful;
     }
 }
