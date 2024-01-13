@@ -76,7 +76,7 @@ https://github.com/giulong/spectrum/assets/27963644/187e237c-7db1-494b-8a3b-5839
 
 Additionally, you can configure Spectrum to automatically produce a html summary and coverage report like these:
 
-<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
+<img style="width: 49%;" src="src/main/resources/images/html-summary.png" alt="summary"/>&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
 
 For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/).
 
