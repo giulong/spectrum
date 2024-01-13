@@ -67,6 +67,9 @@ public class Summary implements SessionHook, Reportable {
         vars.put("failedPercentage", (double) failed / total * 100);
         vars.put("abortedPercentage", (double) aborted / total * 100);
         vars.put("disabledPercentage", (double) disabled / total * 100);
+        vars.put("condition", condition);
+        vars.put("interpolatedCondition", interpolateCondition());
+        vars.put("executionSuccessful", isExecutionSuccessful());
 
         reporters.forEach(reporter -> reporter.flush(this));
     }
@@ -74,10 +77,13 @@ public class Summary implements SessionHook, Reportable {
     @JsonIgnore
     public boolean isExecutionSuccessful() {
         final TestExecutionSummary summary = summaryGeneratingListener.getSummary();
-        final String interpolatedCondition = freeMarkerWrapper.interpolate("summaryCondition", condition, vars);
-        final boolean executionSuccessful = Boolean.parseBoolean(String.valueOf(MVEL.eval(interpolatedCondition, vars)));
+        final boolean executionSuccessful = Boolean.parseBoolean(String.valueOf(MVEL.eval(interpolateCondition(), vars)));
 
         log.info("Execution successful? {}", executionSuccessful);
         return executionSuccessful;
+    }
+
+    protected String interpolateCondition() {
+        return freeMarkerWrapper.interpolate("summaryCondition", condition, vars);
     }
 }

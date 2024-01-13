@@ -63,11 +63,15 @@
             min-width: 480px;
         }
 
-        .successful {
+        .condition-status {
+            text-align: center;
+        }
+
+        .successful, .condition-status-OK {
             background: #88B04B;
         }
 
-        .failed {
+        .failed, .condition-status-KO {
             background: #FF6F61;
         }
 
@@ -262,6 +266,15 @@
                 </tr>
                 <tr>
                     <td id="duration" colspan="4">Duration: &nbsp;&nbsp;${duration}</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="table-separator">
+                        <div class="section">Result</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><b>Condition: </b><span id="condition">${condition}</span><br/><b>Evaluated: </b><span id="interpolated-condition">${interpolatedCondition}</span></td>
+                    <td id="condition-status" class="condition-status condition-status-${executionSuccessful?string('OK', 'KO')}">${executionSuccessful?string('OK', 'KO')}</td>
                 </tr>
                 </tbody>
             </table>

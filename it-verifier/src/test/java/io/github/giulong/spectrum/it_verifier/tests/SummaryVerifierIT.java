@@ -42,5 +42,9 @@ public class SummaryVerifierIT extends SpectrumTest<Data> {
         assertThat(summaryPage.getStartedAt().getText(), matchesPattern("Started at:\\s*" + DATE_PATTERN));
         assertThat(summaryPage.getEndedAt().getText(), matchesPattern("Ended at:\\s*" + DATE_PATTERN));
         assertThat(summaryPage.getDuration().getText(), matchesPattern("Duration:\\s*" + DURATION_PATTERN));
+
+        assertEquals(summary.getCondition(), summaryPage.getCondition().getText());
+        assertEquals(summary.getInterpolatedCondition(), summaryPage.getInterpolatedCondition().getText());
+        assertEquals(summary.getConditionStatus(), summaryPage.getConditionStatus().getText());
     }
 }

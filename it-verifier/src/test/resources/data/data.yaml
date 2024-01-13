@@ -60,3 +60,6 @@ summary:
   abortedPercentage: 0%
   disabledCount: 1/8
   disabledPercentage: 12.5%
+  condition: ${successfulPercentage} == 100
+  interpolatedCondition: 75 == 100
+  conditionStatus: KO

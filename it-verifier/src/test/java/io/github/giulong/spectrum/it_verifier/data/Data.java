@@ -68,5 +68,8 @@ public class Data {
         private String abortedPercentage;
         private String disabledCount;
         private String disabledPercentage;
+        private String condition;
+        private String interpolatedCondition;
+        private String conditionStatus;
     }
 }

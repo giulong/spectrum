@@ -11,9 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mvel2.MVEL;
 
@@ -53,6 +51,12 @@ class SummaryTest {
     @Mock
     private Map<String, Object> vars;
 
+    @Captor
+    private ArgumentCaptor<Map<String, Object>> freeMarkerVarsArgumentCaptor;
+
+    @Captor
+    private ArgumentCaptor<Map<String, Object>> mvelVarsArgumentCaptor;
+
     @InjectMocks
     private Summary summary;
 
@@ -82,10 +86,15 @@ class SummaryTest {
         final long timeStarted = 750000;
         final String globalVar = "globalVar";
         final String globalValue = "globalValue";
+        final String condition = "condition";
+        final String interpolatedCondition = "interpolatedCondition";
 
         Vars.getInstance().put(globalVar, globalValue);
         ReflectionUtils.setField("reporters", summary, List.of(reporter1, reporter2));
+        ReflectionUtils.setField("condition", summary, condition);
         assertTrue(summary.getVars().isEmpty());
+
+        //ReflectionUtils.setField("vars", summary, vars);
 
         when(summaryGeneratingListener.getSummary()).thenReturn(testExecutionSummary);
         when(testExecutionSummary.getTestsFoundCount()).thenReturn(testsFoundCount);
@@ -95,12 +104,14 @@ class SummaryTest {
         when(testExecutionSummary.getTestsSkippedCount()).thenReturn(testsSkippedCount);
         when(testExecutionSummary.getTimeStarted()).thenReturn(timeStarted);
         when(testExecutionSummary.getTimeFinished()).thenReturn(timeFinished);
+        when(freeMarkerWrapper.interpolate(eq("summaryCondition"), eq(condition), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedCondition);
+        when(MVEL.eval(eq(interpolatedCondition), mvelVarsArgumentCaptor.capture())).thenReturn(true);
 
         summary.sessionClosed();
 
         final Map<String, Object> vars = summary.getVars();
 
-        assertEquals(9, vars.size());
+        assertEquals(12, vars.size());
         assertEquals(globalValue, vars.get(globalVar));
         assertEquals(testExecutionSummary, vars.get("summary"));
         assertEquals("00:04:10", vars.get("duration"));
@@ -110,6 +121,11 @@ class SummaryTest {
         assertEquals((double) testsFailedCount / testsFoundCount * 100, vars.get("failedPercentage"));
         assertEquals((double) testsAbortedCount / testsFoundCount * 100, vars.get("abortedPercentage"));
         assertEquals((double) testsSkippedCount / testsFoundCount * 100, vars.get("disabledPercentage"));
+        assertEquals(condition, vars.get("condition"));
+        assertEquals(interpolatedCondition, vars.get("interpolatedCondition"));
+        assertEquals(true, vars.get("executionSuccessful"));
+
+        assertEquals(mvelVarsArgumentCaptor.getValue(), freeMarkerVarsArgumentCaptor.getValue());
 
         verify(reporter1).flush(summary);
         verify(reporter2).flush(summary);

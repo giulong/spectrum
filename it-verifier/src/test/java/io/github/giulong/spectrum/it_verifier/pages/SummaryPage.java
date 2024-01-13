@@ -44,4 +44,13 @@ public class SummaryPage extends SpectrumPage<SummaryPage, Void> {
 
     @FindBy(id = "duration")
     private WebElement duration;
+
+    @FindBy(id = "condition")
+    private WebElement condition;
+
+    @FindBy(id = "interpolated-condition")
+    private WebElement interpolatedCondition;
+
+    @FindBy(id = "condition-status")
+    private WebElement conditionStatus;
 }
