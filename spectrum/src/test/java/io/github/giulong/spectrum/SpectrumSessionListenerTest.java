@@ -113,7 +113,7 @@ class SpectrumSessionListenerTest {
         yamlUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
         eventsDispatcherMockedStatic.close();
-        VARS.clear();
+        Vars.getInstance().clear();
         System.setProperty("os.name", osName);
     }
 
@@ -274,7 +274,7 @@ class SpectrumSessionListenerTest {
         when(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).thenReturn(envVars);
 
         spectrumSessionListener.parseVars(profileConfiguration);
-        assertEquals(expected, VARS);
+        assertEquals(expected, Vars.getInstance());
     }
 
     @DisplayName("parseVars should put in the VARS map also those read from the internal configuration.default.unix.yaml")
@@ -292,7 +292,7 @@ class SpectrumSessionListenerTest {
         when(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).thenReturn(envVars);
 
         spectrumSessionListener.parseVars(profileConfiguration);
-        assertEquals(expected, VARS);
+        assertEquals(expected, Vars.getInstance());
     }
 
     public static Stream<Arguments> varsValuesProvider() {

@@ -19,8 +19,8 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     public static final String CONFIGURATION_YAML = "configuration.yaml";
     public static final String PROFILE_NODE = "/runtime/profiles";
     public static final String VARS_NODE = "/vars";
-    public static final Map<String, String> VARS = new HashMap<>();
 
+    private final Vars vars = Vars.getInstance();
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
@@ -91,14 +91,14 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @SuppressWarnings("unchecked")
     protected void parseVars(final String profileConfiguration) {
-        VARS.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
+        vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
 
         if (isUnix()) {
-            VARS.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
+            vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
         }
 
-        VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
-        VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
     }
 
     protected boolean isUnix() {

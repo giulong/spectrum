@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import io.github.giulong.spectrum.utils.Vars;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +16,6 @@ import java.io.IOException;
 import java.util.stream.Stream;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
-import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
@@ -39,12 +39,12 @@ class InterpolatedStringDeserializerTest {
 
     @BeforeAll
     public static void beforeAll() {
-        VARS.put("varInEnv", VAR_IN_ENV);
+        Vars.getInstance().put("varInEnv", VAR_IN_ENV);
     }
 
     @AfterAll
     public static void afterAll() {
-        VARS.clear();
+        Vars.getInstance().clear();
     }
 
     @Test

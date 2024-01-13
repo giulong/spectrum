@@ -2,9 +2,10 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import io.github.giulong.spectrum.browsers.*;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.browsers.Chrome;
+import io.github.giulong.spectrum.browsers.Edge;
+import io.github.giulong.spectrum.browsers.Firefox;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,7 +19,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
@@ -36,18 +36,6 @@ class BrowserDeserializerTest {
 
     @InjectMocks
     private BrowserDeserializer browserDeserializer;
-
-    private static final String varInEnv = "varInEnv";
-
-    @BeforeAll
-    public static void beforeAll() {
-        VARS.put("varInEnv", varInEnv);
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        VARS.clear();
-    }
 
     @Test
     @DisplayName("getInstance should return the singleton")
