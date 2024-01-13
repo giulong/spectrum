@@ -68,7 +68,7 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 
 Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:
 
-<img style="width: 49%;" src="src/main/resources/images/login-form-it.jpg" alt="login-form"/>&nbsp;&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/login-form-it-extent-report.jpg" alt="report"/>
+<img style="width: 48%;" src="src/main/resources/images/login-form-it.jpg" alt="login-form"/>&nbsp;&nbsp;&nbsp;&nbsp;<img style="width: 48%;" src="src/main/resources/images/login-form-it-extent-report.jpg" alt="report"/>
 
 And here's the generated video:
 
@@ -76,7 +76,7 @@ https://github.com/giulong/spectrum/assets/27963644/187e237c-7db1-494b-8a3b-5839
 
 Additionally, you can configure Spectrum to automatically produce a html summary and coverage report like these:
 
-<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>&nbsp;&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
+<img style="width: 48%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>&nbsp;&nbsp;&nbsp;&nbsp;<img style="width: 48%;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
 
 For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/).
 
