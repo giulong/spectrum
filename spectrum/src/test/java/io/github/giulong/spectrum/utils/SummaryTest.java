@@ -80,7 +80,10 @@ class SummaryTest {
         final long testsSkippedCount = 5;
         final long timeFinished = 1000000;
         final long timeStarted = 750000;
+        final String globalVar = "globalVar";
+        final String globalValue = "globalValue";
 
+        Vars.getInstance().put(globalVar, globalValue);
         ReflectionUtils.setField("reporters", summary, List.of(reporter1, reporter2));
         assertTrue(summary.getVars().isEmpty());
 
@@ -97,7 +100,8 @@ class SummaryTest {
 
         final Map<String, Object> vars = summary.getVars();
 
-        assertEquals(8, vars.size());
+        assertEquals(9, vars.size());
+        assertEquals(globalValue, vars.get(globalVar));
         assertEquals(testExecutionSummary, vars.get("summary"));
         assertEquals("00:04:10", vars.get("duration"));
         assertThat(String.valueOf(vars.get("timestamp")), matchesPattern("[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}"));

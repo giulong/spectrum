@@ -58,7 +58,7 @@ public class Summary implements SessionHook, Reportable {
         final long minutes = MILLISECONDS.toMinutes(duration) % 60;
         final long seconds = MILLISECONDS.toSeconds(duration) % 60;
 
-        // TODO leverage global vars in order to allow having the same condition as in testbook
+        vars.putAll(Vars.getInstance());
         vars.put("summary", summary);
         vars.put("duration", String.format("%02d:%02d:%02d", hours, minutes, seconds));
         vars.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));

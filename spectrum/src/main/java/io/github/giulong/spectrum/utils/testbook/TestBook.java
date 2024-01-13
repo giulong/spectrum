@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
 import io.github.giulong.spectrum.interfaces.reports.Reportable;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
+import io.github.giulong.spectrum.utils.Vars;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -113,7 +114,44 @@ public class TestBook implements SessionHook, Reportable {
         flush(weightedTestsTotal, statistics.getTotalWeightedCount());
         flush(weightedTestsGrandTotal, statistics.getGrandTotalWeightedCount());
 
-        mapVars();
+        final Map<Result, Statistics> totalCount = statistics.getTotalCount();
+        final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
+        final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
+        final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
+
+        vars.putAll(Vars.getInstance());
+        vars.put("mappedTests", mappedTests);
+        vars.put("unmappedTests", unmappedTests);
+        vars.put("groupedMappedTests", groupedMappedTests);
+        vars.put("groupedUnmappedTests", groupedUnmappedTests);
+        vars.put("statistics", statistics);
+        vars.put("qg", qualityGate);
+        vars.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+        vars.put("successful", totalCount.get(SUCCESSFUL));
+        vars.put("failed", totalCount.get(FAILED));
+        vars.put("aborted", totalCount.get(ABORTED));
+        vars.put("disabled", totalCount.get(DISABLED));
+        vars.put("notRun", totalCount.get(NOT_RUN));
+        vars.put("grandSuccessful", grandTotalCount.get(SUCCESSFUL));
+        vars.put("grandFailed", grandTotalCount.get(FAILED));
+        vars.put("grandAborted", grandTotalCount.get(ABORTED));
+        vars.put("grandDisabled", grandTotalCount.get(DISABLED));
+        vars.put("grandNotRun", grandTotalCount.get(NOT_RUN));
+        vars.put("weightedSuccessful", totalWeightedCount.get(SUCCESSFUL));
+        vars.put("weightedFailed", totalWeightedCount.get(FAILED));
+        vars.put("weightedAborted", totalWeightedCount.get(ABORTED));
+        vars.put("weightedDisabled", totalWeightedCount.get(DISABLED));
+        vars.put("weightedNotRun", totalWeightedCount.get(NOT_RUN));
+        vars.put("grandWeightedSuccessful", grandTotalWeightedCount.get(SUCCESSFUL));
+        vars.put("grandWeightedFailed", grandTotalWeightedCount.get(FAILED));
+        vars.put("grandWeightedAborted", grandTotalWeightedCount.get(ABORTED));
+        vars.put("grandWeightedDisabled", grandTotalWeightedCount.get(DISABLED));
+        vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
+
+        final String interpolatedQgStatus = FreeMarkerWrapper.getInstance().interpolate("qgStatus", qualityGate.getCondition(), vars);
+        vars.put("qgStatus", interpolatedQgStatus);
+        Vars.getInstance().put("qgStatus", interpolatedQgStatus);
+
         reporters.forEach(reporter -> reporter.flush(this));
     }
 
@@ -163,42 +201,6 @@ public class TestBook implements SessionHook, Reportable {
                 .stream()
                 .map(TestBookTest::getWeight)
                 .reduce(0, Integer::sum);
-    }
-
-    public void mapVars() {
-        final Map<Result, Statistics> totalCount = statistics.getTotalCount();
-        final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
-        final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
-        final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
-
-        vars.put("mappedTests", mappedTests);
-        vars.put("unmappedTests", unmappedTests);
-        vars.put("groupedMappedTests", groupedMappedTests);
-        vars.put("groupedUnmappedTests", groupedUnmappedTests);
-        vars.put("statistics", statistics);
-        vars.put("qg", qualityGate);
-        vars.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-        vars.put("successful", totalCount.get(SUCCESSFUL));
-        vars.put("failed", totalCount.get(FAILED));
-        vars.put("aborted", totalCount.get(ABORTED));
-        vars.put("disabled", totalCount.get(DISABLED));
-        vars.put("notRun", totalCount.get(NOT_RUN));
-        vars.put("grandSuccessful", grandTotalCount.get(SUCCESSFUL));
-        vars.put("grandFailed", grandTotalCount.get(FAILED));
-        vars.put("grandAborted", grandTotalCount.get(ABORTED));
-        vars.put("grandDisabled", grandTotalCount.get(DISABLED));
-        vars.put("grandNotRun", grandTotalCount.get(NOT_RUN));
-        vars.put("weightedSuccessful", totalWeightedCount.get(SUCCESSFUL));
-        vars.put("weightedFailed", totalWeightedCount.get(FAILED));
-        vars.put("weightedAborted", totalWeightedCount.get(ABORTED));
-        vars.put("weightedDisabled", totalWeightedCount.get(DISABLED));
-        vars.put("weightedNotRun", totalWeightedCount.get(NOT_RUN));
-        vars.put("grandWeightedSuccessful", grandTotalWeightedCount.get(SUCCESSFUL));
-        vars.put("grandWeightedFailed", grandTotalWeightedCount.get(FAILED));
-        vars.put("grandWeightedAborted", grandTotalWeightedCount.get(ABORTED));
-        vars.put("grandWeightedDisabled", grandTotalWeightedCount.get(DISABLED));
-        vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
-        vars.put("qgStatus", FreeMarkerWrapper.getInstance().interpolate("qgStatus", qualityGate.getCondition(), vars));
     }
 
     protected void flush(final int total, final Map<Result, Statistics> map) {

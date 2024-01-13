@@ -8,6 +8,7 @@ import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Vars;
 import io.github.giulong.spectrum.utils.reporters.Reporter;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import org.junit.jupiter.api.AfterEach;
@@ -40,7 +41,8 @@ class TestBookUnitTest {
 
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
 
-    private final String condition = "condition";
+    private final String globalVar = "globalVar";
+    private final String globalValue = "globalValue";
     private final String interpolatedQgStatus = "interpolatedQgStatus";
 
     @Mock
@@ -88,7 +90,8 @@ class TestBookUnitTest {
         final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
         final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
 
-        assertEquals(28, vars.size());
+        assertEquals(29, vars.size());
+        assertEquals(globalValue, vars.get(globalVar));
         assertSame(testBook.getMappedTests(), vars.get("mappedTests"));
         assertSame(testBook.getUnmappedTests(), vars.get("unmappedTests"));
         assertSame(testBook.getGroupedMappedTests(), vars.get("groupedMappedTests"));
@@ -96,6 +99,7 @@ class TestBookUnitTest {
         assertSame(testBook.getStatistics(), vars.get("statistics"));
         assertSame(testBook.getQualityGate(), vars.get("qg"));
         assertEquals(interpolatedQgStatus, vars.get("qgStatus"));
+        assertEquals(interpolatedQgStatus, Vars.getInstance().get("qgStatus"));
         assertThat(vars.get("timestamp").toString(), matchesPattern("\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}:\\d{2}"));
         assertSame(totalCount.get(SUCCESSFUL), vars.get("successful"));
         assertSame(totalCount.get(FAILED), vars.get("failed"));
@@ -221,17 +225,6 @@ class TestBookUnitTest {
     }
 
     @Test
-    @DisplayName("mapVars should put all the needed vars to interpolate templates correctly")
-    public void mapVars() {
-        when(qualityGate.getCondition()).thenReturn(condition);
-        when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
-        when(freeMarkerWrapper.interpolate("qgStatus", condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
-
-        testBook.mapVars();
-        mapVarsAssertions();
-    }
-
-    @Test
     @DisplayName("getWeightedTotalOf should return the sum of the weights of the provided map")
     public void getWeightedTotalOf() {
         final TestBookTest test1 = TestBookTest.builder()
@@ -290,11 +283,14 @@ class TestBookUnitTest {
     @Test
     @DisplayName("flush should flush all reporters")
     public void flushAll() {
+        Vars.getInstance().put(globalVar, globalValue);
+
         ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
 
+        String condition = "condition";
         when(qualityGate.getCondition()).thenReturn(condition);
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
         when(freeMarkerWrapper.interpolate("qgStatus", condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
