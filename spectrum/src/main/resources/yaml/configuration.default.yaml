@@ -1,6 +1,10 @@
 # Common vars to interpolate other String values in the configuration
 vars:
   downloadsFolder: ${user.dir}\target\downloads # Path, as you can see below, where to save downloaded files
+  summary:
+    reportOutput: target/spectrum/summary
+  testBook:
+    reportOutput: target/spectrum/testbook
 
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:

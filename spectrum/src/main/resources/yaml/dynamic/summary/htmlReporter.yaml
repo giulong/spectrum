@@ -1,4 +1,4 @@
 html:
   template: templates/summary.html
-  output: target/spectrum/summary/summary-${timestamp}.html
+  output: ${summary.reportOutput}/summary-${timestamp}.html
   retention: { }
