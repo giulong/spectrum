@@ -39,15 +39,15 @@
 
 ## About
 
-Spectrum is a **JUnit 5** and **Selenium 4** framework that aims to simplify the writing of e2e tests providing these features automatically:
+Spectrum is a **JUnit 5** and **Selenium 4** framework that aims to simplify e2e tests development providing these features automatically:
 
 * **Webdriver** instantiation
-* **Log and html report** generation
+* **Html report** generation
 * **Execution video** generation
 * **Coverage report** generation by reading a **testbook**
 * **Mail/Slack notifications** with reports as attachments
 
-Spectrum manages all the boilerplate code to get these features, allowing you to focus on test logic.
+Spectrum manages all the boilerplate code to get these features and many more, allowing you to focus on test logic.
 * It is fully configurable via a **declarative yaml file**
 * It provides **out-of-the-box defaults** to let you run tests with no additional configuration
 
@@ -66,14 +66,19 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 2. Run the `src/test/java/<PACKAGE NAME>/tests/LoginFormIT` demo test injected by the archetype. You will see an instance of Chrome starting.
 3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` html report with the execution video attached.
 
-Here's a quick overview of the project created by the archetype, along with the report and video generated after the first execution:
+Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:
 
-![LoginFormIT](src/main/resources/images/login-form-it.jpg)
-![Extent Report](src/main/resources/images/login-form-it-extent-report.jpg)
+<img style="width: 49%;" src="src/main/resources/images/login-form-it.jpg" alt="login-form"/>&nbsp;&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/login-form-it-extent-report.jpg" alt="report"/>
+
+And here's the generated video:
 
 https://github.com/giulong/spectrum/assets/27963644/187e237c-7db1-494b-8a3b-5839565ae0b0
 
-For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/)
+Additionally, you can configure Spectrum to automatically produce a html summary and coverage report like these:
+
+<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>&nbsp;&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
+
+For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/).
 
 ## Contacts
 
@@ -89,7 +94,7 @@ If you're interested in building Spectrum locally, check out the [DEV readme](DE
 
 ## Acknowledgments
 
-Spectrum leverages these libraries/frameworks you should definitely check out!
+Spectrum leverages these projects you should definitely check out!
 
 * [JUnit 5](https://junit.org/junit5/docs/current/user-guide/)
 * [Selenium](https://www.selenium.dev/)
@@ -99,3 +104,4 @@ Spectrum leverages these libraries/frameworks you should definitely check out!
 * [Simple Java Mail](https://www.simplejavamail.org/)
 * [JCodec](http://www.jcodec.org/)
 * [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
+* [Modernist Theme](https://github.com/pages-themes/modernist)
