@@ -311,6 +311,8 @@ class TestBookUnitTest {
         mapVarsAssertions();
         verify(reporter1).flush(testBook);
         verify(reporter2).flush(testBook);
+
+        Vars.getInstance().clear();
     }
 
     @Test
