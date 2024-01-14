@@ -1,15 +1,18 @@
 # Common vars to interpolate other String values in the configuration
 vars:
   downloadsFolder: ${user.dir}\target\downloads # Path, as you can see below, where to save downloaded files
+  summaryReportOutput: target/spectrum/summary
+  testBookReportOutput: target/spectrum/testbook
 
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:
-  profiles: ${spectrum.profiles:-local} # profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
-  browser: ${spectrum.browser:-chrome}  # browser to use
+  profiles: ${spectrum.profiles:-local} # Profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
+  browser: ${spectrum.browser:-chrome}  # Browser to use
   environment: # Runtime environment. Can be local or grid
     local: { }
-  filesFolder: src/test/resources/files # folder where you will store files to be checked against downloaded ones
-  downloadsFolder: ${downloadsFolder} # destination folder for files downloaded during the execution
+  filesFolder: src/test/resources/files # Folder where you will store files to be checked against downloaded ones
+  downloadsFolder: ${downloadsFolder} # Destination folder for files downloaded during the execution
+  cacheFolder: ${user.home}/.cache/spectrum # Cache folder for storing Spectrum internal cross-executions data
 
 # Application under test
 application:
@@ -23,10 +26,7 @@ testBook:
   parser:
     yaml:
       path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
-  reporters:
-    - log: { }  # the report will be logged
-    - html:
-        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
+  reporters: [ ] # List of testBook reporters that will produce the execution report in specific formats
 
 # Execution video recording
 video:
@@ -38,15 +38,21 @@ video:
     width: 320 # width of the video in the extent report
     height: 240 # height of the video in the extent report
 
+# Execution summary
+summary:
+  reporters: [ ] # List of reporters that will produce the summary in specific formats
+  condition: ${successfulPercentage} == 100 # Execution successful if all tests are successful
+
 # Extent Report configuration
 extent:
   documentTitle: Spectrum Report  # Title of the html page
   reportFolder: target/spectrum/reports # Where to generate the report
   reportName: Spectrum Report   # Name shown in the header of the report
-  fileName: spectrum-report-{timestamp}.html  # Name of the report file. you can use the {timestamp} placeholder, which will be resolved at runtime
+  fileName: spectrum-report-${timestamp}.html  # Name of the report file. you can use the ${timestamp} placeholder, which will be resolved at runtime
   theme: STANDARD   # Theme used. Can be STANDARD or DARK
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
   locatorRegex: \s->\s([\w:\s\-.#]+)  # Regex to extract the WebElement's selector, when the webDriver fires an event
+  retention: { } # Retention rules, specifies the number of reports to retain. Older ones will be deleted. Defaults to MAX_INT
 
 # WebDriver configuration
 webDriver:
@@ -375,7 +381,7 @@ webDriver:
 
 # Data models
 data:
-  folder: data  # subfolder under src/test/resources where to find your data*.yaml
+  folder: data  # sub-folder under src/test/resources where to find your data*.yaml
   fqdn: fqdn.placeholder  # you need to provide the fully qualified name of your Data class, meaning its package name AND class name
 
 # FreeMarker template engine configuration. See https://freemarker.apache.org/

@@ -1,24 +1,14 @@
 package io.github.giulong.spectrum;
 
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.Theme;
-import io.github.giulong.spectrum.pojos.Configuration;
 import io.github.giulong.spectrum.pojos.SpectrumProperties;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.YamlUtils;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.nio.file.Path;
 import java.util.*;
-
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {
@@ -29,20 +19,15 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     public static final String CONFIGURATION_YAML = "configuration.yaml";
     public static final String PROFILE_NODE = "/runtime/profiles";
     public static final String VARS_NODE = "/vars";
-    public static final Map<String, String> VARS = new HashMap<>();
 
+    private final Vars vars = Vars.getInstance();
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
-
-    @Getter
-    protected static Configuration configuration;
-
-    @Getter
-    protected static ExtentReports extentReports;
-
-    @Getter
-    protected static EventsDispatcher eventsDispatcher;
+    private final ExtentReporter extentReporter = ExtentReporter.getInstance();
+    private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
+    private final Configuration configuration = Configuration.getInstance();
+    private final MetadataManager metadataManager = MetadataManager.getInstance();
 
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
@@ -52,19 +37,21 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), buildVersionLine()));
 
         parseConfiguration();
-        configuration.getTestBook().parse();
-        initExtentReports();
-        initEventsDispatcher();
+        session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
 
-        freeMarkerWrapper.setupFrom(configuration.getFreeMarker());
-        eventsDispatcher.fire(BEFORE, Set.of(SUITE));
+        configuration.sessionOpened();
+        metadataManager.sessionOpenedFrom(configuration);
+        extentReporter.sessionOpenedFrom(configuration);
+        freeMarkerWrapper.sessionOpenedFrom(configuration);
+        eventsDispatcher.sessionOpenedFrom(configuration);
     }
 
     @Override
     public void launcherSessionClosed(final LauncherSession session) {
-        configuration.getTestBook().flush();
-        extentReports.flush();
-        eventsDispatcher.fire(AFTER, Set.of(SUITE));
+        configuration.sessionClosed();
+        extentReporter.sessionClosedFrom(configuration);
+        eventsDispatcher.sessionClosed();
+        metadataManager.sessionClosedFrom(configuration);
     }
 
     protected String buildVersionLine() {
@@ -82,7 +69,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
                 .toList();
 
         profileConfigurations.forEach(this::parseVars);
-        configuration = yamlUtils.readInternal(DEFAULT_CONFIGURATION_YAML, Configuration.class);
+        yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
 
         if (isUnix()) {
             yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
@@ -104,44 +91,14 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @SuppressWarnings("unchecked")
     protected void parseVars(final String profileConfiguration) {
-        VARS.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
+        vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
 
         if (isUnix()) {
-            VARS.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
+            vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
         }
 
-        VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
-        VARS.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
-    }
-
-    protected void initExtentReports() {
-        final Configuration.Extent extent = configuration.getExtent();
-        final String reportPath = getReportsPathFrom(extent.getReportFolder(), extent.getFileName());
-        final String reportName = extent.getReportName();
-        final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
-
-        sparkReporter.config().setDocumentTitle(extent.getDocumentTitle());
-        sparkReporter.config().setReportName(reportName);
-        sparkReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
-        sparkReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
-        sparkReporter.config().setCss(fileUtils.read("/css/report.css"));
-
-        extentReports = new ExtentReports();
-        extentReports.attachReporter(sparkReporter);
-
-        log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
-    }
-
-    protected String getReportsPathFrom(final String reportFolder, final String fileName) {
-        final String resolvedFileName = fileUtils.interpolateTimestampFrom(fileName);
-        return Path.of(reportFolder, resolvedFileName).toAbsolutePath().toString().replace("\\", "/");
-    }
-
-    protected void initEventsDispatcher() {
-        eventsDispatcher = EventsDispatcher
-                .builder()
-                .consumers(configuration.getEventsConsumers())
-                .build();
+        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
     }
 
     protected boolean isUnix() {

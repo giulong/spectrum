@@ -2,12 +2,15 @@ package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -16,7 +19,9 @@ import java.util.List;
 import java.util.Set;
 
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,6 +29,9 @@ import static org.mockito.Mockito.*;
 class EventsDispatcherTest {
 
     private MockedStatic<Event> eventMockedStatic;
+
+    @Mock
+    private Configuration configuration;
 
     @Mock
     private ExtensionContext extensionContext;
@@ -40,20 +48,66 @@ class EventsDispatcherTest {
     @Mock
     private EventsConsumer consumer2;
 
+    @InjectMocks
     private EventsDispatcher eventsDispatcher;
 
     @BeforeEach
     public void beforeEach() {
         eventMockedStatic = mockStatic(Event.class);
-        eventsDispatcher = EventsDispatcher
-                .builder()
-                .consumers(List.of(consumer1, consumer2))
-                .build();
+        ReflectionUtils.setField("consumers", eventsDispatcher, List.of(consumer1, consumer2));
     }
 
     @AfterEach
     public void afterEach() {
         eventMockedStatic.close();
+    }
+
+    @Test
+    @DisplayName("getInstance should return the singleton")
+    public void getInstance() {
+        //noinspection EqualsWithItself
+        assertSame(EventsDispatcher.getInstance(), EventsDispatcher.getInstance());
+    }
+
+    @Test
+    @DisplayName("sessionOpenedFrom should set the consumers and fire the before suite event")
+    public void sessionOpenedFrom() {
+        final List<EventsConsumer> expectedConsumers = List.of(consumer2);
+        final Set<String> tags = Set.of(SUITE);
+
+        when(configuration.getEventsConsumers()).thenReturn(expectedConsumers);
+
+        when(Event.builder()).thenReturn(eventBuilder);
+        when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.reason(BEFORE)).thenReturn(eventBuilder);
+        when(eventBuilder.result(null)).thenReturn(eventBuilder);
+        when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
+        when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.build()).thenReturn(event);
+
+        eventsDispatcher.sessionOpenedFrom(configuration);
+
+        //noinspection unchecked
+        final List<EventsConsumer> actualConsumers = (List<EventsConsumer>) ReflectionUtils.getFieldValue("consumers", eventsDispatcher);
+        assertEquals(expectedConsumers, actualConsumers);
+    }
+
+    @Test
+    @DisplayName("sessionClosed should fire the after suite event")
+    public void sessionClosed() {
+        final Set<String> tags = Set.of(SUITE);
+
+        when(Event.builder()).thenReturn(eventBuilder);
+        when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.reason(AFTER)).thenReturn(eventBuilder);
+        when(eventBuilder.result(null)).thenReturn(eventBuilder);
+        when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
+        when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.build()).thenReturn(event);
+
+        eventsDispatcher.sessionClosed();
     }
 
     @Test

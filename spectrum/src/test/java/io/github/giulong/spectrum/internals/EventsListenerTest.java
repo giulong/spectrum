@@ -4,7 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.Markup;
-import io.github.giulong.spectrum.pojos.Configuration.WebDriver.Event;
+import io.github.giulong.spectrum.utils.Configuration.WebDriver.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.SneakyThrows;

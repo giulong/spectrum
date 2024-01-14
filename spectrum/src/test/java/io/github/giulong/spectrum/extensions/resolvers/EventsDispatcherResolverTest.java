@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.SpectrumSessionListener;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.function.Function;
@@ -23,7 +25,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("EventsDispatcherResolver")
 class EventsDispatcherResolverTest {
 
-    private MockedStatic<SpectrumSessionListener> spectrumSessionListenerMockedStatic;
+    private MockedStatic<EventsDispatcher> eventsDispatcherMockedStatic;
 
     @Mock
     private ParameterContext parameterContext;
@@ -45,18 +47,18 @@ class EventsDispatcherResolverTest {
 
     @BeforeEach
     public void beforeEach() {
-        spectrumSessionListenerMockedStatic = mockStatic(SpectrumSessionListener.class);
+        eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
     }
 
     @AfterEach
     public void afterEach() {
-        spectrumSessionListenerMockedStatic.close();
+        eventsDispatcherMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return an instance of EventsDispatcher")
     public void testResolveParameter() {
-        when(SpectrumSessionListener.getEventsDispatcher()).thenReturn(eventsDispatcher);
+        when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
 
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);

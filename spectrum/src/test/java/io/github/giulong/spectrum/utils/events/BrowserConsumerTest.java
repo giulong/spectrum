@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.browsers.Browser;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.webdrivers.LocalEnvironment;
 import org.junit.jupiter.api.DisplayName;

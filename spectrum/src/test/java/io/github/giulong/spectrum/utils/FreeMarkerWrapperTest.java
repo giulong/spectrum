@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.pojos.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
@@ -31,6 +30,9 @@ class FreeMarkerWrapperTest {
     private freemarker.template.Configuration configuration;
 
     @Mock
+    private Configuration spectrumConfiguration;
+
+    @Mock
     private Configuration.FreeMarker freeMarker;
 
     @InjectMocks
@@ -44,11 +46,12 @@ class FreeMarkerWrapperTest {
     }
 
     @Test
-    @DisplayName("setupFrom should setup the configuration from the freemarker node in the configuration.yaml")
-    public void setupFrom() {
+    @DisplayName("sessionOpenedFrom should setup the configuration from the freemarker node in the configuration.yaml")
+    public void sessionOpenedFrom() {
         final String version = "version";
         final String numberFormat = "numberFormat";
 
+        when(spectrumConfiguration.getFreeMarker()).thenReturn(freeMarker);
         when(freeMarker.getVersion()).thenReturn(version);
         when(freeMarker.getLocale()).thenReturn(US);
         when(freeMarker.getNumberFormat()).thenReturn(numberFormat);
@@ -62,7 +65,7 @@ class FreeMarkerWrapperTest {
             return withSettings();
         });
 
-        freeMarkerWrapper.setupFrom(freeMarker);
+        freeMarkerWrapper.sessionOpenedFrom(spectrumConfiguration);
         assertEquals(freeMarkerWrapper.getConfiguration(), configurationMockedConstruction.constructed().get(0));
 
         versionMockedConstruction.close();

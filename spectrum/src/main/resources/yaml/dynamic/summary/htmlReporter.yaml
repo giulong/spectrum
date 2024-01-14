@@ -1,0 +1,4 @@
+html:
+  template: templates/summary.html
+  output: ${summaryReportOutput}/summary-${timestamp}.html
+  retention: { }

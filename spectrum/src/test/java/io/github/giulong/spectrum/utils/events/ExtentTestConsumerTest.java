@@ -1,150 +1,59 @@
 package io.github.giulong.spectrum.utils.events;
 
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.markuputils.ExtentColor;
-import com.aventstack.extentreports.markuputils.Markup;
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver;
 import io.github.giulong.spectrum.pojos.events.Event;
-import org.junit.jupiter.api.*;
+import io.github.giulong.spectrum.utils.ExtentReporter;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-import java.util.function.Function;
-
-import static com.aventstack.extentreports.Status.PASS;
-import static com.aventstack.extentreports.Status.SKIP;
-import static io.github.giulong.spectrum.enums.Result.*;
-import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.ArgumentMatchers.eq;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ExtentTestConsumer")
 class ExtentTestConsumerTest {
 
-    private final ExtentColor color = ExtentColor.TRANSPARENT;
+    private static MockedStatic<ExtentReporter> extentReporterMockedStatic;
 
-    private static MockedStatic<ExtentTestResolver> extentTestResolverMockedStatic;
+    @Mock
+    private ExtentReporter extentReporter;
 
     @Mock
     private ExtensionContext context;
 
     @Mock
-    private ExtensionContext.Store store;
-
-    @Mock
-    private ExtentTest extentTest;
-
-    @Mock
-    private SpectrumTest<?> spectrumTest;
-
-    @Mock
-    private RuntimeException exception;
-
-    @Mock
     private Event event;
-
-    @Captor
-    private ArgumentCaptor<Function<String, ExtentTest>> functionArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<Markup> markupArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<Markup> skipMarkupArgumentCaptor;
 
     @InjectMocks
     private ExtentTestConsumer extentTestConsumer;
 
     @BeforeEach
     public void beforeEach() {
-        extentTestResolverMockedStatic = mockStatic(ExtentTestResolver.class);
+        ReflectionUtils.setField("extentReporter", extentTestConsumer, extentReporter);
+        extentReporterMockedStatic = mockStatic(ExtentReporter.class);
     }
 
     @AfterEach
     public void afterEach() {
-        extentTestResolverMockedStatic.close();
-    }
-
-    private void addStubs() {
-        when(event.getContext()).thenReturn(context);
-        when(event.getPrimaryId()).thenReturn("className");
-        when(event.getSecondaryId()).thenReturn("displayName");
-        when(context.getStore(GLOBAL)).thenReturn(store);
-        when(ExtentTestResolver.createExtentTestFrom(context)).thenReturn(extentTest);
-        when(store.getOrComputeIfAbsent(eq(EXTENT_TEST), functionArgumentCaptor.capture(), eq(ExtentTest.class))).thenReturn(extentTest);
-    }
-
-    private ExtentTest verifyAndGetExtentTest() {
-        verify(store).getOrComputeIfAbsent(eq(EXTENT_TEST), functionArgumentCaptor.capture(), eq(ExtentTest.class));
-        Function<String, ExtentTest> function = functionArgumentCaptor.getValue();
-        return function.apply("value");
-    }
-
-    @DisplayName("testDisabled should create the test in the report and delegate to finalizeTest")
-    @ParameterizedTest(name = "with method {0} we expect {1}")
-    @CsvSource({
-            "noReasonMethod,no reason",
-            "reasonMethod,specific reason"
-    })
-    public void testDisabled(final String methodName, String expected) throws NoSuchMethodException {
-        addStubs();
-
-        when(event.getResult()).thenReturn(DISABLED);
-        when(ExtentTestResolver.getColorOf(SKIP)).thenReturn(color);
-        when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
-
-        extentTestConsumer.consumes(event);
-        final ExtentTest extentTest = verifyAndGetExtentTest();
-
-        verify(extentTest).skip(skipMarkupArgumentCaptor.capture());
-        assertEquals("<span class='badge white-text transparent'>Skipped: " + expected + "</span>", skipMarkupArgumentCaptor.getValue().getMarkup());
+        extentReporterMockedStatic.close();
     }
 
     @Test
-    @DisplayName("testFailed should add a screenshot to the report and delegate to finalizeTest")
-    public void testFailed() {
-        addStubs();
-        when(context.getRequiredTestInstance()).thenReturn(spectrumTest);
-        when(context.getExecutionException()).thenReturn(Optional.of(exception));
-        when(event.getResult()).thenReturn(FAILED);
-
-        extentTestConsumer.consumes(event);
-        final ExtentTest extentTest = verifyAndGetExtentTest();
-
-        verify(extentTest).fail(exception);
-        verify(spectrumTest).screenshotFail("<span class='badge white-text red'>TEST FAILED</span>");
-    }
-
-    @Test
-    @DisplayName("consume should add a log in the extent report by default")
-    public void consumeDefault() {
-        addStubs();
+    @DisplayName("consumes should add a log in the extent report by default")
+    public void consumes() {
         when(event.getResult()).thenReturn(SUCCESSFUL);
-        when(ExtentTestResolver.getColorOf(PASS)).thenReturn(color);
+        when(event.getContext()).thenReturn(context);
 
         extentTestConsumer.consumes(event);
 
-        final ExtentTest extentTest = verifyAndGetExtentTest();
-        verify(extentTest).log(eq(PASS), markupArgumentCaptor.capture());
-        assertEquals("<span class='badge white-text transparent'>END TEST</span>", markupArgumentCaptor.getValue().getMarkup());
-    }
-
-    @Disabled
-    @SuppressWarnings("unused")
-    private void noReasonMethod() {
-    }
-
-    @Disabled("specific reason")
-    @SuppressWarnings("unused")
-    private void reasonMethod() {
+        verify(extentReporter).logTestEnd(context, SUCCESSFUL.getStatus());
     }
 }

@@ -114,7 +114,7 @@ class VideoEncoderTest {
     @DisplayName("chooseDimensionFor should return a new Dimension based on provided parameters, if at least one is lte 0")
     @ParameterizedTest(name = "with width {0} and height {1}")
     @MethodSource("dimensionProvider")
-    public void chooseDimensionForProvided(final int width, final int height) throws NoSuchFieldException, IllegalAccessException {
+    public void chooseDimensionForProvided(final int width, final int height) throws IllegalAccessException {
         reset(video);
         when(video.getWidth()).thenReturn(width);
 

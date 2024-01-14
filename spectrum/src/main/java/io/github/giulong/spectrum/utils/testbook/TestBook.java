@@ -1,15 +1,19 @@
 package io.github.giulong.spectrum.utils.testbook;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
+import io.github.giulong.spectrum.interfaces.reports.Reportable;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
+import io.github.giulong.spectrum.utils.Vars;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
-import io.github.giulong.spectrum.utils.testbook.reporters.TestBookReporter;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
@@ -21,17 +25,21 @@ import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
 
 @Getter
-@Setter
 @Slf4j
-public class TestBook {
+@SuppressWarnings("unused")
+public class TestBook implements SessionHook, Reportable {
 
+    @JsonPropertyDescription("Enables the testBook")
     private boolean enabled;
 
+    @JsonPropertyDescription("Quality Gate to be evaluated to consider the execution successful")
     private QualityGate qualityGate;
 
+    @JsonPropertyDescription("Object specifying the kind of testBook provided")
     private TestBookParser parser;
 
-    private List<TestBookReporter> reporters;
+    @JsonPropertyDescription("List of testBook reporters that will produce the execution report in specific formats")
+    private List<CanReportTestBook> reporters;
 
     @JsonIgnore
     private final Map<String, TestBookTest> mappedTests = new HashMap<>();
@@ -67,7 +75,8 @@ public class TestBook {
                 });
     }
 
-    public void parse() {
+    @Override
+    public void sessionOpened() {
         if (!enabled) {
             log.debug("TestBook disabled. Skipping parse");
             return;
@@ -80,6 +89,71 @@ public class TestBook {
                 .collect(toMap(test -> String.format("%s %s", test.getClassName(), test.getTestName()), identity())));
 
         tests.forEach(test -> updateGroupedTests(groupedMappedTests, test.getClassName(), test));
+    }
+
+    @Override
+    public void sessionClosed() {
+        if (!enabled) {
+            log.debug("Testbook disabled. Skipping flush");
+            return;
+        }
+
+        log.debug("Updating testBook percentages");
+
+        final int testsTotal = mappedTests.size();
+        final int unmappedTestsTotal = unmappedTests.size();
+        final int weightedTestsTotal = getWeightedTotalOf(mappedTests);
+        final int weightedTestsGrandTotal = weightedTestsTotal + getWeightedTotalOf(unmappedTests);
+
+        statistics.getGrandTotal().set(testsTotal + unmappedTestsTotal);
+        statistics.getTotalWeighted().set(weightedTestsTotal);
+        statistics.getGrandTotalWeighted().set(weightedTestsGrandTotal);
+
+        flush(testsTotal, statistics.getTotalCount());
+        flush(testsTotal + unmappedTestsTotal, statistics.getGrandTotalCount());
+        flush(weightedTestsTotal, statistics.getTotalWeightedCount());
+        flush(weightedTestsGrandTotal, statistics.getGrandTotalWeightedCount());
+
+        final Map<Result, Statistics> totalCount = statistics.getTotalCount();
+        final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
+        final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
+        final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
+
+        vars.putAll(Vars.getInstance());
+        vars.put("mappedTests", mappedTests);
+        vars.put("unmappedTests", unmappedTests);
+        vars.put("groupedMappedTests", groupedMappedTests);
+        vars.put("groupedUnmappedTests", groupedUnmappedTests);
+        vars.put("statistics", statistics);
+        vars.put("qg", qualityGate);
+        vars.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+        vars.put("successful", totalCount.get(SUCCESSFUL));
+        vars.put("failed", totalCount.get(FAILED));
+        vars.put("aborted", totalCount.get(ABORTED));
+        vars.put("disabled", totalCount.get(DISABLED));
+        vars.put("notRun", totalCount.get(NOT_RUN));
+        vars.put("grandSuccessful", grandTotalCount.get(SUCCESSFUL));
+        vars.put("grandFailed", grandTotalCount.get(FAILED));
+        vars.put("grandAborted", grandTotalCount.get(ABORTED));
+        vars.put("grandDisabled", grandTotalCount.get(DISABLED));
+        vars.put("grandNotRun", grandTotalCount.get(NOT_RUN));
+        vars.put("weightedSuccessful", totalWeightedCount.get(SUCCESSFUL));
+        vars.put("weightedFailed", totalWeightedCount.get(FAILED));
+        vars.put("weightedAborted", totalWeightedCount.get(ABORTED));
+        vars.put("weightedDisabled", totalWeightedCount.get(DISABLED));
+        vars.put("weightedNotRun", totalWeightedCount.get(NOT_RUN));
+        vars.put("grandWeightedSuccessful", grandTotalWeightedCount.get(SUCCESSFUL));
+        vars.put("grandWeightedFailed", grandTotalWeightedCount.get(FAILED));
+        vars.put("grandWeightedAborted", grandTotalWeightedCount.get(ABORTED));
+        vars.put("grandWeightedDisabled", grandTotalWeightedCount.get(DISABLED));
+        vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
+
+        final String qgStatus = "qgStatus";
+        final String interpolatedQgStatus = FreeMarkerWrapper.getInstance().interpolate(qgStatus, qualityGate.getCondition(), vars);
+        vars.put(qgStatus, interpolatedQgStatus);
+        Vars.getInstance().put(qgStatus, interpolatedQgStatus);
+
+        reporters.forEach(reporter -> reporter.flush(this));
     }
 
     protected void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
@@ -128,68 +202,6 @@ public class TestBook {
                 .stream()
                 .map(TestBookTest::getWeight)
                 .reduce(0, Integer::sum);
-    }
-
-    public void mapVars() {
-        final Map<Result, Statistics> totalCount = statistics.getTotalCount();
-        final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
-        final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
-        final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
-
-        vars.put("mappedTests", mappedTests);
-        vars.put("unmappedTests", unmappedTests);
-        vars.put("groupedMappedTests", groupedMappedTests);
-        vars.put("groupedUnmappedTests", groupedUnmappedTests);
-        vars.put("statistics", statistics);
-        vars.put("qg", qualityGate);
-        vars.put("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
-        vars.put("successful", totalCount.get(SUCCESSFUL));
-        vars.put("failed", totalCount.get(FAILED));
-        vars.put("aborted", totalCount.get(ABORTED));
-        vars.put("disabled", totalCount.get(DISABLED));
-        vars.put("notRun", totalCount.get(NOT_RUN));
-        vars.put("grandSuccessful", grandTotalCount.get(SUCCESSFUL));
-        vars.put("grandFailed", grandTotalCount.get(FAILED));
-        vars.put("grandAborted", grandTotalCount.get(ABORTED));
-        vars.put("grandDisabled", grandTotalCount.get(DISABLED));
-        vars.put("grandNotRun", grandTotalCount.get(NOT_RUN));
-        vars.put("weightedSuccessful", totalWeightedCount.get(SUCCESSFUL));
-        vars.put("weightedFailed", totalWeightedCount.get(FAILED));
-        vars.put("weightedAborted", totalWeightedCount.get(ABORTED));
-        vars.put("weightedDisabled", totalWeightedCount.get(DISABLED));
-        vars.put("weightedNotRun", totalWeightedCount.get(NOT_RUN));
-        vars.put("grandWeightedSuccessful", grandTotalWeightedCount.get(SUCCESSFUL));
-        vars.put("grandWeightedFailed", grandTotalWeightedCount.get(FAILED));
-        vars.put("grandWeightedAborted", grandTotalWeightedCount.get(ABORTED));
-        vars.put("grandWeightedDisabled", grandTotalWeightedCount.get(DISABLED));
-        vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
-    }
-
-    public void flush() {
-        if (!enabled) {
-            log.debug("Testbook disabled. Skipping flush");
-            return;
-        }
-
-        log.debug("Updating testBook percentages");
-
-        final int testsTotal = mappedTests.size();
-        final int unmappedTestsTotal = unmappedTests.size();
-        final int weightedTestsTotal = getWeightedTotalOf(mappedTests);
-        final int weightedTestsGrandTotal = weightedTestsTotal + getWeightedTotalOf(unmappedTests);
-
-        statistics.getGrandTotal().set(testsTotal + unmappedTestsTotal);
-        statistics.getTotalWeighted().set(weightedTestsTotal);
-        statistics.getGrandTotalWeighted().set(weightedTestsGrandTotal);
-
-        flush(testsTotal, statistics.getTotalCount());
-        flush(testsTotal + unmappedTestsTotal, statistics.getGrandTotalCount());
-        flush(weightedTestsTotal, statistics.getTotalWeightedCount());
-        flush(weightedTestsGrandTotal, statistics.getGrandTotalWeightedCount());
-
-        mapVars();
-        TestBookReporter.evaluateQualityGateStatusFrom(this);
-        reporters.forEach(reporter -> reporter.flush(this));
     }
 
     protected void flush(final int total, final Map<Result, Statistics> map) {

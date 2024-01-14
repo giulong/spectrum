@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.browsers;
 
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.service.DriverService;

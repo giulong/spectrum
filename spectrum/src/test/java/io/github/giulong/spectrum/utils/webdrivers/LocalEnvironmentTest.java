@@ -2,8 +2,8 @@ package io.github.giulong.spectrum.utils.webdrivers;
 
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.internals.BrowserLog;
-import io.github.giulong.spectrum.pojos.Configuration;
-import io.github.giulong.spectrum.pojos.Configuration.WebDriver.Logs;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Configuration.WebDriver.Logs;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

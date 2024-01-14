@@ -1,4 +1,5 @@
 testBook:
+  title: TestBook Results
   statistics:
     generic:
       mappedTests: 4
@@ -48,3 +49,17 @@ extentReport:
     loginTrue: Login Form leveraging the data.yaml
     noDisplayName: Checkbox Page
     download: Files Test
+
+summary:
+  title: Execution Summary
+  successfulCount: 6/8
+  successfulPercentage: 75%
+  failedCount: 1/8
+  failedPercentage: 12.5%
+  abortedCount: 0/8
+  abortedPercentage: 0%
+  disabledCount: 1/8
+  disabledPercentage: 12.5%
+  condition: ${successfulPercentage} == 100
+  interpolatedCondition: 75 == 100
+  conditionStatus: KO

@@ -80,7 +80,7 @@ GitHub workflows:
 |------------|-----------|----------------------------------------|
 | develop    | push      | [build](.github/workflows/build.yml)   |
 | feature/** | push      | [build](.github/workflows/build.yml)   |
-| docs/**    | push      | [build](.github/workflows/docs.yml)    |
+| docs/**    | push      | [docs](.github/workflows/docs.yml)     |
 | main       | pr closed | [deploy](.github/workflows/deploy.yml) |
 
 ## How to build the docs locally

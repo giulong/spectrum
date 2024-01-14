@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 
     {% seo %}
 
@@ -20,10 +20,7 @@
 <body>
 <div class="wrapper">
     <header {% unless site.description or site.github.project_tagline %} class="without-description" {% endunless %}>
-        <h1>{{ site.title | default: site.github.repository_name }}</h1>
-        {% if site.description or site.github.project_tagline %}
-        <p>{{ site.description | default: site.github.project_tagline }}</p>
-        {% endif %}
+        <img id="spectrum-logo" src="assets/images/spectrum-logo.png" alt="Spectrum logo">
         <p class="view"><a href="{{ site.github.repository_url }}" target="_blank">View the Project on GitHub <small>{{ github_name }}</small></a></p>
         <ul>
             {% if site.show_downloads %}
@@ -36,6 +33,7 @@
     </header>
     <section>
 
+        {% include leftMenu.html %}
         {{ content }}
         {% include topButton.html %}
 
@@ -49,6 +47,7 @@
 </footer>
 <!--[if !IE]>
 <script>fixScale(document);</script><![endif]-->
+<script src="assets/scripts/leftMenu.js"></script>
 <script src="assets/scripts/search.js"></script>
 <script src="assets/scripts/copyCode.js"></script>
 <script src="assets/scripts/openImage.js"></script>
