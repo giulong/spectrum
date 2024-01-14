@@ -1,6 +1,5 @@
 const header = document.getElementsByTagName('header')[0];
 const wrapper = document.getElementsByClassName('wrapper')[0];
-const paragraphs = Array.from(document.querySelectorAll('h1, h2, h3, h4')).map(p => p.innerText.toLowerCase());
 const searchContainer = document.getElementById('search-container');
 const searchInput = document.getElementById('search-input');
 const resultsContainer = document.getElementById('results-container');
@@ -16,7 +15,7 @@ searchInput.setAttribute('onfocus', 'highlight()');
 searchInput.setAttribute('onclick', 'showResults()');
 searchInput.setAttribute('onkeyup', 'search()');
 
-document.onload = addAnchor();
+document.onload = setUpAnchors();
 document.addEventListener('click', function(event) {
     if (!searchContainer.contains(event.target)) {
         hideResults();
@@ -29,11 +28,19 @@ document.addEventListener('keydown', evt => {
     }
 });
 
-window.onscroll = function() { stickyHeader() };
-window.onresize = function() { stickyHeader() };
+window.onscroll = () => stickyHeader();
+window.onresize = () => stickyHeader();
+
+function setUpAnchors() {
+    location.href = location.hash ? location.hash : '#spectrum';
+    headings.forEach(h => h.setAttribute('onclick', 'navigateTo("' + h.innerText.toLowerCase().replaceAll(' ', '-') + '")'));
+
+    setTimeout(() => scrollUpABit(), 100);
+}
 
 function highlight() {
     searchInput.classList.add('shadow');
+    resultsContainer.classList.add('shadow');
 }
 
 function stickyHeader() {
@@ -63,20 +70,21 @@ function hideResults() {
     searchInput.classList.remove('shadow');
 }
 
-function addAnchor() {
-    location.href = '#spectrum';
+function scrollUpABit() {
+    window.scrollBy(0, -75);
 }
 
 function navigateTo(anchor) {
     hideResults();
 
     location.href = '#' + anchor;
-    window.scrollBy(0, -75);
+    window.navigator.clipboard.writeText(location.href);
+    scrollUpABit();
 }
 
 function search() {
     const value = searchInput.value.toLowerCase();
-    const results = paragraphs.filter(p => p.includes(value));
+    const results = headings.filter(h => h.innerText.toLowerCase().includes(value));
 
     resultsContainer.innerHTML = '';
     if (value == '') {
@@ -93,9 +101,9 @@ function search() {
         .map(r => {
             const li = document.createElement('li');
 
-            li.setAttribute('onclick', 'navigateTo("' + r.replaceAll(' ', '-') + '")');
+            li.setAttribute('onclick', 'navigateTo("' + r.innerText.toLowerCase().replaceAll(' ', '-') + '")');
             li.classList.add('search-result');
-            li.innerText = r;
+            li.innerText = r.innerText;
 
             return li;
         })

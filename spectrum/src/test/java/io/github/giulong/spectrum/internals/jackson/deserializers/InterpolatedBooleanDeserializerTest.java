@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import io.github.giulong.spectrum.utils.Vars;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -40,12 +40,12 @@ class InterpolatedBooleanDeserializerTest {
 
     @BeforeAll
     public static void beforeAll() {
-        VARS.put("varInEnv", varInEnv);
+        Vars.getInstance().put("varInEnv", varInEnv);
     }
 
     @AfterAll
     public static void afterAll() {
-        VARS.clear();
+        Vars.getInstance().clear();
     }
 
     @Test

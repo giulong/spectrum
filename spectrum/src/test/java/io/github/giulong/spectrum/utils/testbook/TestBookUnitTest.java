@@ -1,11 +1,16 @@
 package io.github.giulong.spectrum.utils.testbook;
 
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
+import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Vars;
+import io.github.giulong.spectrum.utils.reporters.Reporter;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
-import io.github.giulong.spectrum.utils.testbook.reporters.TestBookReporter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +39,14 @@ import static org.mockito.Mockito.*;
 @DisplayName("TestBook")
 class TestBookUnitTest {
 
-    private MockedStatic<TestBookReporter> testBookReporterMockedStatic;
+    private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
+
+    private final String globalVar = "globalVar";
+    private final String globalValue = "globalValue";
+    private final String interpolatedQgStatus = "interpolatedQgStatus";
+
+    @Mock
+    private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
     private TestBookTest test;
@@ -42,11 +54,11 @@ class TestBookUnitTest {
     @Mock
     private TestBookParser testBookParser;
 
-    @Mock
-    private TestBookReporter reporter1;
+    @Mock(extraInterfaces = CanReportTestBook.class)
+    private Reporter reporter1;
 
-    @Mock
-    private TestBookReporter reporter2;
+    @Mock(extraInterfaces = CanReportTestBook.class)
+    private Reporter reporter2;
 
     @Mock
     private TestBookStatistics statistics;
@@ -54,18 +66,20 @@ class TestBookUnitTest {
     @Mock
     private TestBookTest actualTest;
 
+    @Mock
+    private QualityGate qualityGate;
+
     @InjectMocks
     private TestBook testBook;
 
     @BeforeEach
     public void beforeEach() {
-        testBookReporterMockedStatic = mockStatic(TestBookReporter.class);
-        testBook.setEnabled(false);
+        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
     }
 
     @AfterEach
     public void afterEach() {
-        testBookReporterMockedStatic.close();
+        freeMarkerWrapperMockedStatic.close();
     }
 
     private void mapVarsAssertions() {
@@ -76,13 +90,16 @@ class TestBookUnitTest {
         final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
         final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
 
-        assertEquals(27, vars.size());
+        assertEquals(29, vars.size());
+        assertEquals(globalValue, vars.get(globalVar));
         assertSame(testBook.getMappedTests(), vars.get("mappedTests"));
         assertSame(testBook.getUnmappedTests(), vars.get("unmappedTests"));
         assertSame(testBook.getGroupedMappedTests(), vars.get("groupedMappedTests"));
         assertSame(testBook.getGroupedUnmappedTests(), vars.get("groupedUnmappedTests"));
         assertSame(testBook.getStatistics(), vars.get("statistics"));
         assertSame(testBook.getQualityGate(), vars.get("qg"));
+        assertEquals(interpolatedQgStatus, vars.get("qgStatus"));
+        assertEquals(interpolatedQgStatus, Vars.getInstance().get("qgStatus"));
         assertThat(vars.get("timestamp").toString(), matchesPattern("\\d{2}/\\d{2}/\\d{4} \\d{2}:\\d{2}:\\d{2}"));
         assertSame(totalCount.get(SUCCESSFUL), vars.get("successful"));
         assertSame(totalCount.get(FAILED), vars.get("failed"));
@@ -122,8 +139,8 @@ class TestBookUnitTest {
 
         when(testBookParser.parse()).thenReturn(tests);
 
-        testBook.setEnabled(true);
-        testBook.parse();
+        ReflectionUtils.setField("enabled", testBook, true);
+        testBook.sessionOpened();
 
         assertEquals(2, testBook.getMappedTests().size());
         testBook.getMappedTests().values().stream().map(TestBookTest::getResult).forEach(result -> assertEquals(NOT_RUN, result));
@@ -132,8 +149,7 @@ class TestBookUnitTest {
     @Test
     @DisplayName("parse should do nothing if not enabled")
     public void parseNull() {
-        testBook.setEnabled(false);
-        testBook.parse();
+        testBook.sessionOpened();
 
         verify(testBookParser, never()).parse();
     }
@@ -173,7 +189,7 @@ class TestBookUnitTest {
         final String className = "className";
         final String testName = "testName";
 
-        testBook.setEnabled(true);
+        ReflectionUtils.setField("enabled", testBook, true);
         testBook.updateWithResult(className, testName, FAILED);
 
         final TestBookTest unmappedTest = testBook.getUnmappedTests().get(String.format("%s %s", className, testName));
@@ -197,7 +213,7 @@ class TestBookUnitTest {
         when(actualTest.getWeight()).thenReturn(weight);
 
         testBook.getMappedTests().put(fullName, actualTest);
-        testBook.setEnabled(true);
+        ReflectionUtils.setField("enabled", testBook, true);
         testBook.updateWithResult(className, testName, FAILED);
 
         verify(actualTest).setResult(result);
@@ -206,13 +222,6 @@ class TestBookUnitTest {
         assertEquals(1, testBook.getStatistics().getGrandTotalCount().get(result).getTotal().get());
         assertEquals(weight, testBook.getStatistics().getGrandTotalWeightedCount().get(result).getTotal().get());
         assertTrue(testBook.getGroupedMappedTests().get(className).contains(actualTest));
-    }
-
-    @Test
-    @DisplayName("mapVars should put all the needed vars to interpolate templates correctly")
-    public void mapVars() {
-        testBook.mapVars();
-        mapVarsAssertions();
     }
 
     @Test
@@ -260,7 +269,7 @@ class TestBookUnitTest {
         statistics.get(ABORTED).getTotal().set(totalAborted);
         statistics.get(DISABLED).getTotal().set(totalDisabled);
 
-        testBook.setEnabled(true);
+        ReflectionUtils.setField("enabled", testBook, true);
         testBook.flush(total, statistics);
 
         assertEquals((double) totalSuccessful / total * 100, statistics.get(SUCCESSFUL).getPercentage().get());
@@ -274,13 +283,20 @@ class TestBookUnitTest {
     @Test
     @DisplayName("flush should flush all reporters")
     public void flushAll() {
-        testBook.setReporters(List.of(reporter1, reporter2));
+        Vars.getInstance().put(globalVar, globalValue);
+
+        ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
 
-        testBook.setEnabled(true);
-        testBook.flush();
+        String condition = "condition";
+        when(qualityGate.getCondition()).thenReturn(condition);
+        when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
+        when(freeMarkerWrapper.interpolate("qgStatus", condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
+
+        ReflectionUtils.setField("enabled", testBook, true);
+        testBook.sessionClosed();
 
         assertEquals(3, testBook.getStatistics().getGrandTotal().get());
         assertEquals(1, testBook.getStatistics().getTotalWeighted().get());
@@ -293,21 +309,21 @@ class TestBookUnitTest {
         assertEquals(6, testBook.getStatistics().getGrandTotalWeightedCount().get(NOT_RUN).getTotal().get());
 
         mapVarsAssertions();
-        testBookReporterMockedStatic.verify(() -> TestBookReporter.evaluateQualityGateStatusFrom(testBook));
         verify(reporter1).flush(testBook);
         verify(reporter2).flush(testBook);
+
+        Vars.getInstance().clear();
     }
 
     @Test
     @DisplayName("flush should do nothing if the testBook is disabled")
     public void flushAllDisabled() {
-        testBook.setReporters(List.of(reporter1, reporter2));
+        ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
 
-        testBook.setEnabled(false);
-        testBook.flush();
+        testBook.sessionClosed();
 
         assertEquals(0, testBook.getStatistics().getGrandTotal().get());
         assertEquals(0, testBook.getStatistics().getTotalWeighted().get());
@@ -319,7 +335,7 @@ class TestBookUnitTest {
         assertEquals(0, testBook.getStatistics().getTotalWeightedCount().get(NOT_RUN).getTotal().get());
         assertEquals(0, testBook.getStatistics().getGrandTotalWeightedCount().get(NOT_RUN).getTotal().get());
 
-        testBookReporterMockedStatic.verifyNoInteractions();
+        //testBookReporterMockedStatic.verifyNoInteractions();
         verifyNoInteractions(reporter1);
         verifyNoInteractions(reporter2);
     }

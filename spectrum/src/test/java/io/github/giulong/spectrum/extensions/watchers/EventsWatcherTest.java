@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
-import io.github.giulong.spectrum.SpectrumSessionListener;
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("EventsWatcher")
 class EventsWatcherTest {
 
-    private static MockedStatic<SpectrumSessionListener> spectrumSessionListenerMockedStatic;
+    private static MockedStatic<EventsDispatcher> eventsDispatcherMockedStatic;
 
     private final String className = "className";
     private final String displayName = "displayName";
@@ -47,22 +47,23 @@ class EventsWatcherTest {
 
     @BeforeEach
     public void beforeEach() {
-        spectrumSessionListenerMockedStatic = mockStatic(SpectrumSessionListener.class);
+        ReflectionUtils.setField("eventsDispatcher", eventsWatcher, eventsDispatcher);
+        eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
     }
 
     @AfterEach
     public void afterEach() {
-        spectrumSessionListenerMockedStatic.close();
+        eventsDispatcherMockedStatic.close();
     }
 
     private void notifyClassStubs() {
-        when(SpectrumSessionListener.getEventsDispatcher()).thenReturn(eventsDispatcher);
+        when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
         when(extensionContext.getDisplayName()).thenReturn(className);
     }
 
     private void notifyTestStubs() {
         when(extensionContext.getRoot()).thenReturn(rootContext);
-        when(SpectrumSessionListener.getEventsDispatcher()).thenReturn(eventsDispatcher);
+        when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
         when(extensionContext.getDisplayName()).thenReturn(displayName);
         when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(className);

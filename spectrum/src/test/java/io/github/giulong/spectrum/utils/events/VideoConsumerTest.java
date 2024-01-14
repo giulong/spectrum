@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.video.VideoEncoder;

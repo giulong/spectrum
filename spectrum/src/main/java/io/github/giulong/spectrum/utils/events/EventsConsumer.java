@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.events;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.giulong.spectrum.pojos.events.Event;
@@ -25,6 +26,7 @@ import static java.util.stream.Collectors.toSet;
 @Slf4j
 public abstract class EventsConsumer {
 
+    @JsonPropertyDescription("List of events that will be consumed")
     protected List<Event> events;
 
     public abstract void consumes(Event event) throws Exception;

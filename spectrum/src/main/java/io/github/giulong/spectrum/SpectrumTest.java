@@ -5,7 +5,7 @@ import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -82,7 +82,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     protected List<SpectrumPage<?, Data>> spectrumPages;
 
     @BeforeEach
-    @SuppressWarnings({"checkstyle:ParameterNumber", "JUnitMalformedDeclaration", "unused"})
+    @SuppressWarnings({"checkstyle:ParameterNumber", "unused"})
     public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver webDriver,
                            final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
                            final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher,

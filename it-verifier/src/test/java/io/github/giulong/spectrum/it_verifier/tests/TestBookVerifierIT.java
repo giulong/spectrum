@@ -31,7 +31,7 @@ public class TestBookVerifierIT extends SpectrumTest<Data> {
 
         webDriver.get(String.format("file:///%s/it-testbook/target/spectrum/testbook/testbook.html", Path.of(System.getProperty("user.dir")).getParent()));
 
-        assertEquals("TestBook Results", testBookPage.getTitle().getText());
+        assertEquals(data.getTestBook().getTitle(), testBookPage.getTitle().getText());
 
         // STATISTICS
         final Data.TestBook.Statistics.Generic generic = statistics.getGeneric();

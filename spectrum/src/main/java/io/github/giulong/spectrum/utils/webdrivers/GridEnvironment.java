@@ -1,8 +1,9 @@
 package io.github.giulong.spectrum.utils.webdrivers;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
@@ -18,8 +19,13 @@ import java.util.Map;
 public class GridEnvironment extends Environment {
 
     @JsonSchemaTypes(String.class)
+    @JsonPropertyDescription("Url of the selenium grid")
     protected URL url;
+
+    @JsonPropertyDescription("Capabilities dedicated to executions on the grid")
     protected final Map<String, String> capabilities = new HashMap<>();
+
+    @JsonPropertyDescription("Whether to search for files to upload on the client machine or not")
     protected boolean localFileDetector;
 
     @Override

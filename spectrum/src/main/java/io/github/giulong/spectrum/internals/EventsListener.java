@@ -2,8 +2,8 @@ package io.github.giulong.spectrum.internals;
 
 import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.pojos.Configuration;
-import io.github.giulong.spectrum.pojos.Configuration.WebDriver.Events;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Configuration.WebDriver.Events;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Builder;
@@ -178,7 +178,7 @@ public class EventsListener implements WebDriverListener {
 
     @Override
     @Generated
-    public void afterGetCurrentUrl(final String result, final WebDriver driver) {
+    public void afterGetCurrentUrl(final WebDriver driver, final String result) {
         log(AUTO_AFTER, events.getAfterGetCurrentUrl(), result, driver);
     }
 

@@ -1,17 +1,23 @@
 package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
-import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.List;
 import java.util.Set;
 
-@Builder
+import static lombok.AccessLevel.PRIVATE;
+
 @Slf4j
-public class EventsDispatcher {
+@NoArgsConstructor(access = PRIVATE)
+public class EventsDispatcher implements SessionHook {
+
+    private static final EventsDispatcher INSTANCE = new EventsDispatcher();
 
     public static final String BEFORE = "before";
     public static final String AFTER = "after";
@@ -20,6 +26,24 @@ public class EventsDispatcher {
     public static final String SUITE = "suite";
 
     private List<EventsConsumer> consumers;
+
+    public static EventsDispatcher getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
+    public void sessionOpenedFrom(final Configuration configuration) {
+        log.debug("Session opened hook");
+
+        consumers = configuration.getEventsConsumers();
+        fire(BEFORE, Set.of(SUITE));
+    }
+
+    @Override
+    public void sessionClosed() {
+        log.debug("Session closed hook");
+        fire(AFTER, Set.of(SUITE));
+    }
 
     public void fire(final String reason, final Set<String> tags) {
         fire(null, null, reason, null, tags, null);

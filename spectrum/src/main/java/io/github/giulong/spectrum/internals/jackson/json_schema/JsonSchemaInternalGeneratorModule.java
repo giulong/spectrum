@@ -8,7 +8,7 @@ import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.module.jackson.JacksonModule;
 import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.SneakyThrows;
 
 import java.net.URI;
@@ -25,7 +25,6 @@ import static com.github.victools.jsonschema.module.jackson.JacksonOption.SKIP_S
 public class JsonSchemaInternalGeneratorModule implements Module {
 
     @Override
-    @SneakyThrows
     public void applyToConfigBuilder(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
         schemaGeneratorConfigBuilder
                 .with(new JacksonModule(SKIP_SUBTYPE_LOOKUP, FLATTENED_ENUMS_FROM_JSONVALUE))
@@ -40,10 +39,13 @@ public class JsonSchemaInternalGeneratorModule implements Module {
                 .forTypesInGeneral()
                 .withSubtypeResolver(new JsonSubTypesResolver());
 
-        final URI classesFolderUri = JsonSchemaInternalGeneratorModule.class.getProtectionDomain().getCodeSource().getLocation().toURI();
-        final String targetFolder = Path.of(classesFolderUri).getParent().toString();
+        writeSchema(schemaGeneratorConfigBuilder, getTargetJsonSchemaFolder().resolve("ConfigurationInternal-schema.json"));
+    }
 
-        writeSchema(schemaGeneratorConfigBuilder, Path.of(targetFolder, "json-schemas", "ConfigurationInternal-schema.json"));
+    @SneakyThrows
+    protected Path getTargetJsonSchemaFolder() {
+        final URI classesFolderUri = JsonSchemaInternalGeneratorModule.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+        return Path.of(classesFolderUri).getParent().resolve("json-schemas");
     }
 
     @SneakyThrows

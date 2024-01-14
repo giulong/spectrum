@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.browsers;
 
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.service.DriverService;

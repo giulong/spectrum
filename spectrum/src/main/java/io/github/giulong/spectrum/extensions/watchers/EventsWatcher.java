@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
-import io.github.giulong.spectrum.SpectrumSessionListener;
 import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import org.junit.jupiter.api.extension.*;
 
 import java.util.Optional;
@@ -11,6 +11,8 @@ import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 
 public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
+
+    private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
 
     @Override
     public void beforeAll(final ExtensionContext context) {
@@ -50,13 +52,13 @@ public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEach
     public void notifyClass(final ExtensionContext context, final String reason, final Result result, final Set<String> tags) {
         final String className = context.getDisplayName();
 
-        SpectrumSessionListener.getEventsDispatcher().fire(className, null, reason, result, tags, context);
+        eventsDispatcher.fire(className, null, reason, result, tags, context);
     }
 
     public void notifyTest(final ExtensionContext context, final String reason, final Result result, final Set<String> tags) {
         final String className = context.getParent().orElse(context.getRoot()).getDisplayName();
         final String testName = context.getDisplayName();
 
-        SpectrumSessionListener.getEventsDispatcher().fire(className, testName, reason, result, tags, context);
+        eventsDispatcher.fire(className, testName, reason, result, tags, context);
     }
 }

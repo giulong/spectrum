@@ -3,6 +3,8 @@ package io.github.giulong.spectrum.utils;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.Version;
+import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.utils.Configuration.FreeMarker;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -18,7 +20,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Slf4j
 @Getter
 @NoArgsConstructor(access = PRIVATE)
-public final class FreeMarkerWrapper {
+public final class FreeMarkerWrapper implements SessionHook {
 
     private static final FreeMarkerWrapper INSTANCE = new FreeMarkerWrapper();
 
@@ -28,8 +30,13 @@ public final class FreeMarkerWrapper {
         return INSTANCE;
     }
 
-    public void setupFrom(final io.github.giulong.spectrum.pojos.Configuration.FreeMarker freeMarker) {
+    @Override
+    public void sessionOpenedFrom(final io.github.giulong.spectrum.utils.Configuration spectrumConfiguration) {
+        log.debug("Session opened hook");
+
+        final FreeMarker freeMarker = spectrumConfiguration.getFreeMarker();
         final String version = freeMarker.getVersion();
+
         log.debug("Configuring FreeMarker version {}", version);
         this.configuration = new Configuration(new Version(version));
         this.configuration.setLocale(freeMarker.getLocale());

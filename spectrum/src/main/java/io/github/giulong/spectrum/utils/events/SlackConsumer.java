@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.events;
 
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
@@ -19,10 +20,13 @@ public class SlackConsumer extends EventsConsumer {
     private static final FreeMarkerWrapper FREE_MARKER_WRAPPER = FreeMarkerWrapper.getInstance();
 
     @SuppressWarnings("FieldMayBeFinal")
+    @JsonPropertyDescription("Template to be used when creating the message")
     private String template = "slack.json";
 
+    @JsonPropertyDescription("Target channel where to send the message")
     protected String channel;
 
+    @JsonPropertyDescription("Bot User OAuth Token")
     protected String token;
 
     public void consumes(final Event event) throws SlackApiException, IOException {

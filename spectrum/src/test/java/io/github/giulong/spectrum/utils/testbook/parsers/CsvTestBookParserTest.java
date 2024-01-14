@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.testbook.parsers;
 
 import io.github.giulong.spectrum.utils.FileUtils;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,8 +47,7 @@ class CsvTestBookParserTest {
         final String path = "path";
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read(String.format("/%s", path))).thenReturn(line);
-
-        testBookParser.setPath(path);
+        ReflectionUtils.setParentField("path", testBookParser, testBookParser.getClass().getSuperclass().getSuperclass(), path);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> testBookParser.parse());
         assertEquals(String.format("Line '%s' in TestBook doesn't match pattern %s", line, testBookParser.getRegex()), exception.getMessage());
@@ -60,8 +60,7 @@ class CsvTestBookParserTest {
         final String path = "path";
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read(String.format("/%s", path))).thenReturn(line);
-
-        testBookParser.setPath(path);
+        ReflectionUtils.setParentField("path", testBookParser, testBookParser.getClass().getSuperclass().getSuperclass(), path);
 
         Assertions.assertDoesNotThrow(() -> testBookParser.parse());
     }

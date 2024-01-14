@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import io.github.giulong.spectrum.utils.Vars;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,7 +22,6 @@ import java.util.stream.Stream;
 import static com.fasterxml.jackson.databind.node.JsonNodeType.NUMBER;
 import static com.fasterxml.jackson.databind.node.JsonNodeType.STRING;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
-import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
@@ -54,7 +54,7 @@ class InterpolatedObjectDeserializerTest {
 
     @BeforeAll
     public static void beforeAll() {
-        VARS.put("varInEnv", VAR_IN_ENV);
+        Vars.getInstance().put("varInEnv", VAR_IN_ENV);
     }
 
     @BeforeEach
@@ -69,7 +69,7 @@ class InterpolatedObjectDeserializerTest {
 
     @AfterAll
     public static void afterAll() {
-        VARS.clear();
+        Vars.getInstance().clear();
     }
 
     @Test

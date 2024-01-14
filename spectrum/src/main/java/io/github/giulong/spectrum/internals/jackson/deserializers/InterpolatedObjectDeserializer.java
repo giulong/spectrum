@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import io.github.giulong.spectrum.utils.Vars;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,7 +13,6 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.github.giulong.spectrum.SpectrumSessionListener.VARS;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -22,6 +22,8 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
     private static final InterpolatedObjectDeserializer INSTANCE = new InterpolatedObjectDeserializer();
     private static final Pattern INT_PATTERN = Pattern.compile("(?<placeholder>\\$<(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~.:/\\\\]*))?>)");
     private static final Pattern NUMBER = Pattern.compile("-?\\d+(.\\d+|,\\d+)?");
+
+    private final Vars vars = Vars.getInstance();
 
     public static InterpolatedObjectDeserializer getInstance() {
         return INSTANCE;
@@ -56,7 +58,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
         final String envVarOrPlaceholder = envVar != null ? envVar : placeholder;
         final String systemProperty = System.getProperty(varName, envVarOrPlaceholder);
 
-        String interpolatedValue = String.valueOf(VARS.getOrDefault(varName, systemProperty));
+        String interpolatedValue = String.valueOf(vars.getOrDefault(varName, systemProperty));
 
         if (value.equals(interpolatedValue)) {
             if (defaultValue == null) {

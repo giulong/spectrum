@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.browsers;
 
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -5,8 +5,9 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,12 +21,10 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static java.util.Comparator.reverseOrder;
 import static java.util.UUID.randomUUID;
 import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.OutputType.BYTES;
@@ -34,6 +33,8 @@ import static org.openqa.selenium.OutputType.BYTES;
 public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     public static final String HASH_ALGORITHM = "SHA-256";
+
+    private final FileUtils fileUtils = FileUtils.getInstance();
 
     @Shared
     protected Configuration configuration;
@@ -135,17 +136,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final String downloadFolder = configuration.getRuntime().getDownloadsFolder();
         final Path downloadPath = Path.of(downloadFolder);
 
-        if (Files.exists(downloadPath)) {
-            log.info("About to delete downloads folder '{}'", downloadFolder);
-
-            try (Stream<Path> files = Files.walk(downloadPath)) {
-                files
-                        .sorted(reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(f -> log.trace("File '{}' deleted? {}", f, f.delete()));
-            }
-        }
-
+        fileUtils.deleteDirectory(downloadPath);
         Files.createDirectories(downloadPath);
     }
 

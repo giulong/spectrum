@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.SpectrumSessionListener;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -22,7 +21,7 @@ public class EventsDispatcherResolver extends TypeBasedParameterResolver<EventsD
         return rootStore.getOrComputeIfAbsent(EVENTS_DISPATCHER, e -> {
             log.debug("Resolving {}", EVENTS_DISPATCHER);
 
-            final EventsDispatcher eventsDispatcher = SpectrumSessionListener.getEventsDispatcher();
+            final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
             rootStore.put(EVENTS_DISPATCHER, eventsDispatcher);
             return eventsDispatcher;
         }, EventsDispatcher.class);

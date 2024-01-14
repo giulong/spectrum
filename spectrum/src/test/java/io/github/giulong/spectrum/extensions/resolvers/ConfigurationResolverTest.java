@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.SpectrumSessionListener;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +26,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("ConfigurationResolver")
 class ConfigurationResolverTest {
 
-    private static MockedStatic<SpectrumSessionListener> spectrumSessionListenerMockedStatic;
+    private static MockedStatic<Configuration> configurationMockedStatic;
 
     @Mock
     private ParameterContext parameterContext;
@@ -49,18 +48,18 @@ class ConfigurationResolverTest {
 
     @BeforeEach
     public void beforeEach() {
-        spectrumSessionListenerMockedStatic = mockStatic(SpectrumSessionListener.class);
+        configurationMockedStatic = mockStatic(Configuration.class);
     }
 
     @AfterEach
     public void afterEach() {
-        spectrumSessionListenerMockedStatic.close();
+        configurationMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return an instance of Actions on the current stored WebDriver")
     public void testResolveParameter() {
-        when(SpectrumSessionListener.getConfiguration()).thenReturn(configuration);
+        when(Configuration.getInstance()).thenReturn(configuration);
 
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);

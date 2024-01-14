@@ -21,15 +21,33 @@ video:
     - autoAfter
     - manual
 
+summary:
+  reporters:
+    - log: { }
+    - txt:
+        output: ${summaryReportOutput}/summary.txt # a txt report will be produced at this path
+    - html:
+        output: ${summaryReportOutput}/summary.html # a html report will be produced at this path
+
 extent:
   theme: DARK
   fileName: report.html
+  retention:
+    total: 3
 
 testBook:
   enabled: true
   reporters:
+    - log: { } # the report will be logged
+    - html:
+        output: ${testBookReportOutput}/testbook.html # a html report will be produced at this path
+        retention:
+          successful: 2
     - txt:
-        output: target/spectrum/testbook/testbook.txt
+        output: ${testBookReportOutput}/testbook.txt # a txt report will be produced at this path
+        retention:
+          total: 3
+          successful: 2
 
 # these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
 eventsConsumers:

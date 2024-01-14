@@ -1,0 +1,13 @@
+dynamicDeserializers:
+  - clazz: io.github.giulong.spectrum.utils.reporters.LogReporter$LogTestBookReporter
+    configFile: yaml/dynamic/testbook/logReporter.yaml
+  - clazz: io.github.giulong.spectrum.utils.reporters.FileReporter$TxtTestBookReporter
+    configFile: yaml/dynamic/testbook/txtReporter.yaml
+  - clazz: io.github.giulong.spectrum.utils.reporters.FileReporter$HtmlTestBookReporter
+    configFile: yaml/dynamic/testbook/htmlReporter.yaml
+  - clazz: io.github.giulong.spectrum.utils.reporters.LogReporter$LogSummaryReporter
+    configFile: yaml/dynamic/summary/logReporter.yaml
+  - clazz: io.github.giulong.spectrum.utils.reporters.FileReporter$TxtSummaryReporter
+    configFile: yaml/dynamic/summary/txtReporter.yaml
+  - clazz: io.github.giulong.spectrum.utils.reporters.FileReporter$HtmlSummaryReporter
+    configFile: yaml/dynamic/summary/htmlReporter.yaml

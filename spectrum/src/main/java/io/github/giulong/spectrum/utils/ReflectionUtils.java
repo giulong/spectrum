@@ -30,6 +30,13 @@ public final class ReflectionUtils {
     }
 
     @SneakyThrows
+    public static void setParentField(final String fieldName, final Object object, final Class<?> superclass, final Object value) {
+        final Field field = superclass.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(object, value);
+    }
+
+    @SneakyThrows
     public static void setField(final Field field, final Object object, final Object value) {
         field.setAccessible(true);
         field.set(object, value);

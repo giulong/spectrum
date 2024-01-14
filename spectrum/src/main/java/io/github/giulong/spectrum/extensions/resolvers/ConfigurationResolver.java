@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.SpectrumSessionListener;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -22,7 +21,7 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
         return rootStore.getOrComputeIfAbsent(CONFIGURATION, e -> {
             log.debug("Resolving {}", CONFIGURATION);
 
-            final Configuration configuration = SpectrumSessionListener.getConfiguration();
+            final Configuration configuration = Configuration.getInstance();
             rootStore.put(CONFIGURATION, configuration);
             return configuration;
         }, Configuration.class);

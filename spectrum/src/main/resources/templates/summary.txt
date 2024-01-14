@@ -1,0 +1,35 @@
+<#assign
+    barPad = 15
+    countPad = 7
+    percentagePad = 7
+    lastPad = 15
+    datesPad = 20
+    successfulCount = summary.testsSucceededCount + '/' + total
+    failedCount = summary.testsFailedCount + '/' + total
+    abortedCount = summary.testsAbortedCount + '/' + total
+    skippedCount = summary.testsSkippedCount + '/' + total
+>
+#############################################################################################################
+                                         EXECUTION SUMMARY
+#############################################################################################################
+
+  Status           | ${'Count'?left_pad(countPad)} | ${'Percent'?left_pad(percentagePad)} | ${''?left_pad(lastPad)}
+-------------------------------------------------------------------------------------------------------------
+  Successful tests | ${successfulCount?left_pad(countPad)} | ${(successfulPercentage + '%')?left_pad(percentagePad)} | <${""?left_pad(successfulPercentage / 1.5, "=")}>
+  Failed tests     | ${failedCount?left_pad(countPad)} | ${(failedPercentage + '%')?left_pad(percentagePad)} | <${""?left_pad(failedPercentage / 1.5, "=")}>
+  Aborted tests    | ${abortedCount?left_pad(countPad)} | ${(abortedPercentage + '%')?left_pad(percentagePad)} | <${""?left_pad(abortedPercentage / 1.5, "=")}>
+  Skipped tests    | ${skippedCount?left_pad(countPad)} | ${(disabledPercentage + '%')?left_pad(percentagePad)} | <${""?left_pad(disabledPercentage / 1.5, "=")}>
+
+  Execution Time
+-------------------------------------------------------------------------------------------------------------
+  Started at: ${summary.timeStarted?number_to_datetime}
+  Ended at:   ${summary.timeFinished?number_to_datetime}
+  Duration:   ${duration}
+
+  Result
+-------------------------------------------------------------------------------------------------------------
+  Condition: ${condition}
+  Evaluated: ${interpolatedCondition}
+  Result:    ${executionSuccessful?string('OK', 'KO')}
+-------------------------------------------------------------------------------------------------------------
+#############################################################################################################

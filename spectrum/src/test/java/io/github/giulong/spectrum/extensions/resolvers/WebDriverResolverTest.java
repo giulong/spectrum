@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.internals.EventsListener;
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;

@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import io.github.giulong.spectrum.utils.FileUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,6 +16,8 @@ public class InterpolatedStringDeserializer extends InterpolatedDeserializer<Str
 
     private static final InterpolatedStringDeserializer INSTANCE = new InterpolatedStringDeserializer();
 
+    private final FileUtils fileUtils = FileUtils.getInstance();
+
     public static InterpolatedStringDeserializer getInstance() {
         return INSTANCE;
     }
@@ -24,6 +27,7 @@ public class InterpolatedStringDeserializer extends InterpolatedDeserializer<Str
         final String value = jsonParser.getValueAsString();
         log.trace("Deserializing String from value {}", value);
 
-        return interpolate(value, jsonParser.currentName());
+        final String interpolatedValue = interpolate(value, jsonParser.currentName());
+        return fileUtils.interpolateTimestampFrom(interpolatedValue);
     }
 }

@@ -1,7 +1,8 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.pojos.Configuration;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -35,13 +37,20 @@ class TestDataResolverTest {
 
     private Path reportsFolder;
 
+    private static MockedStatic<FileUtils> fileUtilsMockedStatic;
     private static MockedStatic<TestData> testDataMockedStatic;
+
+    @Mock
+    private FileUtils fileUtils;
 
     @Mock
     private ParameterContext parameterContext;
 
     @Mock
     private ExtensionContext extensionContext;
+
+    @Mock
+    private ExtensionContext parentContext;
 
     @Mock
     private ExtensionContext rootContext;
@@ -75,6 +84,7 @@ class TestDataResolverTest {
 
     @BeforeEach
     public void beforeEach() throws IOException {
+        fileUtilsMockedStatic = mockStatic(FileUtils.class);
         testDataMockedStatic = mockStatic(TestData.class);
         reportsFolder = Files.createTempDirectory("reportsFolder");
         reportsFolder.toFile().deleteOnExit();
@@ -82,6 +92,7 @@ class TestDataResolverTest {
 
     @AfterEach
     public void afterEach() {
+        fileUtilsMockedStatic.close();
         testDataMockedStatic.close();
     }
 
@@ -90,9 +101,17 @@ class TestDataResolverTest {
     public void resolveParameter() throws NoSuchMethodException {
         final Class<String> clazz = String.class;
         final String className = clazz.getSimpleName();
+        final String classDisplayName = "classDisplayName";
         final String methodName = "resolveParameter";
-        final Path path = reportsFolder.resolve(Path.of("screenshots", className, methodName));
-        final Path videoFolderPath = reportsFolder.resolve(Path.of("videos", className, methodName));
+        final String methodDisplayName = "methodDisplayName";
+        final String testId = "string-methoddisplayname";
+        final String fileName = "fileName";
+        final String fileNameWithoutExtension = "fileNameWithoutExtension";
+        final Path path = reportsFolder.resolve(Path.of(fileNameWithoutExtension, "screenshots", className, methodName));
+        final Path videoFolderPath = reportsFolder.resolve(Path.of(fileNameWithoutExtension, "videos", className, methodName));
+
+        when(FileUtils.getInstance()).thenReturn(fileUtils);
+        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
 
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
@@ -100,6 +119,7 @@ class TestDataResolverTest {
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(reportsFolder.toString());
+        when(extent.getFileName()).thenReturn(fileName);
         doReturn(String.class).when(extensionContext).getRequiredTestClass();
         when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(configuration.getVideo()).thenReturn(video);
@@ -107,11 +127,18 @@ class TestDataResolverTest {
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
+        when(extensionContext.getDisplayName()).thenReturn(methodDisplayName);
+        when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.methodDisplayName(methodDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.screenshotFolderPath(path)).thenReturn(testDataBuilder);
         when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
 
+        final TestDataResolver testDataResolver = new TestDataResolver();
         final TestData actual = testDataResolver.resolveParameter(parameterContext, extensionContext);
         final Path videoPath = pathArgumentCaptor.getValue();
 
@@ -126,8 +153,10 @@ class TestDataResolverTest {
     @Test
     @DisplayName("getScreenshotFolderPathForCurrentTest should return the path for the current test and create the dirs")
     public void getScreenshotFolderPathForCurrentTest() {
-        final Path path = reportsFolder.resolve(Path.of("screenshots", CLASS_NAME, METHOD_NAME));
-        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(reportsFolder.toString(), CLASS_NAME, METHOD_NAME));
+        final String extentFileName = "extentFileName";
+
+        final Path path = reportsFolder.resolve(Path.of(extentFileName, "screenshots", CLASS_NAME, METHOD_NAME));
+        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(reportsFolder.toString(), extentFileName, CLASS_NAME, METHOD_NAME));
 
         assertTrue(Files.exists(path));
     }
@@ -135,11 +164,10 @@ class TestDataResolverTest {
     @Test
     @DisplayName("getVideoPathForCurrentTest should return the path for the current test and create the directories")
     public void getVideoPathForCurrentTest() {
-        when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(false);
+        final String extentFileName = "extentFileName";
 
-        final Path path = reportsFolder.resolve(Path.of("videos", CLASS_NAME, METHOD_NAME));
-        final Path actual = testDataResolver.getVideoPathForCurrentTest(configuration, reportsFolder.toString(), CLASS_NAME, METHOD_NAME);
+        final Path path = reportsFolder.resolve(Path.of(extentFileName, "videos", CLASS_NAME, METHOD_NAME));
+        final Path actual = testDataResolver.getVideoPathForCurrentTest(false, reportsFolder.toString(), extentFileName, CLASS_NAME, METHOD_NAME);
 
         assertEquals(path, actual.getParent());
         assertThat(actual.getFileName().toString(), matchesPattern(UUID_REGEX));
@@ -149,9 +177,12 @@ class TestDataResolverTest {
     @Test
     @DisplayName("getVideoPathForCurrentTest should return null if video is disabled")
     public void getVideoPathForCurrentTestDisabled() {
-        when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(true);
+        assertNull(testDataResolver.getVideoPathForCurrentTest(true, reportsFolder.toString(), "extentFileName", CLASS_NAME, METHOD_NAME));
+    }
 
-        assertNull(testDataResolver.getVideoPathForCurrentTest(configuration, reportsFolder.toString(), CLASS_NAME, METHOD_NAME));
+    @Test
+    @DisplayName("transformInKebabCase should return the provided string with spaces replaced by dashes and in lowercase")
+    public void transformInKebabCase() {
+        assertEquals("some-composite-string", TestDataResolver.transformInKebabCase("Some Composite STRING"));
     }
 }
