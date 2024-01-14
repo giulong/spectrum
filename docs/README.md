@@ -12,9 +12,6 @@ Main features:
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
 
-> ⚠️ <b>Eclipse IDE</b><br/>
-> The archetype injects a demo test that leverages Lombok. If you use Eclipse IDE, check [how to enable Lombok](https://projectlombok.org/setup/eclipse){:target="_blank"}.
-
 ## Glossary
 
 | Acronym | Meaning                                                                                                                     |
@@ -65,11 +62,11 @@ project:
 ```
 
 > ⚠️ <b>Spectrum version</b><br/>
-> The snippet above references the `LATEST` version just to be ready to use. 
-> Nevertheless, it's highly recommended to use the explicit version you can find in 
+> The snippet above references the `LATEST` version just to be ready to use.
+> Nevertheless, it's highly recommended to use the explicit version you can find in
 > [Maven central](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"}.
-> 
-> With `LATEST`, if a new version which introduces breaking changes is published, your next build would 
+>
+> With `LATEST`, if a new version which introduces breaking changes is published, your next build would
 > download it and potentially fail.
 
 > ⚠️ <b>Lombok Library</b><br/>
@@ -617,11 +614,13 @@ These are the variables already available in the [configuration.default.yaml]({{
 target="_blank"}.
 You can add your own and even override the default ones in your `configuration*.yaml`:
 
-| Variable          | Default Windows              | Default *nix                 |
-|-------------------|------------------------------|------------------------------|
-| spectrum.profiles | local                        | local                        |
-| spectrum.browser  | chrome                       | chrome                       |
-| downloadsFolder   | ${user.dir}\target\downloads | ${user.dir}/target/downloads |
+| Variable             | Default Windows              | Default *nix                 |
+|----------------------|------------------------------|------------------------------|
+| spectrum.profiles    | local                        | local                        |
+| spectrum.browser     | chrome                       | chrome                       |
+| downloadsFolder      | ${user.dir}\target\downloads | ${user.dir}/target/downloads |
+| summaryReportOutput  | target/spectrum/summary      | target/spectrum/summary      |
+| testBookReportOutput | target/spectrum/testbook     | target/spectrum/testbook     |
 
 ## Running on a Grid
 
@@ -927,6 +926,53 @@ and you'd see this:
 
 ---
 
+# Artifacts Retention Policies
+
+You can configure the retention policies for the artifacts produced by each execution. This includes:
+
+* Extent reports
+* Summary reports (both txt and html)
+* TestBook reports (both txt and html)
+
+For each, you can define a `retention` node like the one below.
+As an example, let's say we'd like to keep a total of 10 reports, of which 1 at least one successful.
+This means that, considering the last 10 executions, we will have:
+
+* 10 failed reports, if there are no successful ones **at all**, even before those.
+* 9 failed reports and 1 successful, if there was at least 1 successful execution, **even if the last 10 runs failed**.
+* a mixed number of failed and successful reports, if the last 10 executions are mixed.
+
+So, when configured, the `successful` report(s) to be kept are retained even if they're older than the last `total` number of failed executions.
+This is meant to have an evidence of the last successful run(s), even if there's a long recent history of failed ones.
+This snippet shows how to configure the example we just saw:
+
+{% include copyCode.html %}
+
+```yaml
+retention:
+  total: 10
+  successful: 1
+```
+
+| Field Name | Default             | Description                                                        |
+|------------|---------------------|--------------------------------------------------------------------|
+| total      | `Integer.MAX_VALUE` | Number of reports to retain. Older ones will be deleted            |
+| successful | 0                   | Number of successful reports to retain. Older ones will be deleted |
+
+As you can see, by default no report will be deleted, regardless of the execution status. As a further example,
+this is how you can configure it for the extent report:
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  retention:
+    total: 10
+    successful: 1
+```
+
+---
+
 # Common Use Cases
 
 Here you can find how Spectrum helps you in a few common use cases.
@@ -934,8 +980,8 @@ Here you can find how Spectrum helps you in a few common use cases.
 ## File Upload
 
 You can add files to be uploaded in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
-This is the default you can see in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
-target="_blank"}:
+This is the default you can see in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
 {% include copyCode.html %}
 
@@ -1175,13 +1221,6 @@ The `Data` generic must be specified only in those classes actually using it. Th
 
 ---
 
-# Parallel Execution
-
-Spectrum tests can be run in parallel by leveraging [JUnit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution){:target="_
-blank"}
-
----
-
 # Event Sourcing
 
 Spectrum leverages event sourcing, meaning throughout the execution it fires events at specific moments.
@@ -1205,7 +1244,7 @@ notified about. Most of them can be used in consumers with the type of match spe
 
 Let's see them in detail:
 
-### PrimaryId and SecondaryId
+## PrimaryId and SecondaryId
 
 `primaryId` and `secondaryId` are strings through which you can identify each event. For example, for each test method, their value is:
 
@@ -1253,7 +1292,7 @@ Spectrum will fire an event with:
 * `primaryId` &rarr; "Class display name"
 * `secondaryId` &rarr; "Method display name"
 
-### Tags
+## Tags
 
 Tags are a set of strings used to group events together. For example, all test methods will have the "test" tag.
 This way, instead of attaching a consumer to a specific event (with primary and secondary id, for example) you can listen
@@ -1273,15 +1312,15 @@ eventsConsumers:
         tags: [ test ]
 ```
 
-### Reason
+## Reason
 
 Reason specifies why an event has been fired.
 
-### Result
+## Result
 
 This is the result of the executed test. Of course, this will be available only in events fired after tests execution, as per the table below.
 
-### Context
+## Context
 
 The JUnit's ExtensionContext is attached to each event. It's not considered when matching events, but it can be useful
 in custom templates to access objects stored in it. For example, the default [slack.json template]({{ site.repository_url
@@ -1653,6 +1692,166 @@ slack:
 
 ---
 
+# Execution Summary
+
+You can optionally have Spectrum generate an execution summary by providing one or more summary reporters.
+This is the default summary in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+
+{% include copyCode.html %}
+
+```yaml
+summary:
+  reporters: [ ] # List of reporters that will produce the summary in specific formats
+  condition: ${successfulPercentage} == 100 # Execution successful if all tests are successful
+```
+
+The suite execution is considered successful based on the condition you provide. By default, all tests must end successfully.
+
+The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org/){:target="_blank"},
+meaning you can write complex conditions using the variables briefly explained below. They're all put in the `vars` map in the
+[Summary.java]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/utils/Summary.java){:target="_blank"}.
+
+> ⚠️ <b>FreeMarker</b><br/>
+> Explaining how FreeMarker works, and how to take the most out of it, goes beyond the goal of this doc.
+> Please check its own [docs](https://freemarker.apache.org/){:target="_blank"}.
+
+> 💡 <b>Tip</b><br/>
+> Since the testBook's quality gate status is added to the vars used when evaluating the summary's condition,
+> you can indirectly bind those two by having this:
+
+{% include copyCode.html %}
+
+```yaml
+summary:
+  condition: ${qgStatus}
+```
+
+As an example, this is how you can have a html summary:
+
+{% include copyCode.html %}
+
+```yaml
+summary:
+  reporters:
+    - html:
+        output: ${summaryReportOutput}/summary.html
+```
+
+## Summary Reporters
+
+> 💡 <b>Tip</b><br/>
+> This section is very similar to the TestBook Reporters one, since they leverage the same objects 😉
+
+All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
+
+{% include copyCode.html %}
+
+```yaml
+reporters:
+  - log: { }
+  - txt: { }
+  - html: { }
+```
+
+Of course, they're all optional: you can add just those you want.
+
+Below you will find the output produced by the default internal template for each reporter.
+Those are the real outputs produced when running Spectrum's own e2e tests you can find in the [it-testbook]({{ site.repository_url }}/it-testbook){:target="_blank"} module.
+
+If you want, you can provide a custom template of yours. As for all the other templates (such as those used in events consumers),
+you can leverage [FreeMarker](https://freemarker.apache.org/){:target="_blank"}.
+
+For each reporter:
+
+* the snippets below will contain all the customisable parameters for each reporter
+* values reported in the snippets below are the defaults (no need to provide them)
+* `template` is a path relative to `src/test/resources`
+* `output` is the path relative to the project's root, and might contain the `${timestamp}` placeholder
+* `retention` specifies which and how many reports to keep for each reporter
+
+### Log Summary Reporter
+
+This is the internal
+[logReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/summary/logReporter.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+log:
+  template: summary/template.txt
+```
+
+Here is the output produced by the default internal template, for tests of the `it-testbook` module:
+
+{% include copyCode.html %}
+
+```text
+#############################################################################################################
+                                         EXECUTION SUMMARY
+#############################################################################################################
+
+  Status           |   Count | Percent |                
+-------------------------------------------------------------------------------------------------------------
+  Successful tests |     6/8 |     75% | <==================================================>
+  Failed tests     |     1/8 |   12.5% | <========>
+  Aborted tests    |     0/8 |      0% | <>
+  Skipped tests    |     1/8 |   12.5% | <========>
+
+  Execution Time
+-------------------------------------------------------------------------------------------------------------
+  Started at: 2024 Jan 13 22:20:37
+  Ended at:   2024 Jan 13 22:21:00
+  Duration:   00:00:23
+
+  Result
+-------------------------------------------------------------------------------------------------------------
+  Condition: ${successfulPercentage} == 100
+  Evaluated: 75 == 100
+  Result:    KO
+-------------------------------------------------------------------------------------------------------------
+#############################################################################################################
+```
+
+### Txt Summary Reporter
+
+This is the internal
+[txtReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/summary/txtReporter.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+txt:
+  template: templates/summary.txt
+  output: ${summaryReportOutput}/summary-${timestamp}.txt
+  retention: { }
+```
+
+For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.txt){:target="_blank"}.
+It's the same that is logged, but saved to a dedicated file, so that you can send it as an attachment in an email, for example.
+Or you can provide different templates to log a shorter report and send the full thing to a file, it's up to you!
+
+### Html Summary Reporter
+
+This is the internal
+[htmlReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/summary/htmlReporter.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+html:
+  template: templates/summary.html
+  output: ${summaryReportOutput}/summary-${timestamp}.html
+  retention: { }
+```
+
+For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.html){:target="_blank"}.
+This is what it looks like when opened in a browser:
+
+![Html Summary Reporter](assets/images/html-summary.png)
+
+---
+
 # TestBook - Coverage
 
 Talking about coverage for e2e tests is not so straightforward. Coverage makes sense for unit tests, since they directly run against methods,
@@ -1701,11 +1900,9 @@ qualityGate:
 
 The example above means that the execution is considered successful if more than 60% of the weighted tests are successful.
 
-The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org/){:target="_blank"}, meaning you can write complex conditions using the variables
-briefly explained below. They're all put in the `vars` map in the [TestBook.java]({{ site.repository_url
-}}/spectrum/src/main/java/io/github/giulong/spectrum/utils/testbook/TestBook.java){:target="_
-blank"}
-(check the `mapVars()` method).
+The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org/){:target="_blank"},
+meaning you can write complex conditions using the variables briefly explained below. They're all put in the `vars` map in the
+[TestBook.java]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/utils/testbook/TestBook.java){:target="_blank"}.
 
 > ⚠️ <b>FreeMarker</b><br/>
 > Explaining how FreeMarker works, and how to take the most out of it, goes beyond the goal of this doc.
@@ -1830,6 +2027,9 @@ another class:
 
 ## TestBook Reporters
 
+> 💡 <b>Tip</b><br/>
+> This section is very similar to the Summary Reporters one, since they leverage the same objects 😉
+
 All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
 
 {% include copyCode.html %}
@@ -1870,8 +2070,12 @@ For each reporter:
 * values reported in the snippets below are the defaults (no need to provide them)
 * `template` is a path relative to `src/test/resources`
 * `output` is the path relative to the project's root, and might contain the `${timestamp}` placeholder
+* `retention` specifies which and how many reports to keep for each reporter
 
 ### Log TestBook Reporter
+
+This is the internal
+[logReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/testbook/logReporter.yaml){:target="_blank"}:
 
 {% include copyCode.html %}
 
@@ -1990,12 +2194,16 @@ UNMAPPED TESTS:
 
 ### Txt TestBook Reporter
 
+This is the internal
+[txtReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/testbook/txtReporter.yaml){:target="_blank"}:
+
 {% include copyCode.html %}
 
 ```yaml
 txt:
-  template: testbook/template.txt
-  output: target/spectrum/testbook/testbook-${timestamp}.txt
+  template: templates/testbook.txt
+  output: ${testBookReportOutput}/testbook-${timestamp}.txt
+  retention: { }
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.txt){:target="_blank"}.
@@ -2004,12 +2212,16 @@ Or you can provide different templates to log a shorter report and send the full
 
 ### Html TestBook Reporter
 
+This is the internal
+[htmlReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/testbook/htmlReporter.yaml){:target="_blank"}:
+
 {% include copyCode.html %}
 
 ```yaml
 html:
-  template: testbook/template.html
-  output: target/spectrum/testbook/testbook-${timestamp}.html
+  template: templates/testBook.html
+  output: ${testBookReportOutput}/testBook-${timestamp}.html
+  retention: { }
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.html){:target="_blank"}.
@@ -2019,7 +2231,8 @@ This is what it looks like when opened in a browser:
 
 ## Default TestBook
 
-The one below is the testBook in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+The one below is the testBook in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 As you can see, it has a quality gate already set, as well as a yaml parser but no reporters.
 
 {% include copyCode.html %}
@@ -2046,7 +2259,7 @@ testBook:
   reporters:
     - log: { }  # the report will be logged
     - html:
-        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
+        output: ${testBookReportOutput}/testbook.html # a html report will be produced at this path
 ```
 
 > ⚠️ <b>Enabling testBook</b><br/>
@@ -2067,9 +2280,9 @@ testBook:
   reporters:
     - log: { }  # the report will be logged
     - txt:
-        output: target/spectrum/testbook/testbook.txt # a text report will be produced at this path
+        output: ${testBookReportOutput}/testbook.txt # a text report will be produced at this path
     - html:
-        output: target/spectrum/testbook/testbook.html # a html report will be produced at this path
+        output: ${testBookReportOutput}/testbook.html # a html report will be produced at this path
 ```
 
 {% include copyCode.html %}
@@ -2103,6 +2316,13 @@ testBook:
   reporters:
     - log: { }  # we just want the report to be logged
 ```
+
+---
+
+# Parallel Execution
+
+Spectrum tests can be run in parallel by leveraging
+[JUnit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution){:target="_blank"}
 
 ---
 
@@ -2172,10 +2392,13 @@ root
 
 Found a bug? Want to request a new feature? Just follow these links and provide the requested details:
 
-* [Report Bug](https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E){:target="_blank"}
-* [Request Feature](https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E){:target="_blank"}
+* [Report Bug](https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E){:target="_
+  blank"}
+* [Request Feature](https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E){:
+  target="_blank"}
 
-If you're not sure about what to ask, or for anything else related to Spectrum, you can also choose a proper [discussion category](https://github.com/giulong/spectrum/discussions/new/choose){:target="_blank"}.
+If you're not sure about what to ask, or for anything else related to Spectrum, you can also choose a
+proper [discussion category](https://github.com/giulong/spectrum/discussions/new/choose){:target="_blank"}.
 
 ---
 

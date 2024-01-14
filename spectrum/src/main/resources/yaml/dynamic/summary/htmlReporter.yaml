@@ -1,4 +1,4 @@
 html:
   template: templates/summary.html
-  output: ${summary.reportOutput}/summary-${timestamp}.html
+  output: ${summaryReportOutput}/summary-${timestamp}.html
   retention: { }

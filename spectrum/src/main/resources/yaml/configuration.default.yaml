@@ -1,10 +1,8 @@
 # Common vars to interpolate other String values in the configuration
 vars:
   downloadsFolder: ${user.dir}\target\downloads # Path, as you can see below, where to save downloaded files
-  summary:
-    reportOutput: target/spectrum/summary
-  testBook:
-    reportOutput: target/spectrum/testbook
+  summaryReportOutput: target/spectrum/summary
+  testBookReportOutput: target/spectrum/testbook
 
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:
@@ -43,7 +41,7 @@ video:
 # Execution summary
 summary:
   reporters: [ ] # List of reporters that will produce the summary in specific formats
-  condition: ${successfulPercentage} == 100
+  condition: ${successfulPercentage} == 100 # Execution successful if all tests are successful
 
 # Extent Report configuration
 extent:

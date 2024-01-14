@@ -94,6 +94,8 @@ header.sticky {
     top: 0;
     transform: translateX(-50%);
     z-index: 99;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 header.sticky > img#spectrum-logo { // smaller logo

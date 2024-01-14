@@ -1,4 +1,4 @@
 html:
   template: templates/testbook.html
-  output: ${testBook.reportOutput}/testbook-${timestamp}.html
+  output: ${testBookReportOutput}/testbook-${timestamp}.html
   retention: { }

@@ -1,4 +1,4 @@
 txt:
   template: templates/summary.txt
-  output: ${summary.reportOutput}/summary-${timestamp}.txt
+  output: ${summaryReportOutput}/summary-${timestamp}.txt
   retention: { }
