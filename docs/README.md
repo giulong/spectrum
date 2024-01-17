@@ -24,7 +24,7 @@ directly in your test classes, so that you can focus just on writing the logic t
 ## Setup
 
 > ⚠️ <b>JDK</b><br/>
-> Since Spectrum is compiled with a jdk 17, you need a [jdk 17+](https://jdk.java.net/java-se-ri/17){:target="_blank"} to be able to run your tests.
+> Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/21/){:target="_blank"} to be able to run your tests.
 > If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
 ### Spectrum Archetype
