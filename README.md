@@ -86,7 +86,7 @@ For more details, please refer to the [full documentation](https://giulong.githu
 |-----------------|------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------------------------------------|
 | Giulio Longfils | [giulong](https://github.com/giulong)                            | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)   |
 
-> If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
+If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
 
 ## Local development
 

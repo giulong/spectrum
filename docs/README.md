@@ -2338,6 +2338,13 @@ is `${user.home}/.cache/spectrum`
 
 ---
 
+# Banner
+
+If you want to customise the banner logged at the beginning of each execution,
+you just need to place a file named `src/test/resources/banner.txt` in your project.
+
+---
+
 # Project Structure
 
 Let's see how your project will look like. Few assumptions for this example:
@@ -2408,4 +2415,4 @@ proper [discussion category](https://github.com/giulong/spectrum/discussions/new
 |-----------------|---------------------------------------------------------|----------------------------------------------------------------------------------|-------------------------------------------------------------|
 | Giulio Longfils | [giulong](https://github.com/giulong){:target="_blank"} | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/){:target="_blank"} | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
 
-> If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏
+If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏
