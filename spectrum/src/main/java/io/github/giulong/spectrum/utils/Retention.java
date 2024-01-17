@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.File;
 import java.util.List;
 
+import static java.lang.Math.clamp;
 import static java.lang.Math.max;
-import static java.lang.Math.min;
 
 @Slf4j
 @Getter
@@ -54,9 +54,5 @@ public class Retention {
         }
 
         return toDelete;
-    }
-
-    protected int clamp(final int value, final int min, final int max) {
-        return max(min, min(max, value));
     }
 }

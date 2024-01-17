@@ -4,19 +4,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.jcodec.codecs.mjpeg.tools.Asserts.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -243,21 +238,5 @@ class RetentionTest {
         verify(file3).delete();
         verify(file4, never()).delete();
         verify(file5, never()).delete();
-    }
-
-    @DisplayName("clamp should return the value clamped between the provided minimum and maximum")
-    @ParameterizedTest(name = "with value {0}, min {1}, and max {2} we expect {3}")
-    @MethodSource("valuesProvider")
-    public void clamp(final int value, final int min, final int max, final int expected) {
-        assertEquals(expected, retention.clamp(value, min, max));
-    }
-
-    public static Stream<Arguments> valuesProvider() {
-        return Stream.of(
-                arguments(3, 0, 10, 3),
-                arguments(-3, 0, 10, 0),
-                arguments(30, 0, 10, 10),
-                arguments(3, -20, -10, -10)
-        );
     }
 }
