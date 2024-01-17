@@ -183,9 +183,9 @@ class SpectrumSessionListenerTest {
 
     public static Stream<Arguments> buildVersionLineValuesProvider() {
         return Stream.of(
-                arguments("version", "#                                   Version: version                                   #"),
-                arguments("0.0.1", "#                                    Version: 0.0.1                                    #"),
-                arguments("0.0.1-SNAPSHOT", "#                               Version: 0.0.1-SNAPSHOT                                #")
+                arguments("version", "                       Version: version  #"),
+                arguments("0.0.1", "                         Version: 0.0.1  #"),
+                arguments("0.0.1-SNAPSHOT", "                Version: 0.0.1-SNAPSHOT  #")
         );
     }
 
