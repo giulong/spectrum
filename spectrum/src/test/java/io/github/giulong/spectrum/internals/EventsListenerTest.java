@@ -205,96 +205,96 @@ class EventsListenerTest {
     }
 
     @Test
-    @DisplayName("OFF level: log should not log the provided event")
-    public void logOff() {
+    @DisplayName("OFF level: listen should not log the provided event")
+    public void listenOff() {
         when(event.getLevel()).thenReturn(Level.OFF);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
     }
 
     @Test
-    @DisplayName("TRACE level: log should log the provided event with its args")
-    public void logTrace() {
+    @DisplayName("TRACE level: listen should log the provided event with its args")
+    public void listenTrace() {
         recordViewFrameForStubs();
 
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(TRACE);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(TRACE);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
     }
 
     @Test
-    @DisplayName("TRACE level off: log should not log the provided event")
-    public void logTraceOff() {
+    @DisplayName("TRACE level off: listen should not log the provided event")
+    public void listenTraceOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(TRACE);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
         verify(extentTest, never()).info(tagsMessage);
     }
 
     @Test
-    @DisplayName("DEBUG level: log should log the provided event with its args")
-    public void logDebug() {
+    @DisplayName("DEBUG level: listen should log the provided event with its args")
+    public void listenDebug() {
         recordViewFrameForStubs();
 
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(DEBUG);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(DEBUG);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
     }
 
     @Test
-    @DisplayName("DEBUG level off: log should not log the provided event")
-    public void logDebugOff() {
+    @DisplayName("DEBUG level off: listen should not log the provided event")
+    public void listenDebugOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(DEBUG);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
         verify(extentTest, never()).info(tagsMessage);
     }
 
     @Test
-    @DisplayName("INFO level: log should log the provided event with its args")
-    public void logInfo() {
+    @DisplayName("INFO level: listen should log the provided event with its args")
+    public void listenInfo() {
         recordViewFrameForStubs();
 
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(INFO);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(INFO);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
     }
 
     @Test
-    @DisplayName("INFO level off: log should not log the provided event")
-    public void logInfoOff() {
+    @DisplayName("INFO level off: listen should not log the provided event")
+    public void listenInfoOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(INFO);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
         verify(extentTest, never()).info(tagsMessage);
     }
 
     @Test
-    @DisplayName("WARN level: log should log the provided event with its args")
-    public void logWarn() {
+    @DisplayName("WARN level: listen should log the provided event with its args")
+    public void listenWarn() {
         recordViewFrameForStubs();
 
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(WARN);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(WARN);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
 
         verify(extentTest).warning(markupArgumentCaptor.capture());
         final Markup markup = markupArgumentCaptor.getValue();
@@ -302,24 +302,24 @@ class EventsListenerTest {
     }
 
     @Test
-    @DisplayName("WARN level off: log should not log the provided event")
-    public void logWarnOff() {
+    @DisplayName("WARN level off: listen should not log the provided event")
+    public void listenWarnOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(WARN);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
         verify(extentTest, never()).warning(markupArgumentCaptor.capture());
     }
 
     @Test
-    @DisplayName("Not matching level: log should not log the provided event")
-    public void logDefault() {
+    @DisplayName("Not matching level: listen should not log the provided event")
+    public void listenDefault() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(ALL);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(ALL);
 
-        eventsListener.log(AUTO_BEFORE, event, arg);
+        eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(store, never()).get(EXTENT_TEST, ExtentTest.class);
         verify(extentTest, never()).warning(markupArgumentCaptor.capture());
     }
