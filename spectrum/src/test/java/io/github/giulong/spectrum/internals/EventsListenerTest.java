@@ -56,6 +56,7 @@ class EventsListenerTest {
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
     private final String tagsMessage = "message <div><code>" + arg + "</code></div>";
+    private final long wait = 1L;
 
     @Mock
     private ExtensionContext.Store store;
@@ -231,6 +232,7 @@ class EventsListenerTest {
     public void listenTraceOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(TRACE);
+        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
@@ -245,6 +247,7 @@ class EventsListenerTest {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(DEBUG);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(DEBUG);
+        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
@@ -255,6 +258,7 @@ class EventsListenerTest {
     public void listenDebugOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(DEBUG);
+        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
@@ -269,6 +273,7 @@ class EventsListenerTest {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(INFO);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(INFO);
+        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
@@ -279,6 +284,7 @@ class EventsListenerTest {
     public void listenInfoOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(INFO);
+        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
@@ -293,6 +299,7 @@ class EventsListenerTest {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(WARN);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(WARN);
+        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
 
@@ -306,6 +313,7 @@ class EventsListenerTest {
     public void listenWarnOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(WARN);
+        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();

@@ -375,6 +375,9 @@ public class Configuration implements SessionHook {
 
             @JsonPropertyDescription("Message to be logged upon receiving this event")
             private String message;
+
+            @JsonPropertyDescription("Milliseconds to wait before listening to this event")
+            private long wait;
         }
     }
 

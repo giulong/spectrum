@@ -78,8 +78,15 @@ public class EventsListener implements WebDriverListener {
         return null;
     }
 
+    @SneakyThrows
     protected void apply(final boolean condition, final Consumer<String> logConsumer, final Consumer<String> extentConsumer,
                          final Frame frame, final Configuration.WebDriver.Event event, final Object... args) {
+        final long wait = event.getWait();
+        if (wait > 0) {
+            log.debug("Waiting {} ms before event processing", wait);
+            Thread.sleep(wait);
+        }
+
         if (condition) {
             final String message = String.format(event.getMessage(), parse(args).toArray());
 
