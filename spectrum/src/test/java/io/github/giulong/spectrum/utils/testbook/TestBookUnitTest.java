@@ -6,9 +6,11 @@ import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.ReflectionUtils;
 import io.github.giulong.spectrum.utils.Vars;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.Reporter;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import org.junit.jupiter.api.AfterEach;
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.*;
 class TestBookUnitTest {
 
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
+    private MockedStatic<FileUtils> fileUtilsMockedStatic;
 
     private final String globalVar = "globalVar";
     private final String globalValue = "globalValue";
@@ -49,13 +52,16 @@ class TestBookUnitTest {
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
+    private FileUtils fileUtils;
+
+    @Mock
     private TestBookTest test;
 
     @Mock
     private TestBookParser testBookParser;
 
     @Mock(extraInterfaces = CanReportTestBook.class)
-    private Reporter reporter1;
+    private FileReporter reporter1;
 
     @Mock(extraInterfaces = CanReportTestBook.class)
     private Reporter reporter2;
@@ -75,11 +81,13 @@ class TestBookUnitTest {
     @BeforeEach
     public void beforeEach() {
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
+        fileUtilsMockedStatic = mockStatic(FileUtils.class);
     }
 
     @AfterEach
     public void afterEach() {
         freeMarkerWrapperMockedStatic.close();
+        fileUtilsMockedStatic.close();
     }
 
     private void mapVarsAssertions() {
@@ -136,6 +144,13 @@ class TestBookUnitTest {
                 .testName("another")
                 .build();
         final List<TestBookTest> tests = List.of(test1, test2);
+        final String output = "output";
+        final String extension = "extension";
+
+        ReflectionUtils.setField("fileUtils", testBook, fileUtils);
+        ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
+        when(fileUtils.getExtensionOf(output)).thenReturn(extension);
+        when(reporter1.getOutput()).thenReturn(output);
 
         when(testBookParser.parse()).thenReturn(tests);
 

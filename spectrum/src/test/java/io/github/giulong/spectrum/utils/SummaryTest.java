@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.Reporter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ class SummaryTest {
     private FileUtils fileUtils;
 
     @Mock(extraInterfaces = CanReportSummary.class)
-    private Reporter reporter1;
+    private FileReporter reporter1;
 
     @Mock(extraInterfaces = CanReportSummary.class)
     private Reporter reporter2;
@@ -72,6 +73,20 @@ class SummaryTest {
     @AfterEach
     public void afterEach() {
         mvelMockedStatic.close();
+    }
+
+    @Test
+    @DisplayName("sessionOpened should log where to find the summary for each reporter")
+    public void sessionOpened() {
+        final String output = "output";
+        final String extension = "extension";
+
+        ReflectionUtils.setField("reporters", summary, List.of(reporter1, reporter2));
+
+        when(fileUtils.getExtensionOf(output)).thenReturn(extension);
+        when(reporter1.getOutput()).thenReturn(output);
+
+        summary.sessionOpened();
     }
 
     @Test

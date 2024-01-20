@@ -75,6 +75,7 @@ public class Configuration implements SessionHook {
     public void sessionOpened() {
         log.debug("Session opened hook");
         testBook.sessionOpened();
+        summary.sessionOpened();
     }
 
     @Override
