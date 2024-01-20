@@ -29,7 +29,7 @@ public class FilesIT extends SpectrumTest<Void> {
         deleteDownloadsFolder();
 
         downloadPage.open();
-        downloadPage.getDownloadLinks().get(0).click();
+        downloadPage.getDownloadLinks().getFirst().click();
 
         // We call the inherited helper method to check if the downloaded file is the one we expect
         // This is expected to fail since we're comparing it with a wrong file

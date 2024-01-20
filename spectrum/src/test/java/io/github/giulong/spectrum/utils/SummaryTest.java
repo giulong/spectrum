@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.Reporter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,7 +38,7 @@ class SummaryTest {
     private FileUtils fileUtils;
 
     @Mock(extraInterfaces = CanReportSummary.class)
-    private Reporter reporter1;
+    private FileReporter reporter1;
 
     @Mock(extraInterfaces = CanReportSummary.class)
     private Reporter reporter2;
@@ -75,6 +76,20 @@ class SummaryTest {
     }
 
     @Test
+    @DisplayName("sessionOpened should log where to find the summary for each reporter")
+    public void sessionOpened() {
+        final String output = "output";
+        final String extension = "extension";
+
+        ReflectionUtils.setField("reporters", summary, List.of(reporter1, reporter2));
+
+        when(fileUtils.getExtensionOf(output)).thenReturn(extension);
+        when(reporter1.getOutput()).thenReturn(output);
+
+        summary.sessionOpened();
+    }
+
+    @Test
     @DisplayName("sessionClosed should put the summary in the vars and flush each reporter")
     public void sessionClosed() {
         final long testsFoundCount = 1;
@@ -104,7 +119,7 @@ class SummaryTest {
         when(testExecutionSummary.getTestsSkippedCount()).thenReturn(testsSkippedCount);
         when(testExecutionSummary.getTimeStarted()).thenReturn(timeStarted);
         when(testExecutionSummary.getTimeFinished()).thenReturn(timeFinished);
-        when(freeMarkerWrapper.interpolate(eq("summaryCondition"), eq(condition), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedCondition);
+        when(freeMarkerWrapper.interpolate(eq(condition), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedCondition);
         when(MVEL.eval(eq(interpolatedCondition), mvelVarsArgumentCaptor.capture())).thenReturn(true);
 
         summary.sessionClosed();
@@ -142,7 +157,7 @@ class SummaryTest {
         ReflectionUtils.setField("vars", summary, vars);
 
         when(summaryGeneratingListener.getSummary()).thenReturn(testExecutionSummary);
-        when(freeMarkerWrapper.interpolate("summaryCondition", condition, vars)).thenReturn(interpolatedCondition);
+        when(freeMarkerWrapper.interpolate(condition, vars)).thenReturn(interpolatedCondition);
         when(MVEL.eval(interpolatedCondition, vars)).thenReturn(expected);
 
         assertEquals(expected, summary.isExecutionSuccessful());

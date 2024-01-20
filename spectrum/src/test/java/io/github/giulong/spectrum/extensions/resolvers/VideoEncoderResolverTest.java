@@ -92,7 +92,7 @@ class VideoEncoderResolverTest {
         when(store.get(WEB_DRIVER, WebDriver.class)).thenReturn(webDriver);
 
         MockedConstruction<VideoEncoder> videoEncoderMockedConstruction = mockConstruction(VideoEncoder.class, (mock, context) -> {
-            assertEquals(blockingQueue, context.arguments().get(0));
+            assertEquals(blockingQueue, context.arguments().getFirst());
             assertEquals(CLASS_NAME, context.arguments().get(1));
             assertEquals(METHOD_NAME, context.arguments().get(2));
             assertEquals(videoPath.toFile(), context.arguments().get(3));
@@ -101,7 +101,7 @@ class VideoEncoderResolverTest {
         });
 
         final VideoEncoder actual = videoEncoderResolver.resolveParameter(parameterContext, extensionContext);
-        final VideoEncoder videoEncoder = videoEncoderMockedConstruction.constructed().get(0);
+        final VideoEncoder videoEncoder = videoEncoderMockedConstruction.constructed().getFirst();
 
         verify(videoEncoder).start();
         verify(store).put(VIDEO_ENCODER, videoEncoder);

@@ -115,12 +115,12 @@ public class TestBookSessionListener implements LauncherSessionListener {
         final List<File> remainingExtentReportsDirectories = getRemainingDirectoriesFrom(extentReportsDirectory.toFile().listFiles());
         final List<String> remainingExtentReportsDirectoriesNames = getNamesOf(remainingExtentReportsDirectories);
         assertEquals(extentTotalRetention, remainingExtentReportsDirectories.size());
-        assertFalse(remainingExtentReportsDirectoriesNames.contains(fakeExtentReportsDirectories.get(0)), "The first extent report directory should have been deleted due to retention policies");
+        assertFalse(remainingExtentReportsDirectoriesNames.contains(fakeExtentReportsDirectories.getFirst()), "The first extent report directory should have been deleted due to retention policies");
 
         final List<File> remainingExtentReports = getRemainingFilesFrom(extentReportsDirectory.toFile().listFiles(), "html");
         final List<String> remainingExtentReportsNames = getNamesOf(remainingExtentReports);
         assertEquals(extentTotalRetention, remainingExtentReports.size());
-        assertFalse(remainingExtentReportsNames.contains(fakeExtentReports.get(0)), "The first extent report should have been deleted due to retention policies");
+        assertFalse(remainingExtentReportsNames.contains(fakeExtentReports.getFirst()), "The first extent report should have been deleted due to retention policies");
 
         final List<File> remainingHtmlTestBooks = getRemainingFilesFrom(htmlTestBooksDirectory.toFile().listFiles(), "html");
         assertTrue(remainingHtmlTestBooks.size() <= htmlTestBookTotalRetention);
@@ -145,7 +145,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .map(Path::toFile)
                 .toList()
                 .containsAll(successfulReports.get("TxtTestBookReporter")));
-        assertFalse(remainingTxtTestBooksNames.contains(fakeTxtTestBooks.get(0)), "The first txt testbook should have been deleted due to retention policies");
+        assertFalse(remainingTxtTestBooksNames.contains(fakeTxtTestBooks.getFirst()), "The first txt testbook should have been deleted due to retention policies");
         assertTrue(remainingTxtTestBooksNames.contains(fakeTxtTestBooks.get(1)), "The second txt testbook should have been kept due to retention policies");
         assertTrue(remainingTxtTestBooksNames.contains(fakeTxtTestBooks.get(2)), "The third txt testbook should have been kept due to retention policies");
 

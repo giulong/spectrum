@@ -50,7 +50,7 @@ class BrowserLogTest {
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
 
         browserLog.write(c);
-        verify(stringBuffers.get(0)).append(c);
+        verify(stringBuffers.getFirst()).append(c);
     }
 
     @Test
@@ -60,7 +60,7 @@ class BrowserLogTest {
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
 
         browserLog.write(c);
-        verifyNoInteractions(stringBuffers.get(0));
+        verifyNoInteractions(stringBuffers.getFirst());
         assertEquals(stringBuffers.get(1), ReflectionUtils.getFieldValue("mem", browserLog));
     }
 
@@ -68,7 +68,7 @@ class BrowserLogTest {
     @DisplayName("flush should write the buffer's content at the provided level and re-initialise it")
     public void flush() {
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
-        assertEquals(stringBuffers.get(0), ReflectionUtils.getFieldValue("mem", browserLog));
+        assertEquals(stringBuffers.getFirst(), ReflectionUtils.getFieldValue("mem", browserLog));
 
         browserLog.flush();
         assertEquals(stringBuffers.get(1), ReflectionUtils.getFieldValue("mem", browserLog));

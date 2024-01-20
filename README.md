@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/giulong/spectrum/actions?query=branch%3Adevelop)
 [![coverage](https://giulong.github.io/spectrum/badges/jacoco.svg)](https://giulong.github.io/spectrum/jacoco/)
-[![badge-jdk](https://img.shields.io/badge/jdk-17-blue.svg)](https://www.oracle.com/java/technologies/javase-downloads.html)
+[![badge-jdk](https://img.shields.io/badge/jdk-21-blue.svg)](https://jdk.java.net/21/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
 
@@ -58,7 +58,7 @@ All you need to do is take the three steps listed below, as shown in this video:
 https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad893738c08
 
 > ⚠️ JDK<br/>
-> Since Spectrum is compiled with a jdk 17, you need a [jdk 17+](https://jdk.java.net/java-se-ri/17) to be able to run your tests.
+> Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/21/) to be able to run your tests.
 
 1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) via your IDE or by running this in a terminal and providing values when prompted:
 
@@ -86,7 +86,7 @@ For more details, please refer to the [full documentation](https://giulong.githu
 |-----------------|------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------------------------------------|
 | Giulio Longfils | [giulong](https://github.com/giulong)                            | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)   |
 
-> If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
+If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
 
 ## Local development
 

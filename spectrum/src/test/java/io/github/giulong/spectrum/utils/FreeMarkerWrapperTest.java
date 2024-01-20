@@ -57,16 +57,16 @@ class FreeMarkerWrapperTest {
         when(freeMarker.getNumberFormat()).thenReturn(numberFormat);
 
         MockedConstruction<Version> versionMockedConstruction = mockConstruction(Version.class, context -> {
-            assertEquals(version, context.arguments().get(0));
+            assertEquals(version, context.arguments().getFirst());
             return withSettings();
         });
         MockedConstruction<freemarker.template.Configuration> configurationMockedConstruction = mockConstruction(freemarker.template.Configuration.class, context -> {
-            assertEquals(versionMockedConstruction.constructed().get(0), context.arguments().get(0));
+            assertEquals(versionMockedConstruction.constructed().getFirst(), context.arguments().getFirst());
             return withSettings();
         });
 
         freeMarkerWrapper.sessionOpenedFrom(spectrumConfiguration);
-        assertEquals(freeMarkerWrapper.getConfiguration(), configurationMockedConstruction.constructed().get(0));
+        assertEquals(freeMarkerWrapper.getConfiguration(), configurationMockedConstruction.constructed().getFirst());
 
         versionMockedConstruction.close();
         configurationMockedConstruction.close();
@@ -75,26 +75,25 @@ class FreeMarkerWrapperTest {
     @Test
     @DisplayName("interpolate should create a template from the provided source, interpolating it with the provided vars and returning the interpolated string")
     public void interpolate() throws TemplateException, IOException {
-        final String templateName = "templateName";
         final String source = "source";
         final Map<String, Object> vars = Map.of("one", "value");
 
         MockedConstruction<StringReader> stringReaderMockedConstruction = mockConstruction(StringReader.class, context -> {
-            assertEquals(source, context.arguments().get(0));
+            assertEquals(source, context.arguments().getFirst());
             return withSettings();
         });
         MockedConstruction<Template> templateMockedConstruction = mockConstruction(Template.class, context -> {
-            assertEquals(templateName, context.arguments().get(0));
-            assertEquals(stringReaderMockedConstruction.constructed().get(0), context.arguments().get(1));
+            assertEquals("freemarker", context.arguments().getFirst());
+            assertEquals(stringReaderMockedConstruction.constructed().getFirst(), context.arguments().get(1));
             assertEquals(configuration, context.arguments().get(2));
             return withSettings();
         });
         MockedConstruction<StringWriter> stringWriterMockedConstruction = mockConstruction(StringWriter.class, context -> withSettings());
 
-        final String actual = freeMarkerWrapper.interpolate(templateName, source, vars);
+        final String actual = freeMarkerWrapper.interpolate(source, vars);
 
-        final Template template = templateMockedConstruction.constructed().get(0);
-        final Writer writer = stringWriterMockedConstruction.constructed().get(0);
+        final Template template = templateMockedConstruction.constructed().getFirst();
+        final Writer writer = stringWriterMockedConstruction.constructed().getFirst();
         verify(template).process(vars, writer);
         assertEquals(writer.toString(), actual);
 

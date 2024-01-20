@@ -49,7 +49,7 @@ class FirefoxTest {
         MockedConstruction<GeckoDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(GeckoDriverService.Builder.class);
 
         final DriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> driverServiceBuilder = firefox.getDriverServiceBuilder();
-        assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
+        assertEquals(chromeDriverServiceMockedConstruction.constructed().getFirst(), driverServiceBuilder);
 
         chromeDriverServiceMockedConstruction.close();
     }
@@ -67,7 +67,7 @@ class FirefoxTest {
         MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class);
 
         firefox.buildCapabilitiesFrom(webDriverConfig);
-        final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().get(0);
+        final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
         verify(firefoxOptions).addArguments(arguments);
         verify(firefoxOptions).setLogLevel(firefoxDriverLogLevel);
         verify(firefoxOptions).addPreference("one", "value");

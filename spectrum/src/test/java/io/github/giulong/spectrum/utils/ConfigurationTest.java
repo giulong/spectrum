@@ -37,6 +37,7 @@ class ConfigurationTest {
         configuration.sessionOpened();
 
         verify(testBook).sessionOpened();
+        verify(summary).sessionOpened();
     }
 
     @Test

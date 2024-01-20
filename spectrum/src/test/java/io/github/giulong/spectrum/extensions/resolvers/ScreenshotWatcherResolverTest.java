@@ -80,13 +80,13 @@ class ScreenshotWatcherResolverTest {
         when(store.get(SCREENSHOT_QUEUE, BlockingQueue.class)).thenReturn(blockingQueue);
 
         MockedConstruction<ScreenshotWatcher> screenshotWatcherMockedConstruction = mockConstruction(ScreenshotWatcher.class, (mock, context) -> {
-            assertEquals(blockingQueue, context.arguments().get(0));
+            assertEquals(blockingQueue, context.arguments().getFirst());
             assertEquals(Path.of(SCREENSHOT_FOLDER), context.arguments().get(1));
             assertInstanceOf(WatchService.class, context.arguments().get(2));
         });
 
         final ScreenshotWatcher actual = screenshotWatcherResolver.resolveParameter(parameterContext, extensionContext);
-        final ScreenshotWatcher screenshotWatcher = screenshotWatcherMockedConstruction.constructed().get(0);
+        final ScreenshotWatcher screenshotWatcher = screenshotWatcherMockedConstruction.constructed().getFirst();
 
         verify(screenshotWatcher).start();
         verify(store).put(SCREENSHOT_WATCHER, screenshotWatcher);

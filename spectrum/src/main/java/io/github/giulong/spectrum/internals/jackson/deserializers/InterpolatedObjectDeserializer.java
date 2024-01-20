@@ -62,7 +62,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
 
         if (value.equals(interpolatedValue)) {
             if (defaultValue == null) {
-                log.warn("No variable found to interpolate '{}' for key '{}'", value, currentName);
+                log.debug("No variable found to interpolate '{}' for key '{}'", value, currentName);
             } else {
                 log.trace("No variable found to interpolate '{}' for key '{}'. Using provided default '{}'", value, currentName, defaultValue);
                 interpolatedValue = value.replace(placeholder, defaultValue);

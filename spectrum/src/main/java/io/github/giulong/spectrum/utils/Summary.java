@@ -5,12 +5,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import io.github.giulong.spectrum.interfaces.reports.Reportable;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.mvel2.MVEL;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -41,6 +43,16 @@ public class Summary implements SessionHook, Reportable {
 
     @JsonIgnore
     private final Map<String, Object> vars = new HashMap<>();
+
+    @Override
+    public void sessionOpened() {
+        reporters
+                .stream()
+                .filter(canReportSummary -> canReportSummary instanceof FileReporter)
+                .map(FileReporter.class::cast)
+                .map(FileReporter::getOutput)
+                .forEach(output -> log.info("After the execution, you'll find the {} summary at file:///{}", fileUtils.getExtensionOf(output), Path.of(output).toAbsolutePath()));
+    }
 
     @Override
     public void sessionClosed() {
@@ -84,6 +96,6 @@ public class Summary implements SessionHook, Reportable {
     }
 
     protected String interpolateCondition() {
-        return freeMarkerWrapper.interpolate("summaryCondition", condition, vars);
+        return freeMarkerWrapper.interpolate(condition, vars);
     }
 }

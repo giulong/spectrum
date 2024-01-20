@@ -230,7 +230,7 @@ class ExtentReporterTest {
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
 
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(absolutePathToStringReplaced, context.arguments().get(0));
+            assertEquals(absolutePathToStringReplaced, context.arguments().getFirst());
             when(mock.config()).thenReturn(extentSparkReporterConfig);
         });
 
@@ -242,7 +242,7 @@ class ExtentReporterTest {
         verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
         verify(extentSparkReporterConfig).setCss(css);
 
-        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().get(0);
+        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().getFirst();
         verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
 
         extentSparkReporterMockedConstruction.close();

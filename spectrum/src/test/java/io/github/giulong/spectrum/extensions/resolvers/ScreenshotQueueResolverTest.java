@@ -67,7 +67,7 @@ class ScreenshotQueueResolverTest {
         final BlockingQueue<File> actual = screenshotQueueResolver.resolveParameter(parameterContext, extensionContext);
 
         //noinspection unchecked
-        final BlockingQueue<File> blockingQueue = (BlockingQueue<File>) blockingQueueMockedConstruction.constructed().get(0);
+        final BlockingQueue<File> blockingQueue = (BlockingQueue<File>) blockingQueueMockedConstruction.constructed().getFirst();
         assertEquals(blockingQueue, actual);
         verify(store).put(SCREENSHOT_QUEUE, actual);
 
