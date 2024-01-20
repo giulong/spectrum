@@ -13,7 +13,7 @@ import java.util.*;
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {
 
-    public static final int BANNER_LINE_LENGTH = 39;
+    public static final int BANNER_LINE_LENGTH = 37;
     public static final String DEFAULT_CONFIGURATION_YAML = "yaml/configuration.default.yaml";
     public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
     public static final String CONFIGURATION_YAML = "configuration.yaml";
@@ -58,7 +58,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         final SpectrumProperties spectrumProperties = yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class);
         final String version = String.format("Version: %s", spectrumProperties.getVersion());
         final int wrappingSpacesLeft = BANNER_LINE_LENGTH - version.length();
-        return String.format("%" + wrappingSpacesLeft + "s%s  #", " ", version, " ");
+        return "*".repeat(wrappingSpacesLeft) + String.format("  %s  |", version);
     }
 
     protected void parseConfiguration() {
