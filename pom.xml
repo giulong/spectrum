@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.6.0</revision>
+        <revision>1.7.0</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
@@ -49,7 +49,7 @@
         <jackson.version>2.16.1</jackson.version>
         <simplejavamail.version>8.5.1</simplejavamail.version>
         <jsonschemagenerator.version>4.33.1</jsonschemagenerator.version>
-        <slf4j.version>2.0.10</slf4j.version>
+        <slf4j.version>2.0.11</slf4j.version>
         <selenium.version>4.16.1</selenium.version>
     </properties>
 
@@ -169,7 +169,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.36.1</version>
+                <version>1.37.0</version>
             </dependency>
 
             <dependency>
@@ -205,7 +205,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>5.8.0</version>
+                <version>5.9.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -258,8 +258,8 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.12.1</version>
                     <configuration>
-                        <source>17</source>
-                        <target>17</target>
+                        <source>21</source>
+                        <target>21</target>
                         <encoding>UTF-8</encoding>
                     </configuration>
                 </plugin>
@@ -274,9 +274,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.2.3</version>
+                    <version>3.2.5</version>
                     <configuration>
-                        <argLine>${argLine} -Dfile.encoding=UTF-8</argLine>
+                        <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
                         <reportsDirectory>${reportsDirectory}</reportsDirectory>
                         <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
@@ -287,7 +287,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.2.3</version>
+                    <version>3.2.5</version>
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <failIfNoTests>true</failIfNoTests>
@@ -313,6 +313,30 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>21</version>
+                                </requireJavaVersion>
+                                <banDuplicatePomDependencyVersions/>
+                                <banDynamicVersions/>
+                                <reactorModuleConvergence/>
+                                <requireReleaseDeps/>
+                                <requireSameVersions/>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -342,7 +366,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.5.0</version>
+                <version>1.6.0</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>ossrh</flattenMode>

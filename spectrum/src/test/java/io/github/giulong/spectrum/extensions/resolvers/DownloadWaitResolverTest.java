@@ -69,12 +69,12 @@ class DownloadWaitResolverTest {
         when(waits.getDownloadTimeout()).thenReturn(duration);
 
         MockedConstruction<DownloadWait> mockedConstruction = mockConstruction(DownloadWait.class, (mock, context) -> {
-            assertEquals(webDriver, context.arguments().get(0));
+            assertEquals(webDriver, context.arguments().getFirst());
             assertEquals(duration, context.arguments().get(1));
         });
 
         DownloadWait actual = downloadWaitResolver.resolveParameter(parameterContext, extensionContext);
-        DownloadWait downloadWait = mockedConstruction.constructed().get(0);
+        DownloadWait downloadWait = mockedConstruction.constructed().getFirst();
         verify(store).put(DownloadWaitResolver.DOWNLOAD_WAIT, downloadWait);
         assertEquals(downloadWait, actual);
 

@@ -51,7 +51,7 @@ class EdgeTest {
         MockedConstruction<EdgeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(EdgeDriverService.Builder.class);
 
         final DriverService.Builder<EdgeDriverService, EdgeDriverService.Builder> driverServiceBuilder = edge.getDriverServiceBuilder();
-        assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
+        assertEquals(chromeDriverServiceMockedConstruction.constructed().getFirst(), driverServiceBuilder);
 
         chromeDriverServiceMockedConstruction.close();
     }
@@ -69,8 +69,8 @@ class EdgeTest {
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
         edge.buildCapabilitiesFrom(webDriverConfig);
-        final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().get(0);
-        final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().get(0);
+        final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().getFirst();
+        final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().getFirst();
 
         verify(loggingPreferences).enable(BROWSER, browserLevel);
         verify(loggingPreferences).enable(DRIVER, driverLevel);

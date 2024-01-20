@@ -41,7 +41,7 @@ public class FilesIT extends SpectrumTest<Void> {
         deleteDownloadsFolder();
 
         downloadPage.open();
-        downloadPage.getDownloadLinks().get(0).click();
+        downloadPage.getDownloadLinks().getFirst().click();
 
         assertThrows(TimeoutException.class, () -> checkDownloadedFile(FILE_TO_DOWNLOAD));
     }
@@ -70,7 +70,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
         final Response response = mapResponseFrom(connection);
 
-        assertEquals("6c85-xxxx-xxxx", response.data.sessionsInfo.sessions.get(0).capabilities.get("my:token"));
+        assertEquals("6c85-xxxx-xxxx", response.data.sessionsInfo.sessions.getFirst().capabilities.get("my:token"));
     }
 
     private HttpURLConnection setupConnectionToGrid() throws IOException {

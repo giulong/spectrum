@@ -136,7 +136,7 @@ class BrowserTest {
         final WebDriver actual = browser.build(configuration);
         final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
 
-        verify(chromeOptionsMockedConstruction.constructed().get(0)).setAcceptInsecureCerts(true);
+        verify(chromeOptionsMockedConstruction.constructed().getFirst()).setAcceptInsecureCerts(true);
         assertEquals(protectedWebDriver, threadLocalWebDriver);
         assertEquals(protectedWebDriver, actual);
 

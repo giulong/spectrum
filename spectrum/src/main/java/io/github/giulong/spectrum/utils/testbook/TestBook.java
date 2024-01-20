@@ -10,12 +10,15 @@ import io.github.giulong.spectrum.pojos.testbook.QualityGate;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.Vars;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -28,6 +31,9 @@ import static java.util.stream.Collectors.toMap;
 @Slf4j
 @SuppressWarnings("unused")
 public class TestBook implements SessionHook, Reportable {
+
+    @JsonIgnore
+    private final FileUtils fileUtils = FileUtils.getInstance();
 
     @JsonPropertyDescription("Enables the testBook")
     private boolean enabled;
@@ -81,6 +87,13 @@ public class TestBook implements SessionHook, Reportable {
             log.debug("TestBook disabled. Skipping parse");
             return;
         }
+
+        reporters
+                .stream()
+                .filter(canReportTestBook -> canReportTestBook instanceof FileReporter)
+                .map(FileReporter.class::cast)
+                .map(FileReporter::getOutput)
+                .forEach(output -> log.info("After the execution, you'll find the {} testBook at file:///{}", fileUtils.getExtensionOf(output), Path.of(output).toAbsolutePath()));
 
         final List<TestBookTest> tests = parser.parse();
 
@@ -149,7 +162,7 @@ public class TestBook implements SessionHook, Reportable {
         vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
 
         final String qgStatus = "qgStatus";
-        final String interpolatedQgStatus = FreeMarkerWrapper.getInstance().interpolate(qgStatus, qualityGate.getCondition(), vars);
+        final String interpolatedQgStatus = FreeMarkerWrapper.getInstance().interpolate(qualityGate.getCondition(), vars);
         vars.put(qgStatus, interpolatedQgStatus);
         Vars.getInstance().put(qgStatus, interpolatedQgStatus);
 

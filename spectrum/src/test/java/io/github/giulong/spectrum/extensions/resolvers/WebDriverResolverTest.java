@@ -144,7 +144,7 @@ class WebDriverResolverTest {
 
         //noinspection rawtypes
         MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, context) -> {
-            assertEquals(eventsListener, ((WebDriverListener[]) context.arguments().get(0))[0]);
+            assertEquals(eventsListener, ((WebDriverListener[]) context.arguments().getFirst())[0]);
 
             //noinspection unchecked
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);

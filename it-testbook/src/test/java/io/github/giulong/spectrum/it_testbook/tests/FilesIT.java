@@ -28,7 +28,7 @@ public class FilesIT extends SpectrumTest<Void> {
         deleteDownloadsFolder();
 
         downloadPage.open();
-        downloadPage.getDownloadLinks().get(0).click();
+        downloadPage.getDownloadLinks().getFirst().click();
 
         assertThrows(TimeoutException.class, () -> checkDownloadedFile(FILE_TO_DOWNLOAD));
     }

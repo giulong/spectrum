@@ -12,6 +12,7 @@
 
             return versionColumn + fullPathColumn;
         })
+        .reverse()
         .join('</tr><tr>');
 
     jsonSchemasBody.innerHTML = '<tr>' + rows + '</tr>';

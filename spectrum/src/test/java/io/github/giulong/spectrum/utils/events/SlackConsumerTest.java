@@ -79,7 +79,7 @@ class SlackConsumerTest {
         when(fileUtils.readTemplate("slack.json")).thenReturn(template);
 
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
-        when(freeMarkerWrapper.interpolate("slack", template, Map.of("event", event))).thenReturn(interpolatedTemplate);
+        when(freeMarkerWrapper.interpolate(template, Map.of("event", event))).thenReturn(interpolatedTemplate);
 
         when(ChatPostMessageRequest.builder()).thenReturn(chatPostMessageRequestBuilder);
         when(chatPostMessageRequestBuilder.channel(channel)).thenReturn(chatPostMessageRequestBuilder);

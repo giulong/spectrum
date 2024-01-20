@@ -165,7 +165,7 @@ class VideoEncoderTest {
 
         // resize
         MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
-            assertEquals(EVEN_WIDTH, context.arguments().get(0));
+            assertEquals(EVEN_WIDTH, context.arguments().getFirst());
             assertEquals(EVEN_HEIGHT, context.arguments().get(1));
             assertEquals(TYPE_INT_RGB, context.arguments().get(2));
 
@@ -180,7 +180,7 @@ class VideoEncoderTest {
         //noinspection CallToThreadRun
         videoEncoder.run();
 
-        final BufferedImage resizedImage1 = bufferedImageMockedConstruction.constructed().get(0);
+        final BufferedImage resizedImage1 = bufferedImageMockedConstruction.constructed().getFirst();
         final BufferedImage resizedImage2 = bufferedImageMockedConstruction.constructed().get(1);
         verify(encoder).encodeImage(resizedImage1);
         verify(encoder).encodeImage(resizedImage2);
@@ -197,7 +197,7 @@ class VideoEncoderTest {
 
         // resize
         MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
-            assertEquals(EVEN_WIDTH, context.arguments().get(0));
+            assertEquals(EVEN_WIDTH, context.arguments().getFirst());
             assertEquals(EVEN_HEIGHT, context.arguments().get(1));
             assertEquals(TYPE_INT_RGB, context.arguments().get(2));
 
@@ -206,7 +206,7 @@ class VideoEncoderTest {
 
         videoEncoder.processNext();
 
-        final BufferedImage resizedImage = bufferedImageMockedConstruction.constructed().get(0);
+        final BufferedImage resizedImage = bufferedImageMockedConstruction.constructed().getFirst();
         verify(encoder).encodeImage(resizedImage);
         bufferedImageMockedConstruction.close();
     }
@@ -225,7 +225,7 @@ class VideoEncoderTest {
     @DisplayName("resize should resize the image and return it")
     public void resize() {
         MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
-            assertEquals(EVEN_WIDTH, context.arguments().get(0));
+            assertEquals(EVEN_WIDTH, context.arguments().getFirst());
             assertEquals(EVEN_HEIGHT, context.arguments().get(1));
             assertEquals(TYPE_INT_RGB, context.arguments().get(2));
 
@@ -233,7 +233,7 @@ class VideoEncoderTest {
         });
 
         final BufferedImage actual = videoEncoder.resize(bufferedImage);
-        assertEquals(bufferedImageMockedConstruction.constructed().get(0), actual);
+        assertEquals(bufferedImageMockedConstruction.constructed().getFirst(), actual);
 
         verify(graphics2D).drawImage(bufferedImage, 0, 0, null);
         verify(graphics2D).dispose();

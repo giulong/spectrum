@@ -44,9 +44,10 @@ public final class FreeMarkerWrapper implements SessionHook {
     }
 
     @SneakyThrows
-    public String interpolate(final String templateName, final String source, final Map<String, Object> vars) {
-        final Template template = new Template(templateName, new StringReader(source), configuration);
+    public String interpolate(final String source, final Map<String, Object> vars) {
+        final Template template = new Template("freemarker", new StringReader(source), configuration);
         final Writer writer = new StringWriter();
+
         template.process(vars, writer);
         return writer.toString();
     }

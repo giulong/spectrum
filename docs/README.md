@@ -4,7 +4,7 @@ Main features:
 
 * automatic [execution video](#automatic-execution-video-generation) generation
 * automatic [log and html report](#automatically-generated-reports) generation
-* automatic coverage report generation by reading a [testbook](#testbook-coverage)
+* automatic coverage report generation by reading a [testbook](#testbook---coverage)
 * automatic [mail/slack notifications](#events-consumers) with reports as attachments
 * fully configurable providing human-readable and [declarative yaml files](#configuration)
 * out-of-the-box defaults to let you run tests with no additional configuration
@@ -23,8 +23,8 @@ directly in your test classes, so that you can focus just on writing the logic t
 
 ## Setup
 
-> ⚠️ <b>JDK</b><br/>
-> Since Spectrum is compiled with a jdk 17, you need a [jdk 17+](https://jdk.java.net/java-se-ri/17){:target="_blank"} to be able to run your tests.
+> ⚠️ **JDK**<br/>
+> Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/21/){:target="_blank"} to be able to run your tests.
 > If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
 ### Spectrum Archetype
@@ -41,7 +41,7 @@ mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactI
 
 Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATION>` are placeholders that you need to replace with actual values.
 
-> ⚠️ <b>Maven archetype:generate</b><br/>
+> ⚠️ **Maven archetype:generate**<br/>
 > If you want to tweak the behaviour of the command above, for example to generate the project in interactive mode, check the
 > official [archetype:generate docs](https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html){:target="_blank"}.
 
@@ -61,7 +61,7 @@ project:
 </dependency>
 ```
 
-> ⚠️ <b>Spectrum version</b><br/>
+> ⚠️ **Spectrum version**<br/>
 > The snippet above references the `LATEST` version just to be ready to use.
 > Nevertheless, it's highly recommended to use the explicit version you can find in
 > [Maven central](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"}.
@@ -69,7 +69,7 @@ project:
 > With `LATEST`, if a new version which introduces breaking changes is published, your next build would
 > download it and potentially fail.
 
-> ⚠️ <b>Lombok Library</b><br/>
+> ⚠️ **Lombok Library**<br/>
 > The demo test injected by the archetype uses [Lombok](https://projectlombok.org/){:target="_blank"} to generate getters. Lombok is internally used in Spectrum, and provided as a
 > transitive
 > dependency, so you can already use it.
@@ -96,17 +96,17 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
-> ⚠️ <b>Running with Maven</b><br/>
+> ⚠️ **Running with Maven**<br/>
 > If you run tests with Maven, the name of your test classes should end with `IT` as in the example above: `HelloWorldIT`,
 > to leverage the [default inclusions](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inclusion-exclusion.html){:target="_blank"} of the failsafe plugin.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > The default browser is `chrome`. If you want to use another one, you can switch via the `-Dspectrum.browser` system property, setting its value to
 > `firefox` or `edge`:
 > * `-Dspectrum.browser=firefox`
 > * `-Dspectrum.browser=edge`
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > The default log level is `INFO`. If you want to change it, run with `-Dspectrum.log.level=<LEVEL>`,
 > for example:
 > * `-Dspectrum.log.level=DEBUG`
@@ -114,7 +114,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
 If you now run the test, you will find a html report generated in the `target/spectrum/reports` folder.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > Spectrum is tested with itself, so in this repo you can find real examples of Spectrum e2e tests.
 > They're in the [it]({{ site.repository_url }}/it) and [it-testbook]({{ site.repository_url }}/it-testbook){:target="_blank"} modules. Throughout this doc, you will
 > be pointed to specific examples.
@@ -167,7 +167,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > Check the [tests]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests){:target="_blank"} package to see real examples of SpectrumTests.
 
 ## SpectrumPage
@@ -197,7 +197,7 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 }
 ```
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > Check the [pages]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/pages){:target="_blank"} package to see real examples of SpectrumPages.
 
 ### SpectrumPage Service Methods
@@ -277,7 +277,7 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 }
 ```
 
-💡 <b>Tip</b><br/>
+💡 **Tip**<br/>
 Both the `open` and `waitForPageLoading` methods return the instance calling them.
 This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface){:target="_blank"}, so that you can rely on method chaining.
 You should write your service methods with this in mind.
@@ -342,7 +342,7 @@ so you can directly use them in your tests/pages without caring about declaring 
 
 ### SpectrumEntity Service Methods
 
-> ⚠️ <b>Methods returning `T`</b><br/>
+> ⚠️ **Methods returning `T`**<br/>
 > in the list below, the `T` return type means that method returns the caller instance, so you can leverage method chaining.
 
 * `T hover(WebElement)`: hovers on the provided WebElement, leveraging the `actions` field
@@ -372,7 +372,7 @@ Spectrum is fully configurable and comes with default values which you can find 
 the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 Be sure to check it: each key is properly commented to clarify its purpose.
 
-> ⚠️ <b>Running on *nix</b><br/>
+> ⚠️ **Running on *nix**<br/>
 > When running on *nix, the [configuration.default.unix.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.unix.yaml){:target="_blank"}
 > will be merged onto the base
 > one
@@ -380,7 +380,7 @@ Be sure to check it: each key is properly commented to clarify its purpose.
 
 To customise these values, you can create the `src/test/resources/configuration.yaml` file in your project.
 
-> ⚠️ <b>Files Extension</b><br/>
+> ⚠️ **Files Extension**<br/>
 > The extension must be `.yaml`. The shortened `.yml` won't work.
 
 Furthermore, you can provide how many profile-specific configurations in the same folder, by naming them
@@ -389,7 +389,7 @@ Furthermore, you can provide how many profile-specific configurations in the sam
 To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag,
 which is a comma separated list of profile names you want to activate.
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this order of precedence:
 > 1. configuration.default.yaml [Spectrum internal defaults]
 > 2. configuration.default.unix.yaml [Spectrum internal defaults for *nix, not read on Windows]
@@ -399,11 +399,11 @@ which is a comma separated list of profile names you want to activate.
 
 Values in the most specific configuration file will take precedence over the others.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base configuration.yaml,
 > while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`
 
-⚠️ <b>Merging Lists</b><br/>
+⚠️ **Merging Lists**<br/>
 Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
 
 {% include copyCode.html %}
@@ -432,7 +432,7 @@ someList:
   - value2
 ```
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > If you need different configurations for the same environment, instead of manually changing values in the configuration*.yaml, you should
 > provide different files and choose the right one with the `-Dspectrum.profiles` flag. <br/>
 > For example, if you need to be able to run from your local machine alternatively targeting a remote grid or executing browsers in local,
@@ -444,11 +444,11 @@ someList:
 > so you will avoid errors and will keep your scm history clean.
 > You need just to activate the right one by creating different run configurations in your IDE.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
 > so that everyone can provide their own configuration without interfering with others.
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > Check the `application.baseUrl` node in these configurations used in Spectrum's own tests to see an example of merging:
 > * [configuration.yaml]({{ site.repository_url }}/it-testbook/src/test/resources/configuration.yaml){:target="_blank"}
 > * [configuration-first.yaml]({{ site.repository_url }}/it-testbook/src/test/resources/configuration-first.yaml){:target="_
@@ -536,7 +536,7 @@ object:
   myVar: $<key:-defaultValue>
 ```
 
-> ⚠️ <b>Default value</b><br/>
+> ⚠️ **Default value**<br/>
 > The default value is optional: you can have just `${key}` or `$<key>`. Mind that the default value for numeric interpolation
 > **must resolve to a number**! If a string is provided, like in the line below, 0 is returned.
 >
@@ -557,7 +557,7 @@ Spectrum will interpolate the dollar-string with the first value found in this l
 
 Both key name and default value might contain dots like in `${some.key:-default.value}`
 
-> ⚠️ <b>Combined keys</b><br/>
+> ⚠️ **Combined keys**<br/>
 > It's possible to interpolate multiple **string** values in the same key, for example:
 >
 > `${key:-default}-something_else-${anotherVar}`
@@ -577,7 +577,7 @@ Both key name and default value might contain dots like in `${some.key:-default.
 >
 > `--proxy-server=${proxyHost}:${proxyPort}`
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > This trick is used in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 > to allow for variables to be read from outside.
 > For example, profiles are set like this:
@@ -721,12 +721,77 @@ JSON Schema really comes in handy when editing `configuration*.yaml`, since it a
 and a non-blocking validation (just warnings).
 This is the list of the available schemas, be sure to pick the right one according to the version of Spectrum you are using.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > You can either download the file or copy the path to reference it in your IDE. Check how to configure JSON Schema for
 > [IntelliJ Idea](https://www.jetbrains.com/help/idea/json.html#ws_json_schema_add_custom){:target="_blank"}
 > and [VSCode](https://code.visualstudio.com/docs/languages/json#_json-schemas-and-settings){:target="_blank"}
 
 {% include jsonSchemas.html %}
+
+---
+
+# WebDriver Events Listener
+
+Spectrum
+[decorates the webDriver](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/events/EventFiringDecorator.html){:target="_blank"}
+with an events listener used to automatically take actions such as logging and generating reports.
+You can tweak each event in your `configuration.yaml`, by providing these:
+
+| Key     | Type                                                                                        | Default | Description                                         |
+|---------|---------------------------------------------------------------------------------------------|---------|-----------------------------------------------------|
+| level   | [Level](https://logback.qos.ch/apidocs/ch/qos/logback/classic/Level.html){:target="_blank"} | `OFF`   | Level at which this event will be logged            |
+| message | String                                                                                      | `null`  | Message to be logged upon receiving this event      |
+| wait    | long                                                                                        | `0`     | Milliseconds to wait before listening to this event |
+
+For example, you can set these:
+
+{% include copyCode.html %}
+```yaml
+webDriver:
+  events:
+    beforeFindElement:
+      level: INFO
+      message: Finding element %2$s
+      wait: 1000
+    beforeClose:
+      level: DEBUG
+      message: Closing...
+```
+
+Check the `webDriver.events` node in the
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
+to see the defaults.
+
+The `message` property specifies what to add to logs and reports upon receiving the related event, 
+and is affected by the `level` property (check the sections below).
+On the other hand, `wait` is a standalone property, meaning it will be considered even if the related event won't be logged, 
+and specifies how many milliseconds to wait before actually processing the related event.
+
+> ⚠️ **Static waits**<br/>
+> If you leverage the `wait` property, a static `Thread.sleep` call is executed. This property is here for convenience,
+> for example to be used if you have *flaky* tests, and you need a quick way to slow down the execution.
+> In general, you should leverage better waiting conditions, such as fluent waits, as explained in
+> [Selenium's Waiting Strategies docs](https://www.selenium.dev/documentation/webdriver/waits/){:target="_blank"}.
+
+As an example, you might want to add a 1 second sleep before each call like this:
+
+{% include copyCode.html %}
+```yaml
+webDriver:
+  events:
+    beforeAnyWebDriverCall:
+      wait: 1000
+```
+
+Or a sleep only before clicking elements:
+
+{% include copyCode.html %}
+```yaml
+webDriver:
+  events:
+    beforeClick:
+      wait: 1000
+```
 
 ---
 
@@ -750,7 +815,7 @@ You can specify which screenshots to be used as frames providing one or more of 
 | autoAfter  | Screenshots taken **after** an event happening in the WebDriver                                                                    |
 | manual     | Screenshots programmatically taken by you by invoking one of the [SpectrumEntity Service Methods](#spectrumentity-service-methods) |
 
-> ⚠️ <b>Auto screenshots</b><br/>
+> ⚠️ **Auto screenshots**<br/>
 > Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
 > and the `webDriver.events` settings. For example, if running with the default `INFO` log level and the configuration below,
 > no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
@@ -765,7 +830,7 @@ webDriver:
       message: Clicking on %1$s
 ```
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > Setting both `autoBefore` and `autoAfter` is likely to be useless. In this flow, screenshots at bullets 3 and 4 will be equal:
 > 1. screenshot: before click
 > 2. click event
@@ -785,7 +850,7 @@ folder and attached to the Extent Report as well, where:
 * `CLASS NAME` &rarr; the test class' simple name
 * `TEST NAME` &rarr; the test method's name
 
-> 💡 <b>Video Configuration Example</b><br/>
+> 💡 **Video Configuration Example**<br/>
 > Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
 > internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}):
 
@@ -801,7 +866,7 @@ video:
     height: 480
 ```
 
-> ⚠️ <b>Video Frame Rate</b><br/>
+> ⚠️ **Video Frame Rate**<br/>
 > Since the execution video is made up of screenshots, for performance reason it has a fixed rate of 1 frame per second.
 > This allows to avoid encoding the same frame multiple times.<br/>
 > The consequence is that the video recorded does **NOT** replicate the actual timing of the test execution.
@@ -816,9 +881,9 @@ After each execution, Spectrum produces two files:
 * [html report](#html-report)
 
 The WebDriver fires events that are automatically logged and added to the html report.
-Check the `webDriver.events` node in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_
-blank"} to see the defaults log
-levels and messages.
+Check the `webDriver.events` node in the
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
+to see the defaults log levels and messages.
 
 Remember that the log level is set with `-Dspectrum.log.level` and defaults to `INFO`.
 Each event with a configured log level equal or higher than the one specified with `-Dspectrum.log.level` will be logged and added to the html report.
@@ -833,11 +898,11 @@ It's generated using [Logback](https://logback.qos.ch/){:target="_blank"}, and [
 you can find its configuration.
 Logs are rotated daily, meaning the results of each execution occurred in the same day will be appended to the same file.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > By default, logs are generated using a colored pattern. In case the console you use doesn't support it (if you see weird characters at the beginning of each line),
 > you should deactivate colors by running with `-Dspectrum.log.colors=false`.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > You can provide your own log configuration by adding the `src/test/resources/logback-test.xml`.
 > This file will completely override the one provided by Spectrum
 
@@ -848,7 +913,7 @@ By default, it will be produced under the `target/spectrum/reports` folder.
 Check the `extent` node in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} to see
 how to customise it.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > The default file name of the produced html report contains a timestamp, which is useful to always generate a new file.
 > While developing, it could be worth it to override the `extent.fileName` to have a fixed name.
 > This way the report will be overridden, so you can keep it open in a browser and just refresh the page after each execution.
@@ -857,7 +922,7 @@ You can see an example report here:
 
 ![Extent Report](assets/images/extent-screenshot.png)
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > You can provide your own *look and feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
 > Spectrum will automatically load and apply it to the Extent Report.
 
@@ -1026,7 +1091,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > Check the [FilesIT.upload() test]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java){:target="_blank"} to see a real example
 
 ## File Download
@@ -1096,7 +1161,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > Check the [FilesIT.download() test]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java){:target="_blank"} to see a real example
 
 ---
@@ -1109,7 +1174,7 @@ Spectrum embraces this by leveraging dedicated yaml files. This is completely op
 By default, you can create `data*.yaml` files under the `src/test/resources/data` folder.
 Data files will be loaded and merged following the same conventions of `configurations*.yaml` files.
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > When running tests with `-Dspectrum.profiles=test`, Spectrum will merge these files in this order of precedence:
 > 1. data.yaml
 > 2. data-test.yaml
@@ -1158,7 +1223,7 @@ public class Data {
 }
 ```
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own java file.
 
 * Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
@@ -1205,7 +1270,7 @@ data:
 
 The `Data` generic must be specified only in those classes actually using it. There's no need to set it everywhere.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > For the sake of completeness, you can name the `Data` POJO as you prefer.
 > You can name it `MySuperShinyWhatever.java` and have this as generic in you SpectrumTest(s):
 > `public class SomeIT extends SpectrumTest<MySuperShinyWhatever> {`
@@ -1214,7 +1279,7 @@ The `Data` generic must be specified only in those classes actually using it. Th
 > Probably, could be useful to have different Data classes to be used in different tests, so to have different and clearer names.
 > In this scenario, they could be loaded from different `configuration*.yaml`.
 
-> 💡 <b>Example: parameterized tests</b><br/>
+> 💡 **Example: parameterized tests**<br/>
 > Check the [data.yaml]({{ site.repository_url }}/it/src/test/resources/data/data.yaml){:target="_blank"} and how it's used in
 > the [LoginFormIT]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/LoginFormIT.java){:target="_blank"}.
 > Look for the usage of `data.getUsers()` in that class.
@@ -1298,7 +1363,7 @@ Tags are a set of strings used to group events together. For example, all test m
 This way, instead of attaching a consumer to a specific event (with primary and secondary id, for example) you can listen
 to all events tagged in a particular way, such as all the tests.
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > Check the `eventsConsumers` in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 > Internal consumers need to take actions after each test is done, meaning they listen to events tagged with "test":
 
@@ -1349,7 +1414,7 @@ The other columns are the event's keys, with blank values being nulls.
 | Test started (BeforeEach) | \<CLASS NAME> | \<TEST NAME> | \[test]  | before |                                                        |
 | Test ended (AfterEach)    | \<CLASS NAME> | \<TEST NAME> | \[test]  | after  | NOT_RUN \| SUCCESSFUL \| FAILED \| ABORTED \| DISABLED |
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
 > you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like "Dispatching event ...":
 
@@ -1384,7 +1449,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
-> 💡 <b>Example</b><br/>
+> 💡 **Example**<br/>
 > Check the [DemoIT.events()]({{ site.baseurl }}{{ post.url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/DemoIT.java){:target="_blank"} test to see how to fire custom
 > events,
 > and the related [configuration.yaml]({{ site.github.url }}/it/src/test/resources/configuration.yaml){:target="_blank"} to check how `eventsConsumers` are set, leveraging regex
@@ -1409,11 +1474,11 @@ Spectrum will proceed with inspecting the next consumer.
 5. result and just primaryId
 6. result and tags
 
-> ⚠️ <b>Matches applied</b><br/>
+> ⚠️ **Matches applied**<br/>
 > You can specify regexes to match Reason, primaryId, and secondaryId.<br/>
 > To match tags and result you need to provide the exact value.
 
-> ⚠️ <b>Tags matchers condition</b><br/>
+> ⚠️ **Tags matchers condition**<br/>
 > In the conditions above, "tags" means that the set of tags of the fired event and the set of tags of the consumer event must intersect.
 > This means that they don't need to be all matching, it's enough to have at least one match among all the tags. Few examples:
 
@@ -1424,17 +1489,17 @@ Spectrum will proceed with inspecting the next consumer.
 | \[ tag1 ]          | \[ tag1, tag2 ]       | ✅ tag1       |
 | \[ tag1, tag2 ]    | \[ tag666 ]           | ❌            |
 
-> ⚠️ <b>Consumers exceptions</b><br/>
+> ⚠️ **Consumers exceptions**<br/>
 > Each consumer handles events silently, meaning if any exception is thrown during the handling of an event,
 > that will be logged and the execution of the tests will continue without breaking. This is meant to avoid that errors like network issues
 > when sending an email can cause the whole suite to fail.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > You can configure how many consumers you need. Each consumer can listen to many events.
 
 Let's now see how to configure few consumers:
 
-> 💡 <b>Example: reason and primaryId and secondaryId</b><br/>
+> 💡 **Example: reason and primaryId and secondaryId**<br/>
 > We want to send a Slack notification before and after a specific test, and an email just after:
 
 {% include copyCode.html %}
@@ -1456,7 +1521,7 @@ eventsConsumers:
           reason: after
 ```
 
-> 💡 <b>Example: result and tags</b><br/>
+> 💡 **Example: result and tags**<br/>
 > We want to send a mail notification if the whole suite fails:
 
 {% include copyCode.html %}
@@ -1469,7 +1534,7 @@ eventsConsumers:
           tags: [ suite ]
 ```
 
-> 💡 <b>Example: custom event by primaryId and reason</b><br/>
+> 💡 **Example: custom event by primaryId and reason**<br/>
 
 {% include copyCode.html %}
 
@@ -1481,12 +1546,12 @@ eventsConsumers:
           reason: custom-event
 ```
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > Consumers send notification using templates that leverage [FreeMarker](https://freemarker.apache.org/){:target="_blank"}.
 > You can do the same in your custom templates, by accessing and evaluating all the event's fields directly in the template,
 > and apply logic, if needed.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
 > Otherwise, if you set many events on the same consumer, they will share the template.
 
@@ -1517,7 +1582,7 @@ check [Google's docs](https://support.google.com/accounts/answer/185833?p=Invali
 
 Check Simple java Mail's docs to see all the [available properties](https://www.simplejavamail.org/configuration.html#section-available-properties){:target="_blank"}.
 
-> ⚠️ <b>Mail Template</b><br/>
+> ⚠️ **Mail Template**<br/>
 > The default [mail.html template]({{ site.repository_url }}/spectrum/src/main/resources/templates/mail.html){:target="_blank"} is meant to be used to notify about each test
 > result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
@@ -1547,7 +1612,7 @@ mail:
 
 > * simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
 > Otherwise, if you set many events on the same consumer, they will share the template.
 
@@ -1572,7 +1637,7 @@ mail:
       file: target/spectrum/testbook/testbook.html
 ```
 
-> ⚠️ <b>Mail Attachments</b><br/>
+> ⚠️ **Mail Attachments**<br/>
 > Mind that, like in the snippet above, attachments are specified at consumer level.
 > This means for all the events of a specific consumer, all the attachments will be sent.
 > If you need to send different sets of attachments, provide different consumers:
@@ -1656,7 +1721,7 @@ A few steps are needed to configure your Slack Workspace to receive notification
    ```
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
-> ⚠️ <b>Slack Template</b><br/>
+> ⚠️ **Slack Template**<br/>
 > The default [slack.json template]({{ site.repository_url }}/spectrum/src/main/resources/templates/slack.json){:target="_blank"} is meant to be used to notify about each
 > test result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
@@ -1687,7 +1752,7 @@ slack:
 > * simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
 >
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > To test the slack handler works as expected, you can provide a simple `template.txt` with just an "Hello World from Spectrum" in it.
 
 ---
@@ -1712,11 +1777,11 @@ The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org
 meaning you can write complex conditions using the variables briefly explained below. They're all put in the `vars` map in the
 [Summary.java]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/utils/Summary.java){:target="_blank"}.
 
-> ⚠️ <b>FreeMarker</b><br/>
+> ⚠️ **FreeMarker**<br/>
 > Explaining how FreeMarker works, and how to take the most out of it, goes beyond the goal of this doc.
 > Please check its own [docs](https://freemarker.apache.org/){:target="_blank"}.
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > Since the testBook's quality gate status is added to the vars used when evaluating the summary's condition,
 > you can indirectly bind those two by having this:
 
@@ -1740,7 +1805,7 @@ summary:
 
 ## Summary Reporters
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > This section is very similar to the TestBook Reporters one, since they leverage the same objects 😉
 
 All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
@@ -1904,7 +1969,7 @@ The condition is evaluated leveraging [FreeMarker](https://freemarker.apache.org
 meaning you can write complex conditions using the variables briefly explained below. They're all put in the `vars` map in the
 [TestBook.java]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/utils/testbook/TestBook.java){:target="_blank"}.
 
-> ⚠️ <b>FreeMarker</b><br/>
+> ⚠️ **FreeMarker**<br/>
 > Explaining how FreeMarker works, and how to take the most out of it, goes beyond the goal of this doc.
 > Please check its own [docs](https://freemarker.apache.org/){:target="_blank"}.
 
@@ -1959,7 +2024,7 @@ Statistics of all tests, mapped or not in the testbook, based on their weights
 * grandWeightedDisabled
 * grandWeightedNotRun
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > It's hard to explain and grasp each of these vars. The best way is to:
 > 1. check the [default html template]({{ site.repository_url }}/spectrum/src/main/resources/testbook/template.html){:target="_blank"} and
      the [default txt template]({{ site.repository_url }}/spectrum/src/main/resources/testbook/template.txt){:target="_blank"}
@@ -2027,7 +2092,7 @@ another class:
 
 ## TestBook Reporters
 
-> 💡 <b>Tip</b><br/>
+> 💡 **Tip**<br/>
 > This section is very similar to the Summary Reporters one, since they leverage the same objects 😉
 
 All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
@@ -2052,7 +2117,7 @@ This means you can:
   especially their `@DisplayName`
 * look at the produced reports shown below for each reporter
 
-> ⚠️ <b>it-testbook module's reports</b><br/>
+> ⚠️ **it-testbook module's reports**<br/>
 > The default templates have a `Mapped Tests` and `Unmapped Tests` sections at the bottom,
 > in which tests are grouped by their classes.
 >
@@ -2262,7 +2327,7 @@ testBook:
         output: ${testBookReportOutput}/testbook.html # a html report will be produced at this path
 ```
 
-> ⚠️ <b>Enabling testBook</b><br/>
+> ⚠️ **Enabling testBook**<br/>
 > Remember the `enabled: true` flag must be explicitly set, otherwise the testBook won't be considered.
 
 ## Full TestBook Examples
@@ -2338,6 +2403,13 @@ is `${user.home}/.cache/spectrum`
 
 ---
 
+# Banner
+
+If you want to customise the banner logged at the beginning of each execution,
+you just need to place a file named `src/test/resources/banner.txt` in your project.
+
+---
+
 # Project Structure
 
 Let's see how your project will look like. Few assumptions for this example:
@@ -2408,4 +2480,4 @@ proper [discussion category](https://github.com/giulong/spectrum/discussions/new
 |-----------------|---------------------------------------------------------|----------------------------------------------------------------------------------|-------------------------------------------------------------|
 | Giulio Longfils | [giulong](https://github.com/giulong){:target="_blank"} | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/){:target="_blank"} | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
 
-> If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏
+If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏

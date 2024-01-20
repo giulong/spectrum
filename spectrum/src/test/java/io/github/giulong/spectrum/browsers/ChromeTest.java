@@ -53,7 +53,7 @@ class ChromeTest {
         MockedConstruction<ChromeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(ChromeDriverService.Builder.class);
 
         final DriverService.Builder<ChromeDriverService, ChromeDriverService.Builder> driverServiceBuilder = chrome.getDriverServiceBuilder();
-        assertEquals(chromeDriverServiceMockedConstruction.constructed().get(0), driverServiceBuilder);
+        assertEquals(chromeDriverServiceMockedConstruction.constructed().getFirst(), driverServiceBuilder);
 
         chromeDriverServiceMockedConstruction.close();
     }
@@ -75,10 +75,10 @@ class ChromeTest {
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
         chrome.buildCapabilitiesFrom(webDriverConfig);
-        final ChromeOptions chromeOptions = chromeOptionsMockedConstruction.constructed().get(0);
+        final ChromeOptions chromeOptions = chromeOptionsMockedConstruction.constructed().getFirst();
         verify(chromeOptions).addArguments(arguments);
 
-        final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().get(0);
+        final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().getFirst();
         verify(loggingPreferences).enable(BROWSER, browserLevel);
         verify(loggingPreferences).enable(DRIVER, driverLevel);
         verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
