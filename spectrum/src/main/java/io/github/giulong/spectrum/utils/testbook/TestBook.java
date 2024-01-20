@@ -149,7 +149,7 @@ public class TestBook implements SessionHook, Reportable {
         vars.put("grandWeightedNotRun", grandTotalWeightedCount.get(NOT_RUN));
 
         final String qgStatus = "qgStatus";
-        final String interpolatedQgStatus = FreeMarkerWrapper.getInstance().interpolate(qgStatus, qualityGate.getCondition(), vars);
+        final String interpolatedQgStatus = FreeMarkerWrapper.getInstance().interpolate(qualityGate.getCondition(), vars);
         vars.put(qgStatus, interpolatedQgStatus);
         Vars.getInstance().put(qgStatus, interpolatedQgStatus);
 

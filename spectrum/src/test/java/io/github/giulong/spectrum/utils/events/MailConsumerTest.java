@@ -111,7 +111,7 @@ class MailConsumerTest {
         when(fileUtils.readTemplate("mail.html")).thenReturn(template);
 
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
-        when(freeMarkerWrapper.interpolate("mail", template, Map.of("event", event))).thenReturn(interpolatedTemplate);
+        when(freeMarkerWrapper.interpolate(template, Map.of("event", event))).thenReturn(interpolatedTemplate);
 
         when(MailerBuilder.buildMailer()).thenReturn(mailer);
 

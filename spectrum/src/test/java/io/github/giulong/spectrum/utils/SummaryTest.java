@@ -104,7 +104,7 @@ class SummaryTest {
         when(testExecutionSummary.getTestsSkippedCount()).thenReturn(testsSkippedCount);
         when(testExecutionSummary.getTimeStarted()).thenReturn(timeStarted);
         when(testExecutionSummary.getTimeFinished()).thenReturn(timeFinished);
-        when(freeMarkerWrapper.interpolate(eq("summaryCondition"), eq(condition), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedCondition);
+        when(freeMarkerWrapper.interpolate(eq(condition), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedCondition);
         when(MVEL.eval(eq(interpolatedCondition), mvelVarsArgumentCaptor.capture())).thenReturn(true);
 
         summary.sessionClosed();
@@ -142,7 +142,7 @@ class SummaryTest {
         ReflectionUtils.setField("vars", summary, vars);
 
         when(summaryGeneratingListener.getSummary()).thenReturn(testExecutionSummary);
-        when(freeMarkerWrapper.interpolate("summaryCondition", condition, vars)).thenReturn(interpolatedCondition);
+        when(freeMarkerWrapper.interpolate(condition, vars)).thenReturn(interpolatedCondition);
         when(MVEL.eval(interpolatedCondition, vars)).thenReturn(expected);
 
         assertEquals(expected, summary.isExecutionSuccessful());

@@ -84,6 +84,6 @@ public class Summary implements SessionHook, Reportable {
     }
 
     protected String interpolateCondition() {
-        return freeMarkerWrapper.interpolate("summaryCondition", condition, vars);
+        return freeMarkerWrapper.interpolate(condition, vars);
     }
 }

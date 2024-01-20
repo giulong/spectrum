@@ -75,7 +75,6 @@ class FreeMarkerWrapperTest {
     @Test
     @DisplayName("interpolate should create a template from the provided source, interpolating it with the provided vars and returning the interpolated string")
     public void interpolate() throws TemplateException, IOException {
-        final String templateName = "templateName";
         final String source = "source";
         final Map<String, Object> vars = Map.of("one", "value");
 
@@ -84,14 +83,14 @@ class FreeMarkerWrapperTest {
             return withSettings();
         });
         MockedConstruction<Template> templateMockedConstruction = mockConstruction(Template.class, context -> {
-            assertEquals(templateName, context.arguments().get(0));
+            assertEquals("freemarker", context.arguments().get(0));
             assertEquals(stringReaderMockedConstruction.constructed().get(0), context.arguments().get(1));
             assertEquals(configuration, context.arguments().get(2));
             return withSettings();
         });
         MockedConstruction<StringWriter> stringWriterMockedConstruction = mockConstruction(StringWriter.class, context -> withSettings());
 
-        final String actual = freeMarkerWrapper.interpolate(templateName, source, vars);
+        final String actual = freeMarkerWrapper.interpolate(source, vars);
 
         final Template template = templateMockedConstruction.constructed().get(0);
         final Writer writer = stringWriterMockedConstruction.constructed().get(0);

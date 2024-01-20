@@ -293,7 +293,7 @@ class TestBookUnitTest {
         String condition = "condition";
         when(qualityGate.getCondition()).thenReturn(condition);
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
-        when(freeMarkerWrapper.interpolate("qgStatus", condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
+        when(freeMarkerWrapper.interpolate(condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
 
         ReflectionUtils.setField("enabled", testBook, true);
         testBook.sessionClosed();
