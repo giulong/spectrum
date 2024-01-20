@@ -331,7 +331,6 @@
                                 <banDynamicVersions/>
                                 <reactorModuleConvergence/>
                                 <requireReleaseDeps/>
-                                <requireSameVersions/>
                             </rules>
                         </configuration>
                     </execution>
