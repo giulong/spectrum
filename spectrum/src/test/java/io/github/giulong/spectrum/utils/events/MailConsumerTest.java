@@ -89,20 +89,20 @@ class MailConsumerTest {
 
         MockedConstruction<FileDataSource> fileDataSourceMockedConstruction = mockConstruction(FileDataSource.class, (mock, context) -> {
             if (context.getCount() == 1) {
-                assertEquals(file1, context.arguments().get(0));
+                assertEquals(file1, context.arguments().getFirst());
             }
             if (context.getCount() == 2) {
-                assertEquals(file2, context.arguments().get(0));
+                assertEquals(file2, context.arguments().getFirst());
             }
         });
 
         MockedConstruction<AttachmentResource> attachmentResourceMockedConstruction = mockConstruction(AttachmentResource.class, (mock, context) -> {
             if (context.getCount() == 1) {
-                assertEquals(name1, context.arguments().get(0));
-                assertEquals(fileDataSourceMockedConstruction.constructed().get(0), context.arguments().get(1));
+                assertEquals(name1, context.arguments().getFirst());
+                assertEquals(fileDataSourceMockedConstruction.constructed().getFirst(), context.arguments().get(1));
             }
             if (context.getCount() == 2) {
-                assertEquals(name2, context.arguments().get(0));
+                assertEquals(name2, context.arguments().getFirst());
                 assertEquals(fileDataSourceMockedConstruction.constructed().get(1), context.arguments().get(1));
             }
         });
@@ -130,10 +130,10 @@ class MailConsumerTest {
         mailConsumer.attachments = List.of(attachment1, attachment2);
         mailConsumer.consumes(event);
 
-        final AttachmentResource attachmentResource1 = attachmentResourceMockedConstruction.constructed().get(0);
+        final AttachmentResource attachmentResource1 = attachmentResourceMockedConstruction.constructed().getFirst();
         final AttachmentResource attachmentResource2 = attachmentResourceMockedConstruction.constructed().get(1);
 
-        assertEquals(attachmentResource1, listArgumentCaptor.getValue().get(0));
+        assertEquals(attachmentResource1, listArgumentCaptor.getValue().getFirst());
         assertEquals(attachmentResource2, listArgumentCaptor.getValue().get(1));
         verify(mailer).sendMail(email);
 

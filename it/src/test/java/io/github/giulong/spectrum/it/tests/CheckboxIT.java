@@ -26,7 +26,7 @@ public class CheckboxIT extends SpectrumTest<Void> {
 
         landingPage.getCheckboxLink().click();
 
-        final WebElement firstCheckbox = checkboxPage.getCheckboxes().get(0);
+        final WebElement firstCheckbox = checkboxPage.getCheckboxes().getFirst();
         final WebElement secondCheckbox = checkboxPage.getCheckboxes().get(1);
 
         assertFalse(firstCheckbox.isSelected());

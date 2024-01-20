@@ -45,7 +45,7 @@ class SimpleTestBookParserTest {
         assertEquals(List.of(test1, test2, test3), actual);
 
         // weights are not considered in equals. We need to check them one by one
-        assertEquals(1, actual.get(0).getWeight());
+        assertEquals(1, actual.getFirst().getWeight());
         assertEquals(1, actual.get(1).getWeight());
         assertEquals(3, actual.get(2).getWeight());
     }

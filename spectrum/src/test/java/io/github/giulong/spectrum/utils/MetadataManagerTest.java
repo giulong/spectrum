@@ -217,7 +217,7 @@ class MetadataManagerTest {
         when(successful.getReports()).thenReturn(reports);
 
         final FixedSizeQueue<File> actual = metadataManager.getSuccessfulQueueOf(extentReporter);
-        assertEquals(fixedSizeQueueMockedConstruction.constructed().get(0), actual);
+        assertEquals(fixedSizeQueueMockedConstruction.constructed().getFirst(), actual);
 
         fixedSizeQueueMockedConstruction.close();
     }

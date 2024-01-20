@@ -51,7 +51,7 @@ class ChromiumTest {
 
         chrome.capabilities = chromeOptions;
         chrome.setLoggingPreferencesFrom(logs);
-        verify(chromeOptions).setCapability(LOGGING_PREFS, mockedConstruction.constructed().get(0));
+        verify(chromeOptions).setCapability(LOGGING_PREFS, mockedConstruction.constructed().getFirst());
 
         mockedConstruction.close();
     }

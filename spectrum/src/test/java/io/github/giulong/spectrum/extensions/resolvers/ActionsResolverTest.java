@@ -43,7 +43,7 @@ class ActionsResolverTest {
 
         MockedConstruction<Actions> mockedConstruction = mockConstruction(Actions.class);
         Actions actual = actionsResolver.resolveParameter(parameterContext, extensionContext);
-        Actions actions = mockedConstruction.constructed().get(0);
+        Actions actions = mockedConstruction.constructed().getFirst();
         verify(store).put(ActionsResolver.ACTIONS, actions);
         assertEquals(actions, actual);
 
