@@ -154,9 +154,9 @@ class SpectrumSessionListenerTest {
 
         verify(launcher).registerTestExecutionListeners(summaryGeneratingListener);
         verify(configuration).sessionOpened();
-        verify(extentReporter).sessionOpenedFrom(configuration);
-        verify(freeMarkerWrapper).sessionOpenedFrom(configuration);
-        verify(eventsDispatcher).sessionOpenedFrom(configuration);
+        verify(extentReporter).sessionOpened();
+        verify(freeMarkerWrapper).sessionOpened();
+        verify(eventsDispatcher).sessionOpened();
     }
 
     @Test
@@ -165,9 +165,9 @@ class SpectrumSessionListenerTest {
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
         verify(configuration).sessionClosed();
-        verify(extentReporter).sessionClosedFrom(configuration);
+        verify(extentReporter).sessionClosed();
         verify(eventsDispatcher).sessionClosed();
-        verify(metadataManager).sessionClosedFrom(configuration);
+        verify(metadataManager).sessionClosed();
     }
 
     @DisplayName("buildVersionLine should build the fixed-length line with the version to put in the logged banner")

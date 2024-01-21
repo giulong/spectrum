@@ -51,10 +51,10 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     @Override
-    public void sessionOpenedFrom(final Configuration configurationPojo) {
+    public void sessionOpened() {
         log.debug("Session opened hook");
 
-        final Configuration.Extent extent = configurationPojo.getExtent();
+        final Configuration.Extent extent = configuration.getExtent();
         final String reportPath = getReportPathFrom(extent).toString().replace("\\", "/");
         final String reportName = extent.getReportName();
         final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
@@ -72,10 +72,10 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     @Override
-    public void sessionClosedFrom(final Configuration configurationPojo) {
+    public void sessionClosed() {
         log.debug("Session closed hook");
         extentReports.flush();
-        cleanupOldReports(configurationPojo.getExtent());
+        cleanupOldReports(configuration.getExtent());
     }
 
     @Override

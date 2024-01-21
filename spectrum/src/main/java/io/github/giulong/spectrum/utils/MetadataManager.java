@@ -26,6 +26,7 @@ public class MetadataManager implements SessionHook {
     private final JsonUtils jsonUtils = JsonUtils.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
+    private final Configuration configuration = Configuration.getInstance();
 
     private Metadata metadata;
 
@@ -34,7 +35,7 @@ public class MetadataManager implements SessionHook {
     }
 
     @Override
-    public void sessionOpenedFrom(final Configuration configuration) {
+    public void sessionOpened() {
         log.debug("Session opened hook");
 
         final Path path = Path.of(configuration.getRuntime().getCacheFolder()).resolve(FILE_NAME);
@@ -42,7 +43,7 @@ public class MetadataManager implements SessionHook {
     }
 
     @Override
-    public void sessionClosedFrom(final Configuration configuration) {
+    public void sessionClosed() {
         log.debug("Session closed hook");
         final Summary summary = configuration.getSummary();
 

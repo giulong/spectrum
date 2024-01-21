@@ -101,6 +101,7 @@ class MetadataManagerTest {
         ReflectionUtils.setField("jsonUtils", metadataManager, jsonUtils);
         ReflectionUtils.setField("fileUtils", metadataManager, fileUtils);
         ReflectionUtils.setField("extentReporter", metadataManager, extentReporter);
+        ReflectionUtils.setField("configuration", metadataManager, configuration);
     }
 
     @AfterEach
@@ -117,8 +118,8 @@ class MetadataManagerTest {
     }
 
     @Test
-    @DisplayName("sessionOpenedFrom should parse the existing metadata file cached")
-    public void sessionOpenedFrom() {
+    @DisplayName("sessionOpened should parse the existing metadata file cached")
+    public void sessionOpened() {
         final String cacheFolder = "cacheFolder";
 
         when(configuration.getRuntime()).thenReturn(runtime);
@@ -129,14 +130,14 @@ class MetadataManagerTest {
         when(jsonUtils.readOrEmpty(file, MetadataManager.Metadata.class)).thenReturn(parsedMetadata);
 
         assertEquals(metadata, ReflectionUtils.getFieldValue("metadata", metadataManager));
-        metadataManager.sessionOpenedFrom(configuration);
+        metadataManager.sessionOpened();
 
         assertEquals(parsedMetadata, ReflectionUtils.getFieldValue("metadata", metadataManager));
     }
 
     @Test
-    @DisplayName("sessionClosedFrom should write the metadata.json in the configured cache folder")
-    public void sessionClosedFrom() {
+    @DisplayName("sessionClosed should write the metadata.json in the configured cache folder")
+    public void sessionClosed() {
         final String cacheFolder = "cacheFolder";
         final String content = "content";
 
@@ -149,13 +150,13 @@ class MetadataManagerTest {
         when(path.resolve(FILE_NAME)).thenReturn(filePath);
         when(jsonUtils.write(metadata)).thenReturn(content);
 
-        metadataManager.sessionClosedFrom(configuration);
+        metadataManager.sessionClosed();
 
         verify(fileUtils).write(filePath, content);
     }
 
     @Test
-    @DisplayName("sessionClosedFrom should write the metadata.json updating the successful reports when the execution is successful")
+    @DisplayName("sessionClosed should write the metadata.json updating the successful reports when the execution is successful")
     public void sessionClosedFromSuccessful() {
         final String cacheFolder = "cacheFolder";
         final String content = "content";
@@ -174,7 +175,7 @@ class MetadataManagerTest {
         when(path.resolve(FILE_NAME)).thenReturn(filePath);
         when(jsonUtils.write(metadata)).thenReturn(content);
 
-        metadataManager.sessionClosedFrom(configuration);
+        metadataManager.sessionClosed();
 
         verify(extentReporter).produceMetadata();
         verifyNoMoreInteractions(testBookReporter1);

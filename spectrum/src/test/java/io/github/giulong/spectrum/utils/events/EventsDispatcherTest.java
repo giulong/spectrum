@@ -20,7 +20,6 @@ import java.util.Set;
 
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
@@ -54,7 +53,7 @@ class EventsDispatcherTest {
     @BeforeEach
     public void beforeEach() {
         eventMockedStatic = mockStatic(Event.class);
-        ReflectionUtils.setField("consumers", eventsDispatcher, List.of(consumer1, consumer2));
+        ReflectionUtils.setField("configuration", eventsDispatcher, configuration);
     }
 
     @AfterEach
@@ -70,12 +69,9 @@ class EventsDispatcherTest {
     }
 
     @Test
-    @DisplayName("sessionOpenedFrom should set the consumers and fire the before suite event")
-    public void sessionOpenedFrom() {
-        final List<EventsConsumer> expectedConsumers = List.of(consumer2);
+    @DisplayName("sessionOpened should fire the before suite event")
+    public void sessionOpened() {
         final Set<String> tags = Set.of(SUITE);
-
-        when(configuration.getEventsConsumers()).thenReturn(expectedConsumers);
 
         when(Event.builder()).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
@@ -86,11 +82,7 @@ class EventsDispatcherTest {
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
-        eventsDispatcher.sessionOpenedFrom(configuration);
-
-        //noinspection unchecked
-        final List<EventsConsumer> actualConsumers = (List<EventsConsumer>) ReflectionUtils.getFieldValue("consumers", eventsDispatcher);
-        assertEquals(expectedConsumers, actualConsumers);
+        eventsDispatcher.sessionOpened();
     }
 
     @Test
@@ -116,6 +108,8 @@ class EventsDispatcherTest {
         final String reason = AFTER;
         final Set<String> tags = Set.of();
 
+        when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
+
         when(Event.builder()).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
@@ -136,6 +130,8 @@ class EventsDispatcherTest {
     public void firePrimaryIdAndReason() {
         final String reason = AFTER;
         final String primaryId = "primaryId";
+
+        when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
 
         when(Event.builder()).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(primaryId)).thenReturn(eventBuilder);
@@ -158,6 +154,8 @@ class EventsDispatcherTest {
         final String reason = AFTER;
         final String primaryId = "primaryId";
         final String secondaryId = "secondaryId";
+
+        when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
 
         when(Event.builder()).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(primaryId)).thenReturn(eventBuilder);
@@ -182,6 +180,8 @@ class EventsDispatcherTest {
         final String reason = AFTER;
         final Result result = SUCCESSFUL;
         final Set<String> tags = Set.of();
+
+        when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
 
         when(Event.builder()).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(className)).thenReturn(eventBuilder);

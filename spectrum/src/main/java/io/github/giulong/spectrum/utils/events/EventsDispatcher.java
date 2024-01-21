@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.util.List;
 import java.util.Set;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -25,17 +24,16 @@ public class EventsDispatcher implements SessionHook {
     public static final String CLASS = "class";
     public static final String SUITE = "suite";
 
-    private List<EventsConsumer> consumers;
+    private final Configuration configuration = Configuration.getInstance();
 
     public static EventsDispatcher getInstance() {
         return INSTANCE;
     }
 
     @Override
-    public void sessionOpenedFrom(final Configuration configuration) {
+    public void sessionOpened() {
         log.debug("Session opened hook");
 
-        consumers = configuration.getEventsConsumers();
         fire(BEFORE, Set.of(SUITE));
     }
 
@@ -68,6 +66,6 @@ public class EventsDispatcher implements SessionHook {
                 .build();
 
         log.debug("Dispatching event {}", event);
-        consumers.forEach(consumer -> consumer.match(event));
+        configuration.getEventsConsumers().forEach(consumer -> consumer.match(event));
     }
 }
