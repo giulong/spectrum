@@ -13,6 +13,7 @@ public class ExtentTestConsumer extends EventsConsumer {
 
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
 
+    @Override
     public void consumes(final Event event) {
         final Status status = event.getResult().getStatus();
 

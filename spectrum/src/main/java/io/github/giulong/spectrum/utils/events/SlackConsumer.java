@@ -29,6 +29,7 @@ public class SlackConsumer extends EventsConsumer {
     @JsonPropertyDescription("Bot User OAuth Token")
     protected String token;
 
+    @Override
     public void consumes(final Event event) throws SlackApiException, IOException {
         final Map<String, Object> vars = Map.of("event", event);
         final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate(FILE_UTILS.readTemplate(template), vars);
