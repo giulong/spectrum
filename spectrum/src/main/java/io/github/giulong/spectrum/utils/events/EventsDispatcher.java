@@ -33,7 +33,6 @@ public class EventsDispatcher implements SessionHook {
     @Override
     public void sessionOpened() {
         log.debug("Session opened hook");
-
         fire(BEFORE, Set.of(SUITE));
     }
 
