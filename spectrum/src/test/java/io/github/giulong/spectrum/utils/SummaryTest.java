@@ -109,8 +109,6 @@ class SummaryTest {
         ReflectionUtils.setField("condition", summary, condition);
         assertTrue(summary.getVars().isEmpty());
 
-        //ReflectionUtils.setField("vars", summary, vars);
-
         when(summaryGeneratingListener.getSummary()).thenReturn(testExecutionSummary);
         when(testExecutionSummary.getTestsFoundCount()).thenReturn(testsFoundCount);
         when(testExecutionSummary.getTestsSucceededCount()).thenReturn(testsSucceededCount);

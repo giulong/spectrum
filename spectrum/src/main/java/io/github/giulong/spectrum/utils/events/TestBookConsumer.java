@@ -13,6 +13,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @JsonView(Internal.class)
 public class TestBookConsumer extends EventsConsumer {
 
+    @Override
     public void consumes(final Event event) {
         final ExtensionContext context = event.getContext();
         final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getTestBook();

@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.7.0</revision>
+        <revision>1.7.1</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
@@ -47,7 +47,7 @@
 
         <junit.version>5.10.1</junit.version>
         <jackson.version>2.16.1</jackson.version>
-        <simplejavamail.version>8.5.1</simplejavamail.version>
+        <simplejavamail.version>8.6.1</simplejavamail.version>
         <jsonschemagenerator.version>4.33.1</jsonschemagenerator.version>
         <slf4j.version>2.0.11</slf4j.version>
         <selenium.version>4.16.1</selenium.version>
@@ -329,9 +329,7 @@
                                 </requireJavaVersion>
                                 <banDuplicatePomDependencyVersions/>
                                 <banDynamicVersions/>
-                                <reactorModuleConvergence/>
                                 <requireReleaseDeps/>
-                                <requireSameVersions/>
                             </rules>
                         </configuration>
                     </execution>

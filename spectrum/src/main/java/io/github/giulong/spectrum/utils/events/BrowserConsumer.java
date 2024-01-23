@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @JsonView(Internal.class)
 public class BrowserConsumer extends EventsConsumer {
 
+    @Override
     public void consumes(final Event event) {
         final Configuration.Runtime runtime = event
                 .getContext()

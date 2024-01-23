@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 @JsonView(Internal.class)
 public class VideoConsumer extends EventsConsumer {
 
+    @Override
     public void consumes(final Event event) {
         final ExtensionContext.Store store = event.getContext().getStore(GLOBAL);
         if (store.get(CONFIGURATION, Configuration.class).getVideo().isDisabled()) {

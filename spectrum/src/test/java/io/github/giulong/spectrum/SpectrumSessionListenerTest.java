@@ -5,6 +5,7 @@ import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.Summary;
+import io.github.giulong.spectrum.utils.testbook.TestBook;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -71,6 +72,9 @@ class SpectrumSessionListenerTest {
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
+
+    @Mock
+    private TestBook testBook;
 
     @Mock
     private Summary summary;
@@ -140,6 +144,7 @@ class SpectrumSessionListenerTest {
         when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
 
         when(launcherSession.getLauncher()).thenReturn(launcher);
+        when(configuration.getTestBook()).thenReturn(testBook);
         when(configuration.getSummary()).thenReturn(summary);
         when(summary.getSummaryGeneratingListener()).thenReturn(summaryGeneratingListener);
 
@@ -153,21 +158,26 @@ class SpectrumSessionListenerTest {
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
 
         verify(launcher).registerTestExecutionListeners(summaryGeneratingListener);
-        verify(configuration).sessionOpened();
-        verify(extentReporter).sessionOpenedFrom(configuration);
-        verify(freeMarkerWrapper).sessionOpenedFrom(configuration);
-        verify(eventsDispatcher).sessionOpenedFrom(configuration);
+        verify(testBook).sessionOpened();
+        verify(summary).sessionOpened();
+        verify(extentReporter).sessionOpened();
+        verify(freeMarkerWrapper).sessionOpened();
+        verify(eventsDispatcher).sessionOpened();
     }
 
     @Test
     @DisplayName("launcherSessionClosed should flush the testbook and the extent report")
     public void launcherSessionClosed() {
+        when(configuration.getTestBook()).thenReturn(testBook);
+        when(configuration.getSummary()).thenReturn(summary);
+
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
-        verify(configuration).sessionClosed();
-        verify(extentReporter).sessionClosedFrom(configuration);
+        verify(testBook).sessionClosed();
+        verify(summary).sessionClosed();
+        verify(extentReporter).sessionClosed();
         verify(eventsDispatcher).sessionClosed();
-        verify(metadataManager).sessionClosedFrom(configuration);
+        verify(metadataManager).sessionClosed();
     }
 
     @DisplayName("buildVersionLine should build the fixed-length line with the version to put in the logged banner")

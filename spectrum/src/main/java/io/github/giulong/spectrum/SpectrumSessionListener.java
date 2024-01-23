@@ -39,19 +39,21 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
 
-        configuration.sessionOpened();
-        metadataManager.sessionOpenedFrom(configuration);
-        extentReporter.sessionOpenedFrom(configuration);
-        freeMarkerWrapper.sessionOpenedFrom(configuration);
-        eventsDispatcher.sessionOpenedFrom(configuration);
+        configuration.getTestBook().sessionOpened();
+        configuration.getSummary().sessionOpened();
+        metadataManager.sessionOpened();
+        extentReporter.sessionOpened();
+        freeMarkerWrapper.sessionOpened();
+        eventsDispatcher.sessionOpened();
     }
 
     @Override
     public void launcherSessionClosed(final LauncherSession session) {
-        configuration.sessionClosed();
-        extentReporter.sessionClosedFrom(configuration);
+        configuration.getTestBook().sessionClosed();
+        configuration.getSummary().sessionClosed();
+        extentReporter.sessionClosed();
         eventsDispatcher.sessionClosed();
-        metadataManager.sessionClosedFrom(configuration);
+        metadataManager.sessionClosed();
     }
 
     protected String buildVersionLine() {

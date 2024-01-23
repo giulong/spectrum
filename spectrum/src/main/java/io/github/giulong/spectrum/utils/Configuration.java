@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -29,7 +28,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
-public class Configuration implements SessionHook {
+public class Configuration {
 
     private static final Configuration INSTANCE = new Configuration();
 
@@ -69,20 +68,6 @@ public class Configuration implements SessionHook {
 
     public static Configuration getInstance() {
         return INSTANCE;
-    }
-
-    @Override
-    public void sessionOpened() {
-        log.debug("Session opened hook");
-        testBook.sessionOpened();
-        summary.sessionOpened();
-    }
-
-    @Override
-    public void sessionClosed() {
-        log.debug("Session closed hook");
-        testBook.sessionClosed();
-        summary.sessionClosed();
     }
 
     @Getter

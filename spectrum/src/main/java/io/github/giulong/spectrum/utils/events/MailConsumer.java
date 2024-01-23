@@ -33,6 +33,7 @@ public class MailConsumer extends EventsConsumer {
     @JsonPropertyDescription("List of attachments to add to the email")
     protected List<Attachment> attachments;
 
+    @Override
     public void consumes(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
         final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate(FILE_UTILS.readTemplate(template), vars);
