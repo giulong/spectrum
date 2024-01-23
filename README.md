@@ -1,6 +1,7 @@
 <div align="center">
 
 [![Build](https://github.com/giulong/spectrum/actions/workflows/build.yml/badge.svg?branch=develop)](https://github.com/giulong/spectrum/actions?query=branch%3Adevelop)
+[![javadoc](https://javadoc.io/badge2/io.github.giulong/spectrum/javadoc.svg)](https://javadoc.io/doc/io.github.giulong/spectrum)
 [![coverage](https://giulong.github.io/spectrum/badges/jacoco.svg)](https://giulong.github.io/spectrum/jacoco/)
 [![badge-jdk](https://img.shields.io/badge/jdk-21-blue.svg)](https://jdk.java.net/21/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -14,7 +15,7 @@
 <div>
 <a href="https://giulong.github.io/spectrum/">Full Docs</a>
 ·
-<a href="https://giulong.github.io/spectrum/apidocs/">Javadoc</a>
+<a href="https://javadoc.io/doc/io.github.giulong/spectrum/latest/index.html">Javadoc</a>
 ·
 <a href="https://giulong.github.io/spectrum/jacoco/">Coverage</a>
 ·

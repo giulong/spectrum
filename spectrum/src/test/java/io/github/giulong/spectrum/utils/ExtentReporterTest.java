@@ -202,8 +202,8 @@ class ExtentReporterTest {
     }
 
     @Test
-    @DisplayName("sessionOpenedFrom should init the extent report")
-    public void sessionOpenedFrom() {
+    @DisplayName("sessionOpened should init the extent report")
+    public void sessionOpened() {
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
         final String reportName = "reportName";
@@ -234,7 +234,7 @@ class ExtentReporterTest {
             when(mock.config()).thenReturn(extentSparkReporterConfig);
         });
 
-        extentReporter.sessionOpenedFrom(configuration);
+        extentReporter.sessionOpened();
 
         verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
         verify(extentSparkReporterConfig).setReportName(reportName);
@@ -250,12 +250,12 @@ class ExtentReporterTest {
     }
 
     @Test
-    @DisplayName("sessionClosedFrom should flush the extent report and cleanup old ones")
-    public void sessionClosedFrom() {
+    @DisplayName("sessionClosed should flush the extent report and cleanup old ones")
+    public void sessionClosed() {
         cleanupOldReportsStubs();
         when(configuration.getExtent()).thenReturn(extent);
 
-        extentReporter.sessionClosedFrom(configuration);
+        extentReporter.sessionClosed();
 
         verify(extentReports).flush();
 

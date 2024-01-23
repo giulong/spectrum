@@ -24,6 +24,8 @@ public final class FreeMarkerWrapper implements SessionHook {
 
     private static final FreeMarkerWrapper INSTANCE = new FreeMarkerWrapper();
 
+    private final io.github.giulong.spectrum.utils.Configuration spectrumConfiguration = io.github.giulong.spectrum.utils.Configuration.getInstance();
+
     private Configuration configuration;
 
     public static FreeMarkerWrapper getInstance() {
@@ -31,7 +33,7 @@ public final class FreeMarkerWrapper implements SessionHook {
     }
 
     @Override
-    public void sessionOpenedFrom(final io.github.giulong.spectrum.utils.Configuration spectrumConfiguration) {
+    public void sessionOpened() {
         log.debug("Session opened hook");
 
         final FreeMarker freeMarker = spectrumConfiguration.getFreeMarker();

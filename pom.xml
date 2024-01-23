@@ -329,9 +329,7 @@
                                 </requireJavaVersion>
                                 <banDuplicatePomDependencyVersions/>
                                 <banDynamicVersions/>
-                                <reactorModuleConvergence/>
                                 <requireReleaseDeps/>
-                                <requireSameVersions/>
                             </rules>
                         </configuration>
                     </execution>

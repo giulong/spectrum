@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.utils;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -38,6 +39,11 @@ class FreeMarkerWrapperTest {
     @InjectMocks
     private FreeMarkerWrapper freeMarkerWrapper;
 
+    @BeforeEach
+    public void beforeEach() {
+        ReflectionUtils.setField("spectrumConfiguration", freeMarkerWrapper, spectrumConfiguration);
+    }
+
     @Test
     @DisplayName("getInstance should return the singleton")
     public void getInstance() {
@@ -46,8 +52,8 @@ class FreeMarkerWrapperTest {
     }
 
     @Test
-    @DisplayName("sessionOpenedFrom should setup the configuration from the freemarker node in the configuration.yaml")
-    public void sessionOpenedFrom() {
+    @DisplayName("sessionOpened should setup the configuration from the freemarker node in the configuration.yaml")
+    public void sessionOpened() {
         final String version = "version";
         final String numberFormat = "numberFormat";
 
@@ -65,7 +71,7 @@ class FreeMarkerWrapperTest {
             return withSettings();
         });
 
-        freeMarkerWrapper.sessionOpenedFrom(spectrumConfiguration);
+        freeMarkerWrapper.sessionOpened();
         assertEquals(freeMarkerWrapper.getConfiguration(), configurationMockedConstruction.constructed().getFirst());
 
         versionMockedConstruction.close();
