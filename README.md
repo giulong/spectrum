@@ -73,7 +73,7 @@ Here's a quick overview of the project created by the archetype, along with the 
 
 And here's the generated video:
 
-https://github.com/giulong/spectrum/assets/27963644/187e237c-7db1-494b-8a3b-5839565ae0b0
+https://github.com/giulong/spectrum/assets/27963644/df6b801e-91ca-415b-b510-a45b7392de20
 
 Additionally, you can configure Spectrum to automatically produce a html summary and coverage report like these:
 
