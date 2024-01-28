@@ -53,6 +53,7 @@ class ScreenshotQueueResolverTest {
 
     @Test
     @DisplayName("resolveParameter should return an instance of BlockingQueue<File>")
+    @SuppressWarnings("unchecked")
     public void resolveParameter() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
@@ -66,7 +67,6 @@ class ScreenshotQueueResolverTest {
 
         final BlockingQueue<File> actual = screenshotQueueResolver.resolveParameter(parameterContext, extensionContext);
 
-        //noinspection unchecked
         final BlockingQueue<File> blockingQueue = (BlockingQueue<File>) blockingQueueMockedConstruction.constructed().getFirst();
         assertEquals(blockingQueue, actual);
         verify(store).put(SCREENSHOT_QUEUE, actual);

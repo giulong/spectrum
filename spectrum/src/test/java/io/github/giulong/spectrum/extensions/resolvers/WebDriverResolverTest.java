@@ -113,6 +113,7 @@ class WebDriverResolverTest {
 
     @Test
     @DisplayName("resolveParameter should return the instance of the webdriver decorated with the default event listener")
+    @SuppressWarnings("unchecked")
     public void resolveParameter() {
         final String locatorRegex = "locatorRegex";
 
@@ -146,7 +147,6 @@ class WebDriverResolverTest {
         MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, context) -> {
             assertEquals(eventsListener, ((WebDriverListener[]) context.arguments().getFirst())[0]);
 
-            //noinspection unchecked
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         });
         WebDriver actual = webDriverResolver.resolveParameter(parameterContext, extensionContext);

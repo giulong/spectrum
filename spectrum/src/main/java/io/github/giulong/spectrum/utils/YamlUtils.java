@@ -64,6 +64,7 @@ public final class YamlUtils {
             .registerModules(new JavaTimeModule())
             .writerWithDefaultPrettyPrinter();
 
+    @SuppressWarnings("unchecked")
     private YamlUtils() {
         readInternal("yaml/dynamicDeserializersConfiguration.yaml", DynamicDeserializersConfiguration.class)
                 .getDynamicDeserializers()
@@ -72,7 +73,6 @@ public final class YamlUtils {
                 .peek(deserializer -> log.trace("Registering dynamic deserializer module {}", deserializer.getClazz().getSimpleName()))
                 .forEach(deserializer -> {
                     final Class<?> clazz = deserializer.getClazz();
-                    //noinspection unchecked
                     yamlMapper.registerModule(new SimpleModule(clazz.getSimpleName()).addDeserializer(clazz, deserializer));
                 });
     }
@@ -81,9 +81,8 @@ public final class YamlUtils {
         return INSTANCE;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public SimpleModule buildModuleFor(final Class<?> clazz, final JsonDeserializer jsonDeserializer) {
-        //noinspection unchecked
         return new SimpleModule(jsonDeserializer.getClass().getSimpleName()).addDeserializer(clazz, jsonDeserializer);
     }
 
