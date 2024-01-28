@@ -62,7 +62,7 @@ class RetentionTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("metadataManager", retention, metadataManager);
+        Reflections.setField("metadataManager", retention, metadataManager);
     }
 
     @Test
@@ -77,7 +77,7 @@ class RetentionTest {
         final int total = 1;
         final List<File> files = List.of(file1, file2, file3);
 
-        ReflectionUtils.setField("total", retention, total);
+        Reflections.setField("total", retention, total);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
 
         assertEquals(2, retention.deleteOldArtifactsFrom(files, metadataProducer));
@@ -92,7 +92,7 @@ class RetentionTest {
         final int total = 5;
         final List<File> files = List.of(file1, file2, file3);
 
-        ReflectionUtils.setField("total", retention, total);
+        Reflections.setField("total", retention, total);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
 
         assertEquals(0, retention.deleteOldArtifactsFrom(files, metadataProducer));
@@ -108,8 +108,8 @@ class RetentionTest {
         final int successful = 1;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
 
-        ReflectionUtils.setField("total", retention, total);
-        ReflectionUtils.setField("successful", retention, successful);
+        Reflections.setField("total", retention, total);
+        Reflections.setField("successful", retention, successful);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
         when(file1.getAbsoluteFile()).thenReturn(absoluteFile1);
         when(successfulQueue.contains(absoluteFile1)).thenReturn(true);
@@ -129,8 +129,8 @@ class RetentionTest {
         final int successful = 1;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
 
-        ReflectionUtils.setField("total", retention, total);
-        ReflectionUtils.setField("successful", retention, successful);
+        Reflections.setField("total", retention, total);
+        Reflections.setField("successful", retention, successful);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
         when(file1.getAbsoluteFile()).thenReturn(absoluteFile1);
         when(successfulQueue.contains(absoluteFile1)).thenReturn(true);
@@ -150,8 +150,8 @@ class RetentionTest {
         final int successful = 2;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
 
-        ReflectionUtils.setField("total", retention, total);
-        ReflectionUtils.setField("successful", retention, successful);
+        Reflections.setField("total", retention, total);
+        Reflections.setField("successful", retention, successful);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
         when(file1.getAbsoluteFile()).thenReturn(absoluteFile1);
         when(file5.getAbsoluteFile()).thenReturn(absoluteFile5);
@@ -172,8 +172,8 @@ class RetentionTest {
         final int successful = 2;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
 
-        ReflectionUtils.setField("total", retention, total);
-        ReflectionUtils.setField("successful", retention, successful);
+        Reflections.setField("total", retention, total);
+        Reflections.setField("successful", retention, successful);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
         when(file1.getAbsoluteFile()).thenReturn(absoluteFile1);
         when(file2.getAbsoluteFile()).thenReturn(absoluteFile2);
@@ -197,8 +197,8 @@ class RetentionTest {
         final int successful = 2;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
 
-        ReflectionUtils.setField("total", retention, total);
-        ReflectionUtils.setField("successful", retention, successful);
+        Reflections.setField("total", retention, total);
+        Reflections.setField("successful", retention, successful);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
         when(file1.getAbsoluteFile()).thenReturn(absoluteFile1);
         when(file2.getAbsoluteFile()).thenReturn(absoluteFile2);
@@ -220,8 +220,8 @@ class RetentionTest {
         final int successful = 2;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
 
-        ReflectionUtils.setField("total", retention, total);
-        ReflectionUtils.setField("successful", retention, successful);
+        Reflections.setField("total", retention, total);
+        Reflections.setField("successful", retention, successful);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
         when(file1.getAbsoluteFile()).thenReturn(absoluteFile1);
         when(file2.getAbsoluteFile()).thenReturn(absoluteFile2);

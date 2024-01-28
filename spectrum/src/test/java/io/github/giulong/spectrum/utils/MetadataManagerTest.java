@@ -98,10 +98,10 @@ class MetadataManagerTest {
     public void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
 
-        ReflectionUtils.setField("jsonUtils", metadataManager, jsonUtils);
-        ReflectionUtils.setField("fileUtils", metadataManager, fileUtils);
-        ReflectionUtils.setField("extentReporter", metadataManager, extentReporter);
-        ReflectionUtils.setField("configuration", metadataManager, configuration);
+        Reflections.setField("jsonUtils", metadataManager, jsonUtils);
+        Reflections.setField("fileUtils", metadataManager, fileUtils);
+        Reflections.setField("extentReporter", metadataManager, extentReporter);
+        Reflections.setField("configuration", metadataManager, configuration);
     }
 
     @AfterEach
@@ -129,10 +129,10 @@ class MetadataManagerTest {
         when(filePath.toFile()).thenReturn(file);
         when(jsonUtils.readOrEmpty(file, MetadataManager.Metadata.class)).thenReturn(parsedMetadata);
 
-        assertEquals(metadata, ReflectionUtils.getFieldValue("metadata", metadataManager));
+        assertEquals(metadata, Reflections.getFieldValue("metadata", metadataManager));
         metadataManager.sessionOpened();
 
-        assertEquals(parsedMetadata, ReflectionUtils.getFieldValue("metadata", metadataManager));
+        assertEquals(parsedMetadata, Reflections.getFieldValue("metadata", metadataManager));
     }
 
     @Test

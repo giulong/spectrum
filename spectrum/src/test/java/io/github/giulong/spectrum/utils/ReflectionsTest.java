@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ReflectionUtils")
-class ReflectionUtilsTest {
+class ReflectionsTest {
 
     @Test
     @DisplayName("getField should return the field with the provided name on the provided object")
@@ -22,7 +22,7 @@ class ReflectionUtilsTest {
         final Dummy dummy = new Dummy();
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
 
-        assertEquals(fieldString, ReflectionUtils.getField(fieldName, dummy));
+        assertEquals(fieldString, Reflections.getField(fieldName, dummy));
     }
 
     @Test
@@ -32,7 +32,7 @@ class ReflectionUtilsTest {
         final String value = "value";
         final Dummy dummy = new Dummy(value);
 
-        assertEquals(value, ReflectionUtils.getFieldValue(fieldName, dummy));
+        assertEquals(value, Reflections.getFieldValue(fieldName, dummy));
     }
 
     @Test
@@ -43,7 +43,7 @@ class ReflectionUtilsTest {
         final Dummy dummy = new Dummy();
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
 
-        ReflectionUtils.setField(fieldName, dummy, value);
+        Reflections.setField(fieldName, dummy, value);
         assertEquals(value, fieldString.get(dummy));
     }
 
@@ -55,7 +55,7 @@ class ReflectionUtilsTest {
         final Dummy dummy = new Dummy();
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
 
-        ReflectionUtils.setField(fieldString, dummy, value);
+        Reflections.setField(fieldString, dummy, value);
         assertEquals(value, fieldString.get(dummy));
     }
 
@@ -67,7 +67,7 @@ class ReflectionUtilsTest {
         final Dummy dummy = new Dummy();
         final Field parentField = DummyParent.class.getDeclaredField(fieldName);
 
-        ReflectionUtils.setParentField(fieldName, dummy, DummyParent.class, value);
+        Reflections.setParentField(fieldName, dummy, DummyParent.class, value);
         assertEquals(value, parentField.get(dummy));
     }
 
@@ -81,7 +81,7 @@ class ReflectionUtilsTest {
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
         final Field fieldStringSecond = DummySecond.class.getDeclaredField(fieldName);
 
-        ReflectionUtils.copyField(fieldString, dummy, fieldStringSecond, dummySecond);
+        Reflections.copyField(fieldString, dummy, fieldStringSecond, dummySecond);
         assertEquals(value, fieldStringSecond.get(dummySecond));
     }
 

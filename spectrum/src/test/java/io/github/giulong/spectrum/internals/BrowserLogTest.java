@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.internals;
 
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -35,7 +35,7 @@ class BrowserLogTest {
     @BeforeEach
     public void beforeEach() {
         stringBufferMockedConstruction = mockConstruction(StringBuffer.class);
-        ReflectionUtils.setField("mem", browserLog, new StringBuffer(LOG_MESSAGE));
+        Reflections.setField("mem", browserLog, new StringBuffer(LOG_MESSAGE));
     }
 
     @AfterEach
@@ -61,16 +61,16 @@ class BrowserLogTest {
 
         browserLog.write(c);
         verifyNoInteractions(stringBuffers.getFirst());
-        assertEquals(stringBuffers.get(1), ReflectionUtils.getFieldValue("mem", browserLog));
+        assertEquals(stringBuffers.get(1), Reflections.getFieldValue("mem", browserLog));
     }
 
     @Test
     @DisplayName("flush should write the buffer's content at the provided level and re-initialise it")
     public void flush() {
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
-        assertEquals(stringBuffers.getFirst(), ReflectionUtils.getFieldValue("mem", browserLog));
+        assertEquals(stringBuffers.getFirst(), Reflections.getFieldValue("mem", browserLog));
 
         browserLog.flush();
-        assertEquals(stringBuffers.get(1), ReflectionUtils.getFieldValue("mem", browserLog));
+        assertEquals(stringBuffers.get(1), Reflections.getFieldValue("mem", browserLog));
     }
 }

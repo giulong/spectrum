@@ -142,8 +142,8 @@ class ExtentReporterTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("fileUtils", extentReporter, fileUtils);
-        ReflectionUtils.setField("configuration", extentReporter, configuration);
+        Reflections.setField("fileUtils", extentReporter, fileUtils);
+        Reflections.setField("configuration", extentReporter, configuration);
         testDataMockedStatic = mockStatic(TestData.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         pathMockedStatic = mockStatic(Path.class);

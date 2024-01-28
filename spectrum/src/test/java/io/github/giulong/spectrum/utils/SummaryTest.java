@@ -63,9 +63,9 @@ class SummaryTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("freeMarkerWrapper", summary, freeMarkerWrapper);
-        ReflectionUtils.setField("fileUtils", summary, fileUtils);
-        ReflectionUtils.setField("summaryGeneratingListener", summary, summaryGeneratingListener);
+        Reflections.setField("freeMarkerWrapper", summary, freeMarkerWrapper);
+        Reflections.setField("fileUtils", summary, fileUtils);
+        Reflections.setField("summaryGeneratingListener", summary, summaryGeneratingListener);
 
         mvelMockedStatic = mockStatic(MVEL.class);
     }
@@ -81,7 +81,7 @@ class SummaryTest {
         final String output = "output";
         final String extension = "extension";
 
-        ReflectionUtils.setField("reporters", summary, List.of(reporter1, reporter2));
+        Reflections.setField("reporters", summary, List.of(reporter1, reporter2));
 
         when(fileUtils.getExtensionOf(output)).thenReturn(extension);
         when(reporter1.getOutput()).thenReturn(output);
@@ -105,8 +105,8 @@ class SummaryTest {
         final String interpolatedCondition = "interpolatedCondition";
 
         Vars.getInstance().put(globalVar, globalValue);
-        ReflectionUtils.setField("reporters", summary, List.of(reporter1, reporter2));
-        ReflectionUtils.setField("condition", summary, condition);
+        Reflections.setField("reporters", summary, List.of(reporter1, reporter2));
+        Reflections.setField("condition", summary, condition);
         assertTrue(summary.getVars().isEmpty());
 
         when(summaryGeneratingListener.getSummary()).thenReturn(testExecutionSummary);
@@ -151,8 +151,8 @@ class SummaryTest {
         final String condition = "condition";
         final String interpolatedCondition = "interpolatedCondition";
 
-        ReflectionUtils.setField("condition", summary, condition);
-        ReflectionUtils.setField("vars", summary, vars);
+        Reflections.setField("condition", summary, condition);
+        Reflections.setField("vars", summary, vars);
 
         when(summaryGeneratingListener.getSummary()).thenReturn(testExecutionSummary);
         when(freeMarkerWrapper.interpolate(condition, vars)).thenReturn(interpolatedCondition);

@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.utils.reporters;
 
 import io.github.giulong.spectrum.utils.FixedSizeQueue;
 import io.github.giulong.spectrum.utils.MetadataManager;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.Retention;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,9 +76,9 @@ class FileReporterTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setParentField("output", fileReporter, fileReporter.getClass().getSuperclass(), OUTPUT);
-        ReflectionUtils.setParentField("retention", fileReporter, fileReporter.getClass().getSuperclass(), retention);
-        ReflectionUtils.setParentField("metadataManager", fileReporter, fileReporter.getClass().getSuperclass(), metadataManager);
+        Reflections.setParentField("output", fileReporter, fileReporter.getClass().getSuperclass(), OUTPUT);
+        Reflections.setParentField("retention", fileReporter, fileReporter.getClass().getSuperclass(), retention);
+        Reflections.setParentField("metadataManager", fileReporter, fileReporter.getClass().getSuperclass(), metadataManager);
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
         metadataManagerMockedStatic = mockStatic(MetadataManager.class);

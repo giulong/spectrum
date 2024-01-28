@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
 import io.github.giulong.spectrum.enums.Result;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,7 @@ class EventsWatcherTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("eventsDispatcher", eventsWatcher, eventsDispatcher);
+        Reflections.setField("eventsDispatcher", eventsWatcher, eventsDispatcher);
         eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
     }
 

@@ -91,13 +91,13 @@ class SpectrumSessionListenerTest {
     @BeforeEach
     public void beforeEach() {
         osName = System.getProperty("os.name");
-        ReflectionUtils.setField("yamlUtils", spectrumSessionListener, yamlUtils);
-        ReflectionUtils.setField("fileUtils", spectrumSessionListener, fileUtils);
-        ReflectionUtils.setField("freeMarkerWrapper", spectrumSessionListener, freeMarkerWrapper);
-        ReflectionUtils.setField("extentReporter", spectrumSessionListener, extentReporter);
-        ReflectionUtils.setField("configuration", spectrumSessionListener, configuration);
-        ReflectionUtils.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
-        ReflectionUtils.setField("metadataManager", spectrumSessionListener, metadataManager);
+        Reflections.setField("yamlUtils", spectrumSessionListener, yamlUtils);
+        Reflections.setField("fileUtils", spectrumSessionListener, fileUtils);
+        Reflections.setField("freeMarkerWrapper", spectrumSessionListener, freeMarkerWrapper);
+        Reflections.setField("extentReporter", spectrumSessionListener, extentReporter);
+        Reflections.setField("configuration", spectrumSessionListener, configuration);
+        Reflections.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
+        Reflections.setField("metadataManager", spectrumSessionListener, metadataManager);
 
         configurationMockedStatic = mockStatic(Configuration.class);
         extentReportsWrapperMockedStatic = mockStatic(ExtentReporter.class);

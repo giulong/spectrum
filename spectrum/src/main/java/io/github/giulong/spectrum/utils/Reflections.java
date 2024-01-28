@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 
 @UtilityClass
 @SuppressWarnings("checkstyle:HideUtilityClassConstructor")
-public final class ReflectionUtils {
+public final class Reflections {
 
     @SneakyThrows
     public static Field getField(final String fieldName, final Object object) {

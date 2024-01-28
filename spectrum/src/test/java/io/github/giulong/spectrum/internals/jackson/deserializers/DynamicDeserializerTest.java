@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.YamlUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,8 +57,8 @@ class DynamicDeserializerTest {
     public void deserialize() throws IOException {
         final String expected = "expected";
         final String configFile = "configFile";
-        ReflectionUtils.setField("configFile", dynamicDeserializer, configFile);
-        ReflectionUtils.setField("clazz", dynamicDeserializer, String.class);
+        Reflections.setField("configFile", dynamicDeserializer, configFile);
+        Reflections.setField("clazz", dynamicDeserializer, String.class);
 
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
