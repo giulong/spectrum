@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.browsers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
@@ -18,6 +19,9 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
 
     protected static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
 
+    @JsonIgnore
+    protected final Configuration configuration = Configuration.getInstance();
+
     @JsonPropertyDescription("WebDriver's specific capabilities")
     protected T capabilities;
 
@@ -27,14 +31,14 @@ public abstract class Browser<T extends AbstractDriverOptions<?>, U extends Driv
 
     public abstract T mergeGridCapabilitiesFrom(Map<String, String> gridCapabilities);
 
-    public synchronized WebDriver build(final Configuration configuration) {
+    public synchronized WebDriver build() {
         final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
         buildCapabilitiesFrom(webDriverConfiguration);
 
         final Environment environment = configuration.getRuntime().getEnvironment();
         capabilities.setAcceptInsecureCerts(true);
 
-        final WebDriver webDriver = environment.setupFrom(configuration, this);
+        final WebDriver webDriver = environment.setupFor(this);
         final Configuration.WebDriver.Waits waits = webDriverConfiguration.getWaits();
 
         webDriver

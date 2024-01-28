@@ -122,7 +122,7 @@ class WebDriverResolverTest {
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(browser).when(runtime).getBrowser();
-        when(browser.build(configuration)).thenReturn(webDriver);
+        when(browser.build()).thenReturn(webDriver);
         when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
         when(webDriverConfiguration.getEvents()).thenReturn(events);
         when(configuration.getExtent()).thenReturn(extentConfiguration);
