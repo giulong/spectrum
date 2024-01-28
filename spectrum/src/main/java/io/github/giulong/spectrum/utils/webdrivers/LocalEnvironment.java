@@ -25,7 +25,8 @@ public class LocalEnvironment extends Environment {
                         .build())
                 .build());
 
-        return RemoteWebDriver.builder()
+        return RemoteWebDriver
+                .builder()
                 .withDriverService(DRIVER_SERVICE_THREAD_LOCAL.get())
                 .oneOf(browser.getCapabilities())
                 .build();
