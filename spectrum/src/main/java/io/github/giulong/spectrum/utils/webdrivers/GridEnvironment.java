@@ -16,11 +16,12 @@ import java.util.Map;
 
 @Slf4j
 @Getter
+@SuppressWarnings("unused")
 public class GridEnvironment extends Environment {
 
     @JsonSchemaTypes(String.class)
     @JsonPropertyDescription("Url of the selenium grid")
-    protected URL url;
+    private URL url;
 
     @JsonPropertyDescription("Capabilities dedicated to executions on the grid")
     protected final Map<String, String> capabilities = new HashMap<>();

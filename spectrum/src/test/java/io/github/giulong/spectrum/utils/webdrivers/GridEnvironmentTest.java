@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils.webdrivers;
 
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ReflectionUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -62,7 +63,7 @@ class GridEnvironmentTest {
     private void commonStubs() throws MalformedURLException {
         final URL url = URI.create("http://url").toURL();
 
-        gridEnvironment.url = url;
+        ReflectionUtils.setField("url", gridEnvironment, url);
         gridEnvironment.capabilities.put("one", "value");
 
         when(webDriverBuilder.build()).thenReturn(webDriver);
