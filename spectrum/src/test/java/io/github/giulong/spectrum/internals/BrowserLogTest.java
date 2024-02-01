@@ -35,7 +35,7 @@ class BrowserLogTest {
     @BeforeEach
     public void beforeEach() {
         stringBufferMockedConstruction = mockConstruction(StringBuffer.class);
-        Reflections.setField("mem", browserLog, new StringBuffer(LOG_MESSAGE));
+        Reflections.setField("stringBuffer", browserLog, new StringBuffer(LOG_MESSAGE));
     }
 
     @AfterEach
@@ -57,20 +57,22 @@ class BrowserLogTest {
     @DisplayName("write should flush the buffer when the char provided is a line break")
     public void writeFlush() {
         final char c = '\n';
-        final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
 
         browserLog.write(c);
-        verifyNoInteractions(stringBuffers.getFirst());
-        assertEquals(stringBuffers.get(1), Reflections.getFieldValue("mem", browserLog));
+        final StringBuffer stringBuffer = (StringBuffer) Reflections.getFieldValue("stringBuffer", browserLog);
+
+        verify(stringBuffer).setLength(0);
     }
 
     @Test
     @DisplayName("flush should write the buffer's content at the provided level and re-initialise it")
     public void flush() {
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
-        assertEquals(stringBuffers.getFirst(), Reflections.getFieldValue("mem", browserLog));
+        assertEquals(stringBuffers.getFirst(), Reflections.getFieldValue("stringBuffer", browserLog));
 
         browserLog.flush();
-        assertEquals(stringBuffers.get(1), Reflections.getFieldValue("mem", browserLog));
+        final StringBuffer stringBuffer = (StringBuffer) Reflections.getFieldValue("stringBuffer", browserLog);
+
+        verify(stringBuffer).setLength(0);
     }
 }

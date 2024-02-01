@@ -14,7 +14,7 @@ public class BrowserLog extends OutputStream {
     private final Level level;
 
     @Default
-    private StringBuffer mem = new StringBuffer();
+    private StringBuffer stringBuffer = new StringBuffer();
 
     @Override
     public void write(final int b) {
@@ -23,12 +23,13 @@ public class BrowserLog extends OutputStream {
             flush();
             return;
         }
-        mem.append(c);
+
+        stringBuffer.append(c);
     }
 
     @Override
     public void flush() {
-        log.atLevel(level).log(mem.toString());
-        mem = new StringBuffer();
+        log.atLevel(level).log(stringBuffer.toString());
+        stringBuffer.setLength(0);
     }
 }
