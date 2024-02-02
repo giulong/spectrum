@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,7 +37,7 @@ class ExtentTestConsumerTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("extentReporter", extentTestConsumer, extentReporter);
+        Reflections.setField("extentReporter", extentTestConsumer, extentReporter);
         extentReporterMockedStatic = mockStatic(ExtentReporter.class);
     }
 

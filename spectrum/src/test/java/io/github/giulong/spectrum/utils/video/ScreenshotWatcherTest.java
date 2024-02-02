@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils.video;
 
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -108,7 +108,7 @@ class ScreenshotWatcherTest {
         final Path path = Files.createTempFile("not-new", ".txt");
         Files.writeString(path, "I'm an airplane!!!");
         final String context = "not-new.jpg";
-        ReflectionUtils.setField("lastFrameDigest", screenshotWatcher, lastFrameDigest);
+        Reflections.setField("lastFrameDigest", screenshotWatcher, lastFrameDigest);
 
         when(watchService.take()).thenReturn(watchKey);
         when(watchKey.isValid()).thenReturn(true).thenReturn(false);
@@ -137,8 +137,8 @@ class ScreenshotWatcherTest {
     public void isNewFrame(final byte[] lastFrameDigest, final boolean expected) throws IllegalAccessException {
         final Path path = isNewFrameStubs();
         when(screenshot.toPath()).thenReturn(path);
-        final Field lastFrameDigestField = ReflectionUtils.getField("lastFrameDigest", screenshotWatcher);
-        ReflectionUtils.setField(lastFrameDigestField, screenshotWatcher, lastFrameDigest);
+        final Field lastFrameDigestField = Reflections.getField("lastFrameDigest", screenshotWatcher);
+        Reflections.setField(lastFrameDigestField, screenshotWatcher, lastFrameDigest);
 
         assertEquals(expected, screenshotWatcher.isNewFrame(screenshot));
         assertArrayEquals(oldFrameDigest, (byte[]) lastFrameDigestField.get(screenshotWatcher));

@@ -7,7 +7,7 @@ import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.*;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.ScreenshotWatcher;
 import io.github.giulong.spectrum.utils.video.VideoEncoder;
@@ -132,7 +132,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
         @SuppressWarnings("unchecked")
         final Class<SpectrumPage<?, Data>> spectrumPageClass = (Class<SpectrumPage<?, Data>>) spectrumPage.getClass();
-        ReflectionUtils.setField(spectrumPageField, this, spectrumPage);
+        Reflections.setField(spectrumPageField, this, spectrumPage);
 
         final String className = spectrumPageClass.getSimpleName();
         log.debug("Injecting already resolved fields into an instance of {}", className);
@@ -142,7 +142,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         spectrumPage.setEndpoint(endpointValue);
-        getSharedFields().forEach(sharedField -> ReflectionUtils.copyField(sharedField, this, sharedField, spectrumPage));
+        getSharedFields().forEach(sharedField -> Reflections.copyField(sharedField, this, sharedField, spectrumPage));
 
         PageFactory.initElements(webDriver, spectrumPage);
 

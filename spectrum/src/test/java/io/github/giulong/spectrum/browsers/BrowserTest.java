@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.webdrivers.Environment;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,6 +95,8 @@ class BrowserTest {
 
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
+
+        Reflections.setParentField("configuration", browser, browser.getClass().getSuperclass().getSuperclass(), configuration);
     }
 
     @AfterEach
@@ -129,11 +132,11 @@ class BrowserTest {
         when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
         when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
         when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
-        when(environment.setupFrom(configuration, browser)).thenReturn(webDriver);
+        when(environment.setupFor(browser)).thenReturn(webDriver);
 
         when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
 
-        final WebDriver actual = browser.build(configuration);
+        final WebDriver actual = browser.build();
         final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
 
         verify(chromeOptionsMockedConstruction.constructed().getFirst()).setAcceptInsecureCerts(true);

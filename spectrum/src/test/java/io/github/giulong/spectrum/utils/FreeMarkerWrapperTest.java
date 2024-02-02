@@ -41,7 +41,7 @@ class FreeMarkerWrapperTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("spectrumConfiguration", freeMarkerWrapper, spectrumConfiguration);
+        Reflections.setField("spectrumConfiguration", freeMarkerWrapper, spectrumConfiguration);
     }
 
     @Test

@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.utils.events;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -53,7 +53,7 @@ class EventsDispatcherTest {
     @BeforeEach
     public void beforeEach() {
         eventMockedStatic = mockStatic(Event.class);
-        ReflectionUtils.setField("configuration", eventsDispatcher, configuration);
+        Reflections.setField("configuration", eventsDispatcher, configuration);
     }
 
     @AfterEach

@@ -58,7 +58,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
         final Path testBookReportsPath = Path.of("target/spectrum/testbook");
         final Path summaryReportsPath = Path.of("target/spectrum/summary");
 
-        ReflectionUtils.setField("configuration", metadataManager, defaultConfiguration);
+        Reflections.setField("configuration", metadataManager, defaultConfiguration);
         metadataManager.sessionOpened();
 
         extentReportsDirectory = Path.of("target/spectrum/reports");

@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.webdrivers;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -16,7 +17,11 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
         @Type(value = GridEnvironment.class, name = "grid"),
 })
 public abstract class Environment {
-    public abstract WebDriver setupFrom(Configuration configuration, Browser<?, ?, ?> browser);
+
+    @JsonIgnore
+    protected final Configuration configuration = Configuration.getInstance();
+
+    public abstract WebDriver setupFor(Browser<?, ?, ?> browser);
 
     public abstract void shutdown();
 }

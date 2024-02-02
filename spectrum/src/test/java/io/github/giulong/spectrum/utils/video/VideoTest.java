@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils.video;
 
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.enums.Frame;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ class VideoTest {
     @ParameterizedTest(name = "with frames {0} we expect {1}")
     @MethodSource("valuesProvider")
     public void isDisabled(final List<Frame> frames, final boolean expected) {
-        ReflectionUtils.setField("frames", video, frames);
+        Reflections.setField("frames", video, frames);
         assertEquals(expected, video.isDisabled());
     }
 
@@ -45,7 +45,7 @@ class VideoTest {
     @MethodSource("shouldRecordValuesProvider")
     public void shouldRecord(final List<Frame> frames, final boolean expected) {
         final String frameName = "autoBefore-something";
-        ReflectionUtils.setField("frames", video, frames);
+        Reflections.setField("frames", video, frames);
         assertEquals(expected, video.shouldRecord(frameName));
     }
 

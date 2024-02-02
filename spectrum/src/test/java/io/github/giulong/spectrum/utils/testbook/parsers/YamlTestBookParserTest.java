@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.testbook.parsers;
 
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +23,7 @@ class YamlTestBookParserTest {
     @Test
     @DisplayName("parse should read the provided file line by line and return the list of test names")
     public void parse() {
-        ReflectionUtils.setParentField("path", testBookParser, testBookParser.getClass().getSuperclass(), "testbook.yaml");
+        Reflections.setParentField("path", testBookParser, testBookParser.getClass().getSuperclass(), "testbook.yaml");
         List<TestBookTest> actual = testBookParser.parse();
         assertEquals(3, actual.size());
 

@@ -8,7 +8,7 @@ import io.github.giulong.spectrum.pojos.testbook.TestBookStatistics.Statistics;
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.Vars;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.Reporter;
@@ -147,14 +147,14 @@ class TestBookUnitTest {
         final String output = "output";
         final String extension = "extension";
 
-        ReflectionUtils.setField("fileUtils", testBook, fileUtils);
-        ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
+        Reflections.setField("fileUtils", testBook, fileUtils);
+        Reflections.setField("reporters", testBook, List.of(reporter1, reporter2));
         when(fileUtils.getExtensionOf(output)).thenReturn(extension);
         when(reporter1.getOutput()).thenReturn(output);
 
         when(testBookParser.parse()).thenReturn(tests);
 
-        ReflectionUtils.setField("enabled", testBook, true);
+        Reflections.setField("enabled", testBook, true);
         testBook.sessionOpened();
 
         assertEquals(2, testBook.getMappedTests().size());
@@ -204,7 +204,7 @@ class TestBookUnitTest {
         final String className = "className";
         final String testName = "testName";
 
-        ReflectionUtils.setField("enabled", testBook, true);
+        Reflections.setField("enabled", testBook, true);
         testBook.updateWithResult(className, testName, FAILED);
 
         final TestBookTest unmappedTest = testBook.getUnmappedTests().get(String.format("%s %s", className, testName));
@@ -228,7 +228,7 @@ class TestBookUnitTest {
         when(actualTest.getWeight()).thenReturn(weight);
 
         testBook.getMappedTests().put(fullName, actualTest);
-        ReflectionUtils.setField("enabled", testBook, true);
+        Reflections.setField("enabled", testBook, true);
         testBook.updateWithResult(className, testName, FAILED);
 
         verify(actualTest).setResult(result);
@@ -284,7 +284,7 @@ class TestBookUnitTest {
         statistics.get(ABORTED).getTotal().set(totalAborted);
         statistics.get(DISABLED).getTotal().set(totalDisabled);
 
-        ReflectionUtils.setField("enabled", testBook, true);
+        Reflections.setField("enabled", testBook, true);
         testBook.flush(total, statistics);
 
         assertEquals((double) totalSuccessful / total * 100, statistics.get(SUCCESSFUL).getPercentage().get());
@@ -300,7 +300,7 @@ class TestBookUnitTest {
     public void flushAll() {
         Vars.getInstance().put(globalVar, globalValue);
 
-        ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
+        Reflections.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());
@@ -310,7 +310,7 @@ class TestBookUnitTest {
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
         when(freeMarkerWrapper.interpolate(condition, testBook.getVars())).thenReturn(interpolatedQgStatus);
 
-        ReflectionUtils.setField("enabled", testBook, true);
+        Reflections.setField("enabled", testBook, true);
         testBook.sessionClosed();
 
         assertEquals(3, testBook.getStatistics().getGrandTotal().get());
@@ -333,7 +333,7 @@ class TestBookUnitTest {
     @Test
     @DisplayName("flush should do nothing if the testBook is disabled")
     public void flushAllDisabled() {
-        ReflectionUtils.setField("reporters", testBook, List.of(reporter1, reporter2));
+        Reflections.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());
         testBook.getUnmappedTests().put("c", TestBookTest.builder().weight(3).build());

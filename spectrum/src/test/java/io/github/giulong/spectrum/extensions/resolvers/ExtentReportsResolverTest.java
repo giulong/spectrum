@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentReports;
 import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -55,7 +55,7 @@ class ExtentReportsResolverTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("extentReporter", extentReportsResolver, extentReporter);
+        Reflections.setField("extentReporter", extentReportsResolver, extentReporter);
         extentReporterMockedStatic = mockStatic(ExtentReporter.class);
     }
 

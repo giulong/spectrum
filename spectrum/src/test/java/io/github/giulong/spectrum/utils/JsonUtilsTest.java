@@ -38,8 +38,8 @@ class JsonUtilsTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("jsonMapper", jsonUtils, jsonMapper);
-        ReflectionUtils.setField("writer", jsonUtils, jsonWriter);
+        Reflections.setField("jsonMapper", jsonUtils, jsonMapper);
+        Reflections.setField("writer", jsonUtils, jsonWriter);
     }
 
     @Test

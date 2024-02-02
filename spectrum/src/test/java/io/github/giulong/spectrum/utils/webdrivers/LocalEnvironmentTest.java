@@ -4,6 +4,7 @@ import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.internals.BrowserLog;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.WebDriver.Logs;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -74,6 +75,8 @@ class LocalEnvironmentTest {
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
         browserLogMockedStatic = mockStatic(BrowserLog.class);
         DRIVER_SERVICE_THREAD_LOCAL.remove();
+
+        Reflections.setParentField("configuration", localEnvironment, localEnvironment.getClass().getSuperclass(), configuration);
     }
 
     @AfterEach
@@ -101,7 +104,7 @@ class LocalEnvironmentTest {
 
         final DriverService threadLocalDriverService = DRIVER_SERVICE_THREAD_LOCAL.get();
 
-        assertEquals(webDriver, localEnvironment.setupFrom(configuration, browser));
+        assertEquals(webDriver, localEnvironment.setupFor(browser));
         assertEquals(driverServiceArgumentCaptor.getValue(), threadLocalDriverService);
     }
 

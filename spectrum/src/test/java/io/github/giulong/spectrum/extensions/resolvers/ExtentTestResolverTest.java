@@ -4,7 +4,7 @@ import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.ReflectionUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,7 +68,7 @@ class ExtentTestResolverTest {
 
     @BeforeEach
     public void beforeEach() {
-        ReflectionUtils.setField("extentReporter", extentTestResolver, extentReporter);
+        Reflections.setField("extentReporter", extentTestResolver, extentReporter);
         extentReporterMockedStatic = mockStatic(ExtentReporter.class);
     }
 
