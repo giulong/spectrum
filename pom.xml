@@ -58,8 +58,8 @@
         <module>it</module>
         <module>it-grid</module>
         <module>it-testbook</module>
-        <module>it-verifier</module>
         <module>it-appium</module>
+        <module>it-verifier</module>
         <module>cleanup</module>
     </modules>
 
