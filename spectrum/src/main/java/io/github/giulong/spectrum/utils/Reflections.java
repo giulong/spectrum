@@ -18,8 +18,21 @@ public final class Reflections {
     }
 
     @SneakyThrows
+    public static Field getParentField(final String fieldName, final Object object) {
+        final Field field = object.getClass().getSuperclass().getDeclaredField(fieldName);
+        field.setAccessible(true);
+
+        return field;
+    }
+
+    @SneakyThrows
     public static Object getFieldValue(final String fieldName, final Object object) {
         return getField(fieldName, object).get(object);
+    }
+
+    @SneakyThrows
+    public static Object getParentFieldValue(final String fieldName, final Object object) {
+        return getParentField(fieldName, object).get(object);
     }
 
     @SneakyThrows
