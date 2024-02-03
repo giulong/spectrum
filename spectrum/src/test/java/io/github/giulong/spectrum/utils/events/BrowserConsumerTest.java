@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.utils.events;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.webdrivers.LocalEnvironment;
+import io.github.giulong.spectrum.utils.environments.LocalEnvironment;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -8,7 +8,7 @@ import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.video.Video;
-import io.github.giulong.spectrum.utils.webdrivers.Environment;
+import io.github.giulong.spectrum.utils.environments.Environment;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,7 +82,7 @@ public class Configuration {
         @JsonPropertyDescription("Browser to use")
         private Browser<?, ?, ?> browser;
 
-        @JsonPropertyDescription("Runtime environment. Can be local or grid")
+        @JsonPropertyDescription("Runtime environment. Can be local, grid, appium")
         private Environment environment;
 
         @JsonPropertyDescription("Folder where you will store files to be checked against downloaded ones")
@@ -148,6 +148,9 @@ public class Configuration {
         @JsonPropertyDescription("Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options")
         private Edge edge;
 
+        @JsonPropertyDescription("Android capabilities. See: https://appium.io/docs/en/latest/guides/caps/")
+        private Android android;
+
         @JsonPropertyDescription("WebDriver's internal logging levels")
         private Logs logs;
 
@@ -208,6 +211,14 @@ public class Configuration {
             private List<String> args;
 
             @JsonPropertyDescription("Edge's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class Android {
+
+            @JsonPropertyDescription("Android's capabilities")
             private Map<String, Object> capabilities;
         }
 

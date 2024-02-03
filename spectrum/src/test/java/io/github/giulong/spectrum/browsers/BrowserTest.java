@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
-import io.github.giulong.spectrum.utils.webdrivers.Environment;
+import io.github.giulong.spectrum.utils.environments.Environment;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -139,11 +139,27 @@ class BrowserTest {
         final WebDriver actual = browser.build();
         final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
 
-        verify(chromeOptionsMockedConstruction.constructed().getFirst()).setAcceptInsecureCerts(true);
         assertEquals(protectedWebDriver, threadLocalWebDriver);
         assertEquals(protectedWebDriver, actual);
 
         chromeOptionsMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("configureWaitsOf should configure all the waits by default")
+    public void configureWaitsOf() {
+        when(waits.getImplicit()).thenReturn(implicitDuration);
+        when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);
+        when(waits.getScriptTimeout()).thenReturn(scriptDuration);
+
+        when(webDriver.manage()).thenReturn(options);
+        when(options.timeouts()).thenReturn(timeouts);
+        when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
+        when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
+
+        browser.configureWaitsOf(webDriver, waits);
+
+        verify(timeouts).scriptTimeout(scriptDuration);
     }
 
     @Test

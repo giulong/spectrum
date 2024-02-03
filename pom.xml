@@ -59,6 +59,7 @@
         <module>it-grid</module>
         <module>it-testbook</module>
         <module>it-verifier</module>
+        <module>it-appium</module>
         <module>cleanup</module>
     </modules>
 
@@ -126,6 +127,12 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-grid</artifactId>
                 <version>${selenium.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.appium</groupId>
+                <artifactId>java-client</artifactId>
+                <version>9.0.0</version>
             </dependency>
 
             <dependency>

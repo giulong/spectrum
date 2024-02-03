@@ -1,0 +1,27 @@
+runtime:
+  environment:
+    appium: { }
+
+webDriver:
+  waits:
+    implicit: 2
+    downloadTimeout: 5
+  logs:
+    level: INFO
+  android:
+    capabilities:
+      app: src/test/resources/hello-world.apk # must be an absolute path if appium server is standalone (not started by Spectrum)
+      avd: Pixel_3a_API_34_extension_level_7_arm64-v8a
+      avdArgs: -no-window
+
+data:
+  fqdn: io.github.giulong.spectrum.it_appium.data.Data
+
+video:
+  frames:
+    - autoAfter
+    - manual
+
+extent:
+  theme: DARK
+  fileName: report.html

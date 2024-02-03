@@ -13,7 +13,8 @@ public class Edge extends Chromium<EdgeOptions, EdgeDriverService, EdgeDriverSer
     }
 
     @Override
-    public void buildCapabilitiesFrom(final Configuration.WebDriver webDriverConfiguration) {
+    public void buildCapabilities() {
+        final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
         final Configuration.WebDriver.Edge edgeConfig = webDriverConfiguration.getEdge();
 
         capabilities = new EdgeOptions();

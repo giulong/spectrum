@@ -1,6 +1,8 @@
 package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,6 +39,9 @@ class EdgeTest {
     private Level driverLevel;
 
     @Mock
+    private Configuration configuration;
+
+    @Mock
     private Level performanceLevel;
 
     @Mock
@@ -44,6 +49,11 @@ class EdgeTest {
 
     @InjectMocks
     private Edge edge;
+
+    @BeforeEach
+    public void beforeEach() {
+        Reflections.setParentField("configuration", edge, edge.getClass().getSuperclass().getSuperclass(), configuration);
+    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of EdgeDriverService.Builder()")
@@ -59,6 +69,7 @@ class EdgeTest {
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
     public void buildCapabilitiesFrom() {
+        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
         when(webDriverConfig.getEdge()).thenReturn(edgeConfig);
         when(webDriverConfig.getLogs()).thenReturn(logs);
         when(logs.getBrowser()).thenReturn(browserLevel);
@@ -68,7 +79,7 @@ class EdgeTest {
         MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class);
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        edge.buildCapabilitiesFrom(webDriverConfig);
+        edge.buildCapabilities();
         final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().getFirst();
         final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().getFirst();
 

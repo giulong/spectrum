@@ -90,6 +90,10 @@ webDriver:
       prefs:
         download.default_directory: ${downloadsFolder}
 
+  # UIAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities
+  android:
+    capabilities: { }
+
   # WebDriver's internal logging levels
   logs:
     level: DEBUG  # The level at which webDriver's logs will be logged in Spectrum (execution) logs

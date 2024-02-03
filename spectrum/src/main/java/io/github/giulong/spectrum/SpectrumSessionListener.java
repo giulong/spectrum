@@ -39,6 +39,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
 
+        configuration.getRuntime().getEnvironment().sessionOpened();
         configuration.getTestBook().sessionOpened();
         configuration.getSummary().sessionOpened();
         metadataManager.sessionOpened();
@@ -49,6 +50,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @Override
     public void launcherSessionClosed(final LauncherSession session) {
+        configuration.getRuntime().getEnvironment().sessionClosed();
         configuration.getTestBook().sessionClosed();
         configuration.getSummary().sessionClosed();
         extentReporter.sessionClosed();

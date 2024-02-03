@@ -51,7 +51,8 @@ class YamlUtilsTest {
                 "HtmlTestBookReporter",
                 "LogSummaryReporter",
                 "TxtSummaryReporter",
-                "HtmlSummaryReporter"
+                "HtmlSummaryReporter",
+                "AppiumEnvironment"
         ), yamlUtils.getYamlMapper().getRegisteredModuleIds());
 
         assertEquals(Set.of(

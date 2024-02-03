@@ -1,6 +1,8 @@
 package io.github.giulong.spectrum.browsers;
 
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,10 +44,18 @@ class ChromeTest {
     private Level performanceLevel;
 
     @Mock
+    private Configuration configuration;
+
+    @Mock
     private Configuration.WebDriver.Logs logs;
 
     @InjectMocks
     private Chrome chrome;
+
+    @BeforeEach
+    public void beforeEach() {
+        Reflections.setParentField("configuration", chrome, chrome.getClass().getSuperclass().getSuperclass(), configuration);
+    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of ChromeDriverService.Builder()")
@@ -63,6 +73,7 @@ class ChromeTest {
     public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
 
+        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
         when(webDriverConfig.getChrome()).thenReturn(chromeConfig);
         when(webDriverConfig.getLogs()).thenReturn(logs);
         when(chromeConfig.getArgs()).thenReturn(arguments);
@@ -74,7 +85,7 @@ class ChromeTest {
         MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class);
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        chrome.buildCapabilitiesFrom(webDriverConfig);
+        chrome.buildCapabilities();
         final ChromeOptions chromeOptions = chromeOptionsMockedConstruction.constructed().getFirst();
         verify(chromeOptions).addArguments(arguments);
 

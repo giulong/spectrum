@@ -30,6 +30,7 @@ public class BrowserDeserializer extends InterpolatedDeserializer<Browser<?, ?, 
             case "chrome" -> new Chrome();
             case "firefox" -> new Firefox();
             case "edge" -> new Edge();
+            case "android" -> new Android();
             default -> throw new IllegalArgumentException("Value '" + interpolatedValue + "' is not a valid browser!");
         };
     }
