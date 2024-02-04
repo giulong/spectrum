@@ -51,7 +51,7 @@ Where:
 * `clean` is needed to avoid the `it-verifier` module checks outdated reports of previous builds.
 * `install` will copy the built framework (jar) in your local maven repo, so that you can use it locally in other projects/modules.
 * the `allTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
-  run: `./mvnw clean install -P chrome,firefox,edge -fae`.
+  run: `./mvnw clean install -P chrome,firefox,edge,android -fae`.
 * the `skipSign` skips signing the artifact with a gpg key. That's needed in GitHub actions to publish
   on [Ossrh](https://s01.oss.sonatype.org/content/repositories/releases/io/github/giulong/spectrum/).
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.

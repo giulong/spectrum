@@ -16,6 +16,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import java.time.Duration;
 import java.util.Map;
 
+import static io.github.giulong.spectrum.browsers.Android.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -80,8 +81,11 @@ class AndroidTest {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it")
+    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
     public void buildCapabilities() {
+        final String appPath = "relative/path";
+        final String appAbsolutePath = System.getProperty("user.dir") + "/relative/path";
+
         MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
         });
@@ -90,10 +94,39 @@ class AndroidTest {
         when(webDriver.getAndroid()).thenReturn(androidConfiguration);
         when(androidConfiguration.getCapabilities()).thenReturn(capabilities);
 
+        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
+
         android.buildCapabilities();
 
         final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", android);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+
+        verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
+
+        desiredCapabilitiesMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
+    public void buildCapabilitiesAbsoluteAppPath() {
+        final String appPath = "/absolute/path";
+
+        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
+            assertEquals(capabilities, context.arguments().getFirst());
+        });
+
+        when(configuration.getWebDriver()).thenReturn(webDriver);
+        when(webDriver.getAndroid()).thenReturn(androidConfiguration);
+        when(androidConfiguration.getCapabilities()).thenReturn(capabilities);
+
+        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
+
+        android.buildCapabilities();
+
+        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", android);
+        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+
+        verify(capabilities, never()).put(anyString(), anyString());
 
         desiredCapabilitiesMockedConstruction.close();
     }

@@ -4,13 +4,18 @@ import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.github.giulong.spectrum.utils.Configuration;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.nio.file.Path;
 import java.util.Map;
 
+@Slf4j
 public class Android extends Browser<UiAutomator2Options, AppiumDriverLocalService, AppiumServiceBuilder> {
+
+    public static final String APP_CAPABILITY = "app";
 
     @Override
     public DriverService.Builder<AppiumDriverLocalService, AppiumServiceBuilder> getDriverServiceBuilder() {
@@ -19,10 +24,20 @@ public class Android extends Browser<UiAutomator2Options, AppiumDriverLocalServi
 
     @Override
     public void buildCapabilities() {
-        capabilities = new UiAutomator2Options(configuration
+        final Map<String, Object> configurationCapabilities = configuration
                 .getWebDriver()
                 .getAndroid()
-                .getCapabilities());
+                .getCapabilities();
+
+        final Path appPath = Path.of((String) configurationCapabilities.get(APP_CAPABILITY));
+
+        if (!appPath.isAbsolute()) {
+            final String absoluteAppPath = appPath.toAbsolutePath().toString();
+            log.warn("Converting app path '{}' to absolute: '{}'", appPath, absoluteAppPath);
+            configurationCapabilities.put(APP_CAPABILITY, absoluteAppPath);
+        }
+
+        capabilities = new UiAutomator2Options(configurationCapabilities);
     }
 
     @Override
