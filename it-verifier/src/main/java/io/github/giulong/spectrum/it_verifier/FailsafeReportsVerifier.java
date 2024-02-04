@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.nio.file.Path;
 
 import static lombok.AccessLevel.PRIVATE;
+import static org.slf4j.event.Level.ERROR;
+import static org.slf4j.event.Level.INFO;
 
 @NoArgsConstructor(access = PRIVATE)
 @Slf4j
@@ -66,23 +68,24 @@ public class FailsafeReportsVerifier {
         final String failuresLine = String.format(FORMAT, "failures:", failures, report.failures, failures != report.failures ? ERROR_MARKER : "");
         final String skippedLine = String.format(FORMAT, "skipped:", skipped, report.skipped, skipped != report.skipped ? ERROR_MARKER : "");
 
-        log.info("""
-                                                
-                        Results for report '{}' are:
-                        {}
-                        {}
-                        {}
-                        {}
-                        {}
-                                        
-                        Result: {}""",
-                filePath,
-                header,
-                completedLine,
-                errorsLine,
-                failuresLine,
-                skippedLine,
-                result ? "OK" : "KO");
+        log
+                .atLevel(result ? INFO : ERROR)
+                .log("""
+                                                        
+                                Results for report '{}' are:
+                                
+                                {}
+                                {}
+                                {}
+                                {}
+                                {}
+                                          """,
+                        filePath,
+                        header,
+                        completedLine,
+                        errorsLine,
+                        failuresLine,
+                        skippedLine);
 
         return result;
     }
