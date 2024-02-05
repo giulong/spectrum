@@ -58,7 +58,7 @@
             <id>android</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>appiumTests</name>
                 </property>
             </activation>
             <build>
