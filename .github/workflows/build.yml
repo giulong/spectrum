@@ -15,15 +15,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install and Run Appium Server
+        run: ./.github/actions/appium.sh
+
       - name: Set up JDK 21
         uses: actions/setup-java@v4.0.0
         with:
           java-version: 21
           distribution: temurin
           cache: maven
-
-      - name: Install and Run Appium Server
-        uses: moatazeldebsy/appium-server-gitHub-action@V1.0.4
 
       - name: mvn install
         run: ./mvnw -B install -DallTests -DskipSign -Dmaven.plugin.validation=BRIEF -ntp
