@@ -6,6 +6,14 @@ inputs:
     description: Skips unit tests
     required: true
     default: false
+  allTests:
+    description: Skips browsers tests
+    required: true
+    default: false
+  appiumTests:
+    description: Skips appium tests
+    required: true
+    default: false
 
 runs:
   using: composite
@@ -22,4 +30,11 @@ runs:
 
     - name: Building Spectrum
       shell: bash
-      run: ./mvnw install -DskipTests=${{ inputs.skipTests }} -DskipSign -Dmaven.plugin.validation=BRIEF -ntp -pl spectrum
+      run: >
+        ./mvnw install
+        -DskipTests=${{ inputs.skipTests }}
+        -DallTests=${{ inputs.allTests }}
+        -DappiumTests=${{ inputs.appiumTests }}
+        -DskipSign
+        -Dmaven.plugin.validation=BRIEF
+        -ntp

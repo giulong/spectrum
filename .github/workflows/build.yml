@@ -25,13 +25,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Spectrum
+      - name: Run browsers ITs
         uses: ./.github/actions/build-spectrum
         with:
           skipTests: true
-
-      - name: mvn browsers tests
-        run: ./mvnw install -DskipSign -DallTests -Dmaven.plugin.validation=BRIEF -ntp -pl '!spectrum'
+          allTests: true
 
   appium:
     name: Appium IT
@@ -40,13 +38,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build Spectrum
-        uses: ./.github/actions/build-spectrum
-        with:
-          skipTests: true
-
       - name: Install and Run Appium Server
         run: ./.github/actions/appium.sh
 
-      - name: mvn appium tests
-        run: ./mvnw install -DskipSign -DappiumTests -Dmaven.plugin.validation=BRIEF -ntp -pl '!spectrum'
+      - name: Run Appium ITs
+        uses: ./.github/actions/build-spectrum
+        with:
+          skipTests: true
+          appiumTests: true
