@@ -45,7 +45,7 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <junit.version>5.10.1</junit.version>
+        <junit.version>5.10.2</junit.version>
         <jackson.version>2.16.1</jackson.version>
         <simplejavamail.version>8.6.2</simplejavamail.version>
         <jsonschemagenerator.version>4.33.1</jsonschemagenerator.version>
