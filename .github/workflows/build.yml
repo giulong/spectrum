@@ -26,4 +26,7 @@ jobs:
           cache: maven
 
       - name: mvn install
-        run: ./mvnw -B install -DallTests -DskipSign -Dmaven.plugin.validation=BRIEF -ntp
+        run: ./mvnw install -DallTests -DskipSign -Dmaven.plugin.validation=BRIEF -ntp
+
+      - name: mvn appium tests
+        run: ./mvnw install -DappiumTests -Dmaven.plugin.validation=BRIEF -ntp -pl it-appium
