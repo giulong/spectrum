@@ -34,7 +34,7 @@ runs:
       shell: bash
       run: >
         ./mvnw install
-        -DskipTests=${{ inputs.skipUnits }}
+        -DskipUnits=${{ inputs.skipUnits }}
         -DbrowsersTests=${{ inputs.browsersTests }}
         -DappiumTests=${{ inputs.appiumTests }}
         -DskipSign
