@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run in Java
-        uses: ./.github/actions/run-with-java.yml
+        uses: ./.github/actions/run-with-java
 
       - name: Building Spectrum
         run: ./mvnw install -DskipSign -Dmaven.plugin.validation=BRIEF -ntp -pl spectrum
@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run in Java
-        uses: ./.github/actions/run-with-java.yml
+        uses: ./.github/actions/run-with-java
 
       - name: mvn browsers tests
         run: ./mvnw install -DskipSign -DallTests -Dmaven.plugin.validation=BRIEF -ntp -pl '!spectrum'
@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run in Java
-        uses: ./.github/actions/run-with-java.yml
+        uses: ./.github/actions/run-with-java
 
       - name: Install and Run Appium Server
         run: ./.github/actions/appium.sh
