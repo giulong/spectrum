@@ -21,4 +21,5 @@ runs:
         cache: maven
 
     - name: Building Spectrum
+      shell: bash
       run: ./mvnw install -DskipTests=${{ inputs.skipTests }} -DskipSign -Dmaven.plugin.validation=BRIEF -ntp -pl spectrum
