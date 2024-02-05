@@ -74,12 +74,6 @@
     <profiles>
         <profile>
             <id>chrome</id>
-            <activation>
-                <property>
-                    <name>browsersTests</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>

@@ -5,6 +5,7 @@ import io.github.giulong.spectrum.it_verifier.data.Data;
 import io.github.giulong.spectrum.it_verifier.pages.TestBookPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.nio.file.Path;
 import java.text.DecimalFormat;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("It TestBook Module Verifier")
+@EnabledIfSystemProperty(named = "browsersTests", matches = "true", disabledReason = "Not running since 'browsersTests' is not active")
 @SuppressWarnings("unused")
 public class TestBookVerifierIT extends SpectrumTest<Data> {
 
