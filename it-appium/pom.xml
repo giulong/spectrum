@@ -59,6 +59,7 @@
             <activation>
                 <property>
                     <name>appiumTests</name>
+                    <value>true</value>
                 </property>
             </activation>
             <build>

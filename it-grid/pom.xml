@@ -64,6 +64,7 @@
             <activation>
                 <property>
                     <name>browsersTests</name>
+                    <value>true</value>
                 </property>
             </activation>
             <build>
@@ -95,6 +96,7 @@
             <activation>
                 <property>
                     <name>browsersTests</name>
+                    <value>true</value>
                 </property>
             </activation>
             <build>
@@ -126,6 +128,7 @@
             <activation>
                 <property>
                     <name>browsersTests</name>
+                    <value>true</value>
                 </property>
             </activation>
             <build>
