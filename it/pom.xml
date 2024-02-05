@@ -58,7 +58,7 @@
             <id>chrome</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>browsersTests</name>
                 </property>
             </activation>
             <build>
@@ -89,7 +89,7 @@
             <id>firefox</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>browsersTests</name>
                 </property>
             </activation>
             <build>
@@ -120,7 +120,7 @@
             <id>edge</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>browsersTests</name>
                 </property>
             </activation>
             <build>

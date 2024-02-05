@@ -28,8 +28,8 @@ jobs:
       - name: Run browsers ITs
         uses: ./.github/actions/build-spectrum
         with:
-          skipTests: true
-          allTests: true
+          skipUnits: true
+          browsersTests: true
 
   appium:
     name: Appium IT
@@ -44,5 +44,5 @@ jobs:
       - name: Run Appium ITs
         uses: ./.github/actions/build-spectrum
         with:
-          skipTests: true
+          skipUnits: true
           appiumTests: true

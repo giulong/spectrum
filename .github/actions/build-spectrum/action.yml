@@ -2,14 +2,16 @@ name: Build Spectrum
 description: Setup the proper jdk container
 
 inputs:
-  skipTests:
+  skipUnits:
     description: Skips unit tests
     required: true
     default: false
-  allTests:
+
+  browsersTests:
     description: Skips browsers tests
     required: true
     default: false
+
   appiumTests:
     description: Skips appium tests
     required: true
@@ -32,8 +34,8 @@ runs:
       shell: bash
       run: >
         ./mvnw install
-        -DskipTests=${{ inputs.skipTests }}
-        -DallTests=${{ inputs.allTests }}
+        -DskipTests=${{ inputs.skipUnits }}
+        -DbrowsersTests=${{ inputs.browsersTests }}
         -DappiumTests=${{ inputs.appiumTests }}
         -DskipSign
         -Dmaven.plugin.validation=BRIEF

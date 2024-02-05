@@ -44,6 +44,7 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
+        <skipUnits>@{skipTests}</skipUnits>
 
         <junit.version>5.10.2</junit.version>
         <jackson.version>2.16.1</jackson.version>
@@ -284,6 +285,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.2.5</version>
                     <configuration>
+                        <skipTests>${skipUnits}</skipTests>
                         <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
                         <reportsDirectory>${reportsDirectory}</reportsDirectory>
                         <trimStackTrace>true</trimStackTrace>

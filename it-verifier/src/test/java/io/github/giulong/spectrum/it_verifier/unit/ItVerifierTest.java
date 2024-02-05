@@ -12,7 +12,7 @@ import java.util.Scanner;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("It Module Verifier")
-@EnabledIfSystemProperty(named = "allTests", matches = "true", disabledReason = "Not running since 'allTests' is not active")
+@EnabledIfSystemProperty(named = "browsersTests", matches = "true", disabledReason = "Not running since 'browsersTests' is not active")
 public class ItVerifierTest {
 
     private static final FailsafeReportsVerifier FAILSAFE_REPORTS_VERIFIER = FailsafeReportsVerifier.getInstance();

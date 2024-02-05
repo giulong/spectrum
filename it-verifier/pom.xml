@@ -76,7 +76,7 @@
             <id>chrome</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>browsersTests</name>
                 </property>
             </activation>
             <build>
