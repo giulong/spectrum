@@ -15,9 +15,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install and Run Appium Server
-        run: ./.github/actions/appium.sh
-
       - name: Set up JDK 21
         uses: actions/setup-java@v4.0.0
         with:
@@ -25,8 +22,24 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: mvn install
-        run: ./mvnw install -DallTests -DskipSign -Dmaven.plugin.validation=BRIEF -ntp
+      - name: Building Spectrum
+        run: ./mvnw install -DskipSign -Dmaven.plugin.validation=BRIEF -ntp -pl spectrum
+
+  browsers:
+    name: Browsers IT
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: mvn browsers tests
+        run: ./mvnw install -DskipSign -DallTests -Dmaven.plugin.validation=BRIEF -ntp -pl '!spectrum'
+
+  appium:
+    name: Appium IT
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install and Run Appium Server
+        run: ./.github/actions/appium.sh
 
       - name: mvn appium tests
-        run: ./mvnw install -DappiumTests -Dmaven.plugin.validation=BRIEF -ntp -pl it-appium,it-verifier
+        run: ./mvnw install -DskipSign -DappiumTests -Dmaven.plugin.validation=BRIEF -ntp -pl '!spectrum'
