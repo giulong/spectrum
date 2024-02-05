@@ -13,7 +13,6 @@ jobs:
     if: github.event.pull_request.merged
     name: Deploy
     runs-on: ubuntu-latest
-    permissions: write-all
     environment:
       name: github-pages
       url: ${{steps.deployment.outputs.page_url}}
