@@ -3,10 +3,12 @@ package io.github.giulong.spectrum.it_verifier.unit;
 import io.github.giulong.spectrum.it_verifier.FailsafeReportsVerifier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("It Grid Module Verifier")
+@EnabledIfSystemProperty(named = "allTests", matches = "true", disabledReason = "Not running since 'allTests' is not active")
 public class ItGridVerifierTest {
 
     private static final FailsafeReportsVerifier FAILSAFE_REPORTS_VERIFIER = FailsafeReportsVerifier.getInstance();
