@@ -39,7 +39,7 @@ jobs:
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-        run: ./mvnw -B deploy -DskipTests -Dmaven.plugin.validation=BRIEF -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+        run: ./mvnw -B deploy -DskipTests -Dmaven.plugin.validation=BRIEF -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} -ntp
 
       - name: Get version from pom.xml
         run: |
@@ -48,7 +48,7 @@ jobs:
         id: get_version
 
       - name: Spectrum submodule package
-        run: ./mvnw -B package -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
+        run: ./mvnw -B package -DskipSign -Dmaven.plugin.validation=BRIEF -ntp -pl spectrum
 
       - name: Generate JaCoCo Badge
         id: jacoco

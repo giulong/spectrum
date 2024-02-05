@@ -27,4 +27,4 @@ jobs:
         uses: moatazeldebsy/appium-server-gitHub-action@V1.0.4
 
       - name: mvn install
-        run: ./mvnw -B install -DallTests -DskipSign -Dmaven.plugin.validation=BRIEF
+        run: ./mvnw -B install -DallTests -DskipSign -Dmaven.plugin.validation=BRIEF -ntp
