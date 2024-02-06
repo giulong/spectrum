@@ -5,7 +5,6 @@ import io.github.giulong.spectrum.it_verifier.data.Data;
 import io.github.giulong.spectrum.it_verifier.pages.SummaryPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.nio.file.Path;
 import java.util.regex.Pattern;
@@ -15,7 +14,6 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("It Summary Module Verifier")
-@EnabledIfSystemProperty(named = "browsersTests", matches = "true", disabledReason = "Not running since 'browsersTests' is not active")
 @SuppressWarnings("unused")
 public class SummaryVerifierIT extends SpectrumTest<Data> {
 

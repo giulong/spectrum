@@ -44,7 +44,6 @@
         <maven.deploy.skip>true</maven.deploy.skip>
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
-        <skipUnits>@{skipTests}</skipUnits>
 
         <junit.version>5.10.2</junit.version>
         <jackson.version>2.16.1</jackson.version>
@@ -54,15 +53,54 @@
         <selenium.version>4.17.0</selenium.version>
     </properties>
 
-    <modules>
-        <module>spectrum</module>
-        <module>it</module>
-        <module>it-grid</module>
-        <module>it-testbook</module>
-        <module>it-appium</module>
-        <module>it-verifier</module>
-        <module>cleanup</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>spectrum</module>
+                <module>it</module>
+                <module>it-grid</module>
+                <module>it-testbook</module>
+                <module>it-appium</module>
+                <module>verify-browsers</module>
+                <module>verify-appium</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>framework-only</id>
+            <modules>
+                <module>spectrum</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>browsers</id>
+            <modules>
+                <module>spectrum</module>
+                <module>it</module>
+                <module>it-grid</module>
+                <module>it-testbook</module>
+                <module>verify-browsers</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>appium</id>
+            <modules>
+                <module>spectrum</module>
+                <module>it-appium</module>
+                <module>verify-appium</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -285,7 +323,6 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.2.5</version>
                     <configuration>
-                        <skipTests>${skipUnits}</skipTests>
                         <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
                         <reportsDirectory>${reportsDirectory}</reportsDirectory>
                         <trimStackTrace>true</trimStackTrace>
@@ -307,7 +344,7 @@
                             <configuration>
                                 <message>
                                     ${line.separator}====================================================================================================${line.separator}
-                                    START MODULE ${artifactId} IT TESTS
+                                    START MODULE ${project.artifactId} IT TESTS
                                     ${line.separator}====================================================================================================${line.separator}
                                 </message>
                             </configuration>

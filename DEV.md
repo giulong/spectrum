@@ -11,12 +11,13 @@ spectrum-aggregate (parent pom)
 |─ it (run the same e2e suite with all the browsers, no testbook)
 |─ it-grid (run the same e2e suite as the it modules, pointing to a local embedded grid)
 |─ it-testbook (run a bunch of tests with a testbook)
-|─ it-verifier (verifying results of the it modules)
+|─ it-appium (run a bunch of tests with appium)
+|─ verify-browsers (verifying results of the it modules)
 └─ cleanup
 ```
 
 In all the modules, some tests are meant to fail for demonstration purposes.
-The module's build will not fail: they will be checked later on by the `it-verifier` module.
+The module's build will not fail: they will be checked later on by the `verify-browsers` module.
 
 Spectrum leverages [SpectrumSessionListener](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumSessionListener.java),
 a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom)
@@ -32,13 +33,15 @@ from [spectrum/target/classes/META-INF/services](spectrum/target/classes/META-IN
 while we need to have it in modules that run e2e tests or both unit and e2e.
 To avoid manual operations, at the end of the full build, the `cleanup` module will execute the corresponding action for each module listed below.
 
-| Module      | Unit tests | E2E tests | Action                           |
-|-------------|------------|-----------|----------------------------------|
-| spectrum    | ✅          | ❌         | remove `SpectrumSessionListener` |
-| it          | ❌          | ✅         | add `SpectrumSessionListener`    |
-| it-grid     | ❌          | ✅         | add `SpectrumSessionListener`    |
-| it-testbook | ❌          | ✅         | add `SpectrumSessionListener`    |
-| it-verifier | ✅          | ✅         | add `SpectrumSessionListener`    |
+| Module          | Unit tests | E2E tests | Action                           |
+|-----------------|------------|-----------|----------------------------------|
+| spectrum        | ✅          | ❌         | remove `SpectrumSessionListener` |
+| it              | ❌          | ✅         | add `SpectrumSessionListener`    |
+| it-grid         | ❌          | ✅         | add `SpectrumSessionListener`    |
+| it-testbook     | ❌          | ✅         | add `SpectrumSessionListener`    |
+| it-appium       | ❌          | ✅         | add `SpectrumSessionListener`    |
+| verify-browsers | ✅          | ✅         | add `SpectrumSessionListener`    |
+| verify-appium   | ✅          | ✅         | add `SpectrumSessionListener`    |
 
 ## How to build the project
 
@@ -48,10 +51,10 @@ You can leverage the maven wrapper bundled in this repo:
 
 Where:
 
-* `clean` is needed to avoid the `it-verifier` module checks outdated reports of previous builds.
+* `clean` is needed to avoid the `verify-*` modules check outdated reports of previous builds.
 * `install` will copy the built framework (jar) in your local maven repo, so that you can use it locally in other projects/modules.
 * the `browsersTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
-  run: `./mvnw clean install -P chrome,firefox,edge,android -fae`.
+  run: `./mvnw clean install -P chrome,firefox,edge -fae`.
 * the `skipSign` skips signing the artifact with a gpg key. That's needed in GitHub actions to publish
   on [Ossrh](https://s01.oss.sonatype.org/content/repositories/releases/io/github/giulong/spectrum/).
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.

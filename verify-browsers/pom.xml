@@ -10,7 +10,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>it-verifier</artifactId>
+    <artifactId>verify-browsers</artifactId>
 
     <dependencies>
         <dependency>

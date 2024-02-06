@@ -5,7 +5,6 @@ import io.github.giulong.spectrum.it_verifier.data.Data;
 import io.github.giulong.spectrum.it_verifier.pages.ExtentReportPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.openqa.selenium.By;
 
 import java.nio.file.Path;
@@ -15,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
 @DisplayName("Extent Report Verifier")
-@EnabledIfSystemProperty(named = "browsersTests", matches = "true", disabledReason = "Not running since 'browsersTests' is not active")
 public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
     private ExtentReportPage extentReportPage;

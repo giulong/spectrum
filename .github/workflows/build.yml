@@ -17,6 +17,8 @@ jobs:
 
       - name: Build Spectrum
         uses: ./.github/actions/build-spectrum
+        with:
+          profiles: framework-only
 
   browsers:
     name: Browsers IT
@@ -28,8 +30,8 @@ jobs:
       - name: Run browsers ITs
         uses: ./.github/actions/build-spectrum
         with:
-          skipUnits: true
-          browsersTests: true
+          args: -DbrowsersTests
+          profiles: browsers
 
   appium:
     name: Appium IT
@@ -44,5 +46,5 @@ jobs:
       - name: Run Appium ITs
         uses: ./.github/actions/build-spectrum
         with:
-          skipUnits: true
-          appiumTests: true
+          args: -DappiumTests
+          profiles: appium
