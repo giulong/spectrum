@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Spectrum
-        uses: ./.github/actions/build-spectrum
+        uses: ./.github/actions/maven-build
         with:
           profiles: framework-only
 
@@ -28,10 +28,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Building Spectrum
-        run: ./mvnw install -DskipSign -Dmaven.plugin.validation=BRIEF -DskipTests -ntp -pl spectrum
+        uses: ./.github/actions/build-spectrum
 
       - name: Run browsers ITs
-        uses: ./.github/actions/build-spectrum
+        uses: ./.github/actions/maven-build
         with:
           args: -DbrowsersTests
           profiles: browsers
@@ -44,13 +44,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Building Spectrum
-        run: ./mvnw install -DskipSign -Dmaven.plugin.validation=BRIEF -DskipTests -ntp -pl spectrum
+        uses: ./.github/actions/build-spectrum
 
       - name: Install and Run Appium Server
         run: ./.github/actions/appium.sh
 
       - name: Run Appium ITs
-        uses: ./.github/actions/build-spectrum
+        uses: ./.github/actions/maven-build
         with:
           args: -DappiumTests
           profiles: appium

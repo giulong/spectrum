@@ -1,14 +1,5 @@
 name: Build Spectrum
-description: Setup the proper jdk container
-
-inputs:
-  args:
-    description: Additional Maven arguments
-    default: ''
-
-  profiles:
-    description: Active Maven profiles
-    default: all
+description: Builds just the framework, skipping unit tests
 
 runs:
   using: composite
@@ -25,10 +16,4 @@ runs:
 
     - name: Building Spectrum
       shell: bash
-      run: >
-        ./mvnw install
-        -DskipSign
-        -Dmaven.plugin.validation=BRIEF
-        ${{ inputs.args }}
-        -ntp
-        -P ${{ inputs.profiles }}
+      run: ./mvnw install -DskipSign -Dmaven.plugin.validation=BRIEF -DskipTests -ntp -pl spectrum
