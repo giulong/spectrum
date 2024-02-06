@@ -10,18 +10,17 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>verify-browsers</artifactId>
+    <artifactId>verify-commons</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>io.github.giulong</groupId>
-            <artifactId>verify-commons</artifactId>
-            <version>${revision}</version>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest</artifactId>
-            <scope>test</scope>
+            <groupId>io.github.giulong</groupId>
+            <artifactId>spectrum</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -47,32 +46,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <skip>true</skip>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.ekryd.echo-maven-plugin</groupId>
-                <artifactId>echo-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>Chrome IT</id>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <reportNameSuffix>chrome</reportNameSuffix>
-                            <systemPropertyVariables>
-                                <spectrum.browser>chrome</spectrum.browser>
-                            </systemPropertyVariables>
-                            <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

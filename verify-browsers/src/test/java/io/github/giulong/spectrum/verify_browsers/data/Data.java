@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.it_verifier.data;
+package io.github.giulong.spectrum.verify_browsers.data;
 
 import lombok.Getter;
 

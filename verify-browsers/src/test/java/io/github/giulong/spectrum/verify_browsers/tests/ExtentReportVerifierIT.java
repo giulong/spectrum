@@ -1,8 +1,8 @@
-package io.github.giulong.spectrum.it_verifier.tests;
+package io.github.giulong.spectrum.verify_browsers.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it_verifier.data.Data;
-import io.github.giulong.spectrum.it_verifier.pages.ExtentReportPage;
+import io.github.giulong.spectrum.verify_browsers.data.Data;
+import io.github.giulong.spectrum.verify_browsers.pages.ExtentReportPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;

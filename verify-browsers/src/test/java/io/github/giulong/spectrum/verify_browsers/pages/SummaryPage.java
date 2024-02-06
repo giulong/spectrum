@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.it_verifier.pages;
+package io.github.giulong.spectrum.verify_browsers.pages;
 
 import io.github.giulong.spectrum.SpectrumPage;
 import lombok.Getter;

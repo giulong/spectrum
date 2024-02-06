@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.it_verifier;
+package io.github.giulong.spectrum.verify_commons;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;

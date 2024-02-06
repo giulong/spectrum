@@ -14,23 +14,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-xml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>io.github.giulong</groupId>
-            <artifactId>spectrum</artifactId>
-            <version>${project.version}</version>
-            <scope>test</scope>
+            <artifactId>verify-commons</artifactId>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

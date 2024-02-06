@@ -1,6 +1,6 @@
-package io.github.giulong.spectrum.it_verifier.unit;
+package io.github.giulong.spectrum.verify_appium.unit;
 
-import io.github.giulong.spectrum.it_verifier.FailsafeReportsVerifier;
+import io.github.giulong.spectrum.verify_commons.FailsafeReportsVerifier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
