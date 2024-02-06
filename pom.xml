@@ -83,7 +83,6 @@
         <profile>
             <id>browsers</id>
             <modules>
-                <module>spectrum</module>
                 <module>it</module>
                 <module>it-grid</module>
                 <module>it-testbook</module>
@@ -96,7 +95,6 @@
         <profile>
             <id>appium</id>
             <modules>
-                <module>spectrum</module>
                 <module>it-appium</module>
                 <module>verify-commons</module>
                 <module>verify-appium</module>

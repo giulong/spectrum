@@ -27,6 +27,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Building Spectrum
+        run: ./mvnw install -DskipSign -Dmaven.plugin.validation=BRIEF -DskipTests -ntp -pl spectrum
+
       - name: Run browsers ITs
         uses: ./.github/actions/build-spectrum
         with:
@@ -39,6 +42,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Building Spectrum
+        run: ./mvnw install -DskipSign -Dmaven.plugin.validation=BRIEF -DskipTests -ntp -pl spectrum
 
       - name: Install and Run Appium Server
         run: ./.github/actions/appium.sh
