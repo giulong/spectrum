@@ -276,6 +276,18 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.6.1</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>properties</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.3.2</version>
                 </plugin>
@@ -308,6 +320,7 @@
                         <target>21</target>
                         <encoding>UTF-8</encoding>
                         <compilerArgument>-Xlint:unchecked</compilerArgument>
+                        <proc>full</proc>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -323,7 +336,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.2.5</version>
                     <configuration>
-                        <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
+                        <argLine>@{argLine} -Dfile.encoding=UTF-8 -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</argLine>
                         <reportsDirectory>${reportsDirectory}</reportsDirectory>
                         <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
@@ -380,6 +393,10 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>

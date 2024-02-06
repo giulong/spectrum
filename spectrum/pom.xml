@@ -225,6 +225,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>@{argLine}
+                        -javaagent:${net.bytebuddy:byte-buddy-agent:jar}
                         --add-opens java.base/java.util=ALL-UNNAMED
                         --add-opens java.base/java.lang=ALL-UNNAMED
                         --add-opens java.base/sun.nio.fs=ALL-UNNAMED
