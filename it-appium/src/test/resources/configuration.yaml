@@ -12,7 +12,7 @@ webDriver:
     capabilities:
       app: src/test/resources/hello-world.apk # must be an absolute path if appium server is standalone (not started by Spectrum)
       avd: Pixel_3a_API_34_extension_level_7_arm64-v8a
-      avdArgs: -no-window
+      avdArgs: -no-window -no-audio -no-boot-anim -no-snapshot
 
 data:
   fqdn: io.github.giulong.spectrum.it_appium.data.Data
