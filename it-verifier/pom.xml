@@ -67,40 +67,23 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>Chrome IT</id>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                        <configuration>
+                            <reportNameSuffix>chrome</reportNameSuffix>
+                            <systemPropertyVariables>
+                                <spectrum.browser>chrome</spectrum.browser>
+                            </systemPropertyVariables>
+                            <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>chrome</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>Chrome IT</id>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                                <configuration>
-                                    <reportNameSuffix>chrome</reportNameSuffix>
-                                    <systemPropertyVariables>
-                                        <spectrum.browser>chrome</spectrum.browser>
-                                    </systemPropertyVariables>
-                                    <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
