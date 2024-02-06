@@ -23,7 +23,7 @@ public class GridEnvironment extends Environment {
     private URL url;
 
     @JsonPropertyDescription("Capabilities dedicated to executions on the grid")
-    private final Map<String, String> capabilities = new HashMap<>();
+    private final Map<String, Object> capabilities = new HashMap<>();
 
     @JsonPropertyDescription("Whether to search for files to upload on the client machine or not")
     protected boolean localFileDetector;

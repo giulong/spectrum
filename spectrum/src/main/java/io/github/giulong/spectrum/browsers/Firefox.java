@@ -27,7 +27,7 @@ public class Firefox extends Browser<FirefoxOptions, GeckoDriverService, GeckoDr
     }
 
     @Override
-    public FirefoxOptions mergeGridCapabilitiesFrom(final Map<String, String> gridCapabilities) {
+    public FirefoxOptions mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
         return capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 

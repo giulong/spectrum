@@ -28,7 +28,7 @@ public abstract class Browser<T extends MutableCapabilities, U extends DriverSer
 
     public abstract void buildCapabilities();
 
-    public abstract T mergeGridCapabilitiesFrom(Map<String, String> gridCapabilities);
+    public abstract T mergeGridCapabilitiesFrom(Map<String, Object> gridCapabilities);
 
     public synchronized WebDriver build() {
         buildCapabilities();

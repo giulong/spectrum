@@ -23,7 +23,7 @@ public abstract class Chromium<T extends ChromiumOptions<T>, U extends DriverSer
 
     @SuppressWarnings("unchecked")
     @Override
-    public T mergeGridCapabilitiesFrom(final Map<String, String> gridCapabilities) {
+    public T mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
         return (T) capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 }

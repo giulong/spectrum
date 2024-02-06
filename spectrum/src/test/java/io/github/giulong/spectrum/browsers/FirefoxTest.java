@@ -45,7 +45,7 @@ class FirefoxTest {
     private FirefoxDriverLogLevel firefoxDriverLogLevel;
 
     @Mock
-    private Map<String, String> gridCapabilities;
+    private Map<String, Object> gridCapabilities;
 
     @Captor
     private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;

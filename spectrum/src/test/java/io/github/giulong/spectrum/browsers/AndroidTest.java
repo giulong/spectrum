@@ -52,7 +52,7 @@ class AndroidTest {
     private Map<String, Object> capabilities;
 
     @Mock
-    private Map<String, String> gridCapabilities;
+    private Map<String, Object> gridCapabilities;
 
     @Mock
     private Configuration.WebDriver.Android androidConfiguration;

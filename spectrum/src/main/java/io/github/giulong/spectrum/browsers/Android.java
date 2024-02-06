@@ -41,7 +41,7 @@ public class Android extends Browser<UiAutomator2Options, AppiumDriverLocalServi
     }
 
     @Override
-    public UiAutomator2Options mergeGridCapabilitiesFrom(final Map<String, String> gridCapabilities) {
+    public UiAutomator2Options mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
         return capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 

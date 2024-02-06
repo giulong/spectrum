@@ -44,7 +44,7 @@ class GridEnvironmentTest {
     private ChromeOptions chromeOptions;
 
     @Mock
-    private Map<String, String> capabilities;
+    private Map<String, Object> capabilities;
 
     @InjectMocks
     private GridEnvironment gridEnvironment;
