@@ -68,6 +68,11 @@ If you need a fresh local build of just the framework's jar to use it locally, y
 
 `./mvnw install -DskipTests -DskipSign -Dmaven.plugin.validation=BRIEF -ntp -P framework-only`
 
+> ⚠️ Appium<br/>
+> In order to run Appium tests, you need to install it on your local machine. Be sure to check 
+> [Appium quickstart](http://appium.io/docs/en/latest/quickstart/).
+> You need Appium server and all the drivers for the corresponding technologies.
+
 ## Workflow
 
 We use [GitFlow](http://datasift.github.io/gitflow/IntroducingGitFlow.html):

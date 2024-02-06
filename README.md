@@ -99,6 +99,7 @@ Spectrum leverages these projects you should definitely check out!
 
 * [JUnit 5](https://junit.org/junit5/docs/current/user-guide/)
 * [Selenium](https://www.selenium.dev/)
+* [Appium](http://appium.io/docs/en/latest/)
 * [Lombok](https://projectlombok.org/)
 * [Extent Reports](https://www.extentreports.com/)
 * [FreeMarker](https://freemarker.apache.org/)
