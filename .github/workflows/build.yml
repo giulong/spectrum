@@ -56,6 +56,5 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2.9.0
         with:
           api-level: 29
-          arch: x86_64
           pre-emulator-launch-script: ./.github/actions/appium.sh
           script: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DappiumTests -ntp -P appium
