@@ -26,7 +26,7 @@ jobs:
           cache: maven
 
       - name: Spectrum submodule package
-        run: ./mvnw package -DskipSign -Dmaven.plugin.validation=BRIEF -ntp -pl spectrum
+        run: ./mvnw package -DskipSign -Dmaven.plugin.validation=NONE -ntp -pl spectrum
 
       - name: Generate JaCoCo Badge
         id: jacoco

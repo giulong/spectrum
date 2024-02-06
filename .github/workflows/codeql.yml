@@ -36,7 +36,7 @@ jobs:
         languages: ${{ matrix.language }}
 
     - name: mvn package
-      run: ./mvnw package -DskipTests -DskipSign -Dmaven.plugin.validation=BRIEF -ntp
+      run: ./mvnw package -DskipTests -DskipSign -Dmaven.plugin.validation=NONE -ntp
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2

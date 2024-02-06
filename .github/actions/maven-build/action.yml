@@ -28,7 +28,7 @@ runs:
       run: >
         ./mvnw install
         -DskipSign
-        -Dmaven.plugin.validation=BRIEF
+        -Dmaven.plugin.validation=NONE
         ${{ inputs.args }}
         -ntp
         -P ${{ inputs.profiles }}

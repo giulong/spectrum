@@ -16,4 +16,4 @@ runs:
 
     - name: Building Spectrum
       shell: bash
-      run: ./mvnw install -DskipSign -Dmaven.plugin.validation=BRIEF -DskipTests -ntp -pl spectrum
+      run: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DskipTests -ntp -pl spectrum
