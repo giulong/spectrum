@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.browsers;
 import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -27,22 +28,10 @@ public class Firefox extends Browser<FirefoxOptions, GeckoDriverService, GeckoDr
 
     @Override
     public FirefoxOptions mergeGridCapabilitiesFrom(final Map<String, String> gridCapabilities) {
-        gridCapabilities.forEach(this::setCapability);
-
-        return capabilities;
+        return capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 
     public void addPreference(final String key, final Object value) {
         capabilities.addPreference(key, value instanceof Boolean || value instanceof Integer ? value : String.valueOf(value));
-    }
-
-    public void setCapability(final String key, final Object value) {
-        if (value instanceof Boolean) {
-            capabilities.setCapability(key, (boolean) value);
-        } else if (value instanceof String) {
-            capabilities.setCapability(key, String.valueOf(value));
-        } else {
-            capabilities.setCapability(key, value);
-        }
     }
 }

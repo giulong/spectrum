@@ -9,13 +9,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedConstruction;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.List;
@@ -45,12 +44,19 @@ class FirefoxTest {
     @Mock
     private FirefoxDriverLogLevel firefoxDriverLogLevel;
 
+    @Mock
+    private Map<String, String> gridCapabilities;
+
+    @Captor
+    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
+
     @InjectMocks
     private Firefox firefox;
 
     @BeforeEach
     public void beforeEach() {
         Reflections.setParentField("configuration", firefox, firefox.getClass().getSuperclass(), configuration);
+        Reflections.setParentField("capabilities", firefox, firefox.getClass().getSuperclass(), firefoxOptions);
     }
 
     @Test
@@ -89,14 +95,17 @@ class FirefoxTest {
     @Test
     @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
     public void mergeGridCapabilitiesFrom() {
-        final String key = "one";
-        final String value = "value";
+        when(firefoxOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(firefoxOptions);
 
-        firefox.capabilities = firefoxOptions;
+        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
+            assertEquals(gridCapabilities, context.arguments().getFirst());
+        });
 
-        final FirefoxOptions actual = firefox.mergeGridCapabilitiesFrom(Map.of(key, value));
-        verify(firefoxOptions).setCapability(key, value);
+        final FirefoxOptions actual = firefox.mergeGridCapabilitiesFrom(gridCapabilities);
+        verify(firefoxOptions).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
         assertEquals(actual, firefoxOptions);
+
+        desiredCapabilitiesMockedConstruction.close();
     }
 
     @DisplayName("addPreference should add the correct preference based on the value type")
@@ -107,34 +116,6 @@ class FirefoxTest {
 
         firefox.addPreference("key", value);
         verify(firefoxOptions).addPreference("key", expected);
-    }
-
-    @Test
-    @DisplayName("setCapability should add the correct capabilities for boolean values")
-    public void setCapabilityBoolean() {
-        firefox.capabilities = firefoxOptions;
-
-        firefox.setCapability("key", true);
-        verify(firefoxOptions).setCapability("key", true);
-    }
-
-    @Test
-    @DisplayName("setCapability should add the correct capabilities for int values")
-    public void setCapabilityInteger() {
-        firefox.capabilities = firefoxOptions;
-
-        firefox.setCapability("key", 123);
-        verify(firefoxOptions).setCapability("key", 123);
-    }
-
-    @Test
-    @DisplayName("setCapability should add the correct capabilities for object values")
-    public void setCapabilityObject() {
-        firefox.capabilities = firefoxOptions;
-        final DummyObject dummyObject = new DummyObject();
-
-        firefox.setCapability("key", dummyObject);
-        verify(firefoxOptions).setCapability("key", dummyObject);
     }
 
     public static Stream<Arguments> valuesProvider() {

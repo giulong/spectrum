@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.browsers;
 import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
@@ -20,10 +21,9 @@ public abstract class Chromium<T extends ChromiumOptions<T>, U extends DriverSer
         capabilities.setCapability(LOGGING_PREFS, logPrefs);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public T mergeGridCapabilitiesFrom(final Map<String, String> gridCapabilities) {
-        gridCapabilities.forEach(this.capabilities::setCapability);
-
-        return capabilities;
+        return (T) capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 }
