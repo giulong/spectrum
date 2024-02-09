@@ -11,7 +11,7 @@ webDriver:
   android:
     capabilities:
       app: src/test/resources/hello-world.apk
-      avd: Pixel_3a_API_34_extension_level_7_arm64-v8a
+      avd: phone
       avdArgs: -no-window -no-audio -no-boot-anim -no-snapshot
 
 data:
