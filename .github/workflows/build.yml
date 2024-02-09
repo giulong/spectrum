@@ -52,30 +52,11 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      #- name: AVD cache
-      #  uses: actions/cache@v4
-      #  id: avd-cache
-      #  with:
-      #    path: |
-      #      ~/.android/avd/*
-      #      ~/.android/adb*
-      #    key: avd
-
       - name: Install and Run Appium Server
         run: |
           npm i -g appium
           appium driver install uiautomator2
           appium &>/dev/null &
-
-      - name: create AVD and generate snapshot for caching
-       # if: steps.avd-cache.outputs.cache-hit != 'true'
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
-          arch: arm64-v8a
-          force-avd-creation: false
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: echo "Generated AVD snapshot for caching."
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
@@ -83,7 +64,6 @@ jobs:
           api-level: 31
           arch: arm64-v8a
           avd-name: phone
-          force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DappiumTests -ntp -P appium
