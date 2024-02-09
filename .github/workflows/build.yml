@@ -52,14 +52,14 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: AVD cache
-        uses: actions/cache@v4
-        id: avd-cache
-        with:
-          path: |
-            ~/.android/avd/*
-            ~/.android/adb*
-          key: avd
+      #- name: AVD cache
+      #  uses: actions/cache@v4
+      #  id: avd-cache
+      #  with:
+      #    path: |
+      #      ~/.android/avd/*
+      #      ~/.android/adb*
+      #    key: avd
 
       - name: Install and Run Appium Server
         run: |
