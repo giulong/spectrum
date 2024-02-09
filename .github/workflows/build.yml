@@ -46,12 +46,6 @@ jobs:
       - name: Building Spectrum
         uses: ./.github/actions/build-spectrum
 
-      - name: Install and Run Appium Server
-        run: |
-          npm i -g appium
-          appium driver install uiautomator2
-          appium &>/dev/null &
-
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
@@ -66,6 +60,13 @@ jobs:
             ~/.android/avd/*
             ~/.android/adb*
           key: avd
+
+      - name: Install and Run Appium Server
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        run: |
+          npm i -g appium
+          appium driver install uiautomator2
+          appium &>/dev/null &
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
