@@ -62,7 +62,6 @@ jobs:
           key: avd
 
       - name: Install and Run Appium Server
-        if: steps.avd-cache.outputs.cache-hit != 'true'
         run: |
           npm i -g appium
           appium driver install uiautomator2
