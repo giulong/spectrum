@@ -180,6 +180,45 @@ class EventsListenerTest {
 
         final Object[] args = new Object[]{webElement1, s, null, webElement2, webElement3};
 
+        assertEquals(expected, eventsListener.parse(args, "<code>%s</code>"));
+    }
+
+    @Test
+    @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list, and using String.valueOf to avoid NPEs, applying no additional format by default")
+    public void parseDefault() {
+        final String webElement1ToString = "[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]";
+        final String webElement2ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]";
+        final String webElement3ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]";
+        final String expected1 = "id: message";
+        final String expected2 = "css selector: #gettotal -> tag name: button";
+        final String expected3 = "css selector: #get1-.total -> tag name: button";
+
+        final String s = "string";
+        final List<String> expected = Arrays.asList(
+                "id: message",
+                s,
+                "null",
+                "css selector: #gettotal -> tag name: button",
+                "css selector: #get1-.total -> tag name: button"
+        );
+
+        when(webElement1.toString()).thenReturn(webElement1ToString);
+        when(webElement2.toString()).thenReturn(webElement2ToString);
+        when(webElement3.toString()).thenReturn(webElement3ToString);
+        when(locatorPattern.matcher(webElement1ToString)).thenReturn(matcher);
+        when(locatorPattern.matcher(webElement2ToString)).thenReturn(matcher);
+        when(locatorPattern.matcher(webElement3ToString)).thenReturn(matcher);
+        when(matcher.find())
+                .thenReturn(true).thenReturn(false)
+                .thenReturn(true).thenReturn(false)
+                .thenReturn(true).thenReturn(false);
+        when(matcher.group(1))
+                .thenReturn(expected1)
+                .thenReturn(expected2)
+                .thenReturn(expected3);
+
+        final Object[] args = new Object[]{webElement1, s, null, webElement2, webElement3};
+
         assertEquals(expected, eventsListener.parse(args));
     }
 
@@ -222,6 +261,7 @@ class EventsListenerTest {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(TRACE);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(TRACE);
+        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
