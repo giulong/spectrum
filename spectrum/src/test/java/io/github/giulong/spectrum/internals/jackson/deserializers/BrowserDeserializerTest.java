@@ -2,10 +2,7 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import io.github.giulong.spectrum.browsers.Browser;
-import io.github.giulong.spectrum.browsers.Chrome;
-import io.github.giulong.spectrum.browsers.Edge;
-import io.github.giulong.spectrum.browsers.Firefox;
+import io.github.giulong.spectrum.browsers.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,7 +67,8 @@ class BrowserDeserializerTest {
                 arguments("${justToTestInterpolation:-chrome}", mock(Chrome.class)),
                 arguments("chrome", mock(Chrome.class)),
                 arguments("firefox", mock(Firefox.class)),
-                arguments("edge", mock(Edge.class))
+                arguments("edge", mock(Edge.class)),
+                arguments("android", mock(Android.class))
         );
     }
 }

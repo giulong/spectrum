@@ -261,7 +261,7 @@ class EventsListenerTest {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(TRACE);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(TRACE);
-        when(event.getWait()).thenReturn(wait);
+        when(event.getWait()).thenReturn(0L);
 
         eventsListener.listen(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
