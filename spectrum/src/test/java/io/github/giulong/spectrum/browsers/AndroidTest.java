@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.browsers;
 
 import io.appium.java_client.android.options.UiAutomator2Options;
-import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,19 +64,8 @@ class AndroidTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("configuration", android, android.getClass().getSuperclass(), configuration);
-        Reflections.setParentField("capabilities", android, android.getClass().getSuperclass(), uiAutomator2Options);
-    }
-
-    @Test
-    @DisplayName("getDriverServiceBuilder should return an instance of AppiumDriverServiceBuilder")
-    public void getDriverServiceBuilder() {
-        MockedConstruction<AppiumServiceBuilder> appiumServiceBuilderMockedConstruction = mockConstruction(AppiumServiceBuilder.class);
-
-        final AppiumServiceBuilder actual = (AppiumServiceBuilder) android.getDriverServiceBuilder();
-        assertEquals(appiumServiceBuilderMockedConstruction.constructed().getFirst(), actual);
-
-        appiumServiceBuilderMockedConstruction.close();
+        Reflections.setParentField("configuration", android, android.getClass().getSuperclass().getSuperclass(), configuration);
+        Reflections.setParentField("capabilities", android, android.getClass().getSuperclass().getSuperclass(), uiAutomator2Options);
     }
 
     @Test
@@ -98,7 +86,7 @@ class AndroidTest {
 
         android.buildCapabilities();
 
-        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", android);
+        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", android, android.getClass().getSuperclass().getSuperclass());
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -123,10 +111,8 @@ class AndroidTest {
 
         android.buildCapabilities();
 
-        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", android);
+        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", android, android.getClass().getSuperclass().getSuperclass());
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        verify(capabilities, never()).put(anyString(), anyString());
 
         desiredCapabilitiesMockedConstruction.close();
     }

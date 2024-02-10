@@ -18,8 +18,8 @@ public final class Reflections {
     }
 
     @SneakyThrows
-    public static Field getParentField(final String fieldName, final Object object) {
-        final Field field = object.getClass().getSuperclass().getDeclaredField(fieldName);
+    public static Field getParentField(final String fieldName, final Class<?> superclass) {
+        final Field field = superclass.getDeclaredField(fieldName);
         field.setAccessible(true);
 
         return field;
@@ -31,8 +31,8 @@ public final class Reflections {
     }
 
     @SneakyThrows
-    public static Object getParentFieldValue(final String fieldName, final Object object) {
-        return getParentField(fieldName, object).get(object);
+    public static Object getParentFieldValue(final String fieldName, final Object object, final Class<?> superclass) {
+        return getParentField(fieldName, superclass).get(object);
     }
 
     @SneakyThrows

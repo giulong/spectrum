@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.utils.environments;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.github.giulong.spectrum.browsers.Browser;
@@ -72,7 +72,7 @@ public class AppiumEnvironment extends Environment {
     public WebDriver setupFor(final Browser<?, ?, ?> browser) {
         log.info("Running with appium");
 
-        return new AndroidDriver(url, browser.getCapabilities());
+        return new AppiumDriver(url, browser.getCapabilities());
     }
 
     @Override

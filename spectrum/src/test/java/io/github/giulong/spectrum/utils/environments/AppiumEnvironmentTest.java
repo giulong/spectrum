@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils.environments;
 
-import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
@@ -141,14 +141,14 @@ class AppiumEnvironmentTest {
     public void setupFor() {
         doReturn(uiAutomator2Options).when(browser).getCapabilities();
 
-        MockedConstruction<AndroidDriver> androidDriverMockedConstruction = mockConstruction(AndroidDriver.class, (mock, context) -> {
+        MockedConstruction<AppiumDriver> appiumDriverMockedConstruction = mockConstruction(AppiumDriver.class, (mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(uiAutomator2Options, context.arguments().get(1));
         });
 
-        assertEquals(appiumEnvironment.setupFor(browser), androidDriverMockedConstruction.constructed().getFirst());
+        assertEquals(appiumEnvironment.setupFor(browser), appiumDriverMockedConstruction.constructed().getFirst());
 
-        androidDriverMockedConstruction.close();
+        appiumDriverMockedConstruction.close();
     }
 
     @Test

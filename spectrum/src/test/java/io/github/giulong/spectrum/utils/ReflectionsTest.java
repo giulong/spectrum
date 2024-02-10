@@ -32,7 +32,7 @@ class ReflectionsTest {
         final Dummy dummy = new Dummy(null, fieldName);
         final Field fieldString = DummyParent.class.getDeclaredField(fieldName);
 
-        assertEquals(fieldString, Reflections.getParentField(fieldName, dummy));
+        assertEquals(fieldString, Reflections.getParentField(fieldName, dummy.getClass().getSuperclass()));
     }
 
     @Test
@@ -52,7 +52,7 @@ class ReflectionsTest {
         final String value = "value";
         final Dummy dummy = new Dummy(null, value);
 
-        assertEquals(value, Reflections.getParentFieldValue(fieldName, dummy));
+        assertEquals(value, Reflections.getParentFieldValue(fieldName, dummy, dummy.getClass().getSuperclass()));
     }
 
     @Test
