@@ -68,7 +68,6 @@
             <activation>
                 <property>
                     <name>browsersTests</name>
-                    <value>true</value>
                 </property>
             </activation>
             <build>

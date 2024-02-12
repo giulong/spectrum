@@ -60,7 +60,7 @@ Where:
 * the `-DbrowsersTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
   running with these active profiles: `-P chrome,firefox,edge`.
 * the `-DappiumTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
-  running with these active profiles: `-P uiAutomator2`.
+  running with these active profiles: `-P appium`.
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.
 * the `-ntp` option is [Maven's](https://maven.apache.org/docs/3.6.1/release-notes.html#user-visible-changes) shorthand for `--no-transfer-progress`.
 
