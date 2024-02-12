@@ -148,8 +148,14 @@ public class Configuration {
         @JsonPropertyDescription("Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options")
         private Edge edge;
 
-        @JsonPropertyDescription("Android capabilities. See: https://appium.io/docs/en/latest/guides/caps/")
-        private Android android;
+        @JsonPropertyDescription("Android UiAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities")
+        private UiAutomator2 uiAutomator2;
+
+        @JsonPropertyDescription("Android Espresso capabilities. See: https://github.com/appium/appium-espresso-driver#capabilities")
+        private Espresso espresso;
+
+        @JsonPropertyDescription("XCUITest capabilities. See: https://github.com/appium/appium-xcuitest-driver")
+        private XCUITest xcuiTest;
 
         @JsonPropertyDescription("WebDriver's internal logging levels")
         private Logs logs;
@@ -216,9 +222,25 @@ public class Configuration {
 
         @Getter
         @Generated
-        public static class Android {
+        public static class UiAutomator2 {
 
-            @JsonPropertyDescription("Android's capabilities")
+            @JsonPropertyDescription("Android UiAutomator2's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class Espresso {
+
+            @JsonPropertyDescription("Android Espresso's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class XCUITest {
+
+            @JsonPropertyDescription("iOS XCUITest's capabilities")
             private Map<String, Object> capabilities;
         }
 

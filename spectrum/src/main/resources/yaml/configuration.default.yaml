@@ -91,7 +91,15 @@ webDriver:
         download.default_directory: ${downloadsFolder}
 
   # UIAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities
-  android:
+  uiAutomator2:
+    capabilities: { }
+
+  # Espresso capabilities. See: https://github.com/appium/appium-espresso-driver#capabilities
+  espresso:
+    capabilities: { }
+
+  # XCUITest capabilities. See: https://github.com/appium/appium-xcuitest-driver
+  xcuiTest:
     capabilities: { }
 
   # WebDriver's internal logging levels

@@ -1,10 +1,9 @@
 package io.github.giulong.spectrum.utils.environments;
 
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.browsers.Appium;
 import io.github.giulong.spectrum.internals.AppiumLog;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -53,7 +52,7 @@ class AppiumEnvironmentTest {
     private Configuration.Runtime runtime;
 
     @Mock
-    private Browser<?, ?, ?> browser;
+    private Appium<?, ?> browser;
 
     @Mock
     private AppiumServiceBuilder builder;
@@ -65,7 +64,7 @@ class AppiumEnvironmentTest {
     private Map<String, String> capabilities;
 
     @Mock
-    private UiAutomator2Options uiAutomator2Options;
+    private AppiumDriver appiumDriver;
 
     @Captor
     private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
@@ -137,18 +136,11 @@ class AppiumEnvironmentTest {
     }
 
     @Test
-    @DisplayName("setupFor should return the AndroidDriver with the capabilities of the provided browser")
+    @DisplayName("setupFor should delegate the webDriver construction to the actual subclass")
     public void setupFor() {
-        doReturn(uiAutomator2Options).when(browser).getCapabilities();
+        doReturn(appiumDriver).when(browser).buildDriverFor(url);
 
-        MockedConstruction<AppiumDriver> appiumDriverMockedConstruction = mockConstruction(AppiumDriver.class, (mock, context) -> {
-            assertEquals(url, context.arguments().getFirst());
-            assertEquals(uiAutomator2Options, context.arguments().get(1));
-        });
-
-        assertEquals(appiumEnvironment.setupFor(browser), appiumDriverMockedConstruction.constructed().getFirst());
-
-        appiumDriverMockedConstruction.close();
+        assertEquals(appiumDriver, appiumEnvironment.setupFor(browser));
     }
 
     @Test

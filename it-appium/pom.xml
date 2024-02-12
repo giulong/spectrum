@@ -59,7 +59,7 @@
 
     <profiles>
         <profile>
-            <id>android</id>
+            <id>uiAutomator2</id>
             <activation>
                 <property>
                     <name>appiumTests</name>
@@ -73,16 +73,16 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>Android IT</id>
+                                <id>UiAutomator2 IT</id>
                                 <goals>
                                     <goal>integration-test</goal>
                                 </goals>
                                 <configuration>
-                                    <reportNameSuffix>android</reportNameSuffix>
+                                    <reportNameSuffix>uiAutomator2</reportNameSuffix>
                                     <systemPropertyVariables>
-                                        <spectrum.browser>android</spectrum.browser>
+                                        <spectrum.browser>uiAutomator2</spectrum.browser>
                                     </systemPropertyVariables>
-                                    <summaryFile>target/failsafe-reports/failsafe-android.xml</summaryFile>
+                                    <summaryFile>target/failsafe-reports/failsafe-uiAutomator2.xml</summaryFile>
                                 </configuration>
                             </execution>
                         </executions>

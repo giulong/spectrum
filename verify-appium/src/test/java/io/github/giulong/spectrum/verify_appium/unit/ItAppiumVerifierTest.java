@@ -19,6 +19,6 @@ public class ItAppiumVerifierTest {
     @Test
     @DisplayName("android should have run with the correct results")
     public void verifyAndroid() {
-        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre("it-appium", "android", COMPLETED, ERRORS, FAILURES, SKIPPED), "ANDROID");
+        assertTrue(FAILSAFE_REPORTS_VERIFIER.verifyResultsAre("it-appium", "uiAutomator2", COMPLETED, ERRORS, FAILURES, SKIPPED), "ANDROID");
     }
 }

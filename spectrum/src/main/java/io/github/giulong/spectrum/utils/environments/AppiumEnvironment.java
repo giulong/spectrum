@@ -2,9 +2,9 @@ package io.github.giulong.spectrum.utils.environments;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.github.giulong.spectrum.browsers.Appium;
 import io.github.giulong.spectrum.browsers.Browser;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.internals.AppiumLog;
@@ -40,7 +40,7 @@ public class AppiumEnvironment extends Environment {
     private int port;
 
     @JsonPropertyDescription("Capabilities specific of the Appium Server")
-    private final Map<String, String> capabilities = new HashMap<>();
+    private final Map<String, Object> capabilities = new HashMap<>();
 
     @Override
     public void sessionOpened() {
@@ -72,7 +72,7 @@ public class AppiumEnvironment extends Environment {
     public WebDriver setupFor(final Browser<?, ?, ?> browser) {
         log.info("Running with appium");
 
-        return new AppiumDriver(url, browser.getCapabilities());
+        return ((Appium<?, ?>) browser).buildDriverFor(url);
     }
 
     @Override

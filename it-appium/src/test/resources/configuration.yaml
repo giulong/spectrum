@@ -1,6 +1,6 @@
 runtime:
   environment:
-    appium: { }
+    appium: { } # server configuration. Here you can set Appium server capabilities
 
 webDriver:
   waits:
@@ -8,7 +8,7 @@ webDriver:
     downloadTimeout: 5
   logs:
     level: INFO
-  android:
+  uiAutomator2:
     capabilities:
       app: src/test/resources/hello-world.apk
       avd: phone

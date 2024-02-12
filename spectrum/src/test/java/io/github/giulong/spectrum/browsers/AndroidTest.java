@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.browsers;
 
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -7,24 +8,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.net.URL;
 import java.time.Duration;
-import java.util.Map;
 
-import static io.github.giulong.spectrum.browsers.Android.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Android")
 class AndroidTest {
-
-    @Mock
-    private UiAutomator2Options uiAutomator2Options;
 
     @Mock
     private WebDriver androidWebDriver;
@@ -36,101 +34,23 @@ class AndroidTest {
     private WebDriver.Timeouts timeouts;
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
-    private Configuration.WebDriver webDriver;
-
-    @Mock
     private Configuration.WebDriver.Waits waits;
 
     @Mock
     private Duration duration;
 
     @Mock
-    private Map<String, Object> capabilities;
+    private URL url;
 
     @Mock
-    private Map<String, Object> gridCapabilities;
-
-    @Mock
-    private Configuration.WebDriver.Android androidConfiguration;
-
-    @Captor
-    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
+    private UiAutomator2Options capabilities;
 
     @InjectMocks
-    private Android android;
+    private UiAutomator2 android;
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("configuration", android, android.getClass().getSuperclass().getSuperclass(), configuration);
-        Reflections.setParentField("capabilities", android, android.getClass().getSuperclass().getSuperclass(), uiAutomator2Options);
-    }
-
-    @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
-    public void buildCapabilities() {
-        final String appPath = "relative/path";
-        final String appAbsolutePath = System.getProperty("user.dir") + "/relative/path";
-
-        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
-
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getAndroid()).thenReturn(androidConfiguration);
-        when(androidConfiguration.getCapabilities()).thenReturn(capabilities);
-
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
-
-        android.buildCapabilities();
-
-        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", android, android.getClass().getSuperclass().getSuperclass());
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
-
-        desiredCapabilitiesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
-    public void buildCapabilitiesAbsoluteAppPath() {
-        final String appPath = "/absolute/path";
-
-        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
-
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getAndroid()).thenReturn(androidConfiguration);
-        when(androidConfiguration.getCapabilities()).thenReturn(capabilities);
-
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
-
-        android.buildCapabilities();
-
-        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", android, android.getClass().getSuperclass().getSuperclass());
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        desiredCapabilitiesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        when(uiAutomator2Options.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(uiAutomator2Options);
-
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(gridCapabilities, context.arguments().getFirst());
-        });
-
-        final UiAutomator2Options actual = android.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(uiAutomator2Options).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, uiAutomator2Options);
-
-        desiredCapabilitiesMockedConstruction.close();
+        Reflections.setParentField("capabilities", android, android.getClass().getSuperclass().getSuperclass().getSuperclass(), capabilities);
     }
 
     @Test
@@ -144,5 +64,18 @@ class AndroidTest {
         android.configureWaitsOf(androidWebDriver, waits);
 
         verify(timeouts).implicitlyWait(duration);
+    }
+
+    @Test
+    @DisplayName("buildDriverFor should return a new instance of AndroidDriver for the provided url and the instance capabilities")
+    public void buildDriverFor() {
+        MockedConstruction<AndroidDriver> androidDriverMockedConstruction = mockConstruction(AndroidDriver.class, (mock, context) -> {
+            assertEquals(url, context.arguments().getFirst());
+            assertEquals(capabilities, context.arguments().get(1));
+        });
+
+        assertEquals(android.buildDriverFor(url), androidDriverMockedConstruction.constructed().getFirst());
+
+        androidDriverMockedConstruction.close();
     }
 }

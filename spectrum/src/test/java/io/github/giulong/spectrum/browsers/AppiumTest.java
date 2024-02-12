@@ -24,7 +24,7 @@ class AppiumTest {
     private Map<String, Object> capabilities;
 
     @InjectMocks
-    private Android appium;
+    private UiAutomator2 appium;
 
     @Test
     @DisplayName("getDriverServiceBuilder should return an instance of AppiumDriverServiceBuilder")
