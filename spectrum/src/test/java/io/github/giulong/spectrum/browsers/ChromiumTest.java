@@ -49,7 +49,7 @@ class ChromiumTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("capabilities", chrome, chrome.getClass().getSuperclass().getSuperclass(), chromeOptions);
+        Reflections.setField("capabilities", chrome, chromeOptions);
     }
 
     @Test

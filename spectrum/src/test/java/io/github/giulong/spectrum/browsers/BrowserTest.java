@@ -96,7 +96,7 @@ class BrowserTest {
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        Reflections.setParentField("configuration", browser, browser.getClass().getSuperclass().getSuperclass(), configuration);
+        Reflections.setField("configuration", browser, configuration);
     }
 
     @AfterEach

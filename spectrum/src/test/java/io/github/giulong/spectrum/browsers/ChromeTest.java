@@ -54,7 +54,7 @@ class ChromeTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("configuration", chrome, chrome.getClass().getSuperclass().getSuperclass(), configuration);
+        Reflections.setField("configuration", chrome, configuration);
     }
 
     @Test

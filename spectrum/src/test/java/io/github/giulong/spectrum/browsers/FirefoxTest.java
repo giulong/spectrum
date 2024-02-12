@@ -55,8 +55,8 @@ class FirefoxTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("configuration", firefox, firefox.getClass().getSuperclass(), configuration);
-        Reflections.setParentField("capabilities", firefox, firefox.getClass().getSuperclass(), firefoxOptions);
+        Reflections.setField("configuration", firefox, configuration);
+        Reflections.setField("capabilities", firefox, firefoxOptions);
     }
 
     @Test

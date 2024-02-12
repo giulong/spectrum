@@ -76,9 +76,9 @@ class FileReporterTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("output", fileReporter, fileReporter.getClass().getSuperclass(), OUTPUT);
-        Reflections.setParentField("retention", fileReporter, fileReporter.getClass().getSuperclass(), retention);
-        Reflections.setParentField("metadataManager", fileReporter, fileReporter.getClass().getSuperclass(), metadataManager);
+        Reflections.setField("output", fileReporter, OUTPUT);
+        Reflections.setField("retention", fileReporter, retention);
+        Reflections.setField("metadataManager", fileReporter, metadataManager);
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
         metadataManagerMockedStatic = mockStatic(MetadataManager.class);

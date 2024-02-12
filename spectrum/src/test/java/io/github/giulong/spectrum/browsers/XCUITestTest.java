@@ -52,8 +52,8 @@ class XCUITestTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("configuration", xcuiTest, xcuiTest.getClass().getSuperclass().getSuperclass(), configuration);
-        Reflections.setParentField("capabilities", xcuiTest, xcuiTest.getClass().getSuperclass().getSuperclass(), xcuiTestOptions);
+        Reflections.setField("configuration", xcuiTest, configuration);
+        Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
     }
 
     @Test
@@ -74,7 +74,7 @@ class XCUITestTest {
 
         xcuiTest.buildCapabilities();
 
-        final XCUITestOptions actual = (XCUITestOptions) Reflections.getParentFieldValue("capabilities", xcuiTest, xcuiTest.getClass().getSuperclass().getSuperclass());
+        final XCUITestOptions actual = (XCUITestOptions) Reflections.getFieldValue("capabilities", xcuiTest);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -99,7 +99,7 @@ class XCUITestTest {
 
         xcuiTest.buildCapabilities();
 
-        final XCUITestOptions actual = (XCUITestOptions) Reflections.getParentFieldValue("capabilities", xcuiTest, xcuiTest.getClass().getSuperclass().getSuperclass());
+        final XCUITestOptions actual = (XCUITestOptions) Reflections.getFieldValue("capabilities", xcuiTest);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

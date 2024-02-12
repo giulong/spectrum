@@ -47,7 +47,7 @@ class CsvTestBookParserTest {
         final String path = "path";
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read(String.format("/%s", path))).thenReturn(line);
-        Reflections.setParentField("path", testBookParser, testBookParser.getClass().getSuperclass().getSuperclass(), path);
+        Reflections.setField("path", testBookParser, path);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> testBookParser.parse());
         assertEquals(String.format("Line '%s' in TestBook doesn't match pattern %s", line, testBookParser.getRegex()), exception.getMessage());
@@ -60,7 +60,7 @@ class CsvTestBookParserTest {
         final String path = "path";
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read(String.format("/%s", path))).thenReturn(line);
-        Reflections.setParentField("path", testBookParser, testBookParser.getClass().getSuperclass().getSuperclass(), path);
+        Reflections.setField("path", testBookParser, path);
 
         Assertions.assertDoesNotThrow(() -> testBookParser.parse());
     }

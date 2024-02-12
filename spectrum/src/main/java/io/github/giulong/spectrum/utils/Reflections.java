@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 @UtilityClass
 @SuppressWarnings("checkstyle:HideUtilityClassConstructor")
@@ -11,15 +12,12 @@ public final class Reflections {
 
     @SneakyThrows
     public static Field getField(final String fieldName, final Object object) {
-        final Field field = object.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
+        Class<?> clazz = object.getClass();
+        while (clazz != Object.class && Arrays.stream(clazz.getDeclaredFields()).map(Field::getName).noneMatch(n -> n.equals(fieldName))) {
+            clazz = clazz.getSuperclass();
+        }
 
-        return field;
-    }
-
-    @SneakyThrows
-    public static Field getParentField(final String fieldName, final Class<?> superclass) {
-        final Field field = superclass.getDeclaredField(fieldName);
+        final Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);
 
         return field;
@@ -31,21 +29,8 @@ public final class Reflections {
     }
 
     @SneakyThrows
-    public static Object getParentFieldValue(final String fieldName, final Object object, final Class<?> superclass) {
-        return getParentField(fieldName, superclass).get(object);
-    }
-
-    @SneakyThrows
     public static void setField(final String fieldName, final Object object, final Object value) {
-        final Field field = object.getClass().getDeclaredField(fieldName);
-        field.setAccessible(true);
-        field.set(object, value);
-    }
-
-    @SneakyThrows
-    public static void setParentField(final String fieldName, final Object object, final Class<?> superclass, final Object value) {
-        final Field field = superclass.getDeclaredField(fieldName);
-        field.setAccessible(true);
+        final Field field = getField(fieldName, object);
         field.set(object, value);
     }
 

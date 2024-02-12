@@ -47,8 +47,8 @@ class EspressoTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("configuration", espresso, espresso.getClass().getSuperclass().getSuperclass().getSuperclass(), configuration);
-        Reflections.setParentField("capabilities", espresso, espresso.getClass().getSuperclass().getSuperclass().getSuperclass(), espressoOptions);
+        Reflections.setField("configuration", espresso, configuration);
+        Reflections.setField("capabilities", espresso, espressoOptions);
     }
 
     @Test
@@ -69,7 +69,7 @@ class EspressoTest {
 
         espresso.buildCapabilities();
 
-        final EspressoOptions actual = (EspressoOptions) Reflections.getParentFieldValue("capabilities", espresso, espresso.getClass().getSuperclass().getSuperclass().getSuperclass());
+        final EspressoOptions actual = (EspressoOptions) Reflections.getFieldValue("capabilities", espresso);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -94,7 +94,7 @@ class EspressoTest {
 
         espresso.buildCapabilities();
 
-        final EspressoOptions actual = (EspressoOptions) Reflections.getParentFieldValue("capabilities", espresso, espresso.getClass().getSuperclass().getSuperclass().getSuperclass());
+        final EspressoOptions actual = (EspressoOptions) Reflections.getFieldValue("capabilities", espresso);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

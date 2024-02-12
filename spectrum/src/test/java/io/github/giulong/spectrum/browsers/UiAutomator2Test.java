@@ -47,8 +47,8 @@ class UiAutomator2Test {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("configuration", uiAutomator2, uiAutomator2.getClass().getSuperclass().getSuperclass().getSuperclass(), configuration);
-        Reflections.setParentField("capabilities", uiAutomator2, uiAutomator2.getClass().getSuperclass().getSuperclass().getSuperclass(), uiAutomator2Options);
+        Reflections.setField("configuration", uiAutomator2, configuration);
+        Reflections.setField("capabilities", uiAutomator2, uiAutomator2Options);
     }
 
     @Test
@@ -69,7 +69,7 @@ class UiAutomator2Test {
 
         uiAutomator2.buildCapabilities();
 
-        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", uiAutomator2, uiAutomator2.getClass().getSuperclass().getSuperclass().getSuperclass());
+        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getFieldValue("capabilities", uiAutomator2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -94,7 +94,7 @@ class UiAutomator2Test {
 
         uiAutomator2.buildCapabilities();
 
-        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getParentFieldValue("capabilities", uiAutomator2, uiAutomator2.getClass().getSuperclass().getSuperclass().getSuperclass());
+        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getFieldValue("capabilities", uiAutomator2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

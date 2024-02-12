@@ -50,7 +50,7 @@ class AndroidTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("capabilities", android, android.getClass().getSuperclass().getSuperclass().getSuperclass(), capabilities);
+        Reflections.setField("capabilities", android, capabilities);
     }
 
     @Test

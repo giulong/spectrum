@@ -26,16 +26,6 @@ class ReflectionsTest {
     }
 
     @Test
-    @DisplayName("getParentField should return the field with the provided name on the provided object's parent")
-    public void getParentField() throws NoSuchFieldException {
-        final String fieldName = "parentField";
-        final Dummy dummy = new Dummy(null, fieldName);
-        final Field fieldString = DummyParent.class.getDeclaredField(fieldName);
-
-        assertEquals(fieldString, Reflections.getParentField(fieldName, dummy.getClass().getSuperclass()));
-    }
-
-    @Test
     @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object")
     public void getFieldValue() {
         final String fieldName = "fieldString";
@@ -43,16 +33,6 @@ class ReflectionsTest {
         final Dummy dummy = new Dummy(value);
 
         assertEquals(value, Reflections.getFieldValue(fieldName, dummy));
-    }
-
-    @Test
-    @DisplayName("getParentFieldValue should return the value of the field with the provided name on the provided object's parent")
-    public void getParentFieldValue() {
-        final String fieldName = "parentField";
-        final String value = "value";
-        final Dummy dummy = new Dummy(null, value);
-
-        assertEquals(value, Reflections.getParentFieldValue(fieldName, dummy, dummy.getClass().getSuperclass()));
     }
 
     @Test
@@ -77,18 +57,6 @@ class ReflectionsTest {
 
         Reflections.setField(fieldString, dummy, value);
         assertEquals(value, fieldString.get(dummy));
-    }
-
-    @Test
-    @DisplayName("setParentField should set the provided field of a superclass on the provided object with the provided value")
-    public void setParentField() throws NoSuchFieldException, IllegalAccessException {
-        final String fieldName = "parentField";
-        final String value = "value";
-        final Dummy dummy = new Dummy(null);
-        final Field parentField = DummyParent.class.getDeclaredField(fieldName);
-
-        Reflections.setParentField(fieldName, dummy, DummyParent.class, value);
-        assertEquals(value, parentField.get(dummy));
     }
 
     @Test

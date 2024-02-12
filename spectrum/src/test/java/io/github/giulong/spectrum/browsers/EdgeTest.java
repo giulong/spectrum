@@ -52,7 +52,7 @@ class EdgeTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setParentField("configuration", edge, edge.getClass().getSuperclass().getSuperclass(), configuration);
+        Reflections.setField("configuration", edge, configuration);
     }
 
     @Test
