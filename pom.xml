@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.7.3</revision>
+        <revision>1.7.4</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
@@ -49,7 +49,7 @@
         <jackson.version>2.16.1</jackson.version>
         <simplejavamail.version>8.6.2</simplejavamail.version>
         <jsonschemagenerator.version>4.33.1</jsonschemagenerator.version>
-        <slf4j.version>2.0.11</slf4j.version>
+        <slf4j.version>2.0.12</slf4j.version>
         <selenium.version>4.17.0</selenium.version>
     </properties>
 
@@ -189,7 +189,7 @@
             <dependency>
                 <groupId>org.codehaus.janino</groupId>
                 <artifactId>janino</artifactId>
-                <version>3.1.11</version>
+                <version>3.1.12</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -216,7 +216,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.38.0</version>
+                <version>1.38.1</version>
             </dependency>
 
             <dependency>
