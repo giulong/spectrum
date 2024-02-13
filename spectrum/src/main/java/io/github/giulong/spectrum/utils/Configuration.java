@@ -157,6 +157,9 @@ public class Configuration {
         @JsonPropertyDescription("XCUITest capabilities. See: https://github.com/appium/appium-xcuitest-driver")
         private XCUITest xcuiTest;
 
+        @JsonPropertyDescription("Windows capabilities. See: https://github.com/appium/appium-windows-driver")
+        private Windows windows;
+
         @JsonPropertyDescription("WebDriver's internal logging levels")
         private Logs logs;
 
@@ -241,6 +244,14 @@ public class Configuration {
         public static class XCUITest {
 
             @JsonPropertyDescription("iOS XCUITest's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class Windows {
+
+            @JsonPropertyDescription("Windows' capabilities")
             private Map<String, Object> capabilities;
         }
 

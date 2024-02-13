@@ -102,6 +102,10 @@ webDriver:
   xcuiTest:
     capabilities: { }
 
+  # Windows capabilities. See: https://github.com/appium/appium-windows-driver
+  windows:
+    capabilities: { }
+
   # WebDriver's internal logging levels
   logs:
     level: DEBUG  # The level at which webDriver's logs will be logged in Spectrum (execution) logs

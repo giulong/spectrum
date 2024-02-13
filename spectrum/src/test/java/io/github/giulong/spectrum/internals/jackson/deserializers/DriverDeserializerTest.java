@@ -70,7 +70,8 @@ class DriverDeserializerTest {
                 arguments("edge", mock(Edge.class)),
                 arguments("uiAutomator2", mock(UiAutomator2.class)),
                 arguments("espresso", mock(Espresso.class)),
-                arguments("xcuiTest", mock(XCUITest.class))
+                arguments("xcuiTest", mock(XCUITest.class)),
+                arguments("windows", mock(Windows.class))
         );
     }
 }
