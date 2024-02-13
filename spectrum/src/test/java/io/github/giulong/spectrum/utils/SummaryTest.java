@@ -73,6 +73,7 @@ class SummaryTest {
     @AfterEach
     public void afterEach() {
         mvelMockedStatic.close();
+        Vars.getInstance().clear();
     }
 
     @Test
