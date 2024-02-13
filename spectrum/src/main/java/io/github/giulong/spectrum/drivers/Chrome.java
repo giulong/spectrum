@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.chrome.ChromeDriverService;

@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.environments.LocalEnvironment;
@@ -17,8 +17,8 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("BrowserConsumer")
-class BrowserConsumerTest {
+@DisplayName("DriverConsumer")
+class DriverConsumerTest {
 
     @Mock
     private ExtensionContext context;
@@ -39,28 +39,28 @@ class BrowserConsumerTest {
     private Event event;
 
     @Mock
-    private Browser<?, ?, ?> browser;
+    private Driver<?, ?, ?> driver;
 
     @Mock
     private LocalEnvironment environment;
 
     @InjectMocks
-    private BrowserConsumer browserConsumer;
+    private DriverConsumer driverConsumer;
 
     @Test
-    @DisplayName("consumes should shutdown the browser")
+    @DisplayName("consumes should shutdown the driver")
     public void consumes() {
         when(event.getContext()).thenReturn(context);
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getRuntime()).thenReturn(runtime);
-        doReturn(browser).when(runtime).getBrowser();
+        doReturn(driver).when(runtime).getDriver();
         doReturn(environment).when(runtime).getEnvironment();
 
-        browserConsumer.consumes(event);
+        driverConsumer.consumes(event);
 
-        verify(browser).shutdown();
+        verify(driver).shutdown();
         verify(environment).shutdown();
     }
 }

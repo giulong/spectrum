@@ -44,7 +44,7 @@ class YamlUtilsTest {
                 "UtilLogLevelDeserializer",
                 "LogbackLogLevelDeserializer",
                 "DurationDeserializer",
-                "BrowserDeserializer",
+                "DriverDeserializer",
                 "ClassDeserializer",
                 "LogTestBookReporter",
                 "TxtTestBookReporter",

@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -8,7 +8,7 @@ import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.Map;
 
-public class Firefox extends Browser<FirefoxOptions, GeckoDriverService, GeckoDriverService.Builder> {
+public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDriverService.Builder> {
 
     @Override
     public DriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> getDriverServiceBuilder() {

@@ -1,7 +1,6 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
-import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.ios.options.XCUITestOptions;
+import io.appium.java_client.android.options.UiAutomator2Options;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,19 +11,18 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-import java.net.URL;
 import java.util.Map;
 
-import static io.github.giulong.spectrum.browsers.Appium.APP_CAPABILITY;
+import static io.github.giulong.spectrum.drivers.Android.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("XCUITest")
-class XCUITestTest {
+@DisplayName("UiAutomator2")
+class UiAutomator2Test {
 
     @Mock
-    private XCUITestOptions xcuiTestOptions;
+    private UiAutomator2Options uiAutomator2Options;
 
     @Mock
     private Configuration configuration;
@@ -39,42 +37,39 @@ class XCUITestTest {
     private Map<String, Object> gridCapabilities;
 
     @Mock
-    private Configuration.WebDriver.XCUITest xcuiTestConfiguration;
-
-    @Mock
-    private URL url;
+    private Configuration.WebDriver.UiAutomator2 uiAutomator2Configuration;
 
     @Captor
     private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
 
     @InjectMocks
-    private XCUITest xcuiTest;
+    private UiAutomator2 uiAutomator2;
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setField("configuration", xcuiTest, configuration);
-        Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
+        Reflections.setField("configuration", uiAutomator2, configuration);
+        Reflections.setField("capabilities", uiAutomator2, uiAutomator2Options);
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of xcuiTestOptions and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
+    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
     public void buildCapabilities() {
         final String appPath = "relative/path";
         final String appAbsolutePath = System.getProperty("user.dir") + "/relative/path";
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class, (mock, context) -> {
+        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
         when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getXcuiTest()).thenReturn(xcuiTestConfiguration);
-        when(xcuiTestConfiguration.getCapabilities()).thenReturn(capabilities);
+        when(webDriver.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
+        when(uiAutomator2Configuration.getCapabilities()).thenReturn(capabilities);
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
-        xcuiTest.buildCapabilities();
+        uiAutomator2.buildCapabilities();
 
-        final XCUITestOptions actual = (XCUITestOptions) Reflections.getFieldValue("capabilities", xcuiTest);
+        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getFieldValue("capabilities", uiAutomator2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -87,19 +82,19 @@ class XCUITestTest {
     public void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = "/absolute/path";
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class, (mock, context) -> {
+        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
         when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getXcuiTest()).thenReturn(xcuiTestConfiguration);
-        when(xcuiTestConfiguration.getCapabilities()).thenReturn(capabilities);
+        when(webDriver.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
+        when(uiAutomator2Configuration.getCapabilities()).thenReturn(capabilities);
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
-        xcuiTest.buildCapabilities();
+        uiAutomator2.buildCapabilities();
 
-        final XCUITestOptions actual = (XCUITestOptions) Reflections.getFieldValue("capabilities", xcuiTest);
+        final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getFieldValue("capabilities", uiAutomator2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();
@@ -108,29 +103,16 @@ class XCUITestTest {
     @Test
     @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
     public void mergeGridCapabilitiesFrom() {
-        when(xcuiTestOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(xcuiTestOptions);
+        when(uiAutomator2Options.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(uiAutomator2Options);
 
         MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
             assertEquals(gridCapabilities, context.arguments().getFirst());
         });
 
-        final XCUITestOptions actual = xcuiTest.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(xcuiTestOptions).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, xcuiTestOptions);
+        final UiAutomator2Options actual = uiAutomator2.mergeGridCapabilitiesFrom(gridCapabilities);
+        verify(uiAutomator2Options).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
+        assertEquals(actual, uiAutomator2Options);
 
         desiredCapabilitiesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("buildDriverFor should return a new instance of IOSDriver for the provided url and the instance capabilities")
-    public void buildDriverFor() {
-        MockedConstruction<IOSDriver> iosDriverMockedConstruction = mockConstruction(IOSDriver.class, (mock, context) -> {
-            assertEquals(url, context.arguments().getFirst());
-            assertEquals(xcuiTestOptions, context.arguments().get(1));
-        });
-
-        assertEquals(xcuiTest.buildDriverFor(url), iosDriverMockedConstruction.constructed().getFirst());
-
-        iosDriverMockedConstruction.close();
     }
 }

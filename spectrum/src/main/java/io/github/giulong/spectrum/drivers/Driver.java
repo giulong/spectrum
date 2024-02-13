@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 @Getter
 @Slf4j
-public abstract class Browser<T extends MutableCapabilities, U extends DriverService, V extends DriverService.Builder<U, V>> {
+public abstract class Driver<T extends MutableCapabilities, U extends DriverService, V extends DriverService.Builder<U, V>> {
 
     protected static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
 

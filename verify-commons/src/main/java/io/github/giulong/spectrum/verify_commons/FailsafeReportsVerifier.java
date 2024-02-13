@@ -53,8 +53,8 @@ public class FailsafeReportsVerifier {
         return report.skipped == skipped;
     }
 
-    public boolean verifyResultsAre(final String module, String browser, final int completed, final int errors, final int failures, final int skipped) {
-        final Path filePath = Path.of(module, "target", "failsafe-reports", String.format("failsafe-%s.xml", browser));
+    public boolean verifyResultsAre(final String module, final String driver, final int completed, final int errors, final int failures, final int skipped) {
+        final Path filePath = Path.of(module, "target", "failsafe-reports", String.format("failsafe-%s.xml", driver));
         final Report report = read(BASE_DIR.resolve(filePath));
         final boolean result = verifyCompletedAre(report, completed) &&
                 verifyErrorsAre(report, errors) &&

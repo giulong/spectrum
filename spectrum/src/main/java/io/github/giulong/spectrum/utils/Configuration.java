@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.utils;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
@@ -79,8 +79,8 @@ public class Configuration {
 
         @JsonSerialize(using = ToStringSerializer.class)
         @JsonSchemaTypes(String.class)
-        @JsonPropertyDescription("Browser to use")
-        private Browser<?, ?, ?> browser;
+        @JsonPropertyDescription("Driver to use")
+        private Driver<?, ?, ?> driver;
 
         @JsonPropertyDescription("Runtime environment. Can be local, grid, appium")
         private Environment environment;

@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils.environments;
 
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class GridEnvironmentTest {
     private RemoteWebDriverBuilder webDriverBuilder;
 
     @Mock
-    private Browser<ChromeOptions, ?, ?> browser;
+    private Driver<ChromeOptions, ?, ?> driver;
 
     @Mock
     private RemoteWebDriver webDriver;
@@ -66,7 +66,7 @@ class GridEnvironmentTest {
         Reflections.setField("capabilities", gridEnvironment, capabilities);
 
         when(webDriverBuilder.build()).thenReturn(webDriver);
-        when(browser.mergeGridCapabilitiesFrom(capabilities)).thenReturn(chromeOptions);
+        when(driver.mergeGridCapabilitiesFrom(capabilities)).thenReturn(chromeOptions);
         when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
         when(webDriverBuilder.address(url)).thenReturn(webDriverBuilder);
         when(webDriverBuilder.oneOf(chromeOptions)).thenReturn(webDriverBuilder);
@@ -77,9 +77,9 @@ class GridEnvironmentTest {
     public void setupFrom() throws MalformedURLException {
         commonStubs();
 
-        assertEquals(webDriver, gridEnvironment.setupFor(browser));
+        assertEquals(webDriver, gridEnvironment.setupFor(driver));
 
-        verify(browser).mergeGridCapabilitiesFrom(capabilities);
+        verify(driver).mergeGridCapabilitiesFrom(capabilities);
     }
 
     @Test
@@ -88,9 +88,9 @@ class GridEnvironmentTest {
         commonStubs();
         gridEnvironment.localFileDetector = true;
 
-        assertEquals(webDriver, gridEnvironment.setupFor(browser));
+        assertEquals(webDriver, gridEnvironment.setupFor(driver));
 
-        verify(browser).mergeGridCapabilitiesFrom(capabilities);
+        verify(driver).mergeGridCapabilitiesFrom(capabilities);
         verify(webDriver).setFileDetector(any(LocalFileDetector.class));
     }
 

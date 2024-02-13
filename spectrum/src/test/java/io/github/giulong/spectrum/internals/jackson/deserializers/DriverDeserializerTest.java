@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import io.github.giulong.spectrum.browsers.*;
+import io.github.giulong.spectrum.drivers.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,8 +22,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("BrowserDeserializer")
-class BrowserDeserializerTest {
+@DisplayName("DriverDeserializer")
+class DriverDeserializerTest {
 
     @Mock
     private JsonParser jsonParser;
@@ -32,34 +32,34 @@ class BrowserDeserializerTest {
     private DeserializationContext deserializationContext;
 
     @InjectMocks
-    private BrowserDeserializer browserDeserializer;
+    private DriverDeserializer driverDeserializer;
 
     @Test
     @DisplayName("getInstance should return the singleton")
     public void getInstance() {
         //noinspection EqualsWithItself
-        assertSame(BrowserDeserializer.getInstance(), BrowserDeserializer.getInstance());
+        assertSame(DriverDeserializer.getInstance(), DriverDeserializer.getInstance());
     }
 
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserialize(final String value, final Browser<?, ?, ?> expected) throws IOException {
+    public void deserialize(final String value, final Driver<?, ?, ?> expected) throws IOException {
         when(jsonParser.getValueAsString()).thenReturn(value);
         when(jsonParser.currentName()).thenReturn("key");
 
-        assertInstanceOf(expected.getClass(), browserDeserializer.deserialize(jsonParser, deserializationContext));
+        assertInstanceOf(expected.getClass(), driverDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
     @Test
-    @DisplayName("deserialize should throw an exception if the provided key is not a valid browser name")
+    @DisplayName("deserialize should throw an exception if the provided key is not a valid driver name")
     public void deserializeNotExisting() throws IOException {
-        String notValidBrowser = "notValidBrowser";
-        when(jsonParser.getValueAsString()).thenReturn(notValidBrowser);
+        String notValidDriver = "notValidDriver";
+        when(jsonParser.getValueAsString()).thenReturn(notValidDriver);
         when(jsonParser.currentName()).thenReturn("key");
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> browserDeserializer.deserialize(jsonParser, deserializationContext));
-        assertEquals("Value '" + notValidBrowser + "' is not a valid browser!", exception.getMessage());
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> driverDeserializer.deserialize(jsonParser, deserializationContext));
+        assertEquals("Value '" + notValidDriver + "' is not a valid driver!", exception.getMessage());
     }
 
     public static Stream<Arguments> valuesProvider() {

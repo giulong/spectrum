@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.utils.environments;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.github.giulong.spectrum.browsers.Browser;
-import io.github.giulong.spectrum.internals.BrowserLog;
+import io.github.giulong.spectrum.drivers.Driver;
+import io.github.giulong.spectrum.internals.DriverLog;
 import io.github.giulong.spectrum.utils.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
@@ -18,12 +18,12 @@ public class LocalEnvironment extends Environment {
     protected static final ThreadLocal<DriverService> DRIVER_SERVICE_THREAD_LOCAL = new ThreadLocal<>();
 
     @Override
-    public WebDriver setupFor(final Browser<?, ?, ?> browser) {
+    public WebDriver setupFor(final Driver<?, ?, ?> driver) {
         log.info("Running in local");
 
-        DRIVER_SERVICE_THREAD_LOCAL.set(browser
+        DRIVER_SERVICE_THREAD_LOCAL.set(driver
                 .getDriverServiceBuilder()
-                .withLogOutput(BrowserLog
+                .withLogOutput(DriverLog
                         .builder()
                         .level(configuration.getWebDriver().getLogs().getLevel())
                         .build())
@@ -32,7 +32,7 @@ public class LocalEnvironment extends Environment {
         return RemoteWebDriver
                 .builder()
                 .withDriverService(DRIVER_SERVICE_THREAD_LOCAL.get())
-                .oneOf(browser.getCapabilities())
+                .oneOf(driver.getCapabilities())
                 .build();
     }
 

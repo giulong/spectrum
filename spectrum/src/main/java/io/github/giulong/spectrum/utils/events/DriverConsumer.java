@@ -9,7 +9,7 @@ import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResol
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @JsonView(Internal.class)
-public class BrowserConsumer extends EventsConsumer {
+public class DriverConsumer extends EventsConsumer {
 
     @Override
     public void consumes(final Event event) {
@@ -20,7 +20,7 @@ public class BrowserConsumer extends EventsConsumer {
                 .get(CONFIGURATION, Configuration.class)
                 .getRuntime();
 
-        runtime.getBrowser().shutdown();
+        runtime.getDriver().shutdown();
         runtime.getEnvironment().shutdown();
     }
 }

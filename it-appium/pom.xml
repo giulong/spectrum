@@ -79,7 +79,7 @@
                                 <configuration>
                                     <reportNameSuffix>uiAutomator2</reportNameSuffix>
                                     <systemPropertyVariables>
-                                        <spectrum.browser>uiAutomator2</spectrum.browser>
+                                        <spectrum.driver>uiAutomator2</spectrum.driver>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-uiAutomator2.xml</summaryFile>
                                 </configuration>

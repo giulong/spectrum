@@ -101,10 +101,10 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > to leverage the [default inclusions](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inclusion-exclusion.html){:target="_blank"} of the failsafe plugin.
 
 > 💡 **Tip**<br/>
-> The default browser is `chrome`. If you want to use another one, you can switch via the `-Dspectrum.browser` system property, setting its value to
+> The default driver is `chrome`. If you want to use another one, you can switch via the `-Dspectrum.driver` system property, setting its value to
 > `firefox` or `edge`:
-> * `-Dspectrum.browser=firefox`
-> * `-Dspectrum.browser=edge`
+> * `-Dspectrum.driver=firefox`
+> * `-Dspectrum.driver=edge`
 
 > 💡 **Tip**<br/>
 > The default log level is `INFO`. If you want to change it, run with `-Dspectrum.log.level=<LEVEL>`,
@@ -311,7 +311,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
         //  - base url in configuration.yaml is http://my-app.com
         //  - webAppPage is annotated with @Endpoint("login")
         //  
-        //  will be true if the current url in the browser is http://my-app.com/login
+        //  will be true if the current url in the driver is http://my-app.com/login
         boolean loaded = webAppPage.isLoaded();
     }
 }
@@ -495,7 +495,7 @@ in one of these two ways, depending on the type needed as result. Let's suppose 
 | Numeric     | `$<key>`          | 123    | 0 is returned                                                |
 
 Let's clarify this with an example where you run behind a proxy. You could store the proxy port as a common variable,
-and then interpolate it in each browser's preferences with the proper type:
+and then interpolate it in each driver's preferences with the proper type:
 
 {% include copyCode.html %}
 
@@ -617,7 +617,7 @@ You can add your own and even override the default ones in your `configuration*.
 | Variable             | Default Windows              | Default *nix                 |
 |----------------------|------------------------------|------------------------------|
 | spectrum.profiles    | local                        | local                        |
-| spectrum.browser     | chrome                       | chrome                       |
+| spectrum.driver      | chrome                       | chrome                       |
 | downloadsFolder      | ${user.dir}\target\downloads | ${user.dir}/target/downloads |
 | summaryReportOutput  | target/spectrum/summary      | target/spectrum/summary      |
 | testBookReportOutput | target/spectrum/testbook     | target/spectrum/testbook     |
@@ -656,7 +656,7 @@ Where the params are:
 | Param             | Type               | Default   | Mandatory | Description                                                                                                                                                                                              |
 |-------------------|--------------------|-----------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | url               | String             | null      | ✅         | url of the remote grid                                                                                                                                                                                   |
-| capabilities      | Map<String,String> | empty map | ❌         | additional webDriver capabilities to be added to browser-specific ones only when running on a grid                                                                                                       |
+| capabilities      | Map<String,String> | empty map | ❌         | additional webDriver capabilities to be added to driver-specific ones only when running on a grid                                                                                                        |
 | localFileDetector | boolean            | false     | ❌         | if true, allows to transfer files from the client machine to the remote server. [Docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector){:target="_blank"} |
 
 ---
@@ -683,7 +683,7 @@ public void proxyShouldAllowOnlyCertainDomains() {
 
 Regarding the proxy, these are the relevant part of its
 [configuration.yaml]({{ site.repository_url }}/it-grid/src/test/resources/configuration.yaml){:target="_blank"},
-where you can see how to configure a proxy server for every browser.
+where you can see how to configure a proxy server for every driver.
 
 Mind that this is just an example. Its only purpose is to show how to configure a proxy and prove it's working, leveraging the domain bypass list:
 there's no proxy actually running, so every domain which is not bypassed would throw an exception.
@@ -746,6 +746,7 @@ You can tweak each event in your `configuration.yaml`, by providing these:
 For example, you can set these:
 
 {% include copyCode.html %}
+
 ```yaml
 webDriver:
   events:
@@ -762,9 +763,9 @@ Check the `webDriver.events` node in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 to see the defaults.
 
-The `message` property specifies what to add to logs and reports upon receiving the related event, 
+The `message` property specifies what to add to logs and reports upon receiving the related event,
 and is affected by the `level` property (check the sections below).
-On the other hand, `wait` is a standalone property, meaning it will be considered even if the related event won't be logged, 
+On the other hand, `wait` is a standalone property, meaning it will be considered even if the related event won't be logged,
 and specifies how many milliseconds to wait before actually processing the related event.
 
 > ⚠️ **Static waits**<br/>
@@ -776,6 +777,7 @@ and specifies how many milliseconds to wait before actually processing the relat
 As an example, you might want to add a 1 second sleep before each call like this:
 
 {% include copyCode.html %}
+
 ```yaml
 webDriver:
   events:
@@ -786,6 +788,7 @@ webDriver:
 Or a sleep only before clicking elements:
 
 {% include copyCode.html %}
+
 ```yaml
 webDriver:
   events:
@@ -916,7 +919,7 @@ how to customise it.
 > 💡 **Tip**<br/>
 > The default file name of the produced html report contains a timestamp, which is useful to always generate a new file.
 > While developing, it could be worth it to override the `extent.fileName` to have a fixed name.
-> This way the report will be overridden, so you can keep it open in a browser and just refresh the page after each execution.
+> This way the report will be overridden, so you can keep it open in a driver and just refresh the page after each execution.
 
 You can see an example report here:
 
@@ -1101,7 +1104,7 @@ If needed, you should change this value, since this is used in several places, f
 So, this is a useful way to avoid redundancy and to be able to change all the values with one key.
 
 When downloading a file from the AUT, you can leverage Spectrum to check if it's what you expected.
-Technically speaking, checking the file's content is beyond the goal of a Selenium test, which aims to check web applications, so its boundary is the browser.
+Technically speaking, checking the file's content is beyond the goal of a Selenium test, which aims to check web applications, so its boundary is the driver.
 
 Given a file downloaded from the AUT (so, in the `vars.downloadsFolder`),
 Spectrum helps checking it by comparing its SHA 256 checksum with the checksum of a file in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
@@ -1911,7 +1914,7 @@ html:
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.html){:target="_blank"}.
-This is what it looks like when opened in a browser:
+This is what it looks like when opened in a driver:
 
 ![Html Summary Reporter](assets/images/html-summary.png)
 
@@ -2290,7 +2293,7 @@ html:
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.html){:target="_blank"}.
-This is what it looks like when opened in a browser:
+This is what it looks like when opened in a driver:
 
 ![Html TestBook Reporter](assets/images/html-testbook.png)
 

@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.android.options.EspressoOptions;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.util.Map;
 
-import static io.github.giulong.spectrum.browsers.Appium.APP_CAPABILITY;
+import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 

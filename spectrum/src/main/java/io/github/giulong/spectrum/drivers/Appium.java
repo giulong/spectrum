@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
@@ -12,7 +12,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 @Slf4j
-public abstract class Appium<T extends MutableCapabilities, U extends AppiumDriver> extends Browser<T, AppiumDriverLocalService, AppiumServiceBuilder> {
+public abstract class Appium<T extends MutableCapabilities, U extends AppiumDriver> extends Driver<T, AppiumDriverLocalService, AppiumServiceBuilder> {
 
     public static final String APP_CAPABILITY = "app";
 

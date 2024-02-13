@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import static io.github.giulong.spectrum.browsers.Browser.WEB_DRIVER_THREAD_LOCAL;
+import static io.github.giulong.spectrum.drivers.Driver.WEB_DRIVER_THREAD_LOCAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Browser")
-class BrowserTest {
+@DisplayName("Driver")
+class DriverTest {
 
     private MockedStatic<ThreadGuard> threadGuardMockedStatic;
 
@@ -87,7 +87,7 @@ class BrowserTest {
     private Environment environment;
 
     @InjectMocks
-    private Chrome browser;
+    private Chrome driver;
 
     @BeforeEach
     public void beforeEach() {
@@ -96,7 +96,7 @@ class BrowserTest {
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        Reflections.setField("configuration", browser, configuration);
+        Reflections.setField("configuration", driver, configuration);
     }
 
     @AfterEach
@@ -132,11 +132,11 @@ class BrowserTest {
         when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
         when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
         when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
-        when(environment.setupFor(browser)).thenReturn(webDriver);
+        when(environment.setupFor(driver)).thenReturn(webDriver);
 
         when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
 
-        final WebDriver actual = browser.build();
+        final WebDriver actual = driver.build();
         final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
 
         assertEquals(protectedWebDriver, threadLocalWebDriver);
@@ -157,7 +157,7 @@ class BrowserTest {
         when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
         when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
 
-        browser.configureWaitsOf(webDriver, waits);
+        driver.configureWaitsOf(webDriver, waits);
 
         verify(timeouts).scriptTimeout(scriptDuration);
     }
@@ -167,7 +167,7 @@ class BrowserTest {
     public void shutdown() {
         WEB_DRIVER_THREAD_LOCAL.set(webDriver);
 
-        browser.shutdown();
+        driver.shutdown();
 
         verify(webDriver).quit();
     }

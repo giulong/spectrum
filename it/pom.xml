@@ -79,7 +79,7 @@
                                 <configuration>
                                     <reportNameSuffix>chrome</reportNameSuffix>
                                     <systemPropertyVariables>
-                                        <spectrum.browser>chrome</spectrum.browser>
+                                        <spectrum.driver>chrome</spectrum.driver>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
                                 </configuration>
@@ -110,7 +110,7 @@
                                 <configuration>
                                     <reportNameSuffix>firefox</reportNameSuffix>
                                     <systemPropertyVariables>
-                                        <spectrum.browser>firefox</spectrum.browser>
+                                        <spectrum.driver>firefox</spectrum.driver>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-firefox.xml</summaryFile>
                                 </configuration>
@@ -141,7 +141,7 @@
                                 <configuration>
                                     <reportNameSuffix>edge</reportNameSuffix>
                                     <systemPropertyVariables>
-                                        <spectrum.browser>edge</spectrum.browser>
+                                        <spectrum.driver>edge</spectrum.driver>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-edge.xml</summaryFile>
                                 </configuration>

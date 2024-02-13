@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
 
-import static io.github.giulong.spectrum.browsers.Appium.APP_CAPABILITY;
+import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;

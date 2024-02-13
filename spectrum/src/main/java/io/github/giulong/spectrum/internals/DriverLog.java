@@ -9,7 +9,7 @@ import java.io.OutputStream;
 
 @Slf4j
 @Builder
-public class BrowserLog extends OutputStream {
+public class DriverLog extends OutputStream {
 
     private final Level level;
 

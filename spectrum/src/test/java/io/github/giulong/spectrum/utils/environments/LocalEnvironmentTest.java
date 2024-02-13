@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.environments;
 
-import io.github.giulong.spectrum.browsers.Browser;
-import io.github.giulong.spectrum.internals.BrowserLog;
+import io.github.giulong.spectrum.drivers.Driver;
+import io.github.giulong.spectrum.internals.DriverLog;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.WebDriver.Logs;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -29,7 +29,7 @@ import static org.slf4j.event.Level.DEBUG;
 class LocalEnvironmentTest {
 
     private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
-    private MockedStatic<BrowserLog> browserLogMockedStatic;
+    private MockedStatic<DriverLog> driverLogMockedStatic;
 
     @Mock
     private Configuration configuration;
@@ -41,13 +41,13 @@ class LocalEnvironmentTest {
     private Logs logs;
 
     @Mock
-    private BrowserLog.BrowserLogBuilder browserLogBuilder;
+    private DriverLog.DriverLogBuilder driverLogBuilder;
 
     @Mock
-    private BrowserLog browserLog;
+    private DriverLog driverLog;
 
     @Mock
-    private Browser<ChromeOptions, ?, ?> browser;
+    private Driver<ChromeOptions, ?, ?> driver;
 
     @Mock
     private ChromeOptions chromeOptions;
@@ -73,7 +73,7 @@ class LocalEnvironmentTest {
     @BeforeEach
     public void beforeEach() {
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
-        browserLogMockedStatic = mockStatic(BrowserLog.class);
+        driverLogMockedStatic = mockStatic(DriverLog.class);
         DRIVER_SERVICE_THREAD_LOCAL.remove();
 
         Reflections.setField("configuration", localEnvironment, configuration);
@@ -82,7 +82,7 @@ class LocalEnvironmentTest {
     @AfterEach
     public void afterEach() {
         remoteWebDriverMockedStatic.close();
-        browserLogMockedStatic.close();
+        driverLogMockedStatic.close();
     }
 
     @Test
@@ -91,12 +91,12 @@ class LocalEnvironmentTest {
         when(configuration.getWebDriver()).thenReturn(webDriverConf);
         when(webDriverConf.getLogs()).thenReturn(logs);
         when(logs.getLevel()).thenReturn(DEBUG);
-        when(BrowserLog.builder()).thenReturn(browserLogBuilder);
-        when(browserLogBuilder.level(DEBUG)).thenReturn(browserLogBuilder);
-        when(browserLogBuilder.build()).thenReturn(browserLog);
-        when(browser.getCapabilities()).thenReturn(chromeOptions);
-        doReturn(chromeDriverServiceBuilder).when(browser).getDriverServiceBuilder();
-        when(chromeDriverServiceBuilder.withLogOutput(browserLog)).thenReturn(chromeDriverServiceBuilder);
+        when(DriverLog.builder()).thenReturn(driverLogBuilder);
+        when(driverLogBuilder.level(DEBUG)).thenReturn(driverLogBuilder);
+        when(driverLogBuilder.build()).thenReturn(driverLog);
+        when(driver.getCapabilities()).thenReturn(chromeOptions);
+        doReturn(chromeDriverServiceBuilder).when(driver).getDriverServiceBuilder();
+        when(chromeDriverServiceBuilder.withLogOutput(driverLog)).thenReturn(chromeDriverServiceBuilder);
         when(RemoteWebDriver.builder()).thenReturn(webDriverBuilder);
         when(webDriverBuilder.withDriverService(driverServiceArgumentCaptor.capture())).thenReturn(webDriverBuilder);
         when(webDriverBuilder.oneOf(chromeOptions)).thenReturn(webDriverBuilder);
@@ -104,7 +104,7 @@ class LocalEnvironmentTest {
 
         final DriverService threadLocalDriverService = DRIVER_SERVICE_THREAD_LOCAL.get();
 
-        assertEquals(webDriver, localEnvironment.setupFor(browser));
+        assertEquals(webDriver, localEnvironment.setupFor(driver));
         assertEquals(driverServiceArgumentCaptor.getValue(), threadLocalDriverService);
     }
 

@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.github.giulong.spectrum.utils.Configuration;

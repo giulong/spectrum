@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.browsers;
+package io.github.giulong.spectrum.drivers;
 
 import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.chromium.ChromiumOptions;
@@ -11,7 +11,7 @@ import java.util.Map;
 import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 import static org.openqa.selenium.logging.LogType.*;
 
-public abstract class Chromium<T extends ChromiumOptions<T>, U extends DriverService, V extends DriverService.Builder<U, V>> extends Browser<T, U, V> {
+public abstract class Chromium<T extends ChromiumOptions<T>, U extends DriverService, V extends DriverService.Builder<U, V>> extends Driver<T, U, V> {
 
     public void setLoggingPreferencesFrom(final Configuration.WebDriver.Logs logs) {
         final LoggingPreferences logPrefs = new LoggingPreferences();

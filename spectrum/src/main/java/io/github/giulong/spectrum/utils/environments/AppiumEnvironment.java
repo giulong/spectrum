@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
-import io.github.giulong.spectrum.browsers.Appium;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Appium;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.internals.AppiumLog;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -46,7 +46,7 @@ public class AppiumEnvironment extends Environment {
     public void sessionOpened() {
         final AppiumServiceBuilder appiumServiceBuilder = (AppiumServiceBuilder) configuration
                 .getRuntime()
-                .getBrowser()
+                .getDriver()
                 .getDriverServiceBuilder();
 
         driverService = AppiumDriverLocalService.buildService(appiumServiceBuilder
@@ -69,10 +69,10 @@ public class AppiumEnvironment extends Environment {
     }
 
     @Override
-    public WebDriver setupFor(final Browser<?, ?, ?> browser) {
+    public WebDriver setupFor(final Driver<?, ?, ?> driver) {
         log.info("Running with appium");
 
-        return ((Appium<?, ?>) browser).buildDriverFor(url);
+        return ((Appium<?, ?>) driver).buildDriverFor(url);
     }
 
     @Override

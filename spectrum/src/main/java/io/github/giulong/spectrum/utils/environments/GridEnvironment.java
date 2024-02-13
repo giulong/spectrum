@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.environments;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +29,12 @@ public class GridEnvironment extends Environment {
     protected boolean localFileDetector;
 
     @Override
-    public WebDriver setupFor(final Browser<?, ?, ?> browser) {
+    public WebDriver setupFor(final Driver<?, ?, ?> driver) {
         log.info("Running on grid at {}", url);
 
         final RemoteWebDriver webDriver = (RemoteWebDriver) RemoteWebDriver
                 .builder()
-                .oneOf(browser.mergeGridCapabilitiesFrom(capabilities))
+                .oneOf(driver.mergeGridCapabilitiesFrom(capabilities))
                 .address(url)
                 .build();
 

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Public;
 import io.github.giulong.spectrum.pojos.DynamicDeserializersConfiguration;
@@ -43,7 +43,7 @@ public final class YamlUtils {
                     buildModuleFor(java.util.logging.Level.class, UtilLogLevelDeserializer.getInstance()),
                     buildModuleFor(Level.class, LogbackLogLevelDeserializer.getInstance()),
                     buildModuleFor(Duration.class, DurationDeserializer.getInstance()),
-                    buildModuleFor(Browser.class, BrowserDeserializer.getInstance()),
+                    buildModuleFor(Driver.class, DriverDeserializer.getInstance()),
                     buildModuleFor(Class.class, ClassDeserializer.getInstance())
             );
 

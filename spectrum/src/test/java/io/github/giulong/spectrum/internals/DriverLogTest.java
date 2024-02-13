@@ -18,8 +18,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("BrowserLog")
-class BrowserLogTest {
+@DisplayName("DriverLog")
+class DriverLogTest {
 
     private static final String LOG_MESSAGE = "log message";
 
@@ -30,12 +30,12 @@ class BrowserLogTest {
     private Level level;
 
     @InjectMocks
-    private BrowserLog browserLog;
+    private DriverLog driverLog;
 
     @BeforeEach
     public void beforeEach() {
         stringBufferMockedConstruction = mockConstruction(StringBuffer.class);
-        Reflections.setField("stringBuffer", browserLog, new StringBuffer(LOG_MESSAGE));
+        Reflections.setField("stringBuffer", driverLog, new StringBuffer(LOG_MESSAGE));
     }
 
     @AfterEach
@@ -49,7 +49,7 @@ class BrowserLogTest {
         final char c = 'a';
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
 
-        browserLog.write(c);
+        driverLog.write(c);
         verify(stringBuffers.getFirst()).append(c);
     }
 
@@ -58,8 +58,8 @@ class BrowserLogTest {
     public void writeFlush() {
         final char c = '\n';
 
-        browserLog.write(c);
-        final StringBuffer stringBuffer = (StringBuffer) Reflections.getFieldValue("stringBuffer", browserLog);
+        driverLog.write(c);
+        final StringBuffer stringBuffer = (StringBuffer) Reflections.getFieldValue("stringBuffer", driverLog);
 
         verify(stringBuffer).setLength(0);
     }
@@ -68,10 +68,10 @@ class BrowserLogTest {
     @DisplayName("flush should write the buffer's content at the provided level and re-initialise it")
     public void flush() {
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
-        assertEquals(stringBuffers.getFirst(), Reflections.getFieldValue("stringBuffer", browserLog));
+        assertEquals(stringBuffers.getFirst(), Reflections.getFieldValue("stringBuffer", driverLog));
 
-        browserLog.flush();
-        final StringBuffer stringBuffer = (StringBuffer) Reflections.getFieldValue("stringBuffer", browserLog);
+        driverLog.flush();
+        final StringBuffer stringBuffer = (StringBuffer) Reflections.getFieldValue("stringBuffer", driverLog);
 
         verify(stringBuffer).setLength(0);
     }

@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentTest;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.EventsListener;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.TestData;
@@ -61,7 +61,7 @@ class WebDriverResolverTest {
     private Configuration.Runtime runtime;
 
     @Mock
-    private Browser<?, ?, ?> browser;
+    private Driver<?, ?, ?> driver;
 
     @Mock
     private WebDriver webDriver;
@@ -122,8 +122,8 @@ class WebDriverResolverTest {
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getRuntime()).thenReturn(runtime);
-        doReturn(browser).when(runtime).getBrowser();
-        when(browser.build()).thenReturn(webDriver);
+        doReturn(driver).when(runtime).getDriver();
+        when(driver.build()).thenReturn(webDriver);
         when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
         when(webDriverConfiguration.getEvents()).thenReturn(events);
         when(configuration.getExtent()).thenReturn(extentConfiguration);

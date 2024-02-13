@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.utils.environments;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
-import io.github.giulong.spectrum.browsers.Appium;
+import io.github.giulong.spectrum.drivers.Appium;
 import io.github.giulong.spectrum.internals.AppiumLog;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -52,7 +52,7 @@ class AppiumEnvironmentTest {
     private Configuration.Runtime runtime;
 
     @Mock
-    private Appium<?, ?> browser;
+    private Appium<?, ?> driver;
 
     @Mock
     private AppiumServiceBuilder builder;
@@ -97,8 +97,8 @@ class AppiumEnvironmentTest {
         Reflections.setField("port", appiumEnvironment, port);
 
         when(configuration.getRuntime()).thenReturn(runtime);
-        doReturn(browser).when(runtime).getBrowser();
-        doReturn(builder).when(browser).getDriverServiceBuilder();
+        doReturn(driver).when(runtime).getDriver();
+        doReturn(builder).when(driver).getDriverServiceBuilder();
         when(builder.withCapabilities(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(builder);
         when(builder.withIPAddress(ipAddress)).thenReturn(builder);
         when(builder.usingPort(port)).thenReturn(builder);
@@ -138,9 +138,9 @@ class AppiumEnvironmentTest {
     @Test
     @DisplayName("setupFor should delegate the webDriver construction to the actual subclass")
     public void setupFor() {
-        doReturn(appiumDriver).when(browser).buildDriverFor(url);
+        doReturn(appiumDriver).when(driver).buildDriverFor(url);
 
-        assertEquals(appiumDriver, appiumEnvironment.setupFor(browser));
+        assertEquals(appiumDriver, appiumEnvironment.setupFor(driver));
     }
 
     @Test

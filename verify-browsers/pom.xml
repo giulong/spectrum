@@ -67,7 +67,7 @@
                         <configuration>
                             <reportNameSuffix>chrome</reportNameSuffix>
                             <systemPropertyVariables>
-                                <spectrum.browser>chrome</spectrum.browser>
+                                <spectrum.driver>chrome</spectrum.driver>
                             </systemPropertyVariables>
                             <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
                         </configuration>
