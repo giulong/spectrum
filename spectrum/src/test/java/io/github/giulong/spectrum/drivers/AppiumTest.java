@@ -9,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.nio.file.Path;
 import java.util.Map;
 
 import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
@@ -40,8 +41,9 @@ class AppiumTest {
     @Test
     @DisplayName("adjustCapabilitiesFrom should set the app path absolute if it's relative")
     public void adjustCapabilitiesFrom() {
-        final String appPath = "relative/path";
-        final String appAbsolutePath = System.getProperty("user.dir") + "/relative/path";
+        final Path path = Path.of("relative", "path");
+        final String appPath = path.toString();
+        final String appAbsolutePath = path.toAbsolutePath().toString();
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
@@ -53,7 +55,7 @@ class AppiumTest {
     @Test
     @DisplayName("adjustCapabilitiesFrom should just return the provided capabilities if the app path absolute is already absolute")
     public void adjustCapabilitiesFromAbsolute() {
-        final String appPath = "/absolute/path";
+        final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 

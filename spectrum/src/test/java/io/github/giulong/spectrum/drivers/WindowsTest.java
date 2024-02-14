@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Map;
 
 import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
@@ -59,8 +60,9 @@ class WindowsTest {
     @Test
     @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
     public void buildCapabilities() {
-        final String appPath = "relative/path";
-        final String appAbsolutePath = System.getProperty("user.dir") + "/relative/path";
+        final Path path = Path.of("relative", "path");
+        final String appPath = path.toString();
+        final String appAbsolutePath = path.toAbsolutePath().toString();
 
         MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
@@ -85,7 +87,7 @@ class WindowsTest {
     @Test
     @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
     public void buildCapabilitiesAbsoluteAppPath() {
-        final String appPath = "/absolute/path";
+        final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
         MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());

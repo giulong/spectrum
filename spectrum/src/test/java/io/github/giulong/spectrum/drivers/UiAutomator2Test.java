@@ -11,6 +11,7 @@ import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.nio.file.Path;
 import java.util.Map;
 
 import static io.github.giulong.spectrum.drivers.Android.APP_CAPABILITY;
@@ -54,8 +55,9 @@ class UiAutomator2Test {
     @Test
     @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
     public void buildCapabilities() {
-        final String appPath = "relative/path";
-        final String appAbsolutePath = System.getProperty("user.dir") + "/relative/path";
+        final Path path = Path.of("relative", "path");
+        final String appPath = path.toString();
+        final String appAbsolutePath = path.toAbsolutePath().toString();
 
         MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
@@ -80,7 +82,7 @@ class UiAutomator2Test {
     @Test
     @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
     public void buildCapabilitiesAbsoluteAppPath() {
-        final String appPath = "/absolute/path";
+        final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
         MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
