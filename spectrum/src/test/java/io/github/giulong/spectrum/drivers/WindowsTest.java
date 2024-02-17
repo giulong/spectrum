@@ -10,13 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
-import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Map;
 
-import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -25,7 +25,22 @@ import static org.mockito.Mockito.*;
 class WindowsTest {
 
     @Mock
+    private WebDriver windowsWebDriver;
+
+    @Mock
     private WindowsOptions windowsOptions;
+
+    @Mock
+    private WebDriver.Options options;
+
+    @Mock
+    private WebDriver.Timeouts timeouts;
+
+    @Mock
+    private Configuration.WebDriver.Waits waits;
+
+    @Mock
+    private Duration duration;
 
     @Mock
     private Configuration configuration;
@@ -58,37 +73,21 @@ class WindowsTest {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
-    public void buildCapabilities() {
-        final Path path = Path.of("relative", "path");
-        final String appPath = path.toString();
-        final String appAbsolutePath = path.toAbsolutePath().toString();
+    @DisplayName("configureWaitsOf should configure just the implicitWait, since the others are not implemented")
+    public void configureWaitsOf() {
+        when(waits.getImplicit()).thenReturn(duration);
 
-        MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        when(windowsWebDriver.manage()).thenReturn(options);
+        when(options.timeouts()).thenReturn(timeouts);
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getWindows()).thenReturn(windowsConfiguration);
-        when(windowsConfiguration.getCapabilities()).thenReturn(capabilities);
+        windows.configureWaitsOf(windowsWebDriver, waits);
 
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
-
-        windows.buildCapabilities();
-
-        final WindowsOptions actual = (WindowsOptions) Reflections.getFieldValue("capabilities", windows);
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
-
-        desiredCapabilitiesMockedConstruction.close();
+        verify(timeouts).implicitlyWait(duration);
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
+    @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it")
     public void buildCapabilitiesAbsoluteAppPath() {
-        final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
-
         MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
         });
@@ -96,8 +95,6 @@ class WindowsTest {
         when(configuration.getWebDriver()).thenReturn(webDriver);
         when(webDriver.getWindows()).thenReturn(windowsConfiguration);
         when(windowsConfiguration.getCapabilities()).thenReturn(capabilities);
-
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
         windows.buildCapabilities();
 
