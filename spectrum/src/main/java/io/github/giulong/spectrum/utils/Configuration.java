@@ -163,6 +163,9 @@ public class Configuration {
         @JsonPropertyDescription("Mac2 capabilities. See: https://github.com/appium/appium-mac2-driver")
         private Mac2 mac2;
 
+        @JsonPropertyDescription("Appium generic capabilities. See: https://github.com/appium/java-client#drivers-support")
+        private AppiumGeneric appiumGeneric;
+
         @JsonPropertyDescription("WebDriver's internal logging levels")
         private Logs logs;
 
@@ -263,6 +266,14 @@ public class Configuration {
         public static class Mac2 {
 
             @JsonPropertyDescription("Mac2's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class AppiumGeneric {
+
+            @JsonPropertyDescription("Appium generic's capabilities")
             private Map<String, Object> capabilities;
         }
 

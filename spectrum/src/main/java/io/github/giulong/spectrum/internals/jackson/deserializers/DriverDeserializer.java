@@ -35,6 +35,7 @@ public class DriverDeserializer extends InterpolatedDeserializer<Driver<?, ?, ?>
             case "xcuiTest" -> new XCUITest();
             case "windows" -> new Windows();
             case "mac2" -> new Mac2();
+            case "appiumGeneric" -> new AppiumGeneric();
             default -> throw new IllegalArgumentException("Value '" + interpolatedValue + "' is not a valid driver!");
         };
     }
