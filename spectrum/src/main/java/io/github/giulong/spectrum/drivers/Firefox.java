@@ -3,10 +3,7 @@ package io.github.giulong.spectrum.drivers;
 import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
-
-import java.util.Map;
 
 public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDriverService.Builder> {
 
@@ -24,11 +21,6 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
         capabilities.setLogLevel(firefoxConfig.getLogLevel());
 
         firefoxConfig.getPreferences().forEach(this::addPreference);
-    }
-
-    @Override
-    public FirefoxOptions mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
-        return capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 
     public void addPreference(final String key, final Object value) {

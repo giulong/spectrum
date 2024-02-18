@@ -8,10 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
 import java.time.Duration;
@@ -52,16 +53,10 @@ class WindowsTest {
     private Map<String, Object> capabilities;
 
     @Mock
-    private Map<String, Object> gridCapabilities;
-
-    @Mock
     private Configuration.WebDriver.Windows windowsConfiguration;
 
     @Mock
     private URL url;
-
-    @Captor
-    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
 
     @InjectMocks
     private Windows windows;
@@ -100,22 +95,6 @@ class WindowsTest {
 
         final WindowsOptions actual = (WindowsOptions) Reflections.getFieldValue("capabilities", windows);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        desiredCapabilitiesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        when(windowsOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(windowsOptions);
-
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(gridCapabilities, context.arguments().getFirst());
-        });
-
-        final WindowsOptions actual = windows.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(windowsOptions).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, windowsOptions);
 
         desiredCapabilitiesMockedConstruction.close();
     }

@@ -8,14 +8,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ThreadGuard;
 
 import java.time.Duration;
@@ -86,6 +84,15 @@ class DriverTest {
     @Mock
     private Environment environment;
 
+    @Mock
+    private ChromeOptions driverOptions;
+
+    @Mock
+    private Map<String, Object> gridCapabilities;
+
+    @Captor
+    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
+
     @InjectMocks
     private Chrome driver;
 
@@ -103,6 +110,24 @@ class DriverTest {
     public void afterEach() {
         threadGuardMockedStatic.close();
         loggingPreferencesMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
+    public void mergeGridCapabilitiesFrom() {
+        Reflections.setField("capabilities", driver, driverOptions);
+        when(driverOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(driverOptions);
+
+        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
+            assertEquals(gridCapabilities, context.arguments().getFirst());
+        });
+
+        final ChromeOptions actual = driver.mergeGridCapabilitiesFrom(gridCapabilities);
+        verify(driverOptions).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
+        assertEquals(actual, driverOptions);
+
+        desiredCapabilitiesMockedConstruction.close();
+        Reflections.setField("capabilities", driver, null);
     }
 
     @Test

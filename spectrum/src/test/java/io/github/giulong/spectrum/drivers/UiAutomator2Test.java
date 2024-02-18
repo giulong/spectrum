@@ -7,9 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -35,13 +36,7 @@ class UiAutomator2Test {
     private Map<String, Object> capabilities;
 
     @Mock
-    private Map<String, Object> gridCapabilities;
-
-    @Mock
     private Configuration.WebDriver.UiAutomator2 uiAutomator2Configuration;
-
-    @Captor
-    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
 
     @InjectMocks
     private UiAutomator2 uiAutomator2;
@@ -98,22 +93,6 @@ class UiAutomator2Test {
 
         final UiAutomator2Options actual = (UiAutomator2Options) Reflections.getFieldValue("capabilities", uiAutomator2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        desiredCapabilitiesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        when(uiAutomator2Options.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(uiAutomator2Options);
-
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(gridCapabilities, context.arguments().getFirst());
-        });
-
-        final UiAutomator2Options actual = uiAutomator2.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(uiAutomator2Options).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, uiAutomator2Options);
 
         desiredCapabilitiesMockedConstruction.close();
     }

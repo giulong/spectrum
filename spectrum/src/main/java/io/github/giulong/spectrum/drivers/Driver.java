@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.ThreadGuard;
 
@@ -28,7 +29,10 @@ public abstract class Driver<T extends MutableCapabilities, U extends DriverServ
 
     public abstract void buildCapabilities();
 
-    public abstract T mergeGridCapabilitiesFrom(Map<String, Object> gridCapabilities);
+    @SuppressWarnings("unchecked")
+    public T mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
+        return (T) capabilities.merge(new DesiredCapabilities(gridCapabilities));
+    }
 
     public synchronized WebDriver build() {
         buildCapabilities();

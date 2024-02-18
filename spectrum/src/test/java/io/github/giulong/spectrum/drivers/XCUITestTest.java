@@ -8,9 +8,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -37,16 +38,10 @@ class XCUITestTest {
     private Map<String, Object> capabilities;
 
     @Mock
-    private Map<String, Object> gridCapabilities;
-
-    @Mock
     private Configuration.WebDriver.XCUITest xcuiTestConfiguration;
 
     @Mock
     private URL url;
-
-    @Captor
-    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
 
     @InjectMocks
     private XCUITest xcuiTest;
@@ -103,22 +98,6 @@ class XCUITestTest {
 
         final XCUITestOptions actual = (XCUITestOptions) Reflections.getFieldValue("capabilities", xcuiTest);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        desiredCapabilitiesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        when(xcuiTestOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(xcuiTestOptions);
-
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(gridCapabilities, context.arguments().getFirst());
-        });
-
-        final XCUITestOptions actual = xcuiTest.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(xcuiTestOptions).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, xcuiTestOptions);
 
         desiredCapabilitiesMockedConstruction.close();
     }

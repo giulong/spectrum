@@ -2,10 +2,8 @@ package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.mac.Mac2Driver;
 import io.appium.java_client.mac.options.Mac2Options;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
-import java.util.Map;
 
 public class Mac2 extends Appium<Mac2Options, Mac2Driver> {
 
@@ -15,11 +13,6 @@ public class Mac2 extends Appium<Mac2Options, Mac2Driver> {
                 .getWebDriver()
                 .getMac2()
                 .getCapabilities());
-    }
-
-    @Override
-    public Mac2Options mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
-        return capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 
     @Override

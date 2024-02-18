@@ -9,12 +9,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.List;
@@ -43,12 +44,6 @@ class FirefoxTest {
 
     @Mock
     private FirefoxDriverLogLevel firefoxDriverLogLevel;
-
-    @Mock
-    private Map<String, Object> gridCapabilities;
-
-    @Captor
-    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
 
     @InjectMocks
     private Firefox firefox;
@@ -90,22 +85,6 @@ class FirefoxTest {
         verify(firefoxOptions).addPreference("one", "value");
 
         firefoxOptionsMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        when(firefoxOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(firefoxOptions);
-
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(gridCapabilities, context.arguments().getFirst());
-        });
-
-        final FirefoxOptions actual = firefox.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(firefoxOptions).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, firefoxOptions);
-
-        desiredCapabilitiesMockedConstruction.close();
     }
 
     @DisplayName("addPreference should add the correct preference based on the value type")

@@ -7,9 +7,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -35,13 +36,7 @@ class EspressoTest {
     private Map<String, Object> capabilities;
 
     @Mock
-    private Map<String, Object> gridCapabilities;
-
-    @Mock
     private Configuration.WebDriver.Espresso espressoConfiguration;
-
-    @Captor
-    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
 
     @InjectMocks
     private Espresso espresso;
@@ -98,22 +93,6 @@ class EspressoTest {
 
         final EspressoOptions actual = (EspressoOptions) Reflections.getFieldValue("capabilities", espresso);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        desiredCapabilitiesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        when(espressoOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(espressoOptions);
-
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(gridCapabilities, context.arguments().getFirst());
-        });
-
-        final EspressoOptions actual = espresso.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(espressoOptions).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, espressoOptions);
 
         desiredCapabilitiesMockedConstruction.close();
     }

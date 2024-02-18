@@ -1,9 +1,6 @@
 package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.android.options.EspressoOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.util.Map;
 
 public class Espresso extends Android<EspressoOptions> {
 
@@ -13,10 +10,5 @@ public class Espresso extends Android<EspressoOptions> {
                 .getWebDriver()
                 .getEspresso()
                 .getCapabilities()));
-    }
-
-    @Override
-    public EspressoOptions mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
-        return capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 }

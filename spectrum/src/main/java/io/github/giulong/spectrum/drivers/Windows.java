@@ -4,10 +4,8 @@ import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.options.WindowsOptions;
 import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
-import java.util.Map;
 
 public class Windows extends Appium<WindowsOptions, WindowsDriver> {
 
@@ -25,11 +23,6 @@ public class Windows extends Appium<WindowsOptions, WindowsDriver> {
                 .getWebDriver()
                 .getWindows()
                 .getCapabilities());
-    }
-
-    @Override
-    public WindowsOptions mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
-        return capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 
     @Override

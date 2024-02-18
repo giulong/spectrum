@@ -2,10 +2,8 @@ package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
-import java.util.Map;
 
 public class XCUITest extends Appium<XCUITestOptions, IOSDriver> {
 
@@ -15,11 +13,6 @@ public class XCUITest extends Appium<XCUITestOptions, IOSDriver> {
                 .getWebDriver()
                 .getXcuiTest()
                 .getCapabilities()));
-    }
-
-    @Override
-    public XCUITestOptions mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
-        return capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 
     @Override

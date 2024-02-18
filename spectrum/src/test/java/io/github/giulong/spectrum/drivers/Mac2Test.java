@@ -8,15 +8,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.URL;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Mac2")
@@ -35,16 +37,10 @@ class Mac2Test {
     private Map<String, Object> capabilities;
 
     @Mock
-    private Map<String, Object> gridCapabilities;
-
-    @Mock
     private Configuration.WebDriver.Mac2 mac2Configuration;
 
     @Mock
     private URL url;
-
-    @Captor
-    private ArgumentCaptor<DesiredCapabilities> desiredCapabilitiesArgumentCaptor;
 
     @InjectMocks
     private Mac2 mac2;
@@ -70,22 +66,6 @@ class Mac2Test {
 
         final Mac2Options actual = (Mac2Options) Reflections.getFieldValue("capabilities", mac2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
-
-        desiredCapabilitiesMockedConstruction.close();
-    }
-
-    @Test
-    @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
-    public void mergeGridCapabilitiesFrom() {
-        when(mac2Options.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(mac2Options);
-
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(gridCapabilities, context.arguments().getFirst());
-        });
-
-        final Mac2Options actual = mac2.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(mac2Options).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, mac2Options);
 
         desiredCapabilitiesMockedConstruction.close();
     }
