@@ -42,6 +42,9 @@ public class AppiumEnvironment extends Environment {
     @JsonPropertyDescription("Capabilities specific of the Appium Server")
     private final Map<String, Object> capabilities = new HashMap<>();
 
+    @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs")
+    private boolean collectServerLogs;
+
     @Override
     public void sessionOpened() {
         final AppiumServiceBuilder appiumServiceBuilder = (AppiumServiceBuilder) configuration
@@ -55,11 +58,14 @@ public class AppiumEnvironment extends Environment {
                 .usingPort(port)
         );
 
-        driverService.clearOutPutStreams();
-        driverService.addOutPutStream(AppiumLog
-                .builder()
-                .level(configuration.getWebDriver().getLogs().getLevel())
-                .build());
+        if (collectServerLogs) {
+            driverService.clearOutPutStreams();
+            driverService.addOutPutStream(AppiumLog
+                    .builder()
+                    .level(configuration.getWebDriver().getLogs().getLevel())
+                    .build());
+        }
+
         driverService.start();
     }
 

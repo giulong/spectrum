@@ -89,12 +89,13 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService redirecting the logs to slf4j")
-    public void sessionOpened() {
+    public void sessionOpenedLogs() {
         final String ipAddress = "ipAddress";
         final int port = 123;
 
         Reflections.setField("ipAddress", appiumEnvironment, ipAddress);
         Reflections.setField("port", appiumEnvironment, port);
+        Reflections.setField("collectServerLogs", appiumEnvironment, true);
 
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
@@ -122,6 +123,39 @@ class AppiumEnvironmentTest {
 
         verify(driverService).clearOutPutStreams();
         verify(driverService).addOutPutStream(appiumLog);
+        verify(driverService).start();
+
+        desiredCapabilitiesMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("sessionOpened should initialise the AppiumDriverLocalService without collecting server logs")
+    public void sessionOpened() {
+        final String ipAddress = "ipAddress";
+        final int port = 123;
+
+        Reflections.setField("ipAddress", appiumEnvironment, ipAddress);
+        Reflections.setField("port", appiumEnvironment, port);
+
+        when(configuration.getRuntime()).thenReturn(runtime);
+        doReturn(driver).when(runtime).getDriver();
+        doReturn(builder).when(driver).getDriverServiceBuilder();
+        when(builder.withCapabilities(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(builder);
+        when(builder.withIPAddress(ipAddress)).thenReturn(builder);
+        when(builder.usingPort(port)).thenReturn(builder);
+        when(AppiumDriverLocalService.buildService(builder)).thenReturn(driverService);
+
+        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
+            assertEquals(capabilities, context.arguments().getFirst());
+        });
+
+        appiumEnvironment.sessionOpened();
+
+        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), desiredCapabilitiesArgumentCaptor.getValue());
+        assertEquals(driverService, Reflections.getFieldValue("driverService", appiumEnvironment));
+
+        verify(driverService, never()).clearOutPutStreams();
+        verify(driverService, never()).addOutPutStream(any());
         verify(driverService).start();
 
         desiredCapabilitiesMockedConstruction.close();
