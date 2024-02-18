@@ -71,7 +71,8 @@ class DriverDeserializerTest {
                 arguments("uiAutomator2", mock(UiAutomator2.class)),
                 arguments("espresso", mock(Espresso.class)),
                 arguments("xcuiTest", mock(XCUITest.class)),
-                arguments("windows", mock(Windows.class))
+                arguments("windows", mock(Windows.class)),
+                arguments("mac2", mock(Mac2.class))
         );
     }
 }

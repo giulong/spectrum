@@ -160,6 +160,9 @@ public class Configuration {
         @JsonPropertyDescription("Windows capabilities. See: https://github.com/appium/appium-windows-driver")
         private Windows windows;
 
+        @JsonPropertyDescription("Mac2 capabilities. See: https://github.com/appium/appium-mac2-driver")
+        private Mac2 mac2;
+
         @JsonPropertyDescription("WebDriver's internal logging levels")
         private Logs logs;
 
@@ -252,6 +255,14 @@ public class Configuration {
         public static class Windows {
 
             @JsonPropertyDescription("Windows' capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class Mac2 {
+
+            @JsonPropertyDescription("Mac2's capabilities")
             private Map<String, Object> capabilities;
         }
 

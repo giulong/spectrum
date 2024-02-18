@@ -34,6 +34,7 @@ public class DriverDeserializer extends InterpolatedDeserializer<Driver<?, ?, ?>
             case "espresso" -> new Espresso();
             case "xcuiTest" -> new XCUITest();
             case "windows" -> new Windows();
+            case "mac2" -> new Mac2();
             default -> throw new IllegalArgumentException("Value '" + interpolatedValue + "' is not a valid driver!");
         };
     }
