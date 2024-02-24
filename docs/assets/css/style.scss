@@ -248,7 +248,7 @@ tbody tr:nth-child(odd) {
     background-color: rgba(0,0,0,0.06);
 }
 
-.toc-element:hover, tbody tr:hover {
+.toc-element:hover, .toc-element-selected, tbody tr:hover {
     background-color: #C6EAFA;
 }
 

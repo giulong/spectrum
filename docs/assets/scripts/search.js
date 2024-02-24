@@ -33,7 +33,7 @@ window.onresize = () => stickyHeader();
 
 function setUpAnchors() {
     location.href = location.hash ? location.hash : '#spectrum';
-    headings.forEach(h => h.setAttribute('onclick', 'navigateTo("' + h.innerText.toLowerCase().replaceAll(' ', '-') + '")'));
+    headings.forEach(h => h.setAttribute('onclick', 'navigateTo("' + buildAnchorFrom(h.innerText) + '")'));
 
     setTimeout(() => scrollUpABit(), 100);
 }
@@ -79,6 +79,15 @@ function navigateTo(anchor) {
 
     location.href = '#' + anchor;
     window.navigator.clipboard.writeText(location.href);
+    tocElements.forEach(h => {
+        if (buildAnchorFrom(h.innerText) == anchor) {
+            h.classList.add('toc-element-selected');
+            h.scrollIntoView({ behavior: "smooth", block: "center" });
+        } else {
+            h.classList.remove('toc-element-selected');
+        }
+    });
+
     scrollUpABit();
 }
 
@@ -101,7 +110,7 @@ function search() {
         .map(r => {
             const li = document.createElement('li');
 
-            li.setAttribute('onclick', 'navigateTo("' + r.innerText.toLowerCase().replaceAll(' ', '-') + '")');
+            li.setAttribute('onclick', 'navigateTo("' + buildAnchorFrom(r.innerText) + '")');
             li.classList.add('search-result');
             li.innerText = r.innerText;
 
