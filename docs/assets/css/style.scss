@@ -70,10 +70,6 @@ body {
     background-color: rgba(0,0,0,0.06);
 }
 
-.toc-element:hover {
-    background: #C6EAFA;
-}
-
 .toc-element:last-child:hover {
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
@@ -250,6 +246,10 @@ tbody tr td:first-child {
 
 tbody tr:nth-child(odd) {
     background-color: rgba(0,0,0,0.06);
+}
+
+.toc-element:hover, tbody tr:hover {
+    background-color: #C6EAFA;
 }
 
 blockquote {
