@@ -713,6 +713,10 @@ runtime:
 ```
 
 Appium server is a specialized kind of a Selenium Grid, so its configuration extends the one of the Grid environment above.
+
+When running the Appium server in local, you can either start it manually or let Spectrum do it for you.
+It's enough to have Appium installed: if the Appium server is already running, Spectrum will just send execution commands to it.
+Otherwise, it will start the server process when the tests execution start, and will shut it down once the execution is done.
 That said, all the parameters available for a Grid environment can be used in Appium environment. Here's the list of Appium specific parameters:
 
 | Param             | Type    | Default | Mandatory | Description                                                                                                        |
@@ -721,7 +725,7 @@ That said, all the parameters available for a Grid environment can be used in Ap
 
 > 💡 **Tip**<br/>
 > Use `collectServerLogs` only if you really want to send Appium server's logs to Spectrum's log file.
-> When running in local, or in general where you have a console that prints logs, Appium's server logs are already visible,
+> When the Appium server is started by Spectrum, its logs are already visible in the same console where you see Spectrum's logs,
 > since they're printed on the stout/stderr by default.
 
 If you don't need any particular configuration, it's enough to run with:
