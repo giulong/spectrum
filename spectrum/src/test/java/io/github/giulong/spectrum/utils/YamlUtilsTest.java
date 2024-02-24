@@ -44,14 +44,15 @@ class YamlUtilsTest {
                 "UtilLogLevelDeserializer",
                 "LogbackLogLevelDeserializer",
                 "DurationDeserializer",
-                "BrowserDeserializer",
+                "DriverDeserializer",
                 "ClassDeserializer",
                 "LogTestBookReporter",
                 "TxtTestBookReporter",
                 "HtmlTestBookReporter",
                 "LogSummaryReporter",
                 "TxtSummaryReporter",
-                "HtmlSummaryReporter"
+                "HtmlSummaryReporter",
+                "AppiumEnvironment"
         ), yamlUtils.getYamlMapper().getRegisteredModuleIds());
 
         assertEquals(Set.of(

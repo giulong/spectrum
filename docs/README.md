@@ -12,6 +12,9 @@ Main features:
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
 
+Spectrum supports both browsers automation via [Selenium](https://www.selenium.dev/){:target="_blank"}
+and mobile and desktop applications via [Appium](http://appium.io/docs/en/latest/){:target="_blank"}.
+
 ## Glossary
 
 | Acronym | Meaning                                                                                                                     |
@@ -101,10 +104,16 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > to leverage the [default inclusions](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inclusion-exclusion.html){:target="_blank"} of the failsafe plugin.
 
 > 💡 **Tip**<br/>
-> The default browser is `chrome`. If you want to use another one, you can switch via the `-Dspectrum.browser` system property, setting its value to
-> `firefox` or `edge`:
-> * `-Dspectrum.browser=firefox`
-> * `-Dspectrum.browser=edge`
+> The default driver is `chrome`. If you want to use another one, you can switch via the `-Dspectrum.driver` system property, setting its value to one of the possible values:
+> * `-Dspectrum.driver=chrome`
+> * `-Dspectrum.driver=firefox`
+> * `-Dspectrum.driver=edge`
+> * `-Dspectrum.driver=uiAutomator2`
+> * `-Dspectrum.driver=espresso`
+> * `-Dspectrum.driver=xcuiTest`
+> * `-Dspectrum.driver=windows`
+> * `-Dspectrum.driver=mac2`
+> * `-Dspectrum.driver=appiumGeneric`
 
 > 💡 **Tip**<br/>
 > The default log level is `INFO`. If you want to change it, run with `-Dspectrum.log.level=<LEVEL>`,
@@ -311,7 +320,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
         //  - base url in configuration.yaml is http://my-app.com
         //  - webAppPage is annotated with @Endpoint("login")
         //  
-        //  will be true if the current url in the browser is http://my-app.com/login
+        //  will be true if the current url in the driver is http://my-app.com/login
         boolean loaded = webAppPage.isLoaded();
     }
 }
@@ -371,6 +380,7 @@ so you can directly use them in your tests/pages without caring about declaring 
 Spectrum is fully configurable and comes with default values which you can find in
 the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 Be sure to check it: each key is properly commented to clarify its purpose.
+You should also leverage the [Json Schema](#json-schema) to have autocompletion and fields' descriptions directly in your IDE.
 
 > ⚠️ **Running on *nix**<br/>
 > When running on *nix, the [configuration.default.unix.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.unix.yaml){:target="_blank"}
@@ -378,7 +388,7 @@ Be sure to check it: each key is properly commented to clarify its purpose.
 > one
 > to set filesystem-specific values such as path separators.
 
-To customise these values, you can create the `src/test/resources/configuration.yaml` file in your project.
+To provide your own configuration and customise these values, you can create the `src/test/resources/configuration.yaml` file in your project.
 
 > ⚠️ **Files Extension**<br/>
 > The extension must be `.yaml`. The shortened `.yml` won't work.
@@ -390,63 +400,58 @@ To let Spectrum pick the right profiles-related configuration, you must run with
 which is a comma separated list of profile names you want to activate.
 
 > 💡 **Example**<br/>
-> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this order of precedence:
-> 1. configuration.default.yaml [Spectrum internal defaults]
-> 2. configuration.default.unix.yaml [Spectrum internal defaults for *nix, not read on Windows]
-> 3. configuration.yaml [Provided by you]
-> 4. configuration-test.yaml [Provided by you. A warning will be raised if not found, no errors]
-> 5. configuration-grid.yaml [Provided by you. A warning will be raised if not found, no errors]
+> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this exact order of precedence.
+> The first file loaded is the internal one, which has the lowest priority. This means if the same key is provided in any of the
+> other files, it will be overridden. Values in the most specific configuration file will take precedence over the others.
 
-Values in the most specific configuration file will take precedence over the others.
+| Configuration file              | Priority | Description                                                  |
+|---------------------------------|:--------:|--------------------------------------------------------------|
+| configuration.default.yaml      |    1     | Spectrum internal defaults                                   |
+| configuration.default.unix.yaml |    2     | Spectrum internal defaults for *nix, not read on Windows     |
+| configuration.yaml              |    3     | Provided by you                                              |
+| configuration-test.yaml         |    4     | Provided by you. A warning is raised if not found, no errors |
+| configuration-grid.yaml         |    5     | Provided by you. A warning is raised if not found, no errors |
 
 > 💡 **Tip**<br/>
 > There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base configuration.yaml,
 > while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`
 
-⚠️ **Merging Lists**<br/>
-Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! For example, if you have these:
+> ⚠️ **Merging Lists**<br/>
+> Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! Let's clarify with an example:
 
 {% include copyCode.html %}
 
 ```yaml
 # configuration.yaml
-someList:
-  - value1
-```
+anyList:
+  - baseValue
 
-{% include copyCode.html %}
-
-```yaml
 # configuration-test.yaml
-someList:
-  - value2
-```
+anyList:
+  - valueForTest
 
-If you run with `-Dspectrum.profiles=test` both files will be loaded and lists will be merged, resulting in:
-
-{% include copyCode.html %}
-
-```yaml
-someList:
-  - value1
-  - value2
+# merged configurations
+anyList:
+  - baseValue
+  - valueForTest
 ```
 
 > 💡 **Tip**<br/>
 > If you need different configurations for the same environment, instead of manually changing values in the configuration*.yaml, you should
 > provide different files and choose the right one with the `-Dspectrum.profiles` flag. <br/>
-> For example, if you need to be able to run from your local machine alternatively targeting a remote grid or executing browsers in local,
-> it's preferable to have something like these two files, where you change just the target runtime:
+> For example, if you need to be able to run from your local machine alternatively targeting a remote grid or executing drivers in local,
+> it's preferable to have two files where you change just the target runtime:
 > * configuration-local-local.yaml
 > * configuration-local-grid.yaml
 >
 > In this way, you don't need to change any configuration file. This is important, since configurations are versioned alongside your tests,
-> so you will avoid errors and will keep your scm history clean.
-> You need just to activate the right one by creating different run configurations in your IDE.
+> so you avoid errors and keep your scm history clean.
+> You then just need to activate the right one by creating different run configurations in your IDE.
 
 > 💡 **Tip**<br/>
 > Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
 > so that everyone can provide their own configuration without interfering with others.
+> Remember to run with `-Dspectrum.profiles=personal` to activate it!
 
 > 💡 **Example**<br/>
 > Check the `application.baseUrl` node in these configurations used in Spectrum's own tests to see an example of merging:
@@ -465,29 +470,12 @@ runtime:
   profiles: local,second
 ```
 
-## Vars node
-
-The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
-`vars` is a `Map<String, String>`, so you can define all the keys you need, naming them how you want.
-
-{% include copyCode.html %}
-
-```yaml
-vars:
-  commonKey: some-value # commonKey is a name of your choice
-
-node:
-  property: ${commonKey} # Will be replaced with `some-value`
-
-anotherNode:
-  subNode:
-    key: ${commonKey} # Will be replaced with `some-value`
-```
+---
 
 ## Values interpolation
 
 Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml`  can be interpolated with a dollar-string
-in one of these two ways, depending on the type needed as result. Let's suppose we have a variable named `key = 123`:
+in one of these two ways, depending on the type needed as result. Let's suppose we have the variable `key = 123`:
 
 | Needed type | Interpolation key | Result | Behaviour if not found                                       |
 |-------------|-------------------|--------|--------------------------------------------------------------|
@@ -495,7 +483,7 @@ in one of these two ways, depending on the type needed as result. Let's suppose 
 | Numeric     | `$<key>`          | 123    | 0 is returned                                                |
 
 Let's clarify this with an example where you run behind a proxy. You could store the proxy port as a common variable,
-and then interpolate it in each browser's preferences with the proper type:
+and then interpolate it in each driver's preferences with the proper type:
 
 {% include copyCode.html %}
 
@@ -617,14 +605,46 @@ You can add your own and even override the default ones in your `configuration*.
 | Variable             | Default Windows              | Default *nix                 |
 |----------------------|------------------------------|------------------------------|
 | spectrum.profiles    | local                        | local                        |
-| spectrum.browser     | chrome                       | chrome                       |
+| spectrum.driver      | chrome                       | chrome                       |
 | downloadsFolder      | ${user.dir}\target\downloads | ${user.dir}/target/downloads |
 | summaryReportOutput  | target/spectrum/summary      | target/spectrum/summary      |
 | testBookReportOutput | target/spectrum/testbook     | target/spectrum/testbook     |
 
-## Running on a Grid
+---
 
-By default, browsers run in local. This is because the default value in the internal
+## Selecting the driver
+
+You can select the driver via the `runtime.driver` node. As you can see in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
+its value leverages interpolation with the default set to `chrome`:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  driver: ${spectrum.driver:-chrome}
+```
+
+This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  driver: firefox
+```
+
+or overriding it at runtime by providing the `spectrum.driver` property:
+
+`-Dspectrum.driver=firefox`
+
+Before actually providing the list of available drivers, it's important to spend a few words on the runtime environment.
+
+---
+
+## Selecting the environment
+
+By default, drivers run in local. This is because the default value in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml{:target="_blank"})
 is:
 
@@ -636,7 +656,16 @@ runtime:
     local: { }
 ```
 
-To run on a remote [grid](https://www.selenium.dev/documentation/grid/){:target="_blank"}, you just need to change that node, providing at least the grid url:
+### Local environment
+
+The local environment doesn't have any additional properties, which means you need to configure it as an empty object
+like in the internal default you can see above.
+Watch out that providing no value at all like in `local: ` is equivalent to `local: null` !
+This is valid in general in yaml.
+
+### Grid environment
+
+To run on a remote [grid](https://www.selenium.dev/documentation/grid/){:target="_blank"}, you just need to provide at least the grid url:
 
 {% include copyCode.html %}
 
@@ -654,10 +683,102 @@ runtime:
 Where the params are:
 
 | Param             | Type               | Default   | Mandatory | Description                                                                                                                                                                                              |
-|-------------------|--------------------|-----------|-----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| url               | String             | null      | ✅         | url of the remote grid                                                                                                                                                                                   |
-| capabilities      | Map<String,String> | empty map | ❌         | additional webDriver capabilities to be added to browser-specific ones only when running on a grid                                                                                                       |
-| localFileDetector | boolean            | false     | ❌         | if true, allows to transfer files from the client machine to the remote server. [Docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector){:target="_blank"} |
+|-------------------|--------------------|-----------|:---------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| url               | String             | null      |     ✅     | url of the remote grid                                                                                                                                                                                   |
+| capabilities      | Map<String,String> | empty map |     ❌     | additional webDriver capabilities to be added to driver-specific ones only when running on a grid                                                                                                        |
+| localFileDetector | boolean            | false     |     ❌     | if true, allows to transfer files from the client machine to the remote server. [Docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector){:target="_blank"} |
+
+### Appium environment
+
+> ⚠️ **Appium**<br/>
+> Appium and all the needed drivers need to be already installed, check the
+> [quickstart section](http://appium.io/docs/en/latest/quickstart/){:target="_blank"}
+> in its docs.
+
+Spectrum supports [Appium](http://appium.io/docs/en/latest/){:target="_blank"}.
+To run against an Appium server you need to configure the related environment like this:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  environment:
+    appium:
+      url: http://127.0.0.1:4723/ # this is the default, no need to provide it explicitly
+      capabilities:
+        someCapability: its value
+        another: blah
+      localFileDetector: true
+      collectServerLogs: true
+```
+
+Appium server is a specialized kind of a Selenium Grid, so its configuration extends the one of the Grid environment above.
+
+When running the Appium server in local, you can either start it manually or let Spectrum do it for you.
+It's enough to have Appium installed: if the Appium server is already running, Spectrum will just send execution commands to it.
+Otherwise, it will start the server process when the tests execution start, and will shut it down once the execution is done.
+That said, all the parameters available for a Grid environment can be used in Appium environment. Here's the list of Appium specific parameters:
+
+| Param             | Type    | Default | Mandatory | Description                                                                                                        |
+|-------------------|---------|---------|:---------:|--------------------------------------------------------------------------------------------------------------------|
+| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the webDriver.logs.level node |
+
+> 💡 **Tip**<br/>
+> Use `collectServerLogs` only if you really want to send Appium server's logs to Spectrum's log file.
+> When the Appium server is started by Spectrum, its logs are already visible in the same console where you see Spectrum's logs,
+> since they're printed on the stout/stderr by default.
+
+If you don't need any particular configuration, it's enough to run with:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  environment:
+    appium: { }
+```
+
+You can see few working examples in the
+[it-appium]({{ site.repository_url }}/it-appium){:target="_blank"} module.
+
+---
+
+## Available Drivers
+
+These are the drivers currently supported, each must be used with a compatible environment:
+
+| Driver        | Local | Grid | Appium |
+|---------------|:-----:|:----:|:------:|
+| chrome        |   ✅   |  ✅   |        |
+| firefox       |   ✅   |  ✅   |        |
+| edge          |   ✅   |  ✅   |        |
+| uiAutomator2  |       |      |   ✅    |
+| espresso      |       |      |   ✅    |
+| xcuiTest      |       |      |   ✅    |
+| windows       |       |      |   ✅    |
+| mac2          |       |      |   ✅    |
+| appiumGeneric |       |      |   ✅    |
+
+---
+
+## Vars node
+
+The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
+`vars` is a `Map<String, String>`, so you can define all the keys you need, naming them how you want.
+
+{% include copyCode.html %}
+
+```yaml
+vars:
+  commonKey: some-value # commonKey is a name of your choice
+
+node:
+  property: ${commonKey} # Will be replaced with `some-value`
+
+anotherNode:
+  subNode:
+    key: ${commonKey} # Will be replaced with `some-value`
+```
 
 ---
 
@@ -683,7 +804,7 @@ public void proxyShouldAllowOnlyCertainDomains() {
 
 Regarding the proxy, these are the relevant part of its
 [configuration.yaml]({{ site.repository_url }}/it-grid/src/test/resources/configuration.yaml){:target="_blank"},
-where you can see how to configure a proxy server for every browser.
+where you can see how to configure a proxy server for every driver.
 
 Mind that this is just an example. Its only purpose is to show how to configure a proxy and prove it's working, leveraging the domain bypass list:
 there's no proxy actually running, so every domain which is not bypassed would throw an exception.
@@ -746,6 +867,7 @@ You can tweak each event in your `configuration.yaml`, by providing these:
 For example, you can set these:
 
 {% include copyCode.html %}
+
 ```yaml
 webDriver:
   events:
@@ -762,9 +884,9 @@ Check the `webDriver.events` node in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 to see the defaults.
 
-The `message` property specifies what to add to logs and reports upon receiving the related event, 
+The `message` property specifies what to add to logs and reports upon receiving the related event,
 and is affected by the `level` property (check the sections below).
-On the other hand, `wait` is a standalone property, meaning it will be considered even if the related event won't be logged, 
+On the other hand, `wait` is a standalone property, meaning it will be considered even if the related event won't be logged,
 and specifies how many milliseconds to wait before actually processing the related event.
 
 > ⚠️ **Static waits**<br/>
@@ -776,6 +898,7 @@ and specifies how many milliseconds to wait before actually processing the relat
 As an example, you might want to add a 1 second sleep before each call like this:
 
 {% include copyCode.html %}
+
 ```yaml
 webDriver:
   events:
@@ -786,6 +909,7 @@ webDriver:
 Or a sleep only before clicking elements:
 
 {% include copyCode.html %}
+
 ```yaml
 webDriver:
   events:
@@ -916,7 +1040,7 @@ how to customise it.
 > 💡 **Tip**<br/>
 > The default file name of the produced html report contains a timestamp, which is useful to always generate a new file.
 > While developing, it could be worth it to override the `extent.fileName` to have a fixed name.
-> This way the report will be overridden, so you can keep it open in a browser and just refresh the page after each execution.
+> This way the report will be overridden, so you can keep it open in a driver and just refresh the page after each execution.
 
 You can see an example report here:
 
@@ -1101,7 +1225,7 @@ If needed, you should change this value, since this is used in several places, f
 So, this is a useful way to avoid redundancy and to be able to change all the values with one key.
 
 When downloading a file from the AUT, you can leverage Spectrum to check if it's what you expected.
-Technically speaking, checking the file's content is beyond the goal of a Selenium test, which aims to check web applications, so its boundary is the browser.
+Technically speaking, checking the file's content is beyond the goal of a Selenium test, which aims to check web applications, so its boundary is the driver.
 
 Given a file downloaded from the AUT (so, in the `vars.downloadsFolder`),
 Spectrum helps checking it by comparing its SHA 256 checksum with the checksum of a file in the folder specified in the `runtime.filesFolder` node of the `configuration*.yaml`.
@@ -1911,7 +2035,7 @@ html:
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.html){:target="_blank"}.
-This is what it looks like when opened in a browser:
+This is what it looks like when opened in a driver:
 
 ![Html Summary Reporter](assets/images/html-summary.png)
 
@@ -1930,10 +2054,10 @@ of your full suite. When running them, Spectrum will check which were actually e
 These are the information needed in a testbook:
 
 | Field      | Type   | Default | Mandatory | Description                                                                                     |
-|------------|--------|---------|-----------|-------------------------------------------------------------------------------------------------|
-| Class Name | String | null    | ✅         | enclosing class name                                                                            |
-| Test Name  | String | null    | ✅         | name of the test method                                                                         |
-| Weight     | int    | 1       | ❌         | optional number representing the importance of the related test, with regards to all the others |
+|------------|--------|---------|:---------:|-------------------------------------------------------------------------------------------------|
+| Class Name | String | null    |     ✅     | enclosing class name                                                                            |
+| Test Name  | String | null    |     ✅     | name of the test method                                                                         |
+| Weight     | int    | 1       |     ❌     | optional number representing the importance of the related test, with regards to all the others |
 
 In short, we need to uniquely identify each test by their class name and method name.
 Method name alone is not enough, since there might be test methods with the same name in different classes.
@@ -2290,7 +2414,7 @@ html:
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.html){:target="_blank"}.
-This is what it looks like when opened in a browser:
+This is what it looks like when opened in a driver:
 
 ![Html TestBook Reporter](assets/images/html-testbook.png)
 

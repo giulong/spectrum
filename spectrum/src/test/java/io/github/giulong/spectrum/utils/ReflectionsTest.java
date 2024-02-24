@@ -19,7 +19,7 @@ class ReflectionsTest {
     @DisplayName("getField should return the field with the provided name on the provided object")
     public void getField() throws NoSuchFieldException {
         final String fieldName = "fieldString";
-        final Dummy dummy = new Dummy();
+        final Dummy dummy = new Dummy(fieldName);
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
 
         assertEquals(fieldString, Reflections.getField(fieldName, dummy));
@@ -40,7 +40,7 @@ class ReflectionsTest {
     public void setFieldString() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";
         final String value = "value";
-        final Dummy dummy = new Dummy();
+        final Dummy dummy = new Dummy(null);
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
 
         Reflections.setField(fieldName, dummy, value);
@@ -52,23 +52,11 @@ class ReflectionsTest {
     public void setField() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";
         final String value = "value";
-        final Dummy dummy = new Dummy();
+        final Dummy dummy = new Dummy(null);
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
 
         Reflections.setField(fieldString, dummy, value);
         assertEquals(value, fieldString.get(dummy));
-    }
-
-    @Test
-    @DisplayName("setParentField should set the provided field of a superclass on the provided object with the provided value")
-    public void setParentField() throws NoSuchFieldException, IllegalAccessException {
-        final String fieldName = "parentField";
-        final String value = "value";
-        final Dummy dummy = new Dummy();
-        final Field parentField = DummyParent.class.getDeclaredField(fieldName);
-
-        Reflections.setParentField(fieldName, dummy, DummyParent.class, value);
-        assertEquals(value, parentField.get(dummy));
     }
 
     @Test
@@ -85,11 +73,16 @@ class ReflectionsTest {
         assertEquals(value, fieldStringSecond.get(dummySecond));
     }
 
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
     @AllArgsConstructor
-    @NoArgsConstructor
     private static class Dummy extends DummyParent {
-        private String fieldString;
+
+        private final String fieldString;
+
+        public Dummy(String fieldString, String parentField) {
+            super(parentField);
+            this.fieldString = fieldString;
+        }
     }
 
     @SuppressWarnings("unused")
@@ -98,6 +91,8 @@ class ReflectionsTest {
     }
 
     @SuppressWarnings("unused")
+    @AllArgsConstructor
+    @NoArgsConstructor
     private static class DummyParent {
         private String parentField;
     }

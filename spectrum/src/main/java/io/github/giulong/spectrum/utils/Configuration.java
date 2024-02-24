@@ -3,12 +3,12 @@ package io.github.giulong.spectrum.utils;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.video.Video;
-import io.github.giulong.spectrum.utils.webdrivers.Environment;
+import io.github.giulong.spectrum.utils.environments.Environment;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -79,10 +79,10 @@ public class Configuration {
 
         @JsonSerialize(using = ToStringSerializer.class)
         @JsonSchemaTypes(String.class)
-        @JsonPropertyDescription("Browser to use")
-        private Browser<?, ?, ?> browser;
+        @JsonPropertyDescription("Driver to use")
+        private Driver<?, ?, ?> driver;
 
-        @JsonPropertyDescription("Runtime environment. Can be local or grid")
+        @JsonPropertyDescription("Runtime environment. Can be local, grid, appium")
         private Environment environment;
 
         @JsonPropertyDescription("Folder where you will store files to be checked against downloaded ones")
@@ -148,6 +148,24 @@ public class Configuration {
         @JsonPropertyDescription("Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options")
         private Edge edge;
 
+        @JsonPropertyDescription("Android UiAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities")
+        private UiAutomator2 uiAutomator2;
+
+        @JsonPropertyDescription("Android Espresso capabilities. See: https://github.com/appium/appium-espresso-driver#capabilities")
+        private Espresso espresso;
+
+        @JsonPropertyDescription("XCUITest capabilities. See: https://github.com/appium/appium-xcuitest-driver")
+        private XCUITest xcuiTest;
+
+        @JsonPropertyDescription("Windows capabilities. See: https://github.com/appium/appium-windows-driver")
+        private Windows windows;
+
+        @JsonPropertyDescription("Mac2 capabilities. See: https://github.com/appium/appium-mac2-driver")
+        private Mac2 mac2;
+
+        @JsonPropertyDescription("Appium generic capabilities. See: https://github.com/appium/java-client#drivers-support")
+        private AppiumGeneric appiumGeneric;
+
         @JsonPropertyDescription("WebDriver's internal logging levels")
         private Logs logs;
 
@@ -208,6 +226,54 @@ public class Configuration {
             private List<String> args;
 
             @JsonPropertyDescription("Edge's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class UiAutomator2 {
+
+            @JsonPropertyDescription("Android UiAutomator2's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class Espresso {
+
+            @JsonPropertyDescription("Android Espresso's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class XCUITest {
+
+            @JsonPropertyDescription("iOS XCUITest's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class Windows {
+
+            @JsonPropertyDescription("Windows' capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class Mac2 {
+
+            @JsonPropertyDescription("Mac2's capabilities")
+            private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class AppiumGeneric {
+
+            @JsonPropertyDescription("Appium generic's capabilities")
             private Map<String, Object> capabilities;
         }
 

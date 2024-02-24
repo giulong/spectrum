@@ -6,6 +6,7 @@ import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.Summary;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
+import io.github.giulong.spectrum.utils.environments.Environment;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,6 +81,12 @@ class SpectrumSessionListenerTest {
     private Summary summary;
 
     @Mock
+    private Configuration.Runtime runtime;
+
+    @Mock
+    private Environment environment;
+
+    @Mock
     private SummaryGeneratingListener summaryGeneratingListener;
 
     @Mock
@@ -144,6 +151,8 @@ class SpectrumSessionListenerTest {
         when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
 
         when(launcherSession.getLauncher()).thenReturn(launcher);
+        when(configuration.getRuntime()).thenReturn(runtime);
+        when(runtime.getEnvironment()).thenReturn(environment);
         when(configuration.getTestBook()).thenReturn(testBook);
         when(configuration.getSummary()).thenReturn(summary);
         when(summary.getSummaryGeneratingListener()).thenReturn(summaryGeneratingListener);
@@ -158,6 +167,7 @@ class SpectrumSessionListenerTest {
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
 
         verify(launcher).registerTestExecutionListeners(summaryGeneratingListener);
+        verify(environment).sessionOpened();
         verify(testBook).sessionOpened();
         verify(summary).sessionOpened();
         verify(extentReporter).sessionOpened();
@@ -168,11 +178,14 @@ class SpectrumSessionListenerTest {
     @Test
     @DisplayName("launcherSessionClosed should flush the testbook and the extent report")
     public void launcherSessionClosed() {
+        when(configuration.getRuntime()).thenReturn(runtime);
+        when(runtime.getEnvironment()).thenReturn(environment);
         when(configuration.getTestBook()).thenReturn(testBook);
         when(configuration.getSummary()).thenReturn(summary);
 
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
+        verify(environment).sessionClosed();
         verify(testBook).sessionClosed();
         verify(summary).sessionClosed();
         verify(extentReporter).sessionClosed();

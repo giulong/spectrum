@@ -47,6 +47,10 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>com.github.ekryd.echo-maven-plugin</groupId>
+                <artifactId>echo-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
             </plugin>
@@ -58,7 +62,7 @@
             <id>chrome</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>browsersTests</name>
                 </property>
             </activation>
             <build>
@@ -75,7 +79,7 @@
                                 <configuration>
                                     <reportNameSuffix>chrome</reportNameSuffix>
                                     <systemPropertyVariables>
-                                        <spectrum.browser>chrome</spectrum.browser>
+                                        <spectrum.driver>chrome</spectrum.driver>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
                                 </configuration>
@@ -89,7 +93,7 @@
             <id>firefox</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>browsersTests</name>
                 </property>
             </activation>
             <build>
@@ -106,7 +110,7 @@
                                 <configuration>
                                     <reportNameSuffix>firefox</reportNameSuffix>
                                     <systemPropertyVariables>
-                                        <spectrum.browser>firefox</spectrum.browser>
+                                        <spectrum.driver>firefox</spectrum.driver>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-firefox.xml</summaryFile>
                                 </configuration>
@@ -120,7 +124,7 @@
             <id>edge</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>browsersTests</name>
                 </property>
             </activation>
             <build>
@@ -137,7 +141,7 @@
                                 <configuration>
                                     <reportNameSuffix>edge</reportNameSuffix>
                                     <systemPropertyVariables>
-                                        <spectrum.browser>edge</spectrum.browser>
+                                        <spectrum.driver>edge</spectrum.driver>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-edge.xml</summaryFile>
                                 </configuration>

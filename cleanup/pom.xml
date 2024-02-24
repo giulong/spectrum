@@ -85,13 +85,49 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>Copy LauncherSessionListener to "it-verifier" module's classes</id>
+                        <id>Copy LauncherSessionListener to "verify-browsers" module's classes</id>
                         <phase>clean</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>../it-verifier/target/classes/META-INF/services</outputDirectory>
+                            <outputDirectory>../verify-browsers/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Copy LauncherSessionListener to "it-appium" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../it-appium/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Copy LauncherSessionListener to "verify-appium" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../verify-appium/target/classes/META-INF/services</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${spectrumMetaInfServicesFolder}</directory>

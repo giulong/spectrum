@@ -47,6 +47,10 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>com.github.ekryd.echo-maven-plugin</groupId>
+                <artifactId>echo-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
@@ -63,7 +67,7 @@
             <id>chrome</id>
             <activation>
                 <property>
-                    <name>allTests</name>
+                    <name>browsersTests</name>
                 </property>
             </activation>
             <build>
@@ -81,7 +85,7 @@
                                     <reportNameSuffix>chrome</reportNameSuffix>
                                     <systemPropertyVariables>
                                         <spectrum.log.level>DEBUG</spectrum.log.level>
-                                        <spectrum.browser>chrome</spectrum.browser>
+                                        <spectrum.driver>chrome</spectrum.driver>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
                                 </configuration>

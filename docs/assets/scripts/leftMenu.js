@@ -2,10 +2,15 @@ const leftMenu = document.getElementById('left-menu');
 const originalLeftMenuWidth = getComputedStyle(leftMenu).width;
 const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4'));
 const tocList = document.getElementById('toc-list');
+const tocElements = [];
 const toggleTocButton = document.getElementById('toggle-toc-button');
 const originalToggleTocButtonWidth = getComputedStyle(toggleTocButton).width;
 
 document.onload = buildLeftMenu();
+
+function buildAnchorFrom(text) {
+    return text.toLowerCase().replaceAll(' ', '-');
+}
 
 function buildLeftMenu() {
     headings
@@ -13,13 +18,16 @@ function buildLeftMenu() {
             const li = document.createElement('li');
             const text = heading.innerText;
 
-            li.setAttribute('onclick', 'navigateTo("' + text.toLowerCase().replaceAll(' ', '-') + '")');
+            li.setAttribute('onclick', 'navigateTo("' + buildAnchorFrom(text) + '")');
             li.classList.add('toc-element', heading.nodeName.toLowerCase());
             li.innerText = text;
 
             return li;
         })
-        .forEach(li => tocList.appendChild(li));
+        .forEach(li => {
+            tocList.appendChild(li);
+            tocElements.push(li);
+        });
 }
 
 function toggleToc() {
