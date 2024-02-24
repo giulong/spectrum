@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.LocalFileDetector;
 
 import java.net.URL;
 import java.util.Map;
@@ -90,19 +91,12 @@ class AppiumEnvironmentTest {
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService redirecting the logs to slf4j")
     public void sessionOpenedLogs() {
-        final String ipAddress = "ipAddress";
-        final int port = 123;
-
-        Reflections.setField("ipAddress", appiumEnvironment, ipAddress);
-        Reflections.setField("port", appiumEnvironment, port);
         Reflections.setField("collectServerLogs", appiumEnvironment, true);
 
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
         doReturn(builder).when(driver).getDriverServiceBuilder();
         when(builder.withCapabilities(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(builder);
-        when(builder.withIPAddress(ipAddress)).thenReturn(builder);
-        when(builder.usingPort(port)).thenReturn(builder);
         when(AppiumDriverLocalService.buildService(builder)).thenReturn(driverService);
 
         when(configuration.getWebDriver()).thenReturn(webDriver);
@@ -131,18 +125,10 @@ class AppiumEnvironmentTest {
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService without collecting server logs")
     public void sessionOpened() {
-        final String ipAddress = "ipAddress";
-        final int port = 123;
-
-        Reflections.setField("ipAddress", appiumEnvironment, ipAddress);
-        Reflections.setField("port", appiumEnvironment, port);
-
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
         doReturn(builder).when(driver).getDriverServiceBuilder();
         when(builder.withCapabilities(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(builder);
-        when(builder.withIPAddress(ipAddress)).thenReturn(builder);
-        when(builder.usingPort(port)).thenReturn(builder);
         when(AppiumDriverLocalService.buildService(builder)).thenReturn(driverService);
 
         MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
@@ -170,11 +156,14 @@ class AppiumEnvironmentTest {
     }
 
     @Test
-    @DisplayName("setupFor should delegate the webDriver construction to the actual subclass")
+    @DisplayName("setupFor should delegate the webDriver construction to the actual subclass, calling the super setFileDetectorFor")
     public void setupFor() {
+        appiumEnvironment.localFileDetector = true;
+
         doReturn(appiumDriver).when(driver).buildDriverFor(url);
 
         assertEquals(appiumDriver, appiumEnvironment.setupFor(driver));
+        verify(appiumDriver).setFileDetector(any(LocalFileDetector.class));
     }
 
     @Test

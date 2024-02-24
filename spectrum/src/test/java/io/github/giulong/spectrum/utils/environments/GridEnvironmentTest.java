@@ -73,18 +73,8 @@ class GridEnvironmentTest {
     }
 
     @Test
-    @DisplayName("setupFrom should configure a remote webDriver and return an instance of WebDriver")
-    public void setupFrom() throws MalformedURLException {
-        commonStubs();
-
-        assertEquals(webDriver, gridEnvironment.setupFor(driver));
-
-        verify(driver).mergeGridCapabilitiesFrom(capabilities);
-    }
-
-    @Test
     @DisplayName("setupFrom should configure a remote webDriver with localFileDetector and return an instance of WebDriver")
-    public void setupFromLocalFileDetector() throws MalformedURLException {
+    public void setupFrom() throws MalformedURLException {
         commonStubs();
         gridEnvironment.localFileDetector = true;
 
@@ -92,6 +82,24 @@ class GridEnvironmentTest {
 
         verify(driver).mergeGridCapabilitiesFrom(capabilities);
         verify(webDriver).setFileDetector(any(LocalFileDetector.class));
+    }
+
+    @Test
+    @DisplayName("setFileDetectorFor should set the localFileDetector on the provided webDriver")
+    public void setFileDetectorForLocal() {
+        gridEnvironment.localFileDetector = true;
+
+        assertEquals(webDriver, gridEnvironment.setFileDetectorFor(webDriver));
+
+        verify(webDriver).setFileDetector(any(LocalFileDetector.class));
+    }
+
+    @Test
+    @DisplayName("setFileDetectorFor should do nothing if set the localFileDetector is false")
+    public void setFileDetectorFor() {
+        assertEquals(webDriver, gridEnvironment.setFileDetectorFor(webDriver));
+
+        verifyNoInteractions(webDriver);
     }
 
     @Test

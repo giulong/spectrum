@@ -20,10 +20,10 @@ public class GridEnvironment extends Environment {
 
     @JsonSchemaTypes(String.class)
     @JsonPropertyDescription("Url of the selenium grid")
-    private URL url;
+    protected URL url;
 
     @JsonPropertyDescription("Capabilities dedicated to executions on the grid")
-    private final Map<String, Object> capabilities = new HashMap<>();
+    protected final Map<String, Object> capabilities = new HashMap<>();
 
     @JsonPropertyDescription("Whether to search for files to upload on the client machine or not")
     protected boolean localFileDetector;
@@ -38,15 +38,19 @@ public class GridEnvironment extends Environment {
                 .address(url)
                 .build();
 
-        if (localFileDetector) {
-            webDriver.setFileDetector(new LocalFileDetector());
-        }
-
-        return webDriver;
+        return setFileDetectorFor(webDriver);
     }
 
     @Override
     public void shutdown() {
         log.debug("Nothing to shutdown in a grid environment");
+    }
+
+    protected RemoteWebDriver setFileDetectorFor(final RemoteWebDriver webDriver) {
+        if (localFileDetector) {
+            webDriver.setFileDetector(new LocalFileDetector());
+        }
+
+        return webDriver;
     }
 }
