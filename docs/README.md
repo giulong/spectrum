@@ -12,6 +12,9 @@ Main features:
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
 directly in your test classes, so that you can focus just on writing the logic to test your application.
 
+Spectrum supports both browsers automation via [Selenium](https://www.selenium.dev/){:target="_blank"}
+and mobile and desktop applications via [Appium](http://appium.io/docs/en/latest/){:target="_blank"}.
+
 ## Glossary
 
 | Acronym | Meaning                                                                                                                     |
