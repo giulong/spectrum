@@ -12,6 +12,9 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Free disk space
+        uses: ./.github/actions/free-disk-space
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -24,6 +27,9 @@ jobs:
     name: Browsers IT
     runs-on: ubuntu-latest
     steps:
+      - name: Free disk space
+        uses: ./.github/actions/free-disk-space
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -40,6 +46,9 @@ jobs:
     name: Appium IT
     runs-on: ubuntu-latest
     steps:
+      - name: Free disk space
+        uses: ./.github/actions/free-disk-space
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
