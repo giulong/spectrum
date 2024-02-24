@@ -79,38 +79,38 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
                 .toList();
     }
 
+    @SuppressWarnings("unchecked")
     public T hover(final WebElement webElement) {
         actions.moveToElement(webElement).perform();
 
-        //noinspection unchecked
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public T screenshot() {
         addScreenshotToReport(null, INFO);
 
-        //noinspection unchecked
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public T screenshotInfo(final String msg) {
         addScreenshotToReport(msg, INFO);
 
-        //noinspection unchecked
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public T screenshotWarning(final String msg) {
         addScreenshotToReport(msg, WARNING);
 
-        //noinspection unchecked
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public T screenshotFail(final String msg) {
         addScreenshotToReport(msg, FAIL);
 
-        //noinspection unchecked
         return (T) this;
     }
 
@@ -140,13 +140,13 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         Files.createDirectories(downloadPath);
     }
 
+    @SuppressWarnings("unchecked")
     public T waitForDownloadOf(final Path path) {
         downloadWait.until(driver -> {
             log.trace("Checking for download completion of file '{}'", path);
             return Files.exists(path) && path.toFile().length() > 0;
         });
 
-        //noinspection unchecked
         return (T) this;
     }
 
@@ -184,12 +184,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return webElement;
     }
 
+    @SuppressWarnings("unchecked")
     public T upload(final WebElement webElement, final String fileName) {
         final String fullPath = Path.of(System.getProperty("user.dir"), configuration.getRuntime().getFilesFolder(), fileName).toString();
         log.info("Uploading file '{}'", fullPath);
         webElement.sendKeys(fullPath);
 
-        //noinspection unchecked
         return (T) this;
     }
 

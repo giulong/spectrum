@@ -32,7 +32,7 @@ public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
         final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
-        final WebDriver webDriver = configuration.getRuntime().getBrowser().build();
+        final WebDriver webDriver = configuration.getRuntime().getDriver().build();
         final WebDriverListener eventListener = EventsListener.builder()
                 .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
                 .extentTest(store.get(EXTENT_TEST, ExtentTest.class))

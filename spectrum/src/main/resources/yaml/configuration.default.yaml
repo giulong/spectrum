@@ -7,7 +7,7 @@ vars:
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:
   profiles: ${spectrum.profiles:-local} # Profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
-  browser: ${spectrum.browser:-chrome}  # Browser to use
+  driver: ${spectrum.driver:-chrome}  # Driver to use
   environment: # Runtime environment. Can be local or grid
     local: { }
   filesFolder: src/test/resources/files # Folder where you will store files to be checked against downloaded ones
@@ -89,6 +89,22 @@ webDriver:
     capabilities:
       prefs:
         download.default_directory: ${downloadsFolder}
+
+  # UIAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities
+  uiAutomator2:
+    capabilities: { }
+
+  # Espresso capabilities. See: https://github.com/appium/appium-espresso-driver#capabilities
+  espresso:
+    capabilities: { }
+
+  # XCUITest capabilities. See: https://github.com/appium/appium-xcuitest-driver
+  xcuiTest:
+    capabilities: { }
+
+  # Windows capabilities. See: https://github.com/appium/appium-windows-driver
+  windows:
+    capabilities: { }
 
   # WebDriver's internal logging levels
   logs:
@@ -400,7 +416,7 @@ eventsConsumers:
       events:
         - reason: after
           tags: [ test ]
-  - browser: # We need to close the browser/webDriver once each test is done
+  - driver: # We need to close the driver once each test is done
       events:
         - reason: after
           tags: [ test ]

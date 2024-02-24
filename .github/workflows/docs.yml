@@ -11,7 +11,6 @@ jobs:
   deploy:
     name: Docs
     runs-on: ubuntu-latest
-    permissions: write-all
     environment:
       name: github-pages
       url: ${{steps.deployment.outputs.page_url}}
@@ -20,14 +19,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4.0.0
         with:
           java-version: 21
           distribution: temurin
           cache: maven
 
       - name: Spectrum submodule package
-        run: ./mvnw -B package -DskipSign -Dmaven.plugin.validation=BRIEF -pl spectrum
+        run: ./mvnw package -DskipSign -Dmaven.plugin.validation=NONE -ntp -pl spectrum
 
       - name: Generate JaCoCo Badge
         id: jacoco

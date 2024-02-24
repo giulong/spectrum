@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.giulong.spectrum.utils.YamlUtils;
 import lombok.Getter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -20,7 +19,6 @@ public class DynamicDeserializer<T> extends JsonDeserializer<T> {
     private String configFile;
 
     @Override
-    @SneakyThrows
     public T deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
         final JsonNode jsonNode = jsonParser.readValueAsTree();
         log.trace("Deserializing {} from {} -> {}", clazz, jsonParser.currentName(), jsonNode);

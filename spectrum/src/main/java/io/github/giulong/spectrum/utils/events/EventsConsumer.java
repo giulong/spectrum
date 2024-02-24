@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = SlackConsumer.class, name = "slack"),
         @JsonSubTypes.Type(value = TestBookConsumer.class, name = "testbook"),
         @JsonSubTypes.Type(value = ExtentTestConsumer.class, name = "extentTest"),
-        @JsonSubTypes.Type(value = BrowserConsumer.class, name = "browser"),
+        @JsonSubTypes.Type(value = DriverConsumer.class, name = "driver"),
         @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),
         @JsonSubTypes.Type(value = VideoConsumer.class, name = "video"),
 })

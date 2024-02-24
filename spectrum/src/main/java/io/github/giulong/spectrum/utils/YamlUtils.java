@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.github.giulong.spectrum.browsers.Browser;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Public;
 import io.github.giulong.spectrum.pojos.DynamicDeserializersConfiguration;
@@ -43,7 +43,7 @@ public final class YamlUtils {
                     buildModuleFor(java.util.logging.Level.class, UtilLogLevelDeserializer.getInstance()),
                     buildModuleFor(Level.class, LogbackLogLevelDeserializer.getInstance()),
                     buildModuleFor(Duration.class, DurationDeserializer.getInstance()),
-                    buildModuleFor(Browser.class, BrowserDeserializer.getInstance()),
+                    buildModuleFor(Driver.class, DriverDeserializer.getInstance()),
                     buildModuleFor(Class.class, ClassDeserializer.getInstance())
             );
 
@@ -64,6 +64,7 @@ public final class YamlUtils {
             .registerModules(new JavaTimeModule())
             .writerWithDefaultPrettyPrinter();
 
+    @SuppressWarnings("unchecked")
     private YamlUtils() {
         readInternal("yaml/dynamicDeserializersConfiguration.yaml", DynamicDeserializersConfiguration.class)
                 .getDynamicDeserializers()
@@ -72,7 +73,6 @@ public final class YamlUtils {
                 .peek(deserializer -> log.trace("Registering dynamic deserializer module {}", deserializer.getClazz().getSimpleName()))
                 .forEach(deserializer -> {
                     final Class<?> clazz = deserializer.getClazz();
-                    //noinspection unchecked
                     yamlMapper.registerModule(new SimpleModule(clazz.getSimpleName()).addDeserializer(clazz, deserializer));
                 });
     }
@@ -81,9 +81,8 @@ public final class YamlUtils {
         return INSTANCE;
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public SimpleModule buildModuleFor(final Class<?> clazz, final JsonDeserializer jsonDeserializer) {
-        //noinspection unchecked
         return new SimpleModule(jsonDeserializer.getClass().getSimpleName()).addDeserializer(clazz, jsonDeserializer);
     }
 

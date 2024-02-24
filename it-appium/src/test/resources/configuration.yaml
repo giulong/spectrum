@@ -1,0 +1,27 @@
+runtime:
+  environment:
+    appium: { } # server configuration. Here you can set Appium server capabilities
+
+webDriver:
+  waits:
+    implicit: 2
+    downloadTimeout: 5
+  logs:
+    level: INFO
+  uiAutomator2:
+    capabilities:
+      app: src/test/resources/hello-world.apk
+      avd: phone
+      avdArgs: -no-window -no-audio -no-boot-anim -no-snapshot
+
+data:
+  fqdn: io.github.giulong.spectrum.it_appium.data.Data
+
+video:
+  frames:
+    - autoAfter
+    - manual
+
+extent:
+  theme: DARK
+  fileName: report.html

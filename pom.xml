@@ -53,14 +53,55 @@
         <selenium.version>4.18.0</selenium.version>
     </properties>
 
-    <modules>
-        <module>spectrum</module>
-        <module>it</module>
-        <module>it-grid</module>
-        <module>it-testbook</module>
-        <module>it-verifier</module>
-        <module>cleanup</module>
-    </modules>
+    <profiles>
+        <profile>
+            <id>all</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>spectrum</module>
+                <module>it</module>
+                <module>it-grid</module>
+                <module>it-testbook</module>
+                <module>it-appium</module>
+                <module>verify-commons</module>
+                <module>verify-browsers</module>
+                <module>verify-appium</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>framework-only</id>
+            <modules>
+                <module>spectrum</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>browsers</id>
+            <modules>
+                <module>it</module>
+                <module>it-grid</module>
+                <module>it-testbook</module>
+                <module>verify-commons</module>
+                <module>verify-browsers</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>appium</id>
+            <modules>
+                <module>it-appium</module>
+                <module>verify-commons</module>
+                <module>verify-appium</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -126,6 +167,12 @@
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-grid</artifactId>
                 <version>${selenium.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.appium</groupId>
+                <artifactId>java-client</artifactId>
+                <version>9.0.0</version>
             </dependency>
 
             <dependency>
@@ -230,6 +277,18 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.6.1</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>properties</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>3.3.2</version>
                 </plugin>
@@ -261,6 +320,8 @@
                         <source>21</source>
                         <target>21</target>
                         <encoding>UTF-8</encoding>
+                        <compilerArgument>-Xlint:unchecked</compilerArgument>
+                        <proc>full</proc>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -276,13 +337,33 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.2.5</version>
                     <configuration>
-                        <argLine>@{argLine} -Dfile.encoding=UTF-8</argLine>
+                        <argLine>@{argLine} -Dfile.encoding=UTF-8 -javaagent:${net.bytebuddy:byte-buddy-agent:jar}</argLine>
                         <reportsDirectory>${reportsDirectory}</reportsDirectory>
                         <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
                             <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
                         </systemPropertyVariables>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.ekryd.echo-maven-plugin</groupId>
+                    <artifactId>echo-maven-plugin</artifactId>
+                    <version>2.1.0</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>echo</goal>
+                            </goals>
+                            <phase>integration-test</phase>
+                            <configuration>
+                                <message>
+                                    ${line.separator}====================================================================================================${line.separator}
+                                    START MODULE ${project.artifactId} IT TESTS
+                                    ${line.separator}====================================================================================================${line.separator}
+                                </message>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -313,6 +394,10 @@
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>

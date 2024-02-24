@@ -11,20 +11,20 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
 
     private String endpoint;
 
+    @SuppressWarnings("unchecked")
     public T open() {
         final String url = configuration.getApplication().getBaseUrl() + endpoint;
         log.info("Opening {}", url);
         webDriver.get(url);
         waitForPageLoading();
 
-        //noinspection unchecked
         return (T) this;
     }
 
+    @SuppressWarnings("unchecked")
     public T waitForPageLoading() {
         log.warn("Default no-op waitForPageLoading: override this method in your SpectrumPage!");
 
-        //noinspection unchecked
         return (T) this;
     }
 

@@ -1,0 +1,11 @@
+webDriver:
+  waits:
+    implicit: 2
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+
+data:
+  folder: data
+  fqdn: io.github.giulong.spectrum.verify_browsers.data.Data
