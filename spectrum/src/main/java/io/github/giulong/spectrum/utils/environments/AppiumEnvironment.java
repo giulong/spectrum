@@ -25,7 +25,7 @@ public class AppiumEnvironment extends GridEnvironment {
     @JsonIgnore
     private AppiumDriverLocalService driverService;
 
-    @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs")
+    @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs, at the level specified in the webDriver.logs.level node")
     private boolean collectServerLogs;
 
     @Override
