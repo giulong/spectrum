@@ -4,6 +4,9 @@ description: removes files not needed from ubuntu-latest image, to get rid of GH
 runs:
   using: composite
   steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
     - name: Free Disk Space
       shell: bash
       run: |
