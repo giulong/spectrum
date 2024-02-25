@@ -16,11 +16,13 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
     public void buildCapabilities() {
         final Configuration.WebDriver.Firefox firefoxConfig = configuration.getWebDriver().getFirefox();
 
-        capabilities = new FirefoxOptions();
-        capabilities.addArguments(firefoxConfig.getArgs());
-        capabilities.setLogLevel(firefoxConfig.getLogLevel());
+        capabilities = new FirefoxOptions()
+                .addArguments(firefoxConfig.getArgs())
+                .setLogLevel(firefoxConfig.getLogLevel());
 
-        firefoxConfig.getPreferences().forEach(this::addPreference);
+        firefoxConfig
+                .getPreferences()
+                .forEach(this::addPreference);
     }
 
     public void addPreference(final String key, final Object value) {

@@ -144,7 +144,9 @@ class DriverTest {
         when(logs.getPerformance()).thenReturn(performanceLevel);
         when(chromeConfig.getCapabilities()).thenReturn(Map.of("one", "value"));
 
-        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class);
+        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
+            when(mock.addArguments(arguments)).thenReturn(mock);
+        });
 
         when(waits.getImplicit()).thenReturn(implicitDuration);
         when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);

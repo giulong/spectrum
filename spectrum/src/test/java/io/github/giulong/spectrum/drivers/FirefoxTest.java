@@ -76,12 +76,14 @@ class FirefoxTest {
         when(firefoxConfig.getLogLevel()).thenReturn(firefoxDriverLogLevel);
         when(firefoxConfig.getPreferences()).thenReturn(Map.of("one", "value"));
 
-        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class);
+        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {
+            when(mock.addArguments(arguments)).thenReturn(mock);
+            when(mock.setLogLevel(firefoxDriverLogLevel)).thenReturn(mock);
+        });
 
         firefox.buildCapabilities();
+
         final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
-        verify(firefoxOptions).addArguments(arguments);
-        verify(firefoxOptions).setLogLevel(firefoxDriverLogLevel);
         verify(firefoxOptions).addPreference("one", "value");
 
         firefoxOptionsMockedConstruction.close();

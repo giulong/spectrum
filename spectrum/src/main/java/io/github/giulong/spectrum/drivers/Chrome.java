@@ -17,8 +17,7 @@ public class Chrome extends Chromium<ChromeOptions, ChromeDriverService, ChromeD
         final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
         final Configuration.WebDriver.Chrome chromeConfig = webDriverConfiguration.getChrome();
 
-        capabilities = new ChromeOptions();
-        capabilities.addArguments(chromeConfig.getArgs());
+        capabilities = new ChromeOptions().addArguments(chromeConfig.getArgs());
 
         chromeConfig.getCapabilities().forEach(capabilities::setExperimentalOption);
         setLoggingPreferencesFrom(webDriverConfiguration.getLogs());
