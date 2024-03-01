@@ -155,7 +155,6 @@ class SummaryTest {
         Reflections.setField("condition", summary, condition);
         Reflections.setField("vars", summary, vars);
 
-        when(summaryGeneratingListener.getSummary()).thenReturn(testExecutionSummary);
         when(freeMarkerWrapper.interpolate(condition, vars)).thenReturn(interpolatedCondition);
         when(MVEL.eval(interpolatedCondition, vars)).thenReturn(expected);
 

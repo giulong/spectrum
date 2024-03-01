@@ -16,7 +16,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 @Slf4j
 @Getter
-@SuppressWarnings("unused")
 public class AppiumEnvironment extends GridEnvironment {
 
     @JsonIgnore
@@ -26,6 +25,7 @@ public class AppiumEnvironment extends GridEnvironment {
     private AppiumDriverLocalService driverService;
 
     @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs, at the level specified in the webDriver.logs.level node")
+    @SuppressWarnings("unused")
     private boolean collectServerLogs;
 
     @Override

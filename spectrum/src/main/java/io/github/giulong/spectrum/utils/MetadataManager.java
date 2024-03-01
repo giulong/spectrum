@@ -17,7 +17,6 @@ import static lombok.AccessLevel.PRIVATE;
 @Getter
 @NoArgsConstructor(access = PRIVATE)
 @Slf4j
-@SuppressWarnings("unused")
 public class MetadataManager implements SessionHook {
 
     public static final String FILE_NAME = "metadata.json";

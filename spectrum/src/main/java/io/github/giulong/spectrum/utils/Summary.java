@@ -23,7 +23,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Getter
 @Slf4j
-@SuppressWarnings("unused")
 public class Summary implements SessionHook, Reportable {
 
     @JsonIgnore
@@ -36,9 +35,11 @@ public class Summary implements SessionHook, Reportable {
     private final SummaryGeneratingListener summaryGeneratingListener = new SummaryGeneratingListener();
 
     @JsonPropertyDescription("List of reporters that will produce the summary in specific formats")
+    @SuppressWarnings("unused")
     private List<CanReportSummary> reporters;
 
     @JsonPropertyDescription("Condition to be evaluated. If true, the execution is successful")
+    @SuppressWarnings("unused")
     private String condition;
 
     @JsonIgnore
@@ -88,7 +89,6 @@ public class Summary implements SessionHook, Reportable {
 
     @JsonIgnore
     public boolean isExecutionSuccessful() {
-        final TestExecutionSummary summary = summaryGeneratingListener.getSummary();
         final boolean executionSuccessful = Boolean.parseBoolean(String.valueOf(MVEL.eval(interpolateCondition(), vars)));
 
         log.info("Execution successful? {}", executionSuccessful);

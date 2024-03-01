@@ -15,7 +15,6 @@ import java.util.Map;
 
 @Slf4j
 @Getter
-@SuppressWarnings("unused")
 public class GridEnvironment extends Environment {
 
     @JsonSchemaTypes(String.class)
