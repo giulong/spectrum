@@ -148,6 +148,9 @@ public class Configuration {
         @JsonPropertyDescription("Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options")
         private Edge edge;
 
+        @JsonPropertyDescription("Safari capabilities. See: https://developer.apple.com/documentation/webkit/about_webdriver_for_safari")
+        private Safari safari;
+
         @JsonPropertyDescription("Android UiAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities")
         private UiAutomator2 uiAutomator2;
 
@@ -227,6 +230,14 @@ public class Configuration {
 
             @JsonPropertyDescription("Edge's capabilities")
             private Map<String, Object> capabilities;
+        }
+
+        @Getter
+        @Generated
+        public static class Safari {
+
+            @JsonPropertyDescription("Safari's logging enable flag")
+            private boolean logging;
         }
 
         @Getter

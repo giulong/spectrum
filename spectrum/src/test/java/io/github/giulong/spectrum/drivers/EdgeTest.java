@@ -94,6 +94,8 @@ class EdgeTest {
         verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
         verify(edgeOptions).setCapability(LOGGING_PREFS, loggingPreferences);
 
+        assertEquals(edgeOptions, Reflections.getFieldValue("capabilities", edge));
+
         edgeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();
     }

@@ -52,14 +52,14 @@ extentReport:
 
 summary:
   title: Execution Summary
-  successfulCount: 6/8
-  successfulPercentage: 75%
-  failedCount: 1/8
-  failedPercentage: 12.5%
-  abortedCount: 0/8
+  successfulCount: 6/9
+  successfulPercentage: 66.67%
+  failedCount: 1/9
+  failedPercentage: 11.11%
+  abortedCount: 0/9
   abortedPercentage: 0%
-  disabledCount: 1/8
-  disabledPercentage: 12.5%
+  disabledCount: 2/9
+  disabledPercentage: 22.22%
   condition: ${successfulPercentage} == 100
-  interpolatedCondition: 75 == 100
+  interpolatedCondition: 66.67 == 100
   conditionStatus: KO

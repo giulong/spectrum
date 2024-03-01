@@ -85,6 +85,7 @@ class FirefoxTest {
 
         final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
         verify(firefoxOptions).addPreference("one", "value");
+        assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
 
         firefoxOptionsMockedConstruction.close();
     }

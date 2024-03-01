@@ -90,6 +90,9 @@ webDriver:
       prefs:
         download.default_directory: ${downloadsFolder}
 
+  safari:
+    logging: false
+
   # UIAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities
   uiAutomator2:
     capabilities: { }

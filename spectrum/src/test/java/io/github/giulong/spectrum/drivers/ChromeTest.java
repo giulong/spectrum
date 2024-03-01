@@ -99,6 +99,8 @@ class ChromeTest {
 
         verify(chromeOptions).setExperimentalOption("one", "value");
 
+        assertEquals(chromeOptions, Reflections.getFieldValue("capabilities", chrome));
+
         chromeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();
     }
