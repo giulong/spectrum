@@ -49,7 +49,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     @SneakyThrows
     public void launcherSessionOpened(final LauncherSession session) {
         final Configuration defaultConfiguration = yamlUtils.readInternal("yaml/configuration.default.yaml", Configuration.class);
-        final Configuration configuration = yamlUtils.readInternal("configuration.yaml", Configuration.class);
+        final Configuration configuration = yamlUtils.readInternal("configuration.yml", Configuration.class);
         final Configuration.Extent extent = configuration.getExtent();
         final FileReporter htmlTestBookReporter = getTestBookReporterFrom(configuration, "html");
         final FileReporter txtTestBookReporter = getTestBookReporterFrom(configuration, "txt");

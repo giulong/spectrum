@@ -16,7 +16,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     public static final int BANNER_LINE_LENGTH = 37;
     public static final String DEFAULT_CONFIGURATION_YAML = "yaml/configuration.default.yaml";
     public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
-    public static final String CONFIGURATION_YAML = "configuration.yaml";
+    public static final String CONFIGURATION = "configuration";
     public static final String PROFILE_NODE = "/runtime/profiles";
     public static final String VARS_NODE = "/vars";
 
@@ -68,7 +68,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     protected void parseConfiguration() {
         final List<String> profileConfigurations = parseProfiles()
                 .stream()
-                .map(profile -> String.format("configuration-%s.yaml", profile))
+                .map(profile -> String.format("configuration-%s", profile))
                 .toList();
 
         profileConfigurations.forEach(this::parseVars);
@@ -78,7 +78,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
             yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
         }
 
-        yamlUtils.updateWithFile(configuration, CONFIGURATION_YAML);
+        yamlUtils.updateWithFile(configuration, CONFIGURATION);
         profileConfigurations.forEach(pc -> yamlUtils.updateWithFile(configuration, pc));
 
         log.trace("Configuration:\n{}", yamlUtils.write(configuration));
@@ -86,7 +86,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     protected List<String> parseProfiles() {
         return Arrays.stream(Optional
-                        .ofNullable(yamlUtils.readInternalNode(PROFILE_NODE, CONFIGURATION_YAML, String.class))
+                        .ofNullable(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class))
                         .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
                         .split(","))
                 .toList();
@@ -100,7 +100,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
             vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
         }
 
-        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
         vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
     }
 

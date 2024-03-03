@@ -20,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 
@@ -29,6 +31,7 @@ public final class YamlUtils {
 
     private static final YamlUtils INSTANCE = new YamlUtils();
     private static final Path RESOURCES = Path.of("src", "test", "resources");
+    private static final List<String> EXTENSIONS = List.of(".yaml", ".yml");
 
     private final ClassLoader classLoader = YamlUtils.class.getClassLoader();
     private final ObjectMapper propertiesMapper = new JavaPropsMapper();
@@ -86,23 +89,57 @@ public final class YamlUtils {
         return new SimpleModule(jsonDeserializer.getClass().getSimpleName()).addDeserializer(clazz, jsonDeserializer);
     }
 
-    public boolean notExists(final String file, final boolean internal) {
-        final Path path = Path.of(file);
-        if (!internal && Files.notExists(RESOURCES.resolve(path))) {
-            log.warn("File {} not found.", path);
-            return true;
-        }
-
-        return false;
+    public List<Path> findValidPathsFor(final String file) {
+        return Stream.concat(Stream.of(file), EXTENSIONS
+                        .stream()
+                        .map(e -> String.format("%s%s", file, e)))
+                .map(RESOURCES::resolve)
+                .toList();
     }
 
-    public <T> T read(final String file, final Class<T> clazz, final boolean internal) {
-        if (notExists(file, internal)) {
+    public String findTheFirstValidFileFrom(List<Path> paths) {
+        return paths
+                .stream()
+                .peek(f -> log.debug("Looking for file {}", f))
+                .filter(Files::exists)
+                .peek(f -> log.debug("Found file {}", f))
+                .findFirst()
+                .orElseThrow()
+                .getFileName()
+                .toString();
+    }
+
+    public String findFile(final String file, final boolean internal) {
+        if (internal) {
+            return file;
+        }
+
+        final List<Path> paths = findValidPathsFor(file);
+
+        if (paths
+                .stream()
+                .peek(f -> log.debug("Checking if file {} exists", f))
+                .noneMatch(Files::exists)) {
+            log.warn("File {} not found.", file);
             return null;
         }
 
-        log.debug("Reading {} file '{}' onto an instance of {}", internal ? "internal" : "client", file, clazz.getSimpleName());
-        return read(yamlMapper, file, clazz);
+        final String fileWithExtension = findTheFirstValidFileFrom(paths);
+        final Path directory = Path.of(file).getParent();
+
+        return directory != null
+                ? directory.resolve(fileWithExtension).toString()
+                : fileWithExtension;
+    }
+
+    public <T> T read(final String file, final Class<T> clazz, final boolean internal) {
+        final String fileFound = findFile(file, internal);
+        if (fileFound == null) {
+            return null;
+        }
+
+        log.debug("Reading {} file '{}' onto an instance of {}", internal ? "internal" : "client", fileFound, clazz.getSimpleName());
+        return read(yamlMapper, fileFound, clazz);
     }
 
     public <T> T read(final String file, final Class<T> clazz) {
@@ -120,12 +157,13 @@ public final class YamlUtils {
 
     @SneakyThrows
     public <T> T readNode(final String node, final String file, final Class<T> clazz, final boolean internal) {
-        if (notExists(file, internal)) {
+        final String fileFound = findFile(file, internal);
+        if (fileFound == null) {
             return null;
         }
 
-        log.debug("Reading node '{}' of {} file '{}' onto an instance of {}", node, internal ? "internal" : "client", file, clazz.getSimpleName());
-        final JsonNode root = yamlMapper.readTree(classLoader.getResource(file));
+        log.debug("Reading node '{}' of {} file '{}' onto an instance of {}", node, internal ? "internal" : "client", fileFound, clazz.getSimpleName());
+        final JsonNode root = yamlMapper.readTree(classLoader.getResource(fileFound));
         return yamlMapper.convertValue(root.at(node), clazz);
     }
 
@@ -148,17 +186,17 @@ public final class YamlUtils {
 
     @SneakyThrows
     public <T> void updateWithFile(final T t, final String file) {
-        final Path path = Path.of(file);
-        if (Files.notExists(RESOURCES.resolve(path))) {
-            log.warn("File {} not found. Skipping update of the instance of {}", path, t.getClass().getSimpleName());
+        final String fileFound = findFile(file, false);
+        if (fileFound == null) {
+            log.warn("File {} not found. Skipping update of the instance of {}", file, t.getClass().getSimpleName());
             return;
         }
 
-        log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), file);
+        log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), fileFound);
         yamlMapper
                 .readerForUpdating(t)
                 .withView(Public.class)
-                .readValue(classLoader.getResource(file));
+                .readValue(classLoader.getResource(fileFound));
     }
 
     @SneakyThrows
