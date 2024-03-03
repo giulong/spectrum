@@ -16,7 +16,7 @@
         <dependency>
             <groupId>io.github.giulong</groupId>
             <artifactId>spectrum</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

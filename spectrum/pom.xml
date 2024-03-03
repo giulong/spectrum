@@ -201,7 +201,6 @@
                 <directory>${resourcesFolder}</directory>
                 <filtering>false</filtering>
                 <excludes>
-                    <exclude>examples/**/*</exclude>
                     <exclude>${launcherSessionListener}</exclude>
                 </excludes>
             </resource>
