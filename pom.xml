@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.8.0</revision>
+        <revision>1.8.1</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
@@ -50,7 +50,7 @@
         <simplejavamail.version>8.6.3</simplejavamail.version>
         <jsonschemagenerator.version>4.33.1</jsonschemagenerator.version>
         <slf4j.version>2.0.12</slf4j.version>
-        <selenium.version>4.18.0</selenium.version>
+        <selenium.version>4.18.1</selenium.version>
     </properties>
 
     <profiles>
@@ -172,7 +172,7 @@
             <dependency>
                 <groupId>io.appium</groupId>
                 <artifactId>java-client</artifactId>
-                <version>9.0.0</version>
+                <version>9.1.0</version>
             </dependency>
 
             <dependency>
@@ -184,7 +184,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.0</version>
+                <version>1.5.3</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.janino</groupId>
@@ -216,7 +216,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.38.1</version>
+                <version>1.38.2</version>
             </dependency>
 
             <dependency>
@@ -252,7 +252,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>5.10.0</version>
+                <version>5.11.0</version>
                 <scope>test</scope>
             </dependency>
 
