@@ -360,26 +360,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>com.github.ekryd.echo-maven-plugin</groupId>
-                    <artifactId>echo-maven-plugin</artifactId>
-                    <version>2.1.0</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>echo</goal>
-                            </goals>
-                            <phase>integration-test</phase>
-                            <configuration>
-                                <message>
-                                    ${line.separator}====================================================================================================${line.separator}
-                                    START MODULE ${project.artifactId} IT TESTS
-                                    ${line.separator}====================================================================================================${line.separator}
-                                </message>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
                     <version>3.2.5</version>

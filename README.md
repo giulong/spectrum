@@ -109,4 +109,3 @@ Spectrum leverages these projects you should definitely check out!
 * [JCodec](http://www.jcodec.org/)
 * [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
 * [Modernist Theme](https://github.com/pages-themes/modernist)
-* [Echo Maven Plugin](https://github.com/Ekryd/echo-maven-plugin)
