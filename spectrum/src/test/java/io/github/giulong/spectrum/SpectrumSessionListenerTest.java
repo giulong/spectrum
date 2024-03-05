@@ -1,12 +1,9 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import io.github.giulong.spectrum.utils.Summary;
-import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.environments.Environment;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.testbook.TestBook;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -69,7 +66,7 @@ class SpectrumSessionListenerTest {
     private EventsDispatcher eventsDispatcher;
 
     @Mock
-    private SpectrumProperties spectrumProperties;
+    private Map<String, Object> spectrumProperties;
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
@@ -134,15 +131,15 @@ class SpectrumSessionListenerTest {
         final String profile = "profile";
         final String profileConfiguration = String.format("configuration-%s", profile);
         final String banner = "banner";
-        final String version = "version";
+        final String interpolatedBanner = "interpolatedBanner";
 
         System.setProperty("os.name", "Win");
 
         when(fileUtils.read("/banner.txt")).thenReturn(banner);
-        when(spectrumProperties.getVersion()).thenReturn(version);
+        when(yamlUtils.readInternal("banner.yaml", Map.class)).thenReturn(spectrumProperties);
+        when(freeMarkerWrapper.interpolate(banner, spectrumProperties)).thenReturn(interpolatedBanner);
 
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
-        when(yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class)).thenReturn(spectrumProperties);
         when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultProfile");
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
@@ -191,25 +188,6 @@ class SpectrumSessionListenerTest {
         verify(extentReporter).sessionClosed();
         verify(eventsDispatcher).sessionClosed();
         verify(metadataManager).sessionClosed();
-    }
-
-    @DisplayName("buildVersionLine should build the fixed-length line with the version to put in the logged banner")
-    @ParameterizedTest(name = "with version {0} we expect {1}")
-    @MethodSource("buildVersionLineValuesProvider")
-    public void buildVersionLine(final String version, final String expected) {
-        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
-        when(yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class)).thenReturn(spectrumProperties);
-        when(spectrumProperties.getVersion()).thenReturn(version);
-
-        assertEquals(expected, spectrumSessionListener.buildVersionLine());
-    }
-
-    public static Stream<Arguments> buildVersionLineValuesProvider() {
-        return Stream.of(
-                arguments("version", "*********************  Version: version  |"),
-                arguments("0.0.1", "***********************  Version: 0.0.1  |"),
-                arguments("0.0.1-SNAPSHOT", "**************  Version: 0.0.1-SNAPSHOT  |")
-        );
     }
 
     @Test

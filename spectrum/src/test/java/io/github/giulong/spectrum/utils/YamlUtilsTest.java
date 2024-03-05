@@ -44,8 +44,6 @@ class YamlUtilsTest {
     @Test
     @DisplayName("on construction, all the dynamic deserializers should be registered on the yamlMapper, while not on the dynamicConfYamlMapper")
     public void construction() {
-        assertEquals(Set.of(), yamlUtils.getPropertiesMapper().getRegisteredModuleIds());
-
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
                 "InterpolatedObjectDeserializer",
@@ -153,12 +151,6 @@ class YamlUtilsTest {
     @DisplayName("readInternal should return an instance of the provided class deserializing the provided file")
     public void readInternal() {
         assertEquals("value", yamlUtils.readInternal("test.yaml", TestYaml.class).getKey());
-    }
-
-    @Test
-    @DisplayName("readProperties should return an instance of the provided class deserializing the provided properties file")
-    public void readProperties() {
-        assertEquals("value", yamlUtils.readProperties("test.properties", TestYaml.class).getKey());
     }
 
     @Test

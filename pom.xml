@@ -39,6 +39,7 @@
         <docs.folder>docs</docs.folder>
         <jacoco.outputDirectory>${docs.folder}/jacoco</jacoco.outputDirectory>
         <resourcesFolder>src/main/resources</resourcesFolder>
+        <testResourcesFolder>src/test/resources</testResourcesFolder>
         <launcherSessionListener>org.junit.platform.launcher.LauncherSessionListener</launcherSessionListener>
 
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -145,11 +146,6 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-properties</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
@@ -273,6 +269,24 @@
     </dependencyManagement>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${resourcesFolder}/filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${testResourcesFolder}/filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${resourcesFolder}</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>${launcherSessionListener}</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <pluginManagement>
             <plugins>
                 <plugin>

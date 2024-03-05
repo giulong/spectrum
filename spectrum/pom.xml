@@ -86,10 +86,6 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-properties</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
@@ -192,20 +188,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${resourcesFolder}/filtered</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>${resourcesFolder}</directory>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>${launcherSessionListener}</exclude>
-                </excludes>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

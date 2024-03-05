@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.javaprop.JavaPropsMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giulong.spectrum.drivers.Driver;
@@ -34,7 +33,6 @@ public final class YamlUtils {
     private static final List<String> EXTENSIONS = List.of(".yaml", ".yml");
 
     private final ClassLoader classLoader = YamlUtils.class.getClassLoader();
-    private final ObjectMapper propertiesMapper = new JavaPropsMapper();
 
     private final ObjectMapper yamlMapper = new YAMLMapper()
             .setDefaultMergeable(true)
@@ -148,11 +146,6 @@ public final class YamlUtils {
 
     public <T> T readInternal(final String file, final Class<T> clazz) {
         return read(file, clazz, true);
-    }
-
-    public <T> T readProperties(final String file, final Class<T> clazz) {
-        log.debug("Reading properties file '{}' onto an instance of {}", file, clazz.getSimpleName());
-        return read(propertiesMapper, file, clazz);
     }
 
     @SneakyThrows

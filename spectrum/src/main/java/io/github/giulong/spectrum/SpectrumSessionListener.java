@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +12,6 @@ import java.util.*;
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {
 
-    public static final int BANNER_LINE_LENGTH = 37;
     public static final String DEFAULT_CONFIGURATION_YAML = "yaml/configuration.default.yaml";
     public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
     public static final String CONFIGURATION = "configuration";
@@ -30,11 +28,13 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     private final MetadataManager metadataManager = MetadataManager.getInstance();
 
     @Override
+    @SuppressWarnings("unchecked")
     public void launcherSessionOpened(final LauncherSession session) {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
 
-        log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), buildVersionLine()));
+        final Map<String, Object> bannerYaml = yamlUtils.readInternal("banner.yaml", Map.class);
+        log.info(freeMarkerWrapper.interpolate(fileUtils.read("/banner.txt"), bannerYaml));
 
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
@@ -56,13 +56,6 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         extentReporter.sessionClosed();
         eventsDispatcher.sessionClosed();
         metadataManager.sessionClosed();
-    }
-
-    protected String buildVersionLine() {
-        final SpectrumProperties spectrumProperties = yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class);
-        final String version = String.format("Version: %s", spectrumProperties.getVersion());
-        final int wrappingSpacesLeft = BANNER_LINE_LENGTH - version.length();
-        return "*".repeat(wrappingSpacesLeft) + String.format("  %s  |", version);
     }
 
     protected void parseConfiguration() {
