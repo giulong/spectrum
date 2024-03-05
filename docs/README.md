@@ -2530,7 +2530,14 @@ is `${user.home}/.cache/spectrum`
 # Banner
 
 If you want to customise the banner logged at the beginning of each execution,
-you just need to place a file named `src/test/resources/banner.txt` in your project.
+you just need to place a file named `src/test/resources/banner.txt` in your project. It's interpolated with
+[FreeMarker](https://freemarker.apache.org/){:target="_blank"}, and these are the variables you can use:
+
+| Variable   | Value                               |
+|------------|-------------------------------------|
+| ${name}    | spectrum                            |
+| ${version} | Spectrum version, such as 1.8.1     |
+| ${url}     | https://github.com/giulong/spectrum |
 
 ---
 
