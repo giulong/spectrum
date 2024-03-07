@@ -39,11 +39,15 @@ public class EventsDispatcher implements SessionHook {
     @Override
     public void sessionClosed() {
         log.debug("Session closed hook");
-        fire(AFTER, Set.of(SUITE));
+        fire(AFTER, Set.of(SUITE), configuration.getSummary().toResult());
     }
 
     public void fire(final String reason, final Set<String> tags) {
         fire(null, null, reason, null, tags, null);
+    }
+
+    public void fire(final String reason, final Set<String> tags, final Result result) {
+        fire(null, null, reason, result, tags, null);
     }
 
     public void fire(final String primaryId, final String reason) {

@@ -12,6 +12,7 @@ import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class MailConsumer extends EventsConsumer {
     private String template = "mail.html";
 
     @JsonPropertyDescription("List of attachments to add to the email")
-    protected List<Attachment> attachments;
+    protected List<Attachment> attachments = new ArrayList<>();
 
     @Override
     public void consumes(final Event event) {

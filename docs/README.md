@@ -1410,7 +1410,7 @@ The `Data` generic must be specified only in those classes actually using it. Th
 
 ---
 
-# Event Sourcing
+# Event Sourcing - Notifications
 
 Spectrum leverages event sourcing, meaning throughout the execution it fires events at specific moments.
 These events are sent in broadcast to a list of consumers.
@@ -1681,7 +1681,8 @@ eventsConsumers:
 
 ### Mail Consumer
 
-You can leverage this consumer to send email notification. Spectrum uses [Simple java Mail](https://www.simplejavamail.org/){:target="_blank"},
+You can leverage this consumer to send email notifications.
+Spectrum uses [Simple java Mail](https://www.simplejavamail.org/){:target="_blank"},
 and you can configure it with the file `src/test/resources/simplejavamail.properties`, as specified in
 the [docs](https://www.simplejavamail.org/configuration.html#section-config-properties){:target="_blank"}.
 
@@ -1697,6 +1698,7 @@ simplejavamail.smtp.username=<YOUR GMAIL ADDRESS>
 simplejavamail.smtp.password=<YOUR GMAIL PASSWORD>
 simplejavamail.defaults.trustedhosts=smtp.gmail.com
 simplejavamail.defaults.subject=Spectrum Notification
+simplejavamail.defaults.from.address=<YOUR GMAIL ADDRESS>
 simplejavamail.defaults.to.name=<RECIPIENT NAME>
 simplejavamail.defaults.to.address=<RECIPIENT EMAIL ADDRESS>
 ```
@@ -1707,34 +1709,46 @@ check [Google's docs](https://support.google.com/accounts/answer/185833?p=Invali
 Check Simple java Mail's docs to see all the [available properties](https://www.simplejavamail.org/configuration.html#section-available-properties){:target="_blank"}.
 
 > ⚠️ **Mail Template**<br/>
-> The default [mail.html template]({{ site.repository_url }}/spectrum/src/main/resources/templates/mail.html){:target="_blank"} is meant to be used to notify about each test
-> result,
-> as per the snippet below. It might not be correctly interpolated if used on other events.
+> The default [mail.html template]({{ site.repository_url }}/spectrum/src/main/resources/templates/mail.html){:target="_blank"}
+> can either be used to notify about single tests or the whole suite result,
+> as per the snippet below. You can use both or just the one you prefer.
 
 {% include copyCode.html %}
 
 ```yaml
-mail:
-  events:
-    - reason: after
-      tags: [ test ]
+eventsConsumers:
+  - mail:
+      events:
+        - reason: after
+          tags: [ test ]
+  - mail:
+      events:
+        - reason: after
+          tags: [ suite ]
 ```
 
->
-> If you want to provide a custom template there are two ways:
-> * provide a template with a custom name under `src/test/resources/templates`:
+The default template is pretty basic, as you can see. The first is the test example,
+while the second is the suite result notification:
+
+![Test Mail Notification](assets/images/mail-notification-test.png)
+![Suite Mail Notification](assets/images/mail-notification-suite.png)
+
+If you want to provide a custom template there are two ways:
+
+* provide a template with a custom name under `src/test/resources/templates`:
 
 {% include copyCode.html %}
 
 ```yaml
-mail:
-  template: my-template.txt # The extension doesn't really matter.
-  events:
-    - reason: after
-      tags: [ test ]
+eventsConsumers:
+  - mail:
+      template: my-template.txt # The extension doesn't really matter.
+      events:
+        - reason: after
+          tags: [ test ]
 ```
 
-> * simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
+* simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
 
 > 💡 **Tip**<br/>
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
@@ -1750,15 +1764,16 @@ For example, it's useful to send the html report and/or testbook when the suite 
 {% include copyCode.html %}
 
 ```yaml
-mail:
-  events:
-    - reason: after
-      tags: [ suite ]
-  attachments:
-    - name: report
-      file: target/spectrum/reports/report.html
-    - name: testbook
-      file: target/spectrum/testbook/testbook.html
+eventsConsumers:
+  - mail:
+      events:
+        - reason: after
+          tags: [ suite ]
+      attachments:
+        - name: report
+          file: target/spectrum/reports/report.html
+        - name: testbook
+          file: target/spectrum/testbook/testbook.html
 ```
 
 > ⚠️ **Mail Attachments**<br/>
@@ -1835,13 +1850,14 @@ A few steps are needed to configure your Slack Workspace to receive notification
 5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:
    {% include copyCode.html %}
    ```yaml
-   - slack:
-       token: xoxb-***
-       channel: C05***
-       template: slack-suite.json
-       events:
-         - reason: before
-           tags: [ suite ]
+   eventsConsumers:
+     - slack:
+         token: xoxb-***
+         channel: C05***
+         template: slack-suite.json
+         events:
+           - reason: before
+             tags: [ suite ]
    ```
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
@@ -1853,10 +1869,11 @@ A few steps are needed to configure your Slack Workspace to receive notification
 {% include copyCode.html %}
 
 ```yaml
-slack:
-  events:
-    - reason: after
-      tags: [ test ]
+eventsConsumers:
+  - slack:
+      events:
+        - reason: after
+          tags: [ test ]
 ```
 
 >
@@ -1866,11 +1883,12 @@ slack:
 {% include copyCode.html %}
 
 ```yaml
-slack:
-  template: my-template.txt # The extension doesn't really matter.
-  events:
-    - reason: after
-      tags: [ test ]
+eventsConsumers:
+  - slack:
+      template: my-template.txt # The extension doesn't really matter.
+      events:
+        - reason: after
+          tags: [ test ]
 ```
 
 > * simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.

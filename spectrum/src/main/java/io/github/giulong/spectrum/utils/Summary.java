@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import io.github.giulong.spectrum.interfaces.reports.Reportable;
@@ -19,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.giulong.spectrum.enums.Result.FAILED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Getter
@@ -93,6 +96,10 @@ public class Summary implements SessionHook, Reportable {
 
         log.info("Execution successful? {}", executionSuccessful);
         return executionSuccessful;
+    }
+
+    public Result toResult() {
+        return isExecutionSuccessful() ? SUCCESSFUL : FAILED;
     }
 
     protected String interpolateCondition() {

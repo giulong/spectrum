@@ -127,6 +127,7 @@ class MailConsumerTest {
         when(attachment2.getFile()).thenReturn(file2);
 
         final MailConsumer mailConsumer = new MailConsumer();
+        assertEquals(List.of(), mailConsumer.attachments);  // to check the default is an empty list
         mailConsumer.attachments = List.of(attachment1, attachment2);
         mailConsumer.consumes(event);
 
