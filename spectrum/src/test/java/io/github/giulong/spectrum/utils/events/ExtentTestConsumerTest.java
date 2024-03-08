@@ -47,12 +47,12 @@ class ExtentTestConsumerTest {
     }
 
     @Test
-    @DisplayName("consumes should add a log in the extent report by default")
-    public void consumes() {
+    @DisplayName("accept should add a log in the extent report by default")
+    public void accept() {
         when(event.getResult()).thenReturn(SUCCESSFUL);
         when(event.getContext()).thenReturn(context);
 
-        extentTestConsumer.consumes(event);
+        extentTestConsumer.accept(event);
 
         verify(extentReporter).logTestEnd(context, SUCCESSFUL.getStatus());
     }

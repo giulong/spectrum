@@ -49,8 +49,8 @@ class TestBookConsumerTest {
     private TestBookConsumer testBookConsumer;
 
     @Test
-    @DisplayName("consume should tell the testbook to update")
-    public void consume() {
+    @DisplayName("accept should tell the testbook to update")
+    public void accept() {
         final Result result = FAILED;
 
         when(event.getContext()).thenReturn(context);
@@ -63,7 +63,7 @@ class TestBookConsumerTest {
         when(parentContext.getDisplayName()).thenReturn("className");
         when(context.getDisplayName()).thenReturn("testName");
 
-        testBookConsumer.consumes(event);
+        testBookConsumer.accept(event);
 
         verify(testBook).updateWithResult("className", "testName", result);
     }

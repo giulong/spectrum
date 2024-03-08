@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class VideoConsumer extends EventsConsumer {
 
     @Override
-    public void consumes(final Event event) {
+    public void accept(final Event event) {
         final ExtensionContext.Store store = event.getContext().getStore(GLOBAL);
         if (store.get(CONFIGURATION, Configuration.class).getVideo().isDisabled()) {
             log.debug("Video is disabled. Returning");

@@ -78,8 +78,8 @@ class MailConsumerTest {
     }
 
     @Test
-    @DisplayName("consume should send an email with the provided attachments interpolating the provided template")
-    public void consume() {
+    @DisplayName("accept should send an email with the provided attachments interpolating the provided template")
+    public void accept() {
         final String template = "template";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String name1 = "name1";
@@ -129,7 +129,7 @@ class MailConsumerTest {
         final MailConsumer mailConsumer = new MailConsumer();
         assertEquals(List.of(), mailConsumer.attachments);  // to check the default is an empty list
         mailConsumer.attachments = List.of(attachment1, attachment2);
-        mailConsumer.consumes(event);
+        mailConsumer.accept(event);
 
         final AttachmentResource attachmentResource1 = attachmentResourceMockedConstruction.constructed().getFirst();
         final AttachmentResource attachmentResource2 = attachmentResourceMockedConstruction.constructed().get(1);

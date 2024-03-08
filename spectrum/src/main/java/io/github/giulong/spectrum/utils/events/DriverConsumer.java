@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class DriverConsumer extends EventsConsumer {
 
     @Override
-    public void consumes(final Event event) {
+    public void accept(final Event event) {
         final Configuration.Runtime runtime = event
                 .getContext()
                 .getRoot()

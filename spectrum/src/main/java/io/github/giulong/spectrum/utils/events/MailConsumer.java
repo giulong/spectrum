@@ -35,7 +35,7 @@ public class MailConsumer extends EventsConsumer {
     protected List<Attachment> attachments = new ArrayList<>();
 
     @Override
-    public void consumes(final Event event) {
+    public void accept(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
         final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate(FILE_UTILS.readTemplate(template), vars);
 

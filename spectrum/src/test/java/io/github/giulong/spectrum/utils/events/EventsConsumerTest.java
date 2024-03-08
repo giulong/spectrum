@@ -185,15 +185,15 @@ class EventsConsumerTest {
     }
 
     @Test
-    @DisplayName("consumeSilently should ignore any exception thrown when consuming the provided event")
-    public void consumeSilently() {
+    @DisplayName("acceptSilently should ignore any exception thrown when consuming the provided event")
+    public void acceptSilently() {
         final String exceptionMessage = "THE STACKTRACE BELOW IS EXPECTED!!!";
         final Event event = mock(Event.class);
 
         when(event.getContext()).thenThrow(new RuntimeException(exceptionMessage));
 
         eventsConsumer.events = List.of(event);
-        assertDoesNotThrow(() -> eventsConsumer.consumeSilently(event), exceptionMessage);
+        assertDoesNotThrow(() -> eventsConsumer.acceptSilently(event), exceptionMessage);
     }
 
     private static class DummyEventsConsumer extends EventsConsumer {
@@ -205,7 +205,7 @@ class EventsConsumerTest {
         }
 
         @Override
-        public void consumes(final Event event) {
+        public void accept(final Event event) {
             //noinspection ResultOfMethodCallIgnored
             event.getContext();
         }

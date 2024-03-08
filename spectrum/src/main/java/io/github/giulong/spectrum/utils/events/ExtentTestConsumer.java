@@ -14,7 +14,7 @@ public class ExtentTestConsumer extends EventsConsumer {
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
 
     @Override
-    public void consumes(final Event event) {
+    public void accept(final Event event) {
         final Status status = event.getResult().getStatus();
 
         extentReporter.logTestEnd(event.getContext(), status);
