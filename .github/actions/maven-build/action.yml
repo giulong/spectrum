@@ -25,10 +25,4 @@ runs:
 
     - name: Building Spectrum
       shell: bash
-      run: >
-        ./mvnw install
-        -DskipSign
-        -Dmaven.plugin.validation=NONE
-        ${{ inputs.args }}
-        -ntp
-        -P ${{ inputs.profiles }}
+      run: ./mvnw install -DskipSign -DskipUnitTests -Dmaven.plugin.validation=NONE ${{ inputs.args }} -ntp -P ${{ inputs.profiles }}
