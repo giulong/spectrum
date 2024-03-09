@@ -19,8 +19,9 @@ public class Retention {
     @JsonIgnore
     private final MetadataManager metadataManager = MetadataManager.getInstance();
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Number of reports to retain. Older ones will be deleted")
-    private final int total = Integer.MAX_VALUE;
+    private int total = Integer.MAX_VALUE;
 
     @SuppressWarnings("unused")
     @JsonPropertyDescription("Number of successful reports to retain. Older ones will be deleted")

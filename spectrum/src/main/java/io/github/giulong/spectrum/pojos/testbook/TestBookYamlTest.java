@@ -8,5 +8,6 @@ public class TestBookYamlTest {
 
     private String name;
 
-    private final int weight = 1;
+    @SuppressWarnings("FieldMayBeFinal")
+    private int weight = 1;
 }
