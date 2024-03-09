@@ -18,8 +18,9 @@ public class SlackConsumer extends EventsConsumer {
 
     private static final FreeMarkerWrapper FREE_MARKER_WRAPPER = FreeMarkerWrapper.getInstance();
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Template to be used when creating the message")
-    private final String template = "slack.json";
+    private String template = "slack.json";
 
     @JsonPropertyDescription("Target channel where to send the message")
     protected String channel;

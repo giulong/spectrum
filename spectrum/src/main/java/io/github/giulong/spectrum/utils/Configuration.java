@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import static ch.qos.logback.classic.Level.OFF;
 import static lombok.AccessLevel.PRIVATE;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "FieldMayBeFinal"})
 @Getter
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
@@ -441,7 +441,7 @@ public class Configuration {
 
             @JsonPropertyDescription("Level at which this event will be logged")
             @JsonSchemaTypes(value = String.class, valueList = {"OFF", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL"})
-            private final ch.qos.logback.classic.Level level = OFF;
+            private ch.qos.logback.classic.Level level = OFF;
 
             @JsonPropertyDescription("Message to be logged upon receiving this event")
             private String message;
