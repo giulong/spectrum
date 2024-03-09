@@ -745,7 +745,7 @@ To run against an Appium server you need to configure the related environment li
 ```yaml
 environments:
   appium:
-    url: http://127.0.0.1:4723/ # this is the default, no need to provide it explicitly
+    url: http://localhost:4723/ # this is the default, no need to provide it explicitly
     capabilities:
       someCapability: its value
       another: 123
