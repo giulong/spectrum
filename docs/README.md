@@ -445,7 +445,8 @@ You should also leverage the [Json Schema](#json-schema) to have autocompletion 
 To provide your own configuration and customise these values, you can create the `src/test/resources/configuration.yaml` file in your project.
 
 > ⚠️ **Files Extension**<br/>
-> The extension must be `.yaml`. The shortened `.yml` won't work.
+> The extension can be either `.yaml` or `.yml`. This is valid not only for the `configuration`,
+> but also for all the yaml files you'll see in this docs, such as `data` and `tesbook` for instance.
 
 Furthermore, you can provide how many profile-specific configurations in the same folder, by naming them
 `configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name.
