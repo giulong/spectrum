@@ -205,7 +205,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <skipTests>${skipUnitTests}</skipTests>
                     <argLine>@{argLine}
                         -javaagent:${net.bytebuddy:byte-buddy-agent:jar}
                         --add-opens java.base/java.util=ALL-UNNAMED
