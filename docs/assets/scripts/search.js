@@ -15,7 +15,6 @@ searchInput.setAttribute('onfocus', 'highlight()');
 searchInput.setAttribute('onclick', 'showResults()');
 searchInput.setAttribute('onkeyup', 'search()');
 
-document.onload = setUpAnchors();
 document.addEventListener('click', function(event) {
     if (!searchContainer.contains(event.target)) {
         hideResults();
@@ -30,12 +29,16 @@ document.addEventListener('keydown', evt => {
 
 window.onscroll = () => stickyHeader();
 window.onresize = () => stickyHeader();
+window.onload = () => setUpAnchors();
 
 function setUpAnchors() {
-    location.href = location.hash ? location.hash : '#spectrum';
-    headings.forEach(h => h.setAttribute('onclick', 'navigateTo("' + buildAnchorFrom(h.innerText) + '")'));
+    setTimeout(() => {
+        location.href = location.hash ? location.hash : '#spectrum';
+        headings.forEach(h => h.setAttribute('onclick', 'navigateTo("' + buildAnchorFrom(h.innerText) + '")'));
 
-    setTimeout(() => scrollUpABit(), 100);
+        selectActiveTocElement();
+        scrollUpABit();
+    }, 100);
 }
 
 function highlight() {
@@ -74,20 +77,23 @@ function scrollUpABit() {
     window.scrollBy(0, -75);
 }
 
-function navigateTo(anchor) {
-    hideResults();
-
-    location.href = '#' + anchor;
-    window.navigator.clipboard.writeText(location.href);
+function selectActiveTocElement() {
     tocElements.forEach(h => {
-        if (buildAnchorFrom(h.innerText) == anchor) {
+        if ("#" + buildAnchorFrom(h.innerText) == location.hash) {
             h.classList.add('toc-element-selected');
             h.scrollIntoView({ behavior: "smooth", block: "center" });
         } else {
             h.classList.remove('toc-element-selected');
         }
     });
+}
 
+function navigateTo(anchor) {
+    hideResults();
+
+    location.href = '#' + anchor;
+    window.navigator.clipboard.writeText(location.href);
+    selectActiveTocElement();
     scrollUpABit();
 }
 
