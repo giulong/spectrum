@@ -22,13 +22,8 @@ runs:
         java-version: 21
         distribution: temurin
         cache: maven
+        cache-dependency-path: spectrum/pom.xml
 
     - name: Building Spectrum
       shell: bash
-      run: >
-        ./mvnw install
-        -DskipSign
-        -Dmaven.plugin.validation=NONE
-        ${{ inputs.args }}
-        -ntp
-        -P ${{ inputs.profiles }}
+      run: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE ${{ inputs.args }} -ntp -P ${{ inputs.profiles }}

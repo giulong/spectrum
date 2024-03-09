@@ -27,6 +27,7 @@ jobs:
           java-version: 21
           distribution: temurin
           cache: maven
+          cache-dependency-path: spectrum/pom.xml
 
       - name: Spectrum submodule package
         run: ./mvnw package -DskipSign -Dmaven.plugin.validation=NONE -ntp -pl spectrum

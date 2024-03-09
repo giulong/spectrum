@@ -29,6 +29,7 @@ jobs:
         java-version: 21
         distribution: temurin
         cache: maven
+        cache-dependency-path: spectrum/pom.xml
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
