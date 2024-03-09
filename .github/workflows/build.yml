@@ -104,4 +104,4 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DappiumTests -ntp -P appium
+          script: ./mvnw install -DskipSign -DskipUnitTests -Dmaven.plugin.validation=NONE -DappiumTests -ntp -pl spectrum,it-appium

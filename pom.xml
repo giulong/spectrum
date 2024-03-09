@@ -84,11 +84,7 @@
 
         <profile>
             <id>browsers</id>
-            <properties>
-                <skipUnitTests>true</skipUnitTests>
-            </properties>
             <modules>
-                <module>spectrum</module>
                 <module>it</module>
                 <module>it-grid</module>
                 <module>it-testbook</module>
@@ -100,11 +96,7 @@
 
         <profile>
             <id>appium</id>
-            <properties>
-                <skipUnitTests>true</skipUnitTests>
-            </properties>
             <modules>
-                <module>spectrum</module>
                 <module>it-appium</module>
                 <module>verify-commons</module>
                 <module>verify-appium</module>
