@@ -16,10 +16,22 @@ searchInput.setAttribute('onclick', 'showResults()');
 searchInput.setAttribute('onkeyup', 'search()');
 
 document.addEventListener('click', function(event) {
-    if (!searchContainer.contains(event.target)) {
+    const target = event.target || event.srcElement;
+
+    if (!searchContainer.contains(target)) {
         hideResults();
     }
+
+    if (target.tagName === 'A') {
+        const href = target.getAttribute('href');
+
+        if (href.startsWith('#')) {
+           event.preventDefault();
+           navigateTo(href);
+        }
+    }
 });
+
 document.addEventListener('keydown', evt => {
     if (evt.key === 'Escape') {
         searchInput.blur();
@@ -91,7 +103,7 @@ function selectActiveTocElement() {
 function navigateTo(anchor) {
     hideResults();
 
-    location.href = '#' + anchor;
+    location.href = anchor.startsWith('#') ? anchor : '#' + anchor;
     window.navigator.clipboard.writeText(location.href);
     selectActiveTocElement();
     scrollUpABit();
