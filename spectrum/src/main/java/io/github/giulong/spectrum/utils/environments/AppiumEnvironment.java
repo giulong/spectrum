@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.utils.environments;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.github.giulong.spectrum.drivers.Appium;
@@ -19,28 +18,22 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 public class AppiumEnvironment extends GridEnvironment {
 
     @JsonIgnore
-    private final Configuration configuration = Configuration.getInstance();
-
-    @JsonIgnore
     private AppiumDriverLocalService driverService;
-
-    @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs, at the level specified in the webDriver.logs.level node")
-    @SuppressWarnings("unused")
-    private boolean collectServerLogs;
 
     @Override
     public void sessionOpened() {
         log.info("Starting the Appium driver service");
 
+        final Configuration.Environments.Appium appium = configuration.getEnvironments().getAppium();
         final AppiumServiceBuilder appiumServiceBuilder = ((AppiumServiceBuilder) configuration
                 .getRuntime()
                 .getDriver()
                 .getDriverServiceBuilder())
-                .withCapabilities(new DesiredCapabilities(capabilities));
+                .withCapabilities(new DesiredCapabilities(appium.getCapabilities()));
 
         driverService = AppiumDriverLocalService.buildService(appiumServiceBuilder);
 
-        if (collectServerLogs) {
+        if (appium.isCollectServerLogs()) {
             driverService.clearOutPutStreams();
             driverService.addOutPutStream(AppiumLog
                     .builder()
@@ -61,9 +54,10 @@ public class AppiumEnvironment extends GridEnvironment {
     @Override
     public WebDriver setupFor(final Driver<?, ?, ?> driver) {
         log.info("Running with appium");
-        final RemoteWebDriver webDriver = ((Appium<?, ?>) driver).buildDriverFor(url);
+        final Configuration.Environments.Appium appium = configuration.getEnvironments().getAppium();
+        final RemoteWebDriver webDriver = ((Appium<?, ?>) driver).buildDriverFor(appium.getUrl());
 
-        return setFileDetectorFor(webDriver);
+        return setFileDetectorFor(webDriver, appium);
     }
 
     @Override

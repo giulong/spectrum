@@ -53,6 +53,7 @@ class YamlUtilsTest {
                 "LogbackLogLevelDeserializer",
                 "DurationDeserializer",
                 "DriverDeserializer",
+                "EnvironmentDeserializer",
                 "ClassDeserializer",
                 "LogTestBookReporter",
                 "TxtTestBookReporter",

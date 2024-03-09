@@ -8,8 +8,7 @@ vars:
 runtime:
   profiles: ${spectrum.profiles:-local} # Profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
   driver: ${spectrum.driver:-chrome}  # Driver to use
-  environment: # Runtime environment. Can be local or grid
-    local: { }
+  environment: ${spectrum.environment:-local} # Active runtime environment. Can be local, grid, or appium
   filesFolder: src/test/resources/files # Folder where you will store files to be checked against downloaded ones
   downloadsFolder: ${downloadsFolder} # Destination folder for files downloaded during the execution
   cacheFolder: ${user.home}/.cache/spectrum # Cache folder for storing Spectrum internal cross-executions data
@@ -53,6 +52,14 @@ extent:
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
   locatorRegex: \s->\s([\w:\s\-.#]+)  # Regex to extract the WebElement's selector, when the webDriver fires an event
   retention: { } # Retention rules, specifies the number of reports to retain. Older ones will be deleted. Defaults to MAX_INT
+
+# Environments configuration
+environments:
+  local: { } # The default local environment. No properties available here
+  grid: # Grid configuration. By default, we point to a local grid
+    url: http://localhost:4444/wd/hub
+  appium: # Appium server configuration. Here you can set Appium server capabilities. By default, we point to a local Appium Server
+    url: http://localhost:4723/
 
 # WebDriver configuration
 webDriver:

@@ -375,6 +375,60 @@ so you can directly use them in your tests/pages without caring about declaring 
 
 ---
 
+# Selecting the driver
+
+You can select the driver via the `runtime.driver` node. As you can see in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
+its value leverages [interpolation](#values-interpolation) with the default set to `chrome`:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  driver: ${spectrum.driver:-chrome}
+```
+
+This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  driver: firefox
+```
+
+or overriding it at runtime by providing the `spectrum.driver` property: `-Dspectrum.driver=firefox`
+
+Before actually providing the list of available drivers, it's important to spend a few words on the runtime environment.
+
+---
+
+# Selecting the environment
+
+You can select the driver via the `runtime.environment` node. As you can see in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
+its value leverages [interpolation](#values-interpolation) with the default set to `local`:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  environment: ${spectrum.environment:-local}
+```
+
+This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  environment: grid
+```
+
+or overriding it at runtime by providing the `spectrum.environment` property: `-Dspectrum.environment=grid`
+
+---
+
 # Configuration
 
 Spectrum is fully configurable and comes with default values which you can find in
@@ -612,56 +666,45 @@ You can add your own and even override the default ones in your `configuration*.
 
 ---
 
-## Selecting the driver
+## Configuring the Environment
 
-You can select the driver via the `runtime.driver` node. As you can see in the internal
-[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
-its value leverages interpolation with the default set to `chrome`:
+Let's now see how to configure the available environments. You can provide the configurations of all the environments
+you need in the same `configuration.yaml`, and then activate the one you want to use in a specific run, as we just saw in the
+[Selecting the Environment](#selecting-the-environment) section. All the environments are configured via the `environments` node directly under the root of
+the `configuration.yaml`:
 
-{% include copyCode.html %}
-
-```yaml
-runtime:
-  driver: ${spectrum.driver:-chrome}
-```
-
-This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
+As a reference, let's see the `environments` under the
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
 {% include copyCode.html %}
 
 ```yaml
-runtime:
-  driver: firefox
-```
-
-or overriding it at runtime by providing the `spectrum.driver` property:
-
-`-Dspectrum.driver=firefox`
-
-Before actually providing the list of available drivers, it's important to spend a few words on the runtime environment.
-
----
-
-## Selecting the environment
-
-By default, drivers run in local. This is because the default value in the internal
-[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml{:target="_blank"})
-is:
-
-{% include copyCode.html %}
-
-```yaml
-runtime:
-  environment:
-    local: { }
+environments:
+  local: { }
+  grid:
+    url: http://localhost:4444/wd/hub
+  appium:
+    url: http://localhost:4723/
 ```
 
 ### Local environment
 
 The local environment doesn't have any additional properties, which means you need to configure it as an empty object
-like in the internal default you can see above.
-Watch out that providing no value at all like in `local: ` is equivalent to `local: null` !
-This is valid in general in yaml.
+like in the internal default you can see above:
+
+{% include copyCode.html %}
+
+```yaml
+environments:
+  local: { }
+```
+
+Watch out that providing no value at all like in "`local: `" is equivalent to "`local: null`" !
+This is generally valid in yaml.
+
+> 💡 **Tip**<br/>
+> Since no additional properties are available for the local environment, it doesn't make any sense to explicitly configure it
+> on your side.
 
 ### Grid environment
 
@@ -670,14 +713,13 @@ To run on a remote [grid](https://www.selenium.dev/documentation/grid/){:target=
 {% include copyCode.html %}
 
 ```yaml
-runtime:
-  environment:
-    grid:
-      url: https://my-grid-url:4444/wd/hub
-      capabilities:
-        someCapability: its value
-        another: blah
-      localFileDetector: true
+environments:
+  grid:
+    url: https://my-grid-url:4444/wd/hub
+    capabilities:
+      someCapability: its value
+      another: 123
+    localFileDetector: true
 ```
 
 Where the params are:
@@ -701,27 +743,28 @@ To run against an Appium server you need to configure the related environment li
 {% include copyCode.html %}
 
 ```yaml
-runtime:
-  environment:
-    appium:
-      url: http://127.0.0.1:4723/ # this is the default, no need to provide it explicitly
-      capabilities:
-        someCapability: its value
-        another: blah
-      localFileDetector: true
-      collectServerLogs: true
+environments:
+  appium:
+    url: http://127.0.0.1:4723/ # this is the default, no need to provide it explicitly
+    capabilities:
+      someCapability: its value
+      another: 123
+    localFileDetector: true
+    collectServerLogs: true
 ```
 
-Appium server is a specialized kind of a Selenium Grid, so its configuration extends the one of the Grid environment above.
+Appium server is a specialized kind of a Selenium Grid, so its configuration extends the one of the
+[Grid environment](#grid-environment) above.
 
 When running the Appium server in local, you can either start it manually or let Spectrum do it for you.
 It's enough to have Appium installed: if the Appium server is already running, Spectrum will just send execution commands to it.
 Otherwise, it will start the server process when the tests execution start, and will shut it down once the execution is done.
+
 That said, all the parameters available for a Grid environment can be used in Appium environment. Here's the list of Appium specific parameters:
 
-| Param             | Type    | Default | Mandatory | Description                                                                                                        |
-|-------------------|---------|---------|:---------:|--------------------------------------------------------------------------------------------------------------------|
-| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the webDriver.logs.level node |
+| Param             | Type    | Default | Mandatory | Description                                                                                                          |
+|-------------------|---------|---------|:---------:|----------------------------------------------------------------------------------------------------------------------|
+| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the `webDriver.logs.level` node |
 
 > 💡 **Tip**<br/>
 > Use `collectServerLogs` only if you really want to send Appium server's logs to Spectrum's log file.
@@ -734,8 +777,7 @@ If you don't need any particular configuration, it's enough to run with:
 
 ```yaml
 runtime:
-  environment:
-    appium: { }
+  environment: appium
 ```
 
 You can see few working examples in the

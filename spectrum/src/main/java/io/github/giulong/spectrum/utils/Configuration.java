@@ -5,17 +5,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.video.Video;
-import io.github.giulong.spectrum.utils.environments.Environment;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
+import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -50,6 +52,9 @@ public class Configuration {
     @JsonPropertyDescription("Extent Report configuration")
     private Extent extent;
 
+    @JsonPropertyDescription("Environments configuration")
+    private Environments environments;
+
     @JsonPropertyDescription("WebDriver configuration")
     private WebDriver webDriver;
 
@@ -79,11 +84,13 @@ public class Configuration {
 
         @JsonSerialize(using = ToStringSerializer.class)
         @JsonSchemaTypes(String.class)
+        @JsonPropertyDescription("Active runtime environment")
+        private Environment environment;
+
+        @JsonSerialize(using = ToStringSerializer.class)
+        @JsonSchemaTypes(String.class)
         @JsonPropertyDescription("Driver to use")
         private Driver<?, ?, ?> driver;
-
-        @JsonPropertyDescription("Runtime environment. Can be local, grid, appium")
-        private Environment environment;
 
         @JsonPropertyDescription("Folder where you will store files to be checked against downloaded ones")
         private String filesFolder;
@@ -441,6 +448,48 @@ public class Configuration {
 
             @JsonPropertyDescription("Milliseconds to wait before listening to this event")
             private long wait;
+        }
+    }
+
+    @Getter
+    @Generated
+    public static class Environments {
+
+        @JsonPropertyDescription("Local environment configuration")
+        private Local local;
+
+        @JsonPropertyDescription("Grid environment configuration")
+        private Grid grid;
+
+        @JsonPropertyDescription("Appium environment configuration")
+        private Appium appium;
+
+        @Getter
+        @Generated
+        public static class Local {
+        }
+
+        @Getter
+        @Generated
+        public static class Grid {
+
+            @JsonSchemaTypes(String.class)
+            @JsonPropertyDescription("Url of the selenium grid")
+            private URL url;
+
+            @JsonPropertyDescription("Capabilities dedicated to executions on the grid")
+            private final Map<String, Object> capabilities = new HashMap<>();
+
+            @JsonPropertyDescription("Whether to search for files to upload on the client machine or not")
+            private boolean localFileDetector;
+        }
+
+        @Getter
+        @Generated
+        public static class Appium extends Grid {
+
+            @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs, at the level specified in the webDriver.logs.level node")
+            private boolean collectServerLogs;
         }
     }
 

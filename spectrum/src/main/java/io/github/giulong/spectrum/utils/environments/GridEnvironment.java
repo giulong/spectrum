@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.utils.environments;
 
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.giulong.spectrum.drivers.Driver;
-import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
@@ -10,34 +10,28 @@ import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Getter
 public class GridEnvironment extends Environment {
 
-    @JsonSchemaTypes(String.class)
-    @JsonPropertyDescription("Url of the selenium grid")
-    protected URL url;
-
-    @JsonPropertyDescription("Capabilities dedicated to executions on the grid")
-    protected final Map<String, Object> capabilities = new HashMap<>();
-
-    @JsonPropertyDescription("Whether to search for files to upload on the client machine or not")
-    protected boolean localFileDetector;
+    @JsonIgnore
+    protected final Configuration configuration = Configuration.getInstance();
 
     @Override
     public WebDriver setupFor(final Driver<?, ?, ?> driver) {
+        final Configuration.Environments.Grid grid = configuration.getEnvironments().getGrid();
+        final URL url = grid.getUrl();
+
         log.info("Running on grid at {}", url);
 
         final RemoteWebDriver webDriver = (RemoteWebDriver) RemoteWebDriver
                 .builder()
-                .oneOf(driver.mergeGridCapabilitiesFrom(capabilities))
+                .oneOf(driver.mergeGridCapabilitiesFrom(grid.getCapabilities()))
                 .address(url)
                 .build();
 
-        return setFileDetectorFor(webDriver);
+        return setFileDetectorFor(webDriver, grid);
     }
 
     @Override
@@ -45,8 +39,8 @@ public class GridEnvironment extends Environment {
         log.debug("Nothing to shutdown in a grid environment");
     }
 
-    protected RemoteWebDriver setFileDetectorFor(final RemoteWebDriver webDriver) {
-        if (localFileDetector) {
+    protected RemoteWebDriver setFileDetectorFor(final RemoteWebDriver webDriver, final Configuration.Environments.Grid grid) {
+        if (grid.isLocalFileDetector()) {
             webDriver.setFileDetector(new LocalFileDetector());
         }
 

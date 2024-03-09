@@ -12,6 +12,7 @@ import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Public;
 import io.github.giulong.spectrum.pojos.DynamicDeserializersConfiguration;
+import io.github.giulong.spectrum.utils.environments.Environment;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,7 @@ public final class YamlUtils {
                     buildModuleFor(Level.class, LogbackLogLevelDeserializer.getInstance()),
                     buildModuleFor(Duration.class, DurationDeserializer.getInstance()),
                     buildModuleFor(Driver.class, DriverDeserializer.getInstance()),
+                    buildModuleFor(Environment.class, EnvironmentDeserializer.getInstance()),
                     buildModuleFor(Class.class, ClassDeserializer.getInstance())
             );
 
