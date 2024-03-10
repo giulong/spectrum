@@ -23,6 +23,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.0.0
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: maven
+
       - name: Build Spectrum
         shell: bash
         run: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -ntp -P framework-only
@@ -55,6 +62,13 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.0.0
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: maven
 
       - name: Restore cached Spectrum jar
         uses: actions/cache/restore@v4
