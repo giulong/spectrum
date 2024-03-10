@@ -43,12 +43,11 @@ jobs:
           echo "Spectrum version is $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Spectrum jar cache
-        uses: actions/cache@v4
-        id: spectrum-cache
+      - name: Store Spectrum jar
+        uses: actions/upload-artifact@v4
         with:
+          name: spectrum-jar
           path: spectrum/target/spectrum-${{ env.version }}.jar
-          key: spectrum-jar
 
   browsers:
     name: Browsers IT
@@ -75,11 +74,10 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Restore cached Spectrum jar
-        uses: actions/cache/restore@v4
+      - name: Get Spectrum jar
+        uses: actions/download-artifact@v4
         with:
-          path: spectrum/target/spectrum-${{ env.version }}.jar
-          key: spectrum-jar
+          name: spectrum-jar
 
       - name: Install Spectrum
         shell: bash
@@ -140,11 +138,10 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: echo "Generated AVD snapshot for caching."
 
-      - name: Restore cached Spectrum jar
-        uses: actions/cache/restore@v4
+      - name: Get Spectrum jar
+        uses: actions/download-artifact@v4
         with:
-          path: spectrum/target/spectrum-${{ env.version }}.jar
-          key: spectrum-jar
+          name: spectrum-jar
 
       - name: Install Spectrum
         shell: bash
