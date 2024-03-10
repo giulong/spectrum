@@ -48,7 +48,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: spectrum-jar
-          path: spectrum/target/spectrum-$VERSION.jar
+          path: spectrum/target/spectrum-${{ env.VERSION }}.jar
 
   browsers:
     name: Browsers IT
