@@ -24,9 +24,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build Spectrum
-        uses: ./.github/actions/maven-build
+        shell: bash
+        run: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -ntp -P framework-only
+
+      - name: Get Spectrum version
+        id: get_version
+        run: |
+          VERSION=$( ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout )
+          echo "version=$VERSION" >> $GITHUB_ENV
+
+      - name: Spectrum jar cache
+        uses: actions/cache@v4
+        id: spectrum-cache
         with:
-          profiles: framework-only
+          path: spectrum/target/spectrum-${{ env.version }}.jar
+          key: spectrum-jar
 
   browsers:
     name: Browsers IT
@@ -44,8 +56,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Building Spectrum
-        uses: ./.github/actions/build-spectrum
+      - name: Restore cached Spectrum jar
+        uses: actions/cache/restore@v4
+        with:
+          path: spectrum-${{ env.version }}.jar
+          key: spectrum-jar
+
+      - name: Install Spectrum
+        shell: bash
+        run: mvn install:install-file -Dfile=spectrum-${{ env.version }}.jar
 
       - name: Run browsers ITs
         uses: ./.github/actions/maven-build
@@ -68,9 +87,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Building Spectrum
-        uses: ./.github/actions/build-spectrum
 
       - name: Enable KVM
         run: |
@@ -102,6 +118,16 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: echo "Generated AVD snapshot for caching."
+
+      - name: Restore cached Spectrum jar
+        uses: actions/cache/restore@v4
+        with:
+          path: spectrum-${{ env.version }}.jar
+          key: spectrum-jar
+
+      - name: Install Spectrum
+        shell: bash
+        run: mvn install:install-file -Dfile=spectrum-${{ env.version }}.jar
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
