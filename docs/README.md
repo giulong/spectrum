@@ -375,7 +375,32 @@ so you can directly use them in your tests/pages without caring about declaring 
 
 ---
 
-# Selecting the driver
+# Drivers and Environments
+
+The two main things you need when running an e2e test are the **driver** and the **environment**.
+Spectrum lets you configure all the supported values in the same configuration file, and then select the ones
+to be activated either via the same configuration or via runtime properties.
+
+For instance, you can statically configure in the `configuration.yaml` many drivers such as `chrome`, `firefox`, `uiAutomator2` and
+many environments such as `grid` and `appium`.
+Then, you can choose to run with a specific combination of those, such as `firefox` on a remote `grid`.
+
+| Configuration Node | Selection Node        | Selection Property       |
+|--------------------|-----------------------|--------------------------|
+| `drivers`          | `runtime.driver`      | `-Dspectrum.driver`      |
+| `environments`     | `runtime.environment` | `-Dspectrum.environment` |
+
+Where the columns are:
+
+* **Configuration Node**: name of the node in the `configuration.yaml` to map the configurations of all the possible drivers/environments
+* **Selection Node**: name of the node in the `configuration.yaml` to select the specific driver/environment to be used
+* **Selection Property**: name of the runtime property to select the specific driver/environment to be used
+
+You can choose either to use the selection node or property.
+
+---
+
+## Selecting the driver
 
 You can select the driver via the `runtime.driver` node. As you can see in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
@@ -403,9 +428,9 @@ Before actually providing the list of available drivers, it's important to spend
 
 ---
 
-# Selecting the environment
+## Selecting the environment
 
-You can select the driver via the `runtime.environment` node. As you can see in the internal
+You can select the environment via the `runtime.environment` node. As you can see in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
 its value leverages [interpolation](#values-interpolation) with the default set to `local`:
 
@@ -429,6 +454,24 @@ or overriding it at runtime by providing the `spectrum.environment` property: `-
 
 ---
 
+## Available Drivers and Environments
+
+These are the drivers currently supported, each must be used with a compatible environment:
+
+| Driver        | Local | Grid | Appium |
+|---------------|:-----:|:----:|:------:|
+| chrome        |   ✅   |  ✅   |        |
+| firefox       |   ✅   |  ✅   |        |
+| edge          |   ✅   |  ✅   |        |
+| uiAutomator2  |       |      |   ✅    |
+| espresso      |       |      |   ✅    |
+| xcuiTest      |       |      |   ✅    |
+| windows       |       |      |   ✅    |
+| mac2          |       |      |   ✅    |
+| appiumGeneric |       |      |   ✅    |
+
+---
+
 # Configuration
 
 Spectrum is fully configurable and comes with default values which you can find in
@@ -449,13 +492,13 @@ To provide your own configuration and customise these values, you can create the
 > but also for all the yaml files you'll see in this docs, such as `data` and `tesbook` for instance.
 
 Furthermore, you can provide how many profile-specific configurations in the same folder, by naming them
-`configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name.
+`configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name of your choice.
 
-To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag,
+To let Spectrum pick the right profiles-related configurations, you must run with the `-Dspectrum.profiles` flag,
 which is a comma separated list of profile names you want to activate.
 
 > 💡 **Example**<br/>
-> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this exact order of precedence.
+> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge the files below in this exact order.
 > The first file loaded is the internal one, which has the lowest priority. This means if the same key is provided in any of the
 > other files, it will be overridden. Values in the most specific configuration file will take precedence over the others.
 
@@ -468,8 +511,13 @@ which is a comma separated list of profile names you want to activate.
 | configuration-grid.yaml         |    5     | Provided by you. A warning is raised if not found, no errors |
 
 > 💡 **Tip**<br/>
-> There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base configuration.yaml,
-> while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`
+> There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base `configuration.yaml`,
+> while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`.
+>
+> In this way, when you need to run with a different configuration, you don't need to change any configuration file. 
+> This is important, since configurations are versioned alongside your tests,
+> so you avoid errors and keep your scm history clean.
+> You then just need to activate the right one by creating different run configurations in your IDE.
 
 > ⚠️ **Merging Lists**<br/>
 > Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! Let's clarify with an example:
@@ -490,18 +538,6 @@ anyList:
   - baseValue
   - valueForTest
 ```
-
-> 💡 **Tip**<br/>
-> If you need different configurations for the same environment, instead of manually changing values in the configuration*.yaml, you should
-> provide different files and choose the right one with the `-Dspectrum.profiles` flag. <br/>
-> For example, if you need to be able to run from your local machine alternatively targeting a remote grid or executing drivers in local,
-> it's preferable to have two files where you change just the target runtime:
-> * configuration-local-local.yaml
-> * configuration-local-grid.yaml
->
-> In this way, you don't need to change any configuration file. This is important, since configurations are versioned alongside your tests,
-> so you avoid errors and keep your scm history clean.
-> You then just need to activate the right one by creating different run configurations in your IDE.
 
 > 💡 **Tip**<br/>
 > Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
@@ -550,7 +586,7 @@ vars:
 webDriver:
   chrome:
     args:
-      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
+      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation doesn't make sense here
   firefox:
     preferences:
       network.proxy.type: 1
@@ -569,11 +605,7 @@ between the name of the key to search for and the default value to use in case t
 # String example
 object:
   myVar: ${key:-defaultValue}
-```
 
-{% include copyCode.html %}
-
-```yaml
 # Number example
 object:
   myVar: $<key:-defaultValue>
@@ -587,14 +619,14 @@ object:
 
 Spectrum will interpolate the dollar-string with the first value found in this list:
 
-1. `key` in [vars node](#vars-node):
+1. [vars node](#vars-node):
 
    {% include copyCode.html %}
     ```yaml
     vars:
       key: value 
     ```
-2. system property named `key`: `-Dkey=value`
+2. system property: `-Dkey=value`
 3. environment variable named `key`
 4. `defaultValue` (if provided)
 
@@ -667,10 +699,22 @@ You can add your own and even override the default ones in your `configuration*.
 
 ---
 
+## Configuring the Driver
+
+Let's now see how to configure the available drivers. You can provide the configurations of all the drivers
+you need in the same `configuration.yaml`, and then activate the one you want to use in a specific run, as we saw in the
+[Selecting the Driver](#selecting-the-driver) section. All the drivers are configured via the `webDriver` node directly under the root of
+the `configuration.yaml`:
+
+Be sure to check the `webDriver` defaults in the
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+
+---
+
 ## Configuring the Environment
 
 Let's now see how to configure the available environments. You can provide the configurations of all the environments
-you need in the same `configuration.yaml`, and then activate the one you want to use in a specific run, as we just saw in the
+you need in the same `configuration.yaml`, and then activate the one you want to use in a specific run, as we saw in the
 [Selecting the Environment](#selecting-the-environment) section. All the environments are configured via the `environments` node directly under the root of
 the `configuration.yaml`:
 
@@ -690,7 +734,7 @@ environments:
 
 ### Local environment
 
-The local environment doesn't have any additional properties, which means you need to configure it as an empty object
+The local environment doesn't have any additional property, which means you need to configure it as an empty object
 like in the internal default you can see above:
 
 {% include copyCode.html %}
@@ -700,7 +744,7 @@ environments:
   local: { }
 ```
 
-Watch out that providing no value at all like in "`local: `" is equivalent to "`local: null`" !
+Watch out that providing no value at all like in "`local: `" is equivalent to set "`local: null`" !
 This is generally valid in yaml.
 
 > 💡 **Tip**<br/>
@@ -786,24 +830,6 @@ You can see few working examples in the
 
 ---
 
-## Available Drivers
-
-These are the drivers currently supported, each must be used with a compatible environment:
-
-| Driver        | Local | Grid | Appium |
-|---------------|:-----:|:----:|:------:|
-| chrome        |   ✅   |  ✅   |        |
-| firefox       |   ✅   |  ✅   |        |
-| edge          |   ✅   |  ✅   |        |
-| uiAutomator2  |       |      |   ✅    |
-| espresso      |       |      |   ✅    |
-| xcuiTest      |       |      |   ✅    |
-| windows       |       |      |   ✅    |
-| mac2          |       |      |   ✅    |
-| appiumGeneric |       |      |   ✅    |
-
----
-
 ## Vars node
 
 The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
@@ -850,7 +876,7 @@ Regarding the proxy, these are the relevant part of its
 where you can see how to configure a proxy server for every driver.
 
 Mind that this is just an example. Its only purpose is to show how to configure a proxy and prove it's working, leveraging the domain bypass list:
-there's no proxy actually running, so every domain which is not bypassed would throw an exception.
+there's no proxy actually running, so trying to reach any domain which is not bypassed would throw an exception.
 
 {% include copyCode.html %}
 
@@ -858,7 +884,7 @@ there's no proxy actually running, so every domain which is not bypassed would t
 vars:
   proxyHost: not-existing-proxy.com
   proxyPort: 8080
-  proxyBypass: '*.herokuapp.com'
+  proxyBypass: '*.herokuapp.com' # we need to explicitly wrap the string literal since it starts with a special char
 
 webDriver:
   chrome:
