@@ -52,7 +52,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     protected TestData testData;
 
     @Shared
-    protected WebDriver webDriver;
+    protected WebDriver driver;
 
     @Shared
     protected WebDriverWait implicitWait;
@@ -119,10 +119,10 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", MANUAL.getValue(), randomUUID()));
 
         try {
-            Files.write(screenshotPath, webDriver.findElement(tagName("body")).getScreenshotAs(BYTES));
+            Files.write(screenshotPath, driver.findElement(tagName("body")).getScreenshotAs(BYTES));
         } catch (WebDriverException e) {
             log.debug("Falling back to non-element screenshot due to: {}", e.getMessage());
-            Files.write(screenshotPath, ((TakesScreenshot) webDriver).getScreenshotAs(BYTES));
+            Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));
         }
 
         final Media screenshot = createScreenCaptureFromPath(screenshotPath.toString()).build();
@@ -142,7 +142,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @SuppressWarnings("unchecked")
     public T waitForDownloadOf(final Path path) {
-        downloadWait.until(driver -> {
+        downloadWait.until(webDriver -> {
             log.trace("Checking for download completion of file '{}'", path);
             return Files.exists(path) && path.toFile().length() > 0;
         });
@@ -194,7 +194,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     public boolean isPresent(final By by) {
-        final int total = webDriver.findElements(by).size();
+        final int total = driver.findElements(by).size();
         log.debug("Found {} elements with By {}", total, by);
         return total > 0;
     }

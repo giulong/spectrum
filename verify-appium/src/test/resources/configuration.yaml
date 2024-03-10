@@ -1,4 +1,4 @@
-webDriver:
+drivers:
   waits:
     implicit: 2
     downloadTimeout: 5

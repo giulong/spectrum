@@ -32,13 +32,13 @@ class XCUITestTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriver;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Map<String, Object> capabilities;
 
     @Mock
-    private Configuration.WebDriver.XCUITest xcuiTestConfiguration;
+    private Configuration.Drivers.XCUITest xcuiTestConfiguration;
 
     @Mock
     private URL url;
@@ -63,8 +63,8 @@ class XCUITestTest {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getXcuiTest()).thenReturn(xcuiTestConfiguration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
         when(xcuiTestConfiguration.getCapabilities()).thenReturn(capabilities);
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
@@ -88,8 +88,8 @@ class XCUITestTest {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getXcuiTest()).thenReturn(xcuiTestConfiguration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
         when(xcuiTestConfiguration.getCapabilities()).thenReturn(capabilities);
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);

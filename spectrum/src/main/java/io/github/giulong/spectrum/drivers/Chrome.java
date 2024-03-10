@@ -14,12 +14,12 @@ public class Chrome extends Chromium<ChromeOptions, ChromeDriverService, ChromeD
 
     @Override
     public void buildCapabilities() {
-        final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
-        final Configuration.WebDriver.Chrome chromeConfig = webDriverConfiguration.getChrome();
+        final Configuration.Drivers driversConfiguration = configuration.getDrivers();
+        final Configuration.Drivers.Chrome chrome = driversConfiguration.getChrome();
 
-        capabilities = new ChromeOptions().addArguments(chromeConfig.getArgs());
+        capabilities = new ChromeOptions().addArguments(chrome.getArgs());
 
-        chromeConfig.getCapabilities().forEach(capabilities::setExperimentalOption);
-        setLoggingPreferencesFrom(webDriverConfiguration.getLogs());
+        chrome.getCapabilities().forEach(capabilities::setExperimentalOption);
+        setLoggingPreferencesFrom(driversConfiguration.getLogs());
     }
 }

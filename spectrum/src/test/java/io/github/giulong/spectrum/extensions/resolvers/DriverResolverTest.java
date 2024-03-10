@@ -27,14 +27,14 @@ import java.util.regex.Pattern;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("WebDriverResolver")
-class WebDriverResolverTest {
+@DisplayName("DriverResolver")
+class DriverResolverTest {
 
     private static MockedStatic<EventsListener> eventsListenerMockedStatic;
     private static MockedStatic<Pattern> patternMockedStatic;
@@ -70,10 +70,10 @@ class WebDriverResolverTest {
     private WebDriver decoratedWebDriver;
 
     @Mock
-    private Configuration.WebDriver webDriverConfiguration;
+    private Configuration.Drivers driversConfiguration;
 
     @Mock
-    private Configuration.WebDriver.Events events;
+    private Configuration.Drivers.Events events;
 
     @Mock
     private EventsListener.EventsListenerBuilder eventsListenerBuilder;
@@ -97,7 +97,7 @@ class WebDriverResolverTest {
     private Pattern pattern;
 
     @InjectMocks
-    private WebDriverResolver webDriverResolver;
+    private DriverResolver driverResolver;
 
     @BeforeEach
     public void beforeEach() {
@@ -124,8 +124,8 @@ class WebDriverResolverTest {
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
         when(driver.build()).thenReturn(webDriver);
-        when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
-        when(webDriverConfiguration.getEvents()).thenReturn(events);
+        when(configuration.getDrivers()).thenReturn(driversConfiguration);
+        when(driversConfiguration.getEvents()).thenReturn(events);
         when(configuration.getExtent()).thenReturn(extentConfiguration);
         when(extentConfiguration.getLocatorRegex()).thenReturn(locatorRegex);
         when(Pattern.compile(locatorRegex)).thenReturn(pattern);
@@ -139,7 +139,7 @@ class WebDriverResolverTest {
         when(eventsListenerBuilder.extentTest(extentTest)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.video(video)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.testData(testData)).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.webDriver(webDriver)).thenReturn(eventsListenerBuilder);
+        when(eventsListenerBuilder.driver(webDriver)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.events(events)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.build()).thenReturn(eventsListener);
 
@@ -149,8 +149,8 @@ class WebDriverResolverTest {
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         });
-        WebDriver actual = webDriverResolver.resolveParameter(parameterContext, extensionContext);
-        verify(store).put(WEB_DRIVER, decoratedWebDriver);
+        WebDriver actual = driverResolver.resolveParameter(parameterContext, extensionContext);
+        verify(store).put(DRIVER, decoratedWebDriver);
 
         assertEquals(decoratedWebDriver, actual);
 

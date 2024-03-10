@@ -14,7 +14,7 @@ runtime:
 application:
   baseUrl: https://the-internet.herokuapp.com/
 
-webDriver:
+drivers:
   waits:
     implicit: 2
     downloadTimeout: 5

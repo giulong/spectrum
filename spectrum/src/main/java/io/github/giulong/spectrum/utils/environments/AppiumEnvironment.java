@@ -37,7 +37,7 @@ public class AppiumEnvironment extends GridEnvironment {
             driverService.clearOutPutStreams();
             driverService.addOutPutStream(AppiumLog
                     .builder()
-                    .level(configuration.getWebDriver().getLogs().getLevel())
+                    .level(configuration.getDrivers().getLogs().getLevel())
                     .build());
         }
 

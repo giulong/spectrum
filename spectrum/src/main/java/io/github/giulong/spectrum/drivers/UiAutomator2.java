@@ -7,7 +7,7 @@ public class UiAutomator2 extends Android<UiAutomator2Options> {
     @Override
     public void buildCapabilities() {
         capabilities = new UiAutomator2Options(adjustCapabilitiesFrom(configuration
-                .getWebDriver()
+                .getDrivers()
                 .getUiAutomator2()
                 .getCapabilities()));
     }

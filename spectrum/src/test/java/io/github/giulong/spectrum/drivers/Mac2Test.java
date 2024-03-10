@@ -31,13 +31,13 @@ class Mac2Test {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriver;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Map<String, Object> capabilities;
 
     @Mock
-    private Configuration.WebDriver.Mac2 mac2Configuration;
+    private Configuration.Drivers.Mac2 mac2Configuration;
 
     @Mock
     private URL url;
@@ -58,8 +58,8 @@ class Mac2Test {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getMac2()).thenReturn(mac2Configuration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getMac2()).thenReturn(mac2Configuration);
         when(mac2Configuration.getCapabilities()).thenReturn(capabilities);
 
         mac2.buildCapabilities();

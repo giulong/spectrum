@@ -10,7 +10,7 @@ public class AppiumGeneric extends Appium<MutableCapabilities, AppiumDriver> {
     @Override
     public void buildCapabilities() {
         capabilities = new MutableCapabilities(configuration
-                .getWebDriver()
+                .getDrivers()
                 .getAppiumGeneric()
                 .getCapabilities());
     }

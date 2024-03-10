@@ -50,7 +50,7 @@ extent:
   fileName: spectrum-report-${timestamp}.html  # Name of the report file. you can use the ${timestamp} placeholder, which will be resolved at runtime
   theme: STANDARD   # Theme used. Can be STANDARD or DARK
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
-  locatorRegex: \s->\s([\w:\s\-.#]+)  # Regex to extract the WebElement's selector, when the webDriver fires an event
+  locatorRegex: \s->\s([\w:\s\-.#]+)  # Regex to extract the WebElement's selector, when the driver fires an event
   retention: { } # Retention rules, specifies the number of reports to retain. Older ones will be deleted. Defaults to MAX_INT
 
 # Environments configuration
@@ -61,8 +61,8 @@ environments:
   appium: # Appium server configuration. Here you can set Appium server capabilities. By default, we point to a local Appium Server
     url: http://localhost:4723/
 
-# WebDriver configuration
-webDriver:
+# Drivers configuration
+drivers:
   waits:
     implicit: 0    # Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found
     pageLoadTimeout: 10   # Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet
@@ -116,14 +116,14 @@ webDriver:
   windows:
     capabilities: { }
 
-  # WebDriver's internal logging levels
+  # Driver's internal logging levels
   logs:
-    level: DEBUG  # The level at which webDriver's logs will be logged in Spectrum (execution) logs
+    level: DEBUG  # The level at which driver's logs will be logged in Spectrum (execution) logs
     browser: SEVERE
     driver: SEVERE
     performance: OFF
 
-  # Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite. Specify a level among OFF, TRACE, DEBUG, INFO, WARN
+  # Events fired by the driver, automatically logged and added to the report according to the log level set when running the suite. Specify a level among OFF, TRACE, DEBUG, INFO, WARN
   events:
     beforeAnyCall:
       message: About to call method %2$s with args %3$s on target %1$s

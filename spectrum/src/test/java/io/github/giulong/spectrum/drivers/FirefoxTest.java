@@ -37,10 +37,10 @@ class FirefoxTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriverConfig;
+    private Configuration.Drivers driversConfig;
 
     @Mock
-    private Configuration.WebDriver.Firefox firefoxConfig;
+    private Configuration.Drivers.Firefox firefoxConfig;
 
     @Mock
     private FirefoxDriverLogLevel firefoxDriverLogLevel;
@@ -70,8 +70,8 @@ class FirefoxTest {
     public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
 
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
-        when(webDriverConfig.getFirefox()).thenReturn(firefoxConfig);
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
         when(firefoxConfig.getLogLevel()).thenReturn(firefoxDriverLogLevel);
         when(firefoxConfig.getPreferences()).thenReturn(Map.of("one", "value"));

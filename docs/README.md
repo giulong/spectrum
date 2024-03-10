@@ -94,7 +94,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
     @Test
     public void dummyTest() {
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
     }
 }
 ```
@@ -146,7 +146,7 @@ you just need to set `Void` as generic.
 
 `SpectrumTest` extends [SpectrumEntity](#spectrumentity) and inherits its fields and methods.
 
-Beyond having direct access to `webDriver`, `configuration`, `data`, and all the other inherited fields
+Beyond having direct access to `driver`, `configuration`, `data`, and all the other inherited fields
 that you don't even need to declare or instantiate, by extending `SpectrumTest`, each `SpectrumPage` that you declare
 in your test class will automatically be initialised.
 
@@ -165,10 +165,10 @@ public class HelloWorldIT extends SpectrumTest<Void> {
     @Test
     public void dummyTest() {
 
-        // getting direct access to both webDriver and configuration without declaring
+        // getting direct access to both driver and configuration without declaring
         // nor instantiating them. Spectrum does that for you.
         // Here we're opening the landing page of the AUT
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
 
         // assuming in MyPage we have a WebElement named "button", now we're clicking on it
         myPage.getButton().click();
@@ -335,19 +335,19 @@ Whenever extending any of those, you will inherit its fields and methods.
 Spectrum takes care of resolving and injecting all the fields below,
 so you can directly use them in your tests/pages without caring about declaring nor instantiating them.
 
-| Field            | Description                                                                                                                                                                                                                                     |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                                              |
-| extentReports    | instance of the Extent Report                                                                                                                                                                                                                   |
-| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                              |
-| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                                 |
-| webDriver        | instance of the WebDriver running for the current test, configured in a declarative way via `configuration*.yaml`                                                                                                                               |
-| implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `webDriver.waits.implicit` in the `configuration.yaml`        |
-| pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `webDriver.waits.pageLoadTimeout` in the `configuration.yaml` |
-| scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `webDriver.waits.scriptTimeout` in the `configuration.yaml`   |
-| downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `webDriver.waits.downloadTimeout` in the `configuration.yaml` |
-| eventsDispatcher | you can use it to fire custom events. Check the [Custom Events section](#custom-events)                                                                                                                                                         |
-| data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                       |
+| Field            | Description                                                                                                                                                                                                                                   |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                                            |
+| extentReports    | instance of the Extent Report                                                                                                                                                                                                                 |
+| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                            |
+| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                               |
+| driver           | instance of the [WebDriver](https://www.selenium.dev/documentation/webdriver/){:target="_blank"} running for the current test, configured in a declarative way via `configuration*.yaml`                                                      |
+| implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.implicit` in the `configuration.yaml`        |
+| pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.pageLoadTimeout` in the `configuration.yaml` |
+| scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.scriptTimeout` in the `configuration.yaml`   |
+| downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.downloadTimeout` in the `configuration.yaml` |
+| eventsDispatcher | you can use it to fire custom events. Check the [Custom Events section](#custom-events)                                                                                                                                                       |
+| data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                     |
 
 ### SpectrumEntity Service Methods
 
@@ -514,7 +514,7 @@ which is a comma separated list of profile names you want to activate.
 > There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base `configuration.yaml`,
 > while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`.
 >
-> In this way, when you need to run with a different configuration, you don't need to change any configuration file. 
+> In this way, when you need to run with a different configuration, you don't need to change any configuration file.
 > This is important, since configurations are versioned alongside your tests,
 > so you avoid errors and keep your scm history clean.
 > You then just need to activate the right one by creating different run configurations in your IDE.
@@ -583,7 +583,7 @@ vars:
   proxyHost: my-proxy.com
   proxyPort: 8080
 
-webDriver:
+drivers:
   chrome:
     args:
       - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation doesn't make sense here
@@ -703,10 +703,10 @@ You can add your own and even override the default ones in your `configuration*.
 
 Let's now see how to configure the available drivers. You can provide the configurations of all the drivers
 you need in the same `configuration.yaml`, and then activate the one you want to use in a specific run, as we saw in the
-[Selecting the Driver](#selecting-the-driver) section. All the drivers are configured via the `webDriver` node directly under the root of
+[Selecting the Driver](#selecting-the-driver) section. All the drivers are configured via the `drivers` node directly under the root of
 the `configuration.yaml`:
 
-Be sure to check the `webDriver` defaults in the
+Be sure to check the `drivers` defaults in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 
 ---
@@ -772,7 +772,7 @@ Where the params are:
 | Param             | Type               | Default   | Mandatory | Description                                                                                                                                                                                              |
 |-------------------|--------------------|-----------|:---------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | url               | String             | null      |     ✅     | url of the remote grid                                                                                                                                                                                   |
-| capabilities      | Map<String,String> | empty map |     ❌     | additional webDriver capabilities to be added to driver-specific ones only when running on a grid                                                                                                        |
+| capabilities      | Map<String,String> | empty map |     ❌     | additional driver capabilities to be added to driver-specific ones only when running on a grid                                                                                                           |
 | localFileDetector | boolean            | false     |     ❌     | if true, allows to transfer files from the client machine to the remote server. [Docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector){:target="_blank"} |
 
 ### Appium environment
@@ -807,9 +807,9 @@ Otherwise, it will start the server process when the tests execution start, and 
 
 That said, all the parameters available for a Grid environment can be used in Appium environment. Here's the list of Appium specific parameters:
 
-| Param             | Type    | Default | Mandatory | Description                                                                                                          |
-|-------------------|---------|---------|:---------:|----------------------------------------------------------------------------------------------------------------------|
-| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the `webDriver.logs.level` node |
+| Param             | Type    | Default | Mandatory | Description                                                                                                        |
+|-------------------|---------|---------|:---------:|--------------------------------------------------------------------------------------------------------------------|
+| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the `drivers.logs.level` node |
 
 > 💡 **Tip**<br/>
 > Use `collectServerLogs` only if you really want to send Appium server's logs to Spectrum's log file.
@@ -866,8 +866,8 @@ The test is very simple. We're just checking that a domain in the proxy's bypass
 @Test
 @DisplayName("should prove that connections towards domains in the proxy bypass list are allowed, while others are not reachable")
 public void proxyShouldAllowOnlyCertainDomains() {
-    webDriver.get("https://the-internet.herokuapp.com");    // OK
-    assertThrows(WebDriverException.class, () -> webDriver.get("https://www.google.com"));  // NOT REACHABLE
+    driver.get("https://the-internet.herokuapp.com");    // OK
+    assertThrows(WebDriverException.class, () -> driver.get("https://www.google.com"));  // NOT REACHABLE
 }
 ```
 
@@ -886,7 +886,7 @@ vars:
   proxyPort: 8080
   proxyBypass: '*.herokuapp.com' # we need to explicitly wrap the string literal since it starts with a special char
 
-webDriver:
+drivers:
   chrome:
     args:
       - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
@@ -938,7 +938,7 @@ For example, you can set these:
 {% include copyCode.html %}
 
 ```yaml
-webDriver:
+drivers:
   events:
     beforeFindElement:
       level: INFO
@@ -949,7 +949,7 @@ webDriver:
       message: Closing...
 ```
 
-Check the `webDriver.events` node in the
+Check the `drivers.events` node in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 to see the defaults.
 
@@ -969,7 +969,7 @@ As an example, you might want to add a 1 second sleep before each call like this
 {% include copyCode.html %}
 
 ```yaml
-webDriver:
+drivers:
   events:
     beforeAnyWebDriverCall:
       wait: 1000
@@ -980,7 +980,7 @@ Or a sleep only before clicking elements:
 {% include copyCode.html %}
 
 ```yaml
-webDriver:
+drivers:
   events:
     beforeClick:
       wait: 1000
@@ -1010,13 +1010,13 @@ You can specify which screenshots to be used as frames providing one or more of 
 
 > ⚠️ **Auto screenshots**<br/>
 > Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
-> and the `webDriver.events` settings. For example, if running with the default `INFO` log level and the configuration below,
+> and the `drivers.events` settings. For example, if running with the default `INFO` log level and the configuration below,
 > no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
 
 {% include copyCode.html %}
 
 ```yaml
-webDriver:
+drivers:
   events:
     beforeClick:
       level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
@@ -1074,7 +1074,7 @@ After each execution, Spectrum produces two files:
 * [html report](#html-report)
 
 The WebDriver fires events that are automatically logged and added to the html report.
-Check the `webDriver.events` node in the
+Check the `drivers.events` node in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 to see the defaults log levels and messages.
 

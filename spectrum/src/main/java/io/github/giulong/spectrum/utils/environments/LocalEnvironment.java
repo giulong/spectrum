@@ -25,7 +25,7 @@ public class LocalEnvironment extends Environment {
                 .getDriverServiceBuilder()
                 .withLogOutput(DriverLog
                         .builder()
-                        .level(configuration.getWebDriver().getLogs().getLevel())
+                        .level(configuration.getDrivers().getLogs().getLevel())
                         .build())
                 .build());
 

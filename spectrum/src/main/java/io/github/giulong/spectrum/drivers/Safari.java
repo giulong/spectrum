@@ -10,7 +10,7 @@ public class Safari extends Driver<SafariOptions, SafariDriverService, SafariDri
     public DriverService.Builder<SafariDriverService, SafariDriverService.Builder> getDriverServiceBuilder() {
         return new SafariDriverService
                 .Builder()
-                .withLogging(configuration.getWebDriver().getSafari().isLogging());
+                .withLogging(configuration.getDrivers().getSafari().isLogging());
     }
 
     @Override

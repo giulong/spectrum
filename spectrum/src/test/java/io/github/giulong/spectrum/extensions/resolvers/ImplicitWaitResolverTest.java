@@ -15,6 +15,7 @@ import org.openqa.selenium.WebDriver;
 
 import java.time.Duration;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.ImplicitWaitResolver.IMPLICIT_WAIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -46,10 +47,10 @@ class ImplicitWaitResolverTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriverConfiguration;
+    private Configuration.Drivers drivers;
 
     @Mock
-    private Configuration.WebDriver.Waits waits;
+    private Configuration.Drivers.Waits waits;
 
     @Mock
     private Duration duration;
@@ -63,10 +64,10 @@ class ImplicitWaitResolverTest {
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(WebDriverResolver.WEB_DRIVER, WebDriver.class)).thenReturn(webDriver);
+        when(store.get(DRIVER, WebDriver.class)).thenReturn(webDriver);
         when(rootStore.get(ConfigurationResolver.CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getWebDriver()).thenReturn(webDriverConfiguration);
-        when(webDriverConfiguration.getWaits()).thenReturn(waits);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getWaits()).thenReturn(waits);
         when(waits.getImplicit()).thenReturn(duration);
 
         MockedConstruction<ImplicitWait> mockedConstruction = mockConstruction(ImplicitWait.class, (mock, context) -> {

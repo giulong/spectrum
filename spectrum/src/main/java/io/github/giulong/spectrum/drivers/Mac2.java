@@ -10,7 +10,7 @@ public class Mac2 extends Appium<Mac2Options, Mac2Driver> {
     @Override
     public void buildCapabilities() {
         capabilities = new Mac2Options(configuration
-                .getWebDriver()
+                .getDrivers()
                 .getMac2()
                 .getCapabilities());
     }

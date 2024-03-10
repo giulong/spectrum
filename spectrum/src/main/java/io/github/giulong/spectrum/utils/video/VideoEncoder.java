@@ -29,18 +29,18 @@ public class VideoEncoder extends Thread {
 
     @SneakyThrows
     public VideoEncoder(final BlockingQueue<File> blockingQueue, final String className, final String methodName,
-                        final File file, final Video video, final WebDriver webDriver) {
+                        final File file, final Video video, final WebDriver driver) {
         this.blockingQueue = blockingQueue;
         this.className = className;
         this.methodName = methodName;
         this.video = video;
-        this.dimension = chooseDimensionFor(webDriver);
+        this.dimension = chooseDimensionFor(driver);
         this.encoder = AWTSequenceEncoder.createSequenceEncoder(file, 1);
     }
 
-    protected Dimension chooseDimensionFor(final WebDriver webDriver) {
+    protected Dimension chooseDimensionFor(final WebDriver driver) {
         if (video.getWidth() < 1 || video.getHeight() < 1) {
-            final Dimension size = webDriver.manage().window().getSize();
+            final Dimension size = driver.manage().window().getSize();
             return new Dimension(makeItEven(size.getWidth()), makeItEven(size.getHeight()));
         }
 

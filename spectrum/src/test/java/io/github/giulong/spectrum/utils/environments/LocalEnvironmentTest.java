@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.utils.environments;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.DriverLog;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Configuration.WebDriver.Logs;
+import io.github.giulong.spectrum.utils.Configuration.Drivers.Logs;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ class LocalEnvironmentTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriverConf;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Logs logs;
@@ -88,8 +88,8 @@ class LocalEnvironmentTest {
     @Test
     @DisplayName("setupFrom should set the driver service and return an instance of WebDriver")
     public void setupFromDownload() {
-        when(configuration.getWebDriver()).thenReturn(webDriverConf);
-        when(webDriverConf.getLogs()).thenReturn(logs);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getLogs()).thenReturn(logs);
         when(logs.getLevel()).thenReturn(DEBUG);
         when(DriverLog.builder()).thenReturn(driverLogBuilder);
         when(driverLogBuilder.level(DEBUG)).thenReturn(driverLogBuilder);

@@ -4,7 +4,7 @@ runtime:
 application:
   baseUrl: it's in the configuration-second.yml
 
-webDriver:
+drivers:
   waits:
     implicit: 2
     downloadTimeout: 5

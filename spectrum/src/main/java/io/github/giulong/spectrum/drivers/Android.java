@@ -10,7 +10,7 @@ import java.net.URL;
 public abstract class Android<T extends MutableCapabilities> extends Appium<T, AndroidDriver> {
 
     @Override
-    public void configureWaitsOf(final WebDriver webDriver, final Configuration.WebDriver.Waits waits) {
+    public void configureWaitsOf(final WebDriver webDriver, final Configuration.Drivers.Waits waits) {
         webDriver
                 .manage()
                 .timeouts()

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebDriver;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -24,9 +24,9 @@ public class ScriptWaitResolver extends TypeBasedParameterResolver<ScriptWait> {
 
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
         final ExtensionContext.Store store = context.getStore(GLOBAL);
-        final WebDriver webDriver = store.get(WEB_DRIVER, WebDriver.class);
-        final Configuration.WebDriver.Waits waits = rootStore.get(CONFIGURATION, Configuration.class).getWebDriver().getWaits();
-        final ScriptWait webDriverWait = new ScriptWait(webDriver, waits.getScriptTimeout());
+        final WebDriver driver = store.get(DRIVER, WebDriver.class);
+        final Configuration.Drivers.Waits waits = rootStore.get(CONFIGURATION, Configuration.class).getDrivers().getWaits();
+        final ScriptWait webDriverWait = new ScriptWait(driver, waits.getScriptTimeout());
 
         store.put(SCRIPT_WAIT, webDriverWait);
         return webDriverWait;

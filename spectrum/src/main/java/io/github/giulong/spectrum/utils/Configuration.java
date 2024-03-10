@@ -55,8 +55,8 @@ public class Configuration {
     @JsonPropertyDescription("Environments configuration")
     private Environments environments;
 
-    @JsonPropertyDescription("WebDriver configuration")
-    private WebDriver webDriver;
+    @JsonPropertyDescription("Drivers configuration")
+    private Drivers drivers;
 
     @JsonPropertyDescription("Data models")
     private Data data;
@@ -132,7 +132,7 @@ public class Configuration {
         @JsonPropertyDescription("Timestamp of each test's start-time and end-time")
         private String timeStampFormat;
 
-        @JsonPropertyDescription("Regex to extract the WebElement's selector, when the webDriver fires an event")
+        @JsonPropertyDescription("Regex to extract the WebElement's selector, when the driver fires an event")
         private String locatorRegex;
 
         @JsonPropertyDescription("Retention rules configuration")
@@ -141,9 +141,9 @@ public class Configuration {
 
     @Getter
     @Generated
-    public static class WebDriver {
+    public static class Drivers {
 
-        @JsonPropertyDescription("WebDriver's fluent waits")
+        @JsonPropertyDescription("Driver's fluent waits")
         private Waits waits;
 
         @JsonPropertyDescription("Chrome capabilities. See: https://chromedriver.chromium.org/capabilities")
@@ -176,10 +176,10 @@ public class Configuration {
         @JsonPropertyDescription("Appium generic capabilities. See: https://github.com/appium/java-client#drivers-support")
         private AppiumGeneric appiumGeneric;
 
-        @JsonPropertyDescription("WebDriver's internal logging levels")
+        @JsonPropertyDescription("Driver's internal logging levels")
         private Logs logs;
 
-        @JsonPropertyDescription("Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite")
+        @JsonPropertyDescription("Events fired by the driver, automatically logged and added to the report according to the log level set when running the suite")
         private Events events;
 
         @Getter
@@ -299,7 +299,7 @@ public class Configuration {
         @Generated
         public static class Logs {
 
-            @JsonPropertyDescription("The level at which webDriver's logs will be logged in Spectrum (execution) logs")
+            @JsonPropertyDescription("The level at which driver's logs will be logged in Spectrum (execution) logs")
             @JsonSchemaTypes(value = String.class, valueList = {"ERROR", "WARN", "INFO", "DEBUG", "TRACE"})
             private org.slf4j.event.Level level;
 
@@ -488,7 +488,7 @@ public class Configuration {
         @Generated
         public static class Appium extends Grid {
 
-            @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs, at the level specified in the webDriver.logs.level node")
+            @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs, at the level specified in the drivers.logs.level node")
             private boolean collectServerLogs;
         }
     }

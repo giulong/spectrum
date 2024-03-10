@@ -22,7 +22,7 @@ public class SafariCheckboxIT extends SpectrumTest<Void> {
 
     @Test
     public void testWithNoDisplayName() {
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
         screenshot();
@@ -37,7 +37,7 @@ public class SafariCheckboxIT extends SpectrumTest<Void> {
         assertFalse(firstCheckbox.isSelected());
         assertTrue(secondCheckbox.isSelected());
 
-        JavascriptExecutor executor = (JavascriptExecutor) webDriver;
+        JavascriptExecutor executor = (JavascriptExecutor) driver;
         executor.executeScript("arguments[0].click();", firstCheckbox);
 
         assertTrue(firstCheckbox.isSelected());

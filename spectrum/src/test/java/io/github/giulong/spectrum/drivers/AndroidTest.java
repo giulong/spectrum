@@ -34,7 +34,7 @@ class AndroidTest {
     private WebDriver.Timeouts timeouts;
 
     @Mock
-    private Configuration.WebDriver.Waits waits;
+    private Configuration.Drivers.Waits waits;
 
     @Mock
     private Duration duration;

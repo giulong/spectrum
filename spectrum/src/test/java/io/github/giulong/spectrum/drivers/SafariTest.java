@@ -25,10 +25,10 @@ import static org.mockito.Mockito.when;
 class SafariTest {
 
     @Mock
-    private Configuration.WebDriver webDriverConfig;
+    private Configuration.Drivers drivers;
 
     @Mock
-    private Configuration.WebDriver.Safari safariConfig;
+    private Configuration.Drivers.Safari safariConfig;
 
     @Mock
     private Configuration configuration;
@@ -45,8 +45,8 @@ class SafariTest {
     @ParameterizedTest(name = "with logging {0}")
     @ValueSource(booleans = {true, false})
     public void getDriverServiceBuilder(final boolean logging) {
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
-        when(webDriverConfig.getSafari()).thenReturn(safariConfig);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getSafari()).thenReturn(safariConfig);
         when(safariConfig.isLogging()).thenReturn(logging);
 
         MockedConstruction<SafariDriverService.Builder> safariDriverServiceMockedConstruction = mockConstruction(SafariDriverService.Builder.class, (mock, context) -> {

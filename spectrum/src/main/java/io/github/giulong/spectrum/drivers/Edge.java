@@ -14,12 +14,12 @@ public class Edge extends Chromium<EdgeOptions, EdgeDriverService, EdgeDriverSer
 
     @Override
     public void buildCapabilities() {
-        final Configuration.WebDriver webDriverConfiguration = configuration.getWebDriver();
-        final Configuration.WebDriver.Edge edgeConfig = webDriverConfiguration.getEdge();
+        final Configuration.Drivers drivers = configuration.getDrivers();
+        final Configuration.Drivers.Edge edge = drivers.getEdge();
 
-        capabilities = new EdgeOptions().addArguments(edgeConfig.getArgs());
+        capabilities = new EdgeOptions().addArguments(edge.getArgs());
 
-        edgeConfig.getCapabilities().forEach(capabilities::setExperimentalOption);
-        setLoggingPreferencesFrom(webDriverConfiguration.getLogs());
+        edge.getCapabilities().forEach(capabilities::setExperimentalOption);
+        setLoggingPreferencesFrom(drivers.getLogs());
     }
 }

@@ -28,10 +28,10 @@ import static org.openqa.selenium.logging.LogType.*;
 class EdgeTest {
 
     @Mock
-    private Configuration.WebDriver webDriverConfig;
+    private Configuration.Drivers driversConfig;
 
     @Mock
-    private Configuration.WebDriver.Edge edgeConfig;
+    private Configuration.Drivers.Edge edgeConfig;
 
     @Mock
     private Level browserLevel;
@@ -46,7 +46,7 @@ class EdgeTest {
     private Level performanceLevel;
 
     @Mock
-    private Configuration.WebDriver.Logs logs;
+    private Configuration.Drivers.Logs logs;
 
     @InjectMocks
     private Edge edge;
@@ -72,9 +72,9 @@ class EdgeTest {
     public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
 
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
-        when(webDriverConfig.getEdge()).thenReturn(edgeConfig);
-        when(webDriverConfig.getLogs()).thenReturn(logs);
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getEdge()).thenReturn(edgeConfig);
+        when(driversConfig.getLogs()).thenReturn(logs);
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);

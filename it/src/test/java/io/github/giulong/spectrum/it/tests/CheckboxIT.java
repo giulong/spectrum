@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class CheckboxIT extends SpectrumTest<Void> {
 
     // You just need to declare your pages here: Spectrum will take care of instantiating them
-    // and will inject all the needed fields like the webDriver
+    // and will inject all the needed fields like the driver
     private LandingPage landingPage;
 
     private CheckboxPage checkboxPage;
@@ -21,7 +21,7 @@ public class CheckboxIT extends SpectrumTest<Void> {
     @Test
     public void testWithNoDisplayName() {
         // Open the base url of the application under test
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
         landingPage.getCheckboxLink().click();

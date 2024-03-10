@@ -26,7 +26,7 @@ class ChromiumTest {
     private ChromeOptions chromeOptions;
 
     @Mock
-    private Configuration.WebDriver.Logs logs;
+    private Configuration.Drivers.Logs logs;
 
     @Mock
     private Level browserLevel;

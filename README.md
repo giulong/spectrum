@@ -42,7 +42,7 @@
 
 Spectrum is a **JUnit 5** and **Selenium 4** framework that aims to simplify e2e tests development providing these features automatically:
 
-* **Webdriver** instantiation
+* **Driver** instantiation
 * **Html report** generation
 * **Execution video** generation
 * **Coverage report** generation by reading a **testbook**

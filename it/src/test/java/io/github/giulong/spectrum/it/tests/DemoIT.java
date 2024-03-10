@@ -11,7 +11,7 @@ public class DemoIT extends SpectrumTest<Void> {
     @Test
     @DisplayName("Sending custom events")
     public void events() {
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
         eventsDispatcher.fire("primaryId", "custom-event");
         eventsDispatcher.fire("primaryId", "secondReason");
     }
@@ -19,7 +19,7 @@ public class DemoIT extends SpectrumTest<Void> {
     @Test
     @DisplayName("This one should fail for demonstration purposes")
     public void failing() {
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
         throw new RuntimeException("Exception thrown to demonstrate how failed tests will be displayed");
     }
 

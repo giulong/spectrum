@@ -14,13 +14,13 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
 
     @Override
     public void buildCapabilities() {
-        final Configuration.WebDriver.Firefox firefoxConfig = configuration.getWebDriver().getFirefox();
+        final Configuration.Drivers.Firefox firefox = configuration.getDrivers().getFirefox();
 
         capabilities = new FirefoxOptions()
-                .addArguments(firefoxConfig.getArgs())
-                .setLogLevel(firefoxConfig.getLogLevel());
+                .addArguments(firefox.getArgs())
+                .setLogLevel(firefox.getLogLevel());
 
-        firefoxConfig
+        firefox
                 .getPreferences()
                 .forEach(this::addPreference);
     }

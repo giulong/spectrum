@@ -43,7 +43,7 @@ public class LoginFormIT extends SpectrumTest<Data> {
                 .screenshotInfo("After successful login");
 
         pageLoadWait.until(urlContains(endpoint));
-        assertEquals(expected, webDriver.getCurrentUrl().endsWith("/secure"));
+        assertEquals(expected, driver.getCurrentUrl().endsWith("/secure"));
     }
 
     public static Stream<Arguments> valuesProvider() {

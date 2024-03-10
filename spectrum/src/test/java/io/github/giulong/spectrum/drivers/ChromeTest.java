@@ -29,10 +29,10 @@ import static org.openqa.selenium.logging.LogType.*;
 class ChromeTest {
 
     @Mock
-    private Configuration.WebDriver webDriverConfig;
+    private Configuration.Drivers driversConfig;
 
     @Mock
-    private Configuration.WebDriver.Chrome chromeConfig;
+    private Configuration.Drivers.Chrome chromeConfig;
 
     @Mock
     private Level browserLevel;
@@ -47,7 +47,7 @@ class ChromeTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver.Logs logs;
+    private Configuration.Drivers.Logs logs;
 
     @InjectMocks
     private Chrome chrome;
@@ -73,9 +73,9 @@ class ChromeTest {
     public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
 
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
-        when(webDriverConfig.getChrome()).thenReturn(chromeConfig);
-        when(webDriverConfig.getLogs()).thenReturn(logs);
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getChrome()).thenReturn(chromeConfig);
+        when(driversConfig.getLogs()).thenReturn(logs);
         when(chromeConfig.getArgs()).thenReturn(arguments);
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);

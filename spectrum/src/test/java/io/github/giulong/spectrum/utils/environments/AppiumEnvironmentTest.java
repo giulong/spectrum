@@ -50,10 +50,10 @@ class AppiumEnvironmentTest {
     private Configuration.Environments.Appium appium;
 
     @Mock
-    private Configuration.WebDriver webDriver;
+    private Configuration.Drivers drivers;
 
     @Mock
-    private Configuration.WebDriver.Logs logs;
+    private Configuration.Drivers.Logs logs;
 
     @Mock
     private Configuration.Runtime runtime;
@@ -107,8 +107,8 @@ class AppiumEnvironmentTest {
         when(builder.withCapabilities(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(builder);
         when(AppiumDriverLocalService.buildService(builder)).thenReturn(driverService);
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getLogs()).thenReturn(logs);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getLogs()).thenReturn(logs);
         when(logs.getLevel()).thenReturn(INFO);
         when(AppiumLog.builder()).thenReturn(appiumLogBuilder);
         when(appiumLogBuilder.level(INFO)).thenReturn(appiumLogBuilder);

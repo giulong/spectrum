@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
@@ -39,7 +40,7 @@ class ActionsResolverTest {
     @DisplayName("resolveParameter should return an instance of Actions on the current stored WebDriver")
     public void testResolveParameter() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(WebDriverResolver.WEB_DRIVER, WebDriver.class)).thenReturn(webDriver);
+        when(store.get(DRIVER, WebDriver.class)).thenReturn(webDriver);
 
         MockedConstruction<Actions> mockedConstruction = mockConstruction(Actions.class);
         Actions actual = actionsResolver.resolveParameter(parameterContext, extensionContext);
