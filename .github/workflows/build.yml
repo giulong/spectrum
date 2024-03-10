@@ -11,6 +11,8 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.VERSION }}
     steps:
       - name: Free Disk Space
         shell: bash
@@ -35,10 +37,11 @@ jobs:
         run: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -ntp -P framework-only
 
       - name: Get Spectrum version
-        id: get_version
+        id: get-version
         run: |
           VERSION=$( ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout )
-          echo "version=$VERSION" >> $GITHUB_ENV
+          echo "Spectrum version is $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Spectrum jar cache
         uses: actions/cache@v4
@@ -51,6 +54,8 @@ jobs:
     name: Browsers IT
     needs: build
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
     steps:
       - name: Free Disk Space
         shell: bash
@@ -73,12 +78,12 @@ jobs:
       - name: Restore cached Spectrum jar
         uses: actions/cache/restore@v4
         with:
-          path: spectrum-${{ env.version }}.jar
+          path: spectrum-${{ env.VERSION }}.jar
           key: spectrum-jar
 
       - name: Install Spectrum
         shell: bash
-        run: mvn install:install-file -Dfile=spectrum-${{ env.version }}.jar
+        run: mvn install:install-file -Dfile=spectrum-${{ env.VERSION }}.jar
 
       - name: Run browsers ITs
         uses: ./.github/actions/maven-build
@@ -90,6 +95,8 @@ jobs:
     name: Appium IT
     needs: build
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
     steps:
       - name: Free Disk Space
         shell: bash
@@ -136,12 +143,12 @@ jobs:
       - name: Restore cached Spectrum jar
         uses: actions/cache/restore@v4
         with:
-          path: spectrum-${{ env.version }}.jar
+          path: spectrum-${{ env.VERSION }}.jar
           key: spectrum-jar
 
       - name: Install Spectrum
         shell: bash
-        run: mvn install:install-file -Dfile=spectrum-${{ env.version }}.jar
+        run: mvn install:install-file -Dfile=spectrum-${{ env.VERSION }}.jar
 
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
