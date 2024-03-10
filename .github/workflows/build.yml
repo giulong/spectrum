@@ -78,7 +78,7 @@ jobs:
       - name: Restore cached Spectrum jar
         uses: actions/cache/restore@v4
         with:
-          path: spectrum-${{ env.VERSION }}.jar
+          path: spectrum/target/spectrum-${{ env.version }}.jar
           key: spectrum-jar
 
       - name: Install Spectrum
@@ -143,7 +143,7 @@ jobs:
       - name: Restore cached Spectrum jar
         uses: actions/cache/restore@v4
         with:
-          path: spectrum-${{ env.VERSION }}.jar
+          path: spectrum/target/spectrum-${{ env.version }}.jar
           key: spectrum-jar
 
       - name: Install Spectrum
