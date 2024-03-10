@@ -30,6 +30,7 @@ jobs:
 
   browsers:
     name: Browsers IT
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Free Disk Space
@@ -54,6 +55,7 @@ jobs:
 
   appium:
     name: Appium IT
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Free Disk Space
