@@ -41,6 +41,7 @@ jobs:
         run: |
           VERSION=$( ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout )
           echo "Spectrum version is $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Store Spectrum jar
