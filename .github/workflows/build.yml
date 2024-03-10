@@ -80,21 +80,11 @@ jobs:
         with:
           name: spectrum-jar
 
-      - name: Install Spectrum
-        shell: bash
-        run: > 
-          mvn install:install-file -ntp 
-          -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar 
-          -DgroupId=io.github.giulong 
-          -DartifactId=spectrum
-          -Dversion=${{ env.VERSION }}
-          -Dpackaging=jar
-
       - name: Run browsers ITs
-        uses: ./.github/actions/maven-build
-        with:
-          args: -DbrowsersTests
-          profiles: browsers
+        shell: bash
+        run: |
+          ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
+          ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DbrowsersTests -ntp -P browsers
 
   appium:
     name: Appium IT
@@ -169,4 +159,6 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DappiumTests -ntp -pl it-appium
+          script: |
+            ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
+            ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DappiumTests -ntp -pl it-appium
