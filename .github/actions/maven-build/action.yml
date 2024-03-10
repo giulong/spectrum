@@ -22,7 +22,6 @@ runs:
         java-version: 21
         distribution: temurin
         cache: maven
-        cache-dependency-path: spectrum/pom.xml
 
     - name: Building
       shell: bash
