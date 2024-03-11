@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class TestBookConsumer extends EventsConsumer {
 
     @Override
-    public void consumes(final Event event) {
+    public void accept(final Event event) {
         final ExtensionContext context = event.getContext();
         final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getTestBook();
         final String className = context.getParent().orElseThrow().getDisplayName();

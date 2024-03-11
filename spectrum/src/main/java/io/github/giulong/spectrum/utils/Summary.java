@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import io.github.giulong.spectrum.interfaces.reports.Reportable;
@@ -19,11 +20,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static io.github.giulong.spectrum.enums.Result.FAILED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Getter
 @Slf4j
-@SuppressWarnings("unused")
 public class Summary implements SessionHook, Reportable {
 
     @JsonIgnore
@@ -36,9 +38,11 @@ public class Summary implements SessionHook, Reportable {
     private final SummaryGeneratingListener summaryGeneratingListener = new SummaryGeneratingListener();
 
     @JsonPropertyDescription("List of reporters that will produce the summary in specific formats")
+    @SuppressWarnings("unused")
     private List<CanReportSummary> reporters;
 
     @JsonPropertyDescription("Condition to be evaluated. If true, the execution is successful")
+    @SuppressWarnings("unused")
     private String condition;
 
     @JsonIgnore
@@ -88,11 +92,14 @@ public class Summary implements SessionHook, Reportable {
 
     @JsonIgnore
     public boolean isExecutionSuccessful() {
-        final TestExecutionSummary summary = summaryGeneratingListener.getSummary();
         final boolean executionSuccessful = Boolean.parseBoolean(String.valueOf(MVEL.eval(interpolateCondition(), vars)));
 
         log.info("Execution successful? {}", executionSuccessful);
         return executionSuccessful;
+    }
+
+    public Result toResult() {
+        return isExecutionSuccessful() ? SUCCESSFUL : FAILED;
     }
 
     protected String interpolateCondition() {

@@ -12,10 +12,12 @@ import java.io.IOException;
 
 @Slf4j
 @Getter
-@SuppressWarnings("unused")
 public class DynamicDeserializer<T> extends JsonDeserializer<T> {
 
+    @SuppressWarnings("unused")
     private Class<T> clazz;
+
+    @SuppressWarnings("unused")
     private String configFile;
 
     @Override

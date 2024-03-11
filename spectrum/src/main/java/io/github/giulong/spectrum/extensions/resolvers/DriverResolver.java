@@ -21,29 +21,29 @@ import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.T
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
-public class WebDriverResolver extends TypeBasedParameterResolver<WebDriver> {
+public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
 
-    public static final String WEB_DRIVER = "webDriver";
+    public static final String DRIVER = "driver";
 
     @Override
     public WebDriver resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        log.debug("Resolving {}", WEB_DRIVER);
+        log.debug("Resolving {}", DRIVER);
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
         final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
-        final WebDriver webDriver = configuration.getRuntime().getDriver().build();
+        final WebDriver driver = configuration.getRuntime().getDriver().build();
         final WebDriverListener eventListener = EventsListener.builder()
                 .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
                 .extentTest(store.get(EXTENT_TEST, ExtentTest.class))
                 .video(configuration.getVideo())
                 .testData(store.get(TEST_DATA, TestData.class))
-                .webDriver(webDriver)
-                .events(configuration.getWebDriver().getEvents())
+                .driver(driver)
+                .events(configuration.getDrivers().getEvents())
                 .build();
-        final WebDriver decoratedWebDriver = new EventFiringDecorator<>(eventListener).decorate(webDriver);
+        final WebDriver decoratedDriver = new EventFiringDecorator<>(eventListener).decorate(driver);
 
-        store.put(WEB_DRIVER, decoratedWebDriver);
-        return decoratedWebDriver;
+        store.put(DRIVER, decoratedDriver);
+        return decoratedDriver;
     }
 }

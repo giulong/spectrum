@@ -5,17 +5,19 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.video.Video;
-import io.github.giulong.spectrum.utils.environments.Environment;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
+import java.net.URL;
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -24,7 +26,7 @@ import java.util.logging.Level;
 import static ch.qos.logback.classic.Level.OFF;
 import static lombok.AccessLevel.PRIVATE;
 
-@SuppressWarnings({"unused", "FieldMayBeFinal"})
+@SuppressWarnings("unused")
 @Getter
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
@@ -50,8 +52,11 @@ public class Configuration {
     @JsonPropertyDescription("Extent Report configuration")
     private Extent extent;
 
-    @JsonPropertyDescription("WebDriver configuration")
-    private WebDriver webDriver;
+    @JsonPropertyDescription("Environments configuration")
+    private Environments environments;
+
+    @JsonPropertyDescription("Drivers configuration")
+    private Drivers drivers;
 
     @JsonPropertyDescription("Data models")
     private Data data;
@@ -79,11 +84,13 @@ public class Configuration {
 
         @JsonSerialize(using = ToStringSerializer.class)
         @JsonSchemaTypes(String.class)
+        @JsonPropertyDescription("Active runtime environment")
+        private Environment environment;
+
+        @JsonSerialize(using = ToStringSerializer.class)
+        @JsonSchemaTypes(String.class)
         @JsonPropertyDescription("Driver to use")
         private Driver<?, ?, ?> driver;
-
-        @JsonPropertyDescription("Runtime environment. Can be local, grid, appium")
-        private Environment environment;
 
         @JsonPropertyDescription("Folder where you will store files to be checked against downloaded ones")
         private String filesFolder;
@@ -125,7 +132,7 @@ public class Configuration {
         @JsonPropertyDescription("Timestamp of each test's start-time and end-time")
         private String timeStampFormat;
 
-        @JsonPropertyDescription("Regex to extract the WebElement's selector, when the webDriver fires an event")
+        @JsonPropertyDescription("Regex to extract the WebElement's selector, when the driver fires an event")
         private String locatorRegex;
 
         @JsonPropertyDescription("Retention rules configuration")
@@ -134,9 +141,9 @@ public class Configuration {
 
     @Getter
     @Generated
-    public static class WebDriver {
+    public static class Drivers {
 
-        @JsonPropertyDescription("WebDriver's fluent waits")
+        @JsonPropertyDescription("Driver's fluent waits")
         private Waits waits;
 
         @JsonPropertyDescription("Chrome capabilities. See: https://chromedriver.chromium.org/capabilities")
@@ -147,6 +154,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options")
         private Edge edge;
+
+        @JsonPropertyDescription("Safari capabilities. See: https://developer.apple.com/documentation/webkit/about_webdriver_for_safari")
+        private Safari safari;
 
         @JsonPropertyDescription("Android UiAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities")
         private UiAutomator2 uiAutomator2;
@@ -166,10 +176,10 @@ public class Configuration {
         @JsonPropertyDescription("Appium generic capabilities. See: https://github.com/appium/java-client#drivers-support")
         private AppiumGeneric appiumGeneric;
 
-        @JsonPropertyDescription("WebDriver's internal logging levels")
+        @JsonPropertyDescription("Driver's internal logging levels")
         private Logs logs;
 
-        @JsonPropertyDescription("Events fired by the webDriver, automatically logged and added to the report according to the log level set when running the suite")
+        @JsonPropertyDescription("Events fired by the driver, automatically logged and added to the report according to the log level set when running the suite")
         private Events events;
 
         @Getter
@@ -231,6 +241,14 @@ public class Configuration {
 
         @Getter
         @Generated
+        public static class Safari {
+
+            @JsonPropertyDescription("Safari's logging enable flag")
+            private boolean logging;
+        }
+
+        @Getter
+        @Generated
         public static class UiAutomator2 {
 
             @JsonPropertyDescription("Android UiAutomator2's capabilities")
@@ -281,7 +299,7 @@ public class Configuration {
         @Generated
         public static class Logs {
 
-            @JsonPropertyDescription("The level at which webDriver's logs will be logged in Spectrum (execution) logs")
+            @JsonPropertyDescription("The level at which driver's logs will be logged in Spectrum (execution) logs")
             @JsonSchemaTypes(value = String.class, valueList = {"ERROR", "WARN", "INFO", "DEBUG", "TRACE"})
             private org.slf4j.event.Level level;
 
@@ -423,13 +441,55 @@ public class Configuration {
 
             @JsonPropertyDescription("Level at which this event will be logged")
             @JsonSchemaTypes(value = String.class, valueList = {"OFF", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL"})
-            private ch.qos.logback.classic.Level level = OFF;
+            private final ch.qos.logback.classic.Level level = OFF;
 
             @JsonPropertyDescription("Message to be logged upon receiving this event")
             private String message;
 
             @JsonPropertyDescription("Milliseconds to wait before listening to this event")
             private long wait;
+        }
+    }
+
+    @Getter
+    @Generated
+    public static class Environments {
+
+        @JsonPropertyDescription("Local environment configuration")
+        private Local local;
+
+        @JsonPropertyDescription("Grid environment configuration")
+        private Grid grid;
+
+        @JsonPropertyDescription("Appium environment configuration")
+        private Appium appium;
+
+        @Getter
+        @Generated
+        public static class Local {
+        }
+
+        @Getter
+        @Generated
+        public static class Grid {
+
+            @JsonSchemaTypes(String.class)
+            @JsonPropertyDescription("Url of the selenium grid")
+            private URL url;
+
+            @JsonPropertyDescription("Capabilities dedicated to executions on the grid")
+            private final Map<String, Object> capabilities = new HashMap<>();
+
+            @JsonPropertyDescription("Whether to search for files to upload on the client machine or not")
+            private boolean localFileDetector;
+        }
+
+        @Getter
+        @Generated
+        public static class Appium extends Grid {
+
+            @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs, at the level specified in the drivers.logs.level node")
+            private boolean collectServerLogs;
         }
     }
 

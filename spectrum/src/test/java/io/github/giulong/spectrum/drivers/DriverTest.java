@@ -37,10 +37,10 @@ class DriverTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriverConfig;
+    private Configuration.Drivers driversConfig;
 
     @Mock
-    private Configuration.WebDriver.Chrome chromeConfig;
+    private Configuration.Drivers.Chrome chromeConfig;
 
     @Mock
     private Level browserLevel;
@@ -52,7 +52,7 @@ class DriverTest {
     private Level performanceLevel;
 
     @Mock
-    private Configuration.WebDriver.Logs logs;
+    private Configuration.Drivers.Logs logs;
 
     @Mock
     private WebDriver webDriver;
@@ -61,7 +61,7 @@ class DriverTest {
     private WebDriver protectedWebDriver;
 
     @Mock
-    private Configuration.WebDriver.Waits waits;
+    private Configuration.Drivers.Waits waits;
 
     @Mock
     private WebDriver.Options options;
@@ -135,16 +135,18 @@ class DriverTest {
     public void build() {
         // buildCapabilitiesFrom stubs
         final List<String> arguments = List.of("args");
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
-        when(webDriverConfig.getChrome()).thenReturn(chromeConfig);
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getChrome()).thenReturn(chromeConfig);
         when(chromeConfig.getArgs()).thenReturn(arguments);
-        when(webDriverConfig.getLogs()).thenReturn(logs);
+        when(driversConfig.getLogs()).thenReturn(logs);
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);
         when(chromeConfig.getCapabilities()).thenReturn(Map.of("one", "value"));
 
-        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class);
+        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
+            when(mock.addArguments(arguments)).thenReturn(mock);
+        });
 
         when(waits.getImplicit()).thenReturn(implicitDuration);
         when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);
@@ -153,7 +155,7 @@ class DriverTest {
         when(runtime.getEnvironment()).thenReturn(environment);
         when(webDriver.manage()).thenReturn(options);
         when(options.timeouts()).thenReturn(timeouts);
-        when(webDriverConfig.getWaits()).thenReturn(waits);
+        when(driversConfig.getWaits()).thenReturn(waits);
         when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
         when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
         when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);

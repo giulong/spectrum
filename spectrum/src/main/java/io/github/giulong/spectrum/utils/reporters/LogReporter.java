@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-@SuppressWarnings("unused")
 public abstract class LogReporter extends Reporter {
 
     @JsonPropertyDescription("Path to the template to be used, relative to src/test/resources")
+    @SuppressWarnings("unused")
     private String template;
 
     @Override

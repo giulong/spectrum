@@ -48,8 +48,8 @@ class DriverConsumerTest {
     private DriverConsumer driverConsumer;
 
     @Test
-    @DisplayName("consumes should shutdown the driver")
-    public void consumes() {
+    @DisplayName("accept should shutdown the driver")
+    public void accept() {
         when(event.getContext()).thenReturn(context);
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
@@ -58,7 +58,7 @@ class DriverConsumerTest {
         doReturn(driver).when(runtime).getDriver();
         doReturn(environment).when(runtime).getEnvironment();
 
-        driverConsumer.consumes(event);
+        driverConsumer.accept(event);
 
         verify(driver).shutdown();
         verify(environment).shutdown();

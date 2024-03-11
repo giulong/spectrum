@@ -116,7 +116,7 @@ public class SpectrumTestTest<T> {
 
         assertEquals("blah", spectrumTest.testPage.getEndpoint());
 
-        assertEquals(webDriver, spectrumTest.testPage.webDriver);
+        assertEquals(webDriver, spectrumTest.testPage.driver);
         assertEquals(implicitWait, spectrumTest.testPage.implicitWait);
         assertEquals(pageLoadWait, spectrumTest.testPage.pageLoadWait);
         assertEquals(scriptWait, spectrumTest.testPage.scriptWait);
@@ -136,7 +136,7 @@ public class SpectrumTestTest<T> {
 
         assertEquals("", spectrumTest.testPageWithoutEndpoint.getEndpoint());
 
-        assertEquals(webDriver, spectrumTest.testPageWithoutEndpoint.webDriver);
+        assertEquals(webDriver, spectrumTest.testPageWithoutEndpoint.driver);
         assertEquals(implicitWait, spectrumTest.testPageWithoutEndpoint.implicitWait);
         assertEquals(pageLoadWait, spectrumTest.testPageWithoutEndpoint.pageLoadWait);
         assertEquals(scriptWait, spectrumTest.testPageWithoutEndpoint.scriptWait);
@@ -166,7 +166,7 @@ public class SpectrumTestTest<T> {
         childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, actions, eventsDispatcher, screenshotQueue, screenshotWatcher, videoEncoder, data);
 
         assertEquals(configuration, spectrumTest.configuration);
-        assertEquals(webDriver, spectrumTest.webDriver);
+        assertEquals(webDriver, spectrumTest.driver);
         assertEquals(implicitWait, spectrumTest.implicitWait);
         assertEquals(pageLoadWait, spectrumTest.pageLoadWait);
         assertEquals(scriptWait, spectrumTest.scriptWait);

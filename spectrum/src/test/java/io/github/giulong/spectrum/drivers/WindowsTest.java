@@ -38,7 +38,7 @@ class WindowsTest {
     private WebDriver.Timeouts timeouts;
 
     @Mock
-    private Configuration.WebDriver.Waits waits;
+    private Configuration.Drivers.Waits waits;
 
     @Mock
     private Duration duration;
@@ -47,13 +47,13 @@ class WindowsTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriver;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Map<String, Object> capabilities;
 
     @Mock
-    private Configuration.WebDriver.Windows windowsConfiguration;
+    private Configuration.Drivers.Windows windowsConfiguration;
 
     @Mock
     private URL url;
@@ -87,8 +87,8 @@ class WindowsTest {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getWindows()).thenReturn(windowsConfiguration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getWindows()).thenReturn(windowsConfiguration);
         when(windowsConfiguration.getCapabilities()).thenReturn(capabilities);
 
         windows.buildCapabilities();

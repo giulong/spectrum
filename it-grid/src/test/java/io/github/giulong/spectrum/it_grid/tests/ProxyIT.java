@@ -13,7 +13,7 @@ public class ProxyIT extends SpectrumTest<Void> {
     @Test
     @DisplayName("should prove that connections towards domains in the proxy bypass list are allowed, while others are not reachable")
     public void proxyShouldAllowOnlyCertainDomains() {
-        webDriver.get("https://the-internet.herokuapp.com");
-        assertThrows(WebDriverException.class, () -> webDriver.get("https://www.google.com"));
+        driver.get("https://the-internet.herokuapp.com");
+        assertThrows(WebDriverException.class, () -> driver.get("https://www.google.com"));
     }
 }

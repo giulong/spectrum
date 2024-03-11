@@ -14,7 +14,6 @@ import static java.lang.Math.max;
 
 @Slf4j
 @Getter
-@SuppressWarnings("unused")
 public class Retention {
 
     @JsonIgnore
@@ -24,7 +23,7 @@ public class Retention {
     @JsonPropertyDescription("Number of reports to retain. Older ones will be deleted")
     private int total = Integer.MAX_VALUE;
 
-    @SuppressWarnings("FieldMayBeFinal")
+    @SuppressWarnings("unused")
     @JsonPropertyDescription("Number of successful reports to retain. Older ones will be deleted")
     private int successful;
 

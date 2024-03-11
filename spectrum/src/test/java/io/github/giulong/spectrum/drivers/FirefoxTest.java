@@ -37,10 +37,10 @@ class FirefoxTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriverConfig;
+    private Configuration.Drivers driversConfig;
 
     @Mock
-    private Configuration.WebDriver.Firefox firefoxConfig;
+    private Configuration.Drivers.Firefox firefoxConfig;
 
     @Mock
     private FirefoxDriverLogLevel firefoxDriverLogLevel;
@@ -70,19 +70,22 @@ class FirefoxTest {
     public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
 
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
-        when(webDriverConfig.getFirefox()).thenReturn(firefoxConfig);
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
         when(firefoxConfig.getLogLevel()).thenReturn(firefoxDriverLogLevel);
         when(firefoxConfig.getPreferences()).thenReturn(Map.of("one", "value"));
 
-        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class);
+        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {
+            when(mock.addArguments(arguments)).thenReturn(mock);
+            when(mock.setLogLevel(firefoxDriverLogLevel)).thenReturn(mock);
+        });
 
         firefox.buildCapabilities();
+
         final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
-        verify(firefoxOptions).addArguments(arguments);
-        verify(firefoxOptions).setLogLevel(firefoxDriverLogLevel);
         verify(firefoxOptions).addPreference("one", "value");
+        assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
 
         firefoxOptionsMockedConstruction.close();
     }

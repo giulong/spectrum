@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
@@ -24,12 +25,10 @@ import static java.util.stream.Collectors.toSet;
 })
 @Getter
 @Slf4j
-public abstract class EventsConsumer {
+public abstract class EventsConsumer implements Consumer<Event> {
 
     @JsonPropertyDescription("List of events that will be consumed")
     protected List<Event> events;
-
-    public abstract void consumes(Event event) throws Exception;
 
     protected boolean tagsIntersect(final Event e1, final Event e2) {
         final boolean matches = e1.getTags() != null && e2.getTags() != null &&
@@ -85,13 +84,13 @@ public abstract class EventsConsumer {
                 .peek(h -> log.trace("{} matchers for {}", getClass().getSimpleName(), event))
                 .filter(h -> findMatchFor(event, h))
                 .peek(h -> log.debug("{} is consuming {}", getClass().getSimpleName(), event))
-                .forEach(h -> consumeSilently(event));
+                .forEach(h -> acceptSilently(event));
     }
 
     @SuppressWarnings("checkstyle:IllegalCatch")
-    protected void consumeSilently(final Event event) {
+    protected void acceptSilently(final Event event) {
         try {
-            consumes(event);
+            accept(event);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

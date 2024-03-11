@@ -29,22 +29,25 @@ import static java.util.stream.Collectors.toMap;
 
 @Getter
 @Slf4j
-@SuppressWarnings("unused")
 public class TestBook implements SessionHook, Reportable {
 
     @JsonIgnore
     private final FileUtils fileUtils = FileUtils.getInstance();
 
     @JsonPropertyDescription("Enables the testBook")
+    @SuppressWarnings("unused")
     private boolean enabled;
 
     @JsonPropertyDescription("Quality Gate to be evaluated to consider the execution successful")
+    @SuppressWarnings("unused")
     private QualityGate qualityGate;
 
     @JsonPropertyDescription("Object specifying the kind of testBook provided")
+    @SuppressWarnings("unused")
     private TestBookParser parser;
 
     @JsonPropertyDescription("List of testBook reporters that will produce the execution report in specific formats")
+    @SuppressWarnings("unused")
     private List<CanReportTestBook> reporters;
 
     @JsonIgnore

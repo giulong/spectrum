@@ -44,10 +44,16 @@ class AppiumEnvironmentTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriver;
+    private Configuration.Environments environments;
 
     @Mock
-    private Configuration.WebDriver.Logs logs;
+    private Configuration.Environments.Appium appium;
+
+    @Mock
+    private Configuration.Drivers drivers;
+
+    @Mock
+    private Configuration.Drivers.Logs logs;
 
     @Mock
     private Configuration.Runtime runtime;
@@ -62,7 +68,7 @@ class AppiumEnvironmentTest {
     private URL url;
 
     @Mock
-    private Map<String, String> capabilities;
+    private Map<String, Object> capabilities;
 
     @Mock
     private AppiumDriver appiumDriver;
@@ -79,7 +85,6 @@ class AppiumEnvironmentTest {
         appiumLogMockedStatic = mockStatic(AppiumLog.class);
 
         Reflections.setField("configuration", appiumEnvironment, configuration);
-        Reflections.setField("capabilities", appiumEnvironment, capabilities);
     }
 
     @AfterEach
@@ -91,7 +96,10 @@ class AppiumEnvironmentTest {
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService redirecting the logs to slf4j")
     public void sessionOpenedLogs() {
-        Reflections.setField("collectServerLogs", appiumEnvironment, true);
+        when(configuration.getEnvironments()).thenReturn(environments);
+        when(environments.getAppium()).thenReturn(appium);
+        when(appium.getCapabilities()).thenReturn(capabilities);
+        when(appium.isCollectServerLogs()).thenReturn(true);
 
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
@@ -99,8 +107,8 @@ class AppiumEnvironmentTest {
         when(builder.withCapabilities(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(builder);
         when(AppiumDriverLocalService.buildService(builder)).thenReturn(driverService);
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getLogs()).thenReturn(logs);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getLogs()).thenReturn(logs);
         when(logs.getLevel()).thenReturn(INFO);
         when(AppiumLog.builder()).thenReturn(appiumLogBuilder);
         when(appiumLogBuilder.level(INFO)).thenReturn(appiumLogBuilder);
@@ -125,6 +133,11 @@ class AppiumEnvironmentTest {
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService without collecting server logs")
     public void sessionOpened() {
+        when(configuration.getEnvironments()).thenReturn(environments);
+        when(environments.getAppium()).thenReturn(appium);
+        when(appium.getCapabilities()).thenReturn(capabilities);
+        when(appium.isCollectServerLogs()).thenReturn(false);
+
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
         doReturn(builder).when(driver).getDriverServiceBuilder();
@@ -158,7 +171,10 @@ class AppiumEnvironmentTest {
     @Test
     @DisplayName("setupFor should delegate the webDriver construction to the actual subclass, calling the super setFileDetectorFor")
     public void setupFor() {
-        appiumEnvironment.localFileDetector = true;
+        when(configuration.getEnvironments()).thenReturn(environments);
+        when(environments.getAppium()).thenReturn(appium);
+        when(appium.isLocalFileDetector()).thenReturn(true);
+        when(appium.getUrl()).thenReturn(url);
 
         doReturn(appiumDriver).when(driver).buildDriverFor(url);
 

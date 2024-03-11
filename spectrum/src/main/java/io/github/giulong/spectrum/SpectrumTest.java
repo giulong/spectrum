@@ -50,7 +50,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final TestDataResolver TEST_DATA_RESOLVER = new TestDataResolver();
 
     @RegisterExtension
-    public static final WebDriverResolver WEB_DRIVER_RESOLVER = new WebDriverResolver();
+    public static final DriverResolver WEB_DRIVER_RESOLVER = new DriverResolver();
 
     @RegisterExtension
     public static final ImplicitWaitResolver IMPLICIT_WAIT_RESOLVER = new ImplicitWaitResolver();
@@ -83,13 +83,13 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     @BeforeEach
     @SuppressWarnings({"checkstyle:ParameterNumber", "unused"})
-    public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver webDriver,
+    public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver driver,
                            final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
                            final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher,
                            final BlockingQueue<File> screenshotQueue, final ScreenshotWatcher screenshotWatcher, final VideoEncoder videoEncoder,
                            final Data data) {
         this.configuration = configuration;
-        this.webDriver = webDriver;
+        this.driver = driver;
         this.implicitWait = implicitWait;
         this.pageLoadWait = pageLoadWait;
         this.scriptWait = scriptWait;
@@ -144,7 +144,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         spectrumPage.setEndpoint(endpointValue);
         getSharedFields().forEach(sharedField -> Reflections.copyField(sharedField, this, sharedField, spectrumPage));
 
-        PageFactory.initElements(webDriver, spectrumPage);
+        PageFactory.initElements(driver, spectrumPage);
 
         return spectrumPage;
     }

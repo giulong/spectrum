@@ -7,7 +7,7 @@ public class Espresso extends Android<EspressoOptions> {
     @Override
     public void buildCapabilities() {
         capabilities = new EspressoOptions(adjustCapabilitiesFrom(configuration
-                .getWebDriver()
+                .getDrivers()
                 .getEspresso()
                 .getCapabilities()));
     }

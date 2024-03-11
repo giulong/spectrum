@@ -18,7 +18,7 @@ import java.util.concurrent.BlockingQueue;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.ScreenshotQueueResolver.SCREENSHOT_QUEUE;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -41,10 +41,10 @@ public class VideoEncoderResolver extends TypeBasedParameterResolver<VideoEncode
         final String className = testData.getClassName();
         final String methodName = testData.getMethodName();
         final Path videoPath = testData.getVideoPath();
-        final WebDriver webDriver = store.get(WEB_DRIVER, WebDriver.class);
+        final WebDriver driver = store.get(DRIVER, WebDriver.class);
         @SuppressWarnings("unchecked")
         final BlockingQueue<File> screenshotsQueue = (BlockingQueue<File>) store.get(SCREENSHOT_QUEUE, BlockingQueue.class);
-        final VideoEncoder videoEncoder = new VideoEncoder(screenshotsQueue, className, methodName, videoPath.toFile(), video, webDriver);
+        final VideoEncoder videoEncoder = new VideoEncoder(screenshotsQueue, className, methodName, videoPath.toFile(), video, driver);
 
         videoEncoder.start();
         store.put(VIDEO_ENCODER, videoEncoder);

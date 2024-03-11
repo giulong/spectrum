@@ -27,7 +27,7 @@ import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResol
 import static io.github.giulong.spectrum.extensions.resolvers.ScreenshotQueueResolver.SCREENSHOT_QUEUE;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.extensions.resolvers.VideoEncoderResolver.VIDEO_ENCODER;
-import static io.github.giulong.spectrum.extensions.resolvers.WebDriverResolver.WEB_DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
@@ -62,7 +62,7 @@ class VideoEncoderResolverTest {
     private Path videoPath;
 
     @Mock
-    private WebDriver webDriver;
+    private WebDriver driver;
 
     @Mock
     private LinkedBlockingQueue<File> blockingQueue;
@@ -89,7 +89,7 @@ class VideoEncoderResolverTest {
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getVideoPath()).thenReturn(videoPath);
         when(store.get(SCREENSHOT_QUEUE, BlockingQueue.class)).thenReturn(blockingQueue);
-        when(store.get(WEB_DRIVER, WebDriver.class)).thenReturn(webDriver);
+        when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
 
         MockedConstruction<VideoEncoder> videoEncoderMockedConstruction = mockConstruction(VideoEncoder.class, (mock, context) -> {
             assertEquals(blockingQueue, context.arguments().getFirst());
@@ -97,7 +97,7 @@ class VideoEncoderResolverTest {
             assertEquals(METHOD_NAME, context.arguments().get(2));
             assertEquals(videoPath.toFile(), context.arguments().get(3));
             assertEquals(video, context.arguments().get(4));
-            assertEquals(webDriver, context.arguments().get(5));
+            assertEquals(driver, context.arguments().get(5));
         });
 
         final VideoEncoder actual = videoEncoderResolver.resolveParameter(parameterContext, extensionContext);

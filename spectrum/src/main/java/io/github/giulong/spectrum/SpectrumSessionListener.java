@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.pojos.SpectrumProperties;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +12,9 @@ import java.util.*;
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {
 
-    public static final int BANNER_LINE_LENGTH = 37;
     public static final String DEFAULT_CONFIGURATION_YAML = "yaml/configuration.default.yaml";
     public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
-    public static final String CONFIGURATION_YAML = "configuration.yaml";
+    public static final String CONFIGURATION = "configuration";
     public static final String PROFILE_NODE = "/runtime/profiles";
     public static final String VARS_NODE = "/vars";
 
@@ -30,11 +28,13 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     private final MetadataManager metadataManager = MetadataManager.getInstance();
 
     @Override
+    @SuppressWarnings("unchecked")
     public void launcherSessionOpened(final LauncherSession session) {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
 
-        log.info(String.format(Objects.requireNonNull(fileUtils.read("/banner.txt")), buildVersionLine()));
+        final Map<String, Object> bannerYaml = yamlUtils.readInternal("banner.yaml", Map.class);
+        log.info(freeMarkerWrapper.interpolate(fileUtils.read("/banner.txt"), bannerYaml));
 
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
@@ -58,17 +58,10 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         metadataManager.sessionClosed();
     }
 
-    protected String buildVersionLine() {
-        final SpectrumProperties spectrumProperties = yamlUtils.readProperties("spectrum.properties", SpectrumProperties.class);
-        final String version = String.format("Version: %s", spectrumProperties.getVersion());
-        final int wrappingSpacesLeft = BANNER_LINE_LENGTH - version.length();
-        return "*".repeat(wrappingSpacesLeft) + String.format("  %s  |", version);
-    }
-
     protected void parseConfiguration() {
         final List<String> profileConfigurations = parseProfiles()
                 .stream()
-                .map(profile -> String.format("configuration-%s.yaml", profile))
+                .map(profile -> String.format("configuration-%s", profile))
                 .toList();
 
         profileConfigurations.forEach(this::parseVars);
@@ -78,7 +71,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
             yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
         }
 
-        yamlUtils.updateWithFile(configuration, CONFIGURATION_YAML);
+        yamlUtils.updateWithFile(configuration, CONFIGURATION);
         profileConfigurations.forEach(pc -> yamlUtils.updateWithFile(configuration, pc));
 
         log.trace("Configuration:\n{}", yamlUtils.write(configuration));
@@ -86,7 +79,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     protected List<String> parseProfiles() {
         return Arrays.stream(Optional
-                        .ofNullable(yamlUtils.readInternalNode(PROFILE_NODE, CONFIGURATION_YAML, String.class))
+                        .ofNullable(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class))
                         .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
                         .split(","))
                 .toList();
@@ -100,7 +93,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
             vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
         }
 
-        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION_YAML, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
         vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
     }
 

@@ -32,7 +32,7 @@ public class LoginPage extends SpectrumPage<LoginPage, Void> {
     @Override
     public LoginPage waitForPageLoading() {
         log.info("Wait for page loading: waiting for errorMessage to disappear");
-        implicitWait.until((ExpectedCondition<Boolean>) webDriver -> isNotPresent(id("flash")));
+        implicitWait.until((ExpectedCondition<Boolean>) driver -> isNotPresent(id("flash")));
 
         return this;
     }

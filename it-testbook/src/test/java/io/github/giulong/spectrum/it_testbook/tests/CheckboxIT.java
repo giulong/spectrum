@@ -19,7 +19,7 @@ public class CheckboxIT extends SpectrumTest<Void> {
 
     @Test
     public void testWithNoDisplayName() {
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
         screenshot();

@@ -12,8 +12,8 @@ A clear and concise description of what the bug is.
 
 **Details**
 1. Browser version: 
-2. WebDriver version: 
-3. Runtime Environment: local or grid? 
+2. Driver version: 
+3. Environment: local, grid or Appium? 
 4. Operating System: 
 5. Spectrum version: 
 6. Are tests running sequentially or in parallel? 

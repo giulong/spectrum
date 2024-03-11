@@ -30,13 +30,13 @@ class UiAutomator2Test {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriver;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Map<String, Object> capabilities;
 
     @Mock
-    private Configuration.WebDriver.UiAutomator2 uiAutomator2Configuration;
+    private Configuration.Drivers.UiAutomator2 uiAutomator2Configuration;
 
     @InjectMocks
     private UiAutomator2 uiAutomator2;
@@ -58,8 +58,8 @@ class UiAutomator2Test {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
         when(uiAutomator2Configuration.getCapabilities()).thenReturn(capabilities);
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
@@ -83,8 +83,8 @@ class UiAutomator2Test {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
         when(uiAutomator2Configuration.getCapabilities()).thenReturn(capabilities);
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);

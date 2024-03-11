@@ -3,17 +3,18 @@ vars:
   proxyPort: 8080
   proxyBypass: '*.herokuapp.com'
 
+environments:
+  grid:
+    capabilities:
+      my:token: 6c85-xxxx-xxxx
+
 runtime:
-  environment:
-    grid:
-      url: http://localhost:4444/wd/hub
-      capabilities:
-        my:token: 6c85-xxxx-xxxx
+  environment: grid
 
 application:
   baseUrl: https://the-internet.herokuapp.com/
 
-webDriver:
+drivers:
   waits:
     implicit: 2
     downloadTimeout: 5

@@ -15,7 +15,7 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
     public T open() {
         final String url = configuration.getApplication().getBaseUrl() + endpoint;
         log.info("Opening {}", url);
-        webDriver.get(url);
+        driver.get(url);
         waitForPageLoading();
 
         return (T) this;
@@ -29,7 +29,7 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
     }
 
     public boolean isLoaded() {
-        final String currentUrl = webDriver.getCurrentUrl();
+        final String currentUrl = driver.getCurrentUrl();
         final String pageUrl = configuration.getApplication().getBaseUrl() + endpoint;
         log.debug("Current url: {}", currentUrl);
         log.debug("Page url:    {}", pageUrl);

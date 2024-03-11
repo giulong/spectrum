@@ -32,13 +32,13 @@ class AppiumGenericTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriver;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Map<String, Object> capabilities;
 
     @Mock
-    private Configuration.WebDriver.AppiumGeneric appiumGenericConfiguration;
+    private Configuration.Drivers.AppiumGeneric appiumGenericConfiguration;
 
     @Mock
     private URL url;
@@ -59,8 +59,8 @@ class AppiumGenericTest {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getAppiumGeneric()).thenReturn(appiumGenericConfiguration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getAppiumGeneric()).thenReturn(appiumGenericConfiguration);
         when(appiumGenericConfiguration.getCapabilities()).thenReturn(capabilities);
 
         appiumGeneric.buildCapabilities();
