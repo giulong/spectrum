@@ -380,10 +380,50 @@ so you can directly use them in your tests/pages without caring about declaring 
 The two main things you need when running an e2e test are the **driver** and the **environment**.
 Spectrum lets you configure all the supported values in the same configuration file, and then select the ones
 to be activated either via the same configuration or via runtime properties.
+Let's see a configuration snippet to have a clear picture:
 
-For instance, you can statically configure in the `configuration.yaml` many drivers such as `chrome`, `firefox`, `uiAutomator2` and
-many environments such as `grid` and `appium`.
-Then, you can choose to run with a specific combination of those, such as `firefox` on a remote `grid`.
+{% include copyCode.html %}
+
+```yaml
+# All needed drivers' configurations
+drivers:
+  waits:
+    implicit: 2
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+  firefox:
+    args:
+      - -headless
+  edge:
+    args:
+      - --headless=new
+    capabilities:
+      binary: /usr/bin/microsoft-edge
+
+# All needed environments' configuration. This is the default environments node, 
+# so no need to explicitly override this with these values
+environments:
+  local: { }
+  grid:
+    url: http://localhost:4444/wd/hub
+  appium:
+    url: http://localhost:4723/
+
+# Node to select, among other properties, a specific driver and environment. This is the default, no need to explicitly set these.
+runtime:
+  driver: ${spectrum.driver:-chrome}
+  environment: ${spectrum.environment:-local}
+```
+
+> 💡 **Tip**<br/>
+> The snippet above leverages [interpolation](#values-interpolation).
+
+As you can see in the snippet above, in the `configuration.yaml` you can statically configure many drivers such as `chrome`, `firefox`, `edge` and
+many environments such as `local`, `grid` and `appium`.
+Then, you can choose to run with a specific combination of those, such as `firefox` on a remote `grid`, 
+either via `configuration.yaml` or via the corresponding runtime property.
 
 | Configuration Node | Selection Node        | Selection Property       |
 |--------------------|-----------------------|--------------------------|
@@ -395,8 +435,6 @@ Where the columns are:
 * **Configuration Node**: name of the node in the `configuration.yaml` to map the configurations of all the possible drivers/environments
 * **Selection Node**: name of the node in the `configuration.yaml` to select the specific driver/environment to be used
 * **Selection Property**: name of the runtime property to select the specific driver/environment to be used
-
-You can choose either to use the selection node or property.
 
 ---
 
