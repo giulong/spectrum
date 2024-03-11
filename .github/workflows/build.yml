@@ -140,16 +140,6 @@ jobs:
         with:
           name: spectrum-jar
 
-      - name: Install Spectrum
-        shell: bash
-        run: >
-          mvn install:install-file -ntp 
-          -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar 
-          -DgroupId=io.github.giulong 
-          -DartifactId=spectrum
-          -Dversion=${{ env.VERSION }}
-          -Dpackaging=jar
-
       - name: run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
