@@ -151,4 +151,4 @@ jobs:
           disable-animations: true
           script: |
             ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
-            ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DappiumTests -ntp -pl it-appium
+            ./mvnw install -DskipSign -Denforcer.skip -Dmaven.plugin.validation=NONE -DappiumTests -ntp -pl it-appium
