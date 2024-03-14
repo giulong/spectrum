@@ -97,6 +97,7 @@ drivers:
       prefs:
         download.default_directory: ${downloadsFolder}
 
+  # Safari capabilities. See: https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
   safari:
     logging: false
 
@@ -114,6 +115,14 @@ drivers:
 
   # Windows capabilities. See: https://github.com/appium/appium-windows-driver
   windows:
+    capabilities: { }
+
+  # Mac2 capabilities. See: https://github.com/appium/appium-mac2-driver
+  mac2:
+    capabilities: { }
+
+  # Appium generic capabilities. See: https://appium.io/docs/en/latest/intro/drivers/
+  appiumGeneric:
     capabilities: { }
 
   # Driver's internal logging levels
