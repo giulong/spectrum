@@ -1,19 +1,18 @@
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/){:target="_blank"} and [Selenium 4](https://www.selenium.dev/){:target="_blank"} framework that aims to
-simplify the writing of e2e tests.
-Main features:
+simplify the writing of e2e tests, providing these features:
 
 * automatic [execution video](#automatic-execution-video-generation) generation
 * automatic [log and html report](#automatically-generated-reports) generation
-* automatic coverage report generation by reading a [testbook](#testbook---coverage)
+* automatic [coverage report](#testbook---coverage) generation by reading a testbook
 * automatic [mail/slack notifications](#events-consumers) with reports as attachments
 * fully configurable providing human-readable and [declarative yaml files](#configuration)
 * out-of-the-box defaults to let you run tests with no additional configuration
 
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
-directly in your test classes, so that you can focus just on writing the logic to test your application.
+in your test classes, so that you can focus just on writing the logic to test your application.
 
-Spectrum supports both browsers automation via [Selenium](https://www.selenium.dev/){:target="_blank"}
-and mobile and desktop applications via [Appium](http://appium.io/docs/en/latest/){:target="_blank"}.
+Spectrum supports both **browsers automation** via [Selenium](https://www.selenium.dev/){:target="_blank"}
+and **mobile and desktop applications** via [Appium](http://appium.io/docs/en/latest/){:target="_blank"}.
 
 ## Glossary
 
@@ -33,56 +32,28 @@ and mobile and desktop applications via [Appium](http://appium.io/docs/en/latest
 ### Spectrum Archetype
 
 You should leverage the latest published version of the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype){:target="_blank"} to create a
-new project.
-You can either use it via your IDE, or run this from command line:
+new project either via your IDE or by running this from command line:
 
 {% include copyCode.html %}
 
 ```shell
-mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION> -DoutputDirectory=<DESTINATION>
+mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST
 ```
 
-Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATION>` are placeholders that you need to replace with actual values.
-
 > ⚠️ **Maven archetype:generate**<br/>
-> If you want to tweak the behaviour of the command above, for example to generate the project in interactive mode, check the
+> If you want to tweak the behaviour of the command above, check the
 > official [archetype:generate docs](https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html){:target="_blank"}.
 
-The project created will contain a demo test you can immediately run.
+The project created contains a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"} to your
 project:
 
 {% include copyCode.html %}
-
-```xml
-
-<dependency>
-    <groupId>io.github.giulong</groupId>
-    <artifactId>spectrum</artifactId>
-    <version>LATEST</version>
-    <scope>test</scope>
-</dependency>
-```
-
-> ⚠️ **Spectrum version**<br/>
-> The snippet above references the `LATEST` version just to be ready to use.
-> Nevertheless, it's highly recommended to use the explicit version you can find in
-> [Maven central](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"}.
->
-> With `LATEST`, if a new version which introduces breaking changes is published, your next build would
-> download it and potentially fail.
-
-> ⚠️ **Lombok Library**<br/>
-> The demo test injected by the archetype uses [Lombok](https://projectlombok.org/){:target="_blank"} to generate getters. Lombok is internally used in Spectrum, and provided as a
-> transitive
-> dependency, so you can already use it.
->
-> Be sure to check its docs to understand how to configure it in your IDE.
-> If you don't want to leverage it, you can safely write getters the old way.
+{% include spectrumDependency.html %}
 
 ### Test creation
 
-In general, all you need to do is create a **JUnit 5** test class and make it extend the `SpectrumTest` class:
+In general, all you need to do is create a **JUnit 5** test class extending the `SpectrumTest` class:
 
 {% include copyCode.html %}
 
@@ -99,8 +70,10 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
+After running it, you will find a html report in the `target/spectrum/reports` folder.
+
 > ⚠️ **Running with Maven**<br/>
-> If you run tests with Maven, the name of your test classes should end with `IT` as in the example above: `HelloWorldIT`,
+> If you run tests with Maven, the name of your test classes should end with `IT` as in the example above (`HelloWorldIT`),
 > to leverage the [default inclusions](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inclusion-exclusion.html){:target="_blank"} of the failsafe plugin.
 
 > 💡 **Tip**<br/>
@@ -108,6 +81,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > * `-Dspectrum.driver=chrome`
 > * `-Dspectrum.driver=firefox`
 > * `-Dspectrum.driver=edge`
+> * `-Dspectrum.driver=safari`
 > * `-Dspectrum.driver=uiAutomator2`
 > * `-Dspectrum.driver=espresso`
 > * `-Dspectrum.driver=xcuiTest`
@@ -121,13 +95,6 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > * `-Dspectrum.log.level=DEBUG`
 > * `-Dspectrum.log.level=TRACE`
 
-If you now run the test, you will find a html report generated in the `target/spectrum/reports` folder.
-
-> 💡 **Tip**<br/>
-> Spectrum is tested with itself, so in this repo you can find real examples of Spectrum e2e tests.
-> They're in the [it]({{ site.repository_url }}/it) and [it-testbook]({{ site.repository_url }}/it-testbook){:target="_blank"} modules. Throughout this doc, you will
-> be pointed to specific examples.
-
 ---
 
 # SpectrumTest and SpectrumPage
@@ -137,17 +104,24 @@ These are the two main entities you will need to know to fully leverage Spectrum
 * your test classes must extend [SpectrumTest](#spectrumtest)
 * your test pages must extend [SpectrumPage](#spectrumpage)
 
+> 💡 **Tip**<br/>
+> Check the [Javadoc](https://javadoc.io/doc/io.github.giulong/spectrum/latest/index.html){:target="_blank"}
+> for a detailed api description of
+> [SpectrumTest](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumTest.html){:target="_blank"},
+> [SpectrumPage](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumPage.html){:target="_blank"},
+> and their superclass [SpectrumEntity](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumEntity.html){:target="_blank"}
+
 ## SpectrumTest
 
 Your test classes must extend [SpectrumTest]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/SpectrumTest.java){:target="_blank"}.
 As you might have noticed in the examples above, you need to provide a generic parameter when extending it.
-That is the `Data` type of your own. Be sure to check the [Data section](#data) below. In case you don't need any,
+That is the [Data](#data) type of your own. In case you don't need any,
 you just need to set `Void` as generic.
 
 `SpectrumTest` extends [SpectrumEntity](#spectrumentity) and inherits its fields and methods.
 
-Beyond having direct access to `driver`, `configuration`, `data`, and all the other inherited fields
-that you don't even need to declare or instantiate, by extending `SpectrumTest`, each `SpectrumPage` that you declare
+Beyond having direct access to `driver`, `configuration`, `data`, and all the other inherited objects,
+by extending `SpectrumTest` each `SpectrumPage` that you declare
 in your test class will automatically be initialised.
 
 {% include copyCode.html %}
@@ -159,7 +133,7 @@ import org.junit.jupiter.api.Test;
 public class HelloWorldIT extends SpectrumTest<Void> {
 
     // page class that extends SpectrumPage. 
-    // Simply declare it. Spectrum will initialise an instance and inject it
+    // Simply declare it. Spectrum will inject it
     private MyPage myPage;
 
     @Test
@@ -211,11 +185,11 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 
 ### SpectrumPage Service Methods
 
-By extending `SpectrumPage`, you will inherit few service methods listed here:
+By extending `SpectrumPage`, you inherit few service methods listed here:
 
 * `open()`:
 
-  You can specify an endpoint for your pages by annotating them like this:
+  You can specify an endpoint for your pages by annotating them with the `@Endpoint` annotation:
 
 {% include copyCode.html %}
 
@@ -333,7 +307,14 @@ both `SpectrumTest` and `SpectrumPage`.
 Whenever extending any of those, you will inherit its fields and methods.
 
 Spectrum takes care of resolving and injecting all the fields below,
-so you can directly use them in your tests/pages without caring about declaring nor instantiating them.
+so you can directly use them in your tests/pages.
+
+> 💡 **Tip**<br/>
+> Check the [Javadoc](https://javadoc.io/doc/io.github.giulong/spectrum/latest/index.html){:target="_blank"}
+> for a detailed api description of
+> [SpectrumTest](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumTest.html){:target="_blank"},
+> [SpectrumPage](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumPage.html){:target="_blank"},
+> and their superclass [SpectrumEntity](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumEntity.html){:target="_blank"}
 
 | Field            | Description                                                                                                                                                                                                                                   |
 |------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -341,12 +322,13 @@ so you can directly use them in your tests/pages without caring about declaring 
 | extentReports    | instance of the Extent Report                                                                                                                                                                                                                 |
 | extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                            |
 | actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                               |
-| driver           | instance of the [WebDriver](https://www.selenium.dev/documentation/webdriver/){:target="_blank"} running for the current test, configured in a declarative way via `configuration*.yaml`                                                      |
+| testData         | instance of [TestData]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/types/TestData.java){:target="_blank"} that contains info related to the current test                                                      |
+| driver           | instance of the [WebDriver](https://www.selenium.dev/documentation/webdriver/){:target="_blank"} running for the current test, configured via the `configuration*.yaml`                                                                       |
 | implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.implicit` in the `configuration.yaml`        |
 | pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.pageLoadTimeout` in the `configuration.yaml` |
 | scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.scriptTimeout` in the `configuration.yaml`   |
 | downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.downloadTimeout` in the `configuration.yaml` |
-| eventsDispatcher | you can use it to fire custom events. Check the [Custom Events section](#custom-events)                                                                                                                                                       |
+| eventsDispatcher | you can use it to fire [custom events](#custom-events)                                                                                                                                                                                        |
 | data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                     |
 
 ### SpectrumEntity Service Methods
@@ -422,7 +404,7 @@ runtime:
 
 As you can see in the snippet above, in the `configuration.yaml` you can statically configure many drivers such as `chrome`, `firefox`, `edge` and
 many environments such as `local`, `grid` and `appium`.
-Then, you can choose to run with a specific combination of those, such as `firefox` on a remote `grid`, 
+Then, you can choose to run with a specific combination of those, such as `firefox` on a remote `grid`,
 either via `configuration.yaml` or via the corresponding runtime property.
 
 | Configuration Node | Selection Node        | Selection Property       |
@@ -496,17 +478,18 @@ or overriding it at runtime by providing the `spectrum.environment` property: `-
 
 These are the drivers currently supported, each must be used with a compatible environment:
 
-| Driver        | Local | Grid | Appium |
-|---------------|:-----:|:----:|:------:|
-| chrome        |   ✅   |  ✅   |        |
-| firefox       |   ✅   |  ✅   |        |
-| edge          |   ✅   |  ✅   |        |
-| uiAutomator2  |       |      |   ✅    |
-| espresso      |       |      |   ✅    |
-| xcuiTest      |       |      |   ✅    |
-| windows       |       |      |   ✅    |
-| mac2          |       |      |   ✅    |
-| appiumGeneric |       |      |   ✅    |
+| Driver                          | Local | Grid | Appium |
+|---------------------------------|:-----:|:----:|:------:|
+| [chrome](#chrome)               |   ✅   |  ✅   |        |
+| [firefox](#firefox)             |   ✅   |  ✅   |        |
+| [edge](#edge)                   |   ✅   |  ✅   |        |
+| [safari](#safari)               |   ✅   |  ✅   |        |
+| [uiAutomator2](#uiautomator2)   |       |      |   ✅    |
+| [espresso](#espresso)           |       |      |   ✅    |
+| [xcuiTest](#xcuitest)           |       |      |   ✅    |
+| [windows](#windows)             |       |      |   ✅    |
+| [mac2](#mac2)                   |       |      |   ✅    |
+| [appiumGeneric](#appiumgeneric) |       |      |   ✅    |
 
 ---
 
@@ -739,13 +722,196 @@ You can add your own and even override the default ones in your `configuration*.
 
 ## Configuring the Driver
 
-Let's now see how to configure the available drivers. You can provide the configurations of all the drivers
-you need in the same `configuration.yaml`, and then activate the one you want to use in a specific run, as we saw in the
-[Selecting the Driver](#selecting-the-driver) section. All the drivers are configured via the `drivers` node directly under the root of
-the `configuration.yaml`:
+Let's now see how to configure the available drivers in detail, for each the default snippet taken from the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
+is provided.
 
-Be sure to check the `drivers` defaults in the
-[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
+You can provide the configurations of all the drivers
+you need in the base `configuration.yaml`, and then activate the one you want to use in a specific run, as we saw in the
+[Selecting the Driver](#selecting-the-driver) section. All the drivers are configured via the `drivers` node directly under the root of
+the `configuration.yaml`.
+
+### Chrome
+
+See [https://chromedriver.chromium.org/capabilities](https://chromedriver.chromium.org/capabilities){:target="_blank"}
+
+| Parameter    | Type                  | Description           |
+|--------------|-----------------------|-----------------------|
+| args         | List\<String\>        | Chrome's args         |
+| capabilities | Map\<String, Object\> | Chrome's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  chrome:
+    args: [ ]
+    capabilities:
+      prefs:
+        download.prompt_for_download: false
+        download.directory_upgrade: true
+        download.default_directory: ${downloadsFolder}
+        safebrowsing.enabled: true
+```
+
+### Firefox
+
+See [https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions](https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions){:
+target="_blank"}
+
+| Parameter   | Type                  | Description                                                                                                         |
+|-------------|-----------------------|---------------------------------------------------------------------------------------------------------------------|
+| args        | List\<String\>        | Firefox's args                                                                                                      |
+| logLevel    | FirefoxDriverLogLevel | Firefox's [log level](https://firefox-source-docs.mozilla.org/testing/geckodriver/TraceLogs.html){:target="_blank"} |
+| preferences | Map\<String, Object\> | Firefox's preferences                                                                                               |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  firefox:
+    args: [ ]
+    logLevel: ERROR
+    preferences:
+      browser.download.folderList: 2
+      browser.download.useDownloadDir: true
+      browser.download.dir: ${downloadsFolder}
+      browser.helperApps.neverAsk.saveToDisk: application/pdf
+      pdfjs.disabled: true
+```
+
+### Edge
+
+See [https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options](https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options){:
+target="_blank"}
+
+| Parameter    | Type                  | Description         |
+|--------------|-----------------------|---------------------|
+| args         | List\<String\>        | Edge's args         |
+| capabilities | Map\<String, Object\> | Edge's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  edge:
+    args: [ ]
+    capabilities:
+      prefs:
+        download.default_directory: ${downloadsFolder}
+```
+
+### Safari
+
+See [https://developer.apple.com/documentation/webkit/about_webdriver_for_safari](https://developer.apple.com/documentation/webkit/about_webdriver_for_safari){:target="_blank"}
+
+| Parameter | Type    | Description                  |
+|-----------|---------|------------------------------|
+| logging   | boolean | Safari's logging enable flag |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  safari:
+    logging: false
+```
+
+### UiAutomator2
+
+See [https://github.com/appium/appium-uiautomator2-driver#capabilities](https://github.com/appium/appium-uiautomator2-driver#capabilities){:target="_blank"}
+
+| Parameter    | Type                  | Description                         |
+|--------------|-----------------------|-------------------------------------|
+| capabilities | Map\<String, Object\> | Android UiAutomator2's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  uiAutomator2:
+    capabilities: { }
+```
+
+### Espresso
+
+See [https://github.com/appium/appium-espresso-driver#capabilities](https://github.com/appium/appium-espresso-driver#capabilities){:target="_blank"}
+
+| Parameter    | Type                  | Description                     |
+|--------------|-----------------------|---------------------------------|
+| capabilities | Map\<String, Object\> | Android Espresso's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  espresso:
+    capabilities: { }
+```
+
+### XCUITest
+
+See [https://github.com/appium/appium-xcuitest-driver](https://github.com/appium/appium-xcuitest-driver){:target="_blank"}
+
+| Parameter    | Type                  | Description                 |
+|--------------|-----------------------|-----------------------------|
+| capabilities | Map\<String, Object\> | iOS XCUITest's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  xcuiTest:
+    capabilities: { }
+```
+
+### Windows
+
+See [https://github.com/appium/appium-windows-driver](https://github.com/appium/appium-windows-driver){:target="_blank"}
+
+| Parameter    | Type                  | Description           |
+|--------------|-----------------------|-----------------------|
+| capabilities | Map\<String, Object\> | Windows' capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  windows:
+    capabilities: { }
+```
+
+### Mac2
+
+See [https://github.com/appium/appium-mac2-driver](https://github.com/appium/appium-mac2-driver){:target="_blank"}
+
+| Parameter    | Type                  | Description         |
+|--------------|-----------------------|---------------------|
+| capabilities | Map\<String, Object\> | Mac2's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  mac2:
+    capabilities: { }
+```
+
+### AppiumGeneric
+
+See [https://appium.io/docs/en/latest/intro/drivers/](https://appium.io/docs/en/latest/intro/drivers/){:target="_blank"}
+
+| Parameter    | Type                  | Description                   |
+|--------------|-----------------------|-------------------------------|
+| capabilities | Map\<String, Object\> | Appium generic's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  appiumGeneric:
+    capabilities: { }
+```
 
 ---
 
