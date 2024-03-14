@@ -1,8 +1,7 @@
 runtime:
-  environment:
-    appium: { } # server configuration. Here you can set Appium server capabilities
+  environment: appium
 
-webDriver:
+drivers:
   waits:
     implicit: 2
     downloadTimeout: 5

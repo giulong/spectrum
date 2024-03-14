@@ -33,12 +33,13 @@
     </licenses>
 
     <properties>
-        <revision>1.8.1</revision>
+        <revision>1.9.0</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
         <jacoco.outputDirectory>${docs.folder}/jacoco</jacoco.outputDirectory>
         <resourcesFolder>src/main/resources</resourcesFolder>
+        <testResourcesFolder>src/test/resources</testResourcesFolder>
         <launcherSessionListener>org.junit.platform.launcher.LauncherSessionListener</launcherSessionListener>
 
         <maven.deploy.skip>true</maven.deploy.skip>
@@ -46,7 +47,7 @@
         <maven.install.skip>true</maven.install.skip>
 
         <junit.version>5.10.2</junit.version>
-        <jackson.version>2.16.1</jackson.version>
+        <jackson.version>2.16.2</jackson.version>
         <simplejavamail.version>8.6.3</simplejavamail.version>
         <jsonschemagenerator.version>4.33.1</jsonschemagenerator.version>
         <slf4j.version>2.0.12</slf4j.version>
@@ -145,11 +146,6 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
-                <version>${jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-properties</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
             <dependency>
@@ -273,6 +269,24 @@
     </dependencyManagement>
 
     <build>
+        <resources>
+            <resource>
+                <directory>${resourcesFolder}/filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${testResourcesFolder}/filtered</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>${resourcesFolder}</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>${launcherSessionListener}</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -344,26 +358,6 @@
                             <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
                         </systemPropertyVariables>
                     </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>com.github.ekryd.echo-maven-plugin</groupId>
-                    <artifactId>echo-maven-plugin</artifactId>
-                    <version>2.1.0</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>echo</goal>
-                            </goals>
-                            <phase>integration-test</phase>
-                            <configuration>
-                                <message>
-                                    ${line.separator}====================================================================================================${line.separator}
-                                    START MODULE ${project.artifactId} IT TESTS
-                                    ${line.separator}====================================================================================================${line.separator}
-                                </message>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

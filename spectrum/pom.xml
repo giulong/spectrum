@@ -86,10 +86,6 @@
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-properties</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
@@ -192,21 +188,6 @@
     </dependencies>
 
     <build>
-        <resources>
-            <resource>
-                <directory>${resourcesFolder}/filtered</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>${resourcesFolder}</directory>
-                <filtering>false</filtering>
-                <excludes>
-                    <exclude>examples/**/*</exclude>
-                    <exclude>${launcherSessionListener}</exclude>
-                </excludes>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -364,7 +345,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.2.0</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>

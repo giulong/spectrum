@@ -30,13 +30,13 @@ class EspressoTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.WebDriver webDriver;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Map<String, Object> capabilities;
 
     @Mock
-    private Configuration.WebDriver.Espresso espressoConfiguration;
+    private Configuration.Drivers.Espresso espressoConfiguration;
 
     @InjectMocks
     private Espresso espresso;
@@ -58,8 +58,8 @@ class EspressoTest {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getEspresso()).thenReturn(espressoConfiguration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getEspresso()).thenReturn(espressoConfiguration);
         when(espressoConfiguration.getCapabilities()).thenReturn(capabilities);
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
@@ -83,8 +83,8 @@ class EspressoTest {
             assertEquals(capabilities, context.arguments().getFirst());
         });
 
-        when(configuration.getWebDriver()).thenReturn(webDriver);
-        when(webDriver.getEspresso()).thenReturn(espressoConfiguration);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getEspresso()).thenReturn(espressoConfiguration);
         when(espressoConfiguration.getCapabilities()).thenReturn(capabilities);
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);

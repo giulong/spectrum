@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.environments;
 
 import io.github.giulong.spectrum.drivers.Driver;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,12 +47,23 @@ class GridEnvironmentTest {
     @Mock
     private Map<String, Object> capabilities;
 
+    @Mock
+    private Configuration configuration;
+
+    @Mock
+    private Configuration.Environments environments;
+
+    @Mock
+    private Configuration.Environments.Grid grid;
+
     @InjectMocks
     private GridEnvironment gridEnvironment;
 
     @BeforeEach
     public void beforeEach() {
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
+
+        Reflections.setField("configuration", gridEnvironment, configuration);
     }
 
     @AfterEach
@@ -62,8 +74,10 @@ class GridEnvironmentTest {
     private void commonStubs() throws MalformedURLException {
         final URL url = URI.create("http://url").toURL();
 
-        Reflections.setField("url", gridEnvironment, url);
-        Reflections.setField("capabilities", gridEnvironment, capabilities);
+        when(configuration.getEnvironments()).thenReturn(environments);
+        when(environments.getGrid()).thenReturn(grid);
+        when(grid.getUrl()).thenReturn(url);
+        when(grid.getCapabilities()).thenReturn(capabilities);
 
         when(webDriverBuilder.build()).thenReturn(webDriver);
         when(driver.mergeGridCapabilitiesFrom(capabilities)).thenReturn(chromeOptions);
@@ -76,7 +90,7 @@ class GridEnvironmentTest {
     @DisplayName("setupFrom should configure a remote webDriver with localFileDetector and return an instance of WebDriver")
     public void setupFrom() throws MalformedURLException {
         commonStubs();
-        gridEnvironment.localFileDetector = true;
+        when(grid.isLocalFileDetector()).thenReturn(true);
 
         assertEquals(webDriver, gridEnvironment.setupFor(driver));
 
@@ -87,9 +101,9 @@ class GridEnvironmentTest {
     @Test
     @DisplayName("setFileDetectorFor should set the localFileDetector on the provided webDriver")
     public void setFileDetectorForLocal() {
-        gridEnvironment.localFileDetector = true;
+        when(grid.isLocalFileDetector()).thenReturn(true);
 
-        assertEquals(webDriver, gridEnvironment.setFileDetectorFor(webDriver));
+        assertEquals(webDriver, gridEnvironment.setFileDetectorFor(webDriver, grid));
 
         verify(webDriver).setFileDetector(any(LocalFileDetector.class));
     }
@@ -97,7 +111,7 @@ class GridEnvironmentTest {
     @Test
     @DisplayName("setFileDetectorFor should do nothing if set the localFileDetector is false")
     public void setFileDetectorFor() {
-        assertEquals(webDriver, gridEnvironment.setFileDetectorFor(webDriver));
+        assertEquals(webDriver, gridEnvironment.setFileDetectorFor(webDriver, grid));
 
         verifyNoInteractions(webDriver);
     }

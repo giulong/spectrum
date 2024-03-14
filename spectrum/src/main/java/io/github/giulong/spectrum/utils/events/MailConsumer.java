@@ -12,6 +12,7 @@ import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,26 +27,24 @@ public class MailConsumer extends EventsConsumer {
 
     private static final Mailer MAILER = MailerBuilder.buildMailer();
 
-    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Template to be used when creating the message")
-    private String template = "mail.html";
+    private final String template = "mail.html";
 
     @JsonPropertyDescription("List of attachments to add to the email")
-    protected List<Attachment> attachments;
+    private final List<Attachment> attachments = new ArrayList<>();
 
     @Override
-    public void consumes(final Event event) {
+    public void accept(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
         final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate(FILE_UTILS.readTemplate(template), vars);
 
-        MAILER.sendMail(
-                EmailBuilder
-                        .startingBlank()
-                        .withHTMLText(interpolatedTemplate)
-                        .withAttachments(attachments
-                                .stream()
-                                .map(a -> new AttachmentResource(a.getName(), new FileDataSource(a.getFile())))
-                                .collect(toList()))
-                        .buildEmail());
+        MAILER.sendMail(EmailBuilder
+                .startingBlank()
+                .withHTMLText(interpolatedTemplate)
+                .withAttachments(attachments
+                        .stream()
+                        .map(a -> new AttachmentResource(a.getName(), new FileDataSource(a.getFile())))
+                        .collect(toList()))
+                .buildEmail());
     }
 }

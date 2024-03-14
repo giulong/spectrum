@@ -27,7 +27,7 @@ public class SummaryVerifierIT extends SpectrumTest<Data> {
     public void testbook() {
         final Data.Summary summary = data.getSummary();
 
-        webDriver.get(String.format("file:///%s/it-testbook/target/spectrum/summary/summary.html", Path.of(System.getProperty("user.dir")).getParent()));
+        driver.get(String.format("file:///%s/it-testbook/target/spectrum/summary/summary.html", Path.of(System.getProperty("user.dir")).getParent()));
 
         assertEquals(summary.getTitle(), summaryPage.getTitle().getText());
         assertEquals(summary.getSuccessfulCount(), summaryPage.getSuccessfulCount().getText());

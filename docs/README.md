@@ -1,19 +1,18 @@
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/){:target="_blank"} and [Selenium 4](https://www.selenium.dev/){:target="_blank"} framework that aims to
-simplify the writing of e2e tests.
-Main features:
+simplify the writing of e2e tests, providing these features:
 
 * automatic [execution video](#automatic-execution-video-generation) generation
 * automatic [log and html report](#automatically-generated-reports) generation
-* automatic coverage report generation by reading a [testbook](#testbook---coverage)
+* automatic [coverage report](#testbook---coverage) generation by reading a testbook
 * automatic [mail/slack notifications](#events-consumers) with reports as attachments
 * fully configurable providing human-readable and [declarative yaml files](#configuration)
 * out-of-the-box defaults to let you run tests with no additional configuration
 
 Spectrum leverages JUnit's extension model to initialise and inject all the needed objects
-directly in your test classes, so that you can focus just on writing the logic to test your application.
+in your test classes, so that you can focus just on writing the logic to test your application.
 
-Spectrum supports both browsers automation via [Selenium](https://www.selenium.dev/){:target="_blank"}
-and mobile and desktop applications via [Appium](http://appium.io/docs/en/latest/){:target="_blank"}.
+Spectrum supports both **browsers automation** via [Selenium](https://www.selenium.dev/){:target="_blank"}
+and **mobile and desktop applications** via [Appium](http://appium.io/docs/en/latest/){:target="_blank"}.
 
 ## Glossary
 
@@ -33,56 +32,28 @@ and mobile and desktop applications via [Appium](http://appium.io/docs/en/latest
 ### Spectrum Archetype
 
 You should leverage the latest published version of the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype){:target="_blank"} to create a
-new project.
-You can either use it via your IDE, or run this from command line:
+new project either via your IDE or by running this from command line:
 
 {% include copyCode.html %}
 
 ```shell
-mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST -DinteractiveMode=false -DgroupId=<GROUP ID> -DartifactId=<ARTIFACT ID> -Dversion=<VERSION> -DoutputDirectory=<DESTINATION>
+mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST
 ```
 
-Needless to say that `<GROUP ID>`, `<ARTIFACT ID>`, `<VERSION>`, and `<DESTINATION>` are placeholders that you need to replace with actual values.
-
 > ⚠️ **Maven archetype:generate**<br/>
-> If you want to tweak the behaviour of the command above, for example to generate the project in interactive mode, check the
+> If you want to tweak the behaviour of the command above, check the
 > official [archetype:generate docs](https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html){:target="_blank"}.
 
-The project created will contain a demo test you can immediately run.
+The project created contains a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"} to your
 project:
 
 {% include copyCode.html %}
-
-```xml
-
-<dependency>
-    <groupId>io.github.giulong</groupId>
-    <artifactId>spectrum</artifactId>
-    <version>LATEST</version>
-    <scope>test</scope>
-</dependency>
-```
-
-> ⚠️ **Spectrum version**<br/>
-> The snippet above references the `LATEST` version just to be ready to use.
-> Nevertheless, it's highly recommended to use the explicit version you can find in
-> [Maven central](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"}.
->
-> With `LATEST`, if a new version which introduces breaking changes is published, your next build would
-> download it and potentially fail.
-
-> ⚠️ **Lombok Library**<br/>
-> The demo test injected by the archetype uses [Lombok](https://projectlombok.org/){:target="_blank"} to generate getters. Lombok is internally used in Spectrum, and provided as a
-> transitive
-> dependency, so you can already use it.
->
-> Be sure to check its docs to understand how to configure it in your IDE.
-> If you don't want to leverage it, you can safely write getters the old way.
+{% include spectrumDependency.html %}
 
 ### Test creation
 
-In general, all you need to do is create a **JUnit 5** test class and make it extend the `SpectrumTest` class:
+In general, all you need to do is create a **JUnit 5** test class extending the `SpectrumTest` class:
 
 {% include copyCode.html %}
 
@@ -94,13 +65,15 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
     @Test
     public void dummyTest() {
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
     }
 }
 ```
 
+After running it, you will find a html report in the `target/spectrum/reports` folder.
+
 > ⚠️ **Running with Maven**<br/>
-> If you run tests with Maven, the name of your test classes should end with `IT` as in the example above: `HelloWorldIT`,
+> If you run tests with Maven, the name of your test classes should end with `IT` as in the example above (`HelloWorldIT`),
 > to leverage the [default inclusions](https://maven.apache.org/surefire/maven-failsafe-plugin/examples/inclusion-exclusion.html){:target="_blank"} of the failsafe plugin.
 
 > 💡 **Tip**<br/>
@@ -108,6 +81,7 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > * `-Dspectrum.driver=chrome`
 > * `-Dspectrum.driver=firefox`
 > * `-Dspectrum.driver=edge`
+> * `-Dspectrum.driver=safari`
 > * `-Dspectrum.driver=uiAutomator2`
 > * `-Dspectrum.driver=espresso`
 > * `-Dspectrum.driver=xcuiTest`
@@ -121,13 +95,6 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > * `-Dspectrum.log.level=DEBUG`
 > * `-Dspectrum.log.level=TRACE`
 
-If you now run the test, you will find a html report generated in the `target/spectrum/reports` folder.
-
-> 💡 **Tip**<br/>
-> Spectrum is tested with itself, so in this repo you can find real examples of Spectrum e2e tests.
-> They're in the [it]({{ site.repository_url }}/it) and [it-testbook]({{ site.repository_url }}/it-testbook){:target="_blank"} modules. Throughout this doc, you will
-> be pointed to specific examples.
-
 ---
 
 # SpectrumTest and SpectrumPage
@@ -137,17 +104,24 @@ These are the two main entities you will need to know to fully leverage Spectrum
 * your test classes must extend [SpectrumTest](#spectrumtest)
 * your test pages must extend [SpectrumPage](#spectrumpage)
 
+> 💡 **Tip**<br/>
+> Check the [Javadoc](https://javadoc.io/doc/io.github.giulong/spectrum/latest/index.html){:target="_blank"}
+> for a detailed api description of
+> [SpectrumTest](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumTest.html){:target="_blank"},
+> [SpectrumPage](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumPage.html){:target="_blank"},
+> and their superclass [SpectrumEntity](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumEntity.html){:target="_blank"}
+
 ## SpectrumTest
 
 Your test classes must extend [SpectrumTest]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/SpectrumTest.java){:target="_blank"}.
 As you might have noticed in the examples above, you need to provide a generic parameter when extending it.
-That is the `Data` type of your own. Be sure to check the [Data section](#data) below. In case you don't need any,
+That is the [Data](#data) type of your own. In case you don't need any,
 you just need to set `Void` as generic.
 
 `SpectrumTest` extends [SpectrumEntity](#spectrumentity) and inherits its fields and methods.
 
-Beyond having direct access to `webDriver`, `configuration`, `data`, and all the other inherited fields
-that you don't even need to declare or instantiate, by extending `SpectrumTest`, each `SpectrumPage` that you declare
+Beyond having direct access to `driver`, `configuration`, `data`, and all the other inherited objects,
+by extending `SpectrumTest` each `SpectrumPage` that you declare
 in your test class will automatically be initialised.
 
 {% include copyCode.html %}
@@ -159,16 +133,16 @@ import org.junit.jupiter.api.Test;
 public class HelloWorldIT extends SpectrumTest<Void> {
 
     // page class that extends SpectrumPage. 
-    // Simply declare it. Spectrum will initialise an instance and inject it
+    // Simply declare it. Spectrum will inject it
     private MyPage myPage;
 
     @Test
     public void dummyTest() {
 
-        // getting direct access to both webDriver and configuration without declaring
+        // getting direct access to both driver and configuration without declaring
         // nor instantiating them. Spectrum does that for you.
         // Here we're opening the landing page of the AUT
-        webDriver.get(configuration.getApplication().getBaseUrl());
+        driver.get(configuration.getApplication().getBaseUrl());
 
         // assuming in MyPage we have a WebElement named "button", now we're clicking on it
         myPage.getButton().click();
@@ -211,11 +185,11 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 
 ### SpectrumPage Service Methods
 
-By extending `SpectrumPage`, you will inherit few service methods listed here:
+By extending `SpectrumPage`, you inherit few service methods listed here:
 
 * `open()`:
 
-  You can specify an endpoint for your pages by annotating them like this:
+  You can specify an endpoint for your pages by annotating them with the `@Endpoint` annotation:
 
 {% include copyCode.html %}
 
@@ -333,21 +307,29 @@ both `SpectrumTest` and `SpectrumPage`.
 Whenever extending any of those, you will inherit its fields and methods.
 
 Spectrum takes care of resolving and injecting all the fields below,
-so you can directly use them in your tests/pages without caring about declaring nor instantiating them.
+so you can directly use them in your tests/pages.
 
-| Field            | Description                                                                                                                                                                                                                                     |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                                              |
-| extentReports    | instance of the Extent Report                                                                                                                                                                                                                   |
-| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                              |
-| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                                 |
-| webDriver        | instance of the WebDriver running for the current test, configured in a declarative way via `configuration*.yaml`                                                                                                                               |
-| implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `webDriver.waits.implicit` in the `configuration.yaml`        |
-| pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `webDriver.waits.pageLoadTimeout` in the `configuration.yaml` |
-| scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `webDriver.waits.scriptTimeout` in the `configuration.yaml`   |
-| downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `webDriver.waits.downloadTimeout` in the `configuration.yaml` |
-| eventsDispatcher | you can use it to fire custom events. Check the [Custom Events section](#custom-events)                                                                                                                                                         |
-| data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                       |
+> 💡 **Tip**<br/>
+> Check the [Javadoc](https://javadoc.io/doc/io.github.giulong/spectrum/latest/index.html){:target="_blank"}
+> for a detailed api description of
+> [SpectrumTest](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumTest.html){:target="_blank"},
+> [SpectrumPage](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumPage.html){:target="_blank"},
+> and their superclass [SpectrumEntity](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumEntity.html){:target="_blank"}
+
+| Field            | Description                                                                                                                                                                                                                                   |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                                            |
+| extentReports    | instance of the Extent Report                                                                                                                                                                                                                 |
+| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                            |
+| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                               |
+| testData         | instance of [TestData]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/types/TestData.java){:target="_blank"} that contains info related to the current test                                                      |
+| driver           | instance of the [WebDriver](https://www.selenium.dev/documentation/webdriver/){:target="_blank"} running for the current test, configured via the `configuration*.yaml`                                                                       |
+| implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.implicit` in the `configuration.yaml`        |
+| pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.pageLoadTimeout` in the `configuration.yaml` |
+| scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.scriptTimeout` in the `configuration.yaml`   |
+| downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.downloadTimeout` in the `configuration.yaml` |
+| eventsDispatcher | you can use it to fire [custom events](#custom-events)                                                                                                                                                                                        |
+| data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                     |
 
 ### SpectrumEntity Service Methods
 
@@ -375,6 +357,142 @@ so you can directly use them in your tests/pages without caring about declaring 
 
 ---
 
+# Drivers and Environments
+
+The two main things you need when running an e2e test are the **driver** and the **environment**.
+Spectrum lets you configure all the supported values in the same configuration file, and then select the ones
+to be activated either via the same configuration or via runtime properties.
+Let's see a configuration snippet to have a clear picture:
+
+{% include copyCode.html %}
+
+```yaml
+# All needed drivers' configurations
+drivers:
+  waits:
+    implicit: 2
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+  firefox:
+    args:
+      - -headless
+  edge:
+    args:
+      - --headless=new
+    capabilities:
+      binary: /usr/bin/microsoft-edge
+
+# All needed environments' configuration. This is the default environments node, 
+# so no need to explicitly override this with these values
+environments:
+  local: { }
+  grid:
+    url: http://localhost:4444/wd/hub
+  appium:
+    url: http://localhost:4723/
+
+# Node to select, among other properties, a specific driver and environment. This is the default, no need to explicitly set these.
+runtime:
+  driver: ${spectrum.driver:-chrome}
+  environment: ${spectrum.environment:-local}
+```
+
+> 💡 **Tip**<br/>
+> The snippet above leverages [interpolation](#values-interpolation).
+
+As you can see in the snippet above, in the `configuration.yaml` you can statically configure many drivers such as `chrome`, `firefox`, `edge` and
+many environments such as `local`, `grid` and `appium`.
+Then, you can choose to run with a specific combination of those, such as `firefox` on a remote `grid`,
+either via `configuration.yaml` or via the corresponding runtime property.
+
+| Configuration Node | Selection Node        | Selection Property       |
+|--------------------|-----------------------|--------------------------|
+| `drivers`          | `runtime.driver`      | `-Dspectrum.driver`      |
+| `environments`     | `runtime.environment` | `-Dspectrum.environment` |
+
+Where the columns are:
+
+* **Configuration Node**: name of the node in the `configuration.yaml` to map the configurations of all the possible drivers/environments
+* **Selection Node**: name of the node in the `configuration.yaml` to select the specific driver/environment to be used
+* **Selection Property**: name of the runtime property to select the specific driver/environment to be used
+
+---
+
+## Selecting the driver
+
+You can select the driver via the `runtime.driver` node. As you can see in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
+its value leverages [interpolation](#values-interpolation) with the default set to `chrome`:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  driver: ${spectrum.driver:-chrome}
+```
+
+This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  driver: firefox
+```
+
+or overriding it at runtime by providing the `spectrum.driver` property: `-Dspectrum.driver=firefox`
+
+Before actually providing the list of available drivers, it's important to spend a few words on the runtime environment.
+
+---
+
+## Selecting the environment
+
+You can select the environment via the `runtime.environment` node. As you can see in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
+its value leverages [interpolation](#values-interpolation) with the default set to `local`:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  environment: ${spectrum.environment:-local}
+```
+
+This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
+
+{% include copyCode.html %}
+
+```yaml
+runtime:
+  environment: grid
+```
+
+or overriding it at runtime by providing the `spectrum.environment` property: `-Dspectrum.environment=grid`
+
+---
+
+## Available Drivers and Environments
+
+These are the drivers currently supported, each must be used with a compatible environment:
+
+| Driver                          | Local | Grid | Appium |
+|---------------------------------|:-----:|:----:|:------:|
+| [chrome](#chrome)               |   ✅   |  ✅   |        |
+| [firefox](#firefox)             |   ✅   |  ✅   |        |
+| [edge](#edge)                   |   ✅   |  ✅   |        |
+| [safari](#safari)               |   ✅   |  ✅   |        |
+| [uiAutomator2](#uiautomator2)   |       |      |   ✅    |
+| [espresso](#espresso)           |       |      |   ✅    |
+| [xcuiTest](#xcuitest)           |       |      |   ✅    |
+| [windows](#windows)             |       |      |   ✅    |
+| [mac2](#mac2)                   |       |      |   ✅    |
+| [appiumGeneric](#appiumgeneric) |       |      |   ✅    |
+
+---
+
 # Configuration
 
 Spectrum is fully configurable and comes with default values which you can find in
@@ -391,16 +509,17 @@ You should also leverage the [Json Schema](#json-schema) to have autocompletion 
 To provide your own configuration and customise these values, you can create the `src/test/resources/configuration.yaml` file in your project.
 
 > ⚠️ **Files Extension**<br/>
-> The extension must be `.yaml`. The shortened `.yml` won't work.
+> The extension can be either `.yaml` or `.yml`. This is valid not only for the `configuration`,
+> but also for all the yaml files you'll see in this docs, such as `data` and `tesbook` for instance.
 
 Furthermore, you can provide how many profile-specific configurations in the same folder, by naming them
-`configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name.
+`configuration-<PROFILE>.yaml`, where `<PROFILE>` is a placeholder that you need to replace with the actual profile name of your choice.
 
-To let Spectrum pick the right profiles-related configuration, you must run with the `-Dspectrum.profiles` flag,
+To let Spectrum pick the right profiles-related configurations, you must run with the `-Dspectrum.profiles` flag,
 which is a comma separated list of profile names you want to activate.
 
 > 💡 **Example**<br/>
-> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge these files in this exact order of precedence.
+> When running tests with `-Dspectrum.profiles=test,grid`, Spectrum will merge the files below in this exact order.
 > The first file loaded is the internal one, which has the lowest priority. This means if the same key is provided in any of the
 > other files, it will be overridden. Values in the most specific configuration file will take precedence over the others.
 
@@ -413,8 +532,13 @@ which is a comma separated list of profile names you want to activate.
 | configuration-grid.yaml         |    5     | Provided by you. A warning is raised if not found, no errors |
 
 > 💡 **Tip**<br/>
-> There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base configuration.yaml,
-> while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`
+> There's no need to repeat everything: configuration files are merged, so it's better to keep values that are common to all the profiles in the base `configuration.yaml`,
+> while providing `<PROFILE>`-specific ones in the `configuration-<PROFILE>.yaml`.
+>
+> In this way, when you need to run with a different configuration, you don't need to change any configuration file.
+> This is important, since configurations are versioned alongside your tests,
+> so you avoid errors and keep your scm history clean.
+> You then just need to activate the right one by creating different run configurations in your IDE.
 
 > ⚠️ **Merging Lists**<br/>
 > Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! Let's clarify with an example:
@@ -435,18 +559,6 @@ anyList:
   - baseValue
   - valueForTest
 ```
-
-> 💡 **Tip**<br/>
-> If you need different configurations for the same environment, instead of manually changing values in the configuration*.yaml, you should
-> provide different files and choose the right one with the `-Dspectrum.profiles` flag. <br/>
-> For example, if you need to be able to run from your local machine alternatively targeting a remote grid or executing drivers in local,
-> it's preferable to have two files where you change just the target runtime:
-> * configuration-local-local.yaml
-> * configuration-local-grid.yaml
->
-> In this way, you don't need to change any configuration file. This is important, since configurations are versioned alongside your tests,
-> so you avoid errors and keep your scm history clean.
-> You then just need to activate the right one by creating different run configurations in your IDE.
 
 > 💡 **Tip**<br/>
 > Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
@@ -492,10 +604,10 @@ vars:
   proxyHost: my-proxy.com
   proxyPort: 8080
 
-webDriver:
+drivers:
   chrome:
     args:
-      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
+      - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation doesn't make sense here
   firefox:
     preferences:
       network.proxy.type: 1
@@ -514,11 +626,7 @@ between the name of the key to search for and the default value to use in case t
 # String example
 object:
   myVar: ${key:-defaultValue}
-```
 
-{% include copyCode.html %}
-
-```yaml
 # Number example
 object:
   myVar: $<key:-defaultValue>
@@ -532,14 +640,14 @@ object:
 
 Spectrum will interpolate the dollar-string with the first value found in this list:
 
-1. `key` in [vars node](#vars-node):
+1. [vars node](#vars-node):
 
    {% include copyCode.html %}
     ```yaml
     vars:
       key: value 
     ```
-2. system property named `key`: `-Dkey=value`
+2. system property: `-Dkey=value`
 3. environment variable named `key`
 4. `defaultValue` (if provided)
 
@@ -612,56 +720,240 @@ You can add your own and even override the default ones in your `configuration*.
 
 ---
 
-## Selecting the driver
+## Configuring the Driver
 
-You can select the driver via the `runtime.driver` node. As you can see in the internal
-[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
-its value leverages interpolation with the default set to `chrome`:
+Let's now see how to configure the available drivers in detail, for each the default snippet taken from the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
+is provided.
+
+You can provide the configurations of all the drivers
+you need in the base `configuration.yaml`, and then activate the one you want to use in a specific run, as we saw in the
+[Selecting the Driver](#selecting-the-driver) section. All the drivers are configured via the `drivers` node directly under the root of
+the `configuration.yaml`.
+
+### Chrome
+
+See [https://chromedriver.chromium.org/capabilities](https://chromedriver.chromium.org/capabilities){:target="_blank"}
+
+| Parameter    | Type                  | Description           |
+|--------------|-----------------------|-----------------------|
+| args         | List\<String\>        | Chrome's args         |
+| capabilities | Map\<String, Object\> | Chrome's capabilities |
 
 {% include copyCode.html %}
 
 ```yaml
-runtime:
-  driver: ${spectrum.driver:-chrome}
+drivers:
+  chrome:
+    args: [ ]
+    capabilities:
+      prefs:
+        download.prompt_for_download: false
+        download.directory_upgrade: true
+        download.default_directory: ${downloadsFolder}
+        safebrowsing.enabled: true
 ```
 
-This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
+### Firefox
+
+See [https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions](https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions){:
+target="_blank"}
+
+| Parameter   | Type                  | Description                                                                                                         |
+|-------------|-----------------------|---------------------------------------------------------------------------------------------------------------------|
+| args        | List\<String\>        | Firefox's args                                                                                                      |
+| logLevel    | FirefoxDriverLogLevel | Firefox's [log level](https://firefox-source-docs.mozilla.org/testing/geckodriver/TraceLogs.html){:target="_blank"} |
+| preferences | Map\<String, Object\> | Firefox's preferences                                                                                               |
 
 {% include copyCode.html %}
 
 ```yaml
-runtime:
-  driver: firefox
+drivers:
+  firefox:
+    args: [ ]
+    logLevel: ERROR
+    preferences:
+      browser.download.folderList: 2
+      browser.download.useDownloadDir: true
+      browser.download.dir: ${downloadsFolder}
+      browser.helperApps.neverAsk.saveToDisk: application/pdf
+      pdfjs.disabled: true
 ```
 
-or overriding it at runtime by providing the `spectrum.driver` property:
+### Edge
 
-`-Dspectrum.driver=firefox`
+See [https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options](https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options){:
+target="_blank"}
 
-Before actually providing the list of available drivers, it's important to spend a few words on the runtime environment.
+| Parameter    | Type                  | Description         |
+|--------------|-----------------------|---------------------|
+| args         | List\<String\>        | Edge's args         |
+| capabilities | Map\<String, Object\> | Edge's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  edge:
+    args: [ ]
+    capabilities:
+      prefs:
+        download.default_directory: ${downloadsFolder}
+```
+
+### Safari
+
+See [https://developer.apple.com/documentation/webkit/about_webdriver_for_safari](https://developer.apple.com/documentation/webkit/about_webdriver_for_safari){:target="_blank"}
+
+| Parameter | Type    | Description                  |
+|-----------|---------|------------------------------|
+| logging   | boolean | Safari's logging enable flag |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  safari:
+    logging: false
+```
+
+### UiAutomator2
+
+See [https://github.com/appium/appium-uiautomator2-driver#capabilities](https://github.com/appium/appium-uiautomator2-driver#capabilities){:target="_blank"}
+
+| Parameter    | Type                  | Description                         |
+|--------------|-----------------------|-------------------------------------|
+| capabilities | Map\<String, Object\> | Android UiAutomator2's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  uiAutomator2:
+    capabilities: { }
+```
+
+### Espresso
+
+See [https://github.com/appium/appium-espresso-driver#capabilities](https://github.com/appium/appium-espresso-driver#capabilities){:target="_blank"}
+
+| Parameter    | Type                  | Description                     |
+|--------------|-----------------------|---------------------------------|
+| capabilities | Map\<String, Object\> | Android Espresso's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  espresso:
+    capabilities: { }
+```
+
+### XCUITest
+
+See [https://github.com/appium/appium-xcuitest-driver](https://github.com/appium/appium-xcuitest-driver){:target="_blank"}
+
+| Parameter    | Type                  | Description                 |
+|--------------|-----------------------|-----------------------------|
+| capabilities | Map\<String, Object\> | iOS XCUITest's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  xcuiTest:
+    capabilities: { }
+```
+
+### Windows
+
+See [https://github.com/appium/appium-windows-driver](https://github.com/appium/appium-windows-driver){:target="_blank"}
+
+| Parameter    | Type                  | Description           |
+|--------------|-----------------------|-----------------------|
+| capabilities | Map\<String, Object\> | Windows' capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  windows:
+    capabilities: { }
+```
+
+### Mac2
+
+See [https://github.com/appium/appium-mac2-driver](https://github.com/appium/appium-mac2-driver){:target="_blank"}
+
+| Parameter    | Type                  | Description         |
+|--------------|-----------------------|---------------------|
+| capabilities | Map\<String, Object\> | Mac2's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  mac2:
+    capabilities: { }
+```
+
+### AppiumGeneric
+
+See [https://appium.io/docs/en/latest/intro/drivers/](https://appium.io/docs/en/latest/intro/drivers/){:target="_blank"}
+
+| Parameter    | Type                  | Description                   |
+|--------------|-----------------------|-------------------------------|
+| capabilities | Map\<String, Object\> | Appium generic's capabilities |
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  appiumGeneric:
+    capabilities: { }
+```
 
 ---
 
-## Selecting the environment
+## Configuring the Environment
 
-By default, drivers run in local. This is because the default value in the internal
-[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml{:target="_blank"})
-is:
+Let's now see how to configure the available environments. You can provide the configurations of all the environments
+you need in the same `configuration.yaml`, and then activate the one you want to use in a specific run, as we saw in the
+[Selecting the Environment](#selecting-the-environment) section. All the environments are configured via the `environments` node directly under the root of
+the `configuration.yaml`:
+
+As a reference, let's see the `environments` under the
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
 {% include copyCode.html %}
 
 ```yaml
-runtime:
-  environment:
-    local: { }
+environments:
+  local: { }
+  grid:
+    url: http://localhost:4444/wd/hub
+  appium:
+    url: http://localhost:4723/
 ```
 
 ### Local environment
 
-The local environment doesn't have any additional properties, which means you need to configure it as an empty object
-like in the internal default you can see above.
-Watch out that providing no value at all like in `local: ` is equivalent to `local: null` !
-This is valid in general in yaml.
+The local environment doesn't have any additional property, which means you need to configure it as an empty object
+like in the internal default you can see above:
+
+{% include copyCode.html %}
+
+```yaml
+environments:
+  local: { }
+```
+
+Watch out that providing no value at all like in "`local: `" is equivalent to set "`local: null`" !
+This is generally valid in yaml.
+
+> 💡 **Tip**<br/>
+> Since no additional properties are available for the local environment, it doesn't make any sense to explicitly configure it
+> on your side.
 
 ### Grid environment
 
@@ -670,14 +962,13 @@ To run on a remote [grid](https://www.selenium.dev/documentation/grid/){:target=
 {% include copyCode.html %}
 
 ```yaml
-runtime:
-  environment:
-    grid:
-      url: https://my-grid-url:4444/wd/hub
-      capabilities:
-        someCapability: its value
-        another: blah
-      localFileDetector: true
+environments:
+  grid:
+    url: https://my-grid-url:4444/wd/hub
+    capabilities:
+      someCapability: its value
+      another: 123
+    localFileDetector: true
 ```
 
 Where the params are:
@@ -685,7 +976,7 @@ Where the params are:
 | Param             | Type               | Default   | Mandatory | Description                                                                                                                                                                                              |
 |-------------------|--------------------|-----------|:---------:|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | url               | String             | null      |     ✅     | url of the remote grid                                                                                                                                                                                   |
-| capabilities      | Map<String,String> | empty map |     ❌     | additional webDriver capabilities to be added to driver-specific ones only when running on a grid                                                                                                        |
+| capabilities      | Map<String,String> | empty map |     ❌     | additional driver capabilities to be added to driver-specific ones only when running on a grid                                                                                                           |
 | localFileDetector | boolean            | false     |     ❌     | if true, allows to transfer files from the client machine to the remote server. [Docs](https://www.selenium.dev/documentation/webdriver/drivers/remote_webdriver/#local-file-detector){:target="_blank"} |
 
 ### Appium environment
@@ -701,27 +992,28 @@ To run against an Appium server you need to configure the related environment li
 {% include copyCode.html %}
 
 ```yaml
-runtime:
-  environment:
-    appium:
-      url: http://127.0.0.1:4723/ # this is the default, no need to provide it explicitly
-      capabilities:
-        someCapability: its value
-        another: blah
-      localFileDetector: true
-      collectServerLogs: true
+environments:
+  appium:
+    url: http://localhost:4723/ # this is the default, no need to provide it explicitly
+    capabilities:
+      someCapability: its value
+      another: 123
+    localFileDetector: true
+    collectServerLogs: true
 ```
 
-Appium server is a specialized kind of a Selenium Grid, so its configuration extends the one of the Grid environment above.
+Appium server is a specialized kind of a Selenium Grid, so its configuration extends the one of the
+[Grid environment](#grid-environment) above.
 
 When running the Appium server in local, you can either start it manually or let Spectrum do it for you.
 It's enough to have Appium installed: if the Appium server is already running, Spectrum will just send execution commands to it.
 Otherwise, it will start the server process when the tests execution start, and will shut it down once the execution is done.
+
 That said, all the parameters available for a Grid environment can be used in Appium environment. Here's the list of Appium specific parameters:
 
 | Param             | Type    | Default | Mandatory | Description                                                                                                        |
 |-------------------|---------|---------|:---------:|--------------------------------------------------------------------------------------------------------------------|
-| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the webDriver.logs.level node |
+| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the `drivers.logs.level` node |
 
 > 💡 **Tip**<br/>
 > Use `collectServerLogs` only if you really want to send Appium server's logs to Spectrum's log file.
@@ -734,30 +1026,11 @@ If you don't need any particular configuration, it's enough to run with:
 
 ```yaml
 runtime:
-  environment:
-    appium: { }
+  environment: appium
 ```
 
 You can see few working examples in the
 [it-appium]({{ site.repository_url }}/it-appium){:target="_blank"} module.
-
----
-
-## Available Drivers
-
-These are the drivers currently supported, each must be used with a compatible environment:
-
-| Driver        | Local | Grid | Appium |
-|---------------|:-----:|:----:|:------:|
-| chrome        |   ✅   |  ✅   |        |
-| firefox       |   ✅   |  ✅   |        |
-| edge          |   ✅   |  ✅   |        |
-| uiAutomator2  |       |      |   ✅    |
-| espresso      |       |      |   ✅    |
-| xcuiTest      |       |      |   ✅    |
-| windows       |       |      |   ✅    |
-| mac2          |       |      |   ✅    |
-| appiumGeneric |       |      |   ✅    |
 
 ---
 
@@ -797,8 +1070,8 @@ The test is very simple. We're just checking that a domain in the proxy's bypass
 @Test
 @DisplayName("should prove that connections towards domains in the proxy bypass list are allowed, while others are not reachable")
 public void proxyShouldAllowOnlyCertainDomains() {
-    webDriver.get("https://the-internet.herokuapp.com");    // OK
-    assertThrows(WebDriverException.class, () -> webDriver.get("https://www.google.com"));  // NOT REACHABLE
+    driver.get("https://the-internet.herokuapp.com");    // OK
+    assertThrows(WebDriverException.class, () -> driver.get("https://www.google.com"));  // NOT REACHABLE
 }
 ```
 
@@ -807,7 +1080,7 @@ Regarding the proxy, these are the relevant part of its
 where you can see how to configure a proxy server for every driver.
 
 Mind that this is just an example. Its only purpose is to show how to configure a proxy and prove it's working, leveraging the domain bypass list:
-there's no proxy actually running, so every domain which is not bypassed would throw an exception.
+there's no proxy actually running, so trying to reach any domain which is not bypassed would throw an exception.
 
 {% include copyCode.html %}
 
@@ -815,9 +1088,9 @@ there's no proxy actually running, so every domain which is not bypassed would t
 vars:
   proxyHost: not-existing-proxy.com
   proxyPort: 8080
-  proxyBypass: '*.herokuapp.com'
+  proxyBypass: '*.herokuapp.com' # we need to explicitly wrap the string literal since it starts with a special char
 
-webDriver:
+drivers:
   chrome:
     args:
       - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
@@ -869,7 +1142,7 @@ For example, you can set these:
 {% include copyCode.html %}
 
 ```yaml
-webDriver:
+drivers:
   events:
     beforeFindElement:
       level: INFO
@@ -880,7 +1153,7 @@ webDriver:
       message: Closing...
 ```
 
-Check the `webDriver.events` node in the
+Check the `drivers.events` node in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 to see the defaults.
 
@@ -900,7 +1173,7 @@ As an example, you might want to add a 1 second sleep before each call like this
 {% include copyCode.html %}
 
 ```yaml
-webDriver:
+drivers:
   events:
     beforeAnyWebDriverCall:
       wait: 1000
@@ -911,7 +1184,7 @@ Or a sleep only before clicking elements:
 {% include copyCode.html %}
 
 ```yaml
-webDriver:
+drivers:
   events:
     beforeClick:
       wait: 1000
@@ -941,13 +1214,13 @@ You can specify which screenshots to be used as frames providing one or more of 
 
 > ⚠️ **Auto screenshots**<br/>
 > Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
-> and the `webDriver.events` settings. For example, if running with the default `INFO` log level and the configuration below,
+> and the `drivers.events` settings. For example, if running with the default `INFO` log level and the configuration below,
 > no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
 
 {% include copyCode.html %}
 
 ```yaml
-webDriver:
+drivers:
   events:
     beforeClick:
       level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
@@ -1005,7 +1278,7 @@ After each execution, Spectrum produces two files:
 * [html report](#html-report)
 
 The WebDriver fires events that are automatically logged and added to the html report.
-Check the `webDriver.events` node in the
+Check the `drivers.events` node in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 to see the defaults log levels and messages.
 
@@ -1410,7 +1683,7 @@ The `Data` generic must be specified only in those classes actually using it. Th
 
 ---
 
-# Event Sourcing
+# Event Sourcing - Notifications
 
 Spectrum leverages event sourcing, meaning throughout the execution it fires events at specific moments.
 These events are sent in broadcast to a list of consumers.
@@ -1681,7 +1954,8 @@ eventsConsumers:
 
 ### Mail Consumer
 
-You can leverage this consumer to send email notification. Spectrum uses [Simple java Mail](https://www.simplejavamail.org/){:target="_blank"},
+You can leverage this consumer to send email notifications.
+Spectrum uses [Simple java Mail](https://www.simplejavamail.org/){:target="_blank"},
 and you can configure it with the file `src/test/resources/simplejavamail.properties`, as specified in
 the [docs](https://www.simplejavamail.org/configuration.html#section-config-properties){:target="_blank"}.
 
@@ -1697,6 +1971,7 @@ simplejavamail.smtp.username=<YOUR GMAIL ADDRESS>
 simplejavamail.smtp.password=<YOUR GMAIL PASSWORD>
 simplejavamail.defaults.trustedhosts=smtp.gmail.com
 simplejavamail.defaults.subject=Spectrum Notification
+simplejavamail.defaults.from.address=<YOUR GMAIL ADDRESS>
 simplejavamail.defaults.to.name=<RECIPIENT NAME>
 simplejavamail.defaults.to.address=<RECIPIENT EMAIL ADDRESS>
 ```
@@ -1707,34 +1982,46 @@ check [Google's docs](https://support.google.com/accounts/answer/185833?p=Invali
 Check Simple java Mail's docs to see all the [available properties](https://www.simplejavamail.org/configuration.html#section-available-properties){:target="_blank"}.
 
 > ⚠️ **Mail Template**<br/>
-> The default [mail.html template]({{ site.repository_url }}/spectrum/src/main/resources/templates/mail.html){:target="_blank"} is meant to be used to notify about each test
-> result,
-> as per the snippet below. It might not be correctly interpolated if used on other events.
+> The default [mail.html template]({{ site.repository_url }}/spectrum/src/main/resources/templates/mail.html){:target="_blank"}
+> can either be used to notify about single tests or the whole suite result,
+> as per the snippet below. You can use both or just the one you prefer.
 
 {% include copyCode.html %}
 
 ```yaml
-mail:
-  events:
-    - reason: after
-      tags: [ test ]
+eventsConsumers:
+  - mail:
+      events:
+        - reason: after
+          tags: [ test ]
+  - mail:
+      events:
+        - reason: after
+          tags: [ suite ]
 ```
 
->
-> If you want to provide a custom template there are two ways:
-> * provide a template with a custom name under `src/test/resources/templates`:
+The default template is pretty basic, as you can see. The first is the test example,
+while the second is the suite result notification:
+
+![Test Mail Notification](assets/images/mail-notification-test.png)
+![Suite Mail Notification](assets/images/mail-notification-suite.png)
+
+If you want to provide a custom template there are two ways:
+
+* provide a template with a custom name under `src/test/resources/templates`:
 
 {% include copyCode.html %}
 
 ```yaml
-mail:
-  template: my-template.txt # The extension doesn't really matter.
-  events:
-    - reason: after
-      tags: [ test ]
+eventsConsumers:
+  - mail:
+      template: my-template.txt # The extension doesn't really matter.
+      events:
+        - reason: after
+          tags: [ test ]
 ```
 
-> * simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
+* simply create the file `src/test/resources/templates/mail.html`. This will override the internal default, so there's no need to explicitly provide the `template` parameter.
 
 > 💡 **Tip**<br/>
 > You may add how many consumers you want, so if you want to use different templates just add different consumers and provide a template for each.
@@ -1750,15 +2037,16 @@ For example, it's useful to send the html report and/or testbook when the suite 
 {% include copyCode.html %}
 
 ```yaml
-mail:
-  events:
-    - reason: after
-      tags: [ suite ]
-  attachments:
-    - name: report
-      file: target/spectrum/reports/report.html
-    - name: testbook
-      file: target/spectrum/testbook/testbook.html
+eventsConsumers:
+  - mail:
+      events:
+        - reason: after
+          tags: [ suite ]
+      attachments:
+        - name: report
+          file: target/spectrum/reports/report.html
+        - name: testbook
+          file: target/spectrum/testbook/testbook.html
 ```
 
 > ⚠️ **Mail Attachments**<br/>
@@ -1835,13 +2123,14 @@ A few steps are needed to configure your Slack Workspace to receive notification
 5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:
    {% include copyCode.html %}
    ```yaml
-   - slack:
-       token: xoxb-***
-       channel: C05***
-       template: slack-suite.json
-       events:
-         - reason: before
-           tags: [ suite ]
+   eventsConsumers:
+     - slack:
+         token: xoxb-***
+         channel: C05***
+         template: slack-suite.json
+         events:
+           - reason: before
+             tags: [ suite ]
    ```
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
@@ -1853,10 +2142,11 @@ A few steps are needed to configure your Slack Workspace to receive notification
 {% include copyCode.html %}
 
 ```yaml
-slack:
-  events:
-    - reason: after
-      tags: [ test ]
+eventsConsumers:
+  - slack:
+      events:
+        - reason: after
+          tags: [ test ]
 ```
 
 >
@@ -1866,11 +2156,12 @@ slack:
 {% include copyCode.html %}
 
 ```yaml
-slack:
-  template: my-template.txt # The extension doesn't really matter.
-  events:
-    - reason: after
-      tags: [ test ]
+eventsConsumers:
+  - slack:
+      template: my-template.txt # The extension doesn't really matter.
+      events:
+        - reason: after
+          tags: [ test ]
 ```
 
 > * simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
@@ -2530,7 +2821,14 @@ is `${user.home}/.cache/spectrum`
 # Banner
 
 If you want to customise the banner logged at the beginning of each execution,
-you just need to place a file named `src/test/resources/banner.txt` in your project.
+you just need to place a file named `src/test/resources/banner.txt` in your project. It's interpolated with
+[FreeMarker](https://freemarker.apache.org/){:target="_blank"}, and these are the variables you can use:
+
+| Variable   | Value                               |
+|------------|-------------------------------------|
+| ${name}    | spectrum                            |
+| ${version} | Spectrum version, such as 1.8.1     |
+| ${url}     | https://github.com/giulong/spectrum |
 
 ---
 

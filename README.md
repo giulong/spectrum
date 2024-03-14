@@ -42,7 +42,7 @@
 
 Spectrum is a **JUnit 5** and **Selenium 4** framework that aims to simplify e2e tests development providing these features automatically:
 
-* **Webdriver** instantiation
+* **Driver** instantiation
 * **Html report** generation
 * **Execution video** generation
 * **Coverage report** generation by reading a **testbook**
@@ -109,4 +109,3 @@ Spectrum leverages these projects you should definitely check out!
 * [JCodec](http://www.jcodec.org/)
 * [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
 * [Modernist Theme](https://github.com/pages-themes/modernist)
-* [Echo Maven Plugin](https://github.com/Ekryd/echo-maven-plugin)

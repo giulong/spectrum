@@ -2,9 +2,9 @@ runtime:
   profiles: local,second
 
 application:
-  baseUrl: it's in the configuration-second.yaml
+  baseUrl: it's in the configuration-second.yml
 
-webDriver:
+drivers:
   waits:
     implicit: 2
     downloadTimeout: 5

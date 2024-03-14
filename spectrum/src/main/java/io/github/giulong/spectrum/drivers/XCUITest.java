@@ -10,7 +10,7 @@ public class XCUITest extends Appium<XCUITestOptions, IOSDriver> {
     @Override
     public void buildCapabilities() {
         capabilities = new XCUITestOptions(adjustCapabilitiesFrom(configuration
-                .getWebDriver()
+                .getDrivers()
                 .getXcuiTest()
                 .getCapabilities()));
     }

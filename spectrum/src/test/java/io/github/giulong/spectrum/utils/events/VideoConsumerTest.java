@@ -43,8 +43,8 @@ class VideoConsumerTest {
     private VideoConsumer videoConsumer;
 
     @Test
-    @DisplayName("consumes should notify the VideoEncoder that the test is done")
-    public void consumes() {
+    @DisplayName("accept should notify the VideoEncoder that the test is done")
+    public void accept() {
         when(event.getContext()).thenReturn(extensionContext);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
@@ -52,20 +52,20 @@ class VideoConsumerTest {
         when(video.isDisabled()).thenReturn(false);
         when(store.get(VIDEO_ENCODER, VideoEncoder.class)).thenReturn(videoEncoder);
 
-        videoConsumer.consumes(event);
+        videoConsumer.accept(event);
         verify(videoEncoder).done();
     }
 
     @Test
-    @DisplayName("consumes shouldn't do nothing when video recording is disabled")
-    public void consumesDisabled() {
+    @DisplayName("accept shouldn't do nothing when video recording is disabled")
+    public void acceptDisabled() {
         when(event.getContext()).thenReturn(extensionContext);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(true);
 
-        videoConsumer.consumes(event);
+        videoConsumer.accept(event);
         verify(videoEncoder, never()).done();
     }
 }

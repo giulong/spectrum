@@ -68,8 +68,8 @@ class SlackConsumerTest {
     }
 
     @Test
-    @DisplayName("consume should send a notification to the provided channel using the provided token")
-    public void consume() throws SlackApiException, IOException {
+    @DisplayName("accept should send a notification to the provided channel using the provided token")
+    public void accept() throws SlackApiException, IOException {
         final String template = "template";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String channel = "channel";
@@ -92,7 +92,7 @@ class SlackConsumerTest {
         final SlackConsumer slackConsumer = new SlackConsumer();
         slackConsumer.channel = channel;
         slackConsumer.token = token;
-        slackConsumer.consumes(event);
+        slackConsumer.accept(event);
 
         verify(methodsClient).chatPostMessage(chatPostMessageRequest);
     }

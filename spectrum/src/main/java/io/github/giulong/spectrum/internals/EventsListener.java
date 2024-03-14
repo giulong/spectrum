@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.internals;
 import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Configuration.WebDriver.Events;
+import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Builder;
@@ -42,7 +42,7 @@ public class EventsListener implements WebDriverListener {
     private ExtentTest extentTest;
     private Video video;
     private TestData testData;
-    private WebDriver webDriver;
+    private WebDriver driver;
     private Events events;
 
     protected String extractSelectorFrom(final WebElement webElement) {
@@ -76,7 +76,7 @@ public class EventsListener implements WebDriverListener {
 
         if (video.shouldRecord(screenshotPath.getFileName().toString())) {
             log.trace("Recording frame {}", frame);
-            return Files.write(screenshotPath, ((TakesScreenshot) webDriver).getScreenshotAs(BYTES));
+            return Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));
         }
 
         log.trace("Not recording frame {}", frame);
@@ -85,7 +85,7 @@ public class EventsListener implements WebDriverListener {
 
     @SneakyThrows
     protected void apply(final boolean condition, final Consumer<String> logConsumer, final Consumer<String> extentConsumer,
-                         final Frame frame, final Configuration.WebDriver.Event event, final Object... args) {
+                         final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
         final long wait = event.getWait();
         if (wait > 0) {
             log.debug("Waiting {} ms before event processing", wait);
@@ -102,7 +102,7 @@ public class EventsListener implements WebDriverListener {
         }
     }
 
-    protected void listen(final Frame frame, final Configuration.WebDriver.Event event, final Object... args) {
+    protected void listen(final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
         switch (event.getLevel().levelStr) {
             case "OFF" -> {
             }
@@ -135,182 +135,182 @@ public class EventsListener implements WebDriverListener {
 
     @Override
     @Generated
-    public void beforeAnyWebDriverCall(final WebDriver driver, final Method method, final Object[] args) {
-        listen(AUTO_BEFORE, events.getBeforeAnyWebDriverCall(), driver, method, Arrays.toString(args));
+    public void beforeAnyWebDriverCall(final WebDriver webDriver, final Method method, final Object[] args) {
+        listen(AUTO_BEFORE, events.getBeforeAnyWebDriverCall(), webDriver, method, Arrays.toString(args));
     }
 
     @Override
     @Generated
-    public void afterAnyWebDriverCall(final WebDriver driver, final Method method, final Object[] args, final Object result) {
-        listen(AUTO_AFTER, events.getAfterAnyWebDriverCall(), driver, method, Arrays.toString(args), result);
+    public void afterAnyWebDriverCall(final WebDriver webDriver, final Method method, final Object[] args, final Object result) {
+        listen(AUTO_AFTER, events.getAfterAnyWebDriverCall(), webDriver, method, Arrays.toString(args), result);
     }
 
     @Override
     @Generated
-    public void beforeGet(final WebDriver driver, final String url) {
-        listen(AUTO_BEFORE, events.getBeforeGet(), driver, url);
+    public void beforeGet(final WebDriver webDriver, final String url) {
+        listen(AUTO_BEFORE, events.getBeforeGet(), webDriver, url);
     }
 
     @Override
     @Generated
-    public void afterGet(final WebDriver driver, final String url) {
-        listen(AUTO_AFTER, events.getAfterGet(), driver, url);
+    public void afterGet(final WebDriver webDriver, final String url) {
+        listen(AUTO_AFTER, events.getAfterGet(), webDriver, url);
     }
 
     @Override
     @Generated
-    public void beforeGetCurrentUrl(final WebDriver driver) {
-        listen(AUTO_BEFORE, events.getBeforeGetCurrentUrl(), driver);
+    public void beforeGetCurrentUrl(final WebDriver webDriver) {
+        listen(AUTO_BEFORE, events.getBeforeGetCurrentUrl(), webDriver);
     }
 
     @Override
     @Generated
-    public void afterGetCurrentUrl(final WebDriver driver, final String result) {
-        listen(AUTO_AFTER, events.getAfterGetCurrentUrl(), result, driver);
+    public void afterGetCurrentUrl(final WebDriver webDriver, final String result) {
+        listen(AUTO_AFTER, events.getAfterGetCurrentUrl(), result, webDriver);
     }
 
     @Override
     @Generated
-    public void beforeGetTitle(final WebDriver driver) {
-        listen(AUTO_BEFORE, events.getBeforeGetTitle(), driver);
+    public void beforeGetTitle(final WebDriver webDriver) {
+        listen(AUTO_BEFORE, events.getBeforeGetTitle(), webDriver);
     }
 
     @Override
     @Generated
-    public void afterGetTitle(final WebDriver driver, final String result) {
-        listen(AUTO_AFTER, events.getAfterGetTitle(), driver, result);
+    public void afterGetTitle(final WebDriver webDriver, final String result) {
+        listen(AUTO_AFTER, events.getAfterGetTitle(), webDriver, result);
     }
 
     @Override
     @Generated
-    public void beforeFindElement(final WebDriver driver, final By locator) {
-        listen(AUTO_BEFORE, events.getBeforeFindElement(), driver, locator);
+    public void beforeFindElement(final WebDriver webDriver, final By locator) {
+        listen(AUTO_BEFORE, events.getBeforeFindElement(), webDriver, locator);
     }
 
     @Override
     @Generated
-    public void afterFindElement(final WebDriver driver, final By locator, final WebElement result) {
-        listen(AUTO_AFTER, events.getAfterFindElement(), driver, locator, result);
+    public void afterFindElement(final WebDriver webDriver, final By locator, final WebElement result) {
+        listen(AUTO_AFTER, events.getAfterFindElement(), webDriver, locator, result);
     }
 
     @Override
     @Generated
-    public void beforeFindElements(final WebDriver driver, final By locator) {
-        listen(AUTO_BEFORE, events.getBeforeFindElements(), driver, locator);
+    public void beforeFindElements(final WebDriver webDriver, final By locator) {
+        listen(AUTO_BEFORE, events.getBeforeFindElements(), webDriver, locator);
     }
 
     @Override
     @Generated
-    public void afterFindElements(final WebDriver driver, final By locator, final List<WebElement> result) {
-        listen(AUTO_AFTER, events.getAfterFindElements(), driver, locator, result);
+    public void afterFindElements(final WebDriver webDriver, final By locator, final List<WebElement> result) {
+        listen(AUTO_AFTER, events.getAfterFindElements(), webDriver, locator, result);
     }
 
     @Override
     @Generated
-    public void beforeGetPageSource(final WebDriver driver) {
-        listen(AUTO_BEFORE, events.getBeforeGetPageSource(), driver);
+    public void beforeGetPageSource(final WebDriver webDriver) {
+        listen(AUTO_BEFORE, events.getBeforeGetPageSource(), webDriver);
     }
 
     @Override
     @Generated
-    public void afterGetPageSource(final WebDriver driver, final String result) {
-        listen(AUTO_AFTER, events.getAfterGetPageSource(), driver, result.replace("<", "&lt;").replace(">", "&gt;"));
+    public void afterGetPageSource(final WebDriver webDriver, final String result) {
+        listen(AUTO_AFTER, events.getAfterGetPageSource(), webDriver, result.replace("<", "&lt;").replace(">", "&gt;"));
     }
 
     @Override
     @Generated
-    public void beforeClose(final WebDriver driver) {
-        listen(AUTO_BEFORE, events.getBeforeClose(), driver);
+    public void beforeClose(final WebDriver webDriver) {
+        listen(AUTO_BEFORE, events.getBeforeClose(), webDriver);
     }
 
     @Override
     @Generated
-    public void afterClose(final WebDriver driver) {
-        listen(AUTO_AFTER, events.getAfterClose(), driver);
+    public void afterClose(final WebDriver webDriver) {
+        listen(AUTO_AFTER, events.getAfterClose(), webDriver);
     }
 
     @Override
     @Generated
-    public void beforeQuit(final WebDriver driver) {
-        listen(AUTO_BEFORE, events.getBeforeQuit(), driver);
+    public void beforeQuit(final WebDriver webDriver) {
+        listen(AUTO_BEFORE, events.getBeforeQuit(), webDriver);
     }
 
     @Override
     @Generated
-    public void afterQuit(final WebDriver driver) {
-        listen(AUTO_AFTER, events.getAfterQuit(), driver);
+    public void afterQuit(final WebDriver webDriver) {
+        listen(AUTO_AFTER, events.getAfterQuit(), webDriver);
     }
 
     @Override
     @Generated
-    public void beforeGetWindowHandles(final WebDriver driver) {
-        listen(AUTO_BEFORE, events.getBeforeGetWindowHandles(), driver);
+    public void beforeGetWindowHandles(final WebDriver webDriver) {
+        listen(AUTO_BEFORE, events.getBeforeGetWindowHandles(), webDriver);
     }
 
     @Override
     @Generated
-    public void afterGetWindowHandles(final WebDriver driver, final Set<String> result) {
-        listen(AUTO_AFTER, events.getAfterGetWindowHandles(), driver, result);
+    public void afterGetWindowHandles(final WebDriver webDriver, final Set<String> result) {
+        listen(AUTO_AFTER, events.getAfterGetWindowHandles(), webDriver, result);
     }
 
     @Override
     @Generated
-    public void beforeGetWindowHandle(final WebDriver driver) {
-        listen(AUTO_BEFORE, events.getBeforeGetWindowHandle(), driver);
+    public void beforeGetWindowHandle(final WebDriver webDriver) {
+        listen(AUTO_BEFORE, events.getBeforeGetWindowHandle(), webDriver);
     }
 
     @Override
     @Generated
-    public void afterGetWindowHandle(final WebDriver driver, final String result) {
-        listen(AUTO_AFTER, events.getAfterGetWindowHandle(), driver, result);
+    public void afterGetWindowHandle(final WebDriver webDriver, final String result) {
+        listen(AUTO_AFTER, events.getAfterGetWindowHandle(), webDriver, result);
     }
 
     @Override
     @Generated
-    public void beforeExecuteScript(final WebDriver driver, final String script, final Object[] args) {
-        listen(AUTO_BEFORE, events.getBeforeExecuteScript(), driver, script, Arrays.toString(args));
+    public void beforeExecuteScript(final WebDriver webDriver, final String script, final Object[] args) {
+        listen(AUTO_BEFORE, events.getBeforeExecuteScript(), webDriver, script, Arrays.toString(args));
     }
 
     @Override
     @Generated
-    public void afterExecuteScript(final WebDriver driver, final String script, final Object[] args, final Object result) {
-        listen(AUTO_AFTER, events.getAfterExecuteScript(), driver, script, Arrays.toString(args), result);
+    public void afterExecuteScript(final WebDriver webDriver, final String script, final Object[] args, final Object result) {
+        listen(AUTO_AFTER, events.getAfterExecuteScript(), webDriver, script, Arrays.toString(args), result);
     }
 
     @Override
     @Generated
-    public void beforeExecuteAsyncScript(final WebDriver driver, final String script, final Object[] args) {
-        listen(AUTO_BEFORE, events.getBeforeExecuteAsyncScript(), driver, script, Arrays.toString(args));
+    public void beforeExecuteAsyncScript(final WebDriver webDriver, final String script, final Object[] args) {
+        listen(AUTO_BEFORE, events.getBeforeExecuteAsyncScript(), webDriver, script, Arrays.toString(args));
     }
 
     @Override
     @Generated
-    public void afterExecuteAsyncScript(final WebDriver driver, final String script, final Object[] args, final Object result) {
-        listen(AUTO_AFTER, events.getAfterExecuteAsyncScript(), driver, script, Arrays.toString(args), result);
+    public void afterExecuteAsyncScript(final WebDriver webDriver, final String script, final Object[] args, final Object result) {
+        listen(AUTO_AFTER, events.getAfterExecuteAsyncScript(), webDriver, script, Arrays.toString(args), result);
     }
 
     @Override
     @Generated
-    public void beforePerform(final WebDriver driver, final Collection<Sequence> actions) {
-        listen(AUTO_BEFORE, events.getBeforePerform(), driver, actions);
+    public void beforePerform(final WebDriver webDriver, final Collection<Sequence> actions) {
+        listen(AUTO_BEFORE, events.getBeforePerform(), webDriver, actions);
     }
 
     @Override
     @Generated
-    public void afterPerform(final WebDriver driver, final Collection<Sequence> actions) {
-        listen(AUTO_AFTER, events.getAfterPerform(), driver, actions);
+    public void afterPerform(final WebDriver webDriver, final Collection<Sequence> actions) {
+        listen(AUTO_AFTER, events.getAfterPerform(), webDriver, actions);
     }
 
     @Override
     @Generated
-    public void beforeResetInputState(final WebDriver driver) {
-        listen(AUTO_BEFORE, events.getBeforeResetInputState(), driver);
+    public void beforeResetInputState(final WebDriver webDriver) {
+        listen(AUTO_BEFORE, events.getBeforeResetInputState(), webDriver);
     }
 
     @Override
     @Generated
-    public void afterResetInputState(final WebDriver driver) {
-        listen(AUTO_AFTER, events.getAfterResetInputState(), driver);
+    public void afterResetInputState(final WebDriver webDriver) {
+        listen(AUTO_AFTER, events.getAfterResetInputState(), webDriver);
     }
 
     @Override

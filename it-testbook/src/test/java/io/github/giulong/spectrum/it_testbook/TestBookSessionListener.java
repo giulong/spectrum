@@ -48,8 +48,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     @Override
     @SneakyThrows
     public void launcherSessionOpened(final LauncherSession session) {
-        final Configuration defaultConfiguration = yamlUtils.readInternal("yaml/configuration.default.yaml", Configuration.class);
-        final Configuration configuration = yamlUtils.readInternal("configuration.yaml", Configuration.class);
+        final Configuration configuration = yamlUtils.readInternal("configuration.yml", Configuration.class);
         final Configuration.Extent extent = configuration.getExtent();
         final FileReporter htmlTestBookReporter = getTestBookReporterFrom(configuration, "html");
         final FileReporter txtTestBookReporter = getTestBookReporterFrom(configuration, "txt");
@@ -57,9 +56,6 @@ public class TestBookSessionListener implements LauncherSessionListener {
         final FileReporter txtSummaryReporter = getSummaryReporterFrom(configuration, "txt");
         final Path testBookReportsPath = Path.of("target/spectrum/testbook");
         final Path summaryReportsPath = Path.of("target/spectrum/summary");
-
-        Reflections.setField("configuration", metadataManager, defaultConfiguration);
-        metadataManager.sessionOpened();
 
         extentReportsDirectory = Path.of("target/spectrum/reports");
         htmlTestBooksDirectory = testBookReportsPath;

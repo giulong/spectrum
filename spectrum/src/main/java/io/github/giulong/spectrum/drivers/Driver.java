@@ -39,7 +39,7 @@ public abstract class Driver<T extends MutableCapabilities, U extends DriverServ
 
         final WebDriver webDriver = configuration.getRuntime().getEnvironment().setupFor(this);
 
-        configureWaitsOf(webDriver, configuration.getWebDriver().getWaits());
+        configureWaitsOf(webDriver, configuration.getDrivers().getWaits());
 
         WEB_DRIVER_THREAD_LOCAL.set(ThreadGuard.protect(webDriver));
         log.debug("Capabilities: {}", capabilities.toJson());
@@ -47,7 +47,7 @@ public abstract class Driver<T extends MutableCapabilities, U extends DriverServ
         return WEB_DRIVER_THREAD_LOCAL.get();
     }
 
-    public void configureWaitsOf(final WebDriver webDriver, final Configuration.WebDriver.Waits waits) {
+    public void configureWaitsOf(final WebDriver webDriver, final Configuration.Drivers.Waits waits) {
         webDriver
                 .manage()
                 .timeouts()

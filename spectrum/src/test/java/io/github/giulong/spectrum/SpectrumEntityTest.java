@@ -129,7 +129,7 @@ class SpectrumEntityTest {
                 "extentTest",
                 "actions",
                 "eventsDispatcher",
-                "webDriver",
+                "driver",
                 "implicitWait",
                 "pageLoadWait",
                 "scriptWait",

@@ -15,6 +15,7 @@ import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.util.List;
 import java.util.logging.Level;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,10 +28,10 @@ import static org.openqa.selenium.logging.LogType.*;
 class EdgeTest {
 
     @Mock
-    private Configuration.WebDriver webDriverConfig;
+    private Configuration.Drivers driversConfig;
 
     @Mock
-    private Configuration.WebDriver.Edge edgeConfig;
+    private Configuration.Drivers.Edge edgeConfig;
 
     @Mock
     private Level browserLevel;
@@ -45,7 +46,7 @@ class EdgeTest {
     private Level performanceLevel;
 
     @Mock
-    private Configuration.WebDriver.Logs logs;
+    private Configuration.Drivers.Logs logs;
 
     @InjectMocks
     private Edge edge;
@@ -69,14 +70,19 @@ class EdgeTest {
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
     public void buildCapabilitiesFrom() {
-        when(configuration.getWebDriver()).thenReturn(webDriverConfig);
-        when(webDriverConfig.getEdge()).thenReturn(edgeConfig);
-        when(webDriverConfig.getLogs()).thenReturn(logs);
+        final List<String> arguments = List.of("args");
+
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getEdge()).thenReturn(edgeConfig);
+        when(driversConfig.getLogs()).thenReturn(logs);
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);
+        when(edgeConfig.getArgs()).thenReturn(arguments);
 
-        MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class);
+        MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class, (mock, context) -> {
+            when(mock.addArguments(arguments)).thenReturn(mock);
+        });
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
         edge.buildCapabilities();
@@ -87,6 +93,8 @@ class EdgeTest {
         verify(loggingPreferences).enable(DRIVER, driverLevel);
         verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
         verify(edgeOptions).setCapability(LOGGING_PREFS, loggingPreferences);
+
+        assertEquals(edgeOptions, Reflections.getFieldValue("capabilities", edge));
 
         edgeOptionsMockedConstruction.close();
         loggingPreferencesMockedConstruction.close();

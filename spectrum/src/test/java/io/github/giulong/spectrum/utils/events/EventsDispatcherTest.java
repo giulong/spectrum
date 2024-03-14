@@ -4,6 +4,7 @@ import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.Summary;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +32,9 @@ class EventsDispatcherTest {
 
     @Mock
     private Configuration configuration;
+
+    @Mock
+    private Summary summary;
 
     @Mock
     private ExtensionContext extensionContext;
@@ -89,12 +93,16 @@ class EventsDispatcherTest {
     @DisplayName("sessionClosed should fire the after suite event")
     public void sessionClosed() {
         final Set<String> tags = Set.of(SUITE);
+        final Result result = SUCCESSFUL;
+
+        when(configuration.getSummary()).thenReturn(summary);
+        when(summary.toResult()).thenReturn(result);
 
         when(Event.builder()).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.reason(AFTER)).thenReturn(eventBuilder);
-        when(eventBuilder.result(null)).thenReturn(eventBuilder);
+        when(eventBuilder.result(result)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
@@ -120,6 +128,30 @@ class EventsDispatcherTest {
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(reason, tags);
+
+        verify(consumer1).match(event);
+        verify(consumer2).match(event);
+    }
+
+    @Test
+    @DisplayName("fire should build an event with the provided reason, tags and result and call match on every consumer")
+    public void fireReasonTagsResult() {
+        final String reason = AFTER;
+        final Set<String> tags = Set.of();
+        final Result result = SUCCESSFUL;
+
+        when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
+
+        when(Event.builder()).thenReturn(eventBuilder);
+        when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
+        when(eventBuilder.result(result)).thenReturn(eventBuilder);
+        when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
+        when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.build()).thenReturn(event);
+
+        eventsDispatcher.fire(reason, tags, result);
 
         verify(consumer1).match(event);
         verify(consumer2).match(event);

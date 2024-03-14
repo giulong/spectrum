@@ -23,16 +23,17 @@ import static java.util.Comparator.comparingLong;
 
 @Slf4j
 @Getter
-@SuppressWarnings("unused")
 public abstract class FileReporter extends Reporter implements CanProduceMetadata {
 
     @JsonIgnore
     private final MetadataManager metadataManager = MetadataManager.getInstance();
 
     @JsonPropertyDescription("Path to the template to be used, relative to src/test/resources")
+    @SuppressWarnings("unused")
     private String template;
 
     @JsonPropertyDescription("Where to produce the output, relative to the root of the project")
+    @SuppressWarnings("unused")
     private String output;
 
     @JsonPropertyDescription("Retention rules configuration")

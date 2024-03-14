@@ -30,6 +30,7 @@ public class DriverDeserializer extends InterpolatedDeserializer<Driver<?, ?, ?>
             case "chrome" -> new Chrome();
             case "firefox" -> new Firefox();
             case "edge" -> new Edge();
+            case "safari" -> new Safari();
             case "uiAutomator2" -> new UiAutomator2();
             case "espresso" -> new Espresso();
             case "xcuiTest" -> new XCUITest();

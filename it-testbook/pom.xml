@@ -16,7 +16,7 @@
         <dependency>
             <groupId>io.github.giulong</groupId>
             <artifactId>spectrum</artifactId>
-            <version>${project.version}</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -45,10 +45,6 @@
                 <configuration>
                     <skip>true</skip>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.ekryd.echo-maven-plugin</groupId>
-                <artifactId>echo-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

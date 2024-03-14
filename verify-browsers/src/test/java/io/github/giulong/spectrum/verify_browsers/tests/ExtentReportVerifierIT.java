@@ -23,7 +23,7 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
     public void report() {
         final Map<String, String> testLabels = data.getExtentReport().getTestLabels();
 
-        webDriver.get(String.format("file:///%s/it-testbook/target/spectrum/reports/report.html", Path.of(System.getProperty("user.dir")).getParent()));
+        driver.get(String.format("file:///%s/it-testbook/target/spectrum/reports/report.html", Path.of(System.getProperty("user.dir")).getParent()));
 
         assertEquals(8, extentReportPage.getTestViewTests().size(), "Total tests");
         assertEquals(6, countTestsWithStatus("pass"), "Passed tests");
