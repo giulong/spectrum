@@ -1268,6 +1268,12 @@ video:
 > This allows to avoid encoding the same frame multiple times.<br/>
 > The consequence is that the video recorded does **NOT** replicate the actual timing of the test execution.
 
+> ⚠️ **Empty Video**<br/>
+> When video recording is enabled but no frame was added to it, which might happen when no screenshot was taken
+> according to the events configured and the current log level, a default "No Video" frame is added to it:
+> 
+> ![no-video.png](assets/images/no-video.png)
+
 ---
 
 # Automatically Generated Reports

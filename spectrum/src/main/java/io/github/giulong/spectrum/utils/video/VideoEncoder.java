@@ -10,6 +10,8 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.net.URL;
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -18,6 +20,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Slf4j
 public class VideoEncoder extends Thread {
 
+    private final ClassLoader classLoader = VideoEncoder.class.getClassLoader();
     private final BlockingQueue<File> blockingQueue;
     private final String className;
     private final String methodName;
@@ -25,6 +28,7 @@ public class VideoEncoder extends Thread {
     private final Video video;
     private final Dimension dimension;
 
+    private boolean framesAdded;
     private boolean stopSignal;
 
     @SneakyThrows
@@ -63,6 +67,12 @@ public class VideoEncoder extends Thread {
             processNext();
         }
 
+        if (!framesAdded) {
+            log.debug("No frames were added to the video. Adding 'no-video.png'");
+            final URL noVideoPng = Objects.requireNonNull(classLoader.getResource("no-video.png"));
+            encoder.encodeImage(ImageIO.read(noVideoPng));
+        }
+
         encoder.finish();
     }
 
@@ -76,6 +86,7 @@ public class VideoEncoder extends Thread {
 
         log.debug("Consuming: {}", screenshot);
         encoder.encodeImage(resize(ImageIO.read(screenshot)));
+        framesAdded = true;
     }
 
     protected BufferedImage resize(final BufferedImage bufferedImage) {

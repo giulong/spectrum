@@ -12,9 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mock;
-import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
@@ -25,6 +23,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
 
@@ -81,6 +81,9 @@ class VideoEncoderTest {
 
     @Mock
     private Video video;
+
+    @Captor
+    private ArgumentCaptor<URL> urlArgumentCaptor;
 
     private VideoEncoder videoEncoder;
 
@@ -187,6 +190,23 @@ class VideoEncoderTest {
         verify(encoder).finish();
 
         bufferedImageMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("run should add the no-video.png if no frames were added")
+    public void runNoFramesAdded() throws IOException {
+        Reflections.setField("stopSignal", videoEncoder, true);
+
+        imageIOMockedStatic.when(() -> ImageIO.read(urlArgumentCaptor.capture())).thenReturn(bufferedImage);
+        when(blockingQueue.isEmpty()).thenReturn(true);
+
+        //noinspection CallToThreadRun
+        videoEncoder.run();
+
+        assertEquals("no-video.png", Path.of(urlArgumentCaptor.getValue().toString()).getFileName().toString());
+        verify(encoder).encodeImage(bufferedImage);
+        verify(encoder).finish();
+
     }
 
     @Test
