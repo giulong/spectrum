@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.video.ScreenshotWatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.video.VideoEncoder;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.extensions.resolvers.ScreenshotWatcherResolver.SCREENSHOT_WATCHER;
 import static io.github.giulong.spectrum.extensions.resolvers.VideoEncoderResolver.VIDEO_ENCODER;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
@@ -37,6 +39,9 @@ class VideoConsumerTest {
     private Video video;
 
     @Mock
+    private ScreenshotWatcher screenshotWatcher;
+
+    @Mock
     private VideoEncoder videoEncoder;
 
     @InjectMocks
@@ -50,9 +55,12 @@ class VideoConsumerTest {
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
+        when(store.get(SCREENSHOT_WATCHER, ScreenshotWatcher.class)).thenReturn(screenshotWatcher);
         when(store.get(VIDEO_ENCODER, VideoEncoder.class)).thenReturn(videoEncoder);
 
         videoConsumer.accept(event);
+
+        verify(screenshotWatcher).done();
         verify(videoEncoder).done();
     }
 
@@ -66,6 +74,7 @@ class VideoConsumerTest {
         when(video.isDisabled()).thenReturn(true);
 
         videoConsumer.accept(event);
+        verify(screenshotWatcher, never()).done();
         verify(videoEncoder, never()).done();
     }
 }

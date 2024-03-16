@@ -21,6 +21,7 @@ public class ScreenshotWatcher extends Thread {
     private final Video video;
 
     private byte[] lastFrameDigest;
+    private boolean stopSignal;
 
     @SneakyThrows
     public ScreenshotWatcher(final BlockingQueue<File> blockingQueue, final Path screenshotFolderPath, final WatchService watchService, final Video video) {
@@ -39,7 +40,7 @@ public class ScreenshotWatcher extends Thread {
     public void run() {
         WatchKey watchKey;
 
-        while ((watchKey = watchService.take()).isValid()) {
+        while (!stopSignal && (watchKey = watchService.take()).isValid()) {
             for (WatchEvent<?> watchEvent : watchKey.pollEvents()) {
                 final File screenshot = screenshotFolderPath.resolve(watchEvent.context().toString()).toFile();
 
@@ -64,5 +65,11 @@ public class ScreenshotWatcher extends Thread {
 
         log.trace("Skipping duplicate frame");
         return false;
+    }
+
+    @SneakyThrows
+    public void done() {
+        stopSignal = true;
+        join(5000);
     }
 }

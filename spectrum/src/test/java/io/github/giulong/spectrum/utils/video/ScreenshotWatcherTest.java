@@ -21,8 +21,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -131,6 +130,18 @@ class ScreenshotWatcherTest {
         );
     }
 
+    @Test
+    @DisplayName("run should do nothing when stopSignal is true")
+    public void runStopSignal() {
+        Reflections.setField("stopSignal", screenshotWatcher, true);
+
+        //noinspection CallToThreadRun
+        screenshotWatcher.run();
+
+        verifyNoInteractions(watchService);
+        verifyNoInteractions(blockingQueue);
+    }
+
     @DisplayName("isNewFrame should return if the provided screenshot is new")
     @ParameterizedTest(name = "with digest equals to last one {0} we expect {1}")
     @MethodSource("valuesProvider")
@@ -149,5 +160,15 @@ class ScreenshotWatcherTest {
                 arguments(null, true),
                 arguments(oldFrameDigest, false)
         );
+    }
+
+    @Test
+    @DisplayName("done should set the stop signal to true and join the thread")
+    public void done() throws IllegalAccessException {
+        final Field stopSignal = Reflections.getField("stopSignal", screenshotWatcher);
+
+        screenshotWatcher.done();
+
+        assertTrue(stopSignal.getBoolean(screenshotWatcher));
     }
 }
