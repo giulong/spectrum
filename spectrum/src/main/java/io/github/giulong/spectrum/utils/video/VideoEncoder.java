@@ -43,12 +43,20 @@ public class VideoEncoder extends Thread {
     }
 
     protected Dimension chooseDimensionFor(final WebDriver driver) {
+        int width = video.getWidth();
+        int height = video.getHeight();
+
         if (video.getWidth() < 1 || video.getHeight() < 1) {
             final Dimension size = driver.manage().window().getSize();
-            return new Dimension(makeItEven(size.getWidth()), makeItEven(size.getHeight()));
+            width = size.getWidth();
+            height = size.getHeight() - video.getMenuBarsHeight();
         }
 
-        return new Dimension(makeItEven(video.getWidth()), makeItEven(video.getHeight()));
+        final int evenWidth = makeItEven(width);
+        final int evenHeight = makeItEven(height);
+
+        log.debug("Video dimensions: {}x{}", evenWidth, evenHeight);
+        return new Dimension(evenWidth, evenHeight);
     }
 
     protected int makeItEven(final int i) {
@@ -90,10 +98,15 @@ public class VideoEncoder extends Thread {
     }
 
     protected BufferedImage resize(final BufferedImage bufferedImage) {
-        final BufferedImage resizedImage = new BufferedImage(dimension.getWidth(), dimension.getHeight(), TYPE_INT_RGB);
-
+        final int width = dimension.getWidth();
+        final int height = dimension.getHeight();
+        final int minWidth = Math.min(width, bufferedImage.getWidth());
+        final int minHeight = Math.min(height, bufferedImage.getHeight());
+        final BufferedImage resizedImage = new BufferedImage(width, height, TYPE_INT_RGB);
         final Graphics2D graphics2D = resizedImage.createGraphics();
-        graphics2D.drawImage(bufferedImage, 0, 0, null);
+
+        log.trace("Resizing screenshot to {}x{}", minWidth, minHeight);
+        graphics2D.drawImage(bufferedImage, 0, 0, minWidth, minHeight, null);
         graphics2D.dispose();
 
         return resizedImage;

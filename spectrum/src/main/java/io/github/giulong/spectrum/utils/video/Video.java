@@ -22,6 +22,10 @@ public class Video {
     @SuppressWarnings("unused")
     private int height;
 
+    @JsonPropertyDescription("Browser's menu bars height. When using the browser size (with height: 0), this is used to reduce the screenshots size to avoid stretching them")
+    @SuppressWarnings("unused")
+    private int menuBarsHeight;
+
     @JsonPropertyDescription("Properties of the video tag inside the extent report")
     @SuppressWarnings("unused")
     private ExtentTest extentTest;

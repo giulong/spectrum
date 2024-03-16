@@ -244,6 +244,9 @@ class VideoEncoderTest {
     @Test
     @DisplayName("resize should resize the image and return it")
     public void resize() {
+        final int width = 6;
+        final int height = 100;
+
         MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
             assertEquals(EVEN_WIDTH, context.arguments().getFirst());
             assertEquals(EVEN_HEIGHT, context.arguments().get(1));
@@ -252,10 +255,13 @@ class VideoEncoderTest {
             when(mock.createGraphics()).thenReturn(graphics2D);
         });
 
-        final BufferedImage actual = videoEncoder.resize(bufferedImage);
-        assertEquals(bufferedImageMockedConstruction.constructed().getFirst(), actual);
+        when(bufferedImage.getWidth()).thenReturn(width);
+        when(bufferedImage.getHeight()).thenReturn(height);
 
-        verify(graphics2D).drawImage(bufferedImage, 0, 0, null);
+        final BufferedImage actual = videoEncoder.resize(bufferedImage);
+
+        assertEquals(bufferedImageMockedConstruction.constructed().getFirst(), actual);
+        verify(graphics2D).drawImage(bufferedImage, 0, 0, width, EVEN_HEIGHT, null);
         verify(graphics2D).dispose();
 
         bufferedImageMockedConstruction.close();
