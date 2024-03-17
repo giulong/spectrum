@@ -136,8 +136,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final String downloadFolder = configuration.getRuntime().getDownloadsFolder();
         final Path downloadPath = Path.of(downloadFolder);
 
-        fileUtils.deleteDirectory(downloadPath);
-        Files.createDirectories(downloadPath);
+        Files.createDirectories(fileUtils.deleteDirectory(downloadPath));
     }
 
     @SuppressWarnings("unchecked")
