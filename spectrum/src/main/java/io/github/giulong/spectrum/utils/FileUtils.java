@@ -92,6 +92,11 @@ public final class FileUtils {
     }
 
     @SneakyThrows
+    public Path deleteContentOf(final Path directory) {
+        return Files.createDirectories(deleteDirectory(directory));
+    }
+
+    @SneakyThrows
     public void write(final Path path, final String content) {
         final boolean foldersCreated = path.getParent().toFile().mkdirs();
         log.trace("Folders created? {}. Writing {} to file {}", foldersCreated, content, path);

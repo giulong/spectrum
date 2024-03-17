@@ -136,6 +136,18 @@ class FileUtilsTest {
                 arguments(Files.createTempDirectory("downloadsFolder"), true));
     }
 
+    @DisplayName("deleteContentOf should delete the provided directory, recreate it, and return the reference to it")
+    @ParameterizedTest(name = "with value {0} which is existing? {1}")
+    @MethodSource("deleteDirectoryValuesProvider")
+    public void deleteContentOf(final Path directory, final boolean existing) {
+        directory.toFile().deleteOnExit();
+        assertEquals(existing, Files.exists(directory));
+
+        assertEquals(directory, fileUtils.deleteContentOf(directory));
+
+        assertTrue(Files.exists(directory));
+    }
+
     @Test
     @DisplayName("write should write the provided content to a file in the provided path, creating the parent folders if needed")
     public void write() {
