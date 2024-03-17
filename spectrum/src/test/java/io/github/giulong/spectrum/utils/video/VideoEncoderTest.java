@@ -105,23 +105,23 @@ class VideoEncoderTest {
     }
 
     @Test
-    @DisplayName("chooseDimensionFor should return a new Dimension based on webdriver dimension")
-    public void chooseDimensionFor() throws IllegalAccessException {
-        final Field dimension = Reflections.getField("dimension", videoEncoder);
-
-        videoEncoder.chooseDimensionFor(webDriver);
-        assertEquals(EVEN_WIDTH, ((Dimension) dimension.get(videoEncoder)).getWidth());
-        assertEquals(EVEN_HEIGHT, ((Dimension) dimension.get(videoEncoder)).getHeight());
+    @DisplayName("chooseDimensionFor should return a new Dimension based on the provided video dimension")
+    public void chooseDimensionFor() {
+        final Dimension actual = videoEncoder.chooseDimensionFor(webDriver);
+        assertEquals(EVEN_WIDTH, actual.getWidth());
+        assertEquals(EVEN_HEIGHT, actual.getHeight());
     }
 
-    @DisplayName("chooseDimensionFor should return a new Dimension based on provided parameters, if at least one is lte 0")
+    @DisplayName("chooseDimensionFor should return a new Dimension based on webDriver's dimension, if at least one is lte 0")
     @ParameterizedTest(name = "with width {0} and height {1}")
     @MethodSource("dimensionProvider")
-    public void chooseDimensionForProvided(final int width, final int height) throws IllegalAccessException {
+    public void chooseDimensionForProvided(final int width, final int height) {
+        final int menuBarsHeight = 123;
+
         reset(video);
         when(video.getWidth()).thenReturn(width);
 
-        if (width >= 1) {
+        if (width >= 1) {   // short-circuit
             when(video.getHeight()).thenReturn(height);
         }
         when(webDriver.manage()).thenReturn(options);
@@ -129,12 +129,12 @@ class VideoEncoderTest {
         when(window.getSize()).thenReturn(size);
         when(size.getWidth()).thenReturn(WIDTH);
         when(size.getHeight()).thenReturn(HEIGHT);
+        when(video.getMenuBarsHeight()).thenReturn(menuBarsHeight);
 
-        final Field dimension = Reflections.getField("dimension", videoEncoder);
+        final Dimension actual = videoEncoder.chooseDimensionFor(webDriver);
 
-        videoEncoder.chooseDimensionFor(webDriver);
-        assertEquals(EVEN_WIDTH, ((Dimension) dimension.get(videoEncoder)).getWidth());
-        assertEquals(EVEN_HEIGHT, ((Dimension) dimension.get(videoEncoder)).getHeight());
+        assertEquals(EVEN_WIDTH, actual.getWidth());
+        assertEquals(EVEN_HEIGHT - menuBarsHeight - 1, actual.getHeight());
     }
 
     public static Stream<Arguments> dimensionProvider() {
