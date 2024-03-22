@@ -5,12 +5,10 @@ import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.*;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import io.github.giulong.spectrum.utils.video.ScreenshotWatcher;
-import io.github.giulong.spectrum.utils.video.VideoEncoder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,12 +69,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final ScreenshotQueueResolver SCREENSHOT_QUEUE_RESOLVER = new ScreenshotQueueResolver();
 
     @RegisterExtension
-    public static final ScreenshotWatcherResolver SCREENSHOT_WATCHER_RESOLVER = new ScreenshotWatcherResolver();
-
-    @RegisterExtension
-    public static final VideoEncoderResolver VIDEO_ENCODER_RESOLVER = new VideoEncoderResolver();
-
-    @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
     protected List<SpectrumPage<?, Data>> spectrumPages;
@@ -86,8 +78,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver driver,
                            final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
                            final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher,
-                           final BlockingQueue<File> screenshotQueue, final ScreenshotWatcher screenshotWatcher, final VideoEncoder videoEncoder,
-                           final Data data) {
+                           final BlockingQueue<File> screenshotQueue, final Data data) {
         this.configuration = configuration;
         this.driver = driver;
         this.implicitWait = implicitWait;
@@ -128,10 +119,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public SpectrumPage<?, Data> initPage(final Field spectrumPageField) {
         log.debug("Initializing page {}", spectrumPageField.getName());
 
-        @SuppressWarnings("unchecked")
-        final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
-        @SuppressWarnings("unchecked")
-        final Class<SpectrumPage<?, Data>> spectrumPageClass = (Class<SpectrumPage<?, Data>>) spectrumPage.getClass();
+        @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
+        @SuppressWarnings("unchecked") final Class<SpectrumPage<?, Data>> spectrumPageClass = (Class<SpectrumPage<?, Data>>) spectrumPage.getClass();
         Reflections.setField(spectrumPageField, this, spectrumPage);
 
         final String className = spectrumPageClass.getSimpleName();

@@ -39,7 +39,6 @@ class TestDataResolverTest {
 
     private static MockedStatic<TestData> testDataMockedStatic;
 
-
     @Mock
     private Path path;
 
@@ -111,7 +110,6 @@ class TestDataResolverTest {
         final String testId = "string-methoddisplayname";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
-        //final Path videoFolderPath = REPORTS_FOLDER.resolve(Path.of(fileNameWithoutExtension, "videos", className, methodName));
 
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
 
