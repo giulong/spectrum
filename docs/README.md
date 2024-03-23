@@ -1,3 +1,5 @@
+# Introduction
+
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/){:target="_blank"} and [Selenium 4](https://www.selenium.dev/){:target="_blank"} framework that aims to
 simplify the writing of e2e tests, providing these features:
 
