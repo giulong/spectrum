@@ -1,10 +1,11 @@
-const header = document.getElementsByTagName('header')[0];
+const body = document.querySelector('body');
+const bodyPaddingTop = parseInt(getComputedStyle(body).paddingTop);
+const header = document.querySelector('header');
 const wrapper = document.getElementsByClassName('wrapper')[0];
 const searchContainer = document.getElementById('search-container');
 const searchInput = document.getElementById('search-input');
 const resultsContainer = document.getElementById('results-container');
 const noResult = document.createElement('li');
-const searchContainerTop = searchContainer.getBoundingClientRect().top - 5;
 const section = document.querySelectorAll('section')[0];
 const topButton = document.getElementById("topButton");
 
@@ -59,7 +60,7 @@ function highlight() {
 }
 
 function stickyHeader() {
-    if (window.pageYOffset > searchContainerTop) {
+    if (window.pageYOffset > bodyPaddingTop) {
         header.classList.add('sticky');
         header.style.width = wrapper.offsetWidth - 40 + 'px';
         section.classList.add('sticky-section');
