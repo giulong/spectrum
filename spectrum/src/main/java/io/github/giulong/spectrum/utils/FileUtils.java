@@ -73,10 +73,10 @@ public final class FileUtils {
     }
 
     @SneakyThrows
-    public void deleteDirectory(final Path directory) {
+    public Path deleteDirectory(final Path directory) {
         if (!Files.exists(directory)) {
             log.debug("Avoid deleting non-existing directory '{}'", directory);
-            return;
+            return directory;
         }
 
         log.debug("About to delete directory '{}'", directory);
@@ -87,6 +87,13 @@ public final class FileUtils {
                     .map(Path::toFile)
                     .forEach(f -> log.trace("File '{}' deleted? {}", f, f.delete()));
         }
+
+        return directory;
+    }
+
+    @SneakyThrows
+    public Path deleteContentOf(final Path directory) {
+        return Files.createDirectories(deleteDirectory(directory));
     }
 
     @SneakyThrows

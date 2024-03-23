@@ -249,7 +249,7 @@ class EventsListenerTest {
     public void listenOff() {
         when(event.getLevel()).thenReturn(Level.OFF);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
     }
 
@@ -263,7 +263,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(TRACE);
         when(event.getWait()).thenReturn(0L);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
     }
 
@@ -274,7 +274,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(TRACE);
         when(event.getWait()).thenReturn(wait);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
         verify(extentTest, never()).info(tagsMessage);
     }
@@ -289,7 +289,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(DEBUG);
         when(event.getWait()).thenReturn(wait);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
     }
 
@@ -300,7 +300,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(DEBUG);
         when(event.getWait()).thenReturn(wait);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
         verify(extentTest, never()).info(tagsMessage);
     }
@@ -315,7 +315,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
     }
 
@@ -326,7 +326,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
         verify(extentTest, never()).info(tagsMessage);
     }
@@ -341,7 +341,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(WARN);
         when(event.getWait()).thenReturn(wait);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(extentTest).warning(markupArgumentCaptor.capture());
         final Markup markup = markupArgumentCaptor.getValue();
@@ -355,7 +355,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(WARN);
         when(event.getWait()).thenReturn(wait);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
         verify(extentTest, never()).warning(markupArgumentCaptor.capture());
     }
@@ -367,7 +367,7 @@ class EventsListenerTest {
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(ALL);
 
-        eventsListener.listen(AUTO_BEFORE, event, arg);
+        eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(store, never()).get(EXTENT_TEST, ExtentTest.class);
         verify(extentTest, never()).warning(markupArgumentCaptor.capture());
     }

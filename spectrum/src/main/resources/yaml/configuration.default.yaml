@@ -32,6 +32,7 @@ video:
   frames: [ ] # Kind of frames to be added to the video. By default, nothing is recorded
   width: 0  # width of the video. A value of 0 means the actual browser size will be used. High resolution values will significantly impact performance
   height: 0 # height of the video. A value of 0 means the actual browser size will be used. High resolution values will significantly impact performance
+  menuBarsHeight: 60 # Browser's menu bars height. When using the browser size (with height: 0), this is used to reduce the screenshots size to avoid stretching them
   extentTest: # Properties of the video tag inside the extent report
     attach: true # by default, the video (if recorded) is attached to the extent report
     width: 320 # width of the video in the extent report
@@ -284,7 +285,7 @@ drivers:
     beforeGetSize:
       message: Getting size of %1$s
     afterGetSize:
-      level: INFO
+      level: OFF
       message: Size of %1$s is %2$s
     beforeGetCssValue:
       message: Getting css property %2$s of element %1$s
@@ -435,11 +436,11 @@ eventsConsumers:
       events:
         - reason: after
           tags: [ test ]
-  - driver: # We need to close the driver once each test is done
+  - video: # We need to finalize the video once each test is done
       events:
         - reason: after
           tags: [ test ]
-  - video: # We need to finalize the video once each test is done
+  - driver: # We need to close the driver once each test is done
       events:
         - reason: after
           tags: [ test ]

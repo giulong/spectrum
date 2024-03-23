@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.FileUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -36,8 +35,8 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final String methodDisplayName = context.getDisplayName();
         final String testId = buildTestIdFrom(className, methodDisplayName);
         final String fileName = fileUtils.removeExtensionFrom(extent.getFileName());
-        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, className, methodName);
-        final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, className, methodName);
+        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, classDisplayName, methodDisplayName);
+        final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, classDisplayName, methodDisplayName);
         final TestData testData = TestData
                 .builder()
                 .className(className)
@@ -55,9 +54,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
 
     @SneakyThrows
     public Path getScreenshotFolderPathForCurrentTest(final String reportsFolder, final String extentFileName, final String className, final String methodName) {
-        final Path path = Path.of(reportsFolder, extentFileName, "screenshots", className, methodName).toAbsolutePath();
-        Files.createDirectories(path);
-        return path;
+        return fileUtils.deleteContentOf(Path.of(reportsFolder, extentFileName, "screenshots", className, methodName).toAbsolutePath());
     }
 
     @SneakyThrows
@@ -67,9 +64,9 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
             return null;
         }
 
-        final Path path = Path.of(reportsFolder, extentFileName, "videos", className, methodName).toAbsolutePath();
-        Files.createDirectories(path);
-        return path.resolve(String.format("%s.mp4", randomUUID()));
+        return fileUtils
+                .deleteContentOf(Path.of(reportsFolder, extentFileName, "videos", className, methodName).toAbsolutePath())
+                .resolve(String.format("%s.mp4", randomUUID()));
     }
 
     public static String buildTestIdFrom(final String className, final String testName) {
