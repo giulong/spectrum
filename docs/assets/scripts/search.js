@@ -73,6 +73,28 @@ function stickyHeader() {
         topButton.style.visibility = 'hidden';
         topButton.style.opacity = '0';
     }
+
+    const headingInViewport = headings.find(h => isElementInViewport(h));
+    if (headingInViewport) {
+        const text = buildAnchorFrom(headingInViewport.innerText);
+
+        tocElements.forEach(te => {
+            if (buildAnchorFrom(te.innerText) == text) {
+                te.classList.add('toc-element-selected');
+                te.scrollIntoView({ behavior: "smooth", block: "center" });
+            } else {
+                te.classList.remove('toc-element-selected');
+            }
+        });
+    }
+}
+
+function isElementInViewport(element) {
+    const rect = element.getBoundingClientRect();
+
+    return rect.top >= 0 && rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth);
 }
 
 function showResults() {
@@ -91,12 +113,12 @@ function scrollUpABit() {
 }
 
 function selectActiveTocElement() {
-    tocElements.forEach(h => {
-        if ("#" + buildAnchorFrom(h.innerText) == location.hash) {
-            h.classList.add('toc-element-selected');
-            h.scrollIntoView({ behavior: "smooth", block: "center" });
+    tocElements.forEach(te => {
+        if ("#" + buildAnchorFrom(te.innerText) == location.hash) {
+            te.classList.add('toc-element-selected');
+            te.scrollIntoView({ behavior: "smooth", block: "center" });
         } else {
-            h.classList.remove('toc-element-selected');
+            te.classList.remove('toc-element-selected');
         }
     });
 }
