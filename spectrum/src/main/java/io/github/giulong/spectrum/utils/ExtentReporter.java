@@ -22,10 +22,8 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.aventstack.extentreports.Status.INFO;
@@ -50,6 +48,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final Configuration configuration = Configuration.getInstance();
+    private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
 
     private ExtentReports extentReports;
 
@@ -87,7 +86,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         final Configuration.Extent extent = configuration.getExtent();
         if (extent.isInline()) {
             final Path extentFile = getReportPathFrom(extent);
-            final String inlineReport = inlineVideosOf(inlineImagesOf(Files.readString(extentFile)));
+            final String inlineReport = htmlUtils.inline(Files.readString(extentFile));
             final String inlineReportName = String.format("%s-inline.html", fileUtils.removeExtensionFrom(extent.getFileName()));
 
             fileUtils.write(extentFile.getParent().resolve(inlineReportName), inlineReport);
@@ -111,44 +110,6 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         log.debug("Adding metadata '{}'. Current size: {}, max capacity: {}", file, queue.size(), maxSize);
         queue.shrinkTo(maxSize - 1).add(file);
         metadataManager.setSuccessfulQueueOf(this, queue);
-    }
-
-    @SneakyThrows
-    public String inlineImagesOf(final String report) {
-        final Matcher matcher = IMAGE_TAG.matcher(report);
-        String inlineReport = report;
-
-        while (matcher.find()) {
-            final String src = matcher.group("src");
-            final byte[] bytes = Files.readAllBytes(Path.of(src));
-            final String encoded = new String(Base64.getEncoder().encode(bytes));
-            final String replacement = "<div class=\"row mb-3\"><div class=\"col-md-3\">" +
-                    "<a href=\"data:image/png;base64," + encoded + "\" data-featherlight=\"image\"><img src=\"data:image/png;base64," + encoded + "\"/></a>" +
-                    "</div></div>";
-
-            log.debug("Found img with src {}", src);
-            inlineReport = inlineReport.replace(matcher.group(0), replacement);
-        }
-
-        return inlineReport;
-    }
-
-    @SneakyThrows
-    public String inlineVideosOf(final String report) {
-        final Matcher matcher = VIDEO_SRC.matcher(report);
-        String inlineReport = report;
-
-        while (matcher.find()) {
-            final String src = matcher.group("src");
-            final byte[] bytes = Files.readAllBytes(Path.of(src));
-            final String encoded = new String(Base64.getEncoder().encode(bytes));
-            final String replacement = String.format("data:video/mp4;base64,%s", encoded);
-
-            log.debug("Found video with src {}", src);
-            inlineReport = inlineReport.replace(src, replacement);
-        }
-
-        return inlineReport;
     }
 
     @SneakyThrows

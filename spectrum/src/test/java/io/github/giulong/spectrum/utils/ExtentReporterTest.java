@@ -36,8 +36,6 @@ import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static com.aventstack.extentreports.reporter.configuration.Theme.DARK;
 import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -65,6 +63,9 @@ class ExtentReporterTest {
     private FileUtils fileUtils;
 
     @Mock
+    private HtmlUtils htmlUtils;
+
+    @Mock
     private TestData.TestDataBuilder testDataBuilder;
 
     @Mock
@@ -72,9 +73,6 @@ class ExtentReporterTest {
 
     @Mock
     private Path path;
-
-    @Mock
-    private Path path2;
 
     @Mock
     private Path parentPath;
@@ -158,6 +156,7 @@ class ExtentReporterTest {
     public void beforeEach() {
         Reflections.setField("fileUtils", extentReporter, fileUtils);
         Reflections.setField("configuration", extentReporter, configuration);
+        Reflections.setField("htmlUtils", extentReporter, htmlUtils);
         testDataMockedStatic = mockStatic(TestData.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         pathMockedStatic = mockStatic(Path.class);
@@ -286,6 +285,8 @@ class ExtentReporterTest {
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
+        final String readString = "readString";
+        final String inlineReport = "inlineReport";
 
         cleanupOldReportsStubs();
         when(configuration.getExtent()).thenReturn(extent);
@@ -294,11 +295,10 @@ class ExtentReporterTest {
         when(extent.getFileName()).thenReturn(fileName);
         when(Path.of(reportFolder, fileName)).thenReturn(path);
         when(path.toAbsolutePath()).thenReturn(absolutePath);
-        when(Files.readString(absolutePath)).thenReturn("abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img src=\"src2\"/></div></div>def");
-        when(Path.of("src1")).thenReturn(path);
-        when(Path.of("src2")).thenReturn(path2);
-        when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
-        when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
+
+        when(Files.readString(absolutePath)).thenReturn(readString);
+        when(htmlUtils.inline(readString)).thenReturn(inlineReport);
+
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
         when(absolutePath.getParent()).thenReturn(parentPath);
         when(parentPath.resolve(fileNameWithoutExtension + "-inline.html")).thenReturn(inlineReportPath);
@@ -306,7 +306,7 @@ class ExtentReporterTest {
         extentReporter.sessionClosed();
 
         verify(extentReports).flush();
-        verify(fileUtils).write(inlineReportPath, "abc<video src=\"data:video/mp4;base64,AQID\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img src=\"data:image/png;base64,BAUG\"/></a></div></div>def");
+        verify(fileUtils).write(inlineReportPath, inlineReport);
 
         // cleanupOldReports
         verify(fileUtils).deleteDirectory(directory1Path);
@@ -361,38 +361,6 @@ class ExtentReporterTest {
 
         verify(fileFixedSizeQueue).add(file1);
         assertEquals(fileFixedSizeQueue, reports.get(namespace));
-    }
-
-    @Test
-    @DisplayName("inlineImagesOf should return the provided report with all the images replaced with their own base64")
-    public void inlineImagesOf() throws IOException {
-        final String report = "abc<div class=\"row mb-3\"><div class=\"col-md-3\"><img src=\"src1\"/></div></div>def" +
-                "<div class=\"row mb-3\"><div class=\"col-md-3\"><img src=\"src2\"/></div></div>ghi";
-
-        when(Path.of("src1")).thenReturn(path);
-        when(Path.of("src2")).thenReturn(path2);
-        when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
-        when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
-
-        final String actual = extentReporter.inlineImagesOf(report);
-
-        assertThat(actual, matchesPattern(".*<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,AQID\" data-featherlight=\"image\"><img src=\"data:image/png;base64,AQID\"/></a></div></div>.*" +
-                "<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img src=\"data:image/png;base64,BAUG\"/></a></div></div>.*"));
-    }
-
-    @Test
-    @DisplayName("inlineVideosOf should return the provided report with all the videos replaced with their own base64")
-    public void inlineVideosOf() throws IOException {
-        final String report = "abc<video src=\"src1\"/>def<video src=\"src2\"/>ghi";
-
-        when(Path.of("src1")).thenReturn(path);
-        when(Path.of("src2")).thenReturn(path2);
-        when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
-        when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
-
-        final String actual = extentReporter.inlineVideosOf(report);
-
-        assertThat(actual, matchesPattern(".*<video.*src=\"data:video/mp4;base64,AQID\"/>.*<video.*src=\"data:video/mp4;base64,BAUG\"/>.*"));
     }
 
     @Test
