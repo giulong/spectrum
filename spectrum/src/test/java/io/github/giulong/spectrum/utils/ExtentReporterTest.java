@@ -277,8 +277,7 @@ class ExtentReporterTest {
         when(extent.getRetention()).thenReturn(retention);
         when(retention.getTotal()).thenReturn(total);
         when(extent.getReportFolder()).thenReturn(REPORT_FOLDER);
-        when(extent.getInlineReportFolder()).thenReturn(inlineReportFolder);
-        when(inlineReportFolder.toString()).thenReturn(INLINE_REPORT_FOLDER);
+        when(extent.getInlineReportFolder()).thenReturn(INLINE_REPORT_FOLDER);
 
         extentReporter.sessionClosed();
 
@@ -312,8 +311,8 @@ class ExtentReporterTest {
         when(htmlUtils.inline(readString)).thenReturn(inlineReport);
 
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
-        when(extent.getInlineReportFolder()).thenReturn(inlineReportFolder);
-        when(inlineReportFolder.resolve(fileNameWithoutExtension + "-inline.html")).thenReturn(inlineReportPath);
+        when(extent.getInlineReportFolder()).thenReturn(INLINE_REPORT_FOLDER);
+        when(Path.of(INLINE_REPORT_FOLDER, fileNameWithoutExtension + "-inline.html")).thenReturn(inlineReportPath);
 
         when(extent.getRetention()).thenReturn(retention);
 

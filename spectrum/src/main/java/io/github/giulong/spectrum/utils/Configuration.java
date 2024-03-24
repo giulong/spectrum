@@ -16,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 import java.net.URL;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -143,7 +142,7 @@ public class Configuration {
         private boolean inline;
 
         @JsonPropertyDescription("Where to generate the inline report")
-        private Path inlineReportFolder;
+        private String inlineReportFolder;
     }
 
     @Getter
