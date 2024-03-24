@@ -19,10 +19,14 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.aventstack.extentreports.Status.INFO;
 import static com.aventstack.extentreports.Status.SKIP;
@@ -31,6 +35,7 @@ import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
 import static java.util.Comparator.comparingLong;
+import static java.util.regex.Pattern.DOTALL;
 import static lombok.AccessLevel.PRIVATE;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -40,6 +45,8 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     private static final ExtentReporter INSTANCE = new ExtentReporter();
+    private static final Pattern VIDEO_SRC = Pattern.compile("<video.*?src=\"(?<src>[^\"]*)\"");
+    private static final Pattern IMAGE_TAG = Pattern.compile("<div class=\"row mb-3\">\\s*<div class=\"col-md-3\">\\s*<img.*?src=\"(?<src>[^\"]*)\".*?</div>\\s*</div>", DOTALL);
 
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final Configuration configuration = Configuration.getInstance();
@@ -71,11 +78,22 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
     }
 
+    @SneakyThrows
     @Override
     public void sessionClosed() {
         log.debug("Session closed hook");
         extentReports.flush();
-        cleanupOldReports(configuration.getExtent());
+
+        final Configuration.Extent extent = configuration.getExtent();
+        if (extent.isInline()) {
+            final Path extentFile = getReportPathFrom(extent);
+            final String inlineReport = inlineVideosOf(inlineImagesOf(Files.readString(extentFile)));
+            final String inlineReportName = String.format("%s-inline.html", fileUtils.removeExtensionFrom(extent.getFileName()));
+
+            fileUtils.write(extentFile.getParent().resolve(inlineReportName), inlineReport);
+        }
+
+        cleanupOldReports(extent);
     }
 
     @Override
@@ -91,11 +109,46 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         final FixedSizeQueue<File> queue = metadataManager.getSuccessfulQueueOf(this);
 
         log.debug("Adding metadata '{}'. Current size: {}, max capacity: {}", file, queue.size(), maxSize);
-        queue
-                .shrinkTo(maxSize - 1)
-                .add(file);
-
+        queue.shrinkTo(maxSize - 1).add(file);
         metadataManager.setSuccessfulQueueOf(this, queue);
+    }
+
+    @SneakyThrows
+    public String inlineImagesOf(final String report) {
+        final Matcher matcher = IMAGE_TAG.matcher(report);
+        String inlineReport = report;
+
+        while (matcher.find()) {
+            final String src = matcher.group("src");
+            final byte[] bytes = Files.readAllBytes(Path.of(src));
+            final String encoded = new String(Base64.getEncoder().encode(bytes));
+            final String replacement = "<div class=\"row mb-3\"><div class=\"col-md-3\">" +
+                    "<a href=\"data:image/png;base64," + encoded + "\" data-featherlight=\"image\"><img src=\"data:image/png;base64," + encoded + "\"/></a>" +
+                    "</div></div>";
+
+            log.debug("Found img with src {}", src);
+            inlineReport = inlineReport.replace(matcher.group(0), replacement);
+        }
+
+        return inlineReport;
+    }
+
+    @SneakyThrows
+    public String inlineVideosOf(final String report) {
+        final Matcher matcher = VIDEO_SRC.matcher(report);
+        String inlineReport = report;
+
+        while (matcher.find()) {
+            final String src = matcher.group("src");
+            final byte[] bytes = Files.readAllBytes(Path.of(src));
+            final String encoded = new String(Base64.getEncoder().encode(bytes));
+            final String replacement = String.format("data:video/mp4;base64,%s", encoded);
+
+            log.debug("Found video with src {}", src);
+            inlineReport = inlineReport.replace(src, replacement);
+        }
+
+        return inlineReport;
     }
 
     @SneakyThrows

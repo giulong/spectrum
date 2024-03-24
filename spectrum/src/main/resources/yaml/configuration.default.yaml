@@ -53,6 +53,7 @@ extent:
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
   locatorRegex: \s->\s([\w:\s\-.#]+)  # Regex to extract the WebElement's selector, when the driver fires an event
   retention: { } # Retention rules, specifies the number of reports to retain. Older ones will be deleted. Defaults to MAX_INT
+  inline: false # Set to true to generate an inline report alongside the main one
 
 # Environments configuration
 environments:

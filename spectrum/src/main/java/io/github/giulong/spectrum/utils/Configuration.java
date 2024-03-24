@@ -137,6 +137,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Retention rules configuration")
         private Retention retention;
+
+        @JsonPropertyDescription("Set to true to generate an inline report alongside the main one")
+        private boolean inline;
     }
 
     @Getter
