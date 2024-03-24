@@ -46,6 +46,9 @@ import static org.mockito.Mockito.*;
 @DisplayName("ExtentReporter")
 class ExtentReporterTest {
 
+    private static final String REPORT_FOLDER = "reportFolder";
+    private static final String INLINE_REPORT_FOLDER = "inlineReportFolder";
+
     private static MockedStatic<TestData> testDataMockedStatic;
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private static MockedStatic<Path> pathMockedStatic;
@@ -75,7 +78,7 @@ class ExtentReporterTest {
     private Path path;
 
     @Mock
-    private Path parentPath;
+    private Path inlineReportFolder;
 
     @Mock
     private Path inlineReportPath;
@@ -175,17 +178,16 @@ class ExtentReporterTest {
         metadataManagerMockedStatic.close();
     }
 
-    private void cleanupOldReportsStubs() {
+    private void cleanupOldReportsStubsFor(final String reportFolder) {
         final int total = 123;
-        final String reportFolder = "reportFolder";
         final String file1Name = "file1Name";
         final String file2Name = "file2Name";
         final String directory1Name = "directory1Name";
         final String directory2Name = "directory2Name";
 
+        when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
         when(retention.getTotal()).thenReturn(total);
-        when(extent.getReportFolder()).thenReturn(reportFolder);
 
         when(Path.of(reportFolder)).thenReturn(path);
         when(path.toFile()).thenReturn(folder);
@@ -219,7 +221,6 @@ class ExtentReporterTest {
     @Test
     @DisplayName("sessionOpened should init the extent report")
     public void sessionOpened() {
-        final String reportFolder = "reportFolder";
         final String fileName = "fileName";
         final String reportName = "reportName";
         final String documentTitle = "documentTitle";
@@ -230,9 +231,9 @@ class ExtentReporterTest {
         final String absolutePathToStringReplaced = "absolute/Path/To/String";
 
         when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getReportFolder()).thenReturn(reportFolder);
+        when(extent.getReportFolder()).thenReturn(REPORT_FOLDER);
         when(extent.getFileName()).thenReturn(fileName);
-        when(Path.of(reportFolder, fileName)).thenReturn(path);
+        when(Path.of(REPORT_FOLDER, fileName)).thenReturn(path);
         when(path.toAbsolutePath()).thenReturn(absolutePath);
         when(absolutePath.toString()).thenReturn(absolutePathToString);
         when(extent.getReportName()).thenReturn(reportName);
@@ -267,16 +268,25 @@ class ExtentReporterTest {
     @Test
     @DisplayName("sessionClosed should flush the extent report and cleanup old ones")
     public void sessionClosed() {
-        cleanupOldReportsStubs();
+        final int total = 123;
+
+        cleanupOldReportsStubsFor(REPORT_FOLDER);
+        cleanupOldReportsStubsFor(INLINE_REPORT_FOLDER);
+
         when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getRetention()).thenReturn(retention);
+        when(retention.getTotal()).thenReturn(total);
+        when(extent.getReportFolder()).thenReturn(REPORT_FOLDER);
+        when(extent.getInlineReportFolder()).thenReturn(inlineReportFolder);
+        when(inlineReportFolder.toString()).thenReturn(INLINE_REPORT_FOLDER);
 
         extentReporter.sessionClosed();
 
         verify(extentReports).flush();
 
         // cleanupOldReports
-        verify(fileUtils).deleteDirectory(directory1Path);
-        verify(fileUtils).deleteDirectory(directory2Path);
+        verify(fileUtils, times(2)).deleteDirectory(directory1Path);
+        verify(fileUtils, times(2)).deleteDirectory(directory2Path);
     }
 
     @Test
@@ -288,7 +298,9 @@ class ExtentReporterTest {
         final String readString = "readString";
         final String inlineReport = "inlineReport";
 
-        cleanupOldReportsStubs();
+        cleanupOldReportsStubsFor(REPORT_FOLDER);
+        cleanupOldReportsStubsFor(INLINE_REPORT_FOLDER);
+
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.isInline()).thenReturn(true);
         when(extent.getReportFolder()).thenReturn(reportFolder);
@@ -300,8 +312,10 @@ class ExtentReporterTest {
         when(htmlUtils.inline(readString)).thenReturn(inlineReport);
 
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
-        when(absolutePath.getParent()).thenReturn(parentPath);
-        when(parentPath.resolve(fileNameWithoutExtension + "-inline.html")).thenReturn(inlineReportPath);
+        when(extent.getInlineReportFolder()).thenReturn(inlineReportFolder);
+        when(inlineReportFolder.resolve(fileNameWithoutExtension + "-inline.html")).thenReturn(inlineReportPath);
+
+        when(extent.getRetention()).thenReturn(retention);
 
         extentReporter.sessionClosed();
 
@@ -309,19 +323,33 @@ class ExtentReporterTest {
         verify(fileUtils).write(inlineReportPath, inlineReport);
 
         // cleanupOldReports
+        verify(fileUtils, times(2)).deleteDirectory(directory1Path);
+        verify(fileUtils, times(2)).deleteDirectory(directory2Path);
+    }
+
+    @Test
+    @DisplayName("cleanupOldReportsIn should delete the proper number of old reports and the corresponding directories")
+    public void cleanupOldReportsIn() {
+        cleanupOldReportsStubsFor(REPORT_FOLDER);
+
+        extentReporter.cleanupOldReportsIn(REPORT_FOLDER);
+
         verify(fileUtils).deleteDirectory(directory1Path);
         verify(fileUtils).deleteDirectory(directory2Path);
     }
 
     @Test
-    @DisplayName("cleanupOldReports should delete the proper number of old reports and the corresponding directories")
-    public void cleanupOldReports() {
-        cleanupOldReportsStubs();
+    @DisplayName("cleanupOldReportsIn should return if the provided folder is empty")
+    public void cleanupOldReportsInEmptyFolder() {
+        final String folder = "folder";
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getRetention()).thenReturn(retention);
+        when(Path.of(folder)).thenReturn(path);
+        when(path.toFile()).thenReturn(file1);
 
-        extentReporter.cleanupOldReports(extent);
+        extentReporter.cleanupOldReportsIn(folder);
 
-        verify(fileUtils).deleteDirectory(directory1Path);
-        verify(fileUtils).deleteDirectory(directory2Path);
+        verifyNoInteractions(fileUtils);
     }
 
     @Test

@@ -23,7 +23,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static com.aventstack.extentreports.Status.INFO;
@@ -89,10 +88,11 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
             final String inlineReport = htmlUtils.inline(Files.readString(extentFile));
             final String inlineReportName = String.format("%s-inline.html", fileUtils.removeExtensionFrom(extent.getFileName()));
 
-            fileUtils.write(extentFile.getParent().resolve(inlineReportName), inlineReport);
+            fileUtils.write(extent.getInlineReportFolder().resolve(inlineReportName), inlineReport);
         }
 
-        cleanupOldReports(extent);
+        cleanupOldReportsIn(extent.getReportFolder());
+        cleanupOldReportsIn(extent.getInlineReportFolder().toString());
     }
 
     @Override
@@ -113,15 +113,19 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     @SneakyThrows
-    public void cleanupOldReports(final Configuration.Extent extent) {
-        final Retention retention = extent.getRetention();
-        log.info("Extent reports to keep: {}", retention.getTotal());
+    public void cleanupOldReportsIn(final String folder) {
+        final Retention retention = configuration.getExtent().getRetention();
+        log.info("Extent reports to keep in {}: {}", folder, retention.getTotal());
 
-        final File[] folderContent = Objects
-                .requireNonNull(Path
-                        .of(extent.getReportFolder())
-                        .toFile()
-                        .listFiles());
+        final File[] folderContent = Path
+                .of(folder)
+                .toFile()
+                .listFiles();
+
+        if (folderContent == null) {
+            log.debug("Extent reports folder {} is empty already", folder);
+            return;
+        }
 
         final List<File> files = Arrays
                 .stream(folderContent)
