@@ -86,9 +86,8 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         if (extent.isInline()) {
             final Path extentFile = getReportPathFrom(extent);
             final String inlineReport = htmlUtils.inline(Files.readString(extentFile));
-            final String inlineReportName = String.format("%s-inline.html", fileUtils.removeExtensionFrom(extent.getFileName()));
 
-            fileUtils.write(Path.of(extent.getInlineReportFolder(), inlineReportName), inlineReport);
+            fileUtils.write(Path.of(extent.getInlineReportFolder(), extent.getFileName()), inlineReport);
         }
 
         cleanupOldReportsIn(extent.getReportFolder());

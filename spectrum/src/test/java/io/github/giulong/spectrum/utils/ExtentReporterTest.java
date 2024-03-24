@@ -78,9 +78,6 @@ class ExtentReporterTest {
     private Path path;
 
     @Mock
-    private Path inlineReportFolder;
-
-    @Mock
     private Path inlineReportPath;
 
     @Mock
@@ -293,7 +290,6 @@ class ExtentReporterTest {
     public void sessionClosedInlineReport() throws IOException {
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
-        final String fileNameWithoutExtension = "fileNameWithoutExtension";
         final String readString = "readString";
         final String inlineReport = "inlineReport";
 
@@ -310,9 +306,8 @@ class ExtentReporterTest {
         when(Files.readString(absolutePath)).thenReturn(readString);
         when(htmlUtils.inline(readString)).thenReturn(inlineReport);
 
-        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
         when(extent.getInlineReportFolder()).thenReturn(INLINE_REPORT_FOLDER);
-        when(Path.of(INLINE_REPORT_FOLDER, fileNameWithoutExtension + "-inline.html")).thenReturn(inlineReportPath);
+        when(Path.of(INLINE_REPORT_FOLDER, fileName)).thenReturn(inlineReportPath);
 
         when(extent.getRetention()).thenReturn(retention);
 
