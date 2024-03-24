@@ -39,7 +39,7 @@ public class HtmlUtils {
             final byte[] bytes = Files.readAllBytes(Path.of(src));
             final String encoded = new String(Base64.getEncoder().encode(bytes));
             final String replacement = "<div class=\"row mb-3\"><div class=\"col-md-3\">" +
-                    "<a href=\"data:image/png;base64," + encoded + "\" data-featherlight=\"image\"><img src=\"data:image/png;base64," + encoded + "\"/></a>" +
+                    "<a href=\"data:image/png;base64," + encoded + "\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64," + encoded + "\"/></a>" +
                     "</div></div>";
 
             log.debug("Found img with src {}", src);

@@ -34,6 +34,7 @@ extent:
   fileName: report.html
   retention:
     total: 3
+  inline: true
 
 testBook:
   enabled: true

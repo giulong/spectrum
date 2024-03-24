@@ -59,7 +59,7 @@ class HtmlUtilsTest {
     @Test
     @DisplayName("inline should call both the inlineImagesOf and inlineVideosOf on the provided html and return the one with all of those replaced")
     public void inline() throws IOException {
-        final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img src=\"src2\"/></div></div>def";
+        final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";
         when(Path.of("src1")).thenReturn(path);
         when(Path.of("src2")).thenReturn(path2);
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
@@ -67,14 +67,14 @@ class HtmlUtilsTest {
 
         final String actual = htmlUtils.inline(report);
 
-        assertEquals("abc<video src=\"data:video/mp4;base64,AQID\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img src=\"data:image/png;base64,BAUG\"/></a></div></div>def", actual);
+        assertEquals("abc<video src=\"data:video/mp4;base64,AQID\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>def", actual);
     }
 
     @Test
     @DisplayName("inlineImagesOf should return the provided html with all the images replaced with their own base64")
     public void inlineImagesOf() throws IOException {
-        final String html = "abc<div class=\"row mb-3\"><div class=\"col-md-3\"><img src=\"src1\"/></div></div>def" +
-                "<div class=\"row mb-3\"><div class=\"col-md-3\"><img src=\"src2\"/></div></div>ghi";
+        final String html = "abc<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src1\"/></div></div>def" +
+                "<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>ghi";
 
         when(Path.of("src1")).thenReturn(path);
         when(Path.of("src2")).thenReturn(path2);
@@ -83,8 +83,8 @@ class HtmlUtilsTest {
 
         final String actual = htmlUtils.inlineImagesOf(html);
 
-        assertThat(actual, matchesPattern(".*<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,AQID\" data-featherlight=\"image\"><img src=\"data:image/png;base64,AQID\"/></a></div></div>.*" +
-                "<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img src=\"data:image/png;base64,BAUG\"/></a></div></div>.*"));
+        assertThat(actual, matchesPattern(".*<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,AQID\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,AQID\"/></a></div></div>.*" +
+                "<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>.*"));
     }
 
     @Test
