@@ -13,6 +13,7 @@ import org.openqa.selenium.TimeoutException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,7 @@ public class FilesIT extends SpectrumTest<Void> {
     }
 
     private HttpURLConnection setupConnectionToGrid() throws IOException {
-        final URL url = new URL("http://localhost:4444/graphql");
+        final URL url = URI.create("http://localhost:4444/graphql").toURL();
         final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("POST");
