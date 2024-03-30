@@ -19,11 +19,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static com.aventstack.extentreports.Status.INFO;
 import static com.aventstack.extentreports.Status.SKIP;
@@ -32,22 +30,18 @@ import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
 import static java.util.Comparator.comparingLong;
-import static java.util.regex.Pattern.DOTALL;
-import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PROTECTED;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
-@NoArgsConstructor(access = PRIVATE)
+@NoArgsConstructor(access = PROTECTED)
 @Getter
 public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     private static final ExtentReporter INSTANCE = new ExtentReporter();
-    private static final Pattern VIDEO_SRC = Pattern.compile("<video.*?src=\"(?<src>[^\"]*)\"");
-    private static final Pattern IMAGE_TAG = Pattern.compile("<div class=\"row mb-3\">\\s*<div class=\"col-md-3\">\\s*<img.*?src=\"(?<src>[^\"]*)\".*?</div>\\s*</div>", DOTALL);
 
-    private final FileUtils fileUtils = FileUtils.getInstance();
-    private final Configuration configuration = Configuration.getInstance();
-    private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
+    protected final FileUtils fileUtils = FileUtils.getInstance();
+    protected final Configuration configuration = Configuration.getInstance();
 
     private ExtentReports extentReports;
 
@@ -76,22 +70,12 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
     }
 
-    @SneakyThrows
     @Override
     public void sessionClosed() {
         log.debug("Session closed hook");
         extentReports.flush();
 
-        final Configuration.Extent extent = configuration.getExtent();
-        if (extent.isInline()) {
-            final Path extentFile = getReportPathFrom(extent);
-            final String inlineReport = htmlUtils.inline(Files.readString(extentFile));
-
-            fileUtils.write(Path.of(extent.getInlineReportFolder(), extent.getFileName()), inlineReport);
-        }
-
-        cleanupOldReportsIn(extent.getReportFolder());
-        cleanupOldReportsIn(extent.getInlineReportFolder());
+        cleanupOldReportsIn(configuration.getExtent().getReportFolder());
     }
 
     @Override
@@ -144,7 +128,9 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
             directories
                     .stream()
+                    .peek(directory -> log.debug("Checking if directory needs to be deleted: {}", directory))
                     .filter(directory -> directory.getName().equals(directoryName))
+                    .peek(directory -> log.debug("Found directory to delete: {}", directory))
                     .findFirst()
                     .map(File::toPath)
                     .ifPresent(fileUtils::deleteDirectory);

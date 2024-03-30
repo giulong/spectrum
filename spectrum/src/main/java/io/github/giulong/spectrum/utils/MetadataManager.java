@@ -25,6 +25,7 @@ public class MetadataManager implements SessionHook {
     private final JsonUtils jsonUtils = JsonUtils.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
+    private final ExtentReporterInline extentReporterInline = ExtentReporterInline.getInstance();
     private final Configuration configuration = Configuration.getInstance();
 
     private Metadata metadata;
@@ -48,6 +49,7 @@ public class MetadataManager implements SessionHook {
 
         if (summary.isExecutionSuccessful()) {
             extentReporter.produceMetadata();
+            extentReporterInline.produceMetadata();
 
             configuration
                     .getTestBook()
