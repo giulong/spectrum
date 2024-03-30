@@ -17,11 +17,9 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -66,9 +64,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
 
     @RegisterExtension
-    public static final ScreenshotQueueResolver SCREENSHOT_QUEUE_RESOLVER = new ScreenshotQueueResolver();
-
-    @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
     protected List<SpectrumPage<?, Data>> spectrumPages;
@@ -77,8 +72,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     @SuppressWarnings({"checkstyle:ParameterNumber", "unused"})
     public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver driver,
                            final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
-                           final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher,
-                           final BlockingQueue<File> screenshotQueue, final Data data) {
+                           final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Data data) {
         this.configuration = configuration;
         this.driver = driver;
         this.implicitWait = implicitWait;

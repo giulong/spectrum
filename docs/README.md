@@ -1,3 +1,5 @@
+# Introduction
+
 Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/){:target="_blank"} and [Selenium 4](https://www.selenium.dev/){:target="_blank"} framework that aims to
 simplify the writing of e2e tests, providing these features:
 
@@ -1271,7 +1273,7 @@ video:
 > ⚠️ **Empty Video**<br/>
 > When video recording is enabled but no frame was added to it, which might happen when no screenshot was taken
 > according to the events configured and the current log level, a default "No Video" frame is added to it:
-> 
+>
 > ![no-video.png](assets/images/no-video.png)
 
 ---
@@ -1345,6 +1347,35 @@ public class HelloWorldIT extends SpectrumTest<Void> {
     }
 }
 ```
+
+### Inline report
+
+The generated html report embeds external resources such as images and videos. You can optionally choose to produce an
+inline report, that will be exactly the same, but with all the external images and videos replaced with their
+[Base64](https://en.wikipedia.org/wiki/Base64){:target="_blank"} encoded data.
+
+This is particularly useful if you want to send the html report to someone else, without packing it with the associated
+folder containing all the external resources.
+
+> 💡 **Tip**<br/>
+> Check the [Mail Consumer](#mail-consumer) section to see how to send the inline report as an attachment to an email.
+
+To generate the inline report, you need to set the `extent.inline` key to `true`. By default, the inline report will be
+generated in the `target/spectrum/inline-reports` folder. You can optionally override that as well with the corresponding
+property, as you can see here:
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  fileName: report.html # this is the name of both the regular report and the inline one
+  inline: true
+  inlineReportFolder: target/spectrum/inline-reports # This is the default, no need to add it in your configuration
+```
+
+> ⚠️ **Reports names**<br/>
+> Mind that the inline report has the same name of the regular one, so it's important to have them generated in separate folders
+> not to override each other.
 
 ### Custom locators
 
@@ -2050,7 +2081,7 @@ eventsConsumers:
           tags: [ suite ]
       attachments:
         - name: report
-          file: target/spectrum/reports/report.html
+          file: target/spectrum/inline-reports/report.html
         - name: testbook
           file: target/spectrum/testbook/testbook.html
 ```
@@ -2070,7 +2101,7 @@ eventsConsumers:
           tags: [ suite ]
       attachments:
         - name: report
-          file: target/spectrum/reports/report.html
+          file: target/spectrum/inline-reports/report.html
   - mail:
       events:
         - reason: after

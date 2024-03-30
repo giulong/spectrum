@@ -45,4 +45,10 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
 
     @FindBy(className = "screenshot-container")
     private List<WebElement> screenshotContainers;
+
+    @FindBy(id = "video-demoit-sending-custom-events")
+    private WebElement videoDemoItSendingCustomEvents;
+
+    @FindBy(className = "inline")
+    private List<WebElement> inlineImages;
 }

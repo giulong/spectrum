@@ -5,36 +5,25 @@ import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.Getter;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 
-import java.io.File;
-import java.util.concurrent.BlockingQueue;
-
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("SpectrumTest")
 public class SpectrumTestTest<T> {
-
-    private MockedStatic<FileUtils> fileUtilsMockedStatic;
-    private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
 
     @Mock
     private WebDriver webDriver;
@@ -75,23 +64,12 @@ public class SpectrumTestTest<T> {
     @Mock
     private TestData testData;
 
-    @Mock
-    private BlockingQueue<File> screenshotQueue;
-
     @InjectMocks
     private FakeChild<T> childTest;
 
     @BeforeEach
     public void beforeEach() {
         spectrumTest.data = data;
-        fileUtilsMockedStatic = mockStatic(FileUtils.class);
-        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        fileUtilsMockedStatic.close();
-        freeMarkerWrapperMockedStatic.close();
     }
 
     @Test
@@ -151,7 +129,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
-        childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, actions, eventsDispatcher, screenshotQueue, data);
+        childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, actions, eventsDispatcher, data);
 
         assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.driver);

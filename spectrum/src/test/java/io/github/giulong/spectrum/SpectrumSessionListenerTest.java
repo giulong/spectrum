@@ -34,18 +34,15 @@ import static org.mockito.Mockito.*;
 @DisplayName("SpectrumSessionListener")
 class SpectrumSessionListenerTest {
 
-    private static MockedStatic<Configuration> configurationMockedStatic;
-    private static MockedStatic<ExtentReporter> extentReportsWrapperMockedStatic;
     private static MockedStatic<SLF4JBridgeHandler> slf4JBridgeHandlerMockedStatic;
-    private static MockedStatic<FileUtils> fileUtilsMockedStatic;
-    private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;
-    private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
-    private static MockedStatic<EventsDispatcher> eventsDispatcherMockedStatic;
 
     private String osName;
 
     @Mock
     private ExtentReporter extentReporter;
+
+    @Mock
+    private ExtentReporterInline extentReporterInline;
 
     @Mock
     private FileUtils fileUtils;
@@ -99,30 +96,20 @@ class SpectrumSessionListenerTest {
         Reflections.setField("fileUtils", spectrumSessionListener, fileUtils);
         Reflections.setField("freeMarkerWrapper", spectrumSessionListener, freeMarkerWrapper);
         Reflections.setField("extentReporter", spectrumSessionListener, extentReporter);
+        Reflections.setField("extentReporterInline", spectrumSessionListener, extentReporterInline);
         Reflections.setField("configuration", spectrumSessionListener, configuration);
         Reflections.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
         Reflections.setField("metadataManager", spectrumSessionListener, metadataManager);
 
-        configurationMockedStatic = mockStatic(Configuration.class);
-        extentReportsWrapperMockedStatic = mockStatic(ExtentReporter.class);
         slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
-        fileUtilsMockedStatic = mockStatic(FileUtils.class);
-        yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
-        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
-        eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
     }
 
     @AfterEach
     public void afterEach() {
-        configurationMockedStatic.close();
-        extentReportsWrapperMockedStatic.close();
-        slf4JBridgeHandlerMockedStatic.close();
-        fileUtilsMockedStatic.close();
-        yamlUtilsMockedStatic.close();
-        freeMarkerWrapperMockedStatic.close();
-        eventsDispatcherMockedStatic.close();
         Vars.getInstance().clear();
         System.setProperty("os.name", osName);
+
+        slf4JBridgeHandlerMockedStatic.close();
     }
 
     @Test
@@ -139,13 +126,9 @@ class SpectrumSessionListenerTest {
         when(yamlUtils.readInternal("banner.yaml", Map.class)).thenReturn(spectrumProperties);
         when(freeMarkerWrapper.interpolate(banner, spectrumProperties)).thenReturn(interpolatedBanner);
 
-        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultProfile");
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
-
-        when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
-        when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
 
         when(launcherSession.getLauncher()).thenReturn(launcher);
         when(configuration.getRuntime()).thenReturn(runtime);
@@ -168,6 +151,7 @@ class SpectrumSessionListenerTest {
         verify(testBook).sessionOpened();
         verify(summary).sessionOpened();
         verify(extentReporter).sessionOpened();
+        verify(extentReporterInline).sessionOpened();
         verify(freeMarkerWrapper).sessionOpened();
         verify(eventsDispatcher).sessionOpened();
     }
@@ -186,6 +170,7 @@ class SpectrumSessionListenerTest {
         verify(testBook).sessionClosed();
         verify(summary).sessionClosed();
         verify(extentReporter).sessionClosed();
+        verify(extentReporterInline).sessionClosed();
         verify(eventsDispatcher).sessionClosed();
         verify(metadataManager).sessionClosed();
     }
@@ -197,8 +182,6 @@ class SpectrumSessionListenerTest {
         final String profileConfiguration = String.format("configuration-%s", profile);
 
         System.setProperty("os.name", "Win");
-
-        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
 
         // parseProfile
         when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
@@ -222,8 +205,6 @@ class SpectrumSessionListenerTest {
 
         System.setProperty("os.name", "nix");
 
-        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
-
         // parseProfile
         when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultProfile");
@@ -244,8 +225,6 @@ class SpectrumSessionListenerTest {
     @ParameterizedTest(name = "with profile {0} and default profile {1} we expect {2}")
     @MethodSource("profilesValuesProvider")
     public void parseProfiles(final String profile, final String defaultProfile, final List<String> expected) {
-        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
-
         when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn(defaultProfile);
 
@@ -268,7 +247,6 @@ class SpectrumSessionListenerTest {
         final String profileConfiguration = "profileConfiguration";
 
         System.setProperty("os.name", "Win");
-        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
 
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(defaultVars);
         when(yamlUtils.readNode(VARS_NODE, CONFIGURATION, Map.class)).thenReturn(vars);
@@ -285,7 +263,6 @@ class SpectrumSessionListenerTest {
         final String profileConfiguration = "profileConfiguration";
 
         System.setProperty("os.name", "nix");
-        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
 
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(defaultVars);
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class)).thenReturn(defaultVars);
