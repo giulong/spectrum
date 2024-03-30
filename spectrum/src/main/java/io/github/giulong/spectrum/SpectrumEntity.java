@@ -79,6 +79,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
                 .toList();
     }
 
+    /**
+     * Hovers on the provided WebElement, leveraging the {@code actions} field
+     *
+     * @param webElement the WebElement on which to hover
+     * @return the calling SpectrumEntity instance
+     */
     @SuppressWarnings("unchecked")
     public T hover(final WebElement webElement) {
         actions.moveToElement(webElement).perform();
@@ -86,6 +92,11 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
+    /**
+     * Adds a screenshot at INFO level to the current test in the Extent Report
+     *
+     * @return the calling SpectrumEntity instance
+     */
     @SuppressWarnings("unchecked")
     public T screenshot() {
         addScreenshotToReport(null, INFO);
@@ -93,6 +104,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
+    /**
+     * Adds a screenshot with the provided message and INFO status to the current test in the Extent Report
+     *
+     * @param msg the message to log
+     * @return the calling SpectrumEntity instance
+     */
     @SuppressWarnings("unchecked")
     public T screenshotInfo(final String msg) {
         addScreenshotToReport(msg, INFO);
@@ -100,6 +117,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
+    /**
+     * Adds a screenshot status with the provided message and WARN to the current test in the Extent Report
+     *
+     * @param msg the message to log
+     * @return the calling SpectrumEntity instance
+     */
     @SuppressWarnings("unchecked")
     public T screenshotWarning(final String msg) {
         addScreenshotToReport(msg, WARNING);
@@ -107,6 +130,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
+    /**
+     * Adds a screenshot with the provided message and FAIL status to the current test in the Extent Report
+     *
+     * @param msg the message to log
+     * @return the calling SpectrumEntity instance
+     */
     @SuppressWarnings("unchecked")
     public T screenshotFail(final String msg) {
         addScreenshotToReport(msg, FAIL);
@@ -114,6 +143,13 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
+    /**
+     * Adds a screenshot with the provided message and the provided status to the current test in the Extent Report
+     *
+     * @param msg    the message to log
+     * @param status the log's status
+     * @return the generated screenshot
+     */
     @SneakyThrows
     public Media addScreenshotToReport(final String msg, final Status status) {
         final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", MANUAL.getValue(), randomUUID()));
@@ -131,15 +167,20 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return screenshot;
     }
 
+    /**
+     * Deletes the download folder (its path is provided in the {@code configuration*.yaml})
+     */
     @SneakyThrows
     public void deleteDownloadsFolder() {
-        final String downloadFolder = configuration.getRuntime().getDownloadsFolder();
-        final Path downloadPath = Path.of(downloadFolder);
-
-        fileUtils.deleteDirectory(downloadPath);
-        Files.createDirectories(downloadPath);
+        fileUtils.deleteContentOf(Path.of(configuration.getRuntime().getDownloadsFolder()));
     }
 
+    /**
+     * Leverages the configurable {@code downloadWait} to check fluently if the file at the provided path is fully downloaded
+     *
+     * @param path the path to the downloaded file to wait for
+     * @return the calling SpectrumEntity instance
+     */
     @SuppressWarnings("unchecked")
     public T waitForDownloadOf(final Path path) {
         downloadWait.until(webDriver -> {
@@ -150,6 +191,13 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
+    /**
+     * Leverages the {@code waitForDownloadOf} method and then compares the checksums of the two files provided.
+     *
+     * @param downloadedFileName name of the downloaded file
+     * @param fileToCheckName    name of the static file to be used as comparison
+     * @return true if the files are equal
+     */
     public boolean checkDownloadedFile(final String downloadedFileName, final String fileToCheckName) {
         final Configuration.Runtime runtime = configuration.getRuntime();
         final Path downloadedFile = Path.of(runtime.getDownloadsFolder(), downloadedFileName).toAbsolutePath();
@@ -165,18 +213,23 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
     }
 
+    /**
+     * Leverages the {@code waitForDownloadOf} method and then compares the checksums of the file provided.
+     *
+     * @param file name of both the downloaded file and the static one to be used as comparison
+     * @return true if the files are equal
+     */
     public boolean checkDownloadedFile(final String file) {
         return checkDownloadedFile(file, file);
     }
 
-    @SneakyThrows
-    protected static byte[] sha256Of(final Path file) {
-        final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(Files.readAllBytes(file));
-
-        log.trace("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));
-        return digest;
-    }
-
+    /**
+     * Helper method to call Selenium's {@code clear} and {@code sendKeys} on the provided WebElement, which is then returned
+     *
+     * @param webElement target WebElement
+     * @param keysToSend keys to send
+     * @return the target WebElement passed as argument
+     */
     public WebElement clearAndSendKeys(final WebElement webElement, final CharSequence keysToSend) {
         webElement.clear();
         webElement.sendKeys(keysToSend);
@@ -184,6 +237,14 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return webElement;
     }
 
+    /**
+     * Uploads to the provided WebElement (usually an input field with {@code type="file"}) the file with the provided name, taken from the
+     * configurable {@code runtime.filesFolder}.
+     *
+     * @param webElement target WebElement
+     * @param fileName   name of the file to be uploaded
+     * @return the calling SpectrumEntity instance
+     */
     @SuppressWarnings("unchecked")
     public T upload(final WebElement webElement, final String fileName) {
         final String fullPath = Path.of(System.getProperty("user.dir"), configuration.getRuntime().getFilesFolder(), fileName).toString();
@@ -193,23 +254,57 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return (T) this;
     }
 
+    /**
+     * Checks if the WebElement with the provided {@code by} is present in the current page
+     *
+     * @param by the WebElement's selector
+     * @return true if the WebElement is found
+     */
     public boolean isPresent(final By by) {
         final int total = driver.findElements(by).size();
         log.debug("Found {} elements with By {}", total, by);
         return total > 0;
     }
 
+    /**
+     * Checks if no WebElement with the provided {@code by} is present in the current page
+     *
+     * @param by the WebElement's selector
+     * @return true if the WebElement is not found
+     */
     public boolean isNotPresent(final By by) {
         return !isPresent(by);
     }
 
+    /**
+     * Checks if the provided WebElement has the provided css class
+     *
+     * @param webElement the WebElement to check
+     * @param className  the css class to look for
+     * @return true if the WebElement has the provided css class
+     */
     public boolean hasClass(final WebElement webElement, final String className) {
         return Arrays.asList(webElement.getAttribute("class").split(" ")).contains(className);
     }
 
+    /**
+     * Checks if the provided WebElement has <strong>all</strong> the provided css classes
+     *
+     * @param webElement the WebElement to check
+     * @param classes    the css classes to look for
+     * @return true if the WebElement has all the provided css classes
+     */
     public boolean hasClasses(final WebElement webElement, final String... classes) {
         return Arrays
                 .stream(classes)
                 .allMatch(c -> hasClass(webElement, c));
+    }
+
+    @SneakyThrows
+    protected static byte[] sha256Of(final Path file) {
+        final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(Files.readAllBytes(file));
+
+        log.trace("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));
+        return digest;
     }
 }

@@ -53,6 +53,9 @@ class MetadataManagerTest {
     private ExtentReporter extentReporter;
 
     @Mock
+    private ExtentReporterInline extentReporterInline;
+
+    @Mock
     private Path path;
 
     @Mock
@@ -101,6 +104,7 @@ class MetadataManagerTest {
         Reflections.setField("jsonUtils", metadataManager, jsonUtils);
         Reflections.setField("fileUtils", metadataManager, fileUtils);
         Reflections.setField("extentReporter", metadataManager, extentReporter);
+        Reflections.setField("extentReporterInline", metadataManager, extentReporterInline);
         Reflections.setField("configuration", metadataManager, configuration);
     }
 
@@ -178,6 +182,7 @@ class MetadataManagerTest {
         metadataManager.sessionClosed();
 
         verify(extentReporter).produceMetadata();
+        verify(extentReporterInline).produceMetadata();
         verifyNoMoreInteractions(testBookReporter1);
         verify(testBookReporter2).produceMetadata();
 

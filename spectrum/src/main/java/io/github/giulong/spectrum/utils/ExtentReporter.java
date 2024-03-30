@@ -22,7 +22,6 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import static com.aventstack.extentreports.Status.INFO;
 import static com.aventstack.extentreports.Status.SKIP;
@@ -31,18 +30,18 @@ import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
 import static java.util.Comparator.comparingLong;
-import static lombok.AccessLevel.PRIVATE;
+import static lombok.AccessLevel.PROTECTED;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
-@NoArgsConstructor(access = PRIVATE)
+@NoArgsConstructor(access = PROTECTED)
 @Getter
 public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     private static final ExtentReporter INSTANCE = new ExtentReporter();
 
-    private final FileUtils fileUtils = FileUtils.getInstance();
-    private final Configuration configuration = Configuration.getInstance();
+    protected final FileUtils fileUtils = FileUtils.getInstance();
+    protected final Configuration configuration = Configuration.getInstance();
 
     private ExtentReports extentReports;
 
@@ -75,7 +74,8 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     public void sessionClosed() {
         log.debug("Session closed hook");
         extentReports.flush();
-        cleanupOldReports(configuration.getExtent());
+
+        cleanupOldReportsIn(configuration.getExtent().getReportFolder());
     }
 
     @Override
@@ -91,23 +91,24 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         final FixedSizeQueue<File> queue = metadataManager.getSuccessfulQueueOf(this);
 
         log.debug("Adding metadata '{}'. Current size: {}, max capacity: {}", file, queue.size(), maxSize);
-        queue
-                .shrinkTo(maxSize - 1)
-                .add(file);
-
+        queue.shrinkTo(maxSize - 1).add(file);
         metadataManager.setSuccessfulQueueOf(this, queue);
     }
 
     @SneakyThrows
-    public void cleanupOldReports(final Configuration.Extent extent) {
-        final Retention retention = extent.getRetention();
-        log.info("Extent reports to keep: {}", retention.getTotal());
+    public void cleanupOldReportsIn(final String folder) {
+        final Retention retention = configuration.getExtent().getRetention();
+        log.info("Extent reports to keep in {}: {}", folder, retention.getTotal());
 
-        final File[] folderContent = Objects
-                .requireNonNull(Path
-                        .of(extent.getReportFolder())
-                        .toFile()
-                        .listFiles());
+        final File[] folderContent = Path
+                .of(folder)
+                .toFile()
+                .listFiles();
+
+        if (folderContent == null) {
+            log.debug("Extent reports folder {} is empty already", folder);
+            return;
+        }
 
         final List<File> files = Arrays
                 .stream(folderContent)
@@ -127,7 +128,9 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
             directories
                     .stream()
+                    .peek(directory -> log.debug("Checking if directory needs to be deleted: {}", directory))
                     .filter(directory -> directory.getName().equals(directoryName))
+                    .peek(directory -> log.debug("Found directory to delete: {}", directory))
                     .findFirst()
                     .map(File::toPath)
                     .ifPresent(fileUtils::deleteDirectory);

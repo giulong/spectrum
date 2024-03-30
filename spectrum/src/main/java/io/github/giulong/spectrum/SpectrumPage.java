@@ -11,6 +11,13 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
 
     private String endpoint;
 
+    /**
+     * Opens the web page at the URL made by the concatenation of the {@code baseUrl} provided in the {@code configuration.yaml}
+     * and the value of the {@code @Endpoint} annotation on the calling SpectrumPage.
+     * It also calls the {@link SpectrumPage#waitForPageLoading()}  waitForPageLoading} before returning
+     *
+     * @return the calling SpectrumPage instance
+     */
     @SuppressWarnings("unchecked")
     public T open() {
         final String url = configuration.getApplication().getBaseUrl() + endpoint;
@@ -21,6 +28,13 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
         return (T) this;
     }
 
+    /**
+     * This is a method that by default just logs a warning. If you need to check for custom conditions before considering
+     * a page fully loaded, you should override this method, so that calling {@link SpectrumPage#open() open}
+     * on pages will call your implementation automatically
+     *
+     * @return the calling SpectrumPage instance
+     */
     @SuppressWarnings("unchecked")
     public T waitForPageLoading() {
         log.warn("Default no-op waitForPageLoading: override this method in your SpectrumPage!");
@@ -28,6 +42,11 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
         return (T) this;
     }
 
+    /**
+     * Checks whether the SpectrumPage instance on which this is called is fully loaded
+     *
+     * @return true if the SpectrumPage is loaded
+     */
     public boolean isLoaded() {
         final String currentUrl = driver.getCurrentUrl();
         final String pageUrl = configuration.getApplication().getBaseUrl() + endpoint;
