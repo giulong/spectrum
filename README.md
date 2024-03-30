@@ -17,8 +17,6 @@
 ·
 <a href="https://javadoc.io/doc/io.github.giulong/spectrum/latest/index.html">Javadoc</a>
 ·
-<a href="https://giulong.github.io/spectrum/jacoco/">Coverage</a>
-·
 <a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E">Report Bug</a>
 ·
 <a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E">Request Feature</a>
