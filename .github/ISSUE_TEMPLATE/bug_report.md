@@ -7,24 +7,32 @@ assignees: giulong
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+# Bug description
+\<Replace this line with a clear and concise description of what the bug is>
 
-**Details**
+# Details
 1. Browser version: 
 2. Driver version: 
-3. Environment: local, grid or Appium? 
+3. Environment (choose all that apply):
+      - [ ] local
+      - [ ] grid
+      - [ ] Appium
 4. Operating System: 
 5. Spectrum version: 
-6. Are tests running sequentially or in parallel? 
+6. Test execution (choose all that apply):
+      - [ ] sequential
+      - [ ] parallel 
 7. If parallel, what's the value of these two?
-    junit.jupiter.execution.parallel.mode.default:
-    junit.jupiter.execution.parallel.mode.classes.default
+    - junit.jupiter.execution.parallel.mode.default:
+    - junit.jupiter.execution.parallel.mode.classes.default:
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+# Expected behavior
+\<Replace this line with a clear and concise description of what you expected to happen>
 
-**Execution Log at TRACE level**
+# Execution Log
+```text
+<Replace this line with the log at TRACE level>
+```
 
-**Additional context**
-Add any other context about the problem here.
+## Additional context
+\<Replace this line with any other context about the problem here>
