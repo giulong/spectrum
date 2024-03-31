@@ -7,14 +7,11 @@ assignees: giulong
 
 ---
 
-# Feature Description
+# Feature description
 \<Replace this line with a clear and concise description of what you aim to achieve>
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+# Describe why this should be added to Spectrum
+\<Replace this line explaining why you think this should be something to add to the framework. Will other users benefit from this and how?>
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+## Additional context
+\<Replace this line with any other context or screenshots about the feature request>
