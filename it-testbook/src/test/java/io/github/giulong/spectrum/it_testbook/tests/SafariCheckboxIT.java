@@ -6,13 +6,16 @@ import io.github.giulong.spectrum.it_testbook.pages.LandingPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.condition.OS.MAC;
 
 @SuppressWarnings("unused")
 @DisplayName("Checkbox Page")
+@EnabledOnOs(MAC)
 @EnabledIfSystemProperty(named = "spectrum.driver", matches = "safari")
 public class SafariCheckboxIT extends SpectrumTest<Void> {
 
