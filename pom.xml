@@ -51,7 +51,7 @@
         <simplejavamail.version>8.8.0</simplejavamail.version>
         <jsonschemagenerator.version>4.34.0</jsonschemagenerator.version>
         <slf4j.version>2.0.12</slf4j.version>
-        <selenium.version>4.18.1</selenium.version>
+        <selenium.version>4.19.1</selenium.version>
     </properties>
 
     <profiles>
