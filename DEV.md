@@ -11,16 +11,18 @@ client would. So, we build the framework in a dedicated module, and then we incl
 | [it](it)                           | Runs the same e2e suite with all the browsers, no testbook                    |
 | [it-grid](it-grid)                 | Runs the same e2e suite as the `it` module, pointing to a local embedded grid |
 | [it-testbook](it-testbook)         | Runs a bunch of tests with a testbook                                         |
+| [it-macos](it-macos)               | Runs a bunch of tests specific to macOS (Safari)                              |
 | [it-appium](it-appium)             | Runs a bunch of tests with Appium                                             |
 | [verify-commons](verify-commons)   | Contains common classes used in other verify modules                          |
-| [verify-browsers](verify-browsers) | Verifies results of the `it`, `it-testbook`, and `it.grid` module             |
+| [verify-browsers](verify-browsers) | Verifies results of the `it`, `it-testbook`, and `it-grid` modules            |
+| [verify-macos](verify-macos)       | Verifies results of the `it-macos` module                                     |
 | [verify-appium](verify-appium)     | Verifies results of the `it-appium` module                                    |
 | [cleanup](cleanup)                 | Cleans each module after the execution                                        |
 
 In some modules, some tests are meant to fail or skipped for demonstration purposes, for example to check how they are displayed in the html report.
 These modules' build will not fail anyway: they will be checked later on by the `verify-*` modules.
 
-## Entrypoint
+# Entrypoint
 
 Spectrum leverages [SpectrumSessionListener](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumSessionListener.java) as its entrypoint,
 which is a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom)
@@ -51,15 +53,16 @@ To avoid manual operations, at the end of the full build, the `cleanup` module w
 # How to build the project
 
 You can leverage the [Maven wrapper](https://maven.apache.org/wrapper/) bundled in this repo.
+Below you can see how to build the entire project or just few submodules.
 
 ## Full build
 
 This is how to trigger the full build:
 
-| OS      | Command                                                                     |
-|---------|-----------------------------------------------------------------------------|
-| unix    | `./mvnw clean install -DskipSign -DbrowsersTests -DappiumTests -fae -ntp`   |
-| windows | `mvnw.cmd clean install -DskipSign -DbrowsersTests -DappiumTests -fae -ntp` |
+| OS      | Command                                                                                  |
+|---------|------------------------------------------------------------------------------------------|
+| unix    | `./mvnw clean install -DskipSign -DbrowsersTests -DappiumTests -DmacosTests -fae -ntp`   |
+| windows | `mvnw.cmd clean install -DskipSign -DbrowsersTests -DappiumTests -DmacosTests -fae -ntp` |
 
 Where:
 
@@ -69,6 +72,8 @@ Where:
   on [Ossrh](https://s01.oss.sonatype.org/content/repositories/releases/io/github/giulong/spectrum/).
 * the `-DbrowsersTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
   running with these active profiles: `-P chrome,firefox,edge`.
+* the `-DmacosTests` property is a shorthand to activate all the profiles needed to run tests on macOS. It's equivalent to
+  running with these active profiles: `-P safari`.
 * the `-DappiumTests` property is a shorthand to activate all the profiles needed to run tests on Appium. It's equivalent to
   running with these active profiles: `-P uiAutomator2`.
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.
@@ -80,10 +85,8 @@ Where:
 > You need Appium server and all the drivers for the corresponding technologies.
 
 > ⚠️ Safari<br/>
-> [Safari Integration Tests](it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/SafariCheckboxIT.java)
-> are not executed during the Maven build, since they depend on the underlying OS,
-> and their conditional execution would affect the `verify-browsers` module.
-> If needed, they can be executed programmatically.
+> [Safari Integration Tests](it-macos/src/test/java/io/github/giulong/spectrum/it_macos/tests/SafariCheckboxIT.java)
+> are executed only on macOS.
 
 ## Framework-only build
 
@@ -94,6 +97,24 @@ With that, just the framework's module is built, without running any test.
 |---------|------------------------------------------------------------------|
 | unix    | `./mvnw install -DskipTests -DskipSign -ntp -P framework-only`   |
 | windows | `mvnw.cmd install -DskipTests -DskipSign -ntp -P framework-only` |
+
+## Maven Profiles
+
+These are the available profiles you can find in the [pom.xml](pom.xml):
+
+| Profile        | Description                                                  |
+|----------------|--------------------------------------------------------------|
+| all            | runs the full build. Active by default                       |
+| framework-only | builds the framework, skipping unit tests                    |
+| browsers       | runs tests in the `it`, `it-testbook`, and `it-grid` modules |
+| macos          | runs tests in the `it-macos` module                          |
+| appium         | runs tests in the `it-appium` module                         |
+
+You can leverage them to run specific groups of submodules. It's better to leverage these profiles instead of limiting
+the execution to single modules with `-pl <module name>` in order to build the related `verify-*` and `cleanup` modules as well.
+
+Additionally, submodules have their own profiles to limit the execution to specific drivers.
+Check their own pom files for details.
 
 # Workflow
 
