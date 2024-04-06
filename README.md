@@ -32,15 +32,15 @@
   <ol>
     <li><a href="#about">About</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contacts">Contacts</a></li>
-    <li><a href="#local-development">Local Development</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
 ## About
 
-Spectrum is a **JUnit 5** and **Selenium 4** framework that aims to simplify e2e tests development providing these features automatically:
+Spectrum is a **test automation framework** that leverages **JUnit 5** and **Selenium 4** to simplify e2e tests development providing these features automatically:
 
 * **Driver** instantiation
 * **Html report** generation
@@ -49,10 +49,11 @@ Spectrum is a **JUnit 5** and **Selenium 4** framework that aims to simplify e2e
 * **Mail/Slack notifications** with reports as attachments
 
 Spectrum manages all the boilerplate code to get these features and many more, allowing you to focus on test logic.
+
 * It is fully configurable via a **declarative yaml file**
 * It provides **out-of-the-box defaults** to let you run tests with no additional configuration
-* supports browsers automation via Selenium
-* supports mobile and desktop applications via Appium
+* supports **browsers automation** via Selenium
+* supports **mobile and desktop applications** via Appium
 
 ## Getting Started
 
@@ -63,15 +64,17 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 > ⚠️ JDK<br/>
 > Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/21/) to be able to run your tests.
 
-1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) via your IDE or by running this in a terminal and providing values when prompted:
+1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) via your IDE or by running this in a terminal
+   and providing values when prompted:
 
    `mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST`
-2. Run the `src/test/java/<PACKAGE NAME>/tests/LoginFormIT` demo test injected by the archetype. You will see an instance of Chrome starting.
-3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` html report with the execution video attached.
+2. Run the `LoginFormIT` demo test injected by the archetype. It runs on Chrome by default.
+3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` report with the execution video attached.
 
 Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:
 
-<img style="width: 49%;" src="src/main/resources/images/login-form-it.jpg" alt="login-form"/>&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/login-form-it-extent-report.jpg" alt="report"/>
+<img style="width: 49%;" src="src/main/resources/images/login-form-it.jpg" alt="login-form"/>
+&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/login-form-it-extent-report.jpg" alt="report"/>
 
 And here's the generated video:
 
@@ -79,21 +82,22 @@ https://github.com/giulong/spectrum/assets/27963644/df6b801e-91ca-415b-b510-a45b
 
 Additionally, you can configure Spectrum to automatically produce a html summary and coverage report like these:
 
-<img style="width: 49%;" src="src/main/resources/images/html-summary.png" alt="summary"/>&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
+<img style="width: 49%;" src="src/main/resources/images/html-summary.png" alt="summary"/>
+&nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
 
 For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/).
+
+## Contributing
+
+Contributions to Spectrum are welcome! If you're interested, please check out the [CONTRIBUTING.md](CONTRIBUTING.md).
+
+If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
 
 ## Contacts
 
 | Creator         | GitHub ![github logo](src/main/resources/images/github-mark.png) | Linkedin ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)      | Email ![gmail logo](src/main/resources/images/gmail-icon.png) |
 |-----------------|------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------------------------------------|
 | Giulio Longfils | [giulong](https://github.com/giulong)                            | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)   |
-
-If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
-
-## Local development
-
-If you're interested in building Spectrum locally, check out the [DEV readme](DEV.md)
 
 ## Acknowledgments
 
@@ -108,4 +112,5 @@ Spectrum leverages these projects you should definitely check out!
 * [Simple Java Mail](https://www.simplejavamail.org/)
 * [JCodec](http://www.jcodec.org/)
 * [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
+* [Jekyll](https://jekyllrb.com/)
 * [Modernist Theme](https://github.com/pages-themes/modernist)

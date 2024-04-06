@@ -1,14 +1,14 @@
 ---
 name: Bug report
 about: Report an issue
-title: "[BUG] <Provide a short title>"
-labels: ''
-assignees: giulong
+title: "<Provide a short title>"
+labels: ['bug']
+assignees: ''
 
 ---
 
 # Bug description
-\<Replace this line with a clear and concise description of what the bug is>
+&lt;Replace this line with a clear and concise description of the bug&gt;
 
 # Details
 1. Browser version: 
@@ -26,8 +26,8 @@ assignees: giulong
     - junit.jupiter.execution.parallel.mode.default:
     - junit.jupiter.execution.parallel.mode.classes.default:
 
-# Expected behavior
-\<Replace this line with a clear and concise description of what you expected to happen>
+# Expected behavior
+&lt;Replace this line with a clear and concise description of what you expected to happen&gt;
 
 # Execution Log
 ```text
@@ -35,4 +35,4 @@ assignees: giulong
 ```
 
 ## Additional context
-\<Replace this line with any other context about the problem here>
+&lt;Replace this line with any other context about the problem here&gt;
