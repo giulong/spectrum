@@ -36,7 +36,7 @@
   </ol>
 </details>
 
-## About
+# About
 
 Spectrum is a **test automation framework** that leverages **JUnit 5** and **Selenium 4** to simplify e2e tests development providing these features automatically:
 
@@ -53,7 +53,7 @@ Spectrum manages all the boilerplate code to get these features and many more, a
 * supports **browsers automation** via Selenium
 * supports **mobile and desktop applications** via Appium
 
-## Getting Started
+# Getting Started
 
 All you need to do is take the three steps listed below, as shown in this video:
 
@@ -66,8 +66,11 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
    and providing values when prompted:
 
    `mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST`
-2. Run the `LoginFormIT` demo test injected by the archetype. It runs on Chrome by default.
+2. Run the `LoginFormIT` demo test injected by the archetype.
 3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` report with the execution video attached.
+
+> ⚠️ Default Browser<br/>
+> Tests run on Chrome by default. If you don't have it, you can run the demo test with `-Dspectrum.driver=firefox` or `-Dspectrum.driver=edge`
 
 Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:
 
@@ -85,19 +88,19 @@ Additionally, you can configure Spectrum to automatically produce a html summary
 
 For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/).
 
-## Contributing
+# Contributing
 
 Contributions to Spectrum are welcome! If you're interested, please check out the [CONTRIBUTING.md](CONTRIBUTING.md).
 
 If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
 
-## Contacts
+# Contacts
 
 | Creator         | GitHub ![github logo](src/main/resources/images/github-mark.png) | Linkedin ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)      | Email ![gmail logo](src/main/resources/images/gmail-icon.png) |
 |-----------------|------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------------------------------------|
 | Giulio Longfils | [giulong](https://github.com/giulong)                            | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)   |
 
-## Acknowledgments
+# Acknowledgments
 
 Spectrum leverages these projects you should definitely check out!
 
