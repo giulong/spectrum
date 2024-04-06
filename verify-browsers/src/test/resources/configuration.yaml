@@ -5,6 +5,9 @@ drivers:
   chrome:
     args:
       - --headless=new
+  events:
+    afterGetAttribute:
+      level: TRACE
 
 data:
   folder: data
