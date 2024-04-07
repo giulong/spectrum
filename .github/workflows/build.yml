@@ -86,6 +86,42 @@ jobs:
           ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
           ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DbrowsersTests -ntp -P browsers
 
+  macos:
+    name: MacOS IT
+    needs: build
+    runs-on: macos-latest
+    env:
+      VERSION: ${{ needs.build.outputs.version }}
+    steps:
+      - name: Free Disk Space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.0.0
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: maven
+
+      - name: Get Spectrum jar
+        uses: actions/download-artifact@v4
+        with:
+          name: spectrum-jar
+
+      - name: Run macos ITs
+        shell: bash
+        run: |
+          ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
+          ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE -DmacosTests -ntp -P macos
+
   appium:
     name: Appium IT
     if: false
