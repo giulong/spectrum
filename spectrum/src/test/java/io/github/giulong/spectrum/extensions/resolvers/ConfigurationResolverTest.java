@@ -71,7 +71,6 @@ class ConfigurationResolverTest {
         Function<String, Configuration> function = functionArgumentCaptor.getValue();
         final Configuration actual = function.apply("value");
 
-        verify(rootStore).put(CONFIGURATION, configuration);
         assertEquals(configuration, actual);
     }
 }

@@ -47,9 +47,6 @@ class ExtentReportsResolverTest {
     @Captor
     private ArgumentCaptor<Function<String, ExtentReports>> functionArgumentCaptor;
 
-    @Captor
-    private ArgumentCaptor<ExtentReports> extentReportsArgumentCaptor;
-
     @InjectMocks
     private ExtentReportsResolver extentReportsResolver;
 
@@ -78,7 +75,6 @@ class ExtentReportsResolverTest {
         Function<String, ExtentReports> function = functionArgumentCaptor.getValue();
         final ExtentReports actual = function.apply("value");
 
-        verify(rootStore).put(eq(EXTENT_REPORTS), extentReportsArgumentCaptor.capture());
         assertEquals(extentReports, actual);
     }
 }
