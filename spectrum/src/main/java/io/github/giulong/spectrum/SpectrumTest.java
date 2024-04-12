@@ -125,7 +125,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         spectrumPage.setEndpoint(endpointValue);
-        getSharedFields().forEach(sharedField -> Reflections.copyField(sharedField, this, sharedField, spectrumPage));
+        getSharedFields().forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage));
 
         PageFactory.initElements(driver, spectrumPage);
 
