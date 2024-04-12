@@ -99,6 +99,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
 
         final List<Field> fields = new ArrayList<>(asList(clazz.getDeclaredFields()));
+        final List<Field> sharedFields = getSharedFields();
 
         Class<?> superClazz = clazz.getSuperclass();
         while (superClazz.getSuperclass() != SpectrumEntity.class) {
@@ -110,12 +111,12 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         spectrumPages = fields
                 .stream()
                 .filter(f -> SpectrumPage.class.isAssignableFrom(f.getType()))
-                .map(this::initPage)
+                .map(f -> initPage(f, sharedFields))
                 .collect(toList());
     }
 
     @SneakyThrows
-    public SpectrumPage<?, Data> initPage(final Field spectrumPageField) {
+    public SpectrumPage<?, Data> initPage(final Field spectrumPageField, final List<Field> sharedFields) {
         log.debug("Initializing page {}", spectrumPageField.getName());
 
         @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
@@ -130,7 +131,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         spectrumPage.setEndpoint(endpointValue);
-        getSharedFields().forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage));
+        sharedFields.forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage));
 
         PageFactory.initElements(driver, spectrumPage);
 
