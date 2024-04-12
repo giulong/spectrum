@@ -5,6 +5,7 @@ import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Js;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,6 +64,9 @@ public class SpectrumTestTest<T> {
 
     @Mock
     private TestData testData;
+
+    @Mock
+    private Js js;
 
     @InjectMocks
     private FakeChild<T> childTest;
@@ -129,7 +133,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
-        childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, actions, eventsDispatcher, data);
+        childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, actions, eventsDispatcher, js, data);
 
         assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.driver);
