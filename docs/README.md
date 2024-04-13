@@ -1474,7 +1474,9 @@ extent:
 
 # Common Use Cases
 
-Here you can find how Spectrum helps you in a few common use cases.
+Here you can find how Spectrum helps you in a few common use cases. If you think your use case is interesting and it would be worth
+sharing with the community, please open tell open a discussion in [show and tell](https://github.com/giulong/spectrum/discussions/categories/show-and-tell){:target="_blank"}.
+We'll evaluate to add it here as well.
 
 ## File Upload
 
@@ -1514,12 +1516,13 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
     @Test
     public void myTest() {
+        // Let's assume this is the input with type="file"
         WebElement fileUploadInput = webAppPage.getFileUploadInput();
 
-        // leveraging method chaining
+        // leveraging method chaining, we upload the src/test/resources/files/myFile.txt
         webAppPage.open().upload(fileUploadInput, "myFile.txt");
 
-        // directly invoking the upload
+        // Another example directly invoking the upload of src/test/resources/files/document.pdf
         upload(fileUploadInput, "document.pdf");
     }
 }
@@ -1530,8 +1533,8 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
 ## File Download
 
-Files are downloaded in the folder specified as `vars.downloadsFolder` in the `configuration*.yaml`.
-If needed, you should change this value, since this is used in several places, for example in all the browsers' capabilities.
+Files are downloaded in the folder specified in `vars.downloadsFolder` in the `configuration*.yaml`.
+If needed, you should change this value since this is used in several places, for example in all the browsers' capabilities.
 So, this is a useful way to avoid redundancy and to be able to change all the values with one key.
 
 When downloading a file from the AUT, you can leverage Spectrum to check if it's what you expected.
@@ -1543,9 +1546,9 @@ Spectrum helps checking it by comparing its SHA 256 checksum with the checksum o
 Let's explain this with an example. Let's say that:
 
 * you want to check a file downloaded with the name `downloadedFile.txt`
-* you rely on the default `filesFolder`, which is `src/test/resources/files`:
+* you rely on the default `filesFolder`, which is `src/test/resources/files`
 
-You need to place an exact copy of that file in that folder:
+You need to place the expected file in that folder:
 
 {% include copyCode.html %}
 
@@ -1574,8 +1577,8 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
-If the files are the same, their checksum will match, and that assertion will pass.
-In case you need to check a file with a different name, for example if the AUT generates file names dynamically,
+If the two files are the same their checksum will match, and that assertion will pass.
+In case you need to check a file with a different name, for example if the AUT generates files names dynamically,
 you can leverage the overloaded `checkDownloadedFile(String, String)` method, which takes the names of both the downloaded file and the one to check:
 
 {% include copyCode.html %}
@@ -1594,6 +1597,14 @@ public class HelloWorldIT extends SpectrumTest<Void> {
     }
 }
 ```
+
+Though this check might seem silly, it helps avoid regressions: whenever changes in the AUT lead to produce a different file,
+for example more lines than before in an exported Excel, this is a way to signal something changed. If this is right, you just need to 
+store the newly expected file in the `filesFolder`.
+
+Again, checking the file's content is not in the scope of this kind of tests. Following the Excel example, you should instead focus on checking what led to 
+having more lines: maybe there were more items shown in the web page, so you need to run assertions on those, or maybe it's just something happening in 
+the backend of your application. In this case, you should check with units and integration tests rather than with Selenium.
 
 > 💡 **Example**<br/>
 > Check the [FilesIT.download() test]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/FilesIT.java){:target="_blank"} to see a real example
@@ -2005,7 +2016,7 @@ simplejavamail.transportstrategy=SMTP_TLS
 simplejavamail.smtp.host=smtp.gmail.com
 simplejavamail.smtp.port=587
 simplejavamail.smtp.username=<YOUR GMAIL ADDRESS>
-simplejavamail.smtp.password=<YOUR GMAIL PASSWORD>
+simplejavamail.smtp.password=<YOUR GMAIL APP PASSWORD>
 simplejavamail.defaults.trustedhosts=smtp.gmail.com
 simplejavamail.defaults.subject=Spectrum Notification
 simplejavamail.defaults.from.address=<YOUR GMAIL ADDRESS>
