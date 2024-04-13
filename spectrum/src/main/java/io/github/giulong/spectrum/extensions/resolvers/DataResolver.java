@@ -36,7 +36,7 @@ public class DataResolver<Data> implements ParameterResolver {
                 final YamlUtils yamlUtils = YamlUtils.getInstance();
                 final Data data = yamlUtils.read(String.format("%s/data.yaml", dataConfiguration.getFolder()), dataClass);
                 log.trace("Data:\n{}", yamlUtils.write(data));
-                rootStore.put(DATA, data);
+
                 return data;
             }, dataClass);
         } catch (ClassNotFoundException e) {

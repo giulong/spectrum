@@ -19,14 +19,10 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
 
     @Override
     public ExtentReports resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
-
-        return rootStore.getOrComputeIfAbsent(EXTENT_REPORTS, e -> {
+        return context.getRoot().getStore(GLOBAL).getOrComputeIfAbsent(EXTENT_REPORTS, e -> {
             log.debug("Resolving {}", EXTENT_REPORTS);
 
-            final ExtentReports extentReports = extentReporter.getExtentReports();
-            rootStore.put(EXTENT_REPORTS, extentReports);
-            return extentReports;
+            return extentReporter.getExtentReports();
         }, ExtentReports.class);
     }
 }

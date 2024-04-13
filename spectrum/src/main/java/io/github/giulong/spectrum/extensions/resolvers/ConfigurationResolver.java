@@ -16,14 +16,10 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
 
     @Override
     public Configuration resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
-
-        return rootStore.getOrComputeIfAbsent(CONFIGURATION, e -> {
+        return context.getRoot().getStore(GLOBAL).getOrComputeIfAbsent(CONFIGURATION, e -> {
             log.debug("Resolving {}", CONFIGURATION);
 
-            final Configuration configuration = Configuration.getInstance();
-            rootStore.put(CONFIGURATION, configuration);
-            return configuration;
+            return Configuration.getInstance();
         }, Configuration.class);
     }
 }

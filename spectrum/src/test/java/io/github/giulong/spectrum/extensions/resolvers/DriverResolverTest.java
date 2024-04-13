@@ -112,7 +112,7 @@ class DriverResolverTest {
     }
 
     @Test
-    @DisplayName("resolveParameter should return the instance of the webdriver decorated with the default event listener")
+    @DisplayName("resolveParameter should return the instance of the webDriver decorated with the default event listener")
     @SuppressWarnings("unchecked")
     public void resolveParameter() {
         final String locatorRegex = "locatorRegex";

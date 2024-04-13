@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +34,7 @@ public class SafariCheckboxIT extends SpectrumTest<Void> {
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
         screenshot();
-        jsClickOn(landingPage.getCheckboxLink());
+        js.clickOn(landingPage.getCheckboxLink());
 
         checkboxPage.waitForPageLoading();
 
@@ -46,13 +45,9 @@ public class SafariCheckboxIT extends SpectrumTest<Void> {
         assertFalse(firstCheckbox.isSelected());
         assertTrue(secondCheckbox.isSelected());
 
-        jsClickOn(firstCheckbox);
+        js.clickOn(firstCheckbox);
         assertTrue(firstCheckbox.isSelected());
 
         screenshotInfo("After checking the first checkbox");
-    }
-
-    private void jsClickOn(final WebElement webElement) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", webElement);
     }
 }

@@ -70,7 +70,6 @@ class EventsDispatcherResolverTest {
         Function<String, EventsDispatcher> function = functionArgumentCaptor.getValue();
         final EventsDispatcher actual = function.apply("value");
 
-        verify(rootStore).put(EVENTS_DISPATCHER, eventsDispatcher);
         assertEquals(eventsDispatcher, actual);
     }
 }
