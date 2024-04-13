@@ -1,14 +1,14 @@
 ---
 name: Bug report
 about: Report an issue
-title: "<Provide a short title>"
+title: ''
 labels: ['bug']
 assignees: ''
 
 ---
 
 # Bug description
-&lt;Replace this line with a clear and concise description of the bug&gt;
+Replace this line with a clear and concise description of the bug
 
 # Details
 1. Browser version: 
@@ -27,12 +27,12 @@ assignees: ''
     - junit.jupiter.execution.parallel.mode.classes.default:
 
 # Expected behavior
-&lt;Replace this line with a clear and concise description of what you expected to happen&gt;
+Replace this line with a clear and concise description of what you expected to happen
 
 # Execution Log
 ```text
-<Replace this line with the log at TRACE level>
+Replace this line with the log at TRACE level
 ```
 
 ## Additional context
-&lt;Replace this line with any other context about the problem here&gt;
+Replace this line with any other context about the problem here
