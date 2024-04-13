@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
@@ -35,7 +36,7 @@ class JsResolverTest {
     @Mock
     private ExtensionContext.Store store;
 
-    @Mock
+    @Mock(extraInterfaces = JavascriptExecutor.class)
     private WebDriver webDriver;
 
     @Mock
@@ -63,7 +64,7 @@ class JsResolverTest {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(DRIVER, WebDriver.class)).thenReturn(webDriver);
         when(Js.builder()).thenReturn(jsBuilder);
-        when(jsBuilder.driver(webDriver)).thenReturn(jsBuilder);
+        when(jsBuilder.driver((JavascriptExecutor) webDriver)).thenReturn(jsBuilder);
         when(jsBuilder.build()).thenReturn(js);
 
         assertEquals(js, jsResolver.resolveParameter(parameterContext, extensionContext));

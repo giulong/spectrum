@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
@@ -22,7 +23,7 @@ public class JsResolver extends TypeBasedParameterResolver<Js> {
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final Js js = Js.builder()
-                .driver(store.get(DRIVER, WebDriver.class))
+                .driver((JavascriptExecutor) store.get(DRIVER, WebDriver.class))
                 .build();
 
         store.put(JS, js);
