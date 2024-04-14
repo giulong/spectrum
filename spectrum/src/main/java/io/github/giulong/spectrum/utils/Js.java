@@ -15,7 +15,7 @@ public class Js {
      * @param webElement the WebElement to click on
      * @return the calling SpectrumEntity instance
      */
-    public Js clickOn(final WebElement webElement) {
+    public Js click(final WebElement webElement) {
         driver.executeScript("arguments[0].click();", webElement);
 
         return this;

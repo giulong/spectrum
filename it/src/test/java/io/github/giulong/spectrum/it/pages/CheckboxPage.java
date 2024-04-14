@@ -9,6 +9,8 @@ import org.openqa.selenium.support.FindBys;
 
 import java.util.List;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+
 @Getter
 @Endpoint("checkboxes")
 public class CheckboxPage extends SpectrumPage<CheckboxPage, Void> {
@@ -18,4 +20,13 @@ public class CheckboxPage extends SpectrumPage<CheckboxPage, Void> {
             @FindBy(tagName = "input")
     })
     private List<WebElement> checkboxes;
+
+    @Override
+    public CheckboxPage waitForPageLoading() {
+        pageLoadWait.until(and(
+                urlToBe("https://the-internet.herokuapp.com/checkboxes"),
+                visibilityOfAllElements(checkboxes)));
+
+        return this;
+    }
 }

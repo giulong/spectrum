@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,17 +19,17 @@ class JsTest {
     @Mock
     private WebElement webElement;
 
-    @Mock(extraInterfaces = JavascriptExecutor.class)
-    private WebDriver webDriver;
+    @Mock
+    private JavascriptExecutor webDriver;
 
     @InjectMocks
     private Js js;
 
     @Test
-    @DisplayName("clickOn should click with javascript on the provided webElement and return the Js instance")
-    public void clickOn() {
-        assertEquals(js, js.clickOn(webElement));
+    @DisplayName("click should click with javascript on the provided webElement and return the Js instance")
+    public void click() {
+        assertEquals(js, js.click(webElement));
 
-        verify((JavascriptExecutor) webDriver).executeScript("arguments[0].click();", webElement);
+        verify(webDriver).executeScript("arguments[0].click();", webElement);
     }
 }

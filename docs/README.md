@@ -318,20 +318,21 @@ so you can directly use them in your tests/pages.
 > [SpectrumPage](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumPage.html){:target="_blank"},
 > and their superclass [SpectrumEntity](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumEntity.html){:target="_blank"}
 
-| Field            | Description                                                                                                                                                                                                                                   |
-|------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                                            |
-| extentReports    | instance of the Extent Report                                                                                                                                                                                                                 |
-| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                            |
-| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                               |
-| testData         | instance of [TestData]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/types/TestData.java){:target="_blank"} that contains info related to the current test                                                      |
-| driver           | instance of the [WebDriver](https://www.selenium.dev/documentation/webdriver/){:target="_blank"} running for the current test, configured via the `configuration*.yaml`                                                                       |
-| implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.implicit` in the `configuration.yaml`        |
-| pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.pageLoadTimeout` in the `configuration.yaml` |
-| scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.scriptTimeout` in the `configuration.yaml`   |
-| downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.downloadTimeout` in the `configuration.yaml` |
-| eventsDispatcher | you can use it to fire [custom events](#custom-events)                                                                                                                                                                                        |
-| data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                     |
+| Field            | Description                                                                                                                                                                                                                                           |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                                                    |
+| extentReports    | instance of the Extent Report                                                                                                                                                                                                                         |
+| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                                    |
+| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                                       |
+| testData         | instance of [TestData]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/types/TestData.java){:target="_blank"} that contains info related to the current test                                                              |
+| driver           | instance of the [WebDriver](https://www.selenium.dev/documentation/webdriver/){:target="_blank"} running for the current test, configured via the `configuration*.yaml`                                                                               |
+| implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.implicit` in the `configuration.yaml`                |
+| pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.pageLoadTimeout` in the `configuration.yaml`         |
+| scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.scriptTimeout` in the `configuration.yaml`           |
+| downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.downloadTimeout` in the `configuration.yaml`         |
+| eventsDispatcher | you can use it to fire [custom events](#custom-events)                                                                                                                                                                                                |
+| js               | instance of [Js](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/utils/Js.html){:target="_blank"}. Check the [Javascript Executor](#javascript-executor) paragraph to see the available Javascript helper methods |
+| data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                             |
 
 ### SpectrumEntity Service Methods
 
@@ -1111,6 +1112,36 @@ drivers:
       - --proxy-bypass-list=${proxyBypass}
 ```
 
+---
+
+# Javascript Executor
+
+Generally speaking, Javascript execution should be avoided: a Selenium test should mimic a real user interaction
+with the AUT, and a user would never run scripts (unless they want to try hacky things on the frontend application, of course).
+That said, there are some scenarios where there is no option rather than delegating the execution to Javascript,
+e.g. Safari not doing what it's expected to with regular Selenium methods.
+
+For such scenarios, Spectrum injects the `js` object you can use to perform basic operations with Javascript, instead of relying on the
+regular Selenium API. Each method available replicates the methods of the original
+[WebElement](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html){:target="_blank"} interface.
+
+Let's see how to use each method, you can check the
+[Js javadocs](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/utils/Js.html){:target="_blank"} for details:
+
+## click
+
+{% include copyCode.html %}
+
+```java
+js.click(webElement);
+```
+
+You can check the
+[JavascriptIT]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/JavascriptIT.java){:target="_blank"}
+test to see real examples of all the `js` methods in action.
+
+---
+
 # JSON Schema
 
 JSON Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion
@@ -1198,7 +1229,7 @@ drivers:
 
 It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
 so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
-[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml{:target="_blank"})
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 for all the available parameters along with their details.
 
 The video is attached to the extent report as the very first element:
@@ -1251,7 +1282,7 @@ folder and attached to the Extent Report as well, where:
 
 > 💡 **Video Configuration Example**<br/>
 > Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
-> internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}):
+> internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
 {% include copyCode.html %}
 
@@ -1599,11 +1630,11 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 Though this check might seem silly, it helps avoid regressions: whenever changes in the AUT lead to produce a different file,
-for example more lines than before in an exported Excel, this is a way to signal something changed. If this is right, you just need to 
+for example more lines than before in an exported Excel, this is a way to signal something changed. If this is right, you just need to
 store the newly expected file in the `filesFolder`.
 
-Again, checking the file's content is not in the scope of this kind of tests. Following the Excel example, you should instead focus on checking what led to 
-having more lines: maybe there were more items shown in the web page, so you need to run assertions on those, or maybe it's just something happening in 
+Again, checking the file's content is not in the scope of this kind of tests. Following the Excel example, you should instead focus on checking what led to
+having more lines: maybe there were more items shown in the web page, so you need to run assertions on those, or maybe it's just something happening in
 the backend of your application. In this case, you should check with units and integration tests rather than with Selenium.
 
 > 💡 **Example**<br/>
