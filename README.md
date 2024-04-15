@@ -71,8 +71,7 @@ https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad8
 2. Run the `LoginFormIT` demo test injected by the archetype. It runs on Chrome by default.
 3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` report with the execution video attached.
 
-Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:
-
+Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:<br/><br/>
 <img style="width: 49%;" src="src/main/resources/images/login-form-it.jpg" alt="login-form"/>
 &nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/login-form-it-extent-report.jpg" alt="report"/>
 
@@ -80,8 +79,7 @@ And here's the generated video:
 
 https://github.com/giulong/spectrum/assets/27963644/df6b801e-91ca-415b-b510-a45b7392de20
 
-Additionally, you can configure Spectrum to automatically produce a html summary and coverage report like these:
-
+Additionally, you can configure Spectrum to automatically produce a html summary and coverage report like these:<br/><br/>
 <img style="width: 49%;" src="src/main/resources/images/html-summary.png" alt="summary"/>
 &nbsp;&nbsp;&nbsp;<img style="width: 49%;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
 
