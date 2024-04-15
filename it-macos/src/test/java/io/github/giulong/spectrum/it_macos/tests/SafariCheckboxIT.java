@@ -1,24 +1,32 @@
-package io.github.giulong.spectrum.it_testbook.tests;
+package io.github.giulong.spectrum.it_macos.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it_testbook.pages.CheckboxPage;
-import io.github.giulong.spectrum.it_testbook.pages.LandingPage;
+import io.github.giulong.spectrum.it_macos.pages.CheckboxPage;
+import io.github.giulong.spectrum.it_macos.pages.LandingPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
-import org.openqa.selenium.JavascriptExecutor;
+import org.junit.jupiter.api.condition.EnabledIf;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.openqa.selenium.WebElement;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.condition.OS.MAC;
 
 @SuppressWarnings("unused")
 @DisplayName("Checkbox Page")
-@EnabledIfSystemProperty(named = "spectrum.driver", matches = "safari")
+@EnabledOnOs(MAC)
+@EnabledIf("onMac")
 public class SafariCheckboxIT extends SpectrumTest<Void> {
+
+    private static final String DRIVER_PROPERTY = "spectrum.driver";
 
     private LandingPage landingPage;
 
     private CheckboxPage checkboxPage;
+
+    public static boolean onMac() {
+        return "safari".equals(System.getProperty(DRIVER_PROPERTY, System.getenv(DRIVER_PROPERTY)));
+    }
 
     @Test
     public void testWithNoDisplayName() {
@@ -26,7 +34,7 @@ public class SafariCheckboxIT extends SpectrumTest<Void> {
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
         screenshot();
-        landingPage.getCheckboxLink().click();
+        js.click(landingPage.getCheckboxLink());
 
         checkboxPage.waitForPageLoading();
 
@@ -37,9 +45,7 @@ public class SafariCheckboxIT extends SpectrumTest<Void> {
         assertFalse(firstCheckbox.isSelected());
         assertTrue(secondCheckbox.isSelected());
 
-        JavascriptExecutor executor = (JavascriptExecutor) driver;
-        executor.executeScript("arguments[0].click();", firstCheckbox);
-
+        js.click(firstCheckbox);
         assertTrue(firstCheckbox.isSelected());
 
         screenshotInfo("After checking the first checkbox");

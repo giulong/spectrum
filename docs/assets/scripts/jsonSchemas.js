@@ -1,11 +1,28 @@
 ---
 ---
+function compareSemanticVersions(a, b) {
+    const aTokens = a['name'].split('.');
+    const bTokens = b['name'].split('.');
+
+    for (i = 0; i < 3; i++) {
+        const aToken = parseInt(aTokens[i]);
+        const bToken = parseInt(bTokens[i]);
+
+        if (aToken !== bToken) {
+            return aToken > bToken ? 1 : -1;
+        }
+    }
+
+    return bTokens.length - aTokens.length;
+}
+
 (async () => {
     const jsonSchemasBody = document.getElementById('json-schemas-body');
     const response = await fetch('https://api.github.com/repos/giulong/spectrum/contents/docs/json-schemas');
     const json = await response.json();
-    const latestJson = json.pop();
-    const rows = json
+    const sortedJson = json.sort(compareSemanticVersions);
+    const latestJson = sortedJson.pop();
+    const rows = sortedJson
         .map(jsonSchema => {
             const url = "{{ site.docs_url }}/{{ site.json_schemas_endpoint }}" + jsonSchema.name + "/Configuration-schema.json";
             const versionColumn = '<td><a href="' + url + '" target="_blank">' + jsonSchema.name + '</a></td>';

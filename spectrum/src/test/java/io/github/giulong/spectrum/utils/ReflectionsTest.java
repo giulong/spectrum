@@ -73,6 +73,18 @@ class ReflectionsTest {
         assertEquals(value, fieldStringSecond.get(dummySecond));
     }
 
+    @Test
+    @DisplayName("copyField should copy the provided field if it's the same on source and dest because it's inherited")
+    public void copyFieldSame() {
+        final String parentField = "parentField";
+        final Dummy dummy = new Dummy(null, parentField);
+        final DummyThird dummyThird = new DummyThird();
+        final Field field = Reflections.getField(parentField, dummy);
+
+        Reflections.copyField(field, dummy, dummyThird);
+        assertEquals(parentField, Reflections.getFieldValue(parentField, dummyThird));
+    }
+
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
     @AllArgsConstructor
     private static class Dummy extends DummyParent {
@@ -88,6 +100,10 @@ class ReflectionsTest {
     @SuppressWarnings("unused")
     private static class DummySecond {
         private String fieldString;
+    }
+
+    @SuppressWarnings("unused")
+    private static class DummyThird extends DummyParent {
     }
 
     @SuppressWarnings("unused")

@@ -24,6 +24,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -214,7 +215,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("accept should add the no-video.png if no frames were added")
-    public void acceptNoFramesAdded() throws IOException {
+    public void acceptNoFramesAdded() throws IOException, URISyntaxException {
         when(event.getContext()).thenReturn(extensionContext);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
@@ -233,7 +234,7 @@ class VideoConsumerTest {
 
         videoConsumer.accept(event);
 
-        assertEquals("no-video.png", Path.of(urlArgumentCaptor.getValue().toString()).getFileName().toString());
+        assertEquals("no-video.png", Path.of(urlArgumentCaptor.getValue().toURI()).getFileName().toString());
         verify(encoder).encodeImage(bufferedImage);
         verify(encoder).finish();
     }

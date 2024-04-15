@@ -5,6 +5,7 @@ import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Js;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +65,9 @@ public class SpectrumTestTest<T> {
     @Mock
     private TestData testData;
 
+    @Mock
+    private Js js;
+
     @InjectMocks
     private FakeChild<T> childTest;
 
@@ -75,7 +79,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("initPage should init the provided field")
     public void testInitPage() throws NoSuchFieldException {
-        final SpectrumPage<?, T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPage"));
+        final SpectrumPage<?, T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPage"), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPage, actual);
         assertThat(spectrumTest.testPage, instanceOf(FakeSpectrumPage.class));
@@ -93,9 +97,9 @@ public class SpectrumTestTest<T> {
     }
 
     @Test
-    @DisplayName("initPages without endpoint")
+    @DisplayName("initPage without endpoint")
     public void initPageWithoutEndpoint() throws NoSuchFieldException {
-        final SpectrumPage<?, T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPageWithoutEndpoint"));
+        final SpectrumPage<?, T> actual = spectrumTest.initPage(spectrumTest.getClass().getDeclaredField("testPageWithoutEndpoint"), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPageWithoutEndpoint, actual);
         assertThat(spectrumTest.testPageWithoutEndpoint, instanceOf(FakeSpectrumPageWithoutEndpoint.class));
@@ -129,7 +133,7 @@ public class SpectrumTestTest<T> {
     @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
-        childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, actions, eventsDispatcher, data);
+        childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait, extentReports, actions, eventsDispatcher, js, data);
 
         assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.driver);

@@ -7,6 +7,7 @@ import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Js;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
@@ -64,15 +65,18 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final ActionsResolver ACTIONS_RESOLVER = new ActionsResolver();
 
     @RegisterExtension
+    public static final JsResolver JS_RESOLVER = new JsResolver();
+
+    @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
     protected List<SpectrumPage<?, Data>> spectrumPages;
 
     @BeforeEach
     @SuppressWarnings({"checkstyle:ParameterNumber", "unused"})
-    public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver driver,
-                           final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
-                           final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Data data) {
+    public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver driver, final ImplicitWait implicitWait,
+                           final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final Actions actions,
+                           final EventsDispatcher eventsDispatcher, final Js js, final Data data) {
         this.configuration = configuration;
         this.driver = driver;
         this.implicitWait = implicitWait;
@@ -84,6 +88,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.actions = actions;
         this.eventsDispatcher = eventsDispatcher;
         this.testData = testData;
+        this.js = js;
         this.data = data;
 
         initPages();
@@ -94,6 +99,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
 
         final List<Field> fields = new ArrayList<>(asList(clazz.getDeclaredFields()));
+        final List<Field> sharedFields = getSharedFields();
 
         Class<?> superClazz = clazz.getSuperclass();
         while (superClazz.getSuperclass() != SpectrumEntity.class) {
@@ -105,12 +111,12 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         spectrumPages = fields
                 .stream()
                 .filter(f -> SpectrumPage.class.isAssignableFrom(f.getType()))
-                .map(this::initPage)
+                .map(f -> initPage(f, sharedFields))
                 .collect(toList());
     }
 
     @SneakyThrows
-    public SpectrumPage<?, Data> initPage(final Field spectrumPageField) {
+    public SpectrumPage<?, Data> initPage(final Field spectrumPageField, final List<Field> sharedFields) {
         log.debug("Initializing page {}", spectrumPageField.getName());
 
         @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
@@ -125,7 +131,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         spectrumPage.setEndpoint(endpointValue);
-        getSharedFields().forEach(sharedField -> Reflections.copyField(sharedField, this, sharedField, spectrumPage));
+        sharedFields.forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage));
 
         PageFactory.initElements(driver, spectrumPage);
 

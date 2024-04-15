@@ -16,14 +16,10 @@ public class EventsDispatcherResolver extends TypeBasedParameterResolver<EventsD
 
     @Override
     public EventsDispatcher resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
-
-        return rootStore.getOrComputeIfAbsent(EVENTS_DISPATCHER, e -> {
+        return context.getRoot().getStore(GLOBAL).getOrComputeIfAbsent(EVENTS_DISPATCHER, e -> {
             log.debug("Resolving {}", EVENTS_DISPATCHER);
 
-            final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
-            rootStore.put(EVENTS_DISPATCHER, eventsDispatcher);
-            return eventsDispatcher;
+            return EventsDispatcher.getInstance();
         }, EventsDispatcher.class);
     }
 }

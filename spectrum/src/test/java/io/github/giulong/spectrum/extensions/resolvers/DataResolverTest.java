@@ -115,7 +115,6 @@ class DataResolverTest {
         Function<String, TestYaml> function = runnableArgumentCaptor.getValue();
         TestYaml actual = function.apply("value");
 
-        verify(rootStore).put(DATA, data);
         assertEquals(data, actual);
     }
 
