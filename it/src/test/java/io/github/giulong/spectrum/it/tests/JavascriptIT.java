@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.it.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.CheckboxPage;
+import io.github.giulong.spectrum.it.pages.KeyPressesPage;
 import io.github.giulong.spectrum.it.pages.LandingPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,8 @@ public class JavascriptIT extends SpectrumTest<Void> {
     private LandingPage landingPage;
 
     private CheckboxPage checkboxPage;
+
+    private KeyPressesPage keyPressesPage;
 
     @Test
     public void testWithNoDisplayName() {
@@ -35,5 +38,21 @@ public class JavascriptIT extends SpectrumTest<Void> {
 
         // Take a screenshot with a custom message
         screenshotInfo("After checking the first checkbox");
+    }
+
+    @Test
+    public void testInputFieldActions() {
+        driver.get(configuration.getApplication().getBaseUrl());
+
+        js.click(landingPage.getKeyPressesLink());
+        keyPressesPage.waitForPageLoading();
+
+        final WebElement inputField = keyPressesPage.getInputField();
+
+        js.sendKeys(inputField, "testKeys");
+        assertEquals("testKeys", inputField.getAttribute("value"));
+
+        js.clear(inputField);
+        assertTrue(inputField.getAttribute("value").isEmpty());
     }
 }

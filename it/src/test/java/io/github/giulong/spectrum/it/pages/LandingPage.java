@@ -14,4 +14,7 @@ public class LandingPage extends SpectrumPage<LandingPage, Void> {
 
     @FindBy(linkText = "Checkboxes")
     private WebElement checkboxLink;
+
+    @FindBy(linkText = "Key Presses")
+    private WebElement keyPressesLink;
 }
