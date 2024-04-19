@@ -15,7 +15,7 @@ public class Js {
     /**
      * Get the Tag of the provided WebElement
      *
-     * @param webElement the WebElement to click on
+     * @param webElement the WebElement from which the tag name is taken
      * @return The tag name of the WebElement
      */
     public String getTagName(final WebElement webElement) {
@@ -27,7 +27,7 @@ public class Js {
     /**
      * Get the size of the provided WebElement
      *
-     * @param webElement the WebElement to click on
+     * @param webElement the WebElement from which the size is taken
      * @return The rendered Size of the WebElement
      */
     public Dimension getSize(final WebElement webElement) {
@@ -40,7 +40,7 @@ public class Js {
     /**
      * Get the location and size of the provided WebElement
      *
-     * @param webElement the WebElement to click on
+     * @param webElement the WebElement from which the location and size are taken
      * @return The location and size of the rendered WebElement
      */
     public Rectangle getRect(final WebElement webElement) {
@@ -82,7 +82,7 @@ public class Js {
     /**
      * Clear input value with javascript on the provided WebElement
      *
-     * @param webElement the WebElement to click on
+     * @param webElement the WebElement used to clear the input field
      * @return the calling SpectrumEntity instance
      */
     public Js clear(final WebElement webElement) {
