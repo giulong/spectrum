@@ -1,8 +1,9 @@
 package io.github.giulong.spectrum.utils;
 
 import lombok.Builder;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+
+import java.util.List;
 
 @Builder
 public class Js {
@@ -10,6 +11,47 @@ public class Js {
     private JavascriptExecutor driver;
 
     private final EscapeStringUtils escapeStringUtils = EscapeStringUtils.getInstance();
+
+    /**
+     * Get the Tag of the provided WebElement
+     *
+     * @param webElement the WebElement to click on
+     * @return The tag name of the WebElement
+     */
+    public String getTagName(final WebElement webElement) {
+        final String tagName = (String) driver.executeScript("return arguments[0].tagName", webElement);
+
+        return tagName.toLowerCase();
+    }
+
+    /**
+     * Get the size of the provided WebElement
+     *
+     * @param webElement the WebElement to click on
+     * @return The rendered Size of the WebElement
+     */
+    public Dimension getSize(final WebElement webElement) {
+        final List<Object> dimensions = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
+                "return [rectangle.width, rectangle.height];", webElement);
+
+        return new Dimension(((Number) dimensions.get(0)).intValue(), ((Number) dimensions.get(1)).intValue());
+    }
+
+    /**
+     * Get the location and size of the provided WebElement
+     *
+     * @param webElement the WebElement to click on
+     * @return The location and size of the rendered WebElement
+     */
+    public Rectangle getRect(final WebElement webElement) {
+        final List<Object> rectangle = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
+                "return [rectangle.x, rectangle.y, rectangle.width, rectangle.height];", webElement);
+
+        final Point point = new Point(((Number) rectangle.get(0)).intValue(), ((Number) rectangle.get(1)).intValue());
+        final Dimension dimension = new Dimension(((Number) rectangle.get(2)).intValue(), ((Number) rectangle.get(3)).intValue());
+
+        return new Rectangle(point, dimension);
+    }
 
     /**
      * Performs a click with javascript on the provided WebElement
@@ -32,7 +74,7 @@ public class Js {
      */
     public Js sendKeys(final WebElement webElement, final String keysToSend) {
         final String jsCommand = String.format("arguments[0].value='%s';", escapeStringUtils.escapeString(keysToSend));
-        driver.executeScript(jsCommand,webElement);
+        driver.executeScript(jsCommand, webElement);
 
         return this;
     }
@@ -44,7 +86,7 @@ public class Js {
      * @return the calling SpectrumEntity instance
      */
     public Js clear(final WebElement webElement) {
-        driver.executeScript("arguments[0].value='';",webElement);
+        driver.executeScript("arguments[0].value='';", webElement);
 
         return this;
     }
