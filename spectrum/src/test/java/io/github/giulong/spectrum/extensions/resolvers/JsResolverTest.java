@@ -8,17 +8,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+
+import java.util.function.Function;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.JsResolver.JS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +35,12 @@ class JsResolverTest {
     private ExtensionContext extensionContext;
 
     @Mock
+    private ExtensionContext rootContext;
+
+    @Mock
+    private ExtensionContext.Store rootStore;
+
+    @Mock
     private ExtensionContext.Store store;
 
     @Mock(extraInterfaces = JavascriptExecutor.class)
@@ -44,6 +51,9 @@ class JsResolverTest {
 
     @Mock
     private Js js;
+
+    @Captor
+    private ArgumentCaptor<Function<String, Js>> functionArgumentCaptor;
 
     @InjectMocks
     private JsResolver jsResolver;
@@ -61,14 +71,22 @@ class JsResolverTest {
     @Test
     @DisplayName("resolveParameter should return the instance of Js")
     public void resolveParameter() {
+        when(extensionContext.getRoot()).thenReturn(rootContext);
+        when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
+
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(DRIVER, WebDriver.class)).thenReturn(webDriver);
         when(Js.builder()).thenReturn(jsBuilder);
         when(jsBuilder.driver((JavascriptExecutor) webDriver)).thenReturn(jsBuilder);
         when(jsBuilder.build()).thenReturn(js);
 
+        when(rootStore.getOrComputeIfAbsent(eq(JS), functionArgumentCaptor.capture(), eq(Js.class))).thenReturn(js);
+
         assertEquals(js, jsResolver.resolveParameter(parameterContext, extensionContext));
 
-        verify(store).put(JS, js);
+        Function<String, Js> function = functionArgumentCaptor.getValue();
+        final Js actual = function.apply("value");
+
+        assertEquals(js, actual);
     }
 }

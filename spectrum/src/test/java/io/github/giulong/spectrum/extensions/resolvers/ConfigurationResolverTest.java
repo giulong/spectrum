@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.function.Function;
@@ -20,7 +17,8 @@ import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResol
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("ConfigurationResolver")
@@ -46,6 +44,9 @@ class ConfigurationResolverTest {
     @Captor
     private ArgumentCaptor<Function<String, Configuration>> functionArgumentCaptor;
 
+    @InjectMocks
+    private ConfigurationResolver configurationResolver;
+
     @BeforeEach
     public void beforeEach() {
         configurationMockedStatic = mockStatic(Configuration.class);
@@ -63,14 +64,14 @@ class ConfigurationResolverTest {
 
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
+        when(rootStore.getOrComputeIfAbsent(eq(CONFIGURATION), functionArgumentCaptor.capture(), eq(Configuration.class))).thenReturn(configuration);
 
-        final ConfigurationResolver configurationResolver = new ConfigurationResolver();
-        configurationResolver.resolveParameter(parameterContext, extensionContext);
+        final Configuration actual = configurationResolver.resolveParameter(parameterContext, extensionContext);
 
-        verify(rootStore).getOrComputeIfAbsent(eq(CONFIGURATION), functionArgumentCaptor.capture(), eq(Configuration.class));
         Function<String, Configuration> function = functionArgumentCaptor.getValue();
-        final Configuration actual = function.apply("value");
+        final Configuration captured = function.apply("value");
 
         assertEquals(configuration, actual);
+        assertEquals(configuration, captured);
     }
 }
