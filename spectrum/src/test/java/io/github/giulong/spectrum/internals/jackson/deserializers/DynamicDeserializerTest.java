@@ -22,7 +22,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("DynamicDeserializer")
 class DynamicDeserializerTest {
 
     private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;

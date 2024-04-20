@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("GridEnvironment")
 class GridEnvironmentTest {
 
     private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;

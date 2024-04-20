@@ -92,7 +92,6 @@ Rules:
 * Each class must:
   * be in the same package of its source counterpart
   * have a name that is made up of the **source** class' name + 'Test', such as `MySourceClass` &rarr; `MySourceClassTest`
-  * have a `@DisplayName` with the **source** class' name as value, such as `@DisplayName("MySourceClass")`
 * Each method must:
   * be `public void`
   * have a short and clear `@DisplayName`

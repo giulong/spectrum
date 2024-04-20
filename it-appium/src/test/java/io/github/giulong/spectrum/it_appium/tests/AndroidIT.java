@@ -9,7 +9,6 @@ import org.junit.jupiter.api.RepeatedTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("unused")
-@DisplayName("Android")
 public class AndroidIT extends SpectrumTest<Data> {
 
     private AndroidPage androidPage;

@@ -27,7 +27,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("JsWebElementProxyBuilderResolver")
 class JsWebElementProxyBuilderResolverTest {
 
     private static MockedStatic<Pattern> patternMockedStatic;

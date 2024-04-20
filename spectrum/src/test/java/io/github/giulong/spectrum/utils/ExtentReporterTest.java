@@ -42,7 +42,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("ExtentReporter")
 class ExtentReporterTest {
 
     private static final String REPORT_FOLDER = "reportFolder";

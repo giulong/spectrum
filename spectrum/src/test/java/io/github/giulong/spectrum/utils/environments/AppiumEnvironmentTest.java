@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
 import static org.slf4j.event.Level.INFO;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("AppiumEnvironment")
 class AppiumEnvironmentTest {
 
     private MockedStatic<AppiumDriverLocalService> appiumDriverLocalServiceMockedStatic;

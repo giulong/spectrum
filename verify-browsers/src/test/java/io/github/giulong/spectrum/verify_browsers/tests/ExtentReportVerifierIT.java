@@ -15,7 +15,6 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
-@DisplayName("Extent Report Verifier")
 public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
     private static final String VIDEO_BASE64 = "data:video/mp4;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";

@@ -15,7 +15,6 @@ import static org.jcodec.codecs.mjpeg.tools.Asserts.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Retention")
 class RetentionTest {
 
     @Mock

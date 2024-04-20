@@ -31,7 +31,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("SpectrumSessionListener")
 class SpectrumSessionListenerTest {
 
     private static MockedStatic<SLF4JBridgeHandler> slf4JBridgeHandlerMockedStatic;

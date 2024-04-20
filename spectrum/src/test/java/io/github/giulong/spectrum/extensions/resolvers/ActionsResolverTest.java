@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("ActionsResolver")
 class ActionsResolverTest {
 
     @Mock

@@ -22,7 +22,6 @@ import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("EventsWatcher")
 class EventsWatcherTest {
 
     private static MockedStatic<EventsDispatcher> eventsDispatcherMockedStatic;

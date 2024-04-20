@@ -23,7 +23,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("EventsConsumer")
 class EventsConsumerTest {
 
     @InjectMocks

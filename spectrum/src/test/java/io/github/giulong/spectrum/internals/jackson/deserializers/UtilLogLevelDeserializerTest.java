@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("UtilLogLevelDeserializer")
 class UtilLogLevelDeserializerTest {
 
     @Mock

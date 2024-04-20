@@ -20,7 +20,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("JsWebElementProxyBuilder")
 class JsWebElementProxyBuilderTest {
 
     private MockedStatic<Proxy> proxyMockedStatic;

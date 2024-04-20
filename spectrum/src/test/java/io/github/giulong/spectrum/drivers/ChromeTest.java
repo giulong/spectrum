@@ -25,7 +25,6 @@ import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 import static org.openqa.selenium.logging.LogType.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Chrome")
 class ChromeTest {
 
     @Mock

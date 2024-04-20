@@ -19,7 +19,6 @@ import static org.mockito.Mockito.*;
 import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Chromium")
 class ChromiumTest {
 
     @Mock

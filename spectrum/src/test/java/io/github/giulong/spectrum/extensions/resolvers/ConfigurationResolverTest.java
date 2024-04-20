@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("ConfigurationResolver")
 class ConfigurationResolverTest {
 
     private static MockedStatic<Configuration> configurationMockedStatic;

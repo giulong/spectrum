@@ -19,7 +19,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("CsvTestBookParser")
 class CsvTestBookParserTest {
 
     private MockedStatic<FileUtils> fileUtilsMockedStatic;

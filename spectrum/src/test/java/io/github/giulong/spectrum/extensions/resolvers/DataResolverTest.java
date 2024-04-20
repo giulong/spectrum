@@ -32,7 +32,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("DataResolver")
 class DataResolverTest {
 
     private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;

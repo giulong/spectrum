@@ -22,7 +22,6 @@ import java.util.Map;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("SlackConsumer")
 class SlackConsumerTest {
 
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;

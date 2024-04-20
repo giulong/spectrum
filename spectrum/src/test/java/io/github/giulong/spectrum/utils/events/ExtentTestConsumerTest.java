@@ -18,7 +18,6 @@ import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("ExtentTestConsumer")
 class ExtentTestConsumerTest {
 
     private static MockedStatic<ExtentReporter> extentReporterMockedStatic;

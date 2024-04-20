@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@DisplayName("It Module Verifier")
 public class ItVerifierTest {
 
     private static final FailsafeReportsVerifier FAILSAFE_REPORTS_VERIFIER = FailsafeReportsVerifier.getInstance();

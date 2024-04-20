@@ -22,7 +22,6 @@ import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("AppiumGeneric")
 class AppiumGenericTest {
 
     @Mock

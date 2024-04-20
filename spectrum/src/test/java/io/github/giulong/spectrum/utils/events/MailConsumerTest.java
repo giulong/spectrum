@@ -27,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("MailConsumer")
 class MailConsumerTest {
 
     private static MockedStatic<FileUtils> fileUtilsMockedStatic;

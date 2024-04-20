@@ -24,7 +24,6 @@ import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 import static org.openqa.selenium.logging.LogType.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Edge")
 class EdgeTest {
 
     @Mock

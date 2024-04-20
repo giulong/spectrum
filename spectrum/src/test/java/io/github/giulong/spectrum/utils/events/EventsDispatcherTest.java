@@ -25,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("EventsDispatcher")
 class EventsDispatcherTest {
 
     private MockedStatic<Event> eventMockedStatic;
