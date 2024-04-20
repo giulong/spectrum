@@ -71,15 +71,15 @@ public class FailsafeReportsVerifier {
         log
                 .atLevel(result ? INFO : ERROR)
                 .log("""
-                                                        
-                                Results for report '{}' are:
-                                
-                                {}
-                                {}
-                                {}
-                                {}
-                                {}
-                                          """,
+                                 \s
+                                 Results for report '{}' are:
+                                 \s
+                                 {}
+                                 {}
+                                 {}
+                                 {}
+                                 {}
+                                """,
                         filePath,
                         header,
                         completedLine,
