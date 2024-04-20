@@ -19,12 +19,14 @@ public class JsResolver extends TypeBasedParameterResolver<Js> {
 
     @Override
     public Js resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        return context.getRoot().getStore(GLOBAL).getOrComputeIfAbsent(JS, e -> {
-            log.debug("Resolving {}", JS);
+        log.debug("Resolving {}", JS);
 
-            return Js.builder()
-                    .driver((JavascriptExecutor) context.getStore(GLOBAL).get(DRIVER, WebDriver.class))
-                    .build();
-        }, Js.class);
+        final ExtensionContext.Store store = context.getStore(GLOBAL);
+        final Js js = Js.builder()
+                .driver((JavascriptExecutor) store.get(DRIVER, WebDriver.class))
+                .build();
+
+        store.put(JS, js);
+        return js;
     }
 }
