@@ -5,21 +5,23 @@ import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
+import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.types.*;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Js;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -68,15 +70,20 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final JsResolver JS_RESOLVER = new JsResolver();
 
     @RegisterExtension
+    public static final JsWebElementProxyBuilderResolver JS_WEB_ELEMENT_PROXY_BUILDER_RESOLVER = new JsWebElementProxyBuilderResolver();
+
+    @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
     protected List<SpectrumPage<?, Data>> spectrumPages;
 
+    private JsWebElementProxyBuilder jsWebElementProxyBuilder;
+
     @BeforeEach
-    @SuppressWarnings({"checkstyle:ParameterNumber", "unused"})
+    @SuppressWarnings({"checkstyle:ParameterNumber", "checkstyle:HiddenField", "unused"})
     public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver driver, final ImplicitWait implicitWait,
                            final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final Actions actions,
-                           final EventsDispatcher eventsDispatcher, final Js js, final Data data) {
+                           final EventsDispatcher eventsDispatcher, final Js js, final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
         this.configuration = configuration;
         this.driver = driver;
         this.implicitWait = implicitWait;
@@ -89,6 +96,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.eventsDispatcher = eventsDispatcher;
         this.testData = testData;
         this.js = js;
+        this.jsWebElementProxyBuilder = jsWebElementProxyBuilder;
         this.data = data;
 
         initPages();
@@ -134,7 +142,40 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         sharedFields.forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage));
 
         PageFactory.initElements(driver, spectrumPage);
+        initJsWebElements(spectrumPage);
 
         return spectrumPage;
+    }
+
+    protected void initJsWebElements(final SpectrumPage<?, Data> spectrumPage) {
+        final String className = spectrumPage.getClass().getSimpleName();
+
+        Arrays.stream(spectrumPage.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(JsWebElement.class))
+                .peek(f -> log.debug("Field {}.{} is annotated with @JsWebElement", className, f.getName()))
+                .peek(f -> f.setAccessible(true))
+                .forEach(f -> setJsWebElementProxy(f, spectrumPage));
+    }
+
+    @SneakyThrows
+    protected void setJsWebElementProxy(final Field field, final SpectrumPage<?, Data> spectrumPage) {
+        final Object value = field.get(spectrumPage);
+
+        if (value instanceof List<?>) {
+            log.debug("Field {} is a list. Cannot build proxy eagerly", field.getName());
+            @SuppressWarnings("unchecked") final Object webElementProxy = Proxy.newProxyInstance(
+                    List.class.getClassLoader(),
+                    new Class<?>[]{List.class},
+                    JsWebElementListInvocationHandler
+                            .builder()
+                            .jsWebElementProxyBuilder(jsWebElementProxyBuilder)
+                            .webElements((List<WebElement>) value)
+                            .build());
+
+            field.set(spectrumPage, webElementProxy);
+            return;
+        }
+
+        field.set(spectrumPage, jsWebElementProxyBuilder.buildFor(value));
     }
 }
