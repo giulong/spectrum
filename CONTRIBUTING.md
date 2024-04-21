@@ -43,7 +43,7 @@ If you'd like to actively contribute to Spectrum, whether it's source code or do
 1. First of all, be sure to read the [DEV.md](DEV.md) to be able to build Spectrum and its docs locally
 2. [Fork the repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo)
 3. Checkout a `feature/*`, `bugfix/*`, or `docs/*` branch with a short and meaningful name
-4. Make your changes and be sure you have a successful local build
+4. Make your changes and be sure you have a successful local build (at least the framework-only build)
 5. Be sure your code complies to the [Coding Conventions](#coding-conventions)
 6. Submit a Pull Request towards `develop`
 

@@ -244,9 +244,6 @@ public class Configuration {
             @JsonPropertyDescription("Firefox's args")
             private List<String> args;
 
-            @JsonPropertyDescription("Firefox's log level. See https://firefox-source-docs.mozilla.org/testing/geckodriver/TraceLogs.html")
-            private FirefoxDriverLogLevel logLevel;
-
             @JsonPropertyDescription("Firefox's preferences")
             private Map<String, Object> preferences;
 

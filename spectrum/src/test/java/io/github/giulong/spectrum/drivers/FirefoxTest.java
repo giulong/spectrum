@@ -94,7 +94,6 @@ class FirefoxTest {
         when(configuration.getDrivers()).thenReturn(driversConfig);
         when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
-        when(firefoxConfig.getLogLevel()).thenReturn(firefoxDriverLogLevel);
         when(firefoxConfig.getPreferences()).thenReturn(Map.of("one", "value"));
 
         MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {

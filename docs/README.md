@@ -755,6 +755,14 @@ drivers:
         download.directory_upgrade: true
         download.default_directory: ${downloadsFolder}
         safebrowsing.enabled: true
+    service:
+      buildCheckDisabled: false
+      appendLog: false
+      readableTimestamp: false
+      logLevel: SEVERE
+      silent: false
+      verbose: false
+      allowedListIps: ''
 ```
 
 ### Firefox
@@ -774,13 +782,17 @@ target="_blank"}
 drivers:
   firefox:
     args: [ ]
-    logLevel: ERROR
     preferences:
       browser.download.folderList: 2
       browser.download.useDownloadDir: true
       browser.download.dir: ${downloadsFolder}
       browser.helperApps.neverAsk.saveToDisk: application/pdf
       pdfjs.disabled: true
+    service:
+      allowHosts: null
+      logLevel: FATAL
+      truncatedLogs: false
+      profileRoot: ''
 ```
 
 ### Edge
@@ -802,6 +814,14 @@ drivers:
     capabilities:
       prefs:
         download.default_directory: ${downloadsFolder}
+    service:
+      buildCheckDisabled: false
+      appendLog: false
+      readableTimestamp: false
+      logLevel: SEVERE
+      silent: false
+      verbose: false
+      allowedListIps: ''
 ```
 
 ### Safari
@@ -817,7 +837,8 @@ See [https://www.selenium.dev/documentation/webdriver/browsers/safari/](https://
 ```yaml
 drivers:
   safari:
-    logging: false
+    service:
+      logging: false
 ```
 
 ### UiAutomator2

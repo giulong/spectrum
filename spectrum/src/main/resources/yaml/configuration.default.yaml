@@ -93,7 +93,6 @@ drivers:
   # Firefox's capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/firefox/
   firefox:
     args: [ ]
-    logLevel: ERROR
     preferences:
       browser.download.folderList: 2
       browser.download.useDownloadDir: true
@@ -101,8 +100,8 @@ drivers:
       browser.helperApps.neverAsk.saveToDisk: application/pdf
       pdfjs.disabled: true
     service:
-      allowHosts: ''
-      logLevel: FATAL
+      allowHosts: null
+      logLevel: ERROR
       truncatedLogs: false
       profileRoot: ''
 

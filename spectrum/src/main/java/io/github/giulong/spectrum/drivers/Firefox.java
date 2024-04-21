@@ -23,8 +23,7 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
         final Configuration.Drivers.Firefox firefox = configuration.getDrivers().getFirefox();
 
         capabilities = new FirefoxOptions()
-                .addArguments(firefox.getArgs())
-                .setLogLevel(firefox.getLogLevel());
+                .addArguments(firefox.getArgs());
 
         firefox
                 .getPreferences()
