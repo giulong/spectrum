@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum;
 
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +41,7 @@ class SpectrumPageTest {
     @DisplayName("open should get the configured base url and wait for the page to be loaded")
     public void open() {
         final String url = "url";
-        spectrumPage.setEndpoint(endpoint);
+        Reflections.setField("endpoint", spectrumPage, endpoint);
 
         when(configuration.getApplication()).thenReturn(application);
         when(application.getBaseUrl()).thenReturn(url);
@@ -59,7 +60,7 @@ class SpectrumPageTest {
     @ParameterizedTest(name = "with page url {0} and current url {1} we expect {2}")
     @MethodSource("valuesProvider")
     public void isLoaded(final String pageUrl, final String currentUrl, final boolean expected) {
-        spectrumPage.setEndpoint(endpoint);
+        Reflections.setField("endpoint", spectrumPage, endpoint);
 
         when(webDriver.getCurrentUrl()).thenReturn(currentUrl + endpoint);
         when(configuration.getApplication()).thenReturn(application);
