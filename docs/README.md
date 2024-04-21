@@ -481,18 +481,19 @@ or overriding it at runtime by providing the `spectrum.environment` property: `-
 
 These are the drivers currently supported, each must be used with a compatible environment:
 
-| Driver                          | Local | Grid | Appium |
-|---------------------------------|:-----:|:----:|:------:|
-| [chrome](#chrome)               |   ✅   |  ✅   |        |
-| [firefox](#firefox)             |   ✅   |  ✅   |        |
-| [edge](#edge)                   |   ✅   |  ✅   |        |
-| [safari](#safari)               |   ✅   |  ✅   |        |
-| [uiAutomator2](#uiautomator2)   |       |      |   ✅    |
-| [espresso](#espresso)           |       |      |   ✅    |
-| [xcuiTest](#xcuitest)           |       |      |   ✅    |
-| [windows](#windows)             |       |      |   ✅    |
-| [mac2](#mac2)                   |       |      |   ✅    |
-| [appiumGeneric](#appiumgeneric) |       |      |   ✅    |
+| Driver                            | Local | Grid | Appium |
+|-----------------------------------|:-----:|:----:|:------:|
+| [chrome](#chrome)                 |   ✅   |  ✅   |        |
+| [chromium based](#chromium-based) |   ✅   |  ✅   |        |
+| [firefox](#firefox)               |   ✅   |  ✅   |        |
+| [edge](#edge)                     |   ✅   |  ✅   |        |
+| [safari](#safari)                 |   ✅   |  ✅   |        |
+| [uiAutomator2](#uiautomator2)     |       |      |   ✅    |
+| [espresso](#espresso)             |       |      |   ✅    |
+| [xcuiTest](#xcuitest)             |       |      |   ✅    |
+| [windows](#windows)               |       |      |   ✅    |
+| [mac2](#mac2)                     |       |      |   ✅    |
+| [appiumGeneric](#appiumgeneric)   |       |      |   ✅    |
 
 ---
 
@@ -738,10 +739,11 @@ the `configuration.yaml`.
 
 See [https://www.selenium.dev/documentation/webdriver/browsers/chrome/](https://www.selenium.dev/documentation/webdriver/browsers/chrome/){:target="_blank"}
 
-| Parameter    | Type                  | Description           |
-|--------------|-----------------------|-----------------------|
-| args         | List\<String\>        | Chrome's args         |
-| capabilities | Map\<String, Object\> | Chrome's capabilities |
+| Parameter    | Type                                                                                                   | Description             |
+|--------------|--------------------------------------------------------------------------------------------------------|-------------------------|
+| args         | List\<String\>                                                                                         | Chrome's args           |
+| capabilities | Map\<String, Object\>                                                                                  | Chrome's capabilities   |
+| service      | [Service](https://www.selenium.dev/documentation/webdriver/browsers/chrome/#service){:target="_blank"} | Chrome's driver service |
 
 {% include copyCode.html %}
 
@@ -765,16 +767,32 @@ drivers:
       allowedListIps: ''
 ```
 
+### Chromium Based
+
+As explained in [Start browser in a specified location](https://www.selenium.dev/documentation/webdriver/browsers/chrome/#start-browser-in-a-specified-location){:target="_blank"},
+you can provide the path to any Chromium based browser in the `binary` capability:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  chrome:
+    capabilities:
+      binary: /Applications/Iron.app/Contents/MacOS/Chromium
+    service:
+      buildCheckDisabled: true # this is needed if the Chromium based browser is not compatible with the ChromeDriver you have in local
+```
+
 ### Firefox
 
 See [https://www.selenium.dev/documentation/webdriver/browsers/firefox/](https://www.selenium.dev/documentation/webdriver/browsers/firefox/){:
 target="_blank"}
 
-| Parameter   | Type                  | Description                                                                                                         |
-|-------------|-----------------------|---------------------------------------------------------------------------------------------------------------------|
-| args        | List\<String\>        | Firefox's args                                                                                                      |
-| logLevel    | FirefoxDriverLogLevel | Firefox's [log level](https://firefox-source-docs.mozilla.org/testing/geckodriver/TraceLogs.html){:target="_blank"} |
-| preferences | Map\<String, Object\> | Firefox's preferences                                                                                               |
+| Parameter   | Type                                                                                                    | Description              |
+|-------------|---------------------------------------------------------------------------------------------------------|--------------------------|
+| args        | List\<String\>                                                                                          | Firefox's args           |
+| preferences | Map\<String, Object\>                                                                                   | Firefox's preferences    |
+| service     | [Service](https://www.selenium.dev/documentation/webdriver/browsers/firefox/#service){:target="_blank"} | Firefox's driver service |
 
 {% include copyCode.html %}
 
@@ -800,10 +818,11 @@ drivers:
 See [https://www.selenium.dev/documentation/webdriver/browsers/edge/](https://www.selenium.dev/documentation/webdriver/browsers/edge/){:
 target="_blank"}
 
-| Parameter    | Type                  | Description         |
-|--------------|-----------------------|---------------------|
-| args         | List\<String\>        | Edge's args         |
-| capabilities | Map\<String, Object\> | Edge's capabilities |
+| Parameter    | Type                                                                                                 | Description           |
+|--------------|------------------------------------------------------------------------------------------------------|-----------------------|
+| args         | List\<String\>                                                                                       | Edge's args           |
+| capabilities | Map\<String, Object\>                                                                                | Edge's capabilities   |
+| service      | [Service](https://www.selenium.dev/documentation/webdriver/browsers/edge/#service){:target="_blank"} | Edge's driver service |
 
 {% include copyCode.html %}
 
@@ -828,9 +847,9 @@ drivers:
 
 See [https://www.selenium.dev/documentation/webdriver/browsers/safari/](https://www.selenium.dev/documentation/webdriver/browsers/safari/){:target="_blank"}
 
-| Parameter | Type    | Description                  |
-|-----------|---------|------------------------------|
-| logging   | boolean | Safari's logging enable flag |
+| Parameter | Type                                                                                                   | Description             |
+|-----------|--------------------------------------------------------------------------------------------------------|-------------------------|
+| service   | [Service](https://www.selenium.dev/documentation/webdriver/browsers/safari/#service){:target="_blank"} | Safari's driver service |
 
 {% include copyCode.html %}
 
