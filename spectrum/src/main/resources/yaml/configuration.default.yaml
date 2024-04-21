@@ -72,7 +72,7 @@ drivers:
     scriptTimeout: 10   # Seconds that Selenium waits before throwing a ScriptTimeoutException
     downloadTimeout: 15   # FluentWait injected in test classes/pages that you can use on file download
 
-  # Chrome capabilities. See: https://chromedriver.chromium.org/capabilities
+  # Chrome capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/chrome/
   chrome:
     args: [ ]
     capabilities:
@@ -81,8 +81,16 @@ drivers:
         download.directory_upgrade: true
         download.default_directory: ${downloadsFolder}
         safebrowsing.enabled: true
+    service:
+      buildCheckDisabled: false
+      appendLog: false
+      readableTimestamp: false
+      logLevel: SEVERE
+      silent: false
+      verbose: false
+      allowedListIps: ''
 
-  # Firefox capabilities. See: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions
+  # Firefox's capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/firefox/
   firefox:
     args: [ ]
     logLevel: ERROR
@@ -92,17 +100,31 @@ drivers:
       browser.download.dir: ${downloadsFolder}
       browser.helperApps.neverAsk.saveToDisk: application/pdf
       pdfjs.disabled: true
+    service:
+      allowHosts: ''
+      logLevel: FATAL
+      truncatedLogs: false
+      profileRoot: ''
 
-  # Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options
+  # Edge capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/edge/
   edge:
     args: [ ]
     capabilities:
       prefs:
         download.default_directory: ${downloadsFolder}
+    service:
+      buildCheckDisabled: false
+      appendLog: false
+      readableTimestamp: false
+      logLevel: SEVERE
+      silent: false
+      verbose: false
+      allowedListIps: ''
 
-  # Safari capabilities. See: https://developer.apple.com/documentation/webkit/about_webdriver_for_safari
+  # Safari capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/safari/
   safari:
-    logging: false
+    service:
+      logging: false
 
   # UIAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities
   uiAutomator2:

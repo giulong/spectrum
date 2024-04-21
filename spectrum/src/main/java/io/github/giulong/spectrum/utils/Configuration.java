@@ -13,8 +13,10 @@ import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
+import java.io.File;
 import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
@@ -152,16 +154,16 @@ public class Configuration {
         @JsonPropertyDescription("Driver's fluent waits")
         private Waits waits;
 
-        @JsonPropertyDescription("Chrome capabilities. See: https://chromedriver.chromium.org/capabilities")
+        @JsonPropertyDescription("Chrome capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/chrome/")
         private Chrome chrome;
 
-        @JsonPropertyDescription("Firefox capabilities. See: https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions")
+        @JsonPropertyDescription("Firefox capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/firefox/")
         private Firefox firefox;
 
-        @JsonPropertyDescription("Edge capabilities. See: https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options")
+        @JsonPropertyDescription("Edge capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/edge/")
         private Edge edge;
 
-        @JsonPropertyDescription("Safari capabilities. See: https://developer.apple.com/documentation/webkit/about_webdriver_for_safari")
+        @JsonPropertyDescription("Safari capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/safari/")
         private Safari safari;
 
         @JsonPropertyDescription("Android UiAutomator2 capabilities. See: https://github.com/appium/appium-uiautomator2-driver#capabilities")
@@ -218,6 +220,21 @@ public class Configuration {
 
             @JsonPropertyDescription("Chrome's capabilities")
             private Map<String, Object> capabilities;
+
+            @JsonPropertyDescription("Chrome service options")
+            private Service service;
+
+            @Getter
+            @Generated
+            public static class Service {
+                private boolean buildCheckDisabled;
+                private boolean appendLog;
+                private boolean readableTimestamp;
+                private ChromiumDriverLogLevel logLevel;
+                private boolean silent;
+                private boolean verbose;
+                private String allowedListIps;
+            }
         }
 
         @Getter
@@ -232,6 +249,20 @@ public class Configuration {
 
             @JsonPropertyDescription("Firefox's preferences")
             private Map<String, Object> preferences;
+
+            @JsonPropertyDescription("Firefox service options")
+            private Service service;
+
+            @Getter
+            @Generated
+            public static class Service {
+                private String allowHosts;
+                private FirefoxDriverLogLevel logLevel;
+                private boolean truncatedLogs;
+
+                @JsonSchemaTypes(String.class)
+                private File profileRoot;
+            }
         }
 
         @Getter
@@ -243,14 +274,23 @@ public class Configuration {
 
             @JsonPropertyDescription("Edge's capabilities")
             private Map<String, Object> capabilities;
+
+            @JsonPropertyDescription("Edge service options")
+            private Chrome.Service service;
         }
 
         @Getter
         @Generated
         public static class Safari {
 
-            @JsonPropertyDescription("Safari's logging enable flag")
-            private boolean logging;
+            @JsonPropertyDescription("Safari service options")
+            private Service service;
+
+            @Getter
+            @Generated
+            public static class Service {
+                private boolean logging;
+            }
         }
 
         @Getter

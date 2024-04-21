@@ -18,6 +18,7 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.service.DriverService;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -44,6 +45,12 @@ class FirefoxTest {
     @Mock
     private FirefoxDriverLogLevel firefoxDriverLogLevel;
 
+    @Mock
+    private Configuration.Drivers.Firefox.Service service;
+
+    @Mock
+    private File profileRoot;
+
     @InjectMocks
     private Firefox firefox;
 
@@ -56,7 +63,22 @@ class FirefoxTest {
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of GeckoDriverService.Builder()")
     public void getDriverServiceBuilder() {
-        MockedConstruction<GeckoDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(GeckoDriverService.Builder.class);
+        final String allowHosts = "allowHosts";
+
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
+        when(firefoxConfig.getService()).thenReturn(service);
+        when(service.getAllowHosts()).thenReturn(allowHosts);
+        when(service.getLogLevel()).thenReturn(FirefoxDriverLogLevel.TRACE);
+        when(service.isTruncatedLogs()).thenReturn(true);
+        when(service.getProfileRoot()).thenReturn(profileRoot);
+
+        MockedConstruction<GeckoDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(GeckoDriverService.Builder.class, (mock, context) -> {
+            when(mock.withAllowHosts(allowHosts)).thenReturn(mock);
+            when(mock.withLogLevel(FirefoxDriverLogLevel.TRACE)).thenReturn(mock);
+            when(mock.withTruncatedLogs(true)).thenReturn(mock);
+            when(mock.withProfileRoot(profileRoot)).thenReturn(mock);
+        });
 
         final DriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> driverServiceBuilder = firefox.getDriverServiceBuilder();
         assertEquals(chromeDriverServiceMockedConstruction.constructed().getFirst(), driverServiceBuilder);

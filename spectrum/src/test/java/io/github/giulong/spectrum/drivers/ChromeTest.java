@@ -12,6 +12,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -48,6 +49,9 @@ class ChromeTest {
     @Mock
     private Configuration.Drivers.Logs logs;
 
+    @Mock
+    private Configuration.Drivers.Chrome.Service service;
+
     @InjectMocks
     private Chrome chrome;
 
@@ -59,7 +63,28 @@ class ChromeTest {
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of ChromeDriverService.Builder()")
     public void getDriverServiceBuilder() {
-        MockedConstruction<ChromeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(ChromeDriverService.Builder.class);
+        final String allowedListIps = "allowedListIps";
+
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getChrome()).thenReturn(chromeConfig);
+        when(chromeConfig.getService()).thenReturn(service);
+        when(service.isBuildCheckDisabled()).thenReturn(true);
+        when(service.isAppendLog()).thenReturn(true);
+        when(service.isReadableTimestamp()).thenReturn(true);
+        when(service.getLogLevel()).thenReturn(ChromiumDriverLogLevel.ALL);
+        when(service.isSilent()).thenReturn(true);
+        when(service.isVerbose()).thenReturn(true);
+        when(service.getAllowedListIps()).thenReturn(allowedListIps);
+
+        MockedConstruction<ChromeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(ChromeDriverService.Builder.class, (mock, context) -> {
+            when(mock.withBuildCheckDisabled(true)).thenReturn(mock);
+            when(mock.withAppendLog(true)).thenReturn(mock);
+            when(mock.withReadableTimestamp(true)).thenReturn(mock);
+            when(mock.withLogLevel(ChromiumDriverLogLevel.ALL)).thenReturn(mock);
+            when(mock.withSilent(true)).thenReturn(mock);
+            when(mock.withVerbose(true)).thenReturn(mock);
+            when(mock.withAllowedListIps(allowedListIps)).thenReturn(mock);
+        });
 
         final DriverService.Builder<ChromeDriverService, ChromeDriverService.Builder> driverServiceBuilder = chrome.getDriverServiceBuilder();
         assertEquals(chromeDriverServiceMockedConstruction.constructed().getFirst(), driverServiceBuilder);

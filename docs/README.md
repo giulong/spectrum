@@ -736,7 +736,7 @@ the `configuration.yaml`.
 
 ### Chrome
 
-See [https://chromedriver.chromium.org/capabilities](https://chromedriver.chromium.org/capabilities){:target="_blank"}
+See [https://www.selenium.dev/documentation/webdriver/browsers/chrome/](https://www.selenium.dev/documentation/webdriver/browsers/chrome/){:target="_blank"}
 
 | Parameter    | Type                  | Description           |
 |--------------|-----------------------|-----------------------|
@@ -759,7 +759,7 @@ drivers:
 
 ### Firefox
 
-See [https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions](https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions){:
+See [https://www.selenium.dev/documentation/webdriver/browsers/firefox/](https://www.selenium.dev/documentation/webdriver/browsers/firefox/){:
 target="_blank"}
 
 | Parameter   | Type                  | Description                                                                                                         |
@@ -785,7 +785,7 @@ drivers:
 
 ### Edge
 
-See [https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options](https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options){:
+See [https://www.selenium.dev/documentation/webdriver/browsers/edge/](https://www.selenium.dev/documentation/webdriver/browsers/edge/){:
 target="_blank"}
 
 | Parameter    | Type                  | Description         |
@@ -806,7 +806,7 @@ drivers:
 
 ### Safari
 
-See [https://developer.apple.com/documentation/webkit/about_webdriver_for_safari](https://developer.apple.com/documentation/webkit/about_webdriver_for_safari){:target="_blank"}
+See [https://www.selenium.dev/documentation/webdriver/browsers/safari/](https://www.selenium.dev/documentation/webdriver/browsers/safari/){:target="_blank"}
 
 | Parameter | Type    | Description                  |
 |-----------|---------|------------------------------|

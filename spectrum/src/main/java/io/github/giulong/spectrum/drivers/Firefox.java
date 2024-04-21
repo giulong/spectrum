@@ -9,7 +9,13 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
 
     @Override
     public DriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> getDriverServiceBuilder() {
-        return new GeckoDriverService.Builder();
+        final Configuration.Drivers.Firefox.Service service = configuration.getDrivers().getFirefox().getService();
+
+        return new GeckoDriverService.Builder()
+                .withAllowHosts(service.getAllowHosts())
+                .withLogLevel(service.getLogLevel())
+                .withTruncatedLogs(service.isTruncatedLogs())
+                .withProfileRoot(service.getProfileRoot());
     }
 
     @Override
