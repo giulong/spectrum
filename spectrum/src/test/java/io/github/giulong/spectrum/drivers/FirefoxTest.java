@@ -90,6 +90,33 @@ class FirefoxTest {
     @DisplayName("buildCapabilitiesFrom should build an instance of Firefox based on the provided configuration")
     public void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
+        final String binary = "binary";
+
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
+        when(firefoxConfig.getBinary()).thenReturn(binary);
+        when(firefoxConfig.getArgs()).thenReturn(arguments);
+        when(firefoxConfig.getPreferences()).thenReturn(Map.of("one", "value"));
+
+        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {
+            when(mock.addArguments(arguments)).thenReturn(mock);
+            when(mock.setBinary(binary)).thenReturn(mock);
+        });
+
+        firefox.buildCapabilities();
+
+        final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
+        verify(firefoxOptions).addPreference("one", "value");
+        verify(firefoxOptions).setBinary(binary);
+        assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
+
+        firefoxOptionsMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("buildCapabilitiesFrom should build an instance of Firefox based on the provided configuration")
+    public void buildCapabilitiesFromNoBinary() {
+        final List<String> arguments = List.of("args");
 
         when(configuration.getDrivers()).thenReturn(driversConfig);
         when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
@@ -98,13 +125,13 @@ class FirefoxTest {
 
         MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {
             when(mock.addArguments(arguments)).thenReturn(mock);
-            when(mock.setLogLevel(firefoxDriverLogLevel)).thenReturn(mock);
         });
 
         firefox.buildCapabilities();
 
         final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
         verify(firefoxOptions).addPreference("one", "value");
+        verify(firefoxOptions, never()).setBinary(anyString());
         assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
 
         firefoxOptionsMockedConstruction.close();

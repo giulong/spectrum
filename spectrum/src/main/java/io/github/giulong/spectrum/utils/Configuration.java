@@ -241,6 +241,9 @@ public class Configuration {
         @Generated
         public static class Firefox {
 
+            @JsonPropertyDescription("Absolute path to the custom Firefox binary to use")
+            private String binary;
+
             @JsonPropertyDescription("Firefox's args")
             private List<String> args;
 

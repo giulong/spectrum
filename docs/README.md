@@ -481,19 +481,20 @@ or overriding it at runtime by providing the `spectrum.environment` property: `-
 
 These are the drivers currently supported, each must be used with a compatible environment:
 
-| Driver                            | Local | Grid | Appium |
-|-----------------------------------|:-----:|:----:|:------:|
-| [chrome](#chrome)                 |   ✅   |  ✅   |        |
-| [chromium based](#chromium-based) |   ✅   |  ✅   |        |
-| [firefox](#firefox)               |   ✅   |  ✅   |        |
-| [edge](#edge)                     |   ✅   |  ✅   |        |
-| [safari](#safari)                 |   ✅   |  ✅   |        |
-| [uiAutomator2](#uiautomator2)     |       |      |   ✅    |
-| [espresso](#espresso)             |       |      |   ✅    |
-| [xcuiTest](#xcuitest)             |       |      |   ✅    |
-| [windows](#windows)               |       |      |   ✅    |
-| [mac2](#mac2)                     |       |      |   ✅    |
-| [appiumGeneric](#appiumgeneric)   |       |      |   ✅    |
+| Driver                                  | Local | Grid | Appium |
+|-----------------------------------------|:-----:|:----:|:------:|
+| [chrome](#chrome)                       |   ✅   |  ✅   |        |
+| [chromium based](#chromium-based)       |   ✅   |  ✅   |        |
+| [firefox](#firefox)                     |   ✅   |  ✅   |        |
+| [geckodriver based](#geckodriver-based) |   ✅   |  ✅   |        |
+| [edge](#edge)                           |   ✅   |  ✅   |        |
+| [safari](#safari)                       |   ✅   |  ✅   |        |
+| [uiAutomator2](#uiautomator2)           |       |      |   ✅    |
+| [espresso](#espresso)                   |       |      |   ✅    |
+| [xcuiTest](#xcuitest)                   |       |      |   ✅    |
+| [windows](#windows)                     |       |      |   ✅    |
+| [mac2](#mac2)                           |       |      |   ✅    |
+| [appiumGeneric](#appiumgeneric)         |       |      |   ✅    |
 
 ---
 
@@ -770,7 +771,7 @@ drivers:
 ### Chromium Based
 
 As explained in [Start browser in a specified location](https://www.selenium.dev/documentation/webdriver/browsers/chrome/#start-browser-in-a-specified-location){:target="_blank"},
-you can provide the path to any Chromium based browser in the `binary` capability:
+you can provide the path to any Chromium based browser in Chrome's `binary` capability:
 
 {% include copyCode.html %}
 
@@ -785,20 +786,21 @@ drivers:
 
 ### Firefox
 
-See [https://www.selenium.dev/documentation/webdriver/browsers/firefox/](https://www.selenium.dev/documentation/webdriver/browsers/firefox/){:
-target="_blank"}
+See [https://www.selenium.dev/documentation/webdriver/browsers/firefox/](https://www.selenium.dev/documentation/webdriver/browsers/firefox/){:target="_blank"}
 
-| Parameter   | Type                                                                                                    | Description              |
-|-------------|---------------------------------------------------------------------------------------------------------|--------------------------|
-| args        | List\<String\>                                                                                          | Firefox's args           |
-| preferences | Map\<String, Object\>                                                                                   | Firefox's preferences    |
-| service     | [Service](https://www.selenium.dev/documentation/webdriver/browsers/firefox/#service){:target="_blank"} | Firefox's driver service |
+| Parameter   | Type                                                                                                    | Description                                       |
+|-------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------|
+| binary      | String                                                                                                  | Absolute path to the custom Firefox binary to use |
+| args        | List\<String\>                                                                                          | Firefox's args                                    |
+| preferences | Map\<String, Object\>                                                                                   | Firefox's preferences                             |
+| service     | [Service](https://www.selenium.dev/documentation/webdriver/browsers/firefox/#service){:target="_blank"} | Firefox's driver service                          |
 
 {% include copyCode.html %}
 
 ```yaml
 drivers:
   firefox:
+    binary: null
     args: [ ]
     preferences:
       browser.download.folderList: 2
@@ -811,6 +813,19 @@ drivers:
       logLevel: FATAL
       truncatedLogs: false
       profileRoot: ''
+```
+
+### Geckodriver Based
+
+As explained in [Start browser in a specified location](https://www.selenium.dev/documentation/webdriver/browsers/firefox/#start-browser-in-a-specified-location){:target="_blank"},
+you can provide the path to any Geckodriver based browser in Firefox's `binary` parameter:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  firefox:
+    binary: /Applications/Tor Browser.app/Contents/MacOS/firefox
 ```
 
 ### Edge

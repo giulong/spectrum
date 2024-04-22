@@ -92,6 +92,7 @@ drivers:
 
   # Firefox's capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/firefox/
   firefox:
+    binary: null
     args: [ ]
     preferences:
       browser.download.folderList: 2
