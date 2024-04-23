@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils;
 
 import lombok.Builder;
 import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -54,6 +55,19 @@ public class Js {
     }
 
     /**
+     * Get the location of the provided WebElement
+     *
+     * @param webElement the WebElement from which the location and size are taken
+     * @return The top left-hand point of the rendered WebElement
+     */
+    public Point getLocation(final WebElement webElement) {
+        final List<Object> point = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
+                "return [rectangle.x, rectangle.y];", webElement);
+
+        return new Point(((Number) point.get(0)).intValue(), ((Number) point.get(1)).intValue());
+    }
+
+    /**
      * Performs a click with javascript on the provided WebElement
      *
      * @param webElement the WebElement to click on
@@ -78,6 +92,19 @@ public class Js {
 
         return this;
     }
+
+    /**
+     * Performs a submit action on the provided form
+     *
+     * @param webElement the WebElement to submit
+     * @return the calling SpectrumEntity instance
+     */
+    public Js submit(final WebElement webElement) {
+        driver.executeScript("arguments[0].submit();", webElement);
+
+        return this;
+    }
+
 
     /**
      * Clear input value with javascript on the provided WebElement

@@ -2,20 +2,13 @@ package io.github.giulong.spectrum.it.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.CheckboxPage;
-import io.github.giulong.spectrum.it.pages.KeyPressesPage;
 import io.github.giulong.spectrum.it.pages.LandingPage;
+import io.github.giulong.spectrum.it.pages.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.Mockito;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +20,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
 
     private CheckboxPage checkboxPage;
 
-    private KeyPressesPage keyPressesPage;
+    private LoginPage loginPage;
 
     @Test
     public void testWithNoDisplayName() {
@@ -69,16 +62,22 @@ public class JavascriptIT extends SpectrumTest<Void> {
     public void testInputFieldActions() {
         driver.get(configuration.getApplication().getBaseUrl());
 
-        js.click(landingPage.getKeyPressesLink());
-        keyPressesPage.waitForPageLoading();
+        js.click(landingPage.getFormLoginLink());
+        loginPage.waitForPageLoading();
 
-        final WebElement inputField = keyPressesPage.getInputField();
+        final WebElement usernameField = loginPage.getUsername();
+        final WebElement passwordField = loginPage.getPassword();
+        final WebElement form = loginPage.getForm();
 
-        js.sendKeys(inputField, "testKeys");
-        assertEquals("testKeys", inputField.getAttribute("value"));
+        js.sendKeys(usernameField, "tomsmith");
+        js.clear(usernameField);
+        assertTrue(usernameField.getAttribute("value").isEmpty());
+        js.sendKeys(usernameField, "tomsmith");
+        js.sendKeys(passwordField, "SuperSecretPassword!");
+        assertEquals("tomsmith", usernameField.getAttribute("value"));
 
-        js.clear(inputField);
-        assertTrue(inputField.getAttribute("value").isEmpty());
+        js.submit(form);
+        assertEquals("https://the-internet.herokuapp.com/secure", driver.getCurrentUrl());
     }
 
 }

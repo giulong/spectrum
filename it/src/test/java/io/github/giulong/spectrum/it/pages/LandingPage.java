@@ -9,12 +9,15 @@ import org.openqa.selenium.support.FindBy;
 @SuppressWarnings("unused")
 public class LandingPage extends SpectrumPage<LandingPage, Void> {
 
+    @FindBy(id = "login")
+    private WebElement form;
+
     @FindBy(tagName = "h1")
     private WebElement title;
 
     @FindBy(linkText = "Checkboxes")
     private WebElement checkboxLink;
 
-    @FindBy(linkText = "Key Presses")
-    private WebElement keyPressesLink;
+    @FindBy(linkText = "Form Authentication")
+    private WebElement FormLoginLink;
 }
