@@ -26,6 +26,18 @@ public class Js {
     }
 
     /**
+     * Get the static attribute of the provided WebElement
+     *
+     * @param webElement the WebElement from which the static attribute is taken
+     * @return The DOM Attribute of the WebElement or null if there isn't
+     */
+    public String getDomAttribute(final WebElement webElement, final String domAttribute) {
+        final String jsCommand = String.format("return arguments[0].getAttribute('%s');", domAttribute);
+
+        return (String) driver.executeScript(jsCommand, webElement);
+    }
+
+    /**
      * Get the size of the provided WebElement
      *
      * @param webElement the WebElement from which the size is taken

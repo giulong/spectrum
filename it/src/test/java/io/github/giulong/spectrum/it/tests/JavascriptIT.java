@@ -74,7 +74,11 @@ public class JavascriptIT extends SpectrumTest<Void> {
         assertTrue(usernameField.getAttribute("value").isEmpty());
         js.sendKeys(usernameField, "tomsmith");
         js.sendKeys(passwordField, "SuperSecretPassword!");
-        assertEquals("tomsmith", usernameField.getAttribute("value"));
+        assertEquals("tomsmith", usernameField.getDomProperty("value"));
+
+        // Assert that the method returns only static attributes and not dom properties
+        assertEquals(passwordField.getDomAttribute("name"),js.getDomAttribute(passwordField,"name"));
+        assertNull(js.getDomAttribute(passwordField,"checked"));
 
         js.submit(form);
         assertEquals("https://the-internet.herokuapp.com/secure", driver.getCurrentUrl());
