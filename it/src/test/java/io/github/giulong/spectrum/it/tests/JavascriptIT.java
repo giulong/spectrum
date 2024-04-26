@@ -53,13 +53,14 @@ public class JavascriptIT extends SpectrumTest<Void> {
         final WebElement usernameField = loginPage.getUsername();
         final WebElement contentDiv = loginPage.getContentDiv();
 
+        assertEquals(js.getTagName(usernameField), "input");
+
         // Asserting that custom js methods return same value as selenium WebElement methods
-        assertEquals(js.getTagName(usernameField), usernameField.getTagName());
         assertEquals(js.getSize(usernameField), usernameField.getSize());
         assertEquals(js.getRect(usernameField), usernameField.getRect());
-        assertEquals(js.getDomAttribute(usernameField, "name"), usernameField.getDomAttribute("name"));
-        assertEquals(js.getDomProperty(usernameField, "value"), usernameField.getDomProperty("value"));
-        assertEquals(js.getAttribute(contentDiv, "class"), contentDiv.getAttribute("class"));
+
+        assertEquals(js.getDomAttribute(usernameField, "name"), "username");
+        assertEquals(js.getAttribute(contentDiv, "class"), "large-12 columns");
     }
 
     @Test
@@ -75,7 +76,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
 
         js.sendKeys(usernameField, "tomsmith");
         js.clear(usernameField);
-        assertTrue(usernameField.getDomProperty("value").isEmpty());
+        assertTrue(js.getDomProperty(usernameField, "value").isEmpty());
         js.sendKeys(usernameField, "tomsmith");
         js.sendKeys(passwordField, "SuperSecretPassword!");
 
