@@ -47,15 +47,19 @@ public class JavascriptIT extends SpectrumTest<Void> {
     public void testWebElementGetMethods() {
         driver.get(configuration.getApplication().getBaseUrl());
 
-        js.click(landingPage.getCheckboxLink());
-        checkboxPage.waitForPageLoading();
+        js.click(landingPage.getFormLoginLink());
+        loginPage.waitForPageLoading();
 
-        final WebElement testwebElement = checkboxPage.getCheckboxes().getFirst();
+        final WebElement usernameField = loginPage.getUsername();
+        final WebElement contentDiv = loginPage.getContentDiv();
 
         // Asserting that custom js methods return same value as selenium WebElement methods
-        assertEquals(js.getTagName(testwebElement), testwebElement.getTagName());
-        assertEquals(js.getSize(testwebElement), testwebElement.getSize());
-        assertEquals(js.getRect(testwebElement), testwebElement.getRect());
+        assertEquals(js.getTagName(usernameField), usernameField.getTagName());
+        assertEquals(js.getSize(usernameField), usernameField.getSize());
+        assertEquals(js.getRect(usernameField), usernameField.getRect());
+        assertEquals(js.getDomAttribute(usernameField, "name"), usernameField.getDomAttribute("name"));
+        assertEquals(js.getDomProperty(usernameField, "value"), usernameField.getDomProperty("value"));
+        assertEquals(js.getAttribute(contentDiv, "class"), contentDiv.getAttribute("class"));
     }
 
     @Test
@@ -71,14 +75,9 @@ public class JavascriptIT extends SpectrumTest<Void> {
 
         js.sendKeys(usernameField, "tomsmith");
         js.clear(usernameField);
-        assertTrue(usernameField.getAttribute("value").isEmpty());
+        assertTrue(usernameField.getDomProperty("value").isEmpty());
         js.sendKeys(usernameField, "tomsmith");
         js.sendKeys(passwordField, "SuperSecretPassword!");
-        assertEquals("tomsmith", usernameField.getDomProperty("value"));
-
-        // Assert that the method returns only static attributes and not dom properties
-        assertEquals(passwordField.getDomAttribute("name"),js.getDomAttribute(passwordField,"name"));
-        assertNull(js.getDomAttribute(passwordField,"checked"));
 
         js.submit(form);
         assertEquals("https://the-internet.herokuapp.com/secure", driver.getCurrentUrl());

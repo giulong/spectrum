@@ -2,7 +2,6 @@ package io.github.giulong.spectrum.utils;
 
 import lombok.Builder;
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
 
@@ -11,7 +10,7 @@ public class Js {
 
     private JavascriptExecutor driver;
 
-    private final EscapeStringUtils escapeStringUtils = EscapeStringUtils.getInstance();
+    private final StringUtils stringUtils = StringUtils.getInstance();
 
     /**
      * Get the Tag of the provided WebElement
@@ -28,7 +27,8 @@ public class Js {
     /**
      * Get the static attribute of the provided WebElement
      *
-     * @param webElement the WebElement from which the static attribute is taken
+     * @param webElement   the WebElement from which the static attribute is taken
+     * @param domAttribute the static Attribute to retrieve
      * @return The DOM Attribute of the WebElement or null if there isn't
      */
     public String getDomAttribute(final WebElement webElement, final String domAttribute) {
@@ -38,9 +38,38 @@ public class Js {
     }
 
     /**
+     * Get the property of the provided WebElement
+     *
+     * @param webElement  the webElement from which the property is taken
+     * @param domProperty the property to retrieve
+     * @return The DOM property of the WebElement or null if there isn't
+     */
+    public String getDomProperty(final WebElement webElement, final String domProperty) {
+        final String jsCommand = String.format("return arguments[0].%s;", domProperty);
+
+        return (String) driver.executeScript(jsCommand, webElement);
+    }
+
+    /**
+     * Get the property of the provided WebElement, if is null tries to take the dom attribute with the same name
+     *
+     * @param webElement The webElement from which the property is taken
+     * @param attribute  The property/attribute to retrieve
+     * @return The attribute/property current value or null if the value is not set.
+     */
+    public String getAttribute(final WebElement webElement, final String attribute) {
+        final String domProperty = this.getDomProperty(webElement, stringUtils.convertString(attribute));
+        if (domProperty == null) {
+            return this.getDomAttribute(webElement, stringUtils.convertString(attribute));
+        }
+
+        return domProperty;
+    }
+
+    /**
      * Get the size of the provided WebElement
      *
-     * @param webElement the WebElement from which the size is taken
+     * @param webElement The WebElement from which the size is taken
      * @return The rendered Size of the WebElement
      */
     public Dimension getSize(final WebElement webElement) {
@@ -99,7 +128,7 @@ public class Js {
      * @return the calling SpectrumEntity instance
      */
     public Js sendKeys(final WebElement webElement, final String keysToSend) {
-        final String jsCommand = String.format("arguments[0].value='%s';", escapeStringUtils.escapeString(keysToSend));
+        final String jsCommand = String.format("arguments[0].value='%s';", stringUtils.escapeString(keysToSend));
         driver.executeScript(jsCommand, webElement);
 
         return this;
