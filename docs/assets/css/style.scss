@@ -265,11 +265,16 @@ span.copy-header {
     text-align: right;
 }
 
+span.schema-copy-header {
+    display: block;
+    text-align: center;
+}
+
 blockquote + p > span.copy-header {
     padding: 6px 16px 4px;
 }
 
-button.copy-button {
+button.copy-button, button.schema-copy-button {
     cursor: pointer;
     z-index: 1;
     position: sticky;
@@ -280,7 +285,7 @@ button.copy-button {
     padding: 3px 5px;
 }
 
-button.copy-button:hover {
+button.copy-button:hover, button.schema-copy-button:hover {
     box-shadow: 0px 0px 8px 1px #ccc;
     transition: box-shadow .05s;
 }
