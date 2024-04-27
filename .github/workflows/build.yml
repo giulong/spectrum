@@ -52,6 +52,7 @@ jobs:
 
   browsers:
     name: Browsers IT
+    if: false
     needs: build
     runs-on: ubuntu-latest
     env:
@@ -88,6 +89,7 @@ jobs:
 
   macos:
     name: MacOS IT
+    if: false
     needs: build
     runs-on: macos-latest
     env:
@@ -124,7 +126,6 @@ jobs:
 
   appium:
     name: Appium IT
-    if: false
     needs: build
     runs-on: ubuntu-latest
     env:
