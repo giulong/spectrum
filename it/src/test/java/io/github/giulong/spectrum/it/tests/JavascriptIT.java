@@ -33,11 +33,14 @@ public class JavascriptIT extends SpectrumTest<Void> {
         final WebElement firstCheckbox = checkboxPage.getCheckboxes().getFirst();
         final WebElement secondCheckbox = checkboxPage.getCheckboxes().get(1);
 
-        assertFalse(firstCheckbox.isSelected());
-        assertTrue(secondCheckbox.isSelected());
+        assertFalse(js.isSelected(firstCheckbox));
+        assertTrue(js.isSelected(secondCheckbox));
+
+        assertTrue(js.isEnabled(firstCheckbox));
+        assertTrue(js.isDisplayed(firstCheckbox));
 
         js.click(firstCheckbox);
-        assertTrue(firstCheckbox.isSelected());
+        assertTrue(js.isSelected(firstCheckbox));
 
         // Take a screenshot with a custom message
         screenshotInfo("After checking the first checkbox");

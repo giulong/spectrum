@@ -67,6 +67,43 @@ public class Js {
     }
 
     /**
+     * Determine whether the element is selected or not
+     *
+     * @param webElement The webElement to check
+     * @return True if element is currently selected/checked, false otherwise
+     */
+    public boolean isSelected(final WebElement webElement) {
+
+        return (boolean) driver.executeScript("return arguments[0].checked;", webElement);
+    }
+
+    /**
+     * Determine whether the element is enabled or not
+     *
+     * @param webElement The webElement to check
+     * @return True if element is enabled, false otherwise
+     */
+    public boolean isEnabled(final WebElement webElement) {
+        final boolean isDisabled = (boolean) driver.executeScript("return arguments[0].disabled;", webElement);
+
+        return !isDisabled;
+    }
+
+    /**
+     * Determine whether the element is displayed or not
+     *
+     * @param webElement The webElement to check
+     * @return True if element is displayed, false otherwise
+     */
+    public boolean isDisplayed(final WebElement webElement) {
+        final boolean isDysplayed = (boolean) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect();" +
+                "return arguments[0].checkVisibility({visibilityProperty:true, opacityProperty:true}) && " +
+                "rectangle.height > 0 && rectangle.width > 0", webElement);
+
+        return isDysplayed;
+    }
+
+    /**
      * Get the size of the provided WebElement
      *
      * @param webElement The WebElement from which the size is taken
