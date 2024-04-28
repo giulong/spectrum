@@ -166,7 +166,6 @@ jobs:
         run: |
           npm i -g appium
           appium driver install uiautomator2
-          appium &>/dev/null &
 
       - name: create AVD and generate snapshot for caching
         if: steps.avd-cache.outputs.cache-hit != 'true'
