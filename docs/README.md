@@ -1058,6 +1058,10 @@ environments:
       another: 123
     localFileDetector: true
     collectServerLogs: true
+    service: # this node and its children are the internal defaults, no need to provide them explicitly
+      ipAddress: 0.0.0.0
+      port: 4723
+      timeout: 20
 ```
 
 Appium server is a specialized kind of a Selenium Grid, so its configuration extends the one of the
@@ -1069,9 +1073,10 @@ Otherwise, it will start the server process when the tests execution start, and 
 
 That said, all the parameters available for a Grid environment can be used in Appium environment. Here's the list of Appium specific parameters:
 
-| Param             | Type    | Default | Mandatory | Description                                                                                                        |
-|-------------------|---------|---------|:---------:|--------------------------------------------------------------------------------------------------------------------|
-| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the `drivers.logs.level` node |
+| Param             | Type    | Default | Mandatory | Description                                                                                                                                                                  |
+|-------------------|---------|---------|:---------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the `drivers.logs.level` node                                                           |
+| service           | Service | ---     |     ❌     | arguments to be provided to the [AppiumServiceBuilder](https://appium.github.io/java-client/io/appium/java_client/service/local/AppiumServiceBuilder.html){:target="_blank"} |
 
 > 💡 **Tip**<br/>
 > Use `collectServerLogs` only if you really want to send Appium server's logs to Spectrum's log file.
