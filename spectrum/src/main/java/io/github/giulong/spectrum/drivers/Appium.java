@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.drivers;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
@@ -20,7 +21,12 @@ public abstract class Appium<T extends MutableCapabilities, U extends AppiumDriv
 
     @Override
     public DriverService.Builder<AppiumDriverLocalService, AppiumServiceBuilder> getDriverServiceBuilder() {
-        return new AppiumServiceBuilder();
+        final Configuration.Environments.Appium.Service service = configuration.getEnvironments().getAppium().getService();
+
+        return new AppiumServiceBuilder()
+                .withIPAddress(service.getIpAddress())
+                .usingPort(service.getPort())
+                .withTimeout(service.getTimeout());
     }
 
     protected Map<String, Object> adjustCapabilitiesFrom(final Map<String, Object> configurationCapabilities) {

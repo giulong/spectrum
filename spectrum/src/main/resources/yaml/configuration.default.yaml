@@ -63,6 +63,10 @@ environments:
     url: http://localhost:4444/wd/hub
   appium: # Appium server configuration. Here you can set Appium server capabilities. By default, we point to a local Appium Server
     url: http://localhost:4723/
+    service:
+      ipAddress: 0.0.0.0 # IP address of the Appium server
+      port: 4723 # Sets which port the appium server should be started on. A value of 0 indicates that any free port may be used
+      timeout: 20 # Sets timeout in seconds
 
 # Drivers configuration
 drivers:

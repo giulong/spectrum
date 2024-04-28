@@ -536,6 +536,24 @@ public class Configuration {
 
             @JsonPropertyDescription("Set to true to redirect server logs to Spectrum's logs, at the level specified in the drivers.logs.level node")
             private boolean collectServerLogs;
+
+            @JsonPropertyDescription("Appium service options")
+            private Service service;
+
+            @Getter
+            @Generated
+            public static class Service {
+
+                @JsonPropertyDescription("IP address of the Appium server")
+                private String ipAddress;
+
+                @JsonPropertyDescription("Sets which port the appium server should be started on. A value of 0 indicates that any free port may be used")
+                private int port;
+
+                @JsonPropertyDescription("Sets timeout in seconds")
+                @JsonSchemaTypes(int.class)
+                private Duration timeout;
+            }
         }
     }
 

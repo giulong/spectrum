@@ -43,9 +43,6 @@ class FirefoxTest {
     private Configuration.Drivers.Firefox firefoxConfig;
 
     @Mock
-    private FirefoxDriverLogLevel firefoxDriverLogLevel;
-
-    @Mock
     private Configuration.Drivers.Firefox.Service service;
 
     @Mock
