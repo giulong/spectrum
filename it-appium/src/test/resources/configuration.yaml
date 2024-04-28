@@ -12,6 +12,8 @@ drivers:
       app: src/test/resources/hello-world.apk
       avd: phone
       avdArgs: -no-window -no-audio -no-boot-anim -no-snapshot
+      uiautomator2ServerInstallTimeout: 60000
+      uiautomator2ServerLaunchTimeout: 60000
 
 data:
   fqdn: io.github.giulong.spectrum.it_appium.data.Data
