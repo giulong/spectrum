@@ -307,7 +307,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>**/JsonSchemaGeneratorModule.class</exclude>
+                        <exclude>**/internals/jackson/json_schema/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>
