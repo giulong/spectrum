@@ -23,10 +23,12 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumSessionListener.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -66,6 +68,9 @@ class SpectrumSessionListenerTest {
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
+
+    @Mock
+    private Set<String> interpolationVars;
 
     @Mock
     private TestBook testBook;
@@ -181,6 +186,9 @@ class SpectrumSessionListenerTest {
         final String profileConfiguration = String.format("configuration-%s", profile);
 
         System.setProperty("os.name", "Win");
+        System.setProperty("spectrum.ok", "SOME VALUE");
+
+        when(configuration.getInterpolationVars()).thenReturn(interpolationVars);
 
         // parseProfile
         when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
@@ -191,9 +199,14 @@ class SpectrumSessionListenerTest {
 
         spectrumSessionListener.parseConfiguration();
 
+        // just to check lookForUnrecognizedVars is called
+        verify(interpolationVars).contains(anyString());
+
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION);
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
+
+        System.clearProperty("spectrum.ok");
     }
 
     @Test
@@ -203,6 +216,9 @@ class SpectrumSessionListenerTest {
         final String profileConfiguration = String.format("configuration-%s", profile);
 
         System.setProperty("os.name", "nix");
+        System.setProperty("spectrum.ok", "SOME VALUE");
+
+        when(configuration.getInterpolationVars()).thenReturn(interpolationVars);
 
         // parseProfile
         when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
@@ -214,10 +230,15 @@ class SpectrumSessionListenerTest {
 
         spectrumSessionListener.parseConfiguration();
 
+        // just to check lookForUnrecognizedVars is called
+        verify(interpolationVars).contains(anyString());
+
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION);
         verify(yamlUtils).updateWithFile(configuration, profileConfiguration);
+
+        System.clearProperty("spectrum.ok");
     }
 
     @DisplayName("parseProfiles should parse the profile node from both the internal configuration.yaml and the base configuration.yaml and return the merged value")
@@ -279,6 +300,34 @@ class SpectrumSessionListenerTest {
                 arguments(Map.of("one", "one"), null, Map.of("three", "three"), Map.of("one", "one", "three", "three")),
                 arguments(Map.of("one", "one"), Map.of("two", "two"), Map.of("three", "three"), Map.of("one", "one", "two", "two", "three", "three"))
         );
+    }
+
+    @Test
+    @DisplayName("lookForUnrecognizedVars should look for every var provided via runtime property or env var that starts with 'spectrum' but it's not a valid one")
+    public void lookForUnrecognizedVars() {
+        System.setProperty("spectrum.log.level", "SOME VALUE");
+        System.setProperty("spectrum.log.colors", "SOME VALUE");
+        System.setProperty("spectrum.log.path", "SOME VALUE");
+        System.setProperty("spectrum.invalid", "SOME VALUE");
+        System.setProperty("spectrum.not.recognized", "SOME VALUE");
+        System.setProperty("spectrum.ok", "SOME VALUE");
+
+        when(configuration.getInterpolationVars()).thenReturn(interpolationVars);
+        when(interpolationVars.contains("spectrum.log.level")).thenReturn(false);
+        when(interpolationVars.contains("spectrum.log.colors")).thenReturn(false);
+        when(interpolationVars.contains("spectrum.log.path")).thenReturn(false);
+        when(interpolationVars.contains("spectrum.invalid")).thenReturn(false);
+        when(interpolationVars.contains("spectrum.not.recognized")).thenReturn(false);
+        when(interpolationVars.contains("spectrum.ok")).thenReturn(true);
+
+        assertTrue(spectrumSessionListener.lookForUnrecognizedVars().containsAll(List.of("spectrum.invalid", "spectrum.not.recognized")));
+
+        System.clearProperty("spectrum.log.level");
+        System.clearProperty("spectrum.log.colors");
+        System.clearProperty("spectrum.log.path");
+        System.clearProperty("spectrum.invalid");
+        System.clearProperty("spectrum.not.recognized");
+        System.clearProperty("spectrum.ok");
     }
 
     @DisplayName("isUnix should check the OS")
