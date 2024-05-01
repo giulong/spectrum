@@ -25,6 +25,14 @@ public class JsonSchemaInternalGeneratorModule implements Module {
 
     @Override
     public void applyToConfigBuilder(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
+        commonSetupFor(schemaGeneratorConfigBuilder)
+                .forTypesInGeneral()
+                .withSubtypeResolver(new JsonSubTypesResolver());
+
+        writeSchema(schemaGeneratorConfigBuilder, getTargetJsonSchemaFolder().resolve("ConfigurationInternal-schema.json"));
+    }
+
+    protected SchemaGeneratorConfigBuilder commonSetupFor(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
         schemaGeneratorConfigBuilder
                 .with(new JacksonModule(SKIP_SUBTYPE_LOOKUP, FLATTENED_ENUMS_FROM_JSONVALUE))
                 .with(FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT, MAP_VALUES_AS_ADDITIONAL_PROPERTIES, NULLABLE_FIELDS_BY_DEFAULT);
@@ -34,11 +42,7 @@ public class JsonSchemaInternalGeneratorModule implements Module {
                 .withEnumResolver(this::enumValuesResolver)
                 .withTargetTypeOverridesResolver(this::multipleTypesResolver);
 
-        schemaGeneratorConfigBuilder
-                .forTypesInGeneral()
-                .withSubtypeResolver(new JsonSubTypesResolver());
-
-        writeSchema(schemaGeneratorConfigBuilder, getTargetJsonSchemaFolder().resolve("ConfigurationInternal-schema.json"));
+        return schemaGeneratorConfigBuilder;
     }
 
     @SneakyThrows

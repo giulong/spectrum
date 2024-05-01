@@ -92,7 +92,7 @@ public class AppiumEnvironment extends GridEnvironment {
     }
 
     protected boolean isRunningOn(final int port) {
-        try (final ServerSocket serverSocket = new ServerSocket()) {
+        try (ServerSocket serverSocket = new ServerSocket()) {
             serverSocket.setReuseAddress(false);
             serverSocket.bind(new InetSocketAddress(InetAddress.getByName("localhost"), port), 50);
 
