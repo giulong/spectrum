@@ -22,7 +22,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("HtmlUtils")
 class HtmlUtilsTest {
 
     private static MockedStatic<Path> pathMockedStatic;

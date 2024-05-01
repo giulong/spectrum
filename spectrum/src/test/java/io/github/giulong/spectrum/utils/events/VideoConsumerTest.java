@@ -41,7 +41,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("VideoConsumer")
 class VideoConsumerTest {
 
     private static final String CLASS_NAME = "className";

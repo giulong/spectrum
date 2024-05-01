@@ -30,7 +30,6 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("InterpolatedObjectDeserializer")
 class InterpolatedObjectDeserializerTest {
 
     private static final String VAR_IN_ENV = "456";

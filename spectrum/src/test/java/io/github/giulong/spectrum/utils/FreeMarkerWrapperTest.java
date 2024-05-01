@@ -24,7 +24,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("FreeMarkerWrapper")
 class FreeMarkerWrapperTest {
 
     @Mock

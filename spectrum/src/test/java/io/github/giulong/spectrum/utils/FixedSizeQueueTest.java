@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("FixedSizeQueue")
 class FixedSizeQueueTest {
 
     @Mock

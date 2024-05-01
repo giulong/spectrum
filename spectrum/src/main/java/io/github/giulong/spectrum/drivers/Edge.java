@@ -9,7 +9,16 @@ public class Edge extends Chromium<EdgeOptions, EdgeDriverService, EdgeDriverSer
 
     @Override
     public DriverService.Builder<EdgeDriverService, EdgeDriverService.Builder> getDriverServiceBuilder() {
-        return new EdgeDriverService.Builder();
+        final Configuration.Drivers.Chrome.Service service = configuration.getDrivers().getEdge().getService();
+
+        return new EdgeDriverService.Builder()
+                .withBuildCheckDisabled(service.isBuildCheckDisabled())
+                .withAppendLog(service.isAppendLog())
+                .withReadableTimestamp(service.isReadableTimestamp())
+                .withLoglevel(service.getLogLevel())
+                .withSilent(service.isSilent())
+                .withVerbose(service.isVerbose())
+                .withAllowedListIps(service.getAllowedListIps());
     }
 
     @Override

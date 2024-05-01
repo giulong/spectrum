@@ -25,7 +25,6 @@ import static org.mockito.Mockito.*;
 import static org.slf4j.event.Level.DEBUG;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("LocalEnvironment")
 class LocalEnvironmentTest {
 
     private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;

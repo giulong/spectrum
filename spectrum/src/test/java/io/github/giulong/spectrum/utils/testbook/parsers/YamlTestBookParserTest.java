@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("YamlTestBookParser")
 class YamlTestBookParserTest {
 
     @InjectMocks

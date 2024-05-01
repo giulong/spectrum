@@ -48,7 +48,6 @@ import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("EventsListener")
 class EventsListenerTest {
 
     private static final String UUID_REGEX = AUTO_AFTER.getValue() + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";

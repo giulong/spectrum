@@ -96,7 +96,10 @@ public class TestBook implements SessionHook, Reportable {
                 .filter(canReportTestBook -> canReportTestBook instanceof FileReporter)
                 .map(FileReporter.class::cast)
                 .map(FileReporter::getOutput)
-                .forEach(output -> log.info("After the execution, you'll find the {} testBook at file:///{}", fileUtils.getExtensionOf(output), Path.of(output).toAbsolutePath()));
+                .forEach(output -> {
+                    final String reportPath = Path.of(output).toAbsolutePath().toString().replace("\\", "/");
+                    log.info("After the execution, you'll find the {} testBook at file:///{}", fileUtils.getExtensionOf(output), reportPath);
+                });
 
         final List<TestBookTest> tests = parser.parse();
 

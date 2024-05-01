@@ -40,7 +40,7 @@ public class DataResolver<Data> implements ParameterResolver {
                 return data;
             }, dataClass);
         } catch (ClassNotFoundException e) {
-            log.warn("Invalid value for Data class in 'configuration.data.fqdn': {}. If no Data class is needed, you can safely ignore this warning.", fqdn);
+            log.warn("Invalid value for Data class in 'configuration.data.fqdn: {}'. If no Data class is needed, you can safely ignore this warning.", fqdn);
             return null;
         }
     }

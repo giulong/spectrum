@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("AppiumLog")
 class AppiumLogTest {
 
     private static final String LOG_MESSAGE = "log message";

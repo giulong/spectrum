@@ -20,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("ExtentReporterInline")
 class ExtentReporterInlineTest {
 
     private static final String REPORT_FOLDER = "reportFolder";

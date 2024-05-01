@@ -7,7 +7,7 @@ import com.github.victools.jsonschema.generator.FieldScope;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
 import com.github.victools.jsonschema.generator.TypeContext;
 import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
-import io.github.giulong.spectrum.internals.jackson.views.Views;
+import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.maven.model.Model;
@@ -30,9 +30,7 @@ public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule
     @SneakyThrows
     @Override
     public void applyToConfigBuilder(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
-        super.applyToConfigBuilder(schemaGeneratorConfigBuilder);
-
-        schemaGeneratorConfigBuilder
+        commonSetupFor(schemaGeneratorConfigBuilder)
                 .forFields()
                 .withIgnoreCheck(this::jsonViewInternalPredicate);
 
@@ -56,7 +54,7 @@ public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule
     }
 
     private static boolean isInternal(final AnnotatedElement annotatedElement) {
-        return annotatedElement.isAnnotationPresent(JsonView.class) && Arrays.asList(annotatedElement.getAnnotation(JsonView.class).value()).contains(Views.Internal.class);
+        return annotatedElement.isAnnotationPresent(JsonView.class) && Arrays.asList(annotatedElement.getAnnotation(JsonView.class).value()).contains(Internal.class);
     }
 
     private boolean jsonViewInternalPredicate(final FieldScope fieldScope) {

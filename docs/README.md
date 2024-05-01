@@ -481,18 +481,20 @@ or overriding it at runtime by providing the `spectrum.environment` property: `-
 
 These are the drivers currently supported, each must be used with a compatible environment:
 
-| Driver                          | Local | Grid | Appium |
-|---------------------------------|:-----:|:----:|:------:|
-| [chrome](#chrome)               |   ✅   |  ✅   |        |
-| [firefox](#firefox)             |   ✅   |  ✅   |        |
-| [edge](#edge)                   |   ✅   |  ✅   |        |
-| [safari](#safari)               |   ✅   |  ✅   |        |
-| [uiAutomator2](#uiautomator2)   |       |      |   ✅    |
-| [espresso](#espresso)           |       |      |   ✅    |
-| [xcuiTest](#xcuitest)           |       |      |   ✅    |
-| [windows](#windows)             |       |      |   ✅    |
-| [mac2](#mac2)                   |       |      |   ✅    |
-| [appiumGeneric](#appiumgeneric) |       |      |   ✅    |
+| Driver                                  | Local | Grid | Appium |
+|-----------------------------------------|:-----:|:----:|:------:|
+| [chrome](#chrome)                       |   ✅   |  ✅   |        |
+| [chromium based](#chromium-based)       |   ✅   |  ✅   |        |
+| [firefox](#firefox)                     |   ✅   |  ✅   |        |
+| [geckodriver based](#geckodriver-based) |   ✅   |  ✅   |        |
+| [edge](#edge)                           |   ✅   |  ✅   |        |
+| [safari](#safari)                       |   ✅   |  ✅   |        |
+| [uiAutomator2](#uiautomator2)           |       |      |   ✅    |
+| [espresso](#espresso)                   |       |      |   ✅    |
+| [xcuiTest](#xcuitest)                   |       |      |   ✅    |
+| [windows](#windows)                     |       |      |   ✅    |
+| [mac2](#mac2)                           |       |      |   ✅    |
+| [appiumGeneric](#appiumgeneric)         |       |      |   ✅    |
 
 ---
 
@@ -736,12 +738,13 @@ the `configuration.yaml`.
 
 ### Chrome
 
-See [https://chromedriver.chromium.org/capabilities](https://chromedriver.chromium.org/capabilities){:target="_blank"}
+See [https://www.selenium.dev/documentation/webdriver/browsers/chrome/](https://www.selenium.dev/documentation/webdriver/browsers/chrome/){:target="_blank"}
 
-| Parameter    | Type                  | Description           |
-|--------------|-----------------------|-----------------------|
-| args         | List\<String\>        | Chrome's args         |
-| capabilities | Map\<String, Object\> | Chrome's capabilities |
+| Parameter    | Type                                                                                                   | Description             |
+|--------------|--------------------------------------------------------------------------------------------------------|-------------------------|
+| args         | List\<String\>                                                                                         | Chrome's args           |
+| capabilities | Map\<String, Object\>                                                                                  | Chrome's capabilities   |
+| service      | [Service](https://www.selenium.dev/documentation/webdriver/browsers/chrome/#service){:target="_blank"} | Chrome's driver service |
 
 {% include copyCode.html %}
 
@@ -755,43 +758,86 @@ drivers:
         download.directory_upgrade: true
         download.default_directory: ${downloadsFolder}
         safebrowsing.enabled: true
+    service:
+      buildCheckDisabled: false
+      appendLog: false
+      readableTimestamp: false
+      logLevel: SEVERE
+      silent: false
+      verbose: false
+      allowedListIps: ''
+```
+
+### Chromium Based
+
+As explained in [Start browser in a specified location](https://www.selenium.dev/documentation/webdriver/browsers/chrome/#start-browser-in-a-specified-location){:target="_blank"},
+you can provide the path to any Chromium based browser in Chrome's `binary` capability:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  chrome:
+    capabilities:
+      binary: /Applications/Iron.app/Contents/MacOS/Chromium
+    service:
+      buildCheckDisabled: true # this is needed if the Chromium based browser is not compatible with the ChromeDriver you have in local
 ```
 
 ### Firefox
 
-See [https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions](https://developer.mozilla.org/en-US/docs/Web/WebDriver/Capabilities/firefoxOptions){:
-target="_blank"}
+See [https://www.selenium.dev/documentation/webdriver/browsers/firefox/](https://www.selenium.dev/documentation/webdriver/browsers/firefox/){:target="_blank"}
 
-| Parameter   | Type                  | Description                                                                                                         |
-|-------------|-----------------------|---------------------------------------------------------------------------------------------------------------------|
-| args        | List\<String\>        | Firefox's args                                                                                                      |
-| logLevel    | FirefoxDriverLogLevel | Firefox's [log level](https://firefox-source-docs.mozilla.org/testing/geckodriver/TraceLogs.html){:target="_blank"} |
-| preferences | Map\<String, Object\> | Firefox's preferences                                                                                               |
+| Parameter   | Type                                                                                                    | Description                                       |
+|-------------|---------------------------------------------------------------------------------------------------------|---------------------------------------------------|
+| binary      | String                                                                                                  | Absolute path to the custom Firefox binary to use |
+| args        | List\<String\>                                                                                          | Firefox's args                                    |
+| preferences | Map\<String, Object\>                                                                                   | Firefox's preferences                             |
+| service     | [Service](https://www.selenium.dev/documentation/webdriver/browsers/firefox/#service){:target="_blank"} | Firefox's driver service                          |
 
 {% include copyCode.html %}
 
 ```yaml
 drivers:
   firefox:
+    binary: null
     args: [ ]
-    logLevel: ERROR
     preferences:
       browser.download.folderList: 2
       browser.download.useDownloadDir: true
       browser.download.dir: ${downloadsFolder}
       browser.helperApps.neverAsk.saveToDisk: application/pdf
       pdfjs.disabled: true
+    service:
+      allowHosts: null
+      logLevel: FATAL
+      truncatedLogs: false
+      profileRoot: ''
+```
+
+### Geckodriver Based
+
+As explained in [Start browser in a specified location](https://www.selenium.dev/documentation/webdriver/browsers/firefox/#start-browser-in-a-specified-location){:target="_blank"},
+you can provide the path to any Geckodriver based browser in Firefox's `binary` parameter:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  firefox:
+    binary: /Applications/Tor Browser.app/Contents/MacOS/firefox
 ```
 
 ### Edge
 
-See [https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options](https://learn.microsoft.com/en-us/microsoft-edge/webDriver-chromium/capabilities-edge-options){:
+See [https://www.selenium.dev/documentation/webdriver/browsers/edge/](https://www.selenium.dev/documentation/webdriver/browsers/edge/){:
 target="_blank"}
 
-| Parameter    | Type                  | Description         |
-|--------------|-----------------------|---------------------|
-| args         | List\<String\>        | Edge's args         |
-| capabilities | Map\<String, Object\> | Edge's capabilities |
+| Parameter    | Type                                                                                                 | Description           |
+|--------------|------------------------------------------------------------------------------------------------------|-----------------------|
+| args         | List\<String\>                                                                                       | Edge's args           |
+| capabilities | Map\<String, Object\>                                                                                | Edge's capabilities   |
+| service      | [Service](https://www.selenium.dev/documentation/webdriver/browsers/edge/#service){:target="_blank"} | Edge's driver service |
 
 {% include copyCode.html %}
 
@@ -802,22 +848,31 @@ drivers:
     capabilities:
       prefs:
         download.default_directory: ${downloadsFolder}
+    service:
+      buildCheckDisabled: false
+      appendLog: false
+      readableTimestamp: false
+      logLevel: SEVERE
+      silent: false
+      verbose: false
+      allowedListIps: ''
 ```
 
 ### Safari
 
-See [https://developer.apple.com/documentation/webkit/about_webdriver_for_safari](https://developer.apple.com/documentation/webkit/about_webdriver_for_safari){:target="_blank"}
+See [https://www.selenium.dev/documentation/webdriver/browsers/safari/](https://www.selenium.dev/documentation/webdriver/browsers/safari/){:target="_blank"}
 
-| Parameter | Type    | Description                  |
-|-----------|---------|------------------------------|
-| logging   | boolean | Safari's logging enable flag |
+| Parameter | Type                                                                                                   | Description             |
+|-----------|--------------------------------------------------------------------------------------------------------|-------------------------|
+| service   | [Service](https://www.selenium.dev/documentation/webdriver/browsers/safari/#service){:target="_blank"} | Safari's driver service |
 
 {% include copyCode.html %}
 
 ```yaml
 drivers:
   safari:
-    logging: false
+    service:
+      logging: false
 ```
 
 ### UiAutomator2
@@ -1003,6 +1058,10 @@ environments:
       another: 123
     localFileDetector: true
     collectServerLogs: true
+    service: # this node and its children are the internal defaults, no need to provide them explicitly
+      ipAddress: 0.0.0.0
+      port: 4723
+      timeout: 20
 ```
 
 Appium server is a specialized kind of a Selenium Grid, so its configuration extends the one of the
@@ -1014,9 +1073,10 @@ Otherwise, it will start the server process when the tests execution start, and 
 
 That said, all the parameters available for a Grid environment can be used in Appium environment. Here's the list of Appium specific parameters:
 
-| Param             | Type    | Default | Mandatory | Description                                                                                                        |
-|-------------------|---------|---------|:---------:|--------------------------------------------------------------------------------------------------------------------|
-| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the `drivers.logs.level` node |
+| Param             | Type    | Default | Mandatory | Description                                                                                                                                                                  |
+|-------------------|---------|---------|:---------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| collectServerLogs | boolean | false   |     ❌     | if true, redirect Appium server's logs to Spectrum's logs, at the level specified in the `drivers.logs.level` node                                                           |
+| service           | Service | ---     |     ❌     | arguments to be provided to the [AppiumServiceBuilder](https://appium.github.io/java-client/io/appium/java_client/service/local/AppiumServiceBuilder.html){:target="_blank"} |
 
 > 💡 **Tip**<br/>
 > Use `collectServerLogs` only if you really want to send Appium server's logs to Spectrum's log file.

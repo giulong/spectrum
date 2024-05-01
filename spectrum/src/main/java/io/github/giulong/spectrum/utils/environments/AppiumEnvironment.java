@@ -13,6 +13,11 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+
 @Slf4j
 @Getter
 public class AppiumEnvironment extends GridEnvironment {
@@ -20,11 +25,22 @@ public class AppiumEnvironment extends GridEnvironment {
     @JsonIgnore
     private AppiumDriverLocalService driverService;
 
+    @JsonIgnore
+    private boolean external;
+
     @Override
     public void sessionOpened() {
+        final Configuration.Environments.Appium appium = configuration.getEnvironments().getAppium();
+        final int port = appium.getService().getPort();
+
+        external = isRunningOn(port);
+        if (external) {
+            log.info("Appium is already running at port {}", port);
+            return;
+        }
+
         log.info("Starting the Appium driver service");
 
-        final Configuration.Environments.Appium appium = configuration.getEnvironments().getAppium();
         final AppiumServiceBuilder appiumServiceBuilder = ((AppiumServiceBuilder) configuration
                 .getRuntime()
                 .getDriver()
@@ -46,8 +62,12 @@ public class AppiumEnvironment extends GridEnvironment {
 
     @Override
     public void sessionClosed() {
-        log.debug("Stopping the Appium driver service");
+        if (external) {
+            log.debug("Appium not managed by Spectrum. Avoid stopping it");
+            return;
+        }
 
+        log.debug("Stopping the Appium driver service");
         driverService.stop();
     }
 
@@ -62,8 +82,23 @@ public class AppiumEnvironment extends GridEnvironment {
 
     @Override
     public void shutdown() {
-        log.debug("Closing the Appium driver service");
+        if (external) {
+            log.debug("Appium not managed by Spectrum. Avoid closing it");
+            return;
+        }
 
+        log.debug("Closing the Appium driver service");
         driverService.close();
+    }
+
+    protected boolean isRunningOn(final int port) {
+        try (ServerSocket serverSocket = new ServerSocket()) {
+            serverSocket.setReuseAddress(false);
+            serverSocket.bind(new InetSocketAddress(InetAddress.getByName("localhost"), port), 50);
+
+            return false;
+        } catch (IOException e) {
+            return true;
+        }
     }
 }

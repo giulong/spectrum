@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Mac2")
 class Mac2Test {
 
     @Mock

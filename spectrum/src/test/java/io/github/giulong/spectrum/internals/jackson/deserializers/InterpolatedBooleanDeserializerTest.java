@@ -24,7 +24,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("InterpolatedBooleanDeserializer")
 class InterpolatedBooleanDeserializerTest {
 
     @Mock

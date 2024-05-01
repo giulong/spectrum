@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.edge.EdgeDriverService;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
@@ -24,7 +25,6 @@ import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 import static org.openqa.selenium.logging.LogType.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Edge")
 class EdgeTest {
 
     @Mock
@@ -48,6 +48,9 @@ class EdgeTest {
     @Mock
     private Configuration.Drivers.Logs logs;
 
+    @Mock
+    private Configuration.Drivers.Chrome.Service service;
+
     @InjectMocks
     private Edge edge;
 
@@ -59,12 +62,33 @@ class EdgeTest {
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of EdgeDriverService.Builder()")
     public void getDriverServiceBuilder() {
-        MockedConstruction<EdgeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(EdgeDriverService.Builder.class);
+        final String allowedListIps = "allowedListIps";
+
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.getEdge()).thenReturn(edgeConfig);
+        when(edgeConfig.getService()).thenReturn(service);
+        when(service.isBuildCheckDisabled()).thenReturn(true);
+        when(service.isAppendLog()).thenReturn(true);
+        when(service.isReadableTimestamp()).thenReturn(true);
+        when(service.getLogLevel()).thenReturn(ChromiumDriverLogLevel.ALL);
+        when(service.isSilent()).thenReturn(true);
+        when(service.isVerbose()).thenReturn(true);
+        when(service.getAllowedListIps()).thenReturn(allowedListIps);
+
+        MockedConstruction<EdgeDriverService.Builder> edgeDriverServiceMockedConstruction = mockConstruction(EdgeDriverService.Builder.class, (mock, context) -> {
+            when(mock.withBuildCheckDisabled(true)).thenReturn(mock);
+            when(mock.withAppendLog(true)).thenReturn(mock);
+            when(mock.withReadableTimestamp(true)).thenReturn(mock);
+            when(mock.withLoglevel(ChromiumDriverLogLevel.ALL)).thenReturn(mock);
+            when(mock.withSilent(true)).thenReturn(mock);
+            when(mock.withVerbose(true)).thenReturn(mock);
+            when(mock.withAllowedListIps(allowedListIps)).thenReturn(mock);
+        });
 
         final DriverService.Builder<EdgeDriverService, EdgeDriverService.Builder> driverServiceBuilder = edge.getDriverServiceBuilder();
-        assertEquals(chromeDriverServiceMockedConstruction.constructed().getFirst(), driverServiceBuilder);
+        assertEquals(edgeDriverServiceMockedConstruction.constructed().getFirst(), driverServiceBuilder);
 
-        chromeDriverServiceMockedConstruction.close();
+        edgeDriverServiceMockedConstruction.close();
     }
 
     @Test

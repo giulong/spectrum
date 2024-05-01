@@ -13,7 +13,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@DisplayName("It Summary Module Verifier")
 @SuppressWarnings("unused")
 public class SummaryVerifierIT extends SpectrumTest<Data> {
 

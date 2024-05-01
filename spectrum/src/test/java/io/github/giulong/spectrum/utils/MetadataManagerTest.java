@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Metadata")
 class MetadataManagerTest {
 
     private static MockedStatic<Path> pathMockedStatic;

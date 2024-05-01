@@ -1,6 +1,9 @@
 package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +13,7 @@ import org.mockito.MockedConstruction;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Map;
 
 import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
@@ -18,8 +22,22 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Appium")
 class AppiumTest {
+
+    @Mock
+    private Configuration configuration;
+
+    @Mock
+    private Configuration.Environments environments;
+
+    @Mock
+    private Configuration.Environments.Appium appiumConfiguration;
+
+    @Mock
+    private Configuration.Environments.Appium.Service service;
+
+    @Mock
+    private Duration timeout;
 
     @Mock
     private Map<String, Object> capabilities;
@@ -27,10 +45,29 @@ class AppiumTest {
     @InjectMocks
     private UiAutomator2 appium;
 
+    @BeforeEach
+    public void beforeEach() {
+        Reflections.setField("configuration", appium, configuration);
+    }
+
     @Test
     @DisplayName("getDriverServiceBuilder should return an instance of AppiumDriverServiceBuilder")
     public void getDriverServiceBuilder() {
-        MockedConstruction<AppiumServiceBuilder> appiumServiceBuilderMockedConstruction = mockConstruction(AppiumServiceBuilder.class);
+        final String ipAddress = "ipAddress";
+        final int port = 123;
+
+        when(configuration.getEnvironments()).thenReturn(environments);
+        when(environments.getAppium()).thenReturn(appiumConfiguration);
+        when(appiumConfiguration.getService()).thenReturn(service);
+        when(service.getIpAddress()).thenReturn(ipAddress);
+        when(service.getPort()).thenReturn(port);
+        when(service.getTimeout()).thenReturn(timeout);
+
+        MockedConstruction<AppiumServiceBuilder> appiumServiceBuilderMockedConstruction = mockConstruction(AppiumServiceBuilder.class, (mock, context) -> {
+            when(mock.withIPAddress(ipAddress)).thenReturn(mock);
+            when(mock.usingPort(port)).thenReturn(mock);
+            when(mock.withTimeout(timeout)).thenReturn(mock);
+        });
 
         final AppiumServiceBuilder actual = (AppiumServiceBuilder) appium.getDriverServiceBuilder();
         assertEquals(appiumServiceBuilderMockedConstruction.constructed().getFirst(), actual);

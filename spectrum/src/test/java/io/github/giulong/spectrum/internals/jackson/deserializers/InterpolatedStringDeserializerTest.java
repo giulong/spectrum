@@ -23,7 +23,6 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("InterpolatedStringDeserializer")
 class InterpolatedStringDeserializerTest {
 
     private static final String VAR_IN_ENV = "varInEnv";

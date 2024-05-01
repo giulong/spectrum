@@ -17,15 +17,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
 
-import java.net.URL;
+import java.io.IOException;
+import java.net.*;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import static org.slf4j.event.Level.INFO;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("AppiumEnvironment")
 class AppiumEnvironmentTest {
 
     private MockedStatic<AppiumDriverLocalService> appiumDriverLocalServiceMockedStatic;
@@ -48,6 +48,9 @@ class AppiumEnvironmentTest {
 
     @Mock
     private Configuration.Environments.Appium appium;
+
+    @Mock
+    private Configuration.Environments.Appium.Service service;
 
     @Mock
     private Configuration.Drivers drivers;
@@ -85,6 +88,7 @@ class AppiumEnvironmentTest {
         appiumLogMockedStatic = mockStatic(AppiumLog.class);
 
         Reflections.setField("configuration", appiumEnvironment, configuration);
+        Reflections.setField("external", appiumEnvironment, false);
     }
 
     @AfterEach
@@ -96,10 +100,21 @@ class AppiumEnvironmentTest {
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService redirecting the logs to slf4j")
     public void sessionOpenedLogs() {
+        final int port = 123;
+
+        // isRunningOn
+        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction(ServerSocket.class);
+        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction(InetSocketAddress.class, (mock, context) -> {
+            assertEquals(InetAddress.getByName("localhost"), context.arguments().getFirst());
+            assertEquals(port, context.arguments().get(1));
+        });
+
         when(configuration.getEnvironments()).thenReturn(environments);
         when(environments.getAppium()).thenReturn(appium);
         when(appium.getCapabilities()).thenReturn(capabilities);
         when(appium.isCollectServerLogs()).thenReturn(true);
+        when(appium.getService()).thenReturn(service);
+        when(service.getPort()).thenReturn(port);
 
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
@@ -128,15 +143,28 @@ class AppiumEnvironmentTest {
         verify(driverService).start();
 
         desiredCapabilitiesMockedConstruction.close();
+        serverSocketMockedConstruction.close();
+        inetSocketAddressMockedConstruction.close();
     }
 
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService without collecting server logs")
     public void sessionOpened() {
+        final int port = 123;
+
+        // isRunningOn
+        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction(ServerSocket.class);
+        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction(InetSocketAddress.class, (mock, context) -> {
+            assertEquals(InetAddress.getByName("localhost"), context.arguments().getFirst());
+            assertEquals(port, context.arguments().get(1));
+        });
+
         when(configuration.getEnvironments()).thenReturn(environments);
         when(environments.getAppium()).thenReturn(appium);
         when(appium.getCapabilities()).thenReturn(capabilities);
         when(appium.isCollectServerLogs()).thenReturn(false);
+        when(appium.getService()).thenReturn(service);
+        when(service.getPort()).thenReturn(port);
 
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
@@ -158,6 +186,30 @@ class AppiumEnvironmentTest {
         verify(driverService).start();
 
         desiredCapabilitiesMockedConstruction.close();
+        serverSocketMockedConstruction.close();
+        inetSocketAddressMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("sessionOpened should initialise the AppiumDriverLocalService without collecting server logs")
+    public void sessionOpenedExternal() {
+        final int port = 123;
+
+        // isRunningOn
+        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstructionWithAnswer(ServerSocket.class, answer -> {
+            throw new IOException();
+        });
+
+        when(configuration.getEnvironments()).thenReturn(environments);
+        when(environments.getAppium()).thenReturn(appium);
+        when(appium.getService()).thenReturn(service);
+        when(service.getPort()).thenReturn(port);
+
+        appiumEnvironment.sessionOpened();
+
+        verifyNoInteractions(driverService);
+
+        serverSocketMockedConstruction.close();
     }
 
     @Test
@@ -166,6 +218,16 @@ class AppiumEnvironmentTest {
         appiumEnvironment.sessionClosed();
 
         verify(driverService).stop();
+    }
+
+    @Test
+    @DisplayName("sessionClosed should do nothing if Appium is an external service")
+    public void sessionClosedFalse() {
+        Reflections.setField("external", appiumEnvironment, true);
+
+        appiumEnvironment.sessionClosed();
+
+        verifyNoInteractions(driverService);
     }
 
     @Test
@@ -188,5 +250,47 @@ class AppiumEnvironmentTest {
         appiumEnvironment.shutdown();
 
         verify(driverService).close();
+    }
+
+    @Test
+    @DisplayName("shutdown should do nothing if Appium is an external service")
+    public void shutdownFalse() {
+        Reflections.setField("external", appiumEnvironment, true);
+
+        appiumEnvironment.shutdown();
+
+        verifyNoInteractions(driverService);
+    }
+
+    @Test
+    @DisplayName("isRunningOn should return true if the provided port is already in use")
+    public void isRunningOn() {
+        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstructionWithAnswer(ServerSocket.class, answer -> {
+            throw new IOException();
+        });
+
+        assertTrue(appiumEnvironment.isRunningOn(123));
+
+        serverSocketMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("isRunningOn should return false if the provided port is free")
+    public void isRunningOnFalse() throws IOException {
+        final int port = 123;
+        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction(ServerSocket.class);
+        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction(InetSocketAddress.class, (mock, context) -> {
+            assertEquals(InetAddress.getByName("localhost"), context.arguments().getFirst());
+            assertEquals(port, context.arguments().get(1));
+        });
+
+        assertFalse(appiumEnvironment.isRunningOn(port));
+
+        final ServerSocket serverSocket = serverSocketMockedConstruction.constructed().getFirst();
+        verify(serverSocket).setReuseAddress(false);
+        verify(serverSocket).bind(inetSocketAddressMockedConstruction.constructed().getFirst(), 50);
+
+        inetSocketAddressMockedConstruction.close();
+        serverSocketMockedConstruction.close();
     }
 }

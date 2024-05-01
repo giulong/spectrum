@@ -9,7 +9,16 @@ public class Chrome extends Chromium<ChromeOptions, ChromeDriverService, ChromeD
 
     @Override
     public DriverService.Builder<ChromeDriverService, ChromeDriverService.Builder> getDriverServiceBuilder() {
-        return new ChromeDriverService.Builder();
+        final Configuration.Drivers.Chrome.Service service = configuration.getDrivers().getChrome().getService();
+
+        return new ChromeDriverService.Builder()
+                .withBuildCheckDisabled(service.isBuildCheckDisabled())
+                .withAppendLog(service.isAppendLog())
+                .withReadableTimestamp(service.isReadableTimestamp())
+                .withLogLevel(service.getLogLevel())
+                .withSilent(service.isSilent())
+                .withVerbose(service.isVerbose())
+                .withAllowedListIps(service.getAllowedListIps());
     }
 
     @Override

@@ -12,7 +12,6 @@ import java.lang.reflect.Field;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("ReflectionUtils")
 class ReflectionsTest {
 
     @Test

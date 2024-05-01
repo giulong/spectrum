@@ -17,8 +17,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.github.victools.jsonschema.generator.Option.FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT;
-import static com.github.victools.jsonschema.generator.Option.MAP_VALUES_AS_ADDITIONAL_PROPERTIES;
+import static com.github.victools.jsonschema.generator.Option.*;
 import static com.github.victools.jsonschema.module.jackson.JacksonOption.FLATTENED_ENUMS_FROM_JSONVALUE;
 import static com.github.victools.jsonschema.module.jackson.JacksonOption.SKIP_SUBTYPE_LOOKUP;
 
@@ -26,20 +25,24 @@ public class JsonSchemaInternalGeneratorModule implements Module {
 
     @Override
     public void applyToConfigBuilder(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
+        commonSetupFor(schemaGeneratorConfigBuilder)
+                .forTypesInGeneral()
+                .withSubtypeResolver(new JsonSubTypesResolver());
+
+        writeSchema(schemaGeneratorConfigBuilder, getTargetJsonSchemaFolder().resolve("ConfigurationInternal-schema.json"));
+    }
+
+    protected SchemaGeneratorConfigBuilder commonSetupFor(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
         schemaGeneratorConfigBuilder
                 .with(new JacksonModule(SKIP_SUBTYPE_LOOKUP, FLATTENED_ENUMS_FROM_JSONVALUE))
-                .with(FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT, MAP_VALUES_AS_ADDITIONAL_PROPERTIES);
+                .with(FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT, MAP_VALUES_AS_ADDITIONAL_PROPERTIES, NULLABLE_FIELDS_BY_DEFAULT);
 
         schemaGeneratorConfigBuilder
                 .forFields()
                 .withEnumResolver(this::enumValuesResolver)
                 .withTargetTypeOverridesResolver(this::multipleTypesResolver);
 
-        schemaGeneratorConfigBuilder
-                .forTypesInGeneral()
-                .withSubtypeResolver(new JsonSubTypesResolver());
-
-        writeSchema(schemaGeneratorConfigBuilder, getTargetJsonSchemaFolder().resolve("ConfigurationInternal-schema.json"));
+        return schemaGeneratorConfigBuilder;
     }
 
     @SneakyThrows

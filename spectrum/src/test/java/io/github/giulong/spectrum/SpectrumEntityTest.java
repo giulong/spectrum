@@ -46,7 +46,6 @@ import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("SpectrumEntity")
 class SpectrumEntityTest {
 
     private static final String UUID_REGEX = MANUAL.getValue() + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";

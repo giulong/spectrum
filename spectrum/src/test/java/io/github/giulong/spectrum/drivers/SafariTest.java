@@ -21,7 +21,6 @@ import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("Safari")
 class SafariTest {
 
     @Mock
@@ -32,6 +31,9 @@ class SafariTest {
 
     @Mock
     private Configuration configuration;
+
+    @Mock
+    private Configuration.Drivers.Safari.Service service;
 
     @InjectMocks
     private Safari safari;
@@ -47,7 +49,8 @@ class SafariTest {
     public void getDriverServiceBuilder(final boolean logging) {
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getSafari()).thenReturn(safariConfig);
-        when(safariConfig.isLogging()).thenReturn(logging);
+        when(safariConfig.getService()).thenReturn(service);
+        when(service.isLogging()).thenReturn(logging);
 
         MockedConstruction<SafariDriverService.Builder> safariDriverServiceMockedConstruction = mockConstruction(SafariDriverService.Builder.class, (mock, context) -> {
             when(mock.withLogging(logging)).thenReturn(mock);
