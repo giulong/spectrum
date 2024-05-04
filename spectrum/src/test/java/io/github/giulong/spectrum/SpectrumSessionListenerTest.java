@@ -17,9 +17,7 @@ import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -28,12 +26,11 @@ import java.util.stream.Stream;
 import static io.github.giulong.spectrum.SpectrumSessionListener.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class SpectrumSessionListenerTest {
-
-    private static MockedStatic<SLF4JBridgeHandler> slf4JBridgeHandlerMockedStatic;
 
     private String osName;
 
@@ -99,16 +96,12 @@ class SpectrumSessionListenerTest {
         Reflections.setField("configuration", spectrumSessionListener, configuration);
         Reflections.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
         Reflections.setField("metadataManager", spectrumSessionListener, metadataManager);
-
-        slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
     }
 
     @AfterEach
     public void afterEach() {
         Vars.getInstance().clear();
         System.setProperty("os.name", osName);
-
-        slf4JBridgeHandlerMockedStatic.close();
     }
 
     @Test
@@ -137,9 +130,6 @@ class SpectrumSessionListenerTest {
         when(summary.getSummaryGeneratingListener()).thenReturn(summaryGeneratingListener);
 
         spectrumSessionListener.launcherSessionOpened(launcherSession);
-
-        slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::removeHandlersForRootLogger);
-        slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::install);
 
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
         verify(yamlUtils).updateWithFile(configuration, CONFIGURATION);
