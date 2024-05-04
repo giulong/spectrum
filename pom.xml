@@ -9,7 +9,7 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <name>Spectrum Aggregate</name>
-    <description>Java Selenium Framework</description>
+    <description>E2E Test Automation Framework</description>
     <url>https://github.com/giulong/spectrum</url>
 
     <developers>
@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.10.2</revision>
+        <revision>1.10.3</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
@@ -48,10 +48,10 @@
 
         <junit.version>5.10.2</junit.version>
         <jackson.version>2.17.0</jackson.version>
-        <simplejavamail.version>8.8.3</simplejavamail.version>
+        <simplejavamail.version>8.9.0</simplejavamail.version>
         <jsonschemagenerator.version>4.35.0</jsonschemagenerator.version>
         <slf4j.version>2.0.13</slf4j.version>
-        <selenium.version>4.19.1</selenium.version>
+        <selenium.version>4.20.0</selenium.version>
     </properties>
 
     <profiles>
