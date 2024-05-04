@@ -12,7 +12,7 @@
 
     <artifactId>spectrum</artifactId>
     <name>Spectrum</name>
-    <description>Java Selenium Framework</description>
+    <description>E2E Test Automation Framework</description>
     <url>https://github.com/giulong/spectrum</url>
 
     <developers>

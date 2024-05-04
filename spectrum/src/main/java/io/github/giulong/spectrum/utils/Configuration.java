@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -19,10 +20,7 @@ import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import java.io.File;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 import static ch.qos.logback.classic.Level.OFF;
@@ -35,6 +33,9 @@ import static lombok.AccessLevel.PRIVATE;
 public class Configuration {
 
     private static final Configuration INSTANCE = new Configuration();
+
+    @JsonIgnore
+    private final Set<String> interpolationVars = new HashSet<>();
 
     @JsonPropertyDescription("Common vars to interpolate other String values in the configuration")
     private Map<String, Object> vars;

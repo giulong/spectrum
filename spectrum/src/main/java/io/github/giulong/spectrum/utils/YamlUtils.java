@@ -120,7 +120,7 @@ public final class YamlUtils {
                 .stream()
                 .peek(f -> log.debug("Checking if file {} exists", f))
                 .noneMatch(Files::exists)) {
-            log.warn("File {} not found.", file);
+            log.debug("File {} not found.", file);
             return null;
         }
 
@@ -183,7 +183,7 @@ public final class YamlUtils {
     public <T> void updateWithFile(final T t, final String file) {
         final String fileFound = findFile(file, false);
         if (fileFound == null) {
-            log.warn("File {} not found. Skipping update of the instance of {}", file, t.getClass().getSimpleName());
+            log.debug("File {} not found. Skipping update of the instance of {}", file, t.getClass().getSimpleName());
             return;
         }
 
