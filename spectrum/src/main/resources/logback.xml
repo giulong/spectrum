@@ -5,10 +5,6 @@
     <property name="COLOR_PATTERN" value="%d{HH:mm:ss.SSS} %colored(%.-1level %-30.30logger{0} | %msg%n)"/>
     <property name="FILE_PATH" value="${spectrum.log.path:-target/spectrum/logs}"/>
 
-    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
-        <resetJUL>true</resetJUL>
-    </contextListener>
-
     <if condition='p("spectrum.log.colors").equals("false")'>
         <then>
             <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
