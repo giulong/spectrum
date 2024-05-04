@@ -12,7 +12,10 @@ import io.github.giulong.spectrum.utils.Js;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -27,7 +30,6 @@ import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptur
 import static com.aventstack.extentreports.Status.*;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
 import static java.util.UUID.randomUUID;
-import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
@@ -157,13 +159,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     @SneakyThrows
     public Media addScreenshotToReport(final String msg, final Status status) {
         final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", MANUAL.getValue(), randomUUID()));
-
-        try {
-            Files.write(screenshotPath, driver.findElement(tagName("body")).getScreenshotAs(BYTES));
-        } catch (WebDriverException e) {
-            log.debug("Falling back to non-element screenshot due to: {}", e.getMessage());
-            Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));
-        }
+        Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));
 
         final Media screenshot = createScreenCaptureFromPath(screenshotPath.toString()).build();
         extentTest.log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);

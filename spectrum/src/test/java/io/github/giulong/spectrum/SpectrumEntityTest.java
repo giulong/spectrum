@@ -3,8 +3,8 @@ package io.github.giulong.spectrum;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
@@ -19,7 +19,10 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -42,7 +45,6 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
-import static org.openqa.selenium.By.tagName;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @ExtendWith(MockitoExtension.class)
@@ -100,15 +102,12 @@ class SpectrumEntityTest {
     }
 
     @SneakyThrows
-    private Path addScreenshotToReportStubs() {
+    private void addScreenshotToReportStubs() {
         final Path path = Files.createTempDirectory("reportsFolder");
         REPORTS_FOLDERS.add(path);
 
         when(testData.getScreenshotFolderPath()).thenReturn(path);
-        when(webDriver.findElement(tagName("body"))).thenReturn(webElement);
-        when(webElement.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
-
-        return path;
+        when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
     }
 
     @Test
@@ -153,7 +152,6 @@ class SpectrumEntityTest {
 
         assertEquals(spectrumEntity, spectrumEntity.screenshot());
 
-        verify(webElement).getScreenshotAs(BYTES);
         verify(extentTest).log(eq(INFO), (String) eq(null), any());
     }
 
@@ -165,7 +163,6 @@ class SpectrumEntityTest {
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(msg));
 
-        verify(webElement).getScreenshotAs(BYTES);
         verify(extentTest).log(eq(INFO), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
     }
 
@@ -177,7 +174,6 @@ class SpectrumEntityTest {
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(msg));
 
-        verify(webElement).getScreenshotAs(BYTES);
         verify(extentTest).log(eq(WARNING), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
     }
 
@@ -189,39 +185,17 @@ class SpectrumEntityTest {
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotFail(msg));
 
-        verify(webElement).getScreenshotAs(BYTES);
         verify(extentTest).log(eq(FAIL), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
     }
 
     @Test
-    @DisplayName("addScreenshotToReport should add the provided message to the report, at the provided status level and attaching a screenshot")
-    public void addScreenshotToReport() {
-        final Path path = addScreenshotToReportStubs();
-        final String msg = "msg";
-        final Status status = INFO;
-        final Media screenShot = spectrumEntity.addScreenshotToReport(msg, status);
-
-        assertNotNull(screenShot);
-
-        final Path screenshotPath = Path.of(screenShot.getPath());
-
-        assertTrue(Files.exists(screenshotPath));
-        assertEquals(path, screenshotPath.getParent());
-        assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
-        verify(webElement).getScreenshotAs(BYTES);
-        verify(extentTest).log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenShot);
-    }
-
-    @Test
     @DisplayName("addScreenshotToReport should fall back to taking a screenshot of the visible page if an exception is thrown")
-    public void addScreenshotToReportException() throws IOException {
-        final String exceptionMessage = "exceptionMessage";
+    public void addScreenshotToReport() throws IOException {
         final Path reportsFolder = Files.createTempDirectory("reportsFolder");
         REPORTS_FOLDERS.add(reportsFolder);
 
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
 
-        when(webDriver.findElement(tagName("body"))).thenThrow(new WebDriverException(exceptionMessage));
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
         final String msg = "msg";
