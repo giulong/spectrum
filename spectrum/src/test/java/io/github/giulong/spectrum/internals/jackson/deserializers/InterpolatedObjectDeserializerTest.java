@@ -4,8 +4,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.Vars;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +17,6 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static com.fasterxml.jackson.databind.node.JsonNodeType.NUMBER;
@@ -29,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class InterpolatedObjectDeserializerTest {
@@ -50,12 +48,6 @@ class InterpolatedObjectDeserializerTest {
     @Mock
     private JsonNode jsonNode;
 
-    @Mock
-    private Configuration configuration;
-
-    @Mock
-    private Set<String> interpolationVars;
-
     @InjectMocks
     private InterpolatedObjectDeserializer interpolatedObjectDeserializer;
 
@@ -67,7 +59,6 @@ class InterpolatedObjectDeserializerTest {
     @BeforeEach
     public void beforeEach() {
         interpolatedStringDeserializerMockedStatic = mockStatic(InterpolatedStringDeserializer.class);
-        Reflections.setField("configuration", interpolatedObjectDeserializer, configuration);
     }
 
     @AfterEach
@@ -141,32 +132,29 @@ class InterpolatedObjectDeserializerTest {
     }
 
     @DisplayName("deserialize should apply the INT_PATTERN when deserializing numbers from strings")
-    @ParameterizedTest(name = "with value {0} we expect {2}")
+    @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserializeStringNumbers(final String value, final String varName, final int expected) throws IOException {
+    public void deserializeStringNumbers(final String value, final int expected) throws IOException {
         final String currentName = "currentName";
 
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(jsonParser.currentName()).thenReturn(currentName);
         when(jsonNode.getNodeType()).thenReturn(STRING);
         when(jsonNode.textValue()).thenReturn(value);
-        when(configuration.getInterpolationVars()).thenReturn(interpolationVars);
 
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
-
-        verify(interpolationVars).add(varName);
     }
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("$<not.set:-123>", "not.set", 123),
-                arguments("$<notSet:-123>", "notSet", 123),
-                arguments("$<notSet:->", "notSet", 0),
-                arguments("$<not.set>", "not.set", 0),
-                arguments("$<notSet>", "notSet", 0),
-                arguments("$<notSet:-stringDefault>", "notSet", 0),
-                arguments("$<varInEnv:-123>", "varInEnv", Integer.parseInt(VAR_IN_ENV)),
-                arguments("$<varInEnv>", "varInEnv", Integer.parseInt(VAR_IN_ENV))
+                arguments("$<not.set:-123>", 123),
+                arguments("$<notSet:-123>", 123),
+                arguments("$<notSet:->", 0),
+                arguments("$<not.set>", 0),
+                arguments("$<notSet>", 0),
+                arguments("$<notSet:-stringDefault>", 0),
+                arguments("$<varInEnv:-123>", Integer.parseInt(VAR_IN_ENV)),
+                arguments("$<varInEnv>", Integer.parseInt(VAR_IN_ENV))
         );
     }
 
@@ -182,12 +170,10 @@ class InterpolatedObjectDeserializerTest {
         when(jsonParser.currentName()).thenReturn(currentName);
         when(jsonNode.getNodeType()).thenReturn(STRING);
         when(jsonNode.textValue()).thenReturn(value);
-        when(configuration.getInterpolationVars()).thenReturn(interpolationVars);
 
         // We set the "systemProperty" env var with a random value just to check the precedence: system property wins
         withEnvironmentVariable("systemProperty", "SOME VALUE").execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
 
-        verify(interpolationVars).add("systemProperty");
         System.clearProperty("systemProperty");
     }
 
@@ -202,11 +188,8 @@ class InterpolatedObjectDeserializerTest {
         when(jsonParser.currentName()).thenReturn(currentName);
         when(jsonNode.getNodeType()).thenReturn(STRING);
         when(jsonNode.textValue()).thenReturn(value);
-        when(configuration.getInterpolationVars()).thenReturn(interpolationVars);
 
         withEnvironmentVariable("envVar", String.valueOf(expected)).execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
-
-        verify(interpolationVars).add("envVar");
     }
 
     @DisplayName("isNumber should check if the provided string can be parsed to a number")

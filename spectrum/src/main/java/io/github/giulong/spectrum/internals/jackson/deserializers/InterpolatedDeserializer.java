@@ -1,11 +1,9 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Vars;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,12 +12,10 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
 
     private static final Pattern PATTERN = Pattern.compile("(?<placeholder>\\$\\{(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~.:/\\\\]*))?})");
 
-    private final Configuration configuration = Configuration.getInstance();
     private final Vars vars = Vars.getInstance();
 
     public String interpolate(final String value, final String currentName) {
         final Matcher matcher = PATTERN.matcher(value);
-        final Set<String> interpolationVars = configuration.getInterpolationVars();
 
         String interpolatedValue = value;
         while (matcher.find()) {
@@ -30,7 +26,6 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
             final String envVarOrPlaceholder = envVar != null ? envVar : placeholder;
             final String systemProperty = System.getProperty(varName, envVarOrPlaceholder);
 
-            interpolationVars.add(varName);
             interpolatedValue = interpolatedValue.replace(placeholder, String.valueOf(vars.getOrDefault(varName, systemProperty)));
 
             if (value.equals(interpolatedValue)) {

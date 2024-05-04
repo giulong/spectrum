@@ -7,12 +7,7 @@ import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
-import java.lang.management.ManagementFactory;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {
@@ -22,8 +17,6 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     public static final String CONFIGURATION = "configuration";
     public static final String PROFILE_NODE = "/runtime/profiles";
     public static final String VARS_NODE = "/vars";
-    public static final List<String> ALLOWED_LOG_VARS = List.of("spectrum.log.level", "spectrum.log.colors", "spectrum.log.path");
-    public static final Pattern SPECTRUM_VARS_PATTERN = Pattern.compile("^(?<varName>spectrum[\\w.]+)=?.*$", CASE_INSENSITIVE);
 
     private final Vars vars = Vars.getInstance();
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
@@ -83,7 +76,6 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
         yamlUtils.updateWithFile(configuration, CONFIGURATION);
         profileConfigurations.forEach(pc -> yamlUtils.updateWithFile(configuration, pc));
-        lookForUnrecognizedVars();
 
         log.trace("Configuration:\n{}", yamlUtils.write(configuration));
     }
@@ -106,23 +98,6 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
         vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
         vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
-    }
-
-    protected List<String> lookForUnrecognizedVars() {
-        final Set<String> interpolationVars = configuration.getInterpolationVars();
-
-        return ManagementFactory
-                .getRuntimeMXBean()
-                .getSystemProperties()
-                .keySet()
-                .stream()
-                .map(SPECTRUM_VARS_PATTERN::matcher)
-                .filter(Matcher::find)
-                .map(m -> m.group("varName"))
-                .filter(v -> !interpolationVars.contains(v))
-                .filter(v -> !ALLOWED_LOG_VARS.contains(v))
-                .peek(v -> log.warn("Unrecognized Spectrum var: '{}'. Please check if you misspelled it", v))
-                .toList();
     }
 
     protected boolean isUnix() {

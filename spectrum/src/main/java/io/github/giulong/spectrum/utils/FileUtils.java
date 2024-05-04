@@ -36,7 +36,7 @@ public final class FileUtils {
         final InputStream inputStream = FileUtils.class.getResourceAsStream(file);
 
         if (inputStream == null) {
-            log.debug("File {} not found.", file);
+            log.warn("File {} not found.", file);
             return "";
         }
 
