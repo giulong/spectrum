@@ -13,6 +13,20 @@ public class Js {
     private final StringUtils stringUtils = StringUtils.getInstance();
 
     /**
+     * Get the CSS Value of the provided property
+     *
+     * @param webElement  the WebElement from which the tag CSS value is taken
+     * @param cssProperty the CSS property to read
+     * @return The value of the CSS property as String
+     */
+    public String getCssValue(final WebElement webElement, String cssProperty) {
+        final String cssPropertyValue = (String) driver.executeScript(
+                String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s')", cssProperty), webElement);
+
+        return cssPropertyValue;
+    }
+
+    /**
      * Get the Tag of the provided WebElement
      *
      * @param webElement the WebElement from which the tag name is taken
