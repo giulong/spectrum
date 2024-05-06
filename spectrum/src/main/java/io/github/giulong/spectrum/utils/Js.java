@@ -11,6 +11,7 @@ public class Js {
     private JavascriptExecutor driver;
 
     private final StringUtils stringUtils = StringUtils.getInstance();
+    private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
      * Get the CSS Value of the provided property
@@ -20,10 +21,13 @@ public class Js {
      * @return The value of the CSS property as String
      */
     public String getCssValue(final WebElement webElement, String cssProperty) {
-        final String cssPropertyValue = (String) driver.executeScript(
-                String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s')", cssProperty), webElement);
+        if (!jsMethodsUtils.isShorthandProperty(cssProperty)) {
+            final String cssPropertyValue = (String) driver.executeScript(
+                    String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s')", cssProperty), webElement);
+            return cssPropertyValue;
+        }
 
-        return cssPropertyValue;
+        return null;
     }
 
     /**
@@ -72,9 +76,9 @@ public class Js {
      * @return The attribute/property current value or null if the value is not set.
      */
     public String getAttribute(final WebElement webElement, final String attribute) {
-        final String domProperty = this.getDomProperty(webElement, stringUtils.convertString(attribute));
+        final String domProperty = this.getDomProperty(webElement, jsMethodsUtils.convertString(attribute));
         if (domProperty == null) {
-            return this.getDomAttribute(webElement, stringUtils.convertString(attribute));
+            return this.getDomAttribute(webElement, jsMethodsUtils.convertString(attribute));
         }
 
         return domProperty;

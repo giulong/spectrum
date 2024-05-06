@@ -66,6 +66,8 @@ public class JavascriptIT extends SpectrumTest<Void> {
         assertEquals(js.getAttribute(contentDiv, "class"), "large-12 columns");
 
         assertEquals(js.getCssValue(usernameField, "color"), "rgba(0, 0, 0, 0.75)");
+        assertNull(js.getCssValue(usernameField, "background"));
+        System.out.println(js.getCssValue(usernameField, "background"));
     }
 
     @Test
