@@ -57,7 +57,7 @@ Spectrum manages all the boilerplate code to get these features and many more, a
 
 All you need to do is take the three steps listed below, as shown in this video:
 
-https://github.com/giulong/spectrum/assets/27963644/f9339a81-ae55-453a-a013-7ad893738c08
+https://github.com/giulong/spectrum/assets/27963644/3dcab086-e9c8-4c13-a1ff-4a8e4b8dfd5d
 
 > ⚠️ JDK<br/>
 > Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/21/) to be able to run your tests.
