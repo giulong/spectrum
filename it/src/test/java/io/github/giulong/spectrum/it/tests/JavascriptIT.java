@@ -6,6 +6,7 @@ import io.github.giulong.spectrum.it.pages.LandingPage;
 import io.github.giulong.spectrum.it.pages.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JavascriptIT extends SpectrumTest<Void> {
 
     private static final Logger log = LoggerFactory.getLogger(JavascriptIT.class);
+
     private LandingPage landingPage;
-
     private CheckboxPage checkboxPage;
-
     private LoginPage loginPage;
 
     @Test
@@ -67,7 +67,8 @@ public class JavascriptIT extends SpectrumTest<Void> {
 
         assertEquals(js.getCssValue(usernameField, "color"), "rgba(0, 0, 0, 0.75)");
         assertNull(js.getCssValue(usernameField, "background"));
-        System.out.println(js.getCssValue(usernameField, "background"));
+
+        assertThrows(NoSuchShadowRootException.class, () -> js.getShadowRoot(usernameField));
     }
 
     @Test

@@ -20,14 +20,30 @@ public class Js {
      * @param cssProperty the CSS property to read
      * @return The value of the CSS property as String
      */
-    public String getCssValue(final WebElement webElement, String cssProperty) {
+    public String getCssValue(final WebElement webElement, final String cssProperty) {
         if (!jsMethodsUtils.isShorthandProperty(cssProperty)) {
             final String cssPropertyValue = (String) driver.executeScript(
-                    String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s')", cssProperty), webElement);
+                    String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty), webElement);
+
             return cssPropertyValue;
         }
 
         return null;
+    }
+
+    /**
+     * Get the shadowRoot of the provided WebElement
+     *
+     * @param webElement the WebElement from which the shadowRoot is taken
+     * @return The shadowRoot of the WebElement
+     */
+    public SearchContext getShadowRoot(final WebElement webElement) {
+        SearchContext shadowRoot = (SearchContext) driver.executeScript("return arguments[0].shadowRoot;", webElement);
+        if (shadowRoot == null) {
+            throw new NoSuchShadowRootException("No shadow root could be found for the provided webElement");
+        }
+
+        return shadowRoot;
     }
 
     /**
@@ -37,7 +53,7 @@ public class Js {
      * @return The tag name of the WebElement
      */
     public String getTagName(final WebElement webElement) {
-        final String tagName = (String) driver.executeScript("return arguments[0].tagName", webElement);
+        final String tagName = (String) driver.executeScript("return arguments[0].tagName;", webElement);
 
         return tagName.toLowerCase();
     }
