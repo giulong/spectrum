@@ -22,10 +22,9 @@ public class Js {
      */
     public String getCssValue(final WebElement webElement, final String cssProperty) {
         if (!jsMethodsUtils.isShorthandProperty(cssProperty)) {
-            final String cssPropertyValue = (String) driver.executeScript(
-                    String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty), webElement);
+            final String cssValue = (String) driver.executeScript(String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty), webElement);
 
-            return cssPropertyValue;
+            return cssValue;
         }
 
         return null;
