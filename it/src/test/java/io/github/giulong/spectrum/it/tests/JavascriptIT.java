@@ -1,15 +1,19 @@
 package io.github.giulong.spectrum.it.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.enums.LocatorType;
 import io.github.giulong.spectrum.it.pages.CheckboxPage;
 import io.github.giulong.spectrum.it.pages.LandingPage;
 import io.github.giulong.spectrum.it.pages.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -71,6 +75,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
         assertNull(js.getCssValue(usernameField, "background"));
 
         assertThrows(NoSuchShadowRootException.class, () -> js.getShadowRoot(usernameField));
+        assertEquals(usernameField, js.findElement(Optional.empty(), LocatorType.ID, "username"));
     }
 
     @Test
