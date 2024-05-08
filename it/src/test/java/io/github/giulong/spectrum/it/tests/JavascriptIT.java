@@ -53,6 +53,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
         js.click(landingPage.getFormLoginLink());
         loginPage.waitForPageLoading();
 
+        final WebElement form = loginPage.getForm();
         final WebElement usernameField = loginPage.getUsername();
         final WebElement contentDiv = loginPage.getContentDiv();
 
@@ -64,6 +65,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
 
         assertEquals(js.getDomAttribute(usernameField, "name"), "username");
         assertEquals(js.getAttribute(contentDiv, "class"), "large-12 columns");
+        assertEquals(js.getText(form), "Username\nPassword\n Login");
 
         assertEquals(js.getCssValue(usernameField, "color"), "rgba(0, 0, 0, 0.75)");
         assertNull(js.getCssValue(usernameField, "background"));

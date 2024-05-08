@@ -14,6 +14,17 @@ public class Js {
     private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
+     * Get the innerText of the provided webElement
+     *
+     * @param webElement the WebElement from which the innerText has to be taken
+     * @return The value of the innerText
+     */
+    public String getText(final WebElement webElement) {
+
+        return (String) driver.executeScript("return arguments[0].innerText;", webElement);
+    }
+
+    /**
      * Get the CSS Value of the provided property
      *
      * @param webElement  the WebElement from which the tag CSS value is taken
