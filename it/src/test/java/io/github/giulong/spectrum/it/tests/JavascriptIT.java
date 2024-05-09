@@ -7,7 +7,6 @@ import io.github.giulong.spectrum.it.pages.LandingPage;
 import io.github.giulong.spectrum.it.pages.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
@@ -49,7 +48,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void testFindElementMethods() {
+    public void testFindElementMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
         assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.linkText, "Form Authentication"));
@@ -59,16 +58,18 @@ public class JavascriptIT extends SpectrumTest<Void> {
         loginPage.waitForPageLoading();
 
         final WebElement usernameField = loginPage.getUsername();
-        final WebElement subHeder = loginPage.getSubHeader();
+        final WebElement subHeader = loginPage.getSubHeader();
         final WebElement contentDiv = loginPage.getContentDiv();
         final WebElement form = loginPage.getForm();
 
         assertEquals(usernameField, js.findElement(LocatorType.Id, "username"));
-        assertEquals(subHeder, js.findElement(contentDiv, LocatorType.className, "subheader"));
+        assertEquals(subHeader, js.findElement(contentDiv, LocatorType.className, "subheader"));
         assertEquals(form, js.findElement(contentDiv, LocatorType.tagName, "form"));
         assertEquals(usernameField, js.findElement(LocatorType.name, "username"));
         assertEquals(usernameField, js.findElement(LocatorType.cssSelector, "input[id='username'"));
         assertEquals(usernameField, js.findElement(LocatorType.xpath, "//*[@id='username']"));
+
+        assertNotEquals(js.findElement(LocatorType.className, "row"), js.findElement(contentDiv, LocatorType.className, "row"));
     }
 
     @Test
