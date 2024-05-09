@@ -16,20 +16,34 @@ public class Js {
     private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
-     * find the firs WebElement using the given method
+     * find the first WebElement using the given method starting from the passed node
      *
      * @param node         the node from where to start the search
      * @param locatorType  the locating mechanism for finding the WebElement
      * @param locatorValue the value used by the locating mechanism
      * @return The found WebElement
      */
-    public SearchContext findElement(final Optional<WebElement> node, final LocatorType locatorType, final String locatorValue) {
-
+    public WebElement findElement(final WebElement node, final LocatorType locatorType, final String locatorValue) {
         if (locatorType == LocatorType.ID) {
-            return (SearchContext) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), locatorValue));
+            return (WebElement) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), locatorValue));
         }
 
-        return null;
+        return (WebElement) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), "arguments[0]", locatorValue), node);
+    }
+
+    /**
+     * find the first WebElement using the given method starting from document node
+     *
+     * @param locatorType  the locating mechanism for finding the WebElement
+     * @param locatorValue the value used by the locating mechanism
+     * @return The found WebElement
+     */
+    public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
+        if (locatorType == LocatorType.ID) {
+            return (WebElement) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), locatorValue));
+        }
+
+        return (WebElement) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), "document", locatorValue));
     }
 
     /**

@@ -51,6 +51,21 @@ public class JavascriptIT extends SpectrumTest<Void> {
     }
 
     @Test
+    public void testFindElementMethods() {
+        driver.get(configuration.getApplication().getBaseUrl());
+
+        js.click(landingPage.getFormLoginLink());
+        loginPage.waitForPageLoading();
+
+        final WebElement usernameField = loginPage.getUsername();
+        final WebElement subHeder = loginPage.getSubHeader();
+        final WebElement contentDiv = loginPage.getContentDiv();
+
+        assertEquals(usernameField, js.findElement(LocatorType.ID, "username"));
+        assertEquals(subHeder, js.findElement(contentDiv, LocatorType.CLASS_NAME, "subheader"));
+    }
+
+    @Test
     public void testWebElementGetMethods() {
         driver.get(configuration.getApplication().getBaseUrl());
 
@@ -58,6 +73,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
         loginPage.waitForPageLoading();
 
         final WebElement form = loginPage.getForm();
+        final WebElement subHeder = loginPage.getSubHeader();
         final WebElement usernameField = loginPage.getUsername();
         final WebElement contentDiv = loginPage.getContentDiv();
 
@@ -75,7 +91,6 @@ public class JavascriptIT extends SpectrumTest<Void> {
         assertNull(js.getCssValue(usernameField, "background"));
 
         assertThrows(NoSuchShadowRootException.class, () -> js.getShadowRoot(usernameField));
-        assertEquals(usernameField, js.findElement(Optional.empty(), LocatorType.ID, "username"));
     }
 
     @Test
