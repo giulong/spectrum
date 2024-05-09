@@ -32,11 +32,11 @@ public class JsMethodsUtilsTest {
 
     @Test
     @DisplayName("getScript should return the correct js script by the provided locator")
-    void testGetScript() {
-        assertEquals("return %s.getElementsByTagName('%s')[0];", jsMethodsUtils.getScript(LocatorType.tagName));
-        assertEquals("return %s.getElementsByClassName('%s')[0];", jsMethodsUtils.getScript(LocatorType.className));
-        assertEquals("return %s.evaluate('//a[text()=\"%s\"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;", jsMethodsUtils.getScript(LocatorType.linkText));
-        assertNotEquals("return %s.evaluate('//a[text()=\"%s\"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;", jsMethodsUtils.getScript(LocatorType.name));
+    void testGetFindElementScript() {
+        assertEquals("return %s.getElementsByTagName('%s')[0];", jsMethodsUtils.getFindElementScript(LocatorType.tagName));
+        assertEquals("return %s.getElementsByClassName('%s')[0];", jsMethodsUtils.getFindElementScript(LocatorType.className));
+        assertEquals("return %s.evaluate('//a[text()=\"%s\"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;", jsMethodsUtils.getFindElementScript(LocatorType.linkText));
+        assertNotEquals("return %s.evaluate('//a[text()=\"%s\"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;", jsMethodsUtils.getFindElementScript(LocatorType.name));
     }
 
     @Test

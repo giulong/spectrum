@@ -80,7 +80,6 @@ public class JavascriptIT extends SpectrumTest<Void> {
         loginPage.waitForPageLoading();
 
         final WebElement form = loginPage.getForm();
-        final WebElement subHeder = loginPage.getSubHeader();
         final WebElement usernameField = loginPage.getUsername();
         final WebElement contentDiv = loginPage.getContentDiv();
 

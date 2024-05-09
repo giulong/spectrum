@@ -27,7 +27,7 @@ public class Js {
             return this.findElement(locatorType, locatorValue);
         }
 
-        final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "arguments[0]", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "arguments[0]", jsStringUtils.escapeString(locatorValue));
         return (WebElement) driver.executeScript(jsCommand, context);
     }
 
@@ -39,7 +39,7 @@ public class Js {
      * @return The found WebElement
      */
     public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
-        final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
 
         return (WebElement) driver.executeScript(jsCommand);
     }
