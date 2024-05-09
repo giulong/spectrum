@@ -14,8 +14,8 @@ public final class JsMethodsUtils {
 
     private static final JsMethodsUtils INSTANCE = new JsMethodsUtils();
     private static final Map<String, String> CONVERSIONMAP = new HashMap<>();
-    private static final Map<LocatorType, String> LOCATORTOFINDELEMENTSCRIPT = new HashMap<>();
-    private static final Map<LocatorType, String> LOCATORTOFINDELEMENTSSCRIPT = new HashMap<>();
+    private static final Map<LocatorType, String> LOCATORTOFINDELEMENTSCRIPT = new EnumMap<>(LocatorType.class);
+    private static final Map<LocatorType, String> LOCATORTOFINDELEMENTSSCRIPT = new EnumMap<>(LocatorType.class);
 
     private static final List<String> SHORTANDPROPERTIES = Arrays.asList(
             "background", "font", "border", "border-top", "margin", "margin-top", "padding",
@@ -28,6 +28,11 @@ public final class JsMethodsUtils {
     static {
         CONVERSIONMAP.put("class", "className");
         CONVERSIONMAP.put("readonly", "readOnly");
+        initializeFindElementScripts();
+        initializeFindElementsScripts();
+    }
+
+    private static void initializeFindElementScripts() {
         LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.Id, "return %s.getElementById('%s');");
         LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.className, "return %s.getElementsByClassName('%s')[0];");
         LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.tagName, "return %s.getElementsByTagName('%s')[0];");
@@ -38,7 +43,9 @@ public final class JsMethodsUtils {
                 "document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;");
         LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.partialLinkText, "return %s.evaluate('//a[contains(text(), \"%s\")]', " +
                 "document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;");
+    }
 
+    private static void initializeFindElementsScripts() {
         LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.Id, "return %s.querySelectorAll('#%s');");
         LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.className, "return %s.getElementsByClassName('%s');");
         LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.tagName, "return %s.getElementsByTagName('%s');");
