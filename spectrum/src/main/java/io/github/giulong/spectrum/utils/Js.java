@@ -15,24 +15,24 @@ public class Js {
     private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
-     * find the first WebElement using the given method starting from the passed node
+     * find the first WebElement using the given method starting from the passed context
      *
-     * @param node         the node from where to start the search
+     * @param context      the context where to search the element
      * @param locatorType  the locating mechanism for finding the WebElement
      * @param locatorValue the value used by the locating mechanism
      * @return The found WebElement
      */
-    public WebElement findElement(final WebElement node, final LocatorType locatorType, final String locatorValue) {
+    public WebElement findElement(final WebElement context, final LocatorType locatorType, final String locatorValue) {
         if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath || locatorType == LocatorType.linkText || locatorType == LocatorType.partialLinkText) {
             return this.findElement(locatorType, locatorValue);
         }
 
         final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "arguments[0]", stringUtils.escapeString(locatorValue));
-        return (WebElement) driver.executeScript(jsCommand, node);
+        return (WebElement) driver.executeScript(jsCommand, context);
     }
 
     /**
-     * find the first WebElement using the given method starting from document node
+     * find the first WebElement using the given method starting from document
      *
      * @param locatorType  the locating mechanism for finding the WebElement
      * @param locatorValue the value used by the locating mechanism
