@@ -12,6 +12,8 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Javascript")
@@ -70,6 +72,19 @@ public class JavascriptIT extends SpectrumTest<Void> {
         assertEquals(usernameField, js.findElement(LocatorType.xpath, "//*[@id='username']"));
 
         assertNotEquals(js.findElement(LocatorType.className, "row"), js.findElement(contentDiv, LocatorType.className, "row"));
+    }
+
+    @Test
+    public void testFindElementsMethod() {
+        driver.get(configuration.getApplication().getBaseUrl());
+
+        js.click(landingPage.getCheckboxLink());
+        checkboxPage.waitForPageLoading();
+
+        final WebElement checkboxesForm = js.findElement(LocatorType.Id, "checkboxes");
+
+        assertEquals(js.findElements(checkboxesForm, LocatorType.tagName, "input").size(), 2);
+        assertEquals(js.findElements(LocatorType.tagName, "input").getFirst().getDomAttribute("type"), "checkbox");
     }
 
     @Test

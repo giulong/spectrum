@@ -15,7 +15,7 @@ public class Js {
     private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
-     * find the first WebElement using the given method starting from the passed context
+     * find the first WebElement using the given method starting from the provided context
      *
      * @param context      the context where to search the element
      * @param locatorType  the locating mechanism for finding the WebElement
@@ -42,6 +42,37 @@ public class Js {
         final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
 
         return (WebElement) driver.executeScript(jsCommand);
+    }
+
+    /**
+     * find all WebElements using the given method starting from the provided context
+     *
+     * @param context      the context where to search the elements
+     * @param locatorType  the locating mechanism for finding all WebElements
+     * @param locatorValue the value used by the locating mechanism
+     * @return The list of found WebElements
+     */
+    public List<WebElement> findElements(final WebElement context, final LocatorType locatorType, final String locatorValue) {
+        if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath || locatorType == LocatorType.linkText || locatorType == LocatorType.partialLinkText) {
+            return this.findElements(locatorType, locatorValue);
+        }
+
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "arguments[0]", jsStringUtils.escapeString(locatorValue));
+        return (List<WebElement>) driver.executeScript(jsCommand, context);
+    }
+
+    /**
+     * find all WebElements using the given method starting from the provided context
+     *
+     * @param locatorType  the locating mechanism for finding all WebElements
+     * @param locatorValue the value used by the locating mechanism
+     * @return The list of found WebElements
+     */
+    public List<WebElement> findElements(final LocatorType locatorType, final String locatorValue) {
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
+
+        return (List<WebElement>) driver.executeScript(jsCommand);
+
     }
 
     /**
