@@ -52,6 +52,9 @@ public class JavascriptIT extends SpectrumTest<Void> {
     public void testFindElementMethods() {
         driver.get(configuration.getApplication().getBaseUrl());
 
+        assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.linkText, "Form Authentication"));
+        assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.partialLinkText, "Form Aut"));
+
         js.click(landingPage.getFormLoginLink());
         loginPage.waitForPageLoading();
 

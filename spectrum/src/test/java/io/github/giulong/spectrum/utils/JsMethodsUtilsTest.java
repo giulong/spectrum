@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.enums.LocatorType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,10 +24,19 @@ public class JsMethodsUtilsTest {
 
     @Test
     @DisplayName("convertString should convert the input string into the value combined with the key in the map")
-    void testConvertString() {
-        assertEquals("className", jsMethodsUtils.convertString("class"));
-        assertEquals("readOnly", jsMethodsUtils.convertString("readonly"));
-        assertEquals("notInMap", jsMethodsUtils.convertString("notInMap"));
+    void testConvertCssProperty() {
+        assertEquals("className", jsMethodsUtils.convertCssProperty("class"));
+        assertEquals("readOnly", jsMethodsUtils.convertCssProperty("readonly"));
+        assertEquals("notInMap", jsMethodsUtils.convertCssProperty("notInMap"));
+    }
+
+    @Test
+    @DisplayName("getScript should return the correct js script by the provided locator")
+    void testGetScript() {
+        assertEquals("return %s.getElementsByTagName('%s')[0];", jsMethodsUtils.getScript(LocatorType.tagName));
+        assertEquals("return %s.getElementsByClassName('%s')[0];", jsMethodsUtils.getScript(LocatorType.className));
+        assertEquals("return %s.evaluate('//a[text()=\"%s\"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;", jsMethodsUtils.getScript(LocatorType.linkText));
+        assertNotEquals("return %s.evaluate('//a[text()=\"%s\"]', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;", jsMethodsUtils.getScript(LocatorType.name));
     }
 
     @Test

@@ -23,9 +23,8 @@ public class Js {
      * @return The found WebElement
      */
     public WebElement findElement(final WebElement node, final LocatorType locatorType, final String locatorValue) {
-        if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath) {
-            final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), stringUtils.escapeString(locatorValue));
-            return (WebElement) driver.executeScript(jsCommand);
+        if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath || locatorType == LocatorType.linkText || locatorType == LocatorType.partialLinkText) {
+            return this.findElement(locatorType, locatorValue);
         }
 
         final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "arguments[0]", stringUtils.escapeString(locatorValue));
@@ -40,12 +39,8 @@ public class Js {
      * @return The found WebElement
      */
     public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
-        if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath) {
-            final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), stringUtils.escapeString(locatorValue));
-            return (WebElement) driver.executeScript(jsCommand);
-        }
-
         final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "document", stringUtils.escapeString(locatorValue));
+
         return (WebElement) driver.executeScript(jsCommand);
     }
 
@@ -138,9 +133,9 @@ public class Js {
      * @return The attribute/property current value or null if the value is not set.
      */
     public String getAttribute(final WebElement webElement, final String attribute) {
-        final String domProperty = this.getDomProperty(webElement, jsMethodsUtils.convertString(attribute));
+        final String domProperty = this.getDomProperty(webElement, jsMethodsUtils.convertCssProperty(attribute));
         if (domProperty == null) {
-            return this.getDomAttribute(webElement, jsMethodsUtils.convertString(attribute));
+            return this.getDomAttribute(webElement, jsMethodsUtils.convertCssProperty(attribute));
         }
 
         return domProperty;
