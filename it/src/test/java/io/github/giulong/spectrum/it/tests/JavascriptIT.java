@@ -13,8 +13,6 @@ import org.openqa.selenium.WebElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Javascript")
@@ -60,9 +58,14 @@ public class JavascriptIT extends SpectrumTest<Void> {
         final WebElement usernameField = loginPage.getUsername();
         final WebElement subHeder = loginPage.getSubHeader();
         final WebElement contentDiv = loginPage.getContentDiv();
+        final WebElement form = loginPage.getForm();
 
-        assertEquals(usernameField, js.findElement(LocatorType.ID, "username"));
-        assertEquals(subHeder, js.findElement(contentDiv, LocatorType.CLASS_NAME, "subheader"));
+        assertEquals(usernameField, js.findElement(LocatorType.Id, "username"));
+        assertEquals(subHeder, js.findElement(contentDiv, LocatorType.className, "subheader"));
+        assertEquals(form, js.findElement(contentDiv, LocatorType.tagName, "form"));
+        assertEquals(usernameField, js.findElement(LocatorType.name, "username"));
+        assertEquals(usernameField, js.findElement(LocatorType.cssSelector, "input[id='username'"));
+        assertEquals(usernameField, js.findElement(LocatorType.xpath, "//*[@id='username']"));
     }
 
     @Test

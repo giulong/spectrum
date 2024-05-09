@@ -27,8 +27,12 @@ public final class JsMethodsUtils {
     static {
         CONVERSIONMAP.put("class", "className");
         CONVERSIONMAP.put("readonly", "readOnly");
-        LOCATORTOSCRIPTMAP.put(LocatorType.ID, "return document.getElementById('%s');");
-        LOCATORTOSCRIPTMAP.put(LocatorType.CLASS_NAME, "return %s.getElementsByClassName('%s')[0];");
+        LOCATORTOSCRIPTMAP.put(LocatorType.Id, "return document.getElementById('%s');");
+        LOCATORTOSCRIPTMAP.put(LocatorType.className, "return %s.getElementsByClassName('%s')[0];");
+        LOCATORTOSCRIPTMAP.put(LocatorType.tagName, "return %s.getElementsByTagName('%s')[0];");
+        LOCATORTOSCRIPTMAP.put(LocatorType.name, "return %s.getElementsByName('%s')[0];");
+        LOCATORTOSCRIPTMAP.put(LocatorType.cssSelector, "return %s.querySelector('%s');");
+        LOCATORTOSCRIPTMAP.put(LocatorType.xpath, "return document.evaluate('%s', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;");
     }
 
     public String convertString(String stringToConvert) {

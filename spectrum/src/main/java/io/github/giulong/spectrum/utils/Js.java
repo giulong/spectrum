@@ -5,7 +5,6 @@ import lombok.Builder;
 import org.openqa.selenium.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Builder
 public class Js {
@@ -24,11 +23,13 @@ public class Js {
      * @return The found WebElement
      */
     public WebElement findElement(final WebElement node, final LocatorType locatorType, final String locatorValue) {
-        if (locatorType == LocatorType.ID) {
-            return (WebElement) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), locatorValue));
+        if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath) {
+            final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), stringUtils.escapeString(locatorValue));
+            return (WebElement) driver.executeScript(jsCommand);
         }
 
-        return (WebElement) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), "arguments[0]", locatorValue), node);
+        final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "arguments[0]", stringUtils.escapeString(locatorValue));
+        return (WebElement) driver.executeScript(jsCommand, node);
     }
 
     /**
@@ -39,11 +40,13 @@ public class Js {
      * @return The found WebElement
      */
     public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
-        if (locatorType == LocatorType.ID) {
-            return (WebElement) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), locatorValue));
+        if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath) {
+            final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), stringUtils.escapeString(locatorValue));
+            return (WebElement) driver.executeScript(jsCommand);
         }
 
-        return (WebElement) driver.executeScript(String.format(jsMethodsUtils.getScript(locatorType), "document", locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "document", stringUtils.escapeString(locatorValue));
+        return (WebElement) driver.executeScript(jsCommand);
     }
 
     /**
