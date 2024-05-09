@@ -9,11 +9,11 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @NoArgsConstructor(access = PRIVATE)
-public final class StringUtils {
+public final class JsStringUtils {
 
-    private static final StringUtils INSTANCE = new StringUtils();
+    private static final JsStringUtils INSTANCE = new JsStringUtils();
 
-    public static StringUtils getInstance() {
+    public static JsStringUtils getInstance() {
         return INSTANCE;
     }
 

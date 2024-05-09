@@ -11,7 +11,7 @@ public class Js {
 
     private JavascriptExecutor driver;
 
-    private final StringUtils stringUtils = StringUtils.getInstance();
+    private final JsStringUtils jsStringUtils = JsStringUtils.getInstance();
     private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
@@ -27,7 +27,7 @@ public class Js {
             return this.findElement(locatorType, locatorValue);
         }
 
-        final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "arguments[0]", stringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "arguments[0]", jsStringUtils.escapeString(locatorValue));
         return (WebElement) driver.executeScript(jsCommand, context);
     }
 
@@ -39,7 +39,7 @@ public class Js {
      * @return The found WebElement
      */
     public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
-        final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "document", stringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
 
         return (WebElement) driver.executeScript(jsCommand);
     }
@@ -240,7 +240,7 @@ public class Js {
      * @return the calling SpectrumEntity instance
      */
     public Js sendKeys(final WebElement webElement, final String keysToSend) {
-        final String jsCommand = String.format("arguments[0].value='%s';", stringUtils.escapeString(keysToSend));
+        final String jsCommand = String.format("arguments[0].value='%s';", jsStringUtils.escapeString(keysToSend));
         driver.executeScript(jsCommand, webElement);
 
         return this;
