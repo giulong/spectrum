@@ -64,7 +64,6 @@ public class JavascriptIT extends SpectrumTest<Void> {
         final WebElement contentDiv = loginPage.getContentDiv();
         final WebElement form = loginPage.getForm();
 
-        assertEquals(usernameField, js.findElement(LocatorType.Id, "username"));
         assertEquals(subHeader, js.findElement(contentDiv, LocatorType.className, "subheader"));
         assertEquals(form, js.findElement(contentDiv, LocatorType.tagName, "form"));
         assertEquals(usernameField, js.findElement(LocatorType.name, "username"));
@@ -78,13 +77,31 @@ public class JavascriptIT extends SpectrumTest<Void> {
     public void testFindElementsMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
-        js.click(landingPage.getCheckboxLink());
-        checkboxPage.waitForPageLoading();
+        final WebElement mainContentDiv = js.findElement(LocatorType.Id, "content");
 
-        final WebElement checkboxesForm = js.findElement(LocatorType.Id, "checkboxes");
+        assertEquals(1, js.findElements(mainContentDiv, LocatorType.linkText, "Dropdown").size());
+        assertEquals(1, js.findElements(LocatorType.linkText, "Dropdown").size());
+        assertEquals(3, js.findElements(mainContentDiv, LocatorType.partialLinkText, "File").size());
+        assertEquals(3, js.findElements(LocatorType.partialLinkText, "File").size());
 
-        assertEquals(js.findElements(checkboxesForm, LocatorType.tagName, "input").size(), 2);
-        assertEquals(js.findElements(LocatorType.tagName, "input").getFirst().getDomAttribute("type"), "checkbox");
+        js.click(landingPage.getFormLoginLink());
+        loginPage.waitForPageLoading();
+
+        final WebElement form = loginPage.getForm();
+        final WebElement contentDiv = loginPage.getContentDiv();
+        final WebElement usernameField = loginPage.getUsername();
+
+        // Every test use two test cases, one with context=document (not passed) and other one with context passed
+        assertEquals(5, js.findElements(LocatorType.className, "row").size());
+        assertEquals(2, js.findElements(form, LocatorType.className, "row").size());
+        assertEquals(1, js.findElements(LocatorType.name, "login").size());
+        assertEquals(1, js.findElements(contentDiv, LocatorType.name, "login").size());
+        assertEquals(12, js.findElements(LocatorType.tagName, "div").size());
+        assertEquals(4, js.findElements(form, LocatorType.tagName, "div").size());
+        assertEquals(usernameField, js.findElements(LocatorType.cssSelector, "input[id='username'").getFirst());
+        assertEquals(usernameField, js.findElements(form, LocatorType.cssSelector, "input[id='username'").getFirst());
+        assertEquals(5, js.findElements(LocatorType.cssSelector, "div[class='row'").size());
+        assertEquals(usernameField, js.findElements(LocatorType.xpath, "//*[@id='username']").getFirst());
     }
 
     @Test

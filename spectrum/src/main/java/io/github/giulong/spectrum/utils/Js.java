@@ -15,12 +15,12 @@ public class Js {
     private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
-     * find the first WebElement using the given method starting from the provided context
+     * Find the first WebElement using the given method starting from the provided context
      *
      * @param context      the context where to search the element
      * @param locatorType  the locating mechanism for finding the WebElement
      * @param locatorValue the value used by the locating mechanism
-     * @return The found WebElement
+     * @return the found WebElement
      */
     public WebElement findElement(final WebElement context, final LocatorType locatorType, final String locatorValue) {
         if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath || locatorType == LocatorType.linkText || locatorType == LocatorType.partialLinkText) {
@@ -32,11 +32,11 @@ public class Js {
     }
 
     /**
-     * find the first WebElement using the given method starting from document
+     * Find the first WebElement using the given method starting from document
      *
      * @param locatorType  the locating mechanism for finding the WebElement
      * @param locatorValue the value used by the locating mechanism
-     * @return The found WebElement
+     * @return the found WebElement
      */
     public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
         final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
@@ -45,12 +45,12 @@ public class Js {
     }
 
     /**
-     * find all WebElements using the given method starting from the provided context
+     * Find all WebElements using the given method starting from the provided context
      *
      * @param context      the context where to search the elements
      * @param locatorType  the locating mechanism for finding all WebElements
      * @param locatorValue the value used by the locating mechanism
-     * @return The list of found WebElements
+     * @return the list of found WebElements
      */
     public List<WebElement> findElements(final WebElement context, final LocatorType locatorType, final String locatorValue) {
         if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath || locatorType == LocatorType.linkText || locatorType == LocatorType.partialLinkText) {
@@ -62,11 +62,11 @@ public class Js {
     }
 
     /**
-     * find all WebElements using the given method starting from the provided context
+     * Find all WebElements using the given method starting from the provided context
      *
      * @param locatorType  the locating mechanism for finding all WebElements
      * @param locatorValue the value used by the locating mechanism
-     * @return The list of found WebElements
+     * @return the list of found WebElements
      */
     public List<WebElement> findElements(final LocatorType locatorType, final String locatorValue) {
         final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
@@ -79,7 +79,7 @@ public class Js {
      * Get the innerText of the provided webElement
      *
      * @param webElement the WebElement from which the innerText has to be taken
-     * @return The value of the innerText
+     * @return the value of the innerText
      */
     public String getText(final WebElement webElement) {
 
@@ -91,7 +91,7 @@ public class Js {
      *
      * @param webElement  the WebElement from which the tag CSS value is taken
      * @param cssProperty the CSS property to read
-     * @return The value of the CSS property as String
+     * @return the value of the CSS property as String
      */
     public String getCssValue(final WebElement webElement, final String cssProperty) {
         if (!jsMethodsUtils.isShorthandProperty(cssProperty)) {
@@ -107,7 +107,7 @@ public class Js {
      * Get the shadowRoot of the provided WebElement
      *
      * @param webElement the WebElement from which the shadowRoot is taken
-     * @return The shadowRoot of the WebElement
+     * @return the shadowRoot of the WebElement
      */
     public SearchContext getShadowRoot(final WebElement webElement) {
         SearchContext shadowRoot = (SearchContext) driver.executeScript("return arguments[0].shadowRoot;", webElement);
@@ -122,7 +122,7 @@ public class Js {
      * Get the Tag of the provided WebElement
      *
      * @param webElement the WebElement from which the tag name is taken
-     * @return The tag name of the WebElement
+     * @return the tag name of the WebElement
      */
     public String getTagName(final WebElement webElement) {
         final String tagName = (String) driver.executeScript("return arguments[0].tagName;", webElement);
@@ -135,7 +135,7 @@ public class Js {
      *
      * @param webElement   the WebElement from which the static attribute is taken
      * @param domAttribute the static Attribute to retrieve
-     * @return The DOM Attribute of the WebElement or null if there isn't
+     * @return the DOM Attribute of the WebElement or null if there isn't
      */
     public String getDomAttribute(final WebElement webElement, final String domAttribute) {
         final String jsCommand = String.format("return arguments[0].getAttribute('%s');", domAttribute);
@@ -148,7 +148,7 @@ public class Js {
      *
      * @param webElement  the webElement from which the property is taken
      * @param domProperty the property to retrieve
-     * @return The DOM property of the WebElement or null if there isn't
+     * @return the DOM property of the WebElement or null if there isn't
      */
     public String getDomProperty(final WebElement webElement, final String domProperty) {
         final String jsCommand = String.format("return arguments[0].%s;", domProperty);
@@ -159,9 +159,9 @@ public class Js {
     /**
      * Get the property of the provided WebElement, if is null tries to take the dom attribute with the same name
      *
-     * @param webElement The webElement from which the property is taken
-     * @param attribute  The property/attribute to retrieve
-     * @return The attribute/property current value or null if the value is not set.
+     * @param webElement the webElement from which the property is taken
+     * @param attribute  the property/attribute to retrieve
+     * @return the attribute/property current value or null if the value is not set.
      */
     public String getAttribute(final WebElement webElement, final String attribute) {
         final String domProperty = this.getDomProperty(webElement, jsMethodsUtils.convertCssProperty(attribute));
@@ -175,8 +175,8 @@ public class Js {
     /**
      * Determine whether the element is selected or not
      *
-     * @param webElement The webElement to check
-     * @return True if element is currently selected/checked, false otherwise
+     * @param webElement the webElement to check
+     * @return true if element is currently selected/checked, false otherwise
      */
     public boolean isSelected(final WebElement webElement) {
 
@@ -186,8 +186,8 @@ public class Js {
     /**
      * Determine whether the element is enabled or not
      *
-     * @param webElement The webElement to check
-     * @return True if element is enabled, false otherwise
+     * @param webElement the webElement to check
+     * @return true if element is enabled, false otherwise
      */
     public boolean isEnabled(final WebElement webElement) {
         final boolean isDisabled = (boolean) driver.executeScript("return arguments[0].disabled;", webElement);
@@ -198,8 +198,8 @@ public class Js {
     /**
      * Determine whether the element is displayed or not
      *
-     * @param webElement The webElement to check
-     * @return True if element is displayed, false otherwise
+     * @param webElement the webElement to check
+     * @return true if element is displayed, false otherwise
      */
     public boolean isDisplayed(final WebElement webElement) {
         final boolean isDysplayed = (boolean) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect();" +
@@ -212,8 +212,8 @@ public class Js {
     /**
      * Get the size of the provided WebElement
      *
-     * @param webElement The WebElement from which the size is taken
-     * @return The rendered Size of the WebElement
+     * @param webElement the WebElement from which the size is taken
+     * @return the rendered Size of the WebElement
      */
     public Dimension getSize(final WebElement webElement) {
         final List<Object> dimensions = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
@@ -226,7 +226,7 @@ public class Js {
      * Get the location and size of the provided WebElement
      *
      * @param webElement the WebElement from which the location and size are taken
-     * @return The location and size of the rendered WebElement
+     * @return the location and size of the rendered WebElement
      */
     public Rectangle getRect(final WebElement webElement) {
         final List<Object> rectangle = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
@@ -242,7 +242,7 @@ public class Js {
      * Get the location of the provided WebElement
      *
      * @param webElement the WebElement from which the location and size are taken
-     * @return The top left-hand point of the rendered WebElement
+     * @return the top left-hand point of the rendered WebElement
      */
     public Point getLocation(final WebElement webElement) {
         final List<Object> point = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +

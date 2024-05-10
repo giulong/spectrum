@@ -51,11 +51,10 @@ public final class JsMethodsUtils {
         LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.tagName, "return %s.getElementsByTagName('%s');");
         LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.name, "return %s.querySelectorAll('[name=\"%s\"]');");
         LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.cssSelector, "return %s.querySelectorAll('%s');");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.xpath, "return %s.evaluate('%s', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.linkText, "return %s.evaluate('//a[text()=\"%s\"]', " +
-                "document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.partialLinkText, "return %s.evaluate('//a[contains(text(), \"%s\")]', " +
-                "document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null)");
+        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.xpath, "var webElements = %s.evaluate('%s', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);" +
+                "return Array.from({length: webElements.snapshotLength}, (_, i) => webElements.snapshotItem(i));");
+        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.linkText, "return Array.from(%s.querySelectorAll('a')).filter(link => link.textContent === '%s');");
+        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.partialLinkText, "return Array.from(%s.querySelectorAll('a')).filter(link => link.textContent.includes('%s'));");
     }
 
     public String convertCssProperty(String stringToConvert) {
