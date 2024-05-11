@@ -7,10 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,7 +39,7 @@ class JsTest {
 
     @Test
     @DisplayName("click should click with javascript on the provided webElement and return the Js instance")
-    public void click() {
+    public void testClick() {
         assertEquals(js, js.click(webElement));
 
         verify(webDriver).executeScript("arguments[0].click();", webElement);
@@ -48,7 +47,7 @@ class JsTest {
 
     @Test
     @DisplayName("sendkeys should insert the input string as value of the provided webElement and return the Js instance")
-    public void sendKeys() {
+    public void testSendKeys() {
         final String keysToSend = "input Test";
         assertEquals(js, js.sendKeys(webElement, keysToSend));
 
@@ -57,7 +56,7 @@ class JsTest {
 
     @Test
     @DisplayName("submit should submit with javascript the provided webElement and return the Js instance")
-    public void submit() {
+    public void testSubmit() {
         assertEquals(js, js.submit(webElement));
 
         verify(webDriver).executeScript("arguments[0].submit();", webElement);
@@ -65,7 +64,7 @@ class JsTest {
 
     @Test
     @DisplayName("clear should delete the values with javascript from the provided webElement and return the Js instance")
-    public void clear() {
+    public void testClear() {
         assertEquals(js, js.clear(webElement));
 
         verify(webDriver).executeScript("arguments[0].value='';", webElement);
@@ -76,11 +75,14 @@ class JsTest {
     public void testFindElementNoContext() {
         final String locatorValue = "locatorValue";
         when(js.findElement(LocatorType.Id, locatorValue)).thenReturn(webElement);
+        when(jsMethodsUtils.getFindElementScript(LocatorType.Id)).thenReturn("return %s.getElementById('%s');");
+        when(jsStringUtils.escapeString(locatorValue)).thenReturn(locatorValue);
 
         WebElement result = js.findElement(LocatorType.Id, locatorValue);
         assertSame(webElement, result);
 
-        verify(webDriver).executeScript("return document.getElementById('locatorValue');");
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(LocatorType.Id), "document", jsStringUtils.escapeString(locatorValue));
+        verify(webDriver).executeScript(jsCommand);
     }
 
     @Test
@@ -88,11 +90,14 @@ class JsTest {
     void testFindElementWithContext() {
         final String locatorValue = "locatorValue";
         when(js.findElement(webElement, LocatorType.className, locatorValue)).thenReturn(webElement);
+        when(jsMethodsUtils.getFindElementScript(LocatorType.className)).thenReturn("return %s.getElementsByClassName('%s')[0];");
+        when(jsStringUtils.escapeString(locatorValue)).thenReturn(locatorValue);
 
         WebElement result = js.findElement(webElement, LocatorType.className, locatorValue);
         assertSame(webElement, result);
 
-        verify(webDriver).executeScript("return arguments[0].getElementsByClassName('locatorValue')[0];", webElement);
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(LocatorType.className), "arguments[0]", jsStringUtils.escapeString(locatorValue));
+        verify(webDriver).executeScript(jsCommand, webElement);
     }
 
     @Test
@@ -100,11 +105,14 @@ class JsTest {
     public void testFindElementsNoContext() {
         final String locatorValue = "locatorValue";
         when(js.findElements(LocatorType.Id, locatorValue)).thenReturn(webElements);
+        when(jsMethodsUtils.getFindElementsScript(LocatorType.Id)).thenReturn("return %s.querySelectorAll('#%s');");
+        when(jsStringUtils.escapeString(locatorValue)).thenReturn(locatorValue);
 
         List<WebElement> result = js.findElements(LocatorType.Id, locatorValue);
         assertSame(webElements, result);
 
-        verify(webDriver).executeScript("return document.querySelectorAll('#locatorValue');");
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(LocatorType.Id), "document", jsStringUtils.escapeString(locatorValue));
+        verify(webDriver).executeScript(jsCommand);
     }
 
     @Test
@@ -112,10 +120,206 @@ class JsTest {
     void testFindElementsWithContext() {
         final String locatorValue = "locatorValue";
         when(js.findElements(webElement, LocatorType.className, locatorValue)).thenReturn(webElements);
+        when(jsMethodsUtils.getFindElementsScript(LocatorType.className)).thenReturn("return %s.getElementsByClassName('%s');");
+        when(jsStringUtils.escapeString(locatorValue)).thenReturn(locatorValue);
 
         List<WebElement> result = js.findElements(webElement, LocatorType.className, locatorValue);
         assertSame(webElements, result);
 
-        verify(webDriver).executeScript("return arguments[0].getElementsByClassName('locatorValue');", webElement);
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(LocatorType.className), "arguments[0]", jsStringUtils.escapeString(locatorValue));
+        verify(webDriver).executeScript(jsCommand, webElement);
+    }
+
+    @Test
+    @DisplayName("getText should return the innerText of provided context")
+    void testGetText() {
+        when(js.getText(webElement)).thenReturn("text");
+
+        String result = js.getText(webElement);
+        assertSame("text", result);
+
+        verify(webDriver).executeScript("return arguments[0].innerText;", webElement);
+    }
+
+    @Test
+    @DisplayName("getCssValue should return the webElement with provided css properties")
+    void testGetCssValue() {
+        final String cssProperty = "cssProperty";
+        when(js.getCssValue(webElement, cssProperty)).thenReturn("cssValue");
+
+        String result = js.getCssValue(webElement, cssProperty);
+        assertSame("cssValue", result);
+
+        final String jsCommand = String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty);
+        verify(webDriver).executeScript(jsCommand, webElement);
+    }
+
+    @Test
+    @DisplayName("getShadowRoot should return the shadowRoot when it is present")
+    void testGetShadowRootWhenPresent() {
+        SearchContext expectedShadowRoot = mock(SearchContext.class);
+        when(webDriver.executeScript("return arguments[0].shadowRoot;", webElement)).thenReturn(expectedShadowRoot);
+
+        SearchContext actualShadowRoot = js.getShadowRoot(webElement);
+
+        assertSame(expectedShadowRoot, actualShadowRoot, "The returned shadowRoot should match the expected one.");
+    }
+
+    @Test
+    @DisplayName("getShadowRoot should throw NoSuchShadowRootException when the shadowRoot is not present")
+    void testGetShadowRootWhenNotPresent() {
+        when(webDriver.executeScript("return arguments[0].shadowRoot;", webElement)).thenReturn(null);
+
+        assertThrows(NoSuchShadowRootException.class, () -> js.getShadowRoot(webElement),
+                "Expected NoSuchShadowRootException to be thrown when no shadowRoot is found.");
+    }
+
+    @Test
+    @DisplayName("getTagName should return the tag name of the provided WebElement in lowercase")
+    void testGetTagName() {
+        final String expectedTagName = "div";
+        when(webDriver.executeScript("return arguments[0].tagName;", webElement)).thenReturn("DIV");
+
+        String actualTagName = js.getTagName(webElement);
+
+        assertEquals(expectedTagName, actualTagName, "The returned tag name should be in lowercase.");
+        verify(webDriver).executeScript("return arguments[0].tagName;", webElement);
+    }
+
+    @Test
+    @DisplayName("getDomAttribute should return the attribute value of the WebElement")
+    void testGetDomAttribute() {
+        final String attributeName = "attributeName";
+        final String attributeValue = "attributeValue";
+        when(webDriver.executeScript("return arguments[0].getAttribute('attributeName');", webElement))
+                .thenReturn(attributeValue);
+
+        String result = js.getDomAttribute(webElement, attributeName);
+
+        assertEquals(attributeValue, result);
+    }
+
+    @Test
+    @DisplayName("getDomProperty should return the property value of the WebElement")
+    void testGetDomProperty() {
+        final String propertyName = "propertyName";
+        final String propertyValue = "propertyValue";
+        when(webDriver.executeScript("return arguments[0].propertyName;", webElement))
+                .thenReturn(propertyValue);
+
+        String result = js.getDomProperty(webElement, propertyName);
+
+        assertEquals(propertyValue, result);
+    }
+
+    @Test
+    @DisplayName("getAttribute should return the DOM property if it is not null")
+    void testGetAttributeReturnsProperty() {
+        final String attributeName = "type";
+        final String propertyValue = "button";
+
+        when(js.getDomProperty(webElement, attributeName)).thenReturn(propertyValue);
+
+        String result = js.getAttribute(webElement, attributeName);
+
+        assertEquals(propertyValue, result);
+        verify(webDriver, never()).executeScript("return arguments[0].type;");
+    }
+
+    @Test
+    @DisplayName("getAttribute should return the DOM attribute if the property is null")
+    void testGetAttributeReturnsAttributeWhenPropertyIsNull() {
+        final String attributeName = "type";
+        final String attributeValue = "button";
+
+        when(js.getDomProperty(webElement, attributeName)).thenReturn(null);
+        when(js.getDomAttribute(webElement, attributeName)).thenReturn(attributeValue);
+
+        String result = js.getAttribute(webElement, attributeName);
+
+        assertEquals(attributeValue, result);
+        verify(webDriver, never()).executeScript("return arguments[0].getAttribute('type');");
+    }
+
+    @Test
+    @DisplayName("isSelected should return true if the element is checked")
+    void testIsSelected() {
+        when(webDriver.executeScript("return arguments[0].checked;", webElement)).thenReturn(true);
+
+        boolean result = js.isSelected(webElement);
+
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("isEnabled should return true if the element is not disabled")
+    void testIsEnabled() {
+        when(webDriver.executeScript("return arguments[0].disabled;", webElement)).thenReturn(false);
+
+        boolean result = js.isEnabled(webElement);
+
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("isDisplayed should return true if the element is displayed")
+    void testIsDisplayed() {
+        when(webDriver.executeScript("var rectangle = arguments[0].getBoundingClientRect();" +
+                "return arguments[0].checkVisibility({visibilityProperty:true, opacityProperty:true}) && " +
+                "rectangle.height > 0 && rectangle.width > 0", webElement)).thenReturn(true);
+
+        boolean result = js.isDisplayed(webElement);
+
+        assertTrue(result);
+    }
+
+    @Test
+    @DisplayName("getSize should return the correct dimensions of the WebElement")
+    void testGetSize() {
+        List<Object> dimensions = Arrays.asList(200, 100);
+        when(webDriver.executeScript(
+                "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.width, rectangle.height];",
+                webElement
+        )).thenReturn(dimensions);
+
+        Dimension result = js.getSize(webElement);
+
+        assertNotNull(result);
+        assertEquals(200, result.getWidth());
+        assertEquals(100, result.getHeight());
+    }
+
+    @Test
+    @DisplayName("getRect should return the correct location and dimensions of the WebElement")
+    void testGetRect() {
+        List<Object> rectangleValues = Arrays.asList(50, 60, 200, 100);
+        when(webDriver.executeScript(
+                "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.x, rectangle.y, rectangle.width, rectangle.height];",
+                webElement
+        )).thenReturn(rectangleValues);
+
+        Rectangle result = js.getRect(webElement);
+
+        assertNotNull(result);
+        assertEquals(50, result.x);
+        assertEquals(60, result.y);
+        assertEquals(200, result.width);
+        assertEquals(100, result.height);
+    }
+
+    @Test
+    @DisplayName("getLocation should return the correct top-left point of the WebElement")
+    void testGetLocation() {
+        List<Object> pointValues = Arrays.asList(50, 60);
+        when(webDriver.executeScript(
+                "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.x, rectangle.y];",
+                webElement
+        )).thenReturn(pointValues);
+
+        Point result = js.getLocation(webElement);
+
+        assertNotNull(result);
+        assertEquals(50, result.x);
+        assertEquals(60, result.y);
     }
 }
