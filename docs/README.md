@@ -2465,10 +2465,22 @@ html:
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.html){:target="_blank"}.
-This is what it looks like when opened in a driver:
+This is what it looks like when opened in a browser:
 
 ![Html Summary Reporter](assets/images/html-summary.png)
 
+Beside the default template, these are already available, you just need to pick the corresponding template:
+
+* [summary-pies.html](assets/miscellanea/summary-pies.html){:target="_blank"} that leverages [Google Charts](https://developers.google.com/chart){:target="_blank"}
+
+{% include copyCode.html %}
+
+```yaml
+html:
+  template: templates/summary-pies.html
+```
+
+![Html Summary Pies Reporter](assets/images/html-summary-pies.png)
 ---
 
 # TestBook - Coverage
@@ -2838,15 +2850,28 @@ This is the internal
 
 ```yaml
 html:
-  template: templates/testBook.html
+  template: templates/testbook.html
   output: ${testBookReportOutput}/testBook-${timestamp}.html
   retention: { }
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.html){:target="_blank"}.
-This is what it looks like when opened in a driver:
+This is what it looks like when opened in a browser:
 
 ![Html TestBook Reporter](assets/images/html-testbook.png)
+
+Beside the default template, these are already available, you just need to pick the corresponding template:
+
+* [testbook-pies.html](assets/miscellanea/testbook-pies.html){:target="_blank"} that leverages [Google Charts](https://developers.google.com/chart){:target="_blank"}
+
+{% include copyCode.html %}
+
+```yaml
+html:
+  template: templates/testbook-pies.html
+```
+
+![Html TestBook Pies Reporter](assets/images/html-testbook-pies.png)
 
 ## Default TestBook
 
