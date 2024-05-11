@@ -3,6 +3,9 @@ name: Build
 on:
   push:
     branches: [ "develop", "feature/**", "bugfix/**" ]
+  pull_request:
+    branches: [ "develop" ]
+    types: [ opened ]
 
 env:
   EDGE_BINARY: /usr/bin/microsoft-edge
