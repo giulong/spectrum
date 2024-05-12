@@ -115,6 +115,7 @@
         <module name="ParameterName"/>
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
+        <module name="EnumValueName"/>
 
         <module name="MethodLength">
             <property name="severity" value="warning"/>
