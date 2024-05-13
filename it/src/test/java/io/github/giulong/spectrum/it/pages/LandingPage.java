@@ -19,5 +19,5 @@ public class LandingPage extends SpectrumPage<LandingPage, Void> {
     private WebElement checkboxLink;
 
     @FindBy(linkText = "Form Authentication")
-    private WebElement FormLoginLink;
+    private WebElement formLoginLink;
 }

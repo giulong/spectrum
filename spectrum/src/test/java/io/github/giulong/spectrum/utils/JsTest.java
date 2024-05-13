@@ -32,7 +32,7 @@ class JsTest {
     private JsMethodsUtils jsMethodsUtils;
 
     @Mock
-    private JsStringUtils jsStringUtils;
+    private StringUtils stringUtils;
 
     @InjectMocks
     private Js js;
@@ -74,14 +74,14 @@ class JsTest {
     @DisplayName("findElement should be executed without a context passed")
     public void testFindElementNoContext() {
         final String locatorValue = "locatorValue";
-        when(js.findElement(LocatorType.Id, locatorValue)).thenReturn(webElement);
-        when(jsMethodsUtils.getFindElementScript(LocatorType.Id)).thenReturn("return %s.getElementById('%s');");
-        when(jsStringUtils.escapeString(locatorValue)).thenReturn(locatorValue);
+        when(js.findElement(LocatorType.ID, locatorValue)).thenReturn(webElement);
+        when(jsMethodsUtils.getFindElementScript(LocatorType.ID)).thenReturn("return %s.getElementById('%s');");
+        when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
 
-        WebElement result = js.findElement(LocatorType.Id, locatorValue);
+        WebElement result = js.findElement(LocatorType.ID, locatorValue);
         assertSame(webElement, result);
 
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(LocatorType.Id), "document", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(LocatorType.ID), "document", stringUtils.escape(locatorValue));
         verify(webDriver).executeScript(jsCommand);
     }
 
@@ -89,14 +89,14 @@ class JsTest {
     @DisplayName("findElement should execute and return a webElement between the given context")
     void testFindElementWithContext() {
         final String locatorValue = "locatorValue";
-        when(js.findElement(webElement, LocatorType.className, locatorValue)).thenReturn(webElement);
-        when(jsMethodsUtils.getFindElementScript(LocatorType.className)).thenReturn("return %s.getElementsByClassName('%s')[0];");
-        when(jsStringUtils.escapeString(locatorValue)).thenReturn(locatorValue);
+        when(js.findElement(webElement, LocatorType.CLASS_NAME, locatorValue)).thenReturn(webElement);
+        when(jsMethodsUtils.getFindElementScript(LocatorType.CLASS_NAME)).thenReturn("return %s.getElementsByClassName('%s')[0];");
+        when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
 
-        WebElement result = js.findElement(webElement, LocatorType.className, locatorValue);
+        WebElement result = js.findElement(webElement, LocatorType.CLASS_NAME, locatorValue);
         assertSame(webElement, result);
 
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(LocatorType.className), "arguments[0]", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(LocatorType.CLASS_NAME), "arguments[0]", stringUtils.escape(locatorValue));
         verify(webDriver).executeScript(jsCommand, webElement);
     }
 
@@ -104,14 +104,14 @@ class JsTest {
     @DisplayName("findElements should be executed without a context passed")
     public void testFindElementsNoContext() {
         final String locatorValue = "locatorValue";
-        when(js.findElements(LocatorType.Id, locatorValue)).thenReturn(webElements);
-        when(jsMethodsUtils.getFindElementsScript(LocatorType.Id)).thenReturn("return %s.querySelectorAll('#%s');");
-        when(jsStringUtils.escapeString(locatorValue)).thenReturn(locatorValue);
+        when(js.findElements(LocatorType.ID, locatorValue)).thenReturn(webElements);
+        when(jsMethodsUtils.getFindElementsScript(LocatorType.ID)).thenReturn("return %s.querySelectorAll('#%s');");
+        when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
 
-        List<WebElement> result = js.findElements(LocatorType.Id, locatorValue);
+        List<WebElement> result = js.findElements(LocatorType.ID, locatorValue);
         assertSame(webElements, result);
 
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(LocatorType.Id), "document", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(LocatorType.ID), "document", stringUtils.escape(locatorValue));
         verify(webDriver).executeScript(jsCommand);
     }
 
@@ -119,14 +119,14 @@ class JsTest {
     @DisplayName("findElements should execute and return a list of webElements between the given context")
     void testFindElementsWithContext() {
         final String locatorValue = "locatorValue";
-        when(js.findElements(webElement, LocatorType.className, locatorValue)).thenReturn(webElements);
-        when(jsMethodsUtils.getFindElementsScript(LocatorType.className)).thenReturn("return %s.getElementsByClassName('%s');");
-        when(jsStringUtils.escapeString(locatorValue)).thenReturn(locatorValue);
+        when(js.findElements(webElement, LocatorType.CLASS_NAME, locatorValue)).thenReturn(webElements);
+        when(jsMethodsUtils.getFindElementsScript(LocatorType.CLASS_NAME)).thenReturn("return %s.getElementsByClassName('%s');");
+        when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
 
-        List<WebElement> result = js.findElements(webElement, LocatorType.className, locatorValue);
+        List<WebElement> result = js.findElements(webElement, LocatorType.CLASS_NAME, locatorValue);
         assertSame(webElements, result);
 
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(LocatorType.className), "arguments[0]", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(LocatorType.CLASS_NAME), "arguments[0]", stringUtils.escape(locatorValue));
         verify(webDriver).executeScript(jsCommand, webElement);
     }
 

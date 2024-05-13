@@ -11,7 +11,7 @@ public class Js {
 
     private JavascriptExecutor driver;
 
-    private final JsStringUtils jsStringUtils = JsStringUtils.getInstance();
+    private final StringUtils stringUtils = StringUtils.getInstance();
     private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
@@ -23,11 +23,11 @@ public class Js {
      * @return the found WebElement
      */
     public WebElement findElement(final WebElement context, final LocatorType locatorType, final String locatorValue) {
-        if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath || locatorType == LocatorType.linkText || locatorType == LocatorType.partialLinkText) {
+        if (locatorType == LocatorType.ID || locatorType == LocatorType.XPATH || locatorType == LocatorType.LINK_TEXT || locatorType == LocatorType.PARTIAL_LINK_TEXT) {
             return this.findElement(locatorType, locatorValue);
         }
 
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "arguments[0]", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "arguments[0]", stringUtils.escape(locatorValue));
         return (WebElement) driver.executeScript(jsCommand, context);
     }
 
@@ -39,7 +39,7 @@ public class Js {
      * @return the found WebElement
      */
     public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "document", stringUtils.escape(locatorValue));
 
         return (WebElement) driver.executeScript(jsCommand);
     }
@@ -53,11 +53,11 @@ public class Js {
      * @return the list of found WebElements
      */
     public List<WebElement> findElements(final WebElement context, final LocatorType locatorType, final String locatorValue) {
-        if (locatorType == LocatorType.Id || locatorType == LocatorType.xpath || locatorType == LocatorType.linkText || locatorType == LocatorType.partialLinkText) {
+        if (locatorType == LocatorType.ID || locatorType == LocatorType.XPATH || locatorType == LocatorType.LINK_TEXT || locatorType == LocatorType.PARTIAL_LINK_TEXT) {
             return this.findElements(locatorType, locatorValue);
         }
 
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "arguments[0]", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "arguments[0]", stringUtils.escape(locatorValue));
         return (List<WebElement>) driver.executeScript(jsCommand, context);
     }
 
@@ -69,10 +69,9 @@ public class Js {
      * @return the list of found WebElements
      */
     public List<WebElement> findElements(final LocatorType locatorType, final String locatorValue) {
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "document", jsStringUtils.escapeString(locatorValue));
+        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "document", stringUtils.escape(locatorValue));
 
         return (List<WebElement>) driver.executeScript(jsCommand);
-
     }
 
     /**
@@ -82,7 +81,6 @@ public class Js {
      * @return the value of the innerText
      */
     public String getText(final WebElement webElement) {
-
         return (String) driver.executeScript("return arguments[0].innerText;", webElement);
     }
 
@@ -95,11 +93,8 @@ public class Js {
      */
     public String getCssValue(final WebElement webElement, final String cssProperty) {
         if (!jsMethodsUtils.isShorthandProperty(cssProperty)) {
-            final String cssValue = (String) driver.executeScript(String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty), webElement);
-
-            return cssValue;
+            return (String) driver.executeScript(String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty), webElement);
         }
-
         return null;
     }
 
@@ -114,7 +109,6 @@ public class Js {
         if (shadowRoot == null) {
             throw new NoSuchShadowRootException("No shadow root could be found for the provided webElement");
         }
-
         return shadowRoot;
     }
 
@@ -168,7 +162,6 @@ public class Js {
         if (domProperty == null) {
             return this.getDomAttribute(webElement, jsMethodsUtils.convertCssProperty(attribute));
         }
-
         return domProperty;
     }
 
@@ -179,7 +172,6 @@ public class Js {
      * @return true if element is currently selected/checked, false otherwise
      */
     public boolean isSelected(final WebElement webElement) {
-
         return (boolean) driver.executeScript("return arguments[0].checked;", webElement);
     }
 
@@ -202,11 +194,9 @@ public class Js {
      * @return true if element is displayed, false otherwise
      */
     public boolean isDisplayed(final WebElement webElement) {
-        final boolean isDysplayed = (boolean) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect();" +
+        return (boolean) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect();" +
                 "return arguments[0].checkVisibility({visibilityProperty:true, opacityProperty:true}) && " +
                 "rectangle.height > 0 && rectangle.width > 0", webElement);
-
-        return isDysplayed;
     }
 
     /**
@@ -271,7 +261,7 @@ public class Js {
      * @return the calling SpectrumEntity instance
      */
     public Js sendKeys(final WebElement webElement, final String keysToSend) {
-        final String jsCommand = String.format("arguments[0].value='%s';", jsStringUtils.escapeString(keysToSend));
+        final String jsCommand = String.format("arguments[0].value='%s';", stringUtils.escape(keysToSend));
         driver.executeScript(jsCommand, webElement);
 
         return this;
@@ -288,7 +278,6 @@ public class Js {
 
         return this;
     }
-
 
     /**
      * Clear input value with javascript on the provided WebElement

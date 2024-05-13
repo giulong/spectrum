@@ -9,17 +9,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.NoSuchShadowRootException;
 import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Javascript")
 public class JavascriptIT extends SpectrumTest<Void> {
-
-    private static final Logger log = LoggerFactory.getLogger(JavascriptIT.class);
 
     private LandingPage landingPage;
     private CheckboxPage checkboxPage;
@@ -53,8 +47,8 @@ public class JavascriptIT extends SpectrumTest<Void> {
     public void testFindElementMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
-        assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.linkText, "Form Authentication"));
-        assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.partialLinkText, "Form Aut"));
+        assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.LINK_TEXT, "Form Authentication"));
+        assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.PARTIAL_LINK_TEXT, "Form Aut"));
 
         js.click(landingPage.getFormLoginLink());
         loginPage.waitForPageLoading();
@@ -64,25 +58,25 @@ public class JavascriptIT extends SpectrumTest<Void> {
         final WebElement contentDiv = loginPage.getContentDiv();
         final WebElement form = loginPage.getForm();
 
-        assertEquals(subHeader, js.findElement(contentDiv, LocatorType.className, "subheader"));
-        assertEquals(form, js.findElement(contentDiv, LocatorType.tagName, "form"));
-        assertEquals(usernameField, js.findElement(LocatorType.name, "username"));
-        assertEquals(usernameField, js.findElement(LocatorType.cssSelector, "input[id='username'"));
-        assertEquals(usernameField, js.findElement(LocatorType.xpath, "//*[@id='username']"));
+        assertEquals(subHeader, js.findElement(contentDiv, LocatorType.CLASS_NAME, "subheader"));
+        assertEquals(form, js.findElement(contentDiv, LocatorType.TAG_NAME, "form"));
+        assertEquals(usernameField, js.findElement(LocatorType.NAME, "username"));
+        assertEquals(usernameField, js.findElement(LocatorType.CSS_SELECTOR, "input[id='username'"));
+        assertEquals(usernameField, js.findElement(LocatorType.XPATH, "//*[@id='username']"));
 
-        assertNotEquals(js.findElement(LocatorType.className, "row"), js.findElement(contentDiv, LocatorType.className, "row"));
+        assertNotEquals(js.findElement(LocatorType.CLASS_NAME, "row"), js.findElement(contentDiv, LocatorType.CLASS_NAME, "row"));
     }
 
     @Test
     public void testFindElementsMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
-        final WebElement mainContentDiv = js.findElement(LocatorType.Id, "content");
+        final WebElement mainContentDiv = js.findElement(LocatorType.ID, "content");
 
-        assertEquals(1, js.findElements(mainContentDiv, LocatorType.linkText, "Dropdown").size());
-        assertEquals(1, js.findElements(LocatorType.linkText, "Dropdown").size());
-        assertEquals(3, js.findElements(mainContentDiv, LocatorType.partialLinkText, "File").size());
-        assertEquals(3, js.findElements(LocatorType.partialLinkText, "File").size());
+        assertEquals(1, js.findElements(mainContentDiv, LocatorType.LINK_TEXT, "Dropdown").size());
+        assertEquals(1, js.findElements(LocatorType.LINK_TEXT, "Dropdown").size());
+        assertEquals(3, js.findElements(mainContentDiv, LocatorType.PARTIAL_LINK_TEXT, "File").size());
+        assertEquals(3, js.findElements(LocatorType.PARTIAL_LINK_TEXT, "File").size());
 
         js.click(landingPage.getFormLoginLink());
         loginPage.waitForPageLoading();
@@ -92,16 +86,16 @@ public class JavascriptIT extends SpectrumTest<Void> {
         final WebElement usernameField = loginPage.getUsername();
 
         // Every test use two test cases, one with context=document (not passed) and other one with context passed
-        assertEquals(5, js.findElements(LocatorType.className, "row").size());
-        assertEquals(2, js.findElements(form, LocatorType.className, "row").size());
-        assertEquals(1, js.findElements(LocatorType.name, "login").size());
-        assertEquals(1, js.findElements(contentDiv, LocatorType.name, "login").size());
-        assertEquals(12, js.findElements(LocatorType.tagName, "div").size());
-        assertEquals(4, js.findElements(form, LocatorType.tagName, "div").size());
-        assertEquals(usernameField, js.findElements(LocatorType.cssSelector, "input[id='username'").getFirst());
-        assertEquals(usernameField, js.findElements(form, LocatorType.cssSelector, "input[id='username'").getFirst());
-        assertEquals(5, js.findElements(LocatorType.cssSelector, "div[class='row'").size());
-        assertEquals(usernameField, js.findElements(LocatorType.xpath, "//*[@id='username']").getFirst());
+        assertEquals(5, js.findElements(LocatorType.CLASS_NAME, "row").size());
+        assertEquals(2, js.findElements(form, LocatorType.CLASS_NAME, "row").size());
+        assertEquals(1, js.findElements(LocatorType.NAME, "login").size());
+        assertEquals(1, js.findElements(contentDiv, LocatorType.NAME, "login").size());
+        assertEquals(12, js.findElements(LocatorType.TAG_NAME, "div").size());
+        assertEquals(4, js.findElements(form, LocatorType.TAG_NAME, "div").size());
+        assertEquals(usernameField, js.findElements(LocatorType.CSS_SELECTOR, "input[id='username'").getFirst());
+        assertEquals(usernameField, js.findElements(form, LocatorType.CSS_SELECTOR, "input[id='username'").getFirst());
+        assertEquals(5, js.findElements(LocatorType.CSS_SELECTOR, "div[class='row'").size());
+        assertEquals(usernameField, js.findElements(LocatorType.XPATH, "//*[@id='username']").getFirst());
     }
 
     @Test
@@ -151,5 +145,4 @@ public class JavascriptIT extends SpectrumTest<Void> {
         js.submit(form);
         assertEquals("https://the-internet.herokuapp.com/secure", driver.getCurrentUrl());
     }
-
 }

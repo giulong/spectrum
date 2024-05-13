@@ -6,26 +6,22 @@ import lombok.NoArgsConstructor;
 
 import java.util.*;
 
-import static lombok.AccessLevel.PRIVATE;
-
 @Getter
-@NoArgsConstructor(access = PRIVATE)
 public final class JsMethodsUtils {
 
-    private static final JsMethodsUtils INSTANCE = new JsMethodsUtils();
     private static final Map<String, String> CONVERSIONMAP = new HashMap<>();
-    private static final Map<LocatorType, String> LOCATORTOFINDELEMENTSCRIPT = new EnumMap<>(LocatorType.class);
-    private static final Map<LocatorType, String> LOCATORTOFINDELEMENTSSCRIPT = new EnumMap<>(LocatorType.class);
-
-    private static final List<String> SHORTANDPROPERTIES = Arrays.asList(
+    private static final Map<LocatorType, String> LOCATOR_TO_FIND_ELEMENT_SCRIPT = new EnumMap<>(LocatorType.class);
+    private static final Map<LocatorType, String> LOCATOR_TO_FIND_ELEMENTS_SCRIPT = new EnumMap<>(LocatorType.class);
+    private static final List<String> SHORTHAND_PROPERTIES = Arrays.asList(
             "background", "font", "border", "border-top", "margin", "margin-top", "padding",
             "padding-top", "list-style", "outline", "pause", "cue");
+    private static final JsMethodsUtils INSTANCE = new JsMethodsUtils();
 
     public static JsMethodsUtils getInstance() {
         return INSTANCE;
     }
 
-    static {
+    private JsMethodsUtils() {
         CONVERSIONMAP.put("class", "className");
         CONVERSIONMAP.put("readonly", "readOnly");
         initializeFindElementScripts();
@@ -33,28 +29,28 @@ public final class JsMethodsUtils {
     }
 
     private static void initializeFindElementScripts() {
-        LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.Id, "return %s.getElementById('%s');");
-        LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.className, "return %s.getElementsByClassName('%s')[0];");
-        LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.tagName, "return %s.getElementsByTagName('%s')[0];");
-        LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.name, "return %s.querySelector('[name=\"%s\"]');");
-        LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.cssSelector, "return %s.querySelector('%s');");
-        LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.xpath, "return %s.evaluate('%s', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;");
-        LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.linkText, "return %s.evaluate('//a[text()=\"%s\"]', " +
+        LOCATOR_TO_FIND_ELEMENT_SCRIPT.put(LocatorType.ID, "return %s.getElementById('%s');");
+        LOCATOR_TO_FIND_ELEMENT_SCRIPT.put(LocatorType.CLASS_NAME, "return %s.getElementsByClassName('%s')[0];");
+        LOCATOR_TO_FIND_ELEMENT_SCRIPT.put(LocatorType.TAG_NAME, "return %s.getElementsByTagName('%s')[0];");
+        LOCATOR_TO_FIND_ELEMENT_SCRIPT.put(LocatorType.NAME, "return %s.querySelector('[name=\"%s\"]');");
+        LOCATOR_TO_FIND_ELEMENT_SCRIPT.put(LocatorType.CSS_SELECTOR, "return %s.querySelector('%s');");
+        LOCATOR_TO_FIND_ELEMENT_SCRIPT.put(LocatorType.XPATH, "return %s.evaluate('%s', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;");
+        LOCATOR_TO_FIND_ELEMENT_SCRIPT.put(LocatorType.LINK_TEXT, "return %s.evaluate('//a[text()=\"%s\"]', " +
                 "document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;");
-        LOCATORTOFINDELEMENTSCRIPT.put(LocatorType.partialLinkText, "return %s.evaluate('//a[contains(text(), \"%s\")]', " +
+        LOCATOR_TO_FIND_ELEMENT_SCRIPT.put(LocatorType.PARTIAL_LINK_TEXT, "return %s.evaluate('//a[contains(text(), \"%s\")]', " +
                 "document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;");
     }
 
     private static void initializeFindElementsScripts() {
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.Id, "return %s.querySelectorAll('#%s');");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.className, "return %s.getElementsByClassName('%s');");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.tagName, "return %s.getElementsByTagName('%s');");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.name, "return %s.querySelectorAll('[name=\"%s\"]');");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.cssSelector, "return %s.querySelectorAll('%s');");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.xpath, "var webElements = %s.evaluate('%s', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);" +
+        LOCATOR_TO_FIND_ELEMENTS_SCRIPT.put(LocatorType.ID, "return %s.querySelectorAll('#%s');");
+        LOCATOR_TO_FIND_ELEMENTS_SCRIPT.put(LocatorType.CLASS_NAME, "return %s.getElementsByClassName('%s');");
+        LOCATOR_TO_FIND_ELEMENTS_SCRIPT.put(LocatorType.TAG_NAME, "return %s.getElementsByTagName('%s');");
+        LOCATOR_TO_FIND_ELEMENTS_SCRIPT.put(LocatorType.NAME, "return %s.querySelectorAll('[name=\"%s\"]');");
+        LOCATOR_TO_FIND_ELEMENTS_SCRIPT.put(LocatorType.CSS_SELECTOR, "return %s.querySelectorAll('%s');");
+        LOCATOR_TO_FIND_ELEMENTS_SCRIPT.put(LocatorType.XPATH, "var webElements = %s.evaluate('%s', document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);" +
                 "return Array.from({length: webElements.snapshotLength}, (_, i) => webElements.snapshotItem(i));");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.linkText, "return Array.from(%s.querySelectorAll('a')).filter(link => link.textContent === '%s');");
-        LOCATORTOFINDELEMENTSSCRIPT.put(LocatorType.partialLinkText, "return Array.from(%s.querySelectorAll('a')).filter(link => link.textContent.includes('%s'));");
+        LOCATOR_TO_FIND_ELEMENTS_SCRIPT.put(LocatorType.LINK_TEXT, "return Array.from(%s.querySelectorAll('a')).filter(link => link.textContent === '%s');");
+        LOCATOR_TO_FIND_ELEMENTS_SCRIPT.put(LocatorType.PARTIAL_LINK_TEXT, "return Array.from(%s.querySelectorAll('a')).filter(link => link.textContent.includes('%s'));");
     }
 
     public String convertCssProperty(String stringToConvert) {
@@ -62,14 +58,14 @@ public final class JsMethodsUtils {
     }
 
     public String getFindElementScript(LocatorType locatorType) {
-        return LOCATORTOFINDELEMENTSCRIPT.get(locatorType);
+        return LOCATOR_TO_FIND_ELEMENT_SCRIPT.get(locatorType);
     }
 
     public String getFindElementsScript(LocatorType locatorType) {
-        return LOCATORTOFINDELEMENTSSCRIPT.get(locatorType);
+        return LOCATOR_TO_FIND_ELEMENTS_SCRIPT.get(locatorType);
     }
 
     public boolean isShorthandProperty(String cssProperty) {
-        return SHORTANDPROPERTIES.contains(cssProperty);
+        return SHORTHAND_PROPERTIES.contains(cssProperty);
     }
 }

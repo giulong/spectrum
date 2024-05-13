@@ -9,15 +9,15 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Getter
 @NoArgsConstructor(access = PRIVATE)
-public final class JsStringUtils {
+public final class StringUtils {
 
-    private static final JsStringUtils INSTANCE = new JsStringUtils();
+    private static final StringUtils INSTANCE = new StringUtils();
 
-    public static JsStringUtils getInstance() {
+    public static StringUtils getInstance() {
         return INSTANCE;
     }
 
-    public String escapeString(String stringToEscape) {
+    public String escape(final String stringToEscape) {
         Objects.requireNonNull(stringToEscape, "The string to escape cannot be null");
 
         return stringToEscape
