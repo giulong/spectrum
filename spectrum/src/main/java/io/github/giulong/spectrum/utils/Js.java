@@ -52,6 +52,7 @@ public class Js {
      * @param locatorValue the value used by the locating mechanism
      * @return the list of found WebElements
      */
+    @SuppressWarnings("unchecked")
     public List<WebElement> findElements(final WebElement context, final LocatorType locatorType, final String locatorValue) {
         if (locatorType == LocatorType.ID || locatorType == LocatorType.XPATH || locatorType == LocatorType.LINK_TEXT || locatorType == LocatorType.PARTIAL_LINK_TEXT) {
             return this.findElements(locatorType, locatorValue);
@@ -68,6 +69,7 @@ public class Js {
      * @param locatorValue the value used by the locating mechanism
      * @return the list of found WebElements
      */
+    @SuppressWarnings("unchecked")
     public List<WebElement> findElements(final LocatorType locatorType, final String locatorValue) {
         final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "document", stringUtils.escape(locatorValue));
 
@@ -206,7 +208,7 @@ public class Js {
      * @return the rendered Size of the WebElement
      */
     public Dimension getSize(final WebElement webElement) {
-        final List<Object> dimensions = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
+        @SuppressWarnings("unchecked") final List<Object> dimensions = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
                 "return [rectangle.width, rectangle.height];", webElement);
 
         return new Dimension(((Number) dimensions.get(0)).intValue(), ((Number) dimensions.get(1)).intValue());
@@ -219,7 +221,7 @@ public class Js {
      * @return the location and size of the rendered WebElement
      */
     public Rectangle getRect(final WebElement webElement) {
-        final List<Object> rectangle = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
+        @SuppressWarnings("unchecked") final List<Object> rectangle = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
                 "return [rectangle.x, rectangle.y, rectangle.width, rectangle.height];", webElement);
 
         final Point point = new Point(((Number) rectangle.get(0)).intValue(), ((Number) rectangle.get(1)).intValue());
@@ -235,7 +237,7 @@ public class Js {
      * @return the top left-hand point of the rendered WebElement
      */
     public Point getLocation(final WebElement webElement) {
-        final List<Object> point = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
+        @SuppressWarnings("unchecked") final List<Object> point = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
                 "return [rectangle.x, rectangle.y];", webElement);
 
         return new Point(((Number) point.get(0)).intValue(), ((Number) point.get(1)).intValue());
