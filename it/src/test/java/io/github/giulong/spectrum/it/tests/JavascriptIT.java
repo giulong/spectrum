@@ -61,7 +61,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
         assertEquals(subHeader, js.findElement(contentDiv, LocatorType.CLASS_NAME, "subheader"));
         assertEquals(form, js.findElement(contentDiv, LocatorType.TAG_NAME, "form"));
         assertEquals(usernameField, js.findElement(LocatorType.NAME, "username"));
-        assertEquals(usernameField, js.findElement(LocatorType.CSS_SELECTOR, "input[id='username'"));
+        assertEquals(usernameField, js.findElement(LocatorType.CSS_SELECTOR, "input[id='username']"));
         assertEquals(usernameField, js.findElement(LocatorType.XPATH, "//*[@id='username']"));
 
         assertNotEquals(js.findElement(LocatorType.CLASS_NAME, "row"), js.findElement(contentDiv, LocatorType.CLASS_NAME, "row"));
@@ -120,7 +120,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
         assertEquals(js.getText(form), "Username\nPassword\n Login");
 
         assertEquals(js.getCssValue(usernameField, "color"), "rgba(0, 0, 0, 0.75)");
-        assertNull(js.getCssValue(usernameField, "background"));
+        assertEquals(js.getCssValue(usernameField, "background"), "rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box");
 
         assertThrows(NoSuchShadowRootException.class, () -> js.getShadowRoot(usernameField));
     }

@@ -12,7 +12,6 @@ public class Js {
     private JavascriptExecutor driver;
 
     private final StringUtils stringUtils = StringUtils.getInstance();
-    private final JsMethodsUtils jsMethodsUtils = JsMethodsUtils.getInstance();
 
     /**
      * Find the first WebElement using the given method starting from the provided context
@@ -23,12 +22,7 @@ public class Js {
      * @return the found WebElement
      */
     public WebElement findElement(final WebElement context, final LocatorType locatorType, final String locatorValue) {
-        if (locatorType == LocatorType.ID || locatorType == LocatorType.XPATH || locatorType == LocatorType.LINK_TEXT || locatorType == LocatorType.PARTIAL_LINK_TEXT) {
-            return this.findElement(locatorType, locatorValue);
-        }
-
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "arguments[0]", stringUtils.escape(locatorValue));
-        return (WebElement) driver.executeScript(jsCommand, context);
+        return locatorType.findElement(driver, context, stringUtils.escape(locatorValue));
     }
 
     /**
@@ -39,9 +33,7 @@ public class Js {
      * @return the found WebElement
      */
     public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(locatorType), "document", stringUtils.escape(locatorValue));
-
-        return (WebElement) driver.executeScript(jsCommand);
+        return locatorType.findElement(driver, null, stringUtils.escape(locatorValue));
     }
 
     /**
@@ -52,14 +44,8 @@ public class Js {
      * @param locatorValue the value used by the locating mechanism
      * @return the list of found WebElements
      */
-    @SuppressWarnings("unchecked")
     public List<WebElement> findElements(final WebElement context, final LocatorType locatorType, final String locatorValue) {
-        if (locatorType == LocatorType.ID || locatorType == LocatorType.XPATH || locatorType == LocatorType.LINK_TEXT || locatorType == LocatorType.PARTIAL_LINK_TEXT) {
-            return this.findElements(locatorType, locatorValue);
-        }
-
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "arguments[0]", stringUtils.escape(locatorValue));
-        return (List<WebElement>) driver.executeScript(jsCommand, context);
+        return locatorType.findElements(driver, context, stringUtils.escape(locatorValue));
     }
 
     /**
@@ -69,11 +55,8 @@ public class Js {
      * @param locatorValue the value used by the locating mechanism
      * @return the list of found WebElements
      */
-    @SuppressWarnings("unchecked")
     public List<WebElement> findElements(final LocatorType locatorType, final String locatorValue) {
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(locatorType), "document", stringUtils.escape(locatorValue));
-
-        return (List<WebElement>) driver.executeScript(jsCommand);
+        return locatorType.findElements(driver, null, stringUtils.escape(locatorValue));
     }
 
     /**
@@ -94,10 +77,7 @@ public class Js {
      * @return the value of the CSS property as String
      */
     public String getCssValue(final WebElement webElement, final String cssProperty) {
-        if (!jsMethodsUtils.isShorthandProperty(cssProperty)) {
-            return (String) driver.executeScript(String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty), webElement);
-        }
-        return null;
+        return (String) driver.executeScript(String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty), webElement);
     }
 
     /**
@@ -160,9 +140,9 @@ public class Js {
      * @return the attribute/property current value or null if the value is not set.
      */
     public String getAttribute(final WebElement webElement, final String attribute) {
-        final String domProperty = this.getDomProperty(webElement, jsMethodsUtils.convertCssProperty(attribute));
+        final String domProperty = this.getDomProperty(webElement, stringUtils.convertCssProperty(attribute));
         if (domProperty == null) {
-            return this.getDomAttribute(webElement, jsMethodsUtils.convertCssProperty(attribute));
+            return this.getDomAttribute(webElement, stringUtils.convertCssProperty(attribute));
         }
         return domProperty;
     }

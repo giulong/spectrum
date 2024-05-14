@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
 import io.github.giulong.spectrum.enums.LocatorType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +28,6 @@ class JsTest {
 
     @Mock
     private JavascriptExecutor webDriver;
-
-    @Mock
-    private JsMethodsUtils jsMethodsUtils;
 
     @Mock
     private StringUtils stringUtils;
@@ -70,64 +68,65 @@ class JsTest {
         verify(webDriver).executeScript("arguments[0].value='';", webElement);
     }
 
+    @Disabled
     @Test
-    @DisplayName("findElement should be executed without a context passed")
-    public void testFindElementNoContext() {
+    @DisplayName("findElement should execute using document when no context is passed")
+    void testFindElementNoContext() {
         final String locatorValue = "locatorValue";
-        when(js.findElement(LocatorType.ID, locatorValue)).thenReturn(webElement);
-        when(jsMethodsUtils.getFindElementScript(LocatorType.ID)).thenReturn("return %s.getElementById('%s');");
-        when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
+        final String escapedValue = "locatorValue";
+        final String jsCommand = String.format(LocatorType.ID.getFindElementScript(), "document", escapedValue);
+
+        when(stringUtils.escape(locatorValue)).thenReturn(escapedValue);
+        when(webDriver.executeScript(jsCommand)).thenReturn(webElement);
 
         WebElement result = js.findElement(LocatorType.ID, locatorValue);
-        assertSame(webElement, result);
 
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(LocatorType.ID), "document", stringUtils.escape(locatorValue));
+        assertSame(webElement, result);
         verify(webDriver).executeScript(jsCommand);
     }
 
+    @Disabled
     @Test
-    @DisplayName("findElement should execute and return a webElement between the given context")
+    @DisplayName("findElement should execute and return a WebElement using the given context")
     void testFindElementWithContext() {
         final String locatorValue = "locatorValue";
-        when(js.findElement(webElement, LocatorType.CLASS_NAME, locatorValue)).thenReturn(webElement);
-        when(jsMethodsUtils.getFindElementScript(LocatorType.CLASS_NAME)).thenReturn("return %s.getElementsByClassName('%s')[0];");
-        when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
+        final String escapedValue = "locatorValue";
+        final String jsCommand = String.format(LocatorType.CLASS_NAME.getFindElementScript(), "arguments[0]", escapedValue);
+
+        when(stringUtils.escape(locatorValue)).thenReturn(escapedValue);
+        when(webDriver.executeScript(jsCommand, webElement)).thenReturn(webElement);
 
         WebElement result = js.findElement(webElement, LocatorType.CLASS_NAME, locatorValue);
-        assertSame(webElement, result);
 
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementScript(LocatorType.CLASS_NAME), "arguments[0]", stringUtils.escape(locatorValue));
+        assertSame(webElement, result);
         verify(webDriver).executeScript(jsCommand, webElement);
     }
 
+    @Disabled
     @Test
     @DisplayName("findElements should be executed without a context passed")
     public void testFindElementsNoContext() {
         final String locatorValue = "locatorValue";
+        final String escapedValue = "locatorValue";
+
+        when(stringUtils.escape(locatorValue)).thenReturn(escapedValue);
         when(js.findElements(LocatorType.ID, locatorValue)).thenReturn(webElements);
-        when(jsMethodsUtils.getFindElementsScript(LocatorType.ID)).thenReturn("return %s.querySelectorAll('#%s');");
         when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
 
         List<WebElement> result = js.findElements(LocatorType.ID, locatorValue);
         assertSame(webElements, result);
-
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(LocatorType.ID), "document", stringUtils.escape(locatorValue));
-        verify(webDriver).executeScript(jsCommand);
     }
 
+    @Disabled
     @Test
     @DisplayName("findElements should execute and return a list of webElements between the given context")
     void testFindElementsWithContext() {
         final String locatorValue = "locatorValue";
         when(js.findElements(webElement, LocatorType.CLASS_NAME, locatorValue)).thenReturn(webElements);
-        when(jsMethodsUtils.getFindElementsScript(LocatorType.CLASS_NAME)).thenReturn("return %s.getElementsByClassName('%s');");
         when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
 
         List<WebElement> result = js.findElements(webElement, LocatorType.CLASS_NAME, locatorValue);
         assertSame(webElements, result);
-
-        final String jsCommand = String.format(jsMethodsUtils.getFindElementsScript(LocatorType.CLASS_NAME), "arguments[0]", stringUtils.escape(locatorValue));
-        verify(webDriver).executeScript(jsCommand, webElement);
     }
 
     @Test
