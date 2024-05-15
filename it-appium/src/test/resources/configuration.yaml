@@ -10,6 +10,9 @@ drivers:
   uiAutomator2:
     capabilities:
       app: src/test/resources/hello-world.apk
+      # Instead of providing the 'app' capability, the two below can be used if the app is already installed on the device
+      #appPackage: com.example.helloworld
+      #appActivity: MainActivity
       avd: phone
       avdArgs: -no-window -no-audio -no-boot-anim -no-snapshot
       uiautomator2ServerInstallTimeout: 60000

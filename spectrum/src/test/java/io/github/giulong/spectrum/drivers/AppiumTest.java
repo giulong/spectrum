@@ -76,6 +76,16 @@ class AppiumTest {
     }
 
     @Test
+    @DisplayName("adjustCapabilitiesFrom should do nothing if the app capability is not set")
+    public void adjustCapabilitiesFromNoApp() {
+        when(capabilities.get(APP_CAPABILITY)).thenReturn(null);
+
+        assertEquals(capabilities, appium.adjustCapabilitiesFrom(capabilities));
+
+        verifyNoMoreInteractions(capabilities);
+    }
+
+    @Test
     @DisplayName("adjustCapabilitiesFrom should set the app path absolute if it's relative")
     public void adjustCapabilitiesFrom() {
         final Path path = Path.of("relative", "path");
