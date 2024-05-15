@@ -3,11 +3,15 @@ package io.github.giulong.spectrum.enums;
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
+@Slf4j
 @Getter
 @AllArgsConstructor
 public enum LocatorType implements WebElementFinder {
@@ -36,6 +40,7 @@ public enum LocatorType implements WebElementFinder {
     @Override
     public WebElement findElement(JavascriptExecutor driver, WebElement context, String locatorValue) {
         String jsCommand = String.format(findElementScript, context != null ? "arguments[0]" : "document", locatorValue);
+        log.debug("Executing js for finding web element. Script: {}", jsCommand);
         return (WebElement) driver.executeScript(jsCommand, context);
     }
 
@@ -43,6 +48,7 @@ public enum LocatorType implements WebElementFinder {
     @Override
     public List<WebElement> findElements(JavascriptExecutor driver, WebElement context, String locatorValue) {
         String jsCommand = String.format(findElementsScript, context != null ? "arguments[0]" : "document", locatorValue);
+        log.debug("Executing js for finding multiple web elements. Script: {}", jsCommand);
         return (List<WebElement>) driver.executeScript(jsCommand, context);
     }
 }
