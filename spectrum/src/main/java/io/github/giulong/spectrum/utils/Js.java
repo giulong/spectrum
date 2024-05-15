@@ -202,11 +202,11 @@ public class Js {
      * @return the location and size of the rendered WebElement
      */
     public Rectangle getRect(final WebElement webElement) {
-        @SuppressWarnings("unchecked") final List<Object> rectangle = (List<Object>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
+        @SuppressWarnings("unchecked") final List<Number> rectangle = (List<Number>) driver.executeScript("var rectangle = arguments[0].getBoundingClientRect(); " +
                 "return [rectangle.x, rectangle.y, rectangle.width, rectangle.height];", webElement);
 
-        final Point point = new Point(((Number) rectangle.get(0)).intValue(), ((Number) rectangle.get(1)).intValue());
-        final Dimension dimension = new Dimension(((Number) rectangle.get(2)).intValue(), ((Number) rectangle.get(3)).intValue());
+        final Point point = new Point((rectangle.get(0)).intValue(), (rectangle.get(1)).intValue());
+        final Dimension dimension = new Dimension((rectangle.get(2)).intValue(), (rectangle.get(3)).intValue());
 
         return new Rectangle(point, dimension);
     }

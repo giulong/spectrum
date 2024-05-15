@@ -291,7 +291,7 @@ class JsTest {
     @Test
     @DisplayName("getRect should return the correct location and dimensions of the WebElement")
     void testGetRect() {
-        List<Object> rectangleValues = Arrays.asList(50, 60, 200, 100);
+        List<Number> rectangleValues = Arrays.asList(50, 60, 200, 100);
         when(webDriver.executeScript(
                 "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.x, rectangle.y, rectangle.width, rectangle.height];",
                 webElement
