@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.enums.LocatorType;
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import lombok.Builder;
 import org.openqa.selenium.*;
