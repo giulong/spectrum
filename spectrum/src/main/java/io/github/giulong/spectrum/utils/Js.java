@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
 import io.github.giulong.spectrum.enums.LocatorType;
+import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import lombok.Builder;
 import org.openqa.selenium.*;
 
@@ -16,47 +17,47 @@ public class Js {
     /**
      * Find the first WebElement using the given method starting from the provided context
      *
-     * @param context      the context where to search the element
-     * @param locatorType  the locating mechanism for finding the WebElement
-     * @param locatorValue the value used by the locating mechanism
+     * @param context          the context where to search the element
+     * @param webElementFinder locating mechanism for finding the WebElement
+     * @param locatorValue     the value used by the locating mechanism
      * @return the found WebElement
      */
-    public WebElement findElement(final WebElement context, final LocatorType locatorType, final String locatorValue) {
-        return locatorType.findElement(driver, context, stringUtils.escape(locatorValue));
+    public WebElement findElement(final WebElement context, final WebElementFinder webElementFinder, final String locatorValue) {
+        return webElementFinder.findElement(driver, context, stringUtils.escape(locatorValue));
     }
 
     /**
      * Find the first WebElement using the given method starting from document
      *
-     * @param locatorType  the locating mechanism for finding the WebElement
-     * @param locatorValue the value used by the locating mechanism
+     * @param webElementFinder the locating mechanism for finding the WebElement
+     * @param locatorValue     the value used by the locating mechanism
      * @return the found WebElement
      */
-    public WebElement findElement(final LocatorType locatorType, final String locatorValue) {
-        return locatorType.findElement(driver, null, stringUtils.escape(locatorValue));
+    public WebElement findElement(final WebElementFinder webElementFinder, final String locatorValue) {
+        return webElementFinder.findElement(driver, null, stringUtils.escape(locatorValue));
     }
 
     /**
      * Find all WebElements using the given method starting from the provided context
      *
-     * @param context      the context where to search the elements
-     * @param locatorType  the locating mechanism for finding all WebElements
-     * @param locatorValue the value used by the locating mechanism
+     * @param context          the context where to search the elements
+     * @param webElementFinder the locating mechanism for finding all WebElements
+     * @param locatorValue     the value used by the locating mechanism
      * @return the list of found WebElements
      */
-    public List<WebElement> findElements(final WebElement context, final LocatorType locatorType, final String locatorValue) {
-        return locatorType.findElements(driver, context, stringUtils.escape(locatorValue));
+    public List<WebElement> findElements(final WebElement context, final WebElementFinder webElementFinder, final String locatorValue) {
+        return webElementFinder.findElements(driver, context, stringUtils.escape(locatorValue));
     }
 
     /**
      * Find all WebElements using the given method starting from the provided context
      *
-     * @param locatorType  the locating mechanism for finding all WebElements
-     * @param locatorValue the value used by the locating mechanism
+     * @param webElementFinder the locating mechanism for finding all WebElements
+     * @param locatorValue     the value used by the locating mechanism
      * @return the list of found WebElements
      */
-    public List<WebElement> findElements(final LocatorType locatorType, final String locatorValue) {
-        return locatorType.findElements(driver, null, stringUtils.escape(locatorValue));
+    public List<WebElement> findElements(final WebElementFinder webElementFinder, final String locatorValue) {
+        return webElementFinder.findElements(driver, null, stringUtils.escape(locatorValue));
     }
 
     /**
