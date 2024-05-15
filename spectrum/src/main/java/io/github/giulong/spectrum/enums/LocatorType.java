@@ -15,7 +15,7 @@ public enum LocatorType implements WebElementFinder {
     ID("return %s.getElementById('%s');", "return %s.querySelectorAll('#%s');"),
     CLASS_NAME("return %s.getElementsByClassName('%s')[0];", "return %s.getElementsByClassName('%s');"),
     CSS_SELECTOR("return %s.querySelector('%s');", "return %s.querySelectorAll('%s');"),
-    NAME("return %s.querySelector('[name=\\\"%s\\\"]');", "return %s.querySelectorAll('[name=\\\"%s\\\"]');"),
+    NAME("return %s.querySelector('[name=\"%s\"]');", "return %s.querySelectorAll('[name=\"%s\"]');"),
     TAG_NAME("return %s.getElementsByTagName('%s')[0];", "return %s.getElementsByTagName('%s');"),
 
     XPATH("return %s.evaluate('%s', document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;",
