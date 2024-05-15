@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.enums.LocatorType;
+import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,10 +27,10 @@ class JsTest {
     private List<WebElement> webElements;
 
     @Mock
-    private JavascriptExecutor webDriver;
+    private WebElementFinder webElementFinder;
 
     @Mock
-    private StringUtils stringUtils;
+    private JavascriptExecutor webDriver;
 
     @InjectMocks
     private Js js;
@@ -68,65 +68,60 @@ class JsTest {
         verify(webDriver).executeScript("arguments[0].value='';", webElement);
     }
 
-    @Disabled
     @Test
     @DisplayName("findElement should execute using document when no context is passed")
     void testFindElementNoContext() {
-        final String locatorValue = "locatorValue";
-        final String escapedValue = "locatorValue";
-        final String jsCommand = String.format(LocatorType.ID.getFindElementScript(), "document", escapedValue);
+        String locatorValue = "locatorValue";
 
-        when(stringUtils.escape(locatorValue)).thenReturn(escapedValue);
-        when(webDriver.executeScript(jsCommand)).thenReturn(webElement);
+        when(webElementFinder.findElement(webDriver, null, locatorValue)).thenReturn(webElement);
 
-        WebElement result = js.findElement(LocatorType.ID, locatorValue);
+        WebElement result = js.findElement(webElementFinder, locatorValue);
 
         assertSame(webElement, result);
-        verify(webDriver).executeScript(jsCommand);
+        verify(webElementFinder).findElement(webDriver, null, locatorValue);
     }
 
-    @Disabled
     @Test
     @DisplayName("findElement should execute and return a WebElement using the given context")
     void testFindElementWithContext() {
-        final String locatorValue = "locatorValue";
-        final String escapedValue = "locatorValue";
-        final String jsCommand = String.format(LocatorType.CLASS_NAME.getFindElementScript(), "arguments[0]", escapedValue);
+        WebElement context = webElement;
+        String locatorValue = "testLocatorValue";
+        WebElement expectedWebElement = webElement;
 
-        when(stringUtils.escape(locatorValue)).thenReturn(escapedValue);
-        when(webDriver.executeScript(jsCommand, webElement)).thenReturn(webElement);
+        when(webElementFinder.findElement(webDriver, context, locatorValue)).thenReturn(expectedWebElement);
 
-        WebElement result = js.findElement(webElement, LocatorType.CLASS_NAME, locatorValue);
+        WebElement result = js.findElement(context, webElementFinder, locatorValue);
 
-        assertSame(webElement, result);
-        verify(webDriver).executeScript(jsCommand, webElement);
+        assertSame(expectedWebElement, result);
+        verify(webElementFinder).findElement(webDriver, context, locatorValue);
     }
 
-    @Disabled
     @Test
     @DisplayName("findElements should be executed without a context passed")
     public void testFindElementsNoContext() {
-        final String locatorValue = "locatorValue";
-        final String escapedValue = "locatorValue";
+        String locatorValue = "locatorValue";
 
-        when(stringUtils.escape(locatorValue)).thenReturn(escapedValue);
-        when(js.findElements(LocatorType.ID, locatorValue)).thenReturn(webElements);
-        when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
+        when(webElementFinder.findElements(webDriver, null, locatorValue)).thenReturn(webElements);
 
-        List<WebElement> result = js.findElements(LocatorType.ID, locatorValue);
+        List<WebElement> result = js.findElements(webElementFinder, locatorValue);
+
         assertSame(webElements, result);
+        verify(webElementFinder).findElements(webDriver, null, locatorValue);
     }
 
-    @Disabled
     @Test
     @DisplayName("findElements should execute and return a list of webElements between the given context")
     void testFindElementsWithContext() {
-        final String locatorValue = "locatorValue";
-        when(js.findElements(webElement, LocatorType.CLASS_NAME, locatorValue)).thenReturn(webElements);
-        when(stringUtils.escape(locatorValue)).thenReturn(locatorValue);
+        WebElement context = webElement;
+        String locatorValue = "testLocatorValue";
+        List<WebElement> expectedWebElements = webElements;
 
-        List<WebElement> result = js.findElements(webElement, LocatorType.CLASS_NAME, locatorValue);
-        assertSame(webElements, result);
+        when(webElementFinder.findElements(webDriver, context, locatorValue)).thenReturn(expectedWebElements);
+
+        List<WebElement> result = js.findElements(context, webElementFinder, locatorValue);
+
+        assertSame(expectedWebElements, result);
+        verify(webElementFinder).findElements(webDriver, context, locatorValue);
     }
 
     @Test
