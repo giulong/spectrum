@@ -140,9 +140,10 @@ public class Js {
      * @return the attribute/property current value or null if the value is not set.
      */
     public String getAttribute(final WebElement webElement, final String attribute) {
-        final String domProperty = this.getDomProperty(webElement, stringUtils.convertCssProperty(attribute));
+        final String checkedAttribute = stringUtils.convert(attribute);
+        final String domProperty = this.getDomProperty(webElement, checkedAttribute);
         if (domProperty == null) {
-            return this.getDomAttribute(webElement, stringUtils.convertCssProperty(attribute));
+            return this.getDomAttribute(webElement, checkedAttribute);
         }
         return domProperty;
     }

@@ -41,9 +41,9 @@ public class StringUtilsTest {
 
     @Test
     @DisplayName("convertString should convert the input string into the value combined with the key in the map")
-    void testConvertCssProperty() {
-        assertEquals("className", stringUtils.convertCssProperty("class"));
-        assertEquals("readOnly", stringUtils.convertCssProperty("readonly"));
-        assertEquals("notInMap", stringUtils.convertCssProperty("notInMap"));
+    void testConvert() {
+        assertEquals("className", stringUtils.convert("class"));
+        assertEquals("readOnly", stringUtils.convert("readonly"));
+        assertEquals("notInMap", stringUtils.convert("notInMap"));
     }
 }

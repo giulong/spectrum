@@ -32,7 +32,7 @@ public final class StringUtils {
                 .replace("\r", "\\r");
     }
 
-    public String convertCssProperty(String stringToConvert) {
+    public String convert(String stringToConvert) {
         return CONVERSIONMAP.getOrDefault(stringToConvert, stringToConvert);
     }
 }
