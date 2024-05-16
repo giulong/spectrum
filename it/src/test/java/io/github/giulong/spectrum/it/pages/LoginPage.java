@@ -29,6 +29,12 @@ public class LoginPage extends SpectrumPage<LoginPage, Void> {
     @FindBy(id = "login")
     private WebElement form;
 
+    @FindBy(id = "content")
+    private WebElement contentDiv;
+
+    @FindBy(className = "subheader")
+    private WebElement subHeader;
+
     @Override
     public LoginPage waitForPageLoading() {
         log.info("Wait for page loading: waiting for errorMessage to disappear");
