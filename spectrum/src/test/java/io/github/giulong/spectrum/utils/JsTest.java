@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,9 @@ import static org.mockito.Mockito.*;
 class JsTest {
 
     @Mock
+    private StringUtils stringUtils;
+
+    @Mock
     private WebElement webElement;
 
     @Mock
@@ -33,6 +37,11 @@ class JsTest {
     @InjectMocks
     private Js js;
 
+    @BeforeEach
+    public void beforeEach() {
+        Reflections.setField("stringUtils", js, stringUtils);
+    }
+
     @Test
     @DisplayName("click should click with javascript on the provided webElement and return the Js instance")
     public void testClick() {
@@ -42,12 +51,17 @@ class JsTest {
     }
 
     @Test
-    @DisplayName("sendkeys should insert the input string as value of the provided webElement and return the Js instance")
+    @DisplayName("sendKeys should insert all the provided charSequences as value of the provided webElement and return the Js instance")
     public void testSendKeys() {
-        final String keysToSend = "input Test";
+        final String string = "string";
+        final String escapedString = "escapedString";
+        final CharSequence[] keysToSend = new CharSequence[]{string, Keys.END, Keys.ADD};
+
+        when(stringUtils.escape(string)).thenReturn(escapedString);
+
         assertEquals(js, js.sendKeys(webElement, keysToSend));
 
-        verify(webDriver).executeScript(String.format("arguments[0].value='%s';", keysToSend), webElement);
+        verify(webDriver).executeScript(String.format("arguments[0].value='%s';", String.join("", escapedString, Keys.END, Keys.ADD)), webElement);
     }
 
     @Test
@@ -70,41 +84,47 @@ class JsTest {
     @DisplayName("findElement should execute using document when no context is passed")
     void testFindElementNoContext() {
         String locatorValue = "locatorValue";
+        String escapedLocatorValue = "escapedLocatorValue";
 
-        when(webElementFinder.findElement(webDriver, null, locatorValue)).thenReturn(webElement);
+        when(stringUtils.escape(locatorValue)).thenReturn(escapedLocatorValue);
+        when(webElementFinder.findElement(webDriver, null, escapedLocatorValue)).thenReturn(webElement);
 
         WebElement result = js.findElement(webElementFinder, locatorValue);
 
         assertSame(webElement, result);
-        verify(webElementFinder).findElement(webDriver, null, locatorValue);
+        verify(webElementFinder).findElement(webDriver, null, escapedLocatorValue);
     }
 
     @Test
     @DisplayName("findElement should execute and return a WebElement using the given context")
     void testFindElementWithContext() {
         WebElement context = webElement;
-        String locatorValue = "testLocatorValue";
+        String locatorValue = "locatorValue";
+        String escapedLocatorValue = "escapedLocatorValue";
         WebElement expectedWebElement = webElement;
 
-        when(webElementFinder.findElement(webDriver, context, locatorValue)).thenReturn(expectedWebElement);
+        when(stringUtils.escape(locatorValue)).thenReturn(escapedLocatorValue);
+        when(webElementFinder.findElement(webDriver, context, escapedLocatorValue)).thenReturn(expectedWebElement);
 
         WebElement result = js.findElement(context, webElementFinder, locatorValue);
 
         assertSame(expectedWebElement, result);
-        verify(webElementFinder).findElement(webDriver, context, locatorValue);
+        verify(webElementFinder).findElement(webDriver, context, escapedLocatorValue);
     }
 
     @Test
     @DisplayName("findElements should be executed without a context passed")
     public void testFindElementsNoContext() {
         String locatorValue = "locatorValue";
+        String escapedLocatorValue = "escapedLocatorValue";
 
-        when(webElementFinder.findElements(webDriver, null, locatorValue)).thenReturn(webElements);
+        when(stringUtils.escape(locatorValue)).thenReturn(escapedLocatorValue);
+        when(webElementFinder.findElements(webDriver, null, escapedLocatorValue)).thenReturn(webElements);
 
         List<WebElement> result = js.findElements(webElementFinder, locatorValue);
 
         assertSame(webElements, result);
-        verify(webElementFinder).findElements(webDriver, null, locatorValue);
+        verify(webElementFinder).findElements(webDriver, null, escapedLocatorValue);
     }
 
     @Test
@@ -112,14 +132,16 @@ class JsTest {
     void testFindElementsWithContext() {
         WebElement context = webElement;
         String locatorValue = "testLocatorValue";
+        String escapedLocatorValue = "escapedLocatorValue";
         List<WebElement> expectedWebElements = webElements;
 
-        when(webElementFinder.findElements(webDriver, context, locatorValue)).thenReturn(expectedWebElements);
+        when(stringUtils.escape(locatorValue)).thenReturn(escapedLocatorValue);
+        when(webElementFinder.findElements(webDriver, context, escapedLocatorValue)).thenReturn(expectedWebElements);
 
         List<WebElement> result = js.findElements(context, webElementFinder, locatorValue);
 
         assertSame(expectedWebElements, result);
-        verify(webElementFinder).findElements(webDriver, context, locatorValue);
+        verify(webElementFinder).findElements(webDriver, context, escapedLocatorValue);
     }
 
     @Test
@@ -196,8 +218,7 @@ class JsTest {
     void testGetDomProperty() {
         final String propertyName = "propertyName";
         final String propertyValue = "propertyValue";
-        when(webDriver.executeScript("return arguments[0].propertyName;", webElement))
-                .thenReturn(propertyValue);
+        when(webDriver.executeScript("return arguments[0].propertyName;", webElement)).thenReturn(propertyValue);
 
         String result = js.getDomProperty(webElement, propertyName);
 
@@ -208,9 +229,11 @@ class JsTest {
     @DisplayName("getAttribute should return the DOM property if it is not null")
     void testGetAttributeReturnsProperty() {
         final String attributeName = "type";
+        final String escapedAttributeName = "escapedAttributeName";
         final String propertyValue = "button";
 
-        when(js.getDomProperty(webElement, attributeName)).thenReturn(propertyValue);
+        when(stringUtils.convert(attributeName)).thenReturn(escapedAttributeName);
+        when(js.getDomProperty(webElement, escapedAttributeName)).thenReturn(propertyValue);
 
         String result = js.getAttribute(webElement, attributeName);
 
@@ -222,10 +245,12 @@ class JsTest {
     @DisplayName("getAttribute should return the DOM attribute if the property is null")
     void testGetAttributeReturnsAttributeWhenPropertyIsNull() {
         final String attributeName = "type";
+        final String escapedAttributeName = "escapedAttributeName";
         final String attributeValue = "button";
 
-        when(js.getDomProperty(webElement, attributeName)).thenReturn(null);
-        when(js.getDomAttribute(webElement, attributeName)).thenReturn(attributeValue);
+        when(js.getDomProperty(webElement, escapedAttributeName)).thenReturn(null);
+        when(js.getDomAttribute(webElement, escapedAttributeName)).thenReturn(attributeValue);
+        when(stringUtils.convert(attributeName)).thenReturn(escapedAttributeName);
 
         String result = js.getAttribute(webElement, attributeName);
 

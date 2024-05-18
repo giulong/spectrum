@@ -4,7 +4,10 @@ import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import lombok.Builder;
 import org.openqa.selenium.*;
 
+import java.util.Arrays;
 import java.util.List;
+
+import static java.util.stream.Collectors.joining;
 
 @Builder
 public class Js {
@@ -243,9 +246,13 @@ public class Js {
      * @param keysToSend the String to send to webElement
      * @return the calling SpectrumEntity instance
      */
-    public Js sendKeys(final WebElement webElement, final String keysToSend) {
-        final String jsCommand = String.format("arguments[0].value='%s';", stringUtils.escape(keysToSend));
-        driver.executeScript(jsCommand, webElement);
+    public Js sendKeys(final WebElement webElement, final CharSequence... keysToSend) {
+        final String escapedKeysToSend = Arrays
+                .stream(keysToSend)
+                .map(key -> key instanceof String ? stringUtils.escape((String) key) : key)
+                .collect(joining());
+
+        driver.executeScript(String.format("arguments[0].value='%s';", escapedKeysToSend), webElement);
 
         return this;
     }
