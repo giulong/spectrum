@@ -5,7 +5,7 @@ on:
     branches: [ "develop", "feature/**", "bugfix/**" ]
   pull_request:
     branches: [ "develop" ]
-    types: [ opened ]
+    types: [ opened, reopened, edited ]
 
 env:
   EDGE_BINARY: /usr/bin/microsoft-edge

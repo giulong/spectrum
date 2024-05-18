@@ -219,7 +219,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.39.0</version>
+                <version>1.39.1</version>
             </dependency>
 
             <dependency>
@@ -255,7 +255,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>5.11.0</version>
+                <version>5.12.0</version>
                 <scope>test</scope>
             </dependency>
 
