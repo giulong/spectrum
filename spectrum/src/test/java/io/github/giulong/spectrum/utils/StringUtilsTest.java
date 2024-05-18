@@ -38,12 +38,4 @@ public class StringUtilsTest {
     void testEscapeWithCombinedCharacters() {
         assertEquals("\\\\\\'\\\"\\n\\r", stringUtils.escape("\\'\"\n\r"));
     }
-
-    @Test
-    @DisplayName("convertString should convert the input string into the value combined with the key in the map")
-    void testConvert() {
-        assertEquals("className", stringUtils.convert("class"));
-        assertEquals("readOnly", stringUtils.convert("readonly"));
-        assertEquals("notInMap", stringUtils.convert("notInMap"));
-    }
 }

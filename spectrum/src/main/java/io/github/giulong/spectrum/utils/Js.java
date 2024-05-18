@@ -5,16 +5,23 @@ import lombok.Builder;
 import org.openqa.selenium.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.joining;
 
 @Builder
 public class Js {
 
-    private JavascriptExecutor driver;
+    private static final Map<String, String> CONVERSION_MAP = new HashMap<>() {{
+        put("class", "className");
+        put("readonly", "readOnly");
+    }};
 
     private final StringUtils stringUtils = StringUtils.getInstance();
+
+    private JavascriptExecutor driver;
 
     /**
      * Find the first WebElement using the given method starting from the provided context
@@ -143,12 +150,10 @@ public class Js {
      * @return the attribute/property current value or null if the value is not set.
      */
     public String getAttribute(final WebElement webElement, final String attribute) {
-        final String checkedAttribute = stringUtils.convert(attribute);
+        final String checkedAttribute = convert(attribute);
         final String domProperty = this.getDomProperty(webElement, checkedAttribute);
-        if (domProperty == null) {
-            return this.getDomAttribute(webElement, checkedAttribute);
-        }
-        return domProperty;
+
+        return domProperty == null ? this.getDomAttribute(webElement, checkedAttribute) : domProperty;
     }
 
     /**
@@ -279,5 +284,9 @@ public class Js {
         driver.executeScript("arguments[0].value='';", webElement);
 
         return this;
+    }
+
+    protected String convert(final String stringToConvert) {
+        return CONVERSION_MAP.getOrDefault(stringToConvert, stringToConvert);
     }
 }

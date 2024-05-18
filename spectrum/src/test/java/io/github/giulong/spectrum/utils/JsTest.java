@@ -228,12 +228,11 @@ class JsTest {
     @Test
     @DisplayName("getAttribute should return the DOM property if it is not null")
     void testGetAttributeReturnsProperty() {
-        final String attributeName = "type";
-        final String escapedAttributeName = "escapedAttributeName";
+        final String attributeName = "class";
+        final String convertedAttributeName = "className";
         final String propertyValue = "button";
 
-        when(stringUtils.convert(attributeName)).thenReturn(escapedAttributeName);
-        when(js.getDomProperty(webElement, escapedAttributeName)).thenReturn(propertyValue);
+        when(js.getDomProperty(webElement, convertedAttributeName)).thenReturn(propertyValue);
 
         String result = js.getAttribute(webElement, attributeName);
 
@@ -244,13 +243,12 @@ class JsTest {
     @Test
     @DisplayName("getAttribute should return the DOM attribute if the property is null")
     void testGetAttributeReturnsAttributeWhenPropertyIsNull() {
-        final String attributeName = "type";
-        final String escapedAttributeName = "escapedAttributeName";
+        final String attributeName = "class";
+        final String convertedAttributeName = "className";
         final String attributeValue = "button";
 
-        when(js.getDomProperty(webElement, escapedAttributeName)).thenReturn(null);
-        when(js.getDomAttribute(webElement, escapedAttributeName)).thenReturn(attributeValue);
-        when(stringUtils.convert(attributeName)).thenReturn(escapedAttributeName);
+        when(js.getDomProperty(webElement, convertedAttributeName)).thenReturn(null);
+        when(js.getDomAttribute(webElement, convertedAttributeName)).thenReturn(attributeValue);
 
         String result = js.getAttribute(webElement, attributeName);
 
@@ -338,5 +336,13 @@ class JsTest {
         assertNotNull(result);
         assertEquals(50, result.x);
         assertEquals(60, result.y);
+    }
+
+    @Test
+    @DisplayName("convertString should convert the input string into the value combined with the key in the map")
+    void testConvert() {
+        assertEquals("className", js.convert("class"));
+        assertEquals("readOnly", js.convert("readonly"));
+        assertEquals("notInMap", js.convert("notInMap"));
     }
 }
