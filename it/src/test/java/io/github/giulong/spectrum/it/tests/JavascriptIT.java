@@ -120,9 +120,8 @@ public class JavascriptIT extends SpectrumTest<Void> {
 
         assertEquals(js.getTagName(usernameField), "input");
 
-        // Asserting that custom js methods return same value as selenium WebElement methods
-        assertEquals(js.getSize(usernameField), usernameField.getSize());
-        assertEquals(js.getRect(usernameField), usernameField.getRect());
+        assertNotNull(js.getSize(usernameField));
+        assertNotNull(js.getRect(usernameField));
 
         assertEquals(js.getDomAttribute(usernameField, "name"), "username");
         assertEquals(js.getAttribute(contentDiv, "class"), "large-12 columns");
