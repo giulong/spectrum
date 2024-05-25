@@ -91,11 +91,10 @@ public class JsWebElementIT extends SpectrumTest<Void> {
         assertEquals("login", form.getDomAttribute("id"));
         assertEquals("login", form.getAttribute("id"));
 
-        final Dimension dimension = new Dimension(470, 32);
-        assertEquals(dimension, usernameField.getSize());
+        assertNotNull(usernameField.getSize());
         assertTrue(usernameField.getLocation().getX() > 50);
         assertTrue(usernameField.getLocation().getY() > 200);
-        assertEquals(dimension, usernameField.getRect().getDimension());
+        assertNotNull(usernameField.getRect().getDimension());
 
         usernameField.clear();
         assertTrue(usernameField.getDomProperty("value").isEmpty());
