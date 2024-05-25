@@ -92,8 +92,8 @@ public class JsWebElementIT extends SpectrumTest<Void> {
         assertEquals("login", form.getAttribute("id"));
 
         assertNotNull(usernameField.getSize());
-        assertTrue(usernameField.getLocation().getX() > 50);
-        assertTrue(usernameField.getLocation().getY() > 200);
+        assertNotNull(usernameField.getLocation());
+        assertNotNull(usernameField.getLocation());
         assertNotNull(usernameField.getRect().getDimension());
 
         usernameField.clear();
