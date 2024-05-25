@@ -1,24 +1,22 @@
 package io.github.giulong.spectrum.it.pages;
 
 import io.github.giulong.spectrum.SpectrumPage;
+import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import lombok.Getter;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
 @Getter
+@Endpoint("shadowdom")
 @SuppressWarnings("unused")
-public class JsLandingPage extends SpectrumPage<JsLandingPage, Void> {
+public class JsShadowDomPage extends SpectrumPage<JsShadowDomPage, Void> {
 
-    @FindBy(tagName = "h1")
+    @FindBy(tagName = "my-paragraph")
     @JsWebElement
-    private WebElement title;
+    private WebElement myParagraph;
 
-    @FindBy(linkText = "Checkboxes")
+    @FindBy(css = "span[slot=\"my-text\"]")
     @JsWebElement
-    private WebElement checkboxLink;
-
-    @FindBy(linkText = "Form Authentication")
-    @JsWebElement
-    private WebElement formLoginLink;
+    private WebElement span;
 }

@@ -4,14 +4,12 @@ import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import lombok.Builder;
 import org.openqa.selenium.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.stream.Collectors.joining;
 
 @Builder
+@SuppressWarnings("checkstyle:MultipleStringLiterals")
 public class Js {
 
     private static final Map<String, String> CONVERSION_MAP = new HashMap<>() {{
@@ -97,11 +95,7 @@ public class Js {
      * @return the shadowRoot of the WebElement
      */
     public SearchContext getShadowRoot(final WebElement webElement) {
-        SearchContext shadowRoot = (SearchContext) driver.executeScript("return arguments[0].shadowRoot;", webElement);
-        if (shadowRoot == null) {
-            throw new NoSuchShadowRootException("No shadow root could be found for the provided webElement");
-        }
-        return shadowRoot;
+        return (SearchContext) driver.executeScript("return arguments[0].shadowRoot;", webElement);
     }
 
     /**
@@ -173,9 +167,9 @@ public class Js {
      * @return true if element is enabled, false otherwise
      */
     public boolean isEnabled(final WebElement webElement) {
-        final boolean isDisabled = (boolean) driver.executeScript("return arguments[0].disabled;", webElement);
+        final boolean disabled = (boolean) driver.executeScript("return arguments[0].disabled;", webElement);
 
-        return !isDisabled;
+        return !disabled;
     }
 
     /**

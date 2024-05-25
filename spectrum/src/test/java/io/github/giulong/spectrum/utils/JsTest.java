@@ -180,12 +180,11 @@ class JsTest {
     }
 
     @Test
-    @DisplayName("getShadowRoot should throw NoSuchShadowRootException when the shadowRoot is not present")
+    @DisplayName("getShadowRoot should return null when the shadowRoot is not present")
     void testGetShadowRootWhenNotPresent() {
         when(webDriver.executeScript("return arguments[0].shadowRoot;", webElement)).thenReturn(null);
 
-        assertThrows(NoSuchShadowRootException.class, () -> js.getShadowRoot(webElement),
-                "Expected NoSuchShadowRootException to be thrown when no shadowRoot is found.");
+        assertNull(js.getShadowRoot(webElement));
     }
 
     @Test

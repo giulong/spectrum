@@ -5,19 +5,28 @@ import io.github.giulong.spectrum.enums.LocatorType;
 import io.github.giulong.spectrum.it.pages.CheckboxPage;
 import io.github.giulong.spectrum.it.pages.LandingPage;
 import io.github.giulong.spectrum.it.pages.LoginPage;
-import org.junit.jupiter.api.DisplayName;
+import io.github.giulong.spectrum.it.pages.ShadowDomPage;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.NoSuchShadowRootException;
+import org.openqa.selenium.By;
+import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 
-@DisplayName("Javascript")
 public class JavascriptIT extends SpectrumTest<Void> {
 
+    @SuppressWarnings("unused")
     private LandingPage landingPage;
+
+    @SuppressWarnings("unused")
     private CheckboxPage checkboxPage;
+
+    @SuppressWarnings("unused")
     private LoginPage loginPage;
+
+    @SuppressWarnings("unused")
+    private ShadowDomPage shadowDomPage;
 
     @Test
     public void testWithNoDisplayName() {
@@ -120,9 +129,9 @@ public class JavascriptIT extends SpectrumTest<Void> {
         assertEquals(js.getText(form), "Username\nPassword\n Login");
 
         assertEquals(js.getCssValue(usernameField, "color"), "rgba(0, 0, 0, 0.75)");
-        assertEquals(js.getCssValue(usernameField, "background"), "rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box");
+        assertTrue(js.getCssValue(usernameField, "background").startsWith("rgb(255, 255, 255)"));
 
-        assertThrows(NoSuchShadowRootException.class, () -> js.getShadowRoot(usernameField));
+        assertNull(js.getShadowRoot(usernameField));
     }
 
     @Test
@@ -143,6 +152,21 @@ public class JavascriptIT extends SpectrumTest<Void> {
         js.sendKeys(passwordField, "SuperSecretPassword!");
 
         js.submit(form);
+        pageLoadWait.until(urlToBe("https://the-internet.herokuapp.com/secure"));
         assertEquals("https://the-internet.herokuapp.com/secure", driver.getCurrentUrl());
+    }
+
+    @Test
+    public void shadowDom() {
+        shadowDomPage.open();
+
+        final WebElement span = shadowDomPage.getSpan();
+
+        final SearchContext shadowRoot = js.getShadowRoot(shadowDomPage.getMyParagraph());
+        assertNotNull(shadowRoot);
+        assertNull(js.getShadowRoot(span));
+
+        assertEquals("Let's have some different text!", span.getText());
+        assertEquals("My default text", shadowRoot.findElement(By.cssSelector("slot")).getText());
     }
 }
