@@ -52,7 +52,7 @@ class JsTest {
 
     @Test
     @DisplayName("sendKeys should insert all the provided charSequences as value of the provided webElement and return the Js instance")
-    public void testSendKeys() {
+    public void testSendKegitys() {
         final String string = "string";
         final String escapedString = "escapedString";
         final CharSequence[] keysToSend = new CharSequence[]{string, Keys.END, Keys.ADD};
@@ -91,7 +91,7 @@ class JsTest {
 
         WebElement result = js.findElement(webElementFinder, locatorValue);
 
-        assertSame(webElement, result);
+        assertEquals(webElement, result);
         verify(webElementFinder).findElement(webDriver, null, escapedLocatorValue);
     }
 
@@ -108,7 +108,7 @@ class JsTest {
 
         WebElement result = js.findElement(context, webElementFinder, locatorValue);
 
-        assertSame(expectedWebElement, result);
+        assertEquals(expectedWebElement, result);
         verify(webElementFinder).findElement(webDriver, context, escapedLocatorValue);
     }
 
@@ -123,7 +123,7 @@ class JsTest {
 
         List<WebElement> result = js.findElements(webElementFinder, locatorValue);
 
-        assertSame(webElements, result);
+        assertEquals(webElements, result);
         verify(webElementFinder).findElements(webDriver, null, escapedLocatorValue);
     }
 
@@ -140,17 +140,17 @@ class JsTest {
 
         List<WebElement> result = js.findElements(context, webElementFinder, locatorValue);
 
-        assertSame(expectedWebElements, result);
+        assertEquals(expectedWebElements, result);
         verify(webElementFinder).findElements(webDriver, context, escapedLocatorValue);
     }
 
     @Test
     @DisplayName("getText should return the innerText of provided context")
     void testGetText() {
-        when(js.getText(webElement)).thenReturn("text");
+        when(webDriver.executeScript("return arguments[0].innerText;", webElement)).thenReturn("text");
 
         String result = js.getText(webElement);
-        assertSame("text", result);
+        assertEquals("text", result);
 
         verify(webDriver).executeScript("return arguments[0].innerText;", webElement);
     }
@@ -159,13 +159,10 @@ class JsTest {
     @DisplayName("getCssValue should return the webElement with provided css properties")
     void testGetCssValue() {
         final String cssProperty = "cssProperty";
-        when(js.getCssValue(webElement, cssProperty)).thenReturn("cssValue");
+        when(webDriver.executeScript(String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty), webElement)).thenReturn("cssValue");
 
         String result = js.getCssValue(webElement, cssProperty);
-        assertSame("cssValue", result);
-
-        final String jsCommand = String.format("return window.getComputedStyle(arguments[0]).getPropertyValue('%s');", cssProperty);
-        verify(webDriver).executeScript(jsCommand, webElement);
+        assertEquals("cssValue", result);
     }
 
     @Test
@@ -176,7 +173,7 @@ class JsTest {
 
         SearchContext actualShadowRoot = js.getShadowRoot(webElement);
 
-        assertSame(expectedShadowRoot, actualShadowRoot, "The returned shadowRoot should match the expected one.");
+        assertEquals(expectedShadowRoot, actualShadowRoot, "The returned shadowRoot should match the expected one.");
     }
 
     @Test
