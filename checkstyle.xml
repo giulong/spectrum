@@ -92,9 +92,7 @@
 
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
-        <module name="UnusedImports">
-            <property name="severity" value="warning"/>
-        </module>
+        <module name="UnusedImports"/>
 
         <module name="OuterTypeFilename"/>
         <module name="UpperEll"/>
