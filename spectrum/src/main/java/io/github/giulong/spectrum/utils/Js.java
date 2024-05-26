@@ -4,14 +4,22 @@ import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import lombok.Builder;
 import org.openqa.selenium.*;
 
-import java.util.List;
+import java.util.*;
+
+import static java.util.stream.Collectors.joining;
 
 @Builder
+@SuppressWarnings("checkstyle:MultipleStringLiterals")
 public class Js {
 
-    private JavascriptExecutor driver;
+    private static final Map<String, String> CONVERSION_MAP = new HashMap<>() {{
+        put("class", "className");
+        put("readonly", "readOnly");
+    }};
 
     private final StringUtils stringUtils = StringUtils.getInstance();
+
+    private JavascriptExecutor driver;
 
     /**
      * Find the first WebElement using the given method starting from the provided context
@@ -87,11 +95,7 @@ public class Js {
      * @return the shadowRoot of the WebElement
      */
     public SearchContext getShadowRoot(final WebElement webElement) {
-        SearchContext shadowRoot = (SearchContext) driver.executeScript("return arguments[0].shadowRoot;", webElement);
-        if (shadowRoot == null) {
-            throw new NoSuchShadowRootException("No shadow root could be found for the provided webElement");
-        }
-        return shadowRoot;
+        return (SearchContext) driver.executeScript("return arguments[0].shadowRoot;", webElement);
     }
 
     /**
@@ -140,12 +144,10 @@ public class Js {
      * @return the attribute/property current value or null if the value is not set.
      */
     public String getAttribute(final WebElement webElement, final String attribute) {
-        final String checkedAttribute = stringUtils.convert(attribute);
+        final String checkedAttribute = convert(attribute);
         final String domProperty = this.getDomProperty(webElement, checkedAttribute);
-        if (domProperty == null) {
-            return this.getDomAttribute(webElement, checkedAttribute);
-        }
-        return domProperty;
+
+        return domProperty == null ? this.getDomAttribute(webElement, checkedAttribute) : domProperty;
     }
 
     /**
@@ -165,9 +167,9 @@ public class Js {
      * @return true if element is enabled, false otherwise
      */
     public boolean isEnabled(final WebElement webElement) {
-        final boolean isDisabled = (boolean) driver.executeScript("return arguments[0].disabled;", webElement);
+        final boolean disabled = (boolean) driver.executeScript("return arguments[0].disabled;", webElement);
 
-        return !isDisabled;
+        return !disabled;
     }
 
     /**
@@ -243,9 +245,13 @@ public class Js {
      * @param keysToSend the String to send to webElement
      * @return the calling SpectrumEntity instance
      */
-    public Js sendKeys(final WebElement webElement, final String keysToSend) {
-        final String jsCommand = String.format("arguments[0].value='%s';", stringUtils.escape(keysToSend));
-        driver.executeScript(jsCommand, webElement);
+    public Js sendKeys(final WebElement webElement, final CharSequence... keysToSend) {
+        final String escapedKeysToSend = Arrays
+                .stream(keysToSend)
+                .map(key -> key instanceof String ? stringUtils.escape((String) key) : key)
+                .collect(joining());
+
+        driver.executeScript(String.format("arguments[0].value='%s';", escapedKeysToSend), webElement);
 
         return this;
     }
@@ -272,5 +278,9 @@ public class Js {
         driver.executeScript("arguments[0].value='';", webElement);
 
         return this;
+    }
+
+    protected String convert(final String stringToConvert) {
+        return CONVERSION_MAP.getOrDefault(stringToConvert, stringToConvert);
     }
 }

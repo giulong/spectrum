@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Method;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -23,7 +22,6 @@ import static io.github.giulong.spectrum.extensions.resolvers.JsResolver.JS;
 import static io.github.giulong.spectrum.extensions.resolvers.JsWebElementProxyBuilderResolver.JS_WEB_ELEMENT_PROXY_BUILDER;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +41,9 @@ class JsWebElementProxyBuilderResolverTest {
 
     @Mock
     private ExtensionContext rootContext;
+
+    @Mock
+    private ExtensionContext.Store store;
 
     @Mock
     private ExtensionContext.Store rootStore;
@@ -71,9 +72,6 @@ class JsWebElementProxyBuilderResolverTest {
     @Captor
     private ArgumentCaptor<Map<Method, Method>> mapArgumentCaptor;
 
-    @Captor
-    private ArgumentCaptor<Function<String, JsWebElementProxyBuilder>> functionArgumentCaptor;
-
     @InjectMocks
     private JsWebElementProxyBuilderResolver jsWebElementProxyBuilderResolver;
 
@@ -94,11 +92,11 @@ class JsWebElementProxyBuilderResolverTest {
     public void resolveParameter() {
         final String locatorRegex = "locatorRegex";
 
+        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
-        when(rootStore.getOrComputeIfAbsent(eq(JS_WEB_ELEMENT_PROXY_BUILDER), functionArgumentCaptor.capture(), eq(JsWebElementProxyBuilder.class))).thenReturn(jsWebElementProxyBuilder);
 
-        when(rootStore.get(JS, Js.class)).thenReturn(js);
+        when(store.get(JS, Js.class)).thenReturn(js);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getLocatorRegex()).thenReturn(locatorRegex);
@@ -112,11 +110,8 @@ class JsWebElementProxyBuilderResolverTest {
 
         final JsWebElementProxyBuilder actual = jsWebElementProxyBuilderResolver.resolveParameter(parameterContext, extensionContext);
 
-        Function<String, JsWebElementProxyBuilder> function = functionArgumentCaptor.getValue();
-        final JsWebElementProxyBuilder captured = function.apply("value");
-
         assertEquals(jsWebElementProxyBuilder, actual);
-        assertEquals(jsWebElementProxyBuilder, captured);
+        verify(store).put(JS_WEB_ELEMENT_PROXY_BUILDER, jsWebElementProxyBuilder);
     }
 
     @Test

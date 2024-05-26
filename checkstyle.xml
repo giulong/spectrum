@@ -17,6 +17,9 @@
 <module name="Checker">
     <module name="Translation"/>
     <module name="FileLength"/>
+    <module name="NewlineAtEndOfFile">
+        <property name="fileExtensions" value="java"/>
+    </module>
 
     <module name="UniqueProperties"/>
 
@@ -38,6 +41,11 @@
         </module>
         <module name="AvoidNestedBlocks"/>
         <module name="EmptyBlock"/>
+        <module name="EmptyLineSeparator">
+            <property name="allowMultipleEmptyLines" value="false"/>
+            <property name="allowMultipleEmptyLinesInsideClassMembers" value="false"/>
+            <property name="tokens" value="CLASS_DEF, METHOD_DEF"/>
+        </module>
         <module name="EmptyCatchBlock"/>
         <module name="LeftCurly">
             <property name="tokens" value="CLASS_DEF,INTERFACE_DEF,ANNOTATION_DEF,CTOR_DEF,METHOD_DEF"/>
@@ -84,9 +92,7 @@
 
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
-        <module name="UnusedImports">
-            <property name="severity" value="warning"/>
-        </module>
+        <module name="UnusedImports"/>
 
         <module name="OuterTypeFilename"/>
         <module name="UpperEll"/>
@@ -107,6 +113,7 @@
         <module name="ParameterName"/>
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
+        <module name="EnumValueName"/>
 
         <module name="MethodLength">
             <property name="severity" value="warning"/>

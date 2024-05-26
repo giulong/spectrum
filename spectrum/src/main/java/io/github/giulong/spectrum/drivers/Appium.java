@@ -30,13 +30,16 @@ public abstract class Appium<T extends MutableCapabilities, U extends AppiumDriv
     }
 
     protected Map<String, Object> adjustCapabilitiesFrom(final Map<String, Object> configurationCapabilities) {
-        log.debug("Adjusting capabilities for {}", getClass().getSimpleName());
-        final Path appPath = Path.of((String) configurationCapabilities.get(APP_CAPABILITY));
+        final String app = (String) configurationCapabilities.get(APP_CAPABILITY);
+        if (app != null) {
+            log.debug("Adjusting capabilities for {}", getClass().getSimpleName());
+            final Path appPath = Path.of(app);
 
-        if (!appPath.isAbsolute()) {
-            final String absoluteAppPath = appPath.toAbsolutePath().toString();
-            log.warn("Converting app path '{}' to absolute: '{}'", appPath, absoluteAppPath);
-            configurationCapabilities.put(APP_CAPABILITY, absoluteAppPath);
+            if (!appPath.isAbsolute()) {
+                final String absoluteAppPath = appPath.toAbsolutePath().toString();
+                log.warn("Converting app path '{}' to absolute: '{}'", appPath, absoluteAppPath);
+                configurationCapabilities.put(APP_CAPABILITY, absoluteAppPath);
+            }
         }
 
         return configurationCapabilities;

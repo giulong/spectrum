@@ -10,6 +10,8 @@ import org.openqa.selenium.support.FindBys;
 
 import java.util.List;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+
 @Getter
 @Endpoint("checkboxes")
 @SuppressWarnings("unused")
@@ -21,4 +23,13 @@ public class JsCheckboxPage extends SpectrumPage<JsCheckboxPage, Void> {
     })
     @JsWebElement
     private List<WebElement> checkboxes;
+
+    @Override
+    public JsCheckboxPage waitForPageLoading() {
+        pageLoadWait.until(and(
+                urlToBe("https://the-internet.herokuapp.com/checkboxes"),
+                visibilityOfAllElements(checkboxes)));
+
+        return this;
+    }
 }

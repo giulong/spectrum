@@ -1185,20 +1185,82 @@ For such scenarios, Spectrum injects the `js` object you can use to perform basi
 regular Selenium API. Each method available replicates the methods of the original
 [WebElement](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/WebElement.html){:target="_blank"} interface.
 
-Let's see how to use each method, you can check the
-[Js javadocs](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/utils/Js.html){:target="_blank"} for details:
-
-## click
+You can check the
+[Js javadocs](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/utils/Js.html){:target="_blank"} for details and the
+[JavascriptIT]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/JavascriptIT.java){:target="_blank"}
+test to see real examples of all the `js` methods in action. For completeness, we're reporting one here:
 
 {% include copyCode.html %}
 
 ```java
-js.click(webElement);
+
+@Test
+public void testInputFieldActions() {
+    driver.get(configuration.getApplication().getBaseUrl());
+    js.click(landingPage.getFormLoginLink());
+    loginPage.waitForPageLoading();
+
+    final WebElement usernameField = loginPage.getUsername();
+    final WebElement passwordField = loginPage.getPassword();
+    final WebElement form = loginPage.getForm();
+
+    js.sendKeys(usernameField, "tomsmith");
+    js.clear(usernameField);
+    assertTrue(js.getDomProperty(usernameField, "value").isEmpty());
+
+    js.sendKeys(usernameField, "tomsmith");
+    js.sendKeys(passwordField, "SuperSecretPassword!");
+    js.submit(form);
+
+    pageLoadWait.until(urlToBe("https://the-internet.herokuapp.com/secure"));
+    assertEquals("https://the-internet.herokuapp.com/secure", driver.getCurrentUrl());
+}
 ```
 
-You can check the
-[JavascriptIT]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/JavascriptIT.java){:target="_blank"}
-test to see real examples of all the `js` methods in action.
+> ⚠️ **Methods not supported**<br/>
+> Currently, the `js` object doesn't support these WebElement methods:
+> * getAriaRole
+> * getAccessibleName
+> * getScreenshotAs
+
+---
+
+# JsWebElement
+
+If you find yourself frequently running Javascript to interact with a particular web element,
+you should probably annotate it with `@JsWebElement` like this:
+
+{% include copyCode.html %}
+
+```java
+// applied on a single WebElement
+@FindBy(tagName = "h1")
+@JsWebElement
+private WebElement title;
+
+// applied on a list of WebElements, the annotation is the same
+@FindBys({
+        @FindBy(id = "wrapper-id"),
+        @FindBy(tagName = "input")
+})
+@JsWebElement
+private List<WebElement> inputFields;
+```
+
+By applying the `@JsWebElement` annotation, each interaction with the annotated web element will be executed in the corresponding Javascript
+way. This means you don't need to do anything programmatically, the annotation on the field is enough:
+by calling any regular webElement method on the fields above, such as `title.getText()` or `inputFields.getFirst().sendKeys("username")`,
+the execution will actually be delegated to the `js` object, and will behave as explained in the [Javascript Executor](#javascript-executor) paragraph.
+This means that:
+
+* `title.getText()` will behave as `js.getText(title)`
+* `inputFields.getFirst().sendKeys("username")` will behave as `js.sendKeys(inputFields.getFirst(), "username")`
+
+Remember: you just need to annotate the webElement(s) with `@JsWebElement` and Spectrum will take care of interacting with the annotated
+webElement(s) via Javascript. That's it!
+
+Be sure to check the [JsWebElementIT]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/JsWebElementIT.java){:target="_blank"}
+to see some working example tests.
 
 ---
 
@@ -2465,10 +2527,22 @@ html:
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.html){:target="_blank"}.
-This is what it looks like when opened in a driver:
+This is what it looks like when opened in a browser:
 
 ![Html Summary Reporter](assets/images/html-summary.png)
 
+Beside the default template, these are already available, you just need to pick the corresponding template:
+
+* [summary-pies.html](assets/miscellanea/summary-pies.html){:target="_blank"} that leverages [Google Charts](https://developers.google.com/chart){:target="_blank"}
+
+{% include copyCode.html %}
+
+```yaml
+html:
+  template: templates/summary-pies.html
+```
+
+![Html Summary Pies Reporter](assets/images/html-summary-pies.png)
 ---
 
 # TestBook - Coverage
@@ -2838,15 +2912,28 @@ This is the internal
 
 ```yaml
 html:
-  template: templates/testBook.html
+  template: templates/testbook.html
   output: ${testBookReportOutput}/testBook-${timestamp}.html
   retention: { }
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.html){:target="_blank"}.
-This is what it looks like when opened in a driver:
+This is what it looks like when opened in a browser:
 
 ![Html TestBook Reporter](assets/images/html-testbook.png)
+
+Beside the default template, these are already available, you just need to pick the corresponding template:
+
+* [testbook-pies.html](assets/miscellanea/testbook-pies.html){:target="_blank"} that leverages [Google Charts](https://developers.google.com/chart){:target="_blank"}
+
+{% include copyCode.html %}
+
+```yaml
+html:
+  template: templates/testbook-pies.html
+```
+
+![Html TestBook Pies Reporter](assets/images/html-testbook-pies.png)
 
 ## Default TestBook
 
