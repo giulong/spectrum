@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <style>
+        <style>
         .content {
             max-width: 1024px;
             margin: auto;
@@ -57,6 +57,14 @@
             font-weight: bold;
         }
 
+        .tests-container {
+            width: 100%;
+            min-width: 480px;
+            text-align: left;
+            border-collapse: collapse;
+            border-radius: 0 0 8px 8px;
+        }
+
         .tests-header {
             font-size: 16px;
             font-weight: bold;
@@ -64,15 +72,65 @@
             min-width: 480px;
         }
 
-        .condition-status {
+        .tests-header > div, .test-row > div {
+            padding: 5px;
+        }
+
+        .test-row {
+            border-bottom: 1px solid #aaa;
+            min-width: 480px;
+        }
+
+        .test-row > div {
+            border-right: 1px solid #aaa;
+        }
+
+        .test-row > div:last-child {
+            border-right: 0;
+        }
+
+        .test-row:last-child {
+            border-bottom: 0;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .test-name-header {
+            width: 82%;
+            padding: 5px 0 5px 5px;
+            border-right: 1px solid #aaa;
+        }
+
+        .test-name {
+            width: 82%;
+            padding: 5px 0 5px 20px;
+        }
+
+        .test-name, .weight {
+            border-right: 1px solid #aaa;
+        }
+
+        .weight, .status {
+            padding: 0 10px;
+        }
+
+        .weight {
+            text-align: right;
+        }
+
+        .qg-status {
             text-align: center;
         }
 
-        .successful, .condition-status-OK {
+        .not-run {
+            background: transparent;
+        }
+
+        .successful, .qg-status-OK {
             background: #88B04B;
         }
 
-        .failed, .condition-status-KO {
+        .failed, .qg-status-KO {
             background: #FF6F61;
         }
 
@@ -120,6 +178,14 @@
             width: 39%;
         }
 
+        .description {
+            font-weight: normal;
+            font-size: 12px;
+            display: inline-block;
+            text-align: right;
+            width: 60%;
+        }
+
         #table-statistics tr {
             border-bottom: 1px solid #aaa;
         }
@@ -150,44 +216,47 @@
             background-color: rgba(0,0,0,0.06);
         }
 
-        .bar-container {
-            background: #fff;
-            border: 1px solid #333;
-            border-radius: 5px;
-            padding: 0;
-            width: 250px;
-            min-width: 100%;
-            box-shadow: inset 0 0 5px #666;
+        .test-row:hover, #table-statistics tbody tr:hover {
+           background: #C6EAFA;
+           font-weight: bold;
         }
 
-        .bar {
-            border-radius: 3px;
-            border-right: 1px solid #333;
-            height: 10px;
+        .test-row:last-child > td:first-child, #table-statistics tr:last-child > td:first-child {
+            border-bottom-left-radius: 8px;
         }
 
-        .successful-bar {
-            width: ${successfulPercentage}%;
+        .test-row:last-child > td:last-child, #table-statistics tr:last-child > td:last-child {
+            border-bottom-right-radius: 8px;
         }
 
-        .failed-bar {
-            width: ${failedPercentage}%;
-        }
-
-        .aborted-bar {
-            width: ${abortedPercentage}%;
-        }
-
-        .disabled-bar {
-            width: ${disabledPercentage}%;
+        .chart-container {
+            width: 400px;
         }
 
         @media print, screen and (max-width: 800px) {
             .logo { width: 100px; height: 20px; top: 50px; }
         }
     </style>
-    <title>Spectrum Summary</title>
-    <link rel="icon" type="image/x-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAHlBMVEVMaXEAc9kAdNgAdNkActcAc9kAc9gAddYAdNkAdNkTXjVRAAAACXRSTlMAb57qKFW2Edhl53wyAAAACXBIWXMAAAPoAAAD6AG1e1JrAAACz0lEQVR4nO2aS5LrIAxF0Q+h/W/4lfwBnKTSSdstKi/ckTOIdQz4WkikNDU1NTU19dFizCUjDwufbVUeg8C0xTcjHhU/i4iPA2k8AJqRLFdCZhgeX81sjZ+SmFn4EIBZqT+KGUQDYB8TBswBTgD7silQKGSEMgoA7Nb2YwHQ7mw/FADMrAgrO0jRcAAls9xMF8IBoD5258CRALmL5d8gjgYoW8ydRqIB6MMABAtRBh0EoHumSjAEgFumet2s0BsAxQOLMvgFxANAzRR9Kq7Klel1gC451OsSRXoZgPv0GKqBxwFIH5P7vHkQAE2A1MQiPG4KFBaDItQxAOy2tBq0jABgf3zKeRkFHgBQdlv2jfwr9sjH9XIWwBNJaWPxkz0qruulfdDPAuTuw3jY1T+Uj9JN4ecsQP9/zymfx7e2XnaCkwDHmPQcQH2VLAH8xS1/AFCeA0B7bq5LJxKgdLfF/W6RANZ9zx8uor8HoHuaWIAyAdKcgqq5CG2+hjaNyL7Riq2/wfojEoBaJ6rlj5EA2ObAszMIB2CvyOu+m9r2EJEAyYs8hABLgX6bjVCA1LUG4KJ9wWFD+NO+ICXZdrKlrsazAH2mK6+UTQQRodscngXwXF9b6ez9+iWdBPD3qXCt43L89lyWwi3Asu2FERUSOFdApvM1ovuVHQyQEgMi/Cp8moXK9EG1Yu6n/UATBJD6fKJvN4YBYHNdf/c5HID3GpPihV0reqNptVbZyuI7teEcCZBanXHNrMIB0lZp/Z3pXtQ7ZmH9r7rnuXu563BEAmBnaTWniwTglse0nC70FA26qeje8eB4AF19Ze35yIiDTJrvul7RZ8mk3PT94k/T8bGT9XXH+e40AXD0FECfcl6X/r3nz/zgOk6l5lxulBftAN6RZ39FNOniUSPO98PqzYdyUqyEzhyLuEKKPvrldwdDrmLgkdGnpqampqbSBfoHs+1BtT08DXcAAAAASUVORK5CYII=">
+    <title>TestBook Results</title>
+    <link rel="icon" type="image/x-icon"
+          href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAHlBMVEVMaXEAc9kAdNgAdNkActcAc9kAc9gAddYAdNkAdNkTXjVRAAAACXRSTlMAb57qKFW2Edhl53wyAAAACXBIWXMAAAPoAAAD6AG1e1JrAAACz0lEQVR4nO2aS5LrIAxF0Q+h/W/4lfwBnKTSSdstKi/ckTOIdQz4WkikNDU1NTU19dFizCUjDwufbVUeg8C0xTcjHhU/i4iPA2k8AJqRLFdCZhgeX81sjZ+SmFn4EIBZqT+KGUQDYB8TBswBTgD7silQKGSEMgoA7Nb2YwHQ7mw/FADMrAgrO0jRcAAls9xMF8IBoD5258CRALmL5d8gjgYoW8ydRqIB6MMABAtRBh0EoHumSjAEgFumet2s0BsAxQOLMvgFxANAzRR9Kq7Klel1gC451OsSRXoZgPv0GKqBxwFIH5P7vHkQAE2A1MQiPG4KFBaDItQxAOy2tBq0jABgf3zKeRkFHgBQdlv2jfwr9sjH9XIWwBNJaWPxkz0qruulfdDPAuTuw3jY1T+Uj9JN4ecsQP9/zymfx7e2XnaCkwDHmPQcQH2VLAH8xS1/AFCeA0B7bq5LJxKgdLfF/W6RANZ9zx8uor8HoHuaWIAyAdKcgqq5CG2+hjaNyL7Riq2/wfojEoBaJ6rlj5EA2ObAszMIB2CvyOu+m9r2EJEAyYs8hABLgX6bjVCA1LUG4KJ9wWFD+NO+ICXZdrKlrsazAH2mK6+UTQQRodscngXwXF9b6ez9+iWdBPD3qXCt43L89lyWwi3Asu2FERUSOFdApvM1ovuVHQyQEgMi/Cp8moXK9EG1Yu6n/UATBJD6fKJvN4YBYHNdf/c5HID3GpPihV0reqNptVbZyuI7teEcCZBanXHNrMIB0lZp/Z3pXtQ7ZmH9r7rnuXu563BEAmBnaTWniwTglse0nC70FA26qeje8eB4AF19Ze35yIiDTJrvul7RZ8mk3PT94k/T8bGT9XXH+e40AXD0FECfcl6X/r3nz/zgOk6l5lxulBftAN6RZ39FNOniUSPO98PqzYdyUqyEzhyLuEKKPvrldwdDrmLgkdGnpqampqbSBfoHs+1BtT08DXcAAAAASUVORK5CYII=">
+    <script src="https://www.gstatic.com/charts/loader.js"></script>
+    <script>
+        google.charts.load('current',{packages:['corechart']});
+
+        const options = {
+          'width':400,
+          'height':130,
+          'backgroundColor':'transparent',
+          'is3D':true,
+          'chartArea':{left:20,top:0,width:'100%',height:'100%'},
+          'colors':['#88B04B','#FF6F61','#D2386C','#FDAC53','#939597'],
+          'fontName':'monospace',
+          'fontSize':'12',
+          'tooltip': {ignoreBounds:true, isHtml:true, text:'percentage'},
+          'legend': {alignment: 'center'}
+        };
+    </script>
 </head>
 <body>
 <div class="content">
@@ -195,8 +264,8 @@
         <header class="header">
             <div class="logo"></div>
             <div>
-                <div class="title">Execution Summary</div>
-                <div>Generated on: ${timestamp}</div>
+                <div class="title">TestBook Results</div>
+                <div>Generated on: 11/05/2024 19:03:19</div>
             </div>
         </header>
     </div>
@@ -207,7 +276,7 @@
             <table id="table-statistics">
                 <thead>
                 <tr class="tests-header">
-                    <th>Status</th>
+                    <th>Category</th>
                     <th>Count</th>
                     <th>Percentage</th>
                     <th></th>
@@ -215,71 +284,366 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>Successful Tests</td>
-                    <td id="successful-count">${summary.testsSucceededCount}/${total}</td>
-                    <td id="successful-percentage">${successfulPercentage}%</td>
-                    <td>
-                        <div class="bar-container">
-                            <div class="successful bar successful-bar"></div>
-                        </div>
-                    </td>
+                    <td>Mapped Tests</td>
+                    <td id="mapped-tests">4</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <td>Failed Tests</td>
-                    <td id="failed-count">${summary.testsFailedCount}/${total}</td>
-                    <td id="failed-percentage">${failedPercentage}%</td>
-                    <td>
-                        <div class="bar-container">
-                            <div class="failed bar failed-bar"></div>
-                        </div>
-                    </td>
+                    <td>Unmapped Tests</td>
+                    <td id="unmapped-tests">8</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <td>Aborted Tests</td>
-                    <td id="aborted-count">${summary.testsAbortedCount}/${total}</td>
-                    <td id="aborted-percentage">${abortedPercentage}%</td>
-                    <td>
-                        <div class="bar-container">
-                            <div class="aborted bar aborted-bar"></div>
-                        </div>
-                    </td>
+                    <td>Grand Total</td>
+                    <td id="grand-total">4 + 8 = 12</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
-                    <td>Skipped Tests</td>
-                    <td id="disabled-count">${summary.testsSkippedCount}/${total}</td>
-                    <td id="disabled-percentage">${disabledPercentage}%</td>
-                    <td>
-                        <div class="bar-container">
-                            <div class="disabled bar disabled-bar"></div>
-                        </div>
-                    </td>
+                    <td>Total Weighted</td>
+                    <td id="total-weighted">7</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Grand Total Weighted</td>
+                    <td id="grand-total-weighted">7 + 8 = 15</td>
+                    <td></td>
+                    <td></td>
                 </tr>
                 <tr>
                     <td colspan="4" class="table-separator">
-                        <div class="section">Execution Time</div>
+                        <div class="section">Mapped Weighted Tests Ratio</div>
+                        <div class="description">Ratio of tests mapped in the TestBook, based on their weights</div>
                     </td>
                 </tr>
                 <tr>
-                    <td id="started-at" colspan="4">Started at: ${summary.timeStarted?number_to_datetime}</td>
+                    <td>Successful</td>
+                    <td id="weighted-successful">0/7</td>
+                    <td id="weighted-successful-percentage">0%</td>
+                    <td rowspan="5" class="chart-container">
+                        <div id="mapped-weighted-tests-chart"></div>
+                        <script>
+                            google.charts.setOnLoadCallback(drawMappedWeightedTestsChart);
+
+                            function drawMappedWeightedTestsChart() {
+                                const data = google.visualization.arrayToDataTable([
+                                  ['Mapped Weighted Tests Ratio', 'Percentage'],
+                                  ['Successful', 0],
+                                  ['Failed', 0],
+                                  ['Aborted', 0],
+                                  ['Disabled', 0],
+                                  ['Not run', 100]
+                                ]);
+
+                                const chart = new google.visualization.PieChart(document.getElementById('mapped-weighted-tests-chart'));
+                                chart.draw(data, options);
+                            }
+                        </script>
+                    </td>
                 </tr>
                 <tr>
-                    <td id="ended-at" colspan="4">Ended at: &nbsp;&nbsp;${summary.timeFinished?number_to_datetime}</td>
+                    <td>Failed</td>
+                    <td id="weighted-failed">0/7</td>
+                    <td id="weighted-failed-percentage">0%</td>
                 </tr>
                 <tr>
-                    <td id="duration" colspan="4">Duration: &nbsp;&nbsp;${duration}</td>
+                    <td>Aborted</td>
+                    <td id="weighted-aborted">0/7</td>
+                    <td id="weighted-aborted-percentage">0%</td>
+                </tr>
+                <tr>
+                    <td>Disabled</td>
+                    <td id="weighted-disabled">0/7</td>
+                    <td id="weighted-disabled-percentage">0%</td>
+                </tr>
+                <tr>
+                    <td>Not run</td>
+                    <td id="weighted-not-run">7/7</td>
+                    <td id="weighted-not-run-percentage">100%</td>
                 </tr>
                 <tr>
                     <td colspan="4" class="table-separator">
-                        <div class="section">Result</div>
+                        <div class="section">Grand Total Weighted Tests Ratio</div>
+                        <div class="description">Ratio of all tests, mapped or not, based on their weights</div>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3"><b>Condition: </b><span id="condition">${condition}</span><br/><b>Evaluated: </b><span id="interpolated-condition">${interpolatedCondition}</span></td>
-                    <td id="condition-status" class="condition-status condition-status-${executionSuccessful?string('OK', 'KO')}">${executionSuccessful?string('OK', 'KO')}</td>
+                    <td>Successful</td>
+                    <td id="grand-weighted-successful">6/15</td>
+                    <td id="grand-weighted-successful-percentage">40%</td>
+                    <td rowspan="5" class="chart-container">
+                        <div id="grand-total-weighted-tests-chart"></div>
+                        <script>
+                            google.charts.setOnLoadCallback(drawGrandTotalWeightedTestsChart);
+
+                            function drawGrandTotalWeightedTestsChart() {
+                                const data = google.visualization.arrayToDataTable([
+                                  ['Mapped Weighted Tests Ratio', 'Percentage'],
+                                  ['Successful', 40],
+                                  ['Failed', 6.67],
+                                  ['Aborted', 0],
+                                  ['Disabled', 6.67],
+                                  ['Not run', 46.67]
+                                ]);
+
+                                const chart = new google.visualization.PieChart(document.getElementById('grand-total-weighted-tests-chart'));
+                                chart.draw(data, options);
+                            }
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Failed</td>
+                    <td id="grand-weighted-failed">1/15</td>
+                    <td id="grand-weighted-failed-percentage">6.67%</td>
+                </tr>
+                <tr>
+                    <td>Aborted</td>
+                    <td id="grand-weighted-aborted">0/15</td>
+                    <td id="grand-weighted-aborted-percentage">0%</td>
+                </tr>
+                <tr>
+                    <td>Disabled</td>
+                    <td id="grand-weighted-disabled">1/15</td>
+                    <td id="grand-weighted-disabled-percentage">6.67%</td>
+                </tr>
+                <tr>
+                    <td>Not run</td>
+                    <td id="grand-weighted-not-run">7/15</td>
+                    <td id="grand-weighted-not-run-percentage">46.67%</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="table-separator">
+                        <div class="section">Mapped Tests Ratio</div>
+                        <div class="description">Ratio of tests mapped in the TestBook</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Successful</td>
+                    <td id="successful">0/4</td>
+                    <td id="successful-percentage">0%</td>
+                    <td rowspan="5" class="chart-container">
+                        <div id="mapped-tests-chart"></div>
+                        <script>
+                            google.charts.setOnLoadCallback(drawMappedTestsChart);
+
+                            function drawMappedTestsChart() {
+                                const data = google.visualization.arrayToDataTable([
+                                  ['Mapped Weighted Tests Ratio', 'Percentage'],
+                                  ['Successful', 0],
+                                  ['Failed', 0],
+                                  ['Aborted', 0],
+                                  ['Disabled', 0],
+                                  ['Not run', 100]
+                                ]);
+
+                                const chart = new google.visualization.PieChart(document.getElementById('mapped-tests-chart'));
+                                chart.draw(data, options);
+                            }
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Failed</td>
+                    <td id="failed">0/4</td>
+                    <td id="failed-percentage">0%</td>
+                </tr>
+                <tr>
+                    <td>Aborted</td>
+                    <td id="aborted">0/4</td>
+                    <td id="aborted-percentage">0%</td>
+                </tr>
+                <tr>
+                    <td>Disabled</td>
+                    <td id="disabled">0/4</td>
+                    <td id="disabled-percentage">0%</td>
+                </tr>
+                <tr>
+                    <td>Not run</td>
+                    <td id="not-run">4/4</td>
+                    <td id="not-run-percentage">100%</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="table-separator">
+                        <div class="section">Grand Total Tests Ratio</div>
+                        <div class="description">Ratio of tests, mapped or not, based on their weights</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Successful</td>
+                    <td id="grand-successful">6/12</td>
+                    <td id="grand-successful-percentage">50%</td>
+                    <td rowspan="5" class="chart-container">
+                        <div id="grand-total-tests-chart"></div>
+                        <script>
+                            google.charts.setOnLoadCallback(drawGrandTotalTestsChart);
+
+                            function drawGrandTotalTestsChart() {
+                                const data = google.visualization.arrayToDataTable([
+                                  ['Mapped Weighted Tests Ratio', 'Percentage'],
+                                  ['Successful', 50],
+                                  ['Failed', 8.33],
+                                  ['Aborted', 0],
+                                  ['Disabled', 8.33],
+                                  ['Not run', 33.33]
+                                ]);
+
+                                const chart = new google.visualization.PieChart(document.getElementById('grand-total-tests-chart'));
+                                chart.draw(data, options);
+                            }
+                        </script>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Failed</td>
+                    <td id="grand-failed">1/12</td>
+                    <td id="grand-failed-percentage">8.33%</td>
+                </tr>
+                <tr>
+                    <td>Aborted</td>
+                    <td id="grand-aborted">0/12</td>
+                    <td id="grand-aborted-percentage">0%</td>
+                </tr>
+                <tr>
+                    <td>Disabled</td>
+                    <td id="grand-disabled">1/12</td>
+                    <td id="grand-disabled-percentage">8.33%</td>
+                </tr>
+                <tr>
+                    <td>Not run</td>
+                    <td id="grand-not-run">4/12</td>
+                    <td id="grand-not-run-percentage">33.33%</td>
+                </tr>
+                <tr>
+                    <td colspan="4" class="table-separator">
+                        <div class="section">Quality Gate</div>
+                        <div class="description">Minimum threshold to consider the suite successful</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><b>Condition: </b><span id="condition">${weightedSuccessful.percentage} > 60</span><br/><b>Evaluated: </b><span id="evaluated-condition"> 0 > 60</span>
+                    </td>
+                    <td id="qg-status" class="qg-status qg-status-KO">KO</td>
                 </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
+    <div class="wrapper">
+        <h2 class="header">Mapped Tests</h2>
+        <div class="table-container">
+            <table class="tests-container">
+                <thead>
+                <tr class="tests-header">
+                    <td class="test-name-header">Test Name</td>
+                    <td class="weight">Weight</td>
+                    <td class="status">Status</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="table-separator" colspan="3">Hello World Selenium</td>
+                </tr>
+                <tr class="test-row not-run">
+                    <td class="test-name">- Successful</td>
+                    <td class="weight">1</td>
+                    <td class="status">Not Run</td>
+                </tr>
+                <tr class="test-row not-run">
+                    <td class="test-name">- This is my first selenium!</td>
+                    <td class="weight">2</td>
+                    <td class="status">Not Run</td>
+                </tr>
+                <tr class="test-row not-run">
+                    <td class="test-name">- another test</td>
+                    <td class="weight">3</td>
+                    <td class="status">Not Run</td>
+                </tr>
+                <tr>
+                    <td class="table-separator" colspan="3">Second Class</td>
+                </tr>
+                <tr class="test-row not-run">
+                    <td class="test-name">- skipped</td>
+                    <td class="weight">1</td>
+                    <td class="status">Not Run</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <h2 class="header">Unmapped Tests</h2>
+        <div class="table-container">
+            <table class="tests-container">
+                <thead>
+                <tr class="tests-header">
+                    <td class="test-name-header">Test Name</td>
+                    <td class="weight">Weight</td>
+                    <td class="status">Status</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="table-separator" colspan="3">Demo test</td>
+                </tr>
+                <tr class="test-row disabled">
+                    <td class="test-name">- Skipped Test</td>
+                    <td class="weight">1</td>
+                    <td class="status">Disabled</td>
+                </tr>
+                <tr class="test-row successful">
+                    <td class="test-name">- Sending custom events</td>
+                    <td class="weight">1</td>
+                    <td class="status">Successful</td>
+                </tr>
+                <tr class="test-row failed">
+                    <td class="test-name">- This one should fail for demonstration purposes</td>
+                    <td class="weight">1</td>
+                    <td class="status">Failed</td>
+                </tr>
+                <tr>
+                    <td class="table-separator" colspan="3">Login Form leveraging the data.yaml</td>
+                </tr>
+                <tr class="test-row successful">
+                    <td class="test-name">- with user giulio we expect login to be successful: false</td>
+                    <td class="weight">1</td>
+                    <td class="status">Successful</td>
+                </tr>
+                <tr class="test-row successful">
+                    <td class="test-name">- with user tom we expect login to be successful: true</td>
+                    <td class="weight">1</td>
+                    <td class="status">Successful</td>
+                </tr>
+                <tr>
+                    <td class="table-separator" colspan="3">Files Test</td>
+                </tr>
+                <tr class="test-row successful">
+                    <td class="test-name">- upload</td>
+                    <td class="weight">1</td>
+                    <td class="status">Successful</td>
+                </tr>
+                <tr class="test-row successful">
+                    <td class="test-name">- download</td>
+                    <td class="weight">1</td>
+                    <td class="status">Successful</td>
+                </tr>
+                <tr>
+                    <td class="table-separator" colspan="3">Checkbox Page</td>
+                </tr>
+                <tr class="test-row successful">
+                    <td class="test-name">- testWithNoDisplayName()</td>
+                    <td class="weight">1</td>
+                    <td class="status">Successful</td>
+                </tr>
+            </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 </body>
+</html>

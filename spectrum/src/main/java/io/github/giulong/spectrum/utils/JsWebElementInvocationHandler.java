@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.enums.LocatorType;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -28,34 +29,37 @@ public class JsWebElementInvocationHandler implements WebElement, InvocationHand
 
     @Override
     public void submit() {
+        js.submit(webElement);
     }
 
     @Override
     public void sendKeys(final CharSequence... keysToSend) {
+        js.sendKeys(webElement, keysToSend);
     }
 
     @Override
     public void clear() {
+        js.clear(webElement);
     }
 
     @Override
     public String getTagName() {
-        return "";
+        return js.getTagName(webElement);
     }
 
     @Override
-    public String getDomProperty(String name) {
-        throw new UnsupportedOperationException("getDomProperty");
+    public String getDomProperty(final String name) {
+        return js.getDomProperty(webElement, name);
     }
 
     @Override
-    public String getDomAttribute(String name) {
-        throw new UnsupportedOperationException("getDomAttribute");
+    public String getDomAttribute(final String name) {
+        return js.getDomAttribute(webElement, name);
     }
 
     @Override
     public String getAttribute(final String name) {
-        return "";
+        return js.getAttribute(webElement, name);
     }
 
     @Override
@@ -70,62 +74,62 @@ public class JsWebElementInvocationHandler implements WebElement, InvocationHand
 
     @Override
     public boolean isSelected() {
-        return false;
+        return js.isSelected(webElement);
     }
 
     @Override
     public boolean isEnabled() {
-        return false;
+        return js.isEnabled(webElement);
     }
 
     @Override
     public String getText() {
-        return "";
+        return js.getText(webElement);
     }
 
     @Override
     public List<WebElement> findElements(final By by) {
-        return List.of();
+        return js.findElements(webElement, LocatorType.from(by), extractLocatorValueFrom(by));
     }
 
     @Override
     public WebElement findElement(final By by) {
-        return null;
+        return js.findElement(webElement, LocatorType.from(by), extractLocatorValueFrom(by));
     }
 
     @Override
     public SearchContext getShadowRoot() {
-        throw new UnsupportedOperationException("getShadowRoot");
+        return js.getShadowRoot(webElement);
     }
 
     @Override
     public boolean isDisplayed() {
-        return false;
+        return js.isDisplayed(webElement);
     }
 
     @Override
     public Point getLocation() {
-        return null;
+        return js.getLocation(webElement);
     }
 
     @Override
     public Dimension getSize() {
-        return null;
+        return js.getSize(webElement);
     }
 
     @Override
     public Rectangle getRect() {
-        return null;
+        return js.getRect(webElement);
     }
 
     @Override
     public String getCssValue(final String propertyName) {
-        return "";
+        return js.getCssValue(webElement, propertyName);
     }
 
     @Override
     public <X> X getScreenshotAs(final OutputType<X> target) throws WebDriverException {
-        return null;
+        throw new UnsupportedOperationException("getScreenshotAs");
     }
 
     @SneakyThrows
@@ -135,6 +139,10 @@ public class JsWebElementInvocationHandler implements WebElement, InvocationHand
         final Matcher matcher = locatorPattern.matcher(fullWebElement);
         log.debug("Intercepting method {} on webElement [{}]", method.getName(), matcher.find() ? matcher.group(1) : fullWebElement);
 
-        return methods.get(method).invoke(this, args);
+        return methods.getOrDefault(method, method).invoke(this, args);
+    }
+
+    protected String extractLocatorValueFrom(final By by) {
+        return by.toString().split(": ")[1];
     }
 }

@@ -64,7 +64,7 @@ public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule
         return isInternal(f);
     }
 
-    private static class PublicSubTypeResolver extends JsonSubTypesResolver {
+    private static final class PublicSubTypeResolver extends JsonSubTypesResolver {
         public List<ResolvedType> lookUpSubtypesFromAnnotation(final ResolvedType declaredType, final JsonSubTypes subtypesAnnotation, final TypeContext context) {
             return Optional
                     .ofNullable(super.lookUpSubtypesFromAnnotation(declaredType, subtypesAnnotation, context))

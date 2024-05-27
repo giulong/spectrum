@@ -31,11 +31,12 @@ public class AppiumEnvironment extends GridEnvironment {
     @Override
     public void sessionOpened() {
         final Configuration.Environments.Appium appium = configuration.getEnvironments().getAppium();
-        final int port = appium.getService().getPort();
+        final Configuration.Environments.Appium.Service service = appium.getService();
+        final String ipAddress = service.getIpAddress();
+        final int port = service.getPort();
 
-        external = isRunningOn(port);
+        external = isRunningAt(ipAddress, port);
         if (external) {
-            log.info("Appium is already running at port {}", port);
             return;
         }
 
@@ -91,13 +92,19 @@ public class AppiumEnvironment extends GridEnvironment {
         driverService.close();
     }
 
-    protected boolean isRunningOn(final int port) {
+    protected boolean isRunningAt(final String ipAddress, final int port) {
+        if (!ipAddress.matches("(localhost|127\\.0\\.0\\.1|0\\.0\\.0\\.0)")) {
+            log.info("Running on Appium server at {}:{}", ipAddress, port);
+            return true;
+        }
+
         try (ServerSocket serverSocket = new ServerSocket()) {
             serverSocket.setReuseAddress(false);
             serverSocket.bind(new InetSocketAddress(InetAddress.getByName("localhost"), port), 50);
 
             return false;
         } catch (IOException e) {
+            log.info("Appium is already running at {}:{}", ipAddress, port);
             return true;
         }
     }

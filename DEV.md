@@ -98,6 +98,15 @@ With that, just the framework's module is built, without running any test.
 | unix    | `./mvnw install -DskipTests -DskipSign -ntp -P framework-only`   |
 | windows | `mvnw.cmd install -DskipTests -DskipSign -ntp -P framework-only` |
 
+## Checkstyle
+
+The [checkstyle plugin](https://maven.apache.org/plugins/maven-checkstyle-plugin/) runs on every build. If you'd like to focus on code linting, you can run it with:
+
+| OS      | Command                                                                   |
+|---------|---------------------------------------------------------------------------|
+| unix    | `./mvnw checkstyle:checkstyle -DskipSign -DskipTests -ntp -pl spectrum`   |
+| windows | `mvnw.cmd checkstyle:checkstyle -DskipSign -DskipTests -ntp -pl spectrum` |
+
 ## Maven Profiles
 
 These are the available profiles you can find in the [pom.xml](pom.xml):

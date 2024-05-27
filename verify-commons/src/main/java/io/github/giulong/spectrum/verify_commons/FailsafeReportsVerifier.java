@@ -61,7 +61,6 @@ public class FailsafeReportsVerifier {
                 verifyFailuresAre(report, failures) &&
                 verifySkippedAre(report, skipped);
 
-
         final String header = String.format(FORMAT, "", "expected", "actual", "");
         final String completedLine = String.format(FORMAT, "completed:", completed, report.completed, completed != report.completed ? ERROR_MARKER : "");
         final String errorsLine = String.format(FORMAT, "errors:", errors, report.errors, errors != report.errors ? ERROR_MARKER : "");

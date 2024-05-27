@@ -27,34 +27,36 @@ public class JsWebElementProxyBuilderResolver extends TypeBasedParameterResolver
     @Override
     public JsWebElementProxyBuilder resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
+        final ExtensionContext.Store store = context.getStore(GLOBAL);
 
-        return rootStore.getOrComputeIfAbsent(JS_WEB_ELEMENT_PROXY_BUILDER, e -> {
-            log.debug("Resolving {}", JS_WEB_ELEMENT_PROXY_BUILDER);
+        log.debug("Resolving {}", JS_WEB_ELEMENT_PROXY_BUILDER);
 
-            final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
-            final List<Method> remainingJsMethods = new ArrayList<>(Arrays.asList(JsWebElementInvocationHandler.class.getDeclaredMethods()));
-            final List<Method> remainingWebElementMethods = new ArrayList<>(Arrays.asList(WebElement.class.getDeclaredMethods()));
-            final Map<Method, Method> methods = new HashMap<>(remainingWebElementMethods.size());
+        final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
+        final List<Method> remainingJsMethods = new ArrayList<>(Arrays.asList(JsWebElementInvocationHandler.class.getDeclaredMethods()));
+        final List<Method> remainingWebElementMethods = new ArrayList<>(Arrays.asList(WebElement.class.getDeclaredMethods()));
+        final Map<Method, Method> methods = new HashMap<>(remainingWebElementMethods.size());
 
-            do {
-                final Method webElementMethod = remainingWebElementMethods.getFirst();
-                final Method jsMethod = remainingJsMethods
-                        .stream()
-                        .filter(method -> methodsEqual(webElementMethod, method))
-                        .findFirst()
-                        .orElseThrow();
+        do {
+            final Method webElementMethod = remainingWebElementMethods.getFirst();
+            final Method jsMethod = remainingJsMethods
+                    .stream()
+                    .filter(method -> methodsEqual(webElementMethod, method))
+                    .findFirst()
+                    .orElseThrow();
 
-                methods.put(webElementMethod, jsMethod);
-                remainingJsMethods.remove(jsMethod);
-                remainingWebElementMethods.remove(webElementMethod);
-            } while (!remainingWebElementMethods.isEmpty());
+            methods.put(webElementMethod, jsMethod);
+            remainingJsMethods.remove(jsMethod);
+            remainingWebElementMethods.remove(webElementMethod);
+        } while (!remainingWebElementMethods.isEmpty());
 
-            return JsWebElementProxyBuilder.builder()
-                    .js(rootStore.get(JS, Js.class))
-                    .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
-                    .methods(methods)
-                    .build();
-        }, JsWebElementProxyBuilder.class);
+        final JsWebElementProxyBuilder jsWebElementProxyBuilder = JsWebElementProxyBuilder.builder()
+                .js(store.get(JS, Js.class))
+                .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
+                .methods(methods)
+                .build();
+
+        store.put(JS_WEB_ELEMENT_PROXY_BUILDER, jsWebElementProxyBuilder);
+        return jsWebElementProxyBuilder;
     }
 
     protected boolean methodsEqual(final Method m1, final Method m2) {
