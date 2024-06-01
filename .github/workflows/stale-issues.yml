@@ -5,6 +5,7 @@ on:
 
 jobs:
   close-issues:
+    if: false
     runs-on: ubuntu-latest
     permissions:
       issues: write
