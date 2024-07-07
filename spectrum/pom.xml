@@ -246,7 +246,7 @@
                 <artifactId>jsonschema-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>internal json schema</id>
+                        <id>internal</id>
                         <phase>install</phase>
                         <goals>
                             <goal>generate</goal>
@@ -260,7 +260,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>public json schema</id>
+                        <id>public</id>
                         <phase>install</phase>
                         <goals>
                             <goal>generate</goal>
