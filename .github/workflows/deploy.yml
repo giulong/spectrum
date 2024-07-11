@@ -14,18 +14,26 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     permissions:
+      contents: write
       id-token: write
       pages: write
     environment:
       name: github-pages
       url: ${{steps.deployment.outputs.page_url}}
     steps:
+      - name: Free Disk Space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /opt/ghc
+          sudo rm -rf "/usr/local/share/boost"
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - id: install-secret-key
-        name: Install gpg secret key
-        run: cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4.0.0
@@ -37,20 +45,61 @@ jobs:
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
 
+      - name: Get Spectrum new version
+        id: get-version
+        run: |
+          NEW_VERSION=${GITHUB_HEAD_REF#release/v}
+          echo "Spectrum version is $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Bump Spectrum version
+        shell: bash
+        run: ./mvnw versions:set-property -Dmaven.plugin.validation=NONE -DgenerateBackupPoms=false -Dproperty=revision -DnewVersion=$NEW_VERSION -ntp
+
+      - id: install-secret-key
+        name: Install gpg secret key
+        run: cat <(echo -e "${{ secrets.OSSRH_GPG_SECRET_KEY }}") | gpg --batch --import
+
       - name: Publish package
         env:
           MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
         run: ./mvnw deploy -DskipTests -Dmaven.plugin.validation=NONE -Dgpg.passphrase=${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }} -ntp
 
-      - name: Get version from pom.xml
-        run: |
-          VERSION=$( ./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout )
-          echo "version=$VERSION" >> $GITHUB_ENV
-        id: get_version
+      - name: Generate new public Json Schema
+        shell: bash
+        run: ./mvnw install -Dmaven.plugin.validation=NONE -DskipTests -DskipSign -ntp -P framework-only
 
-      - name: Spectrum submodule package
-        run: ./mvnw package -DskipSign -Dmaven.plugin.validation=NONE -ntp -pl spectrum
+      - name: Commit files and generate new tag
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add .
+          git commit -a -m "Bumping Spectrum version to $NEW_VERSION"
+          git tag v$NEW_VERSION
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: main
+          tags: true
+          atomic: true
+
+      - name: Merge on develop
+        run: |
+          export GIT_MERGE_AUTOEDIT=no
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git checkout develop
+          git merge main
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: develop
 
       - name: Generate JaCoCo Badge
         id: jacoco
@@ -83,77 +132,3 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2
-
-  bump:
-    name: Bump Version
-    needs: deploy
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Free Disk Space
-        shell: bash
-        run: |
-          sudo rm -rf /usr/share/dotnet
-          sudo rm -rf /opt/ghc
-          sudo rm -rf "/usr/local/share/boost"
-          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
-
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          fetch-depth: 0
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4.0.0
-        with:
-          java-version: 21
-          distribution: temurin
-          cache: maven
-
-      - name: Get Spectrum new version
-        id: get-version
-        run: |
-          NEW_VERSION=${GITHUB_HEAD_REF#release/v}
-          echo "Spectrum version is $NEW_VERSION"
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
-
-      - name: Bump Spectrum version
-        shell: bash
-        run: ./mvnw versions:set-property -DgenerateBackupPoms=false -Dproperty=revision -DnewVersion=$NEW_VERSION -ntp
-
-      - name: Generate new public Json Schema
-        shell: bash
-        run: |
-          ./mvnw install -DskipTests -DskipSign -ntp -P framework-only
-          ./mvnw jsonschema:generate@public -pl spectrum -ntp
-
-      - name: Commit files and generate new tag
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -a -m "Bumping Spectrum version to $NEW_VERSION"
-          git tag v$NEW_VERSION
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
-          tags: true
-          atomic: true
-
-      - name: Cherry pick on develop
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git checkout develop
-          git cherry-pick -x main
-
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: develop
