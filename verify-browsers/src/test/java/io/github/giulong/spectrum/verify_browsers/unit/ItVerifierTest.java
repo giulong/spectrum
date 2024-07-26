@@ -15,8 +15,8 @@ public class ItVerifierTest {
     private static final FailsafeReportsVerifier FAILSAFE_REPORTS_VERIFIER = FailsafeReportsVerifier.getInstance();
     private static final Path BASE_DIR = Path.of(System.getProperty("user.dir")).getParent();
 
-    private static final int COMPLETED = 18;
-    private static final int ERRORS = 1;
+    private static final int COMPLETED = 19;
+    private static final int ERRORS = 2;
     private static final int FAILURES = 0;
     private static final int SKIPPED = 1;
 

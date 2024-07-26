@@ -21,6 +21,7 @@ public class EventsDispatcher implements SessionHook {
     public static final String BEFORE = "before";
     public static final String AFTER = "after";
     public static final String TEST = "test";
+    public static final String DYNAMIC_TEST = "dynamicTest";
     public static final String CLASS = "class";
     public static final String SUITE = "suite";
 

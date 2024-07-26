@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.Markup;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -38,7 +39,7 @@ import java.util.stream.Stream;
 import static ch.qos.logback.classic.Level.*;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,6 +66,9 @@ class EventsListenerTest {
 
     @Mock
     private ExtentTest extentTest;
+
+    @Mock
+    private StatefulExtentTest statefulExtentTest;
 
     @Mock
     private WebElement webElement1;
@@ -261,6 +265,7 @@ class EventsListenerTest {
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(TRACE);
         when(event.getWait()).thenReturn(0L);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
@@ -272,6 +277,7 @@ class EventsListenerTest {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(TRACE);
         when(event.getWait()).thenReturn(wait);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
@@ -287,6 +293,7 @@ class EventsListenerTest {
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(DEBUG);
         when(event.getWait()).thenReturn(wait);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
@@ -298,6 +305,7 @@ class EventsListenerTest {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(DEBUG);
         when(event.getWait()).thenReturn(wait);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
@@ -313,6 +321,7 @@ class EventsListenerTest {
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(extentTest).info(tagsMessage);
@@ -324,6 +333,7 @@ class EventsListenerTest {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
@@ -339,6 +349,7 @@ class EventsListenerTest {
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(WARN);
         when(event.getWait()).thenReturn(wait);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
 
@@ -367,7 +378,7 @@ class EventsListenerTest {
         when(event.getLevel()).thenReturn(ALL);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
-        verify(store, never()).get(EXTENT_TEST, ExtentTest.class);
+        verify(store, never()).get(STATEFUL_EXTENT_TEST, ExtentTest.class);
         verify(extentTest, never()).warning(markupArgumentCaptor.capture());
     }
 }

@@ -1,9 +1,9 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.internals.EventsListener;
-import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -16,7 +16,7 @@ import org.openqa.selenium.support.events.WebDriverListener;
 import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -35,7 +35,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final WebDriver driver = configuration.getRuntime().getDriver().build();
         final WebDriverListener eventListener = EventsListener.builder()
                 .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
-                .extentTest(store.get(EXTENT_TEST, ExtentTest.class))
+                .statefulExtentTest(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class))
                 .video(configuration.getVideo())
                 .testData(store.get(TEST_DATA, TestData.class))
                 .driver(driver)

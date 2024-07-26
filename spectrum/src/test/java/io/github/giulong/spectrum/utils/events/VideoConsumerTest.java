@@ -28,14 +28,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
@@ -109,9 +108,6 @@ class VideoConsumerTest {
     private Path videoPath;
 
     @Mock
-    private MessageDigest messageDigest;
-
-    @Mock
     private ExtensionContext extensionContext;
 
     @Mock
@@ -123,17 +119,8 @@ class VideoConsumerTest {
     @Mock
     private Configuration configuration;
 
-    @Mock
-    private Set<byte[]> frameDigests;
-
-    @Mock
-    private Stream<byte[]> frameDigestsStream;
-
     @Captor
     private ArgumentCaptor<URL> urlArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
 
     @InjectMocks
     private VideoConsumer videoConsumer;
@@ -180,13 +167,6 @@ class VideoConsumerTest {
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot3)).thenReturn(bufferedImage);
-
-        // isNewFrame 1
-        when(screenshot1.toPath()).thenReturn(screenshotPath1);
-        when(Files.readAllBytes(screenshotPath1)).thenReturn(new byte[]{1});
-        // isNewFrame 3
-        when(screenshot3.toPath()).thenReturn(screenshotPath3);
-        when(Files.readAllBytes(screenshotPath3)).thenReturn(new byte[]{3});
 
         // chooseDimensionFor
         when(video.getWidth()).thenReturn(width);
@@ -253,6 +233,20 @@ class VideoConsumerTest {
     }
 
     @Test
+    @DisplayName("getVideoPathFrom should return the video path from the provided testData")
+    public void getVideoPathFrom() {
+        when(testData.getVideoPath()).thenReturn(videoPath);
+
+        assertEquals(videoPath, videoConsumer.getVideoPathFrom(testData));
+    }
+
+    @Test
+    @DisplayName("filter should always return true for any provided file")
+    public void filter() {
+        assertTrue(videoConsumer.filter(screenshot1, testData));
+    }
+
+    @Test
     @DisplayName("chooseDimensionFor should return a new Dimension based on the provided video dimension")
     public void chooseDimensionFor() {
         when(video.getWidth()).thenReturn(1);
@@ -308,37 +302,6 @@ class VideoConsumerTest {
                 arguments(0, 0),
                 arguments(1, 2)
         );
-    }
-
-    @Test
-    @DisplayName("isNewFrame should return true if the provided screenshot is new")
-    public void isNewFrame() throws IOException {
-        when(screenshot1.toPath()).thenReturn(screenshotPath1);
-        when(Files.readAllBytes(screenshotPath1)).thenReturn(new byte[]{1, 2, 3});
-        when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(new byte[]{4, 5, 6});
-        when(frameDigests.stream()).thenReturn(frameDigestsStream);
-        when(frameDigestsStream.noneMatch(any())).thenReturn(true);
-
-        assertTrue(videoConsumer.isNewFrame(screenshot1));
-
-        verify(frameDigests).add(byteArrayArgumentCaptor.capture());
-        assertArrayEquals(new byte[]{1, 2, 3}, byteArrayArgumentCaptor.getAllValues().getFirst());
-        assertArrayEquals(new byte[]{4, 5, 6}, byteArrayArgumentCaptor.getAllValues().get(1));
-    }
-
-    @Test
-    @DisplayName("isNewFrame should return false if the provided screenshot is not new")
-    public void isNewFrameFalse() throws IOException {
-        when(screenshot1.toPath()).thenReturn(screenshotPath1);
-        when(Files.readAllBytes(screenshotPath1)).thenReturn(new byte[]{1, 2, 3});
-        when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(new byte[]{4, 5, 6});
-        when(frameDigests.stream()).thenReturn(frameDigestsStream);
-        when(frameDigestsStream.noneMatch(any())).thenReturn(false);
-
-        assertFalse(videoConsumer.isNewFrame(screenshot1));
-
-        verify(frameDigests, never()).add(any());
-        assertArrayEquals(new byte[]{1, 2, 3}, byteArrayArgumentCaptor.getValue());
     }
 
     @Test

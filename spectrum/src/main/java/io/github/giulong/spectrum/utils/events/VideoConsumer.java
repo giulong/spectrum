@@ -20,15 +20,10 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
-import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -42,9 +37,6 @@ public class VideoConsumer extends EventsConsumer {
 
     private final ClassLoader classLoader = VideoConsumer.class.getClassLoader();
 
-    private Set<byte[]> framesDigests;
-    private MessageDigest messageDigest;
-
     @SneakyThrows
     @Override
     public void accept(final Event event) {
@@ -57,17 +49,14 @@ public class VideoConsumer extends EventsConsumer {
             return;
         }
 
-        this.framesDigests = ConcurrentHashMap.newKeySet();
-        this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
-
         log.info("Generating video for test {}.{}", testData.getClassName(), testData.getMethodName());
 
         try (Stream<Path> screenshots = Files.walk(testData.getScreenshotFolderPath())) {
-            final AWTSequenceEncoder encoder = AWTSequenceEncoder.createSequenceEncoder(testData.getVideoPath().toFile(), 1);
+            final AWTSequenceEncoder encoder = AWTSequenceEncoder.createSequenceEncoder(getVideoPathFrom(testData).toFile(), 1);
             final List<File> frames = screenshots
                     .map(Path::toFile)
                     .filter(File::isFile)
-                    .filter(this::isNewFrame)
+                    .filter(file -> filter(file, testData))
                     .sorted(comparingLong(File::lastModified))
                     .toList();
 
@@ -85,6 +74,14 @@ public class VideoConsumer extends EventsConsumer {
 
             encoder.finish();
         }
+    }
+
+    protected Path getVideoPathFrom(final TestData testData) {
+        return testData.getVideoPath();
+    }
+
+    protected boolean filter(final File file, final TestData testData) {
+        return true;
     }
 
     protected Dimension chooseDimensionFor(final WebDriver driver, final Video video) {
@@ -106,19 +103,6 @@ public class VideoConsumer extends EventsConsumer {
 
     protected int makeItEven(final int i) {
         return i % 2 == 0 ? i : i + 1;
-    }
-
-    @SneakyThrows
-    protected boolean isNewFrame(final File screenshot) {
-        final byte[] digest = messageDigest.digest(Files.readAllBytes(screenshot.toPath()));
-
-        if (framesDigests.stream().noneMatch(frameDigest -> Arrays.equals(digest, frameDigest))) {
-            framesDigests.add(digest);
-            return true;
-        }
-
-        log.trace("Discarding duplicate frame {}", screenshot.getName());
-        return false;
     }
 
     protected BufferedImage resize(final BufferedImage bufferedImage, final Dimension dimension) {

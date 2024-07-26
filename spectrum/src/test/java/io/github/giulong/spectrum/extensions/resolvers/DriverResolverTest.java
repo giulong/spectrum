@@ -1,10 +1,10 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.EventsListener;
-import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,9 +25,9 @@ import org.openqa.selenium.support.events.WebDriverListener;
 import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
@@ -81,7 +81,7 @@ class DriverResolverTest {
     private EventsListener eventsListener;
 
     @Mock
-    private ExtentTest extentTest;
+    private StatefulExtentTest statefulExtentTest;
 
     @Mock
     private Configuration.Extent extentConfiguration;
@@ -129,13 +129,13 @@ class DriverResolverTest {
         when(extentConfiguration.getLocatorRegex()).thenReturn(locatorRegex);
         when(Pattern.compile(locatorRegex)).thenReturn(pattern);
 
-        when(store.get(EXTENT_TEST, ExtentTest.class)).thenReturn(extentTest);
+        when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(configuration.getVideo()).thenReturn(video);
 
         when(EventsListener.builder()).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.locatorPattern(pattern)).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.extentTest(extentTest)).thenReturn(eventsListenerBuilder);
+        when(eventsListenerBuilder.statefulExtentTest(statefulExtentTest)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.video(video)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.testData(testData)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.driver(webDriver)).thenReturn(eventsListenerBuilder);

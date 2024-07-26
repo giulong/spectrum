@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -59,6 +60,9 @@ class SpectrumTestTest<T> {
 
     @Mock
     private ExtentTest extentTest;
+
+    @Mock
+    private StatefulExtentTest statefulExtentTest;
 
     @Mock
     private Actions actions;
@@ -130,7 +134,7 @@ class SpectrumTestTest<T> {
     @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
-        childTest.beforeEach(configuration, testData, extentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
+        childTest.beforeEach(configuration, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
                 extentReports, actions, eventsDispatcher, js, jsWebElementProxyBuilder, data);
 
         assertEquals(configuration, spectrumTest.configuration);
@@ -140,6 +144,7 @@ class SpectrumTestTest<T> {
         assertEquals(scriptWait, spectrumTest.scriptWait);
         assertEquals(downloadWait, spectrumTest.downloadWait);
         assertEquals(extentReports, spectrumTest.extentReports);
+        assertEquals(statefulExtentTest, spectrumTest.statefulExtentTest);
         assertEquals(extentTest, spectrumTest.extentTest);
         assertEquals(actions, spectrumTest.actions);
         assertEquals(eventsDispatcher, spectrumTest.eventsDispatcher);

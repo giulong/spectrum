@@ -5,6 +5,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.FileUtils;
@@ -77,6 +78,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected Data data;
+
+    @Shared
+    StatefulExtentTest statefulExtentTest;
 
     protected List<Field> getSharedFields() {
         return Arrays
@@ -158,11 +162,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      */
     @SneakyThrows
     public Media addScreenshotToReport(final String msg, final Status status) {
-        final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", MANUAL.getValue(), randomUUID()));
+        final String fileName = String.format("%s-%s-%s.png", MANUAL.getValue(), statefulExtentTest.getDisplayName(), randomUUID());
+        final Path screenshotPath = testData.getScreenshotFolderPath().resolve(fileName);
         Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));
 
         final Media screenshot = createScreenCaptureFromPath(screenshotPath.toString()).build();
-        extentTest.log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
+        statefulExtentTest.getCurrentNode().log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
 
         return screenshot;
     }

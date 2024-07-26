@@ -1,8 +1,9 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentTest;
-import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ExtentReporter;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.extern.slf4j.Slf4j;
@@ -16,29 +17,33 @@ import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.T
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
-public class ExtentTestResolver extends TypeBasedParameterResolver<ExtentTest> {
+public class StatefulExtentTestResolver extends TypeBasedParameterResolver<StatefulExtentTest> {
 
-    public static final String EXTENT_TEST = "extentTest";
+    public static final String STATEFUL_EXTENT_TEST = "statefulExtentTest";
 
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
 
     @Override
-    public ExtentTest resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        log.debug("Resolving {}", EXTENT_TEST);
+    public StatefulExtentTest resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
+        log.debug("Resolving {}", STATEFUL_EXTENT_TEST);
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final TestData testData = store.get(TEST_DATA, TestData.class);
-        final ExtentTest extentTest = extentReporter.createExtentTestFrom(testData);
+        final ExtentTest extentTest = extentReporter.createExtentTestFrom(context);
         final Video video = store.get(CONFIGURATION, Configuration.class).getVideo();
         final Video.ExtentTest videoExtentTest = video.getExtentTest();
+        final StatefulExtentTest statefulExtentTest = StatefulExtentTest
+                .builder()
+                .currentNode(extentTest)
+                .build();
 
         if (!video.isDisabled() && videoExtentTest.isAttach()) {
-            extentReporter.attachVideo(extentTest, videoExtentTest, testData);
+            extentReporter.attachVideo(extentTest, videoExtentTest, testData.getTestId(), testData.getVideoPath());
         }
 
         extentReporter.logTestStartOf(extentTest);
-        store.put(EXTENT_TEST, extentTest);
+        store.put(STATEFUL_EXTENT_TEST, statefulExtentTest);
 
-        return extentTest;
+        return statefulExtentTest;
     }
 }
