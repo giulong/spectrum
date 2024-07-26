@@ -13,7 +13,6 @@ import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -96,7 +95,6 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         metadataManager.setSuccessfulQueueOf(this, queue);
     }
 
-    @SneakyThrows
     public void cleanupOldReportsIn(final String folder) {
         final Retention retention = configuration.getExtent().getRetention();
         log.info("Extent reports to keep in {}: {}", folder, retention.getTotal());

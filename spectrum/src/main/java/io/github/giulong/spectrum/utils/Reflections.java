@@ -34,7 +34,6 @@ public final class Reflections {
         return getField(fieldName, object).get(object);
     }
 
-    @SneakyThrows
     public static void setField(final String fieldName, final Object object, final Object value) {
         final Field field = getField(fieldName, object);
         setField(field, object, value);

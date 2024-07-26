@@ -175,7 +175,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     /**
      * Deletes the download folder (its path is provided in the {@code configuration*.yaml})
      */
-    @SneakyThrows
     public void deleteDownloadsFolder() {
         fileUtils.deleteContentOf(Path.of(configuration.getRuntime().getDownloadsFolder()));
     }
