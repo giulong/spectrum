@@ -9,13 +9,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
@@ -39,7 +37,6 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class VideoConsumerTest {
 
     private static final String CLASS_NAME = "className";

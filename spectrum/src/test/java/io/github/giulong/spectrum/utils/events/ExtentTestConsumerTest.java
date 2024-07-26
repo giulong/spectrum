@@ -7,17 +7,14 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class ExtentTestConsumerTest {
 
     private static MockedStatic<ExtentReporter> extentReporterMockedStatic;

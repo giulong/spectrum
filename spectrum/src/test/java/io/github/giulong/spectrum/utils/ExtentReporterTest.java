@@ -11,14 +11,12 @@ import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -42,7 +40,6 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class ExtentReporterTest {
 
     private static final String REPORT_FOLDER = "reportFolder";
