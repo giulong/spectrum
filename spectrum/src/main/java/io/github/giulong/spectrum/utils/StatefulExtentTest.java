@@ -11,7 +11,8 @@ public class StatefulExtentTest {
     private ExtentTest previousNode;
 
     @Setter
-    private String displayName;
+    @Builder.Default
+    private String displayName = "static";
 
     public ExtentTest createNode(final String name) {
         previousNode = currentNode;
