@@ -4,10 +4,10 @@ import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.*;
 
 import java.util.Arrays;
@@ -16,7 +16,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class JsTest {
 
     @Mock
@@ -262,14 +261,13 @@ class JsTest {
         assertTrue(result);
     }
 
-    @Test
     @DisplayName("isEnabled should return true if the element is not disabled")
-    void testIsEnabled() {
-        when(webDriver.executeScript("return arguments[0].disabled;", webElement)).thenReturn(false);
+    @ParameterizedTest(name = "with js disabled {0}")
+    @ValueSource(booleans = {true, false})
+    void testIsEnabled(final boolean disabled) {
+        when(webDriver.executeScript("return arguments[0].disabled;", webElement)).thenReturn(disabled);
 
-        boolean result = js.isEnabled(webElement);
-
-        assertTrue(result);
+        assertEquals(!disabled, js.isEnabled(webElement));
     }
 
     @Test

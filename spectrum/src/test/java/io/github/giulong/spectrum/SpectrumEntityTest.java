@@ -5,11 +5,11 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,7 +18,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -47,10 +46,10 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
 
-@ExtendWith(MockitoExtension.class)
 class SpectrumEntityTest {
 
-    private static final String UUID_REGEX = MANUAL.getValue() + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
+    private static final String DISPLAY_NAME = "displayName";
+    private static final String UUID_REGEX = MANUAL.getValue() + "-" + DISPLAY_NAME + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
     private static final List<Path> REPORTS_FOLDERS = new ArrayList<>();
 
     @Mock
@@ -64,6 +63,9 @@ class SpectrumEntityTest {
 
     @Mock
     private ExtentTest extentTest;
+
+    @Mock
+    private StatefulExtentTest statefulExtentTest;
 
     @Mock(extraInterfaces = TakesScreenshot.class)
     private WebDriver webDriver;
@@ -107,6 +109,8 @@ class SpectrumEntityTest {
         REPORTS_FOLDERS.add(path);
 
         when(testData.getScreenshotFolderPath()).thenReturn(path);
+        when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
     }
 
@@ -120,7 +124,7 @@ class SpectrumEntityTest {
                 .toList();
 
         // we're checking real size and names here, no mocks
-        assertEquals(13, actual.size());
+        assertEquals(14, actual.size());
         assertTrue(sharedFieldsNames.containsAll(List.of(
                 "configuration",
                 "extentReports",
@@ -133,7 +137,8 @@ class SpectrumEntityTest {
                 "scriptWait",
                 "downloadWait",
                 "js",
-                "data"
+                "data",
+                "statefulExtentTest"
         )));
     }
 
@@ -195,6 +200,8 @@ class SpectrumEntityTest {
         REPORTS_FOLDERS.add(reportsFolder);
 
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
+        when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 

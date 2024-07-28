@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@ExtendWith(MockitoExtension.class)
 class ReflectionsTest {
 
     @Test
@@ -22,6 +20,26 @@ class ReflectionsTest {
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
 
         assertEquals(fieldString, Reflections.getField(fieldName, dummy));
+    }
+
+    @Test
+    @DisplayName("getField should return the field with the provided name on the provided object even if it's in the parent class")
+    public void getFieldParent() throws NoSuchFieldException {
+        final String fieldName = "fieldString";
+        final String parentField = "parentField";
+        final Dummy dummy = new Dummy(fieldName, parentField);
+        final Field fieldString = DummyParent.class.getDeclaredField(parentField);
+
+        assertEquals(fieldString, Reflections.getField(parentField, dummy));
+    }
+
+    @Test
+    @DisplayName("getField should return the field with the provided name on the provided object even if it's in the parent class")
+    public void getFieldNotFound() {
+        final String fieldName = "notFound";
+        final Dummy dummy = new Dummy(fieldName);
+
+        assertThrows(NoSuchFieldException.class, () -> Reflections.getField(fieldName, dummy));
     }
 
     @Test

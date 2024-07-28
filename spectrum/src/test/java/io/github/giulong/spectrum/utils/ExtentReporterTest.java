@@ -11,14 +11,12 @@ import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -34,14 +32,14 @@ import static com.aventstack.extentreports.Status.*;
 import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static com.aventstack.extentreports.reporter.configuration.Theme.DARK;
-import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class ExtentReporterTest {
 
     private static final String REPORT_FOLDER = "reportFolder";
@@ -105,6 +103,9 @@ class ExtentReporterTest {
     private ExtentTest extentTest;
 
     @Mock
+    private StatefulExtentTest statefulExtentTest;
+
+    @Mock
     private Video.ExtentTest videoExtentTest;
 
     @Mock
@@ -132,7 +133,7 @@ class ExtentReporterTest {
     private MetadataManager metadataManager;
 
     @Captor
-    private ArgumentCaptor<Function<String, ExtentTest>> functionArgumentCaptor;
+    private ArgumentCaptor<Function<String, StatefulExtentTest>> functionArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<Markup> markupArgumentCaptor;
@@ -358,12 +359,14 @@ class ExtentReporterTest {
         final String classDisplayName = "classDisplayName";
         final String methodDisplayName = "methodDisplayName";
 
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getTestId()).thenReturn(testId);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getMethodDisplayName()).thenReturn(methodDisplayName);
         when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, methodDisplayName))).thenReturn(extentTest);
 
-        assertEquals(extentTest, extentReporter.createExtentTestFrom(testData));
+        assertEquals(extentTest, extentReporter.createExtentTestFrom(context));
     }
 
     @Test
@@ -373,12 +376,10 @@ class ExtentReporterTest {
         final int width = 123;
         final int height = 456;
 
-        when(testData.getTestId()).thenReturn(testId);
-        when(testData.getVideoPath()).thenReturn(path);
         when(videoExtentTest.getWidth()).thenReturn(width);
         when(videoExtentTest.getHeight()).thenReturn(height);
 
-        extentReporter.attachVideo(extentTest, videoExtentTest, testData);
+        extentReporter.attachVideo(extentTest, videoExtentTest, testId, path);
 
         verify(extentTest).info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", testId, width, height, path));
     }
@@ -422,9 +423,10 @@ class ExtentReporterTest {
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, SKIP);
-        final ExtentTest extentTest = verifyAndGetExtentTest();
+        functionArgumentCaptor.getValue().apply("value");
 
         verify(extentTest).skip(skipMarkupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text amber'>Skipped: " + expected + "</span>", skipMarkupArgumentCaptor.getValue().getMarkup());
@@ -440,9 +442,10 @@ class ExtentReporterTest {
         when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(context.getExecutionException()).thenReturn(Optional.of(exception));
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, FAIL);
-        final ExtentTest extentTest = verifyAndGetExtentTest();
+        functionArgumentCaptor.getValue().apply("value");
 
         verify(extentTest).fail(exception);
         verify(spectrumTest).screenshotFail("<span class='badge white-text red'>TEST FAILED</span>");
@@ -456,10 +459,11 @@ class ExtentReporterTest {
         logTestEndStubs();
         when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, PASS);
 
-        final ExtentTest extentTest = verifyAndGetExtentTest();
+        functionArgumentCaptor.getValue().apply("value");
         verify(extentTest).log(eq(PASS), markupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text green'>END TEST</span>", markupArgumentCaptor.getValue().getMarkup());
     }
@@ -492,11 +496,8 @@ class ExtentReporterTest {
         when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, methodDisplayName))).thenReturn(extentTest);
 
         when(context.getStore(GLOBAL)).thenReturn(store);
-        when(store.getOrComputeIfAbsent(eq(EXTENT_TEST), functionArgumentCaptor.capture(), eq(ExtentTest.class))).thenReturn(extentTest);
-    }
-
-    private ExtentTest verifyAndGetExtentTest() {
-        Function<String, ExtentTest> function = functionArgumentCaptor.getValue();
-        return function.apply("value");
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(store.getOrComputeIfAbsent(eq(STATEFUL_EXTENT_TEST), functionArgumentCaptor.capture(), eq(StatefulExtentTest.class))).thenReturn(statefulExtentTest);
     }
 }

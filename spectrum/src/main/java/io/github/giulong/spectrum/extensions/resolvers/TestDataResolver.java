@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.extensions.resolvers;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.FileUtils;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -52,12 +51,10 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         return testData;
     }
 
-    @SneakyThrows
     public Path getScreenshotFolderPathForCurrentTest(final String reportsFolder, final String extentFileName, final String className, final String methodName) {
         return fileUtils.deleteContentOf(Path.of(reportsFolder, extentFileName, "screenshots", className, methodName).toAbsolutePath());
     }
 
-    @SneakyThrows
     public Path getVideoPathForCurrentTest(final boolean disabled, final String reportsFolder, final String extentFileName, final String className, final String methodName) {
         if (disabled) {
             log.trace("Video disabled: avoiding video folder creation");

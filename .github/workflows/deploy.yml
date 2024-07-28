@@ -69,7 +69,7 @@ jobs:
 
       - name: Generate new public Json Schema
         shell: bash
-        run: ./mvnw install -Dmaven.plugin.validation=NONE -DskipTests -DskipSign -ntp -P framework-only
+        run: ./mvnw install -Dmaven.plugin.validation=NONE -DskipSign -ntp -P framework-only
 
       - name: Commit files and generate new tag
         run: |

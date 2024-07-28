@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.types;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.nio.file.Path;
 
@@ -15,4 +16,10 @@ public class TestData {
     private String testId;
     private Path screenshotFolderPath;
     private Path videoPath;
+
+    @Setter
+    private Path dynamicVideoPath;
+
+    @Setter
+    private String displayName;
 }

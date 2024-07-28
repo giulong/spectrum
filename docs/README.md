@@ -1392,7 +1392,7 @@ drivers:
 > 6. screenshot: after set text
 >
 > There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
-> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard duplicate frames.
+> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard **consecutive** duplicate frames.
 
 The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>`
 folder and attached to the Extent Report as well, where:
@@ -1500,6 +1500,18 @@ public class HelloWorldIT extends SpectrumTest<Void> {
     }
 }
 ```
+
+> ⚠️ **Dynamic Tests**<br/>
+> [Dynamic Tests](https://junit.org/junit5/docs/current/user-guide/#writing-tests-dynamic-tests){:target="_blank"}
+> are shown in the html report as a single one in the left column. In the test's details on the right,
+> you'll see one collapsible nested block for each dynamic test. Additionally, if you enabled video generation,
+> you'll find the full video attached on top of the right column, as well as the video related to the specific dynamic test
+> execution in its own nested block.
+> 
+> The example report shown here is the one generated from
+> [TestFactoryIT.java]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/TestFactoryIT.java){:target="_blank"}.
+> 
+> ![dynamic-tests-extent-report.png](assets/images/dynamic-tests-extent-report.png)
 
 ### Inline report
 
