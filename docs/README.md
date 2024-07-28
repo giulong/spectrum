@@ -1392,7 +1392,7 @@ drivers:
 > 6. screenshot: after set text
 >
 > There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
-> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard duplicate frames.
+> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard **consecutive** duplicate frames.
 
 The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>`
 folder and attached to the Extent Report as well, where:

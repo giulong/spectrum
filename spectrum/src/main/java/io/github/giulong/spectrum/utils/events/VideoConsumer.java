@@ -20,10 +20,13 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -37,6 +40,9 @@ public class VideoConsumer extends EventsConsumer {
 
     private final ClassLoader classLoader = VideoConsumer.class.getClassLoader();
 
+    private byte[] lastFrameDigest;
+    private MessageDigest messageDigest;
+
     @SneakyThrows
     @Override
     public void accept(final Event event) {
@@ -49,6 +55,8 @@ public class VideoConsumer extends EventsConsumer {
             return;
         }
 
+        this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+
         log.info("Generating video for test {}.{}", testData.getClassName(), testData.getMethodName());
 
         try (Stream<Path> screenshots = Files.walk(testData.getScreenshotFolderPath())) {
@@ -57,6 +65,7 @@ public class VideoConsumer extends EventsConsumer {
                     .map(Path::toFile)
                     .filter(File::isFile)
                     .filter(file -> filter(file, testData))
+                    .filter(this::isNewFrame)
                     .sorted(comparingLong(File::lastModified))
                     .toList();
 
@@ -103,6 +112,19 @@ public class VideoConsumer extends EventsConsumer {
 
     protected int makeItEven(final int i) {
         return i % 2 == 0 ? i : i + 1;
+    }
+
+    @SneakyThrows
+    protected boolean isNewFrame(final File screenshot) {
+        final byte[] digest = messageDigest.digest(Files.readAllBytes(screenshot.toPath()));
+
+        if (!Arrays.equals(lastFrameDigest, digest)) {
+            lastFrameDigest = digest;
+            return true;
+        }
+
+        log.trace("Discarding duplicate frame {}", screenshot.getName());
+        return false;
     }
 
     protected BufferedImage resize(final BufferedImage bufferedImage, final Dimension dimension) {
