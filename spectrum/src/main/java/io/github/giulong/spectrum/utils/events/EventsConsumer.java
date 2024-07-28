@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = DriverConsumer.class, name = "driver"),
         @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),
         @JsonSubTypes.Type(value = VideoConsumer.class, name = "video"),
+        @JsonSubTypes.Type(value = VideoDynamicConsumer.class, name = "videoDynamic"),
 })
 @Getter
 @Slf4j

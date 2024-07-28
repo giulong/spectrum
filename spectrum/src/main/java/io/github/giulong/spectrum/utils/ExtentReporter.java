@@ -13,7 +13,6 @@ import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -27,7 +26,8 @@ import static com.aventstack.extentreports.Status.INFO;
 import static com.aventstack.extentreports.Status.SKIP;
 import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
-import static io.github.giulong.spectrum.extensions.resolvers.ExtentTestResolver.EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
 import static java.util.Comparator.comparingLong;
 import static lombok.AccessLevel.PROTECTED;
@@ -95,7 +95,6 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         metadataManager.setSuccessfulQueueOf(this, queue);
     }
 
-    @SneakyThrows
     public void cleanupOldReportsIn(final String folder) {
         final Retention retention = configuration.getExtent().getRetention();
         log.info("Extent reports to keep in {}: {}", folder, retention.getTotal());
@@ -141,16 +140,17 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         return Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath();
     }
 
-    public ExtentTest createExtentTestFrom(final TestData testData) {
+    public ExtentTest createExtentTestFrom(final ExtensionContext context) {
+        final TestData testData = context.getStore(GLOBAL).get(TEST_DATA, TestData.class);
+
         return extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getMethodDisplayName()));
     }
 
-    public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final TestData testData) {
+    public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final String testId, final Path path) {
         final int width = videoExtentTest.getWidth();
         final int height = videoExtentTest.getHeight();
 
-        extentTest.info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>",
-                testData.getTestId(), width, height, testData.getVideoPath()));
+        extentTest.info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", testId, width, height, path));
     }
 
     public void logTestStartOf(final ExtentTest extentTest) {
@@ -167,33 +167,37 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     public void logTestEnd(final ExtensionContext context, final Status status) {
         final ExtensionContext.Store store = context.getStore(GLOBAL);
-        final ExtentTest extentTest = store.getOrComputeIfAbsent(EXTENT_TEST, e -> {
+        final StatefulExtentTest statefulExtentTest = store.getOrComputeIfAbsent(STATEFUL_EXTENT_TEST, e -> {
             final String className = context.getRequiredTestClass().getSimpleName();
             final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
             final String methodDisplayName = context.getDisplayName();
             final String testId = buildTestIdFrom(className, methodDisplayName);
-            final TestData testData = TestData
+
+            store.put(TEST_DATA, TestData
                     .builder()
                     .classDisplayName(classDisplayName)
                     .methodDisplayName(methodDisplayName)
                     .testId(testId)
-                    .build();
+                    .build());
 
-            return createExtentTestFrom(testData);
-        }, ExtentTest.class);
+            return StatefulExtentTest
+                    .builder()
+                    .currentNode(createExtentTestFrom(context))
+                    .build();
+        }, StatefulExtentTest.class);
 
         switch (status) {
             case SKIP -> {
                 final String disabledValue = context.getRequiredTestMethod().getAnnotation(Disabled.class).value();
                 final String reason = "".equals(disabledValue) ? "no reason" : disabledValue;
-                extentTest.skip(createLabel("Skipped: " + reason, getColorOf(SKIP)));
+                statefulExtentTest.getCurrentNode().skip(createLabel("Skipped: " + reason, getColorOf(SKIP)));
             }
             case FAIL -> {
                 final SpectrumTest<?> spectrumTest = (SpectrumTest<?>) context.getRequiredTestInstance();
-                extentTest.fail(context.getExecutionException().orElse(new RuntimeException("Test Failed with no exception")));
+                statefulExtentTest.getCurrentNode().fail(context.getExecutionException().orElse(new RuntimeException("Test Failed with no exception")));
                 spectrumTest.screenshotFail(createLabel("TEST FAILED", RED).getMarkup());
             }
-            default -> extentTest.log(status, createLabel("END TEST", getColorOf(status)));
+            default -> statefulExtentTest.getCurrentNode().log(status, createLabel("END TEST", getColorOf(status)));
         }
     }
 }

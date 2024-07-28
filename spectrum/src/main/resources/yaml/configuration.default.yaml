@@ -467,7 +467,11 @@ eventsConsumers:
   - video: # We need to finalize the video once each test is done
       events:
         - reason: after
-          tags: [ test ]
+          tags: [ test, dynamicTest ]
+  - videoDynamic: # We need to finalize the video once each dynamic test is done
+      events:
+        - reason: after
+          tags: [ dynamicTest ]
   - driver: # We need to close the driver once each test is done
       events:
         - reason: after

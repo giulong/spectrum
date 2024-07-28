@@ -24,8 +24,6 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
@@ -42,7 +40,7 @@ public class VideoConsumer extends EventsConsumer {
 
     private final ClassLoader classLoader = VideoConsumer.class.getClassLoader();
 
-    private Set<byte[]> framesDigests;
+    private byte[] lastFrameDigest;
     private MessageDigest messageDigest;
 
     @SneakyThrows
@@ -57,17 +55,17 @@ public class VideoConsumer extends EventsConsumer {
             return;
         }
 
-        this.framesDigests = ConcurrentHashMap.newKeySet();
         this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
 
         log.info("Generating video for test {}.{}", testData.getClassName(), testData.getMethodName());
 
         try (Stream<Path> screenshots = Files.walk(testData.getScreenshotFolderPath())) {
-            final AWTSequenceEncoder encoder = AWTSequenceEncoder.createSequenceEncoder(testData.getVideoPath().toFile(), 1);
+            final AWTSequenceEncoder encoder = AWTSequenceEncoder.createSequenceEncoder(getVideoPathFrom(testData).toFile(), 1);
             final List<File> frames = screenshots
                     .map(Path::toFile)
                     .filter(File::isFile)
-                    .filter(this::isNewFrame)
+                    .filter(file -> filter(file, testData))
+                    .filter(file -> isNewFrame(file, testData))
                     .sorted(comparingLong(File::lastModified))
                     .toList();
 
@@ -85,6 +83,14 @@ public class VideoConsumer extends EventsConsumer {
 
             encoder.finish();
         }
+    }
+
+    protected Path getVideoPathFrom(final TestData testData) {
+        return testData.getVideoPath();
+    }
+
+    protected boolean filter(final File file, final TestData testData) {
+        return true;
     }
 
     protected Dimension chooseDimensionFor(final WebDriver driver, final Video video) {
@@ -109,11 +115,11 @@ public class VideoConsumer extends EventsConsumer {
     }
 
     @SneakyThrows
-    protected boolean isNewFrame(final File screenshot) {
+    protected boolean isNewFrame(final File screenshot, final TestData testData) {
         final byte[] digest = messageDigest.digest(Files.readAllBytes(screenshot.toPath()));
 
-        if (framesDigests.stream().noneMatch(frameDigest -> Arrays.equals(digest, frameDigest))) {
-            framesDigests.add(digest);
+        if (!Arrays.equals(lastFrameDigest, digest)) {
+            lastFrameDigest = digest;
             return true;
         }
 

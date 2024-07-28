@@ -1,10 +1,10 @@
 package io.github.giulong.spectrum.internals;
 
-import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Builder;
 import lombok.Generated;
@@ -39,7 +39,7 @@ public class EventsListener implements WebDriverListener {
     private static final String TAG = "<.*?>";
 
     private Pattern locatorPattern;
-    private ExtentTest extentTest;
+    private StatefulExtentTest statefulExtentTest;
     private Video video;
     private TestData testData;
     private WebDriver driver;
@@ -106,10 +106,10 @@ public class EventsListener implements WebDriverListener {
         switch (event.getLevel().levelStr) {
             case "OFF" -> {
             }
-            case "TRACE" -> apply(log.isTraceEnabled(), log::trace, extentTest::info, frame, event, args);
-            case "DEBUG" -> apply(log.isDebugEnabled(), log::debug, extentTest::info, frame, event, args);
-            case "INFO" -> apply(log.isInfoEnabled(), log::info, extentTest::info, frame, event, args);
-            case "WARN" -> apply(log.isWarnEnabled(), log::warn, message -> extentTest.warning(createLabel(message, YELLOW)), frame, event, args);
+            case "TRACE" -> apply(log.isTraceEnabled(), log::trace, statefulExtentTest.getCurrentNode()::info, frame, event, args);
+            case "DEBUG" -> apply(log.isDebugEnabled(), log::debug, statefulExtentTest.getCurrentNode()::info, frame, event, args);
+            case "INFO" -> apply(log.isInfoEnabled(), log::info, statefulExtentTest.getCurrentNode()::info, frame, event, args);
+            case "WARN" -> apply(log.isWarnEnabled(), log::warn, message -> statefulExtentTest.getCurrentNode().warning(createLabel(message, YELLOW)), frame, event, args);
             default -> log.warn("Message '{}' won't be logged. Wrong log level set in configuration.yaml. Choose one among OFF, TRACE, DEBUG, INFO, WARN",
                     String.format(event.getMessage(), parse(args).toArray()));
         }

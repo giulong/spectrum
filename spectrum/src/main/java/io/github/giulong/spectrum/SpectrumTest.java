@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
+import io.github.giulong.spectrum.extensions.interceptors.SpectrumInterceptor;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -43,7 +44,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final ExtentReportsResolver EXTENT_REPORTS_RESOLVER = new ExtentReportsResolver();
 
     @RegisterExtension
-    public static final ExtentTestResolver EXTENT_TEST_RESOLVER = new ExtentTestResolver();
+    public static final StatefulExtentTestResolver STATEFUL_EXTENT_TEST_RESOLVER = new StatefulExtentTestResolver();
 
     @RegisterExtension
     public static final TestDataResolver TEST_DATA_RESOLVER = new TestDataResolver();
@@ -70,6 +71,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final JsResolver JS_RESOLVER = new JsResolver();
 
     @RegisterExtension
+    public static final SpectrumInterceptor SPECTRUM_INTERCEPTOR = new SpectrumInterceptor();
+
+    @RegisterExtension
     public static final JsWebElementProxyBuilderResolver JS_WEB_ELEMENT_PROXY_BUILDER_RESOLVER = new JsWebElementProxyBuilderResolver();
 
     @RegisterExtension
@@ -81,9 +85,10 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     @BeforeEach
     @SuppressWarnings({"checkstyle:ParameterNumber", "checkstyle:HiddenField", "unused"})
-    public void beforeEach(final Configuration configuration, final TestData testData, final ExtentTest extentTest, final WebDriver driver, final ImplicitWait implicitWait,
-                           final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait, final ExtentReports extentReports, final Actions actions,
-                           final EventsDispatcher eventsDispatcher, final Js js, final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
+    public void beforeEach(final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest, final WebDriver driver,
+                           final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
+                           final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js,
+                           final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
         this.configuration = configuration;
         this.driver = driver;
         this.implicitWait = implicitWait;
@@ -91,7 +96,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.scriptWait = scriptWait;
         this.downloadWait = downloadWait;
         this.extentReports = extentReports;
-        this.extentTest = extentTest;
+        this.statefulExtentTest = statefulExtentTest;
+        this.extentTest = statefulExtentTest.getCurrentNode();
         this.actions = actions;
         this.eventsDispatcher = eventsDispatcher;
         this.testData = testData;

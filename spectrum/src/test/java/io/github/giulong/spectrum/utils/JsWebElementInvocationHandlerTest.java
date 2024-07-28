@@ -3,12 +3,10 @@ package io.github.giulong.spectrum.utils;
 import io.github.giulong.spectrum.enums.LocatorType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.openqa.selenium.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -23,7 +21,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
 
-@ExtendWith(MockitoExtension.class)
 class JsWebElementInvocationHandlerTest {
 
     @Mock

@@ -7,11 +7,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.mockito.*;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -24,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
 class JsWebElementProxyBuilderResolverTest {
 
     private static MockedStatic<Pattern> patternMockedStatic;

@@ -21,6 +21,11 @@ data:
   folder: data
   fqdn: io.github.giulong.spectrum.it.data.Data
 
+video:
+  frames:
+    - autoAfter
+    - manual
+
 extent:
   theme: DARK
   fileName: report.html
