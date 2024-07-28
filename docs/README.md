@@ -1501,6 +1501,18 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
+> ⚠️ **Dynamic Tests**<br/>
+> [Dynamic Tests](https://junit.org/junit5/docs/current/user-guide/#writing-tests-dynamic-tests){:target="_blank"}
+> are shown in the html report as a single one in the left column. In the test's details on the right,
+> you'll see one collapsible nested block for each dynamic test. Additionally, if you enabled video generation,
+> you'll find the full video attached on top of the right column, as well as the video related to the specific dynamic test
+> execution in its own nested block.
+> 
+> The example report shown here is the one generated from
+> [TestFactoryIT.java]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/TestFactoryIT.java){:target="_blank"}.
+> 
+> ![dynamic-tests-extent-report.png](assets/images/dynamic-tests-extent-report.png)
+
 ### Inline report
 
 The generated html report embeds external resources such as images and videos. You can optionally choose to produce an
