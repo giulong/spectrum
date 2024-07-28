@@ -14,6 +14,8 @@ public class VideoDynamicConsumer extends VideoConsumer {
 
     private static final Pattern PATTERN = Pattern.compile("[A-Za-z]+-(?<displayName>.*)-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png");
 
+    private String lastFrameDisplayName;
+
     @Override
     protected Path getVideoPathFrom(final TestData testData) {
         return testData.getDynamicVideoPath();
@@ -24,5 +26,17 @@ public class VideoDynamicConsumer extends VideoConsumer {
         final Matcher matcher = PATTERN.matcher(file.getName());
 
         return matcher.find() && testData.getDisplayName().equals(matcher.group("displayName"));
+    }
+
+    @Override
+    protected boolean isNewFrame(final File screenshot, final TestData testData) {
+        final String displayName = testData.getDisplayName();
+
+        if (!displayName.equals(lastFrameDisplayName)) {
+            lastFrameDisplayName = displayName;
+            return true;
+        }
+
+        return super.isNewFrame(screenshot, testData);
     }
 }

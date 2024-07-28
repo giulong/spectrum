@@ -65,7 +65,7 @@ public class VideoConsumer extends EventsConsumer {
                     .map(Path::toFile)
                     .filter(File::isFile)
                     .filter(file -> filter(file, testData))
-                    .filter(this::isNewFrame)
+                    .filter(file -> isNewFrame(file, testData))
                     .sorted(comparingLong(File::lastModified))
                     .toList();
 
@@ -115,7 +115,7 @@ public class VideoConsumer extends EventsConsumer {
     }
 
     @SneakyThrows
-    protected boolean isNewFrame(final File screenshot) {
+    protected boolean isNewFrame(final File screenshot, final TestData testData) {
         final byte[] digest = messageDigest.digest(Files.readAllBytes(screenshot.toPath()));
 
         if (!Arrays.equals(lastFrameDigest, digest)) {

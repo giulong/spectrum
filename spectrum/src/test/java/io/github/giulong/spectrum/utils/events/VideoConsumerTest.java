@@ -328,7 +328,7 @@ class VideoConsumerTest {
         when(Files.readAllBytes(screenshotPath1)).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(newFrameDigest);
 
-        assertTrue(videoConsumer.isNewFrame(screenshot1));
+        assertTrue(videoConsumer.isNewFrame(screenshot1, testData));
 
         assertArrayEquals(screenshotBytes, byteArrayArgumentCaptor.getValue());
         assertArrayEquals(newFrameDigest, (byte[]) Reflections.getFieldValue("lastFrameDigest", videoConsumer));
@@ -346,7 +346,7 @@ class VideoConsumerTest {
         when(Files.readAllBytes(screenshotPath1)).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(lastFrameDigest);
 
-        assertFalse(videoConsumer.isNewFrame(screenshot1));
+        assertFalse(videoConsumer.isNewFrame(screenshot1, testData));
 
         assertArrayEquals(screenshotBytes, byteArrayArgumentCaptor.getValue());
         assertArrayEquals(lastFrameDigest, (byte[]) Reflections.getFieldValue("lastFrameDigest", videoConsumer));
