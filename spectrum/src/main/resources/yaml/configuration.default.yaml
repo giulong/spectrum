@@ -78,7 +78,8 @@ drivers:
 
   # Chrome capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/chrome/
   chrome:
-    args: [ ]
+    args:
+      - --disable-search-engine-choice-screen
     capabilities:
       prefs:
         download.prompt_for_download: false
