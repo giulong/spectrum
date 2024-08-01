@@ -55,7 +55,7 @@ public class VideoConsumer extends EventsConsumer {
             return;
         }
 
-        this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
+        init();
 
         log.info("Generating video for test {}.{}", testData.getClassName(), testData.getMethodName());
 
@@ -83,6 +83,12 @@ public class VideoConsumer extends EventsConsumer {
 
             encoder.finish();
         }
+    }
+
+    @SneakyThrows
+    protected void init() {
+        this.lastFrameDigest = null;
+        this.messageDigest = MessageDigest.getInstance(HASH_ALGORITHM);
     }
 
     protected Path getVideoPathFrom(final TestData testData) {

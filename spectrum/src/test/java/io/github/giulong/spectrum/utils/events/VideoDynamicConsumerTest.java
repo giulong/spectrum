@@ -16,8 +16,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
+import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
@@ -55,6 +57,22 @@ class VideoDynamicConsumerTest {
     @AfterEach
     public void afterEach() {
         filesMockedStatic.close();
+    }
+
+    @Test
+    @DisplayName("init should init the needed fields")
+    public void init() throws NoSuchAlgorithmException {
+        final byte[] lastFrameDigest = new byte[]{1, 2, 3};
+        final String displayName = "displayName";
+
+        Reflections.setField("lastFrameDigest", videoDynamicConsumer, lastFrameDigest);
+        Reflections.setField("lastFrameDisplayName", videoDynamicConsumer, displayName);
+
+        videoDynamicConsumer.init();
+
+        assertNull(Reflections.getFieldValue("lastFrameDigest", videoDynamicConsumer));
+        assertNull(Reflections.getFieldValue("lastFrameDisplayName", videoDynamicConsumer));
+        assertEquals(MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(), ((MessageDigest) Reflections.getFieldValue("messageDigest", videoDynamicConsumer)).getAlgorithm());
     }
 
     @Test

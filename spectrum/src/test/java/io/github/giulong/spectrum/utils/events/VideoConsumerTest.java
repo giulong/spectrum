@@ -28,8 +28,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
+import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -241,6 +243,19 @@ class VideoConsumerTest {
         videoConsumer.accept(event);
 
         verify(encoder, never()).encodeImage(any());
+    }
+
+    @Test
+    @DisplayName("init should init the needed fields")
+    public void init() throws NoSuchAlgorithmException {
+        final byte[] lastFrameDigest = new byte[]{1, 2, 3};
+
+        Reflections.setField("lastFrameDigest", videoConsumer, lastFrameDigest);
+
+        videoConsumer.init();
+
+        assertNull(Reflections.getFieldValue("lastFrameDigest", videoConsumer));
+        assertEquals(MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(), ((MessageDigest) Reflections.getFieldValue("messageDigest", videoConsumer)).getAlgorithm());
     }
 
     @Test
