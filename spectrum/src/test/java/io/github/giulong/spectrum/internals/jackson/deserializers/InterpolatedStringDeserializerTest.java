@@ -63,6 +63,10 @@ class InterpolatedStringDeserializerTest {
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("value", "value"),
+                arguments("${not.set:-_-}", "_-"),
+                arguments("${not.set:-- -}", "- -"),
+                arguments("${not.set:--\t-}", "-\t-"),
+                arguments("${not.set:-a b }", "a b "),
                 arguments("${not.set:-local}", "local"),
                 arguments("${notSet:-local}", "local"),
                 arguments("${notSet:-local}-something_else-${varInEnv}", "local-something_else-" + VAR_IN_ENV),
