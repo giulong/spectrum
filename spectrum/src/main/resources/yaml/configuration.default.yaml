@@ -51,7 +51,7 @@ extent:
   fileName: spectrum-report-${timestamp}.html  # Name of the report file. you can use the ${timestamp} placeholder, which will be resolved at runtime
   theme: STANDARD   # Theme used. Can be STANDARD or DARK
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
-  locatorRegex: \s->\s([\w:\s\-.#]+)  # Regex to extract the WebElement's selector, when the driver fires an event
+  locatorRegex: \s->\s(.+?(?=(]]+|]\s+|]$)))  # Regex to extract the WebElement's selector, when the driver fires an event
   retention: { } # Retention rules, specifies the number of reports to retain. Older ones will be deleted. Defaults to MAX_INT
   inline: false # Set to true to generate an inline report alongside the main one
   inlineReportFolder: target/spectrum/inline-reports # Where to generate the inline report
@@ -290,7 +290,7 @@ drivers:
       message: Getting text of <code>%1$s</code>
     afterGetText:
       level: INFO
-      message: Text of <code>%1$s</code> is <code>%2$s</code>
+      message: Text of <code>%1$s</code> is '<code>%2$s</code>'
     beforeFindWebElement:
       level: DEBUG
       message: About to find element <code>%2$s</code> inside <code>%1$s</code>
