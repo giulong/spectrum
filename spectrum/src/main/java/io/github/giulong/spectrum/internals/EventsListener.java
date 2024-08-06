@@ -57,17 +57,11 @@ public class EventsListener implements WebDriverListener {
         return String.join(" -> ", locators);
     }
 
-    protected List<String> parse(final Object[] args, final String format) {
+    protected List<String> parse(final Object[] args) {
         return Arrays
                 .stream(args)
-                .map(arg -> String.format(format, arg instanceof WebElement
-                        ? extractSelectorFrom((WebElement) arg)
-                        : arg))
+                .map(arg -> arg instanceof WebElement ? extractSelectorFrom((WebElement) arg) : String.valueOf(arg))
                 .toList();
-    }
-
-    protected List<String> parse(final Object[] args) {
-        return parse(args, "%s");
     }
 
     @SneakyThrows
@@ -93,12 +87,11 @@ public class EventsListener implements WebDriverListener {
         }
 
         if (condition) {
-            final String logMessage = String.format(event.getMessage(), parse(args).toArray());
-            final String extentMessage = String.format(event.getMessage(), parse(args, "<code>%s</code>").toArray());
+            final String message = String.format(event.getMessage(), parse(args).toArray());
 
-            logConsumer.accept(logMessage.replaceAll(TAG, ""));
+            logConsumer.accept(message.replaceAll(TAG, ""));
             record(frame);
-            extentConsumer.accept(extentMessage);
+            extentConsumer.accept(message);
         }
     }
 

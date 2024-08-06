@@ -52,7 +52,7 @@ class EventsListenerTest {
 
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
-    private final String tagsMessage = "message <div><code>" + arg + "</code></div>";
+    private final String tagsMessage = "message <div>" + arg + "</div>";
     private final long wait = 1L;
 
     @Mock
@@ -156,11 +156,11 @@ class EventsListenerTest {
 
         final String s = "string";
         final List<String> expected = Arrays.asList(
-                "<code>id: message</code>",
-                "<code>" + s + "</code>",
-                "<code>null</code>",
-                "<code>css selector: #gettotal -> tag name: button</code>",
-                "<code>css selector: #get1-.total -> tag name: button</code>"
+                "id: message",
+                s,
+                "null",
+                "css selector: #gettotal -> tag name: button",
+                "css selector: #get1-.total -> tag name: button"
         );
 
         when(webElement1.toString()).thenReturn(webElement1ToString);
@@ -180,7 +180,7 @@ class EventsListenerTest {
 
         final Object[] args = new Object[]{webElement1, s, null, webElement2, webElement3};
 
-        assertEquals(expected, eventsListener.parse(args, "<code>%s</code>"));
+        assertEquals(expected, eventsListener.parse(args));
     }
 
     @Test

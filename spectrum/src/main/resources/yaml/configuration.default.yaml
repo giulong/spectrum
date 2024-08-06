@@ -165,39 +165,39 @@ drivers:
   # Events fired by the driver, automatically logged and added to the report according to the log level set when running the suite. Specify a level among OFF, TRACE, DEBUG, INFO, WARN
   events:
     beforeAnyCall:
-      message: About to call method %2$s with args %3$s on target %1$s
+      message: About to call method <code>%2$s</code> with args <code>%3$s</code> on target <code>%1$s</code>
     afterAnyCall:
-      message: Called method method %2$s with args %3$s on target %1$s with result %4$s
+      message: Called method method <code>%2$s</code> with args <code>%3$s</code> on target <code>%1$s</code> with result <code>%4$s</code>
     onError:
       level: DEBUG
-      message: Got a %4$s calling method %2$s with args %3$s on target %1$s
+      message: Got a <code>%4$s</code> calling method <code>%2$s</code> with args <code>%3$s</code> on target <code>%1$s</code>
     beforeAnyWebDriverCall:
-      message: About to call %2$s with args %3$s
+      message: About to call <code>%2$s</code> with args <code>%3$s</code>
     afterAnyWebDriverCall:
-      message: Called %2$s with args %3$s with result %4$s
+      message: Called <code>%2$s</code> with args <code>%3$s</code> with result <code>%4$s</code>
     beforeGet:
       level: INFO
-      message: About to get <a href="%2$s" target="_blank">%2$s</a>
+      message: About to get <a href="%2$s" target="_blank"><code>%2$s</code></a>
     afterGet:
-      message: Got <a href="%2$s" target="_blank">%2$s</a>
+      message: Got <a href="%2$s" target="_blank"><code>%2$s</code></a>
     beforeGetCurrentUrl:
       message: About to get current url
     afterGetCurrentUrl:
-      message: Got current url with result %1$s
+      message: Got current url with result <a href="%1$s" target="_blank"><code>%1$s</code></a>
     beforeGetTitle:
       message: About to get title
     afterGetTitle:
-      message: Got title %2$s
+      message: Got title <code>%2$s</code>
     beforeFindElement:
       level: DEBUG
-      message: About to find element %2$s
+      message: About to find element <code>%2$s</code>
     afterFindElement:
-      message: Element %2$s is %3$s
+      message: Element <code>%2$s</code> is <code>%3$s</code>
     beforeFindElements:
       level: DEBUG
-      message: About to find elements %2$s
+      message: About to find elements <code>%2$s</code>
     afterFindElements:
-      message: Elements %2$s are %3$s
+      message: Elements <code>%2$s</code> are <code>%3$s</code>
     beforeGetPageSource:
       message: About to get page source
     afterGetPageSource:
@@ -217,119 +217,119 @@ drivers:
       level: DEBUG
       message: About to get window handles
     afterGetWindowHandles:
-      message: Got window handles %2$s
+      message: Got window handles <code>%2$s</code>
     beforeGetWindowHandle:
       level: DEBUG
       message: About to get window handle
     afterGetWindowHandle:
-      message: Got window handle %2$s
+      message: Got window handle <code>%2$s</code>
     beforeExecuteScript:
       level: DEBUG
-      message: About to execute script %2$s with args %3$s
+      message: About to execute script <code>%2$s</code> with args <code>%3$s</code>
     afterExecuteScript:
-      message: Result of script %2$s with args %3$s is %4$s
+      message: Result of script <code>%2$s</code> with args <code>%3$s</code> is <code>%4$s</code>
     beforeExecuteAsyncScript:
       level: DEBUG
-      message: About to execute async script %2$s with args %3$s
+      message: About to execute async script <code>%2$s</code> with args <code>%3$s</code>
     afterExecuteAsyncScript:
-      message: Result of async script %2$s with args %3$s is %4$s
+      message: Result of async script <code>%2$s</code> with args <code>%3$s</code> is <code>%4$s</code>
     beforePerform:
       level: DEBUG
-      message: About to perform actions %2$s
+      message: About to perform actions <code>%2$s</code>
     afterPerform:
-      message: Performed actions %2$s
+      message: Performed actions <code>%2$s</code>
     beforeResetInputState:
       message: About to reset input state
     afterResetInputState:
       message: Done resetting input state
     beforeAnyWebElementCall:
-      message: About to call %2$s with args %3$s on %1$s
+      message: About to call <code>%2$s</code> with args <code>%3$s</code> on <code>%1$s</code>
     afterAnyWebElementCall:
-      message: Result of call %2$s with args %3$s on %1$s is %4$s
+      message: Result of call <code>%2$s</code> with args <code>%3$s</code> on <code>%1$s</code> is <code>%4$s</code>
     beforeClick:
       level: INFO
-      message: Clicking on %1$s
+      message: Clicking on <code>%1$s</code>
     afterClick:
-      message: Clicked on %1$s
+      message: Clicked on <code>%1$s</code>
     beforeSubmit:
       level: INFO
-      message: Submitting %1$s
+      message: Submitting <code>%1$s</code>
     afterSubmit:
-      message: Submitted %1$s
+      message: Submitted <code>%1$s</code>
     beforeSendKeys:
       level: INFO
-      message: Sending keys %2$s to %1$s
+      message: Sending keys <code>%2$s</code> to <code>%1$s</code>
     afterSendKeys:
-      message: Sent keys %2$s to %1$s
+      message: Sent keys <code>%2$s</code> to <code>%1$s</code>
     beforeClear:
       level: DEBUG
-      message: Clearing %1$s
+      message: Clearing <code>%1$s</code>
     afterClear:
-      message: Cleared %1$s
+      message: Cleared <code>%1$s</code>
     beforeGetTagName:
-      message: Getting tag name of %1$s
+      message: Getting tag name of <code>%1$s</code>
     afterGetTagName:
       level: INFO
-      message: Tag name of %1$s is %2$s
+      message: Tag name of <code>%1$s</code> is <code>%2$s</code>
     beforeGetAttribute:
-      message: Getting attribute %2$s of %1$s
+      message: Getting attribute <code>%2$s</code> of <code>%1$s</code>
     afterGetAttribute:
       level: INFO
-      message: Attribute %2$s of %1$s is %3$s
+      message: Attribute <code>%2$s</code> of <code>%1$s</code> is <code>%3$s</code>
     beforeIsSelected:
-      message: Checking if %1$s is selected
+      message: Checking if <code>%1$s</code> is selected
     afterIsSelected:
       level: INFO
-      message: Element %1$s is selected? %2$s
+      message: Element <code>%1$s</code> is selected? <code>%2$s</code>
     beforeIsEnabled:
-      message: Checking if %1$s is enabled
+      message: Checking if <code>%1$s</code> is enabled
     afterIsEnabled:
       level: INFO
-      message: Element %1$s is enabled? %2$s
+      message: Element <code>%1$s</code> is enabled? <code>%2$s</code>
     beforeGetText:
-      message: Getting text of %1$s
+      message: Getting text of <code>%1$s</code>
     afterGetText:
       level: INFO
-      message: Text of %1$s is %2$s
+      message: Text of <code>%1$s</code> is <code>%2$s</code>
     beforeFindWebElement:
       level: DEBUG
-      message: About to find element %2$s inside %1$s
+      message: About to find element <code>%2$s</code> inside <code>%1$s</code>
     afterFindWebElement:
-      message: Element %2$s inside %1$s is %3$s
+      message: Element <code>%2$s</code> inside <code>%1$s</code> is <code>%3$s</code>
     beforeFindWebElements:
       level: DEBUG
-      message: About to find elements %2$s inside %1$s
+      message: About to find elements <code>%2$s</code> inside <code>%1$s</code>
     afterFindWebElements:
-      message: Elements %2$s inside %1$s are %3$s
+      message: Elements <code>%2$s</code> inside <code>%1$s</code> are <code>%3$s</code>
     beforeIsDisplayed:
-      message: Checking if %1$s is displayed
+      message: Checking if <code>%1$s</code> is displayed
     afterIsDisplayed:
       level: INFO
-      message: Element %1$s is displayed? %2$s
+      message: Element <code>%1$s</code> is displayed? <code>%2$s</code>
     beforeGetLocation:
-      message: Getting location of %1$s
+      message: Getting location of <code>%1$s</code>
     afterGetLocation:
       level: INFO
-      message: Location of %1$s is %2$s
+      message: Location of <code>%1$s</code> is <code>%2$s</code>
     beforeGetSize:
-      message: Getting size of %1$s
+      message: Getting size of <code>%1$s</code>
     afterGetSize:
       level: OFF
-      message: Size of %1$s is %2$s
+      message: Size of <code>%1$s</code> is <code>%2$s</code>
     beforeGetCssValue:
-      message: Getting css property %2$s of element %1$s
+      message: Getting css property <code>%2$s</code> of element <code>%1$s</code>
     afterGetCssValue:
       level: INFO
-      message: Css property %2$s of element %1$s is %3$s
+      message: Css property <code>%2$s</code> of element <code>%1$s</code> is <code>%3$s</code>
     beforeAnyNavigationCall:
-      message: Calling navigation method %2$s with args %3$s
+      message: Calling navigation method <code>%2$s</code> with args <code>%3$s</code>
     afterAnyNavigationCall:
-      message: Navigation method %2$s with args %3$s led to %4$s
+      message: Navigation method <code>%2$s</code> with args <code>%3$s</code> led to <code>%4$s</code>
     beforeTo:
       level: INFO
-      message: Navigating to %2$s
+      message: Navigating to <code>%2$s</code>
     afterTo:
-      message: Navigated to %2$s
+      message: Navigated to <code>%2$s</code>
     beforeBack:
       level: INFO
       message: Going back
@@ -346,9 +346,9 @@ drivers:
     afterRefresh:
       message: Page refreshed
     beforeAnyAlertCall:
-      message: Calling alert method %2$s with args %3$s
+      message: Calling alert method <code>%2$s</code> with args <code>%3$s</code>
     afterAnyAlertCall:
-      message: Alert method %2$s with args %3$s resulted in %4$s
+      message: Alert method <code>%2$s</code> with args <code>%3$s</code> resulted in <code>%4$s</code>
     beforeAccept:
       level: INFO
       message: Accepting alert
@@ -360,24 +360,24 @@ drivers:
     afterDismiss:
       message: Alert dismissed
     beforeAnyOptionsCall:
-      message: Calling options method %2$s with args %3$s
+      message: Calling options method <code>%2$s</code> with args <code>%3$s</code>
     afterAnyOptionsCall:
-      message: Options method %2$s with args %3$s resulted in %4$s
+      message: Options method <code>%2$s</code> with args <code>%3$s</code> resulted in <code>%4$s</code>
     beforeAddCookie:
       level: TRACE
-      message: Adding cookie %2$s
+      message: Adding cookie <code>%2$s</code>
     afterAddCookie:
-      message: Added cookie %2$s
+      message: Added cookie <code>%2$s</code>
     beforeDeleteCookieNamed:
       level: TRACE
-      message: Deleting cookie named %2$s
+      message: Deleting cookie named <code>%2$s</code>
     afterDeleteCookieNamed:
-      message: Cookie named %2$s deleted
+      message: Cookie named <code>%2$s</code> deleted
     beforeDeleteCookie:
       level: TRACE
-      message: Deleting cookie %2$s
+      message: Deleting cookie <code>%2$s</code>
     afterDeleteCookie:
-      message: Cookie %2$s deleted
+      message: Cookie <code>%2$s</code> deleted
     beforeDeleteAllCookies:
       level: TRACE
       message: Deleting all cookies
@@ -387,52 +387,52 @@ drivers:
       level: TRACE
       message: Getting cookies
     afterGetCookies:
-      message: Cookies are %2$s
+      message: Cookies are <code>%2$s</code>
     beforeGetCookieNamed:
       level: TRACE
-      message: Getting cookie named %2$s
+      message: Getting cookie named <code>%2$s</code>
     afterGetCookieNamed:
-      message: Cookie named %2$s is %3$s
+      message: Cookie named <code>%2$s</code> is <code>%3$s</code>
     beforeAnyTimeoutsCall:
-      message: About to reach timeout on method %2$s with args %3$s
+      message: About to reach timeout on method <code>%2$s</code> with args <code>%3$s</code>
     afterAnyTimeoutsCall:
-      message: Got timeout on method %2$s with args %3$s and result %4$s
+      message: Got timeout on method <code>%2$s</code> with args <code>%3$s</code> and result <code>%4$s</code>
     beforeImplicitlyWait:
-      message: Waiting for %2$s
+      message: Waiting for <code>%2$s</code>
     afterImplicitlyWait:
-      message: Waited for %2$s
+      message: Waited for <code>%2$s</code>
     beforeSetScriptTimeout:
-      message: Setting script timeout to %2$s
+      message: Setting script timeout to <code>%2$s</code>
     afterSetScriptTimeout:
-      message: Script timeout set to %2$s
+      message: Script timeout set to <code>%2$s</code>
     beforePageLoadTimeout:
-      message: About to reach page load timeout of %2$s
+      message: About to reach page load timeout of <code>%2$s</code>
     afterPageLoadTimeout:
-      message: Reached page load timeout of %2$s
+      message: Reached page load timeout of <code>%2$s</code>
     beforeAnyWindowCall:
-      message: Calling window method %2$s with args %3$s
+      message: Calling window method <code>%2$s</code> with args <code>%3$s</code>
     afterAnyWindowCall:
-      message: Window method %2$s with args %3$s resulted in %4$s
+      message: Window method <code>%2$s</code> with args <code>%3$s</code> resulted in <code>%4$s</code>
     beforeGetWindowSize:
-      message: Getting size of window %1$s
+      message: Getting size of window <code>%1$s</code>
     afterGetWindowSize:
       level: TRACE
-      message: Size of window %1$s is %2$s
+      message: Size of window <code>%1$s</code> is <code>%2$s</code>
     beforeSetSize:
-      message: Settings size to %2$s
+      message: Settings size to <code>%2$s</code>
     afterSetSize:
       level: INFO
-      message: Set size to %2$s
+      message: Set size to <code>%2$s</code>
     beforeGetPosition:
       message: Getting window position
     afterGetPosition:
       level: INFO
-      message: Window position is %2$s
+      message: Window position is <code>%2$s</code>
     beforeSetPosition:
-      message: Setting window position to %2$s
+      message: Setting window position to <code>%2$s</code>
     afterSetPosition:
       level: INFO
-      message: Set window position to %2$s
+      message: Set window position to <code>%2$s</code>
     beforeMaximize:
       level: DEBUG
       message: Maximizing window
