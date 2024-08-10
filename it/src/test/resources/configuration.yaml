@@ -17,10 +17,6 @@ drivers:
     capabilities:
       binary: ${EDGE_BINARY:-}
 
-data:
-  folder: data
-  fqdn: io.github.giulong.spectrum.it.data.Data
-
 video:
   frames:
     - autoAfter

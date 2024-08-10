@@ -563,9 +563,6 @@ public class Configuration {
 
         @JsonPropertyDescription("sub-folder under src/test/resources where to find your data*.yaml")
         private String folder;
-
-        @JsonPropertyDescription("you need to provide the fully qualified name of your Data class, meaning its package name AND class name")
-        private String fqdn;
     }
 
     @Getter
