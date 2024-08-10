@@ -1392,7 +1392,8 @@ drivers:
 > 6. screenshot: after set text
 >
 > There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
-> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard **consecutive** duplicate frames.
+> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard **consecutive** duplicate frames by default.
+> You can disable frame skipping by setting the `video.skipDuplicateFrames` to `false`.
 
 The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>`
 folder and attached to the Extent Report as well, where:
@@ -1403,7 +1404,7 @@ folder and attached to the Extent Report as well, where:
 * `TEST NAME` &rarr; the test method's name
 
 > 💡 **Video Configuration Example**<br/>
-> Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
+> Here's a quick example snippet. Remember you just need to provide fields with a value different from the corresponding one in the
 > internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
 {% include copyCode.html %}
@@ -1413,6 +1414,7 @@ video:
   frames:
     - autoAfter
     - manual
+  skipDuplicateFrames: false
   extentTest:
     width: 640  # we want a bigger video tag in the report
     height: 480
@@ -1420,7 +1422,7 @@ video:
 
 > ⚠️ **Video Frame Rate**<br/>
 > Since the execution video is made up of screenshots, for performance reason it has a fixed rate of 1 frame per second.
-> This allows to avoid encoding the same frame multiple times.<br/>
+> This allows to avoid encoding the same frame multiple times, while producing a very light video.<br/>
 > The consequence is that the video recorded does **NOT** replicate the actual timing of the test execution.
 
 > ⚠️ **Empty Video**<br/>

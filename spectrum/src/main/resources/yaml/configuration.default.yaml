@@ -33,6 +33,7 @@ video:
   width: 0  # width of the video. A value of 0 means the actual browser size will be used. High resolution values will significantly impact performance
   height: 0 # height of the video. A value of 0 means the actual browser size will be used. High resolution values will significantly impact performance
   menuBarsHeight: 60 # Browser's menu bars height. When using the browser size (with height: 0), this is used to reduce the screenshots size to avoid stretching them
+  skipDuplicateFrames: true # If true, consecutive duplicate frames are not included in the generated video
   extentTest: # Properties of the video tag inside the extent report
     attach: true # by default, the video (if recorded) is attached to the extent report
     width: 320 # width of the video in the extent report

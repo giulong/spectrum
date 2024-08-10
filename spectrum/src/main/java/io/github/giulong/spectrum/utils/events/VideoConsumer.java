@@ -65,7 +65,7 @@ public class VideoConsumer extends EventsConsumer {
                     .map(Path::toFile)
                     .filter(File::isFile)
                     .filter(file -> filter(file, testData))
-                    .filter(file -> isNewFrame(file, testData))
+                    .filter(file -> !video.isSkipDuplicateFrames() || isNewFrame(file, testData))
                     .sorted(comparingLong(File::lastModified))
                     .toList();
 

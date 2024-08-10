@@ -26,6 +26,10 @@ public class Video {
     @SuppressWarnings("unused")
     private int menuBarsHeight;
 
+    @JsonPropertyDescription("If true, consecutive duplicate frames are not included in the generated video")
+    @SuppressWarnings("unused")
+    private boolean skipDuplicateFrames;
+
     @JsonPropertyDescription("Properties of the video tag inside the extent report")
     @SuppressWarnings("unused")
     private ExtentTest extentTest;
