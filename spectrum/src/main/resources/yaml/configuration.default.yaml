@@ -56,6 +56,7 @@ extent:
   retention: { } # Retention rules, specifies the number of reports to retain. Older ones will be deleted. Defaults to MAX_INT
   inline: false # Set to true to generate an inline report alongside the main one
   inlineReportFolder: target/spectrum/inline-reports # Where to generate the inline report
+  openAtEnd: false # Set to true if you want the report to be automatically opened when the suite execution is finished
 
 # Environments configuration
 environments:

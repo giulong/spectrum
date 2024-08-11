@@ -1,5 +1,7 @@
 package io.github.giulong.spectrum.interfaces.reports;
 
+import lombok.Generated;
+
 public interface CanReport {
     String getTemplate();
 
@@ -7,5 +9,11 @@ public interface CanReport {
 
     void doOutputFrom(String interpolatedTemplate);
 
-    void cleanupOldReports();
+    @Generated
+    default void cleanupOldReports() {
+    }
+
+    @Generated
+    default void open() {
+    }
 }
