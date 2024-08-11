@@ -1509,10 +1509,10 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > you'll see one collapsible nested block for each dynamic test. Additionally, if you enabled video generation,
 > you'll find the full video attached on top of the right column, as well as the video related to the specific dynamic test
 > execution in its own nested block.
-> 
+>
 > The example report shown here is the one generated from
 > [TestFactoryIT.java]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/TestFactoryIT.java){:target="_blank"}.
-> 
+>
 > ![dynamic-tests-extent-report.png](assets/images/dynamic-tests-extent-report.png)
 
 ### Inline report
@@ -1791,32 +1791,34 @@ Data files will be loaded and merged following the same conventions of `configur
 > 1. data.yaml
 > 2. data-test.yaml
 
-For data files to be properly unmarshalled, you must create the corresponding POJOs and set the fqdn of your parent data class in the configuration.yaml.
+For data files to be properly unmarshalled, you must create the corresponding POJOs.
 
 Let's see an example. Let's say we want to test the AUT with two users having two different roles (admin and guest).
 Both will have the same set of params, such as a name and a password to login.
 
-We need to take four steps:
+We need to take three steps:
 
 * Create the yaml describing this scenario:
-  {% include copyCode.html %}
-    ```yaml
-    # data.yaml
-    users:
-      admin:
-        name: ada
-        password: secret
-      guest:
-        name: bob
-        password: pwd
-    ```
+
+{% include copyCode.html %}
+
+```yaml
+# data.yaml
+users:
+  admin:
+    name: ada
+    password: secret
+  guest:
+    name: bob
+    password: pwd
+```
 
 * Create the POJO mapping the yaml above:
 
 {% include copyCode.html %}
 
 ```java
-package your.package_name;  // this must be set in the configuration.yaml. Keep reading below :)
+package your.package_name;
 
 import lombok.Getter;
 
@@ -1838,49 +1840,42 @@ public class Data {
 > 💡 **Tip**<br/>
 > The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own java file.
 
-* Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
+* Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
 
 {% include copyCode.html %}
 
-```yaml
-# configuration.yaml    
-data:
-  fqdn: your.package_name.Data  # Format: <package name>.<class name>
+```java
+import io.github.giulong.spectrum.SpectrumTest;
+import org.junit.jupiter.api.Test;
+import your.package_name.Data;
+
+public class SomeIT extends SpectrumTest<Data> { // <-- Mind the generic here
+
+    @Test
+    public void someTestMethod() {
+        // We can now use the data object leveraging its getters.
+        // No need to declare/instantiate the 'data' field: Spectrum is taking care of injecting it.
+        // You can directly use it as it is here.
+        data.getUsers().get("admin").getName();
+    }
+}
 ```
 
-* Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
-  {% include copyCode.html %}
-    ```java
-    import io.github.giulong.spectrum.SpectrumTest;
-    import org.junit.jupiter.api.Test;
-    import your.package_name.Data;
-   
-    public class SomeIT extends SpectrumTest<Data> { // <-- Mind the generic here
-        
-        @Test
-        public void someTestMethod() {
-            // We can now use the data object leveraging its getters.
-            // No need to declare/instantiate the 'data' field: Spectrum is taking care of injecting it.
-            // You can directly use it as it is here.
-            data.getUsers().get("admin").getName();
-        }
-    }
-    ```
+{% include copyCode.html %}
 
-  {% include copyCode.html %}
-    ```java
-    import io.github.giulong.spectrum.SpectrumPage;
-    import your.package_name.Data;
-   
-    public class SomePage extends SpectrumPage<SomePage, Data> { // <-- Mind the generic here
-        
-        public void someServiceMethod() {
-            data.getUsers().get("admin").getName();
-        }
-    }
-    ```
+```java
+import io.github.giulong.spectrum.SpectrumPage;
+import your.package_name.Data;
 
-The `Data` generic must be specified only in those classes actually using it. There's no need to set it everywhere.
+public class SomePage extends SpectrumPage<SomePage, Data> { // <-- Mind the generic here
+
+    public void someServiceMethod() {
+        data.getUsers().get("admin").getName();
+    }
+}
+```
+
+The `Data` generic must be specified only in classes actually using it. There's no need to set it everywhere.
 
 > 💡 **Tip**<br/>
 > For the sake of completeness, you can name the `Data` POJO as you prefer.
@@ -1889,7 +1884,6 @@ The `Data` generic must be specified only in those classes actually using it. Th
 >
 > That said, I don't really see any valid use case for this. Let me know if you see one.
 > Probably, could be useful to have different Data classes to be used in different tests, so to have different and clearer names.
-> In this scenario, they could be loaded from different `configuration*.yaml`.
 
 > 💡 **Example: parameterized tests**<br/>
 > Check the [data.yaml]({{ site.repository_url }}/it/src/test/resources/data/data.yaml){:target="_blank"} and how it's used in
