@@ -53,6 +53,10 @@ class ExtentReporterTest {
     private MockedStatic<Files> filesMockedStatic;
     private MockedStatic<MetadataManager> metadataManagerMockedStatic;
     private MockedStatic<Desktop> desktopMockedStatic;
+    private MockedStatic<ExtentSparkReporterConfig> extentSparkReporterConfigMockedStatic;
+
+    @Mock
+    private ExtentSparkReporterConfig.ExtentSparkReporterConfigBuilder<?, ?> extentSparkReporterConfigBuilder;
 
     @Mock
     private Configuration configuration;
@@ -161,6 +165,7 @@ class ExtentReporterTest {
         filesMockedStatic = mockStatic(Files.class);
         metadataManagerMockedStatic = mockStatic(MetadataManager.class);
         desktopMockedStatic = mockStatic(Desktop.class);
+        extentSparkReporterConfigMockedStatic = mockStatic(ExtentSparkReporterConfig.class);
     }
 
     @AfterEach
@@ -172,6 +177,7 @@ class ExtentReporterTest {
         filesMockedStatic.close();
         metadataManagerMockedStatic.close();
         desktopMockedStatic.close();
+        extentSparkReporterConfigMockedStatic.close();
     }
 
     private void cleanupOldReportsStubs() {
@@ -239,20 +245,22 @@ class ExtentReporterTest {
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read("/css/report.css")).thenReturn(css);
 
+        extentSparkReporterConfigMockedStatic.when(ExtentSparkReporterConfig::builder).thenReturn(extentSparkReporterConfigBuilder);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).documentTitle(documentTitle);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).reportName(reportName);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).theme(DARK);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).timeStampFormat(timeStampFormat);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).css(css);
+        doReturn(extentSparkReporterConfig).when(extentSparkReporterConfigBuilder).build();
+
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
 
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
             assertEquals(absolutePathToStringReplaced, context.arguments().getFirst());
-            when(mock.config()).thenReturn(extentSparkReporterConfig);
+            when(mock.config(extentSparkReporterConfig)).thenReturn(mock);
         });
 
         extentReporter.sessionOpened();
-
-        verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
-        verify(extentSparkReporterConfig).setReportName(reportName);
-        verify(extentSparkReporterConfig).setTheme(DARK);
-        verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
-        verify(extentSparkReporterConfig).setCss(css);
 
         final ExtentReports extentReports = extentReportsMockedConstruction.constructed().getFirst();
         verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));

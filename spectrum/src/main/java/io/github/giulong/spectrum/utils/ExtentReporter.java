@@ -5,6 +5,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.interfaces.SessionHook;
@@ -58,16 +59,17 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         final Configuration.Extent extent = configuration.getExtent();
         final String reportPath = getReportPathFrom(extent).toString().replace("\\", "/");
         final String reportName = extent.getReportName();
-        final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
-
-        sparkReporter.config().setDocumentTitle(extent.getDocumentTitle());
-        sparkReporter.config().setReportName(reportName);
-        sparkReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
-        sparkReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
-        sparkReporter.config().setCss(fileUtils.read("/css/report.css"));
 
         extentReports = new ExtentReports();
-        extentReports.attachReporter(sparkReporter);
+        extentReports.attachReporter(new ExtentSparkReporter(reportPath)
+                .config(ExtentSparkReporterConfig
+                        .builder()
+                        .documentTitle(extent.getDocumentTitle())
+                        .reportName(reportName)
+                        .theme(Theme.valueOf(extent.getTheme()))
+                        .timeStampFormat(extent.getTimeStampFormat())
+                        .css(fileUtils.read("/css/report.css"))
+                        .build()));
 
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
     }
