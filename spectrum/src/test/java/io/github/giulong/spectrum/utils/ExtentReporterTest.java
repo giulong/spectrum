@@ -229,7 +229,9 @@ class ExtentReporterTest {
         final String theme = "DARK";
         final String timeStampFormat = "timeStampFormat";
         final String css = "css";
+        final String js = "js";
         final String extentCss = "extentCss";
+        final String extentJs = "extentJs";
         final String absolutePathToString = "absolute\\Path\\To\\String";
         final String absolutePathToStringReplaced = "absolute/Path/To/String";
 
@@ -246,6 +248,8 @@ class ExtentReporterTest {
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(extent.getCss()).thenReturn(extentCss);
         when(fileUtils.read("/" + extentCss)).thenReturn(css);
+        when(extent.getJs()).thenReturn(extentJs);
+        when(fileUtils.read("/" + extentJs)).thenReturn(js);
 
         extentSparkReporterConfigMockedStatic.when(ExtentSparkReporterConfig::builder).thenReturn(extentSparkReporterConfigBuilder);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).documentTitle(documentTitle);
@@ -253,6 +257,7 @@ class ExtentReporterTest {
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).theme(DARK);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).timeStampFormat(timeStampFormat);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).css(css);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).js(js);
         doReturn(extentSparkReporterConfig).when(extentSparkReporterConfigBuilder).build();
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);

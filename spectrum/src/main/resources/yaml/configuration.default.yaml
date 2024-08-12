@@ -58,6 +58,7 @@ extent:
   inlineReportFolder: target/spectrum/inline-reports # Where to generate the inline report
   openAtEnd: false # Set to true if you want the report to be automatically opened when the suite execution is finished
   css: css/report.css # Path to the custom css to apply. Relative to the resources folder
+  js: js/report.js
 
 # Environments configuration
 environments:

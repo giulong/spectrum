@@ -151,6 +151,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Path to the custom css to apply. Relative to the resources folder")
         private String css;
+
+        @JsonPropertyDescription("Path to the custom js to apply. Relative to the resources folder")
+        private String js;
     }
 
     @Getter
