@@ -87,6 +87,8 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());
+
+        assertTrue(extentReportPage.getVideoFilesItUpload().getAttribute("class").contains("class-added-from-js"));
     }
 
     @Test
