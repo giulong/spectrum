@@ -148,6 +148,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Set to true if you want the report to be automatically opened when the suite execution is finished")
         private boolean openAtEnd;
+
+        @JsonPropertyDescription("Path to the custom css to apply. Relative to the resources folder")
+        private String css;
     }
 
     @Getter

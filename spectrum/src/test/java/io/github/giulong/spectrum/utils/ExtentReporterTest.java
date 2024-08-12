@@ -229,6 +229,7 @@ class ExtentReporterTest {
         final String theme = "DARK";
         final String timeStampFormat = "timeStampFormat";
         final String css = "css";
+        final String extentCss = "extentCss";
         final String absolutePathToString = "absolute\\Path\\To\\String";
         final String absolutePathToStringReplaced = "absolute/Path/To/String";
 
@@ -243,7 +244,8 @@ class ExtentReporterTest {
         when(extent.getTheme()).thenReturn(theme);
         when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
         when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.read("/css/report.css")).thenReturn(css);
+        when(extent.getCss()).thenReturn(extentCss);
+        when(fileUtils.read("/" + extentCss)).thenReturn(css);
 
         extentSparkReporterConfigMockedStatic.when(ExtentSparkReporterConfig::builder).thenReturn(extentSparkReporterConfigBuilder);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).documentTitle(documentTitle);

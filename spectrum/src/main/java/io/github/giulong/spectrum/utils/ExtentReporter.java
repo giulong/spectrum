@@ -68,7 +68,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
                         .reportName(reportName)
                         .theme(Theme.valueOf(extent.getTheme()))
                         .timeStampFormat(extent.getTimeStampFormat())
-                        .css(fileUtils.read("/css/report.css"))
+                        .css(fileUtils.read("/" + extent.getCss()))
                         .build()));
 
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
