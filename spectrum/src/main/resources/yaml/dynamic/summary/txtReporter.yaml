@@ -1,4 +1,5 @@
 txt:
-  template: templates/summary.txt
-  output: ${summaryReportOutput}/summary-${timestamp}.txt
-  retention: { }
+  template: templates/summary.txt # Path to the template to be used, relative to src/test/resources
+  output: ${summaryReportOutput}/summary-${timestamp}.txt # Where to produce the output, relative to the root of the project
+  retention: { } # Retention rules configuration
+  openAtEnd: false # Set to true if you want the report to be automatically opened when the suite execution is finished

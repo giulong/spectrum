@@ -1498,9 +1498,21 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
     @Test
     public void dummyTest() {
-        extentTest.screenshotInfo("Custom message");
+        screenshotInfo("Custom message");
     }
 }
+```
+
+The html report, as well as any other file produced ([testbook](#testbook---coverage), [summary](#execution-summary), ...)
+can be automatically opened at the end of the execution. You simply need to set the `extent.openAtEnd` flag, and the file
+will be opened in the default application you set for that file extension. This means that unless you overrode the default,
+html files will be opened in the web browser.
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  openAtEnd: true
 ```
 
 > ⚠️ **Dynamic Tests**<br/>
@@ -2458,6 +2470,7 @@ For each reporter:
 * `template` is a path relative to `src/test/resources`
 * `output` is the path relative to the project's root, and might contain the `${timestamp}` placeholder
 * `retention` specifies which and how many reports to keep for each reporter
+* `openAtEnd` specifies, for reporters that produce a file, if you want it to be automatically opened when the suite execution is finished
 
 ### Log Summary Reporter
 
@@ -2514,6 +2527,7 @@ txt:
   template: templates/summary.txt
   output: ${summaryReportOutput}/summary-${timestamp}.txt
   retention: { }
+  openAtEnd: false
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.txt){:target="_blank"}.
@@ -2532,6 +2546,7 @@ html:
   template: templates/summary.html
   output: ${summaryReportOutput}/summary-${timestamp}.html
   retention: { }
+  openAtEnd: false
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.html){:target="_blank"}.
@@ -2772,6 +2787,7 @@ For each reporter:
 * `template` is a path relative to `src/test/resources`
 * `output` is the path relative to the project's root, and might contain the `${timestamp}` placeholder
 * `retention` specifies which and how many reports to keep for each reporter
+* `openAtEnd` specifies, for reporters that produce a file, if you want it to be automatically opened when the suite execution is finished
 
 ### Log TestBook Reporter
 
@@ -2905,6 +2921,7 @@ txt:
   template: templates/testbook.txt
   output: ${testBookReportOutput}/testbook-${timestamp}.txt
   retention: { }
+  openAtEnd: false
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.txt){:target="_blank"}.
@@ -2923,6 +2940,7 @@ html:
   template: templates/testbook.html
   output: ${testBookReportOutput}/testBook-${timestamp}.html
   retention: { }
+  openAtEnd: false
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.html){:target="_blank"}.
