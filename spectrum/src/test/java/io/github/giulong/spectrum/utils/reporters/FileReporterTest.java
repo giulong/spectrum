@@ -10,7 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -27,6 +29,10 @@ class FileReporterTest {
     private MockedStatic<Path> pathMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
     private MockedStatic<MetadataManager> metadataManagerMockedStatic;
+    private MockedStatic<Desktop> desktopMockedStatic;
+
+    @Mock
+    private Desktop desktop;
 
     @Mock
     private Path path;
@@ -78,6 +84,7 @@ class FileReporterTest {
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
         metadataManagerMockedStatic = mockStatic(MetadataManager.class);
+        desktopMockedStatic = mockStatic(Desktop.class);
     }
 
     @AfterEach
@@ -85,6 +92,7 @@ class FileReporterTest {
         pathMockedStatic.close();
         filesMockedStatic.close();
         metadataManagerMockedStatic.close();
+        desktopMockedStatic.close();
     }
 
     @Test
@@ -173,6 +181,28 @@ class FileReporterTest {
 
         verify(fileFixedSizeQueue).add(file1);
         assertEquals(fileFixedSizeQueue, reports.get(namespace));
+    }
+
+    @Test
+    @DisplayName("open should open the report")
+    public void open() throws IOException {
+        Reflections.setField("openAtEnd", fileReporter, true);
+
+        when(Path.of(OUTPUT)).thenReturn(path);
+        when(path.toFile()).thenReturn(file1);
+        when(Desktop.getDesktop()).thenReturn(desktop);
+
+        fileReporter.open();
+
+        verify(desktop).open(file1);
+    }
+
+    @Test
+    @DisplayName("open should do nothing if openAtEnd is false")
+    public void openFalse() {
+        fileReporter.open();
+
+        verifyNoInteractions(desktop);
     }
 
     private static class DummyFileReporter extends FileReporter {}

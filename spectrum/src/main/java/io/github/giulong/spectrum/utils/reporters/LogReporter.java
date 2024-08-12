@@ -20,11 +20,6 @@ public abstract class LogReporter extends Reporter {
         log.info("\n{}", interpolatedTemplate);
     }
 
-    @Override
-    public void cleanupOldReports() {
-        log.debug("NoOp cleanupOldReports");
-    }
-
     @Generated
     @SuppressWarnings("checkstyle:WhitespaceAround")
     public static class LogTestBookReporter extends LogReporter implements CanReportTestBook {}

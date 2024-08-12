@@ -28,8 +28,10 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
+import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -172,12 +174,129 @@ class VideoConsumerTest {
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot3)).thenReturn(bufferedImage);
 
+        when(video.isSkipDuplicateFrames()).thenReturn(true);
+
         // isNewFrame 1
         when(screenshot1.toPath()).thenReturn(screenshotPath1);
         when(Files.readAllBytes(screenshotPath1)).thenReturn(new byte[]{1});
         // isNewFrame 3
         when(screenshot3.toPath()).thenReturn(screenshotPath3);
         when(Files.readAllBytes(screenshotPath3)).thenReturn(new byte[]{3});
+
+        // chooseDimensionFor
+        when(video.getWidth()).thenReturn(width);
+        when(video.getHeight()).thenReturn(height);
+
+        // resize
+        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
+            assertEquals(width + 1, context.arguments().getFirst());
+            assertEquals(height + 1, context.arguments().get(1));
+            assertEquals(TYPE_INT_RGB, context.arguments().get(2));
+
+            when(mock.createGraphics()).thenReturn(graphics2D);
+        });
+
+        videoConsumer.accept(event);
+
+        final BufferedImage resizedImage1 = bufferedImageMockedConstruction.constructed().getFirst();
+        final BufferedImage resizedImage2 = bufferedImageMockedConstruction.constructed().get(1);
+        verify(encoder).encodeImage(resizedImage1);
+        verify(encoder).encodeImage(resizedImage2);
+        verify(encoder).finish();
+
+        bufferedImageMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("accept should notify the VideoEncoder that the test is done, with a skipped duplicate frame")
+    public void acceptOneDuplicateFrame() throws IOException {
+        final int width = 1;
+        final int height = 3;
+
+        when(event.getContext()).thenReturn(extensionContext);
+        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(false);
+        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(testData.getClassName()).thenReturn(CLASS_NAME);
+        when(testData.getMethodName()).thenReturn(METHOD_NAME);
+        when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
+        when(testData.getVideoPath()).thenReturn(videoPath);
+        when(videoPath.toFile()).thenReturn(videoFile);
+        when(Files.walk(screenshotFolderPath)).thenReturn(Stream.of(screenshotPath1, screenshotPath2, screenshotPath3));
+        when(screenshotPath1.toFile()).thenReturn(screenshot1);
+        when(screenshotPath2.toFile()).thenReturn(screenshot2);
+        when(screenshotPath3.toFile()).thenReturn(screenshot3);
+        when(screenshot1.isFile()).thenReturn(true);
+        when(screenshot2.isFile()).thenReturn(false);
+        when(screenshot3.isFile()).thenReturn(true);
+
+        awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
+        imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
+        imageIOMockedStatic.when(() -> ImageIO.read(screenshot3)).thenReturn(bufferedImage);
+
+        when(video.isSkipDuplicateFrames()).thenReturn(true);
+
+        // isNewFrame 1
+        when(screenshot1.toPath()).thenReturn(screenshotPath1);
+        when(Files.readAllBytes(screenshotPath1)).thenReturn(new byte[]{1});
+        // isNewFrame 3
+        when(screenshot3.toPath()).thenReturn(screenshotPath3);
+        when(Files.readAllBytes(screenshotPath3)).thenReturn(new byte[]{1});
+
+        // chooseDimensionFor
+        when(video.getWidth()).thenReturn(width);
+        when(video.getHeight()).thenReturn(height);
+
+        // resize
+        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
+            assertEquals(width + 1, context.arguments().getFirst());
+            assertEquals(height + 1, context.arguments().get(1));
+            assertEquals(TYPE_INT_RGB, context.arguments().get(2));
+
+            when(mock.createGraphics()).thenReturn(graphics2D);
+        });
+
+        videoConsumer.accept(event);
+
+        final BufferedImage resizedImage1 = bufferedImageMockedConstruction.constructed().getFirst();
+        verify(encoder).encodeImage(resizedImage1);
+        verify(encoder).finish();
+
+        bufferedImageMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("accept should notify the VideoEncoder that the test is done without skipping duplicate frames")
+    public void acceptNoSkipDuplicates() throws IOException {
+        final int width = 1;
+        final int height = 3;
+
+        when(event.getContext()).thenReturn(extensionContext);
+        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(false);
+        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(testData.getClassName()).thenReturn(CLASS_NAME);
+        when(testData.getMethodName()).thenReturn(METHOD_NAME);
+        when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
+        when(testData.getVideoPath()).thenReturn(videoPath);
+        when(videoPath.toFile()).thenReturn(videoFile);
+        when(Files.walk(screenshotFolderPath)).thenReturn(Stream.of(screenshotPath1, screenshotPath2, screenshotPath3));
+        when(screenshotPath1.toFile()).thenReturn(screenshot1);
+        when(screenshotPath2.toFile()).thenReturn(screenshot2);
+        when(screenshotPath3.toFile()).thenReturn(screenshot3);
+        when(screenshot1.isFile()).thenReturn(true);
+        when(screenshot2.isFile()).thenReturn(false);
+        when(screenshot3.isFile()).thenReturn(true);
+
+        awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
+        imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
+        imageIOMockedStatic.when(() -> ImageIO.read(screenshot3)).thenReturn(bufferedImage);
+
+        when(video.isSkipDuplicateFrames()).thenReturn(false);
 
         // chooseDimensionFor
         when(video.getWidth()).thenReturn(width);
@@ -241,6 +360,19 @@ class VideoConsumerTest {
         videoConsumer.accept(event);
 
         verify(encoder, never()).encodeImage(any());
+    }
+
+    @Test
+    @DisplayName("init should init the needed fields")
+    public void init() throws NoSuchAlgorithmException {
+        final byte[] lastFrameDigest = new byte[]{1, 2, 3};
+
+        Reflections.setField("lastFrameDigest", videoConsumer, lastFrameDigest);
+
+        videoConsumer.init();
+
+        assertNull(Reflections.getFieldValue("lastFrameDigest", videoConsumer));
+        assertEquals(MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(), ((MessageDigest) Reflections.getFieldValue("messageDigest", videoConsumer)).getAlgorithm());
     }
 
     @Test

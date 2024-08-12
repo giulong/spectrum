@@ -8,7 +8,3 @@ drivers:
   events:
     afterGetAttribute:
       level: TRACE
-
-data:
-  folder: data
-  fqdn: io.github.giulong.spectrum.verify_browsers.data.Data

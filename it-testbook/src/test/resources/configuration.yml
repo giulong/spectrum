@@ -12,10 +12,6 @@ drivers:
     args:
       - --headless=new
 
-data:
-  folder: data
-  fqdn: io.github.giulong.spectrum.it_testbook.data.Data
-
 video:
   frames:
     - autoAfter

@@ -18,7 +18,9 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -44,12 +46,13 @@ class ExtentReporterTest {
 
     private static final String REPORT_FOLDER = "reportFolder";
 
-    private static MockedStatic<TestData> testDataMockedStatic;
-    private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
-    private static MockedStatic<Path> pathMockedStatic;
-    private static MockedStatic<FileUtils> fileUtilsMockedStatic;
-    private static MockedStatic<Files> filesMockedStatic;
+    private MockedStatic<TestData> testDataMockedStatic;
+    private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
+    private MockedStatic<Path> pathMockedStatic;
+    private MockedStatic<FileUtils> fileUtilsMockedStatic;
+    private MockedStatic<Files> filesMockedStatic;
     private MockedStatic<MetadataManager> metadataManagerMockedStatic;
+    private MockedStatic<Desktop> desktopMockedStatic;
 
     @Mock
     private Configuration configuration;
@@ -127,6 +130,9 @@ class ExtentReporterTest {
     private ExtensionContext.Store store;
 
     @Mock
+    private Desktop desktop;
+
+    @Mock
     private SpectrumTest<?> spectrumTest;
 
     @Mock
@@ -154,6 +160,7 @@ class ExtentReporterTest {
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
         filesMockedStatic = mockStatic(Files.class);
         metadataManagerMockedStatic = mockStatic(MetadataManager.class);
+        desktopMockedStatic = mockStatic(Desktop.class);
     }
 
     @AfterEach
@@ -164,6 +171,7 @@ class ExtentReporterTest {
         fileUtilsMockedStatic.close();
         filesMockedStatic.close();
         metadataManagerMockedStatic.close();
+        desktopMockedStatic.close();
     }
 
     private void cleanupOldReportsStubs() {
@@ -272,6 +280,39 @@ class ExtentReporterTest {
         // cleanupOldReports
         verify(fileUtils).deleteDirectory(directory1Path);
         verify(fileUtils).deleteDirectory(directory2Path);
+    }
+
+    @Test
+    @DisplayName("sessionClosed should open the report")
+    public void sessionClosedOpenReport() throws IOException {
+        final int total = 123;
+        final String reportFolder = "reportFolder";
+        final String fileName = "fileName";
+
+        cleanupOldReportsStubs();
+
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getRetention()).thenReturn(retention);
+        when(retention.getTotal()).thenReturn(total);
+        when(extent.getReportFolder()).thenReturn(REPORT_FOLDER);
+
+        when(extent.isOpenAtEnd()).thenReturn(true);
+
+        when(extent.getReportFolder()).thenReturn(reportFolder);
+        when(extent.getFileName()).thenReturn(fileName);
+        when(Path.of(reportFolder, fileName)).thenReturn(path);
+        when(path.toAbsolutePath()).thenReturn(absolutePath);
+        when(absolutePath.toFile()).thenReturn(file1);
+        when(Desktop.getDesktop()).thenReturn(desktop);
+
+        extentReporter.sessionClosed();
+
+        verify(extentReports).flush();
+
+        // cleanupOldReports
+        verify(fileUtils).deleteDirectory(directory1Path);
+        verify(fileUtils).deleteDirectory(directory2Path);
+        verify(desktop).open(file1);
     }
 
     @Test

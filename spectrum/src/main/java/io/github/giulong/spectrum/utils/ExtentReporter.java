@@ -13,10 +13,12 @@ import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -70,12 +72,21 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
     }
 
+    @SneakyThrows
     @Override
     public void sessionClosed() {
         log.debug("Session closed hook");
+
+        final Configuration.Extent extent = configuration.getExtent();
+
         extentReports.flush();
 
-        cleanupOldReportsIn(configuration.getExtent().getReportFolder());
+        if (extent.isOpenAtEnd()) {
+            log.debug("Opening extent report in default browser");
+            Desktop.getDesktop().open(getReportPathFrom(extent).toFile());
+        }
+
+        cleanupOldReportsIn(extent.getReportFolder());
     }
 
     @Override

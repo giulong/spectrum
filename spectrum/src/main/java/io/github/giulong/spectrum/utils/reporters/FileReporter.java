@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -38,6 +39,10 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
 
     @JsonPropertyDescription("Retention rules configuration")
     private final Retention retention = new Retention();
+
+    @JsonPropertyDescription("Set to true if you want the report to be automatically opened when the suite execution is finished")
+    @SuppressWarnings("unused")
+    private boolean openAtEnd;
 
     @Override
     public void cleanupOldReports() {
@@ -86,19 +91,31 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
         metadataManager.setSuccessfulQueueOf(this, queue);
     }
 
-    @Generated
-    @SuppressWarnings("checkstyle:WhitespaceAround")
-    public static class TxtTestBookReporter extends FileReporter implements CanReportTestBook {}
+    @SneakyThrows
+    @Override
+    public void open() {
+        if (openAtEnd) {
+            Desktop.getDesktop().open(Path.of(output).toFile());
+        }
+    }
 
     @Generated
     @SuppressWarnings("checkstyle:WhitespaceAround")
-    public static class HtmlTestBookReporter extends FileReporter implements CanReportTestBook {}
+    public static class TxtTestBookReporter extends FileReporter implements CanReportTestBook {
+    }
 
     @Generated
     @SuppressWarnings("checkstyle:WhitespaceAround")
-    public static class TxtSummaryReporter extends FileReporter implements CanReportSummary {}
+    public static class HtmlTestBookReporter extends FileReporter implements CanReportTestBook {
+    }
 
     @Generated
     @SuppressWarnings("checkstyle:WhitespaceAround")
-    public static class HtmlSummaryReporter extends FileReporter implements CanReportSummary {}
+    public static class TxtSummaryReporter extends FileReporter implements CanReportSummary {
+    }
+
+    @Generated
+    @SuppressWarnings("checkstyle:WhitespaceAround")
+    public static class HtmlSummaryReporter extends FileReporter implements CanReportSummary {
+    }
 }

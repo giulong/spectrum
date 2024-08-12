@@ -46,8 +46,62 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(className = "screenshot-container")
     private List<WebElement> screenshotContainers;
 
+    @FindBy(id = "video-javascriptit-testinputfieldactions()")
+    private WebElement videoJavascriptItTestInputFieldActions;
+
+    @FindBy(id = "video-javascriptit-testfindelementmethod()")
+    private WebElement videoJavascriptItTestFindElementMethod;
+
+    @FindBy(id = "video-javascriptit-shadowdom()")
+    private WebElement videoJavascriptItShadowDom;
+
+    @FindBy(id = "video-javascriptit-testwebelementgetmethods()")
+    private WebElement videoJavascriptItTestWebElementGetMethods;
+
+    @FindBy(id = "video-javascriptit-testfindelementsmethod()")
+    private WebElement videoJavascriptItTestFindElementsMethod;
+
+    @FindBy(id = "video-javascriptit-testwithnodisplayname()")
+    private WebElement videoJavascriptItTestWithNoDisplayName;
+
+    @FindBy(id = "video-testfactoryit-dynamictestswithcontainers()")
+    private WebElement videoTestFactoryItDynamicTestsWithContainers;
+
+    @FindBy(id = "video-navigationit-test-to-show-navigation-and-produced-video")
+    private WebElement videoNavigationItTestToShowNavigationAndProducedVideo;
+
+    @FindBy(id = "video-jswebelementit-checkingjswebelements()")
+    private WebElement videoJsWebElementItCheckingJsWebElements;
+
+    @FindBy(id = "video-jswebelementit-testfindelementsmethod()")
+    private WebElement videoJsWebElementItTestFindElementsMethod;
+
+    @FindBy(id = "video-jswebelementit-shadowdom()")
+    private WebElement videoJsWebElementItShadowDom;
+
+    @FindBy(id = "video-jswebelementit-testinputfieldactions()")
+    private WebElement videoJsWebElementItTestInputFieldActions;
+
+    @FindBy(id = "video-checkboxit-testwithnodisplayname()")
+    private WebElement videoCheckboxItTestWithNoDisplayName;
+
+    @FindBy(id = "video-filesit-upload")
+    private WebElement videoFilesItUpload;
+
     @FindBy(id = "video-demoit-sending-custom-events")
     private WebElement videoDemoItSendingCustomEvents;
+
+    @FindBy(id = "video-demoit-this-one-should-fail-for-demonstration-purposes")
+    private WebElement videoDemoItThisOneShouldFailForDemonstrationPurposes;
+
+    @FindBy(id = "video-loginformit-with-user-giulio-we-expect-login-to-be-successful:-false")
+    private WebElement videoLoginFormItWithUserGiulioWeExpectLoginToBeSuccessfulFalse;
+
+    @FindBy(id = "video-loginformit-with-user-tom-we-expect-login-to-be-successful:-true")
+    private WebElement videoLoginFormItWithUserTomWeExpectLoginToBeSuccessfulTrue;
+
+    @FindBy(id = "video-filesit-download")
+    private WebElement videoFilesItDownload;
 
     @FindBy(className = "inline")
     private List<WebElement> inlineImages;

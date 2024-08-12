@@ -17,6 +17,7 @@ public abstract class Reporter implements CanReport {
     @Override
     public void flush(@NotNull final Reportable reportable) {
         doOutputFrom(FREE_MARKER_WRAPPER.interpolate(FILE_UTILS.read(String.format("/%s", getTemplate())), reportable.getVars()));
+        open();
         cleanupOldReports();
     }
 }

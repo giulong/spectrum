@@ -18,9 +18,6 @@ drivers:
       uiautomator2ServerInstallTimeout: 60000
       uiautomator2ServerLaunchTimeout: 60000
 
-data:
-  fqdn: io.github.giulong.spectrum.it_appium.data.Data
-
 video:
   frames:
     - autoAfter

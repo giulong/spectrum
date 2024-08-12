@@ -18,13 +18,6 @@ class LogReporterTest {
         // no verifications/assertions needed
     }
 
-    @Test
-    @DisplayName("cleanupOldReports should do nothing")
-    public void cleanupOldReports() {
-        logReporter.cleanupOldReports();
-
-        // no verifications/assertions needed
+    private static class DummyLogReporter extends LogReporter {
     }
-
-    private static class DummyLogReporter extends LogReporter {}
 }

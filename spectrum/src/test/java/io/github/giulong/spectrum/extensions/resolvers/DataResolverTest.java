@@ -21,8 +21,7 @@ import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.DataResolver.DATA;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
@@ -90,6 +89,13 @@ class DataResolverTest {
         assertEquals(expected, dataResolver.supportsParameter(parameterContext, extensionContext));
     }
 
+    public static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments("Data", true),
+                arguments("not-good", false)
+        );
+    }
+
     @Test
     @DisplayName("resolveParameter should load the data class from client side and deserialize the data.yaml on it")
     public void resolveParameter() {
@@ -100,7 +106,8 @@ class DataResolverTest {
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(dataFolder);
-        when(dataConfiguration.getFqdn()).thenReturn("io.github.giulong.spectrum.TestYaml");
+
+        doReturn(TestClass.class).when(extensionContext).getRequiredTestClass();
 
         when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         when(yamlUtils.read(eq(dataFolder + "/data.yaml"), any())).thenReturn(data);
@@ -115,22 +122,23 @@ class DataResolverTest {
     }
 
     @Test
-    @DisplayName("resolveParameter should return null if the provided fqdn is not a valid class name")
-    public void resolveParameterException() {
-        when(extensionContext.getRoot()).thenReturn(rootContext);
-        when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
-        when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getData()).thenReturn(dataConfiguration);
-        when(dataConfiguration.getFqdn()).thenReturn("invalid");
+    @DisplayName("resolveParameter should return null if Void is provided as generic Data")
+    public void resolveParameterVoid() {
+        doReturn(VoidClass.class).when(extensionContext).getRequiredTestClass();
 
         assertNull(dataResolver.resolveParameter(parameterContext, extensionContext));
-        verify(rootStore, never()).getOrComputeIfAbsent(eq(DATA), runnableArgumentCaptor.capture(), any());
+
+        verifyNoInteractions(yamlUtils);
+        verifyNoInteractions(rootContext);
     }
 
-    public static Stream<Arguments> valuesProvider() {
-        return Stream.of(
-                arguments("Data", true),
-                arguments("not-good", false)
-        );
+    @SuppressWarnings("unused")
+    private static class Parameterized<T> {
+    }
+
+    private static class TestClass extends Parameterized<String> {
+    }
+
+    private static class VoidClass extends Parameterized<Void> {
     }
 }

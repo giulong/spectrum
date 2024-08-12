@@ -17,6 +17,12 @@ public class VideoDynamicConsumer extends VideoConsumer {
     private String lastFrameDisplayName;
 
     @Override
+    protected void init() {
+        super.init();
+        this.lastFrameDisplayName = null;
+    }
+
+    @Override
     protected Path getVideoPathFrom(final TestData testData) {
         return testData.getDynamicVideoPath();
     }

@@ -17,18 +17,16 @@ drivers:
     capabilities:
       binary: ${EDGE_BINARY:-}
 
-data:
-  folder: data
-  fqdn: io.github.giulong.spectrum.it.data.Data
-
 video:
   frames:
     - autoAfter
     - manual
+  skipDuplicateFrames: false
 
 extent:
   theme: DARK
   fileName: report.html
+  inline: true
 
 # these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
 eventsConsumers:

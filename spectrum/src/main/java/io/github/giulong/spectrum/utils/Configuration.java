@@ -145,6 +145,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Where to generate the inline report")
         private String inlineReportFolder;
+
+        @JsonPropertyDescription("Set to true if you want the report to be automatically opened when the suite execution is finished")
+        private boolean openAtEnd;
     }
 
     @Getter
@@ -563,9 +566,6 @@ public class Configuration {
 
         @JsonPropertyDescription("sub-folder under src/test/resources where to find your data*.yaml")
         private String folder;
-
-        @JsonPropertyDescription("you need to provide the fully qualified name of your Data class, meaning its package name AND class name")
-        private String fqdn;
     }
 
     @Getter

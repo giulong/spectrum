@@ -1392,7 +1392,8 @@ drivers:
 > 6. screenshot: after set text
 >
 > There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
-> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard **consecutive** duplicate frames.
+> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard **consecutive** duplicate frames by default.
+> You can disable frame skipping by setting the `video.skipDuplicateFrames` to `false`.
 
 The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>`
 folder and attached to the Extent Report as well, where:
@@ -1403,7 +1404,7 @@ folder and attached to the Extent Report as well, where:
 * `TEST NAME` &rarr; the test method's name
 
 > 💡 **Video Configuration Example**<br/>
-> Here's a quick example snippet (remember you just need to provide fields with a value different from the corresponding one in the
+> Here's a quick example snippet. Remember you just need to provide fields with a value different from the corresponding one in the
 > internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
 {% include copyCode.html %}
@@ -1413,6 +1414,7 @@ video:
   frames:
     - autoAfter
     - manual
+  skipDuplicateFrames: false
   extentTest:
     width: 640  # we want a bigger video tag in the report
     height: 480
@@ -1420,7 +1422,7 @@ video:
 
 > ⚠️ **Video Frame Rate**<br/>
 > Since the execution video is made up of screenshots, for performance reason it has a fixed rate of 1 frame per second.
-> This allows to avoid encoding the same frame multiple times.<br/>
+> This allows to avoid encoding the same frame multiple times, while producing a very light video.<br/>
 > The consequence is that the video recorded does **NOT** replicate the actual timing of the test execution.
 
 > ⚠️ **Empty Video**<br/>
@@ -1496,9 +1498,21 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 
     @Test
     public void dummyTest() {
-        extentTest.screenshotInfo("Custom message");
+        screenshotInfo("Custom message");
     }
 }
+```
+
+The html report, as well as any other file produced ([testbook](#testbook---coverage), [summary](#execution-summary), ...)
+can be automatically opened at the end of the execution. You simply need to set the `extent.openAtEnd` flag, and the file
+will be opened in the default application you set for that file extension. This means that unless you overrode the default,
+html files will be opened in the web browser.
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  openAtEnd: true
 ```
 
 > ⚠️ **Dynamic Tests**<br/>
@@ -1507,10 +1521,10 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 > you'll see one collapsible nested block for each dynamic test. Additionally, if you enabled video generation,
 > you'll find the full video attached on top of the right column, as well as the video related to the specific dynamic test
 > execution in its own nested block.
-> 
+>
 > The example report shown here is the one generated from
 > [TestFactoryIT.java]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/TestFactoryIT.java){:target="_blank"}.
-> 
+>
 > ![dynamic-tests-extent-report.png](assets/images/dynamic-tests-extent-report.png)
 
 ### Inline report
@@ -1789,32 +1803,34 @@ Data files will be loaded and merged following the same conventions of `configur
 > 1. data.yaml
 > 2. data-test.yaml
 
-For data files to be properly unmarshalled, you must create the corresponding POJOs and set the fqdn of your parent data class in the configuration.yaml.
+For data files to be properly unmarshalled, you must create the corresponding POJOs.
 
 Let's see an example. Let's say we want to test the AUT with two users having two different roles (admin and guest).
 Both will have the same set of params, such as a name and a password to login.
 
-We need to take four steps:
+We need to take three steps:
 
 * Create the yaml describing this scenario:
-  {% include copyCode.html %}
-    ```yaml
-    # data.yaml
-    users:
-      admin:
-        name: ada
-        password: secret
-      guest:
-        name: bob
-        password: pwd
-    ```
+
+{% include copyCode.html %}
+
+```yaml
+# data.yaml
+users:
+  admin:
+    name: ada
+    password: secret
+  guest:
+    name: bob
+    password: pwd
+```
 
 * Create the POJO mapping the yaml above:
 
 {% include copyCode.html %}
 
 ```java
-package your.package_name;  // this must be set in the configuration.yaml. Keep reading below :)
+package your.package_name;
 
 import lombok.Getter;
 
@@ -1836,49 +1852,42 @@ public class Data {
 > 💡 **Tip**<br/>
 > The `User` class in the snippet above is declared as a static inner class. This is not mandatory, you could have plain public classes in their own java file.
 
-* Make Spectrum aware of your Data class by providing its fqdn in the configuration.yaml:
+* Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
 
 {% include copyCode.html %}
 
-```yaml
-# configuration.yaml    
-data:
-  fqdn: your.package_name.Data  # Format: <package name>.<class name>
+```java
+import io.github.giulong.spectrum.SpectrumTest;
+import org.junit.jupiter.api.Test;
+import your.package_name.Data;
+
+public class SomeIT extends SpectrumTest<Data> { // <-- Mind the generic here
+
+    @Test
+    public void someTestMethod() {
+        // We can now use the data object leveraging its getters.
+        // No need to declare/instantiate the 'data' field: Spectrum is taking care of injecting it.
+        // You can directly use it as it is here.
+        data.getUsers().get("admin").getName();
+    }
+}
 ```
 
-* Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
-  {% include copyCode.html %}
-    ```java
-    import io.github.giulong.spectrum.SpectrumTest;
-    import org.junit.jupiter.api.Test;
-    import your.package_name.Data;
-   
-    public class SomeIT extends SpectrumTest<Data> { // <-- Mind the generic here
-        
-        @Test
-        public void someTestMethod() {
-            // We can now use the data object leveraging its getters.
-            // No need to declare/instantiate the 'data' field: Spectrum is taking care of injecting it.
-            // You can directly use it as it is here.
-            data.getUsers().get("admin").getName();
-        }
-    }
-    ```
+{% include copyCode.html %}
 
-  {% include copyCode.html %}
-    ```java
-    import io.github.giulong.spectrum.SpectrumPage;
-    import your.package_name.Data;
-   
-    public class SomePage extends SpectrumPage<SomePage, Data> { // <-- Mind the generic here
-        
-        public void someServiceMethod() {
-            data.getUsers().get("admin").getName();
-        }
-    }
-    ```
+```java
+import io.github.giulong.spectrum.SpectrumPage;
+import your.package_name.Data;
 
-The `Data` generic must be specified only in those classes actually using it. There's no need to set it everywhere.
+public class SomePage extends SpectrumPage<SomePage, Data> { // <-- Mind the generic here
+
+    public void someServiceMethod() {
+        data.getUsers().get("admin").getName();
+    }
+}
+```
+
+The `Data` generic must be specified only in classes actually using it. There's no need to set it everywhere.
 
 > 💡 **Tip**<br/>
 > For the sake of completeness, you can name the `Data` POJO as you prefer.
@@ -1887,7 +1896,6 @@ The `Data` generic must be specified only in those classes actually using it. Th
 >
 > That said, I don't really see any valid use case for this. Let me know if you see one.
 > Probably, could be useful to have different Data classes to be used in different tests, so to have different and clearer names.
-> In this scenario, they could be loaded from different `configuration*.yaml`.
 
 > 💡 **Example: parameterized tests**<br/>
 > Check the [data.yaml]({{ site.repository_url }}/it/src/test/resources/data/data.yaml){:target="_blank"} and how it's used in
@@ -2462,6 +2470,7 @@ For each reporter:
 * `template` is a path relative to `src/test/resources`
 * `output` is the path relative to the project's root, and might contain the `${timestamp}` placeholder
 * `retention` specifies which and how many reports to keep for each reporter
+* `openAtEnd` specifies, for reporters that produce a file, if you want it to be automatically opened when the suite execution is finished
 
 ### Log Summary Reporter
 
@@ -2518,6 +2527,7 @@ txt:
   template: templates/summary.txt
   output: ${summaryReportOutput}/summary-${timestamp}.txt
   retention: { }
+  openAtEnd: false
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.txt){:target="_blank"}.
@@ -2536,6 +2546,7 @@ html:
   template: templates/summary.html
   output: ${summaryReportOutput}/summary-${timestamp}.html
   retention: { }
+  openAtEnd: false
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/summary.html){:target="_blank"}.
@@ -2776,6 +2787,7 @@ For each reporter:
 * `template` is a path relative to `src/test/resources`
 * `output` is the path relative to the project's root, and might contain the `${timestamp}` placeholder
 * `retention` specifies which and how many reports to keep for each reporter
+* `openAtEnd` specifies, for reporters that produce a file, if you want it to be automatically opened when the suite execution is finished
 
 ### Log TestBook Reporter
 
@@ -2909,6 +2921,7 @@ txt:
   template: templates/testbook.txt
   output: ${testBookReportOutput}/testbook-${timestamp}.txt
   retention: { }
+  openAtEnd: false
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.txt){:target="_blank"}.
@@ -2927,6 +2940,7 @@ html:
   template: templates/testbook.html
   output: ${testBookReportOutput}/testBook-${timestamp}.html
   retention: { }
+  openAtEnd: false
 ```
 
 For the sake of completeness, the output file was manually copied [here](assets/miscellanea/testbook.html){:target="_blank"}.
