@@ -4,6 +4,8 @@ import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.DownloadPage;
 import io.github.giulong.spectrum.it.pages.UploadPage;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
 
@@ -24,6 +26,10 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("download")
+    @Tags({
+            @Tag("tag1"),
+            @Tag("tag2"),
+    })
     public void download() {
         // We call the inherited helper method to ensure a fresh download
         deleteDownloadsFolder();
@@ -38,6 +44,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("upload")
+    @Tag("tag2")
     public void upload() {
         uploadPage
                 .open()

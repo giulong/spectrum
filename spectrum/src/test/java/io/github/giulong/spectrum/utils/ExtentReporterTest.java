@@ -23,10 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -414,13 +412,16 @@ class ExtentReporterTest {
         final String testId = "testId";
         final String classDisplayName = "classDisplayName";
         final String methodDisplayName = "methodDisplayName";
+        final Set<String> tags = Set.of("t1", "t2");
 
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getTestId()).thenReturn(testId);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getMethodDisplayName()).thenReturn(methodDisplayName);
+        when(context.getTags()).thenReturn(tags);
         when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, methodDisplayName))).thenReturn(extentTest);
+        when(extentTest.assignCategory(tags.toArray(new String[0]))).thenReturn(extentTest);
 
         assertEquals(extentTest, extentReporter.createExtentTestFrom(context));
     }

@@ -157,7 +157,9 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     public ExtentTest createExtentTestFrom(final ExtensionContext context) {
         final TestData testData = context.getStore(GLOBAL).get(TEST_DATA, TestData.class);
 
-        return extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getMethodDisplayName()));
+        return extentReports
+                .createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getMethodDisplayName()))
+                .assignCategory(context.getTags().toArray(new String[0]));
     }
 
     public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final String testId, final Path path) {
