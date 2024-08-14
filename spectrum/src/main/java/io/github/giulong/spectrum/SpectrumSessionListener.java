@@ -31,7 +31,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     @SuppressWarnings("unchecked")
     public void launcherSessionOpened(final LauncherSession session) {
         final Map<String, Object> bannerYaml = yamlUtils.readInternal("banner.yaml", Map.class);
-        log.info(freeMarkerWrapper.interpolate(fileUtils.read("/banner.txt"), bannerYaml));
+        log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), bannerYaml));
 
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());

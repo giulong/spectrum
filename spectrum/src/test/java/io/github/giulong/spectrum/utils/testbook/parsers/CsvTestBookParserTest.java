@@ -42,7 +42,7 @@ class CsvTestBookParserTest {
     public void parseException(final String line) {
         final String path = "path";
         when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.read(String.format("/%s", path))).thenReturn(line);
+        when(fileUtils.read(path)).thenReturn(line);
         Reflections.setField("path", testBookParser, path);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> testBookParser.parse());
@@ -55,7 +55,7 @@ class CsvTestBookParserTest {
     public void parseValid(final String line) {
         final String path = "path";
         when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.read(String.format("/%s", path))).thenReturn(line);
+        when(fileUtils.read(path)).thenReturn(line);
         Reflections.setField("path", testBookParser, path);
 
         Assertions.assertDoesNotThrow(() -> testBookParser.parse());

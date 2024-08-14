@@ -111,7 +111,7 @@ class SpectrumSessionListenerTest {
 
         System.setProperty("os.name", "Win");
 
-        when(fileUtils.read("/banner.txt")).thenReturn(banner);
+        when(fileUtils.read("banner.txt")).thenReturn(banner);
         when(yamlUtils.readInternal("banner.yaml", Map.class)).thenReturn(spectrumProperties);
         when(freeMarkerWrapper.interpolate(banner, spectrumProperties)).thenReturn(interpolatedBanner);
 

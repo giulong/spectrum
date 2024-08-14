@@ -245,9 +245,9 @@ class ExtentReporterTest {
         when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(extent.getCss()).thenReturn(extentCss);
-        when(fileUtils.read("/" + extentCss)).thenReturn(css);
+        when(fileUtils.read(extentCss)).thenReturn(css);
         when(extent.getJs()).thenReturn(extentJs);
-        when(fileUtils.read("/" + extentJs)).thenReturn(js);
+        when(fileUtils.read(extentJs)).thenReturn(js);
 
         extentSparkReporterConfigMockedStatic.when(ExtentSparkReporterConfig::builder).thenReturn(extentSparkReporterConfigBuilder);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).documentTitle(documentTitle);

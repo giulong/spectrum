@@ -43,7 +43,7 @@ class FileUtilsTest {
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("/test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
+                arguments("test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
                 arguments("not-existing", ""));
     }
 
@@ -65,7 +65,7 @@ class FileUtilsTest {
     public void interpolate() {
         assertEquals(
                 "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue",
-                fileUtils.interpolate("/interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
+                fileUtils.interpolate("interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
     }
 
     @DisplayName("interpolateTimestampFrom should replace the timestamp from the provided file name")

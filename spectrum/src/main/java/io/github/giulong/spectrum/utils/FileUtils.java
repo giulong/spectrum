@@ -33,7 +33,7 @@ public final class FileUtils {
 
     public String read(final String file) {
         log.debug("Reading file {}", file);
-        final InputStream inputStream = FileUtils.class.getResourceAsStream(file);
+        final InputStream inputStream = FileUtils.class.getResourceAsStream(String.format("/%s", file));
 
         if (inputStream == null) {
             log.warn("File {} not found.", file);
@@ -46,7 +46,7 @@ public final class FileUtils {
     }
 
     public String readTemplate(final String file) {
-        return read(String.format("/templates/%s", file));
+        return read(String.format("templates/%s", file));
     }
 
     public String interpolate(final String file, final Map<String, String> vars) {
