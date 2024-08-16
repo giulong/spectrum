@@ -28,9 +28,8 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     private final MetadataManager metadataManager = MetadataManager.getInstance();
 
     @Override
-    @SuppressWarnings("unchecked")
     public void launcherSessionOpened(final LauncherSession session) {
-        final Map<String, Object> bannerYaml = yamlUtils.readInternal("banner.yaml", Map.class);
+        @SuppressWarnings("unchecked") final Map<String, Object> bannerYaml = yamlUtils.readInternal("banner.yaml", Map.class);
         log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), bannerYaml));
 
         parseConfiguration();
@@ -81,6 +80,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
                         .ofNullable(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class))
                         .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
                         .split(","))
+                .filter(profile -> !profile.isBlank())
                 .toList();
     }
 

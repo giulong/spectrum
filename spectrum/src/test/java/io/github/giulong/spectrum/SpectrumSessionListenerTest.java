@@ -220,9 +220,11 @@ class SpectrumSessionListenerTest {
     public static Stream<Arguments> profilesValuesProvider() {
         return Stream.of(
                 arguments("overridden-profile", "default-profile,first", List.of("overridden-profile")),
+                arguments("overridden-profile,, ", "default-profile,first", List.of("overridden-profile")),
                 arguments("overridden-profile,second", "default-profile", List.of("overridden-profile", "second")),
                 arguments(null, "default-profile", List.of("default-profile")),
-                arguments(null, "default-profile,another", List.of("default-profile", "another"))
+                arguments(null, "default-profile,another", List.of("default-profile", "another")),
+                arguments(null, " ,,default-profile,another", List.of("default-profile", "another"))
         );
     }
 
