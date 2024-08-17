@@ -46,6 +46,8 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     protected final FileUtils fileUtils = FileUtils.getInstance();
     protected final Configuration configuration = Configuration.getInstance();
 
+    private final MetadataManager metadataManager = MetadataManager.getInstance();
+
     private ExtentReports extentReports;
 
     public static ExtentReporter getInstance() {
@@ -99,7 +101,6 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     @Override
     public void produceMetadata() {
-        final MetadataManager metadataManager = MetadataManager.getInstance();
         final File file = getReportPathFrom(configuration.getExtent()).toFile();
         final int maxSize = getRetention().getSuccessful();
         final FixedSizeQueue<File> queue = metadataManager.getSuccessfulQueueOf(this);
