@@ -18,6 +18,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class DataResolver<Data> implements ParameterResolver {
 
     public static final String DATA = "data";
+    private final YamlUtils yamlUtils = YamlUtils.getInstance();
 
     @Override
     public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
@@ -30,7 +31,7 @@ public class DataResolver<Data> implements ParameterResolver {
         final Type type = dataType.getActualTypeArguments()[0];
 
         if (Void.class.equals(type)) {
-            log.warn("Running an instance of SpectrumTest<Void>. If no Data class is needed, you can safely ignore this warning.");
+            log.debug("Running an instance of SpectrumTest<Void>. No Data class injected in test '{}'", context.getDisplayName());
             return null;
         }
 
@@ -40,7 +41,6 @@ public class DataResolver<Data> implements ParameterResolver {
         return rootStore.getOrComputeIfAbsent(DATA, e -> {
             log.debug("Resolving {}", DATA);
 
-            final YamlUtils yamlUtils = YamlUtils.getInstance();
             final Configuration.Data dataConfiguration = rootStore.get(CONFIGURATION, Configuration.class).getData();
             final Data data = yamlUtils.read(String.format("%s/data.yaml", dataConfiguration.getFolder()), dataClass);
             log.trace("Data:\n{}", yamlUtils.write(data));

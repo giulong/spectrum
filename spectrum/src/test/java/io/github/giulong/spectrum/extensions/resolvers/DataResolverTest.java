@@ -2,8 +2,8 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.TestYaml;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.YamlUtils;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,8 @@ import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.DataResolver.DATA;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,8 +30,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 class DataResolverTest {
-
-    private static MockedStatic<YamlUtils> yamlUtilsMockedStatic;
 
     @Mock
     private ParameterContext parameterContext;
@@ -70,12 +69,7 @@ class DataResolverTest {
 
     @BeforeEach
     public void beforeEach() {
-        yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
-    }
-
-    @AfterEach
-    public void afterEach() {
-        yamlUtilsMockedStatic.close();
+        Reflections.setField("yamlUtils", dataResolver, yamlUtils);
     }
 
     @DisplayName("supportsParameter should check if the generic type name is exactly Data")
@@ -109,7 +103,6 @@ class DataResolverTest {
 
         doReturn(TestClass.class).when(extensionContext).getRequiredTestClass();
 
-        when(YamlUtils.getInstance()).thenReturn(yamlUtils);
         when(yamlUtils.read(eq(dataFolder + "/data.yaml"), any())).thenReturn(data);
 
         dataResolver.resolveParameter(parameterContext, extensionContext);
