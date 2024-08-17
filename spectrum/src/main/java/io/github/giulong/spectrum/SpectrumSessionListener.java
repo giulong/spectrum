@@ -62,6 +62,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
                 .map(profile -> String.format("configuration-%s", profile))
                 .toList();
 
+        parseVars(CONFIGURATION);
         profileConfigurations.forEach(this::parseVars);
         yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
 

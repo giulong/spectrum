@@ -162,6 +162,24 @@ class SpectrumSessionListenerTest {
     }
 
     @Test
+    @DisplayName("parseConfiguration should parse all the configurations considering no active profile")
+    public void parseConfigurationNoProfile() {
+        System.setProperty("os.name", "Win");
+
+        // parseProfile
+        when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn("");
+        when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultProfile");
+
+        // parseVars
+        when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
+
+        spectrumSessionListener.parseConfiguration();
+
+        verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
+        verify(yamlUtils).updateWithFile(configuration, CONFIGURATION);
+    }
+
+    @Test
     @DisplayName("parseConfiguration should parse all the configurations considering the active profile")
     public void parseConfiguration() {
         final String profile = "profile";
