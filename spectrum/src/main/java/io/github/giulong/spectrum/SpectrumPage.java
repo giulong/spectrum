@@ -36,7 +36,7 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
      */
     @SuppressWarnings("unchecked")
     public T waitForPageLoading() {
-        log.warn("Default no-op waitForPageLoading: override this method in your SpectrumPage!");
+        log.debug("Default no-op waitForPageLoading: override this method in your SpectrumPage!");
 
         return (T) this;
     }
