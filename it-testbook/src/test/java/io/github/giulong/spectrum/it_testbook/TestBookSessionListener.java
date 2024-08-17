@@ -223,7 +223,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .stream()
                 .filter(reporter -> reporter instanceof FileReporter)
                 .map(FileReporter.class::cast)
-                .filter(reporter -> FileUtils.getInstance().getExtensionOf(reporter.getTemplate()).equals(extension))
+                .filter(reporter -> fileUtils.getExtensionOf(reporter.getTemplate()).equals(extension))
                 .findFirst()
                 .orElseThrow();
     }
@@ -235,7 +235,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .stream()
                 .filter(reporter -> reporter instanceof FileReporter)
                 .map(FileReporter.class::cast)
-                .filter(reporter -> FileUtils.getInstance().getExtensionOf(reporter.getTemplate()).equals(extension))
+                .filter(reporter -> fileUtils.getExtensionOf(reporter.getTemplate()).equals(extension))
                 .findFirst()
                 .orElseThrow();
     }

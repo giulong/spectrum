@@ -24,6 +24,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
     private static final Pattern NUMBER = Pattern.compile("-?\\d+(.\\d+|,\\d+)?");
 
     private final Vars vars = Vars.getInstance();
+    private final InterpolatedStringDeserializer interpolatedStringDeserializer = InterpolatedStringDeserializer.getInstance();
 
     public static InterpolatedObjectDeserializer getInstance() {
         return INSTANCE;
@@ -43,7 +44,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
                 final Matcher matcher = INT_PATTERN.matcher(textValue);
                 yield matcher.matches()
                         ? interpolate(textValue, currentName, matcher)
-                        : InterpolatedStringDeserializer.getInstance().interpolate(textValue, currentName);
+                        : interpolatedStringDeserializer.interpolate(textValue, currentName);
             }
             case NUMBER -> jsonNode.numberValue();
             default -> jsonNode;
