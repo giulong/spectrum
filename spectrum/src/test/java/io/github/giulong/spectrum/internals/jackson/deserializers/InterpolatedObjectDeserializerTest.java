@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.Vars;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,6 +12,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -24,11 +24,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
 class InterpolatedObjectDeserializerTest {
 
     private static final String VAR_IN_ENV = "456";
+
+    private static MockedStatic<InterpolatedStringDeserializer> interpolatedStringDeserializerMockedStatic;
 
     @Mock
     private InterpolatedStringDeserializer interpolatedStringDeserializer;
@@ -52,7 +55,12 @@ class InterpolatedObjectDeserializerTest {
 
     @BeforeEach
     public void beforeEach() {
-        Reflections.setField("interpolatedStringDeserializer", interpolatedObjectDeserializer, interpolatedStringDeserializer);
+        interpolatedStringDeserializerMockedStatic = mockStatic(InterpolatedStringDeserializer.class);
+    }
+
+    @AfterEach
+    public void afterEach() {
+        interpolatedStringDeserializerMockedStatic.close();
     }
 
     @AfterAll
@@ -78,6 +86,7 @@ class InterpolatedObjectDeserializerTest {
         when(jsonParser.currentName()).thenReturn(currentName);
         when(jsonNode.getNodeType()).thenReturn(STRING);
         when(jsonNode.textValue()).thenReturn(value);
+        when(InterpolatedStringDeserializer.getInstance()).thenReturn(interpolatedStringDeserializer);
         when(interpolatedStringDeserializer.interpolate(value, currentName)).thenReturn(expected);
 
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));

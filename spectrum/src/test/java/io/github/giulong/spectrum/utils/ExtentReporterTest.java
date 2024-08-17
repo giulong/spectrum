@@ -156,7 +156,6 @@ class ExtentReporterTest {
     public void beforeEach() {
         Reflections.setField("fileUtils", extentReporter, fileUtils);
         Reflections.setField("configuration", extentReporter, configuration);
-        Reflections.setField("metadataManager", extentReporter, metadataManager);
         testDataMockedStatic = mockStatic(TestData.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         pathMockedStatic = mockStatic(Path.class);
@@ -383,6 +382,7 @@ class ExtentReporterTest {
         when(absolutePath.toFile()).thenReturn(file1);
         when(retention.getSuccessful()).thenReturn(retentionSuccessful);
 
+        when(MetadataManager.getInstance()).thenReturn(metadataManager);
         when(metadataManager.getSuccessfulQueueOf(extentReporter)).thenReturn(fileFixedSizeQueue);
         when(fileFixedSizeQueue.shrinkTo(retentionSuccessful - 1)).thenReturn(fileFixedSizeQueue);
 
