@@ -13,7 +13,7 @@ import org.openqa.selenium.remote.service.DriverService;
 public class LocalEnvironment extends Environment {
 
     @JsonIgnore
-    protected final Configuration configuration = Configuration.getInstance();
+    private final Configuration configuration = Configuration.getInstance();
 
     protected static final ThreadLocal<DriverService> DRIVER_SERVICE_THREAD_LOCAL = new ThreadLocal<>();
 
