@@ -2,9 +2,8 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.EventsListener;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +33,12 @@ class DriverResolverTest {
 
     private static MockedStatic<EventsListener> eventsListenerMockedStatic;
     private static MockedStatic<Pattern> patternMockedStatic;
+
+    @Mock
+    private ContextManager contextManager;
+
+    @Mock
+    private TestContext testContext;
 
     @Mock
     private ParameterContext parameterContext;
@@ -97,6 +102,8 @@ class DriverResolverTest {
 
     @BeforeEach
     public void beforeEach() {
+        Reflections.setField("contextManager", driverResolver, contextManager);
+
         eventsListenerMockedStatic = mockStatic(EventsListener.class);
         patternMockedStatic = mockStatic(Pattern.class);
     }
@@ -112,6 +119,7 @@ class DriverResolverTest {
     @SuppressWarnings("unchecked")
     public void resolveParameter() {
         final String locatorRegex = "locatorRegex";
+        final String uniqueId = "uniqueId";
 
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
@@ -139,6 +147,9 @@ class DriverResolverTest {
         when(eventsListenerBuilder.events(events)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.build()).thenReturn(eventsListener);
 
+        when(extensionContext.getUniqueId()).thenReturn(uniqueId);
+        when(contextManager.get(uniqueId)).thenReturn(testContext);
+
         //noinspection rawtypes
         MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, context) -> {
             assertEquals(eventsListener, ((WebDriverListener[]) context.arguments().getFirst())[0]);
@@ -146,7 +157,8 @@ class DriverResolverTest {
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         });
         WebDriver actual = driverResolver.resolveParameter(parameterContext, extensionContext);
-        verify(store).put(DRIVER, decoratedWebDriver);
+        verify(store).put(DRIVER, actual);
+        verify(testContext).put(DRIVER, actual);
 
         assertEquals(decoratedWebDriver, actual);
 

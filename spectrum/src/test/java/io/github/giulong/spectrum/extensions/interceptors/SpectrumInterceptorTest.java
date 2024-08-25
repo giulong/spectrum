@@ -1,12 +1,8 @@
 package io.github.giulong.spectrum.extensions.interceptors;
 
 import com.aventstack.extentreports.ExtentTest;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +38,14 @@ class SpectrumInterceptorTest {
     private final String className = "className";
     private final String displayName = "displayName";
     private final String fileName = "fileName";
+    private final String uniqueId = "uniqueId";
     private final Path dynamicVideoPath = Path.of(String.format("%s-%s.mp4", fileName, displayName));
+
+    @Mock
+    private ContextManager contextManager;
+
+    @Mock
+    private TestContext parentTestContext;
 
     @Mock
     private InvocationInterceptor.Invocation<Void> invocation;
@@ -100,9 +103,12 @@ class SpectrumInterceptorTest {
         Reflections.setField("eventsDispatcher", spectrumInterceptor, eventsDispatcher);
         Reflections.setField("extentReporter", spectrumInterceptor, extentReporter);
         Reflections.setField("fileUtils", spectrumInterceptor, fileUtils);
+        Reflections.setField("contextManager", spectrumInterceptor, contextManager);
     }
 
     private void commonStubs() {
+        final String parentUniqueId = "parentUniqueId";
+
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
@@ -117,6 +123,10 @@ class SpectrumInterceptorTest {
         when(parentContext.getDisplayName()).thenReturn(className);
         when(statefulExtentTest.createNode(displayName)).thenReturn(extentTest);
 
+        when(context.getUniqueId()).thenReturn(uniqueId);
+        when(parentContext.getUniqueId()).thenReturn(parentUniqueId);
+        when(contextManager.get(parentUniqueId)).thenReturn(parentTestContext);
+
         when(fileUtils.removeExtensionFrom(videoPath.toString())).thenReturn(fileName);
     }
 
@@ -129,6 +139,7 @@ class SpectrumInterceptorTest {
 
         verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(DYNAMIC_TEST), context);
         verify(invocation).proceed();
+        verify(contextManager).put(uniqueId, parentTestContext);
     }
 
     @DisplayName("interceptDynamicTest should fire the proper events and create nodes in the current extent test")

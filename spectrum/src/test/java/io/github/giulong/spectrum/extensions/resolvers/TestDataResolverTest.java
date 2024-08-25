@@ -1,9 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +38,12 @@ class TestDataResolverTest {
 
     @Mock
     private FileUtils fileUtils;
+
+    @Mock
+    private ContextManager contextManager;
+
+    @Mock
+    private TestContext testContext;
 
     @Mock
     private ParameterContext parameterContext;
@@ -86,6 +90,7 @@ class TestDataResolverTest {
     @BeforeEach
     public void beforeEach() throws IOException {
         Reflections.setField("fileUtils", testDataResolver, fileUtils);
+        Reflections.setField("contextManager", testDataResolver, contextManager);
 
         testDataMockedStatic = mockStatic(TestData.class);
     }
@@ -106,6 +111,7 @@ class TestDataResolverTest {
         final String testId = "string-methoddisplayname";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
+        final String uniqueId = "uniqueId";
 
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
 
@@ -140,10 +146,14 @@ class TestDataResolverTest {
         when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
 
+        when(extensionContext.getUniqueId()).thenReturn(uniqueId);
+        when(contextManager.get(uniqueId)).thenReturn(testContext);
+
         final TestData actual = testDataResolver.resolveParameter(parameterContext, extensionContext);
 
         assertEquals(testData, actual);
         verify(store).put(TEST_DATA, actual);
+        verify(testContext).put(TEST_DATA, actual);
     }
 
     @Test

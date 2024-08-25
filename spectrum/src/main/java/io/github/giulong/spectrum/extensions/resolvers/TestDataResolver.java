@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -21,10 +22,13 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
     public static final String TEST_DATA = "testData";
 
     private final FileUtils fileUtils = FileUtils.getInstance();
+    private final ContextManager contextManager = ContextManager.getInstance();
 
     @Override
     public TestData resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         log.debug("Resolving {}", TEST_DATA);
+
+        final ExtensionContext.Store store = context.getStore(GLOBAL);
         final Configuration configuration = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class);
         final Configuration.Extent extent = configuration.getExtent();
         final String reportFolder = extent.getReportFolder();
@@ -47,7 +51,8 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
                 .videoPath(videoPath)
                 .build();
 
-        context.getStore(GLOBAL).put(TEST_DATA, testData);
+        store.put(TEST_DATA, testData);
+        contextManager.get(context.getUniqueId()).put(TEST_DATA, testData);
         return testData;
     }
 

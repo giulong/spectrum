@@ -38,6 +38,9 @@ class SpectrumTestTest<T> {
     private JsWebElementListInvocationHandler jsWebElementListInvocationHandler;
 
     @Mock
+    private TestContext testContext;
+
+    @Mock
     private WebDriver webDriver;
 
     @Mock
@@ -131,8 +134,10 @@ class SpectrumTestTest<T> {
     @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
     public void testBeforeEach() {
-        childTest.beforeEach(configuration, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
+        childTest.beforeEach(testContext, configuration, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
                 extentReports, actions, eventsDispatcher, js, jsWebElementProxyBuilder, data);
+
+        verifyNoInteractions(testContext);
 
         assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.driver);

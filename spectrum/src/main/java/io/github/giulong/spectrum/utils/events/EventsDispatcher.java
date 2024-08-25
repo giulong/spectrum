@@ -61,6 +61,7 @@ public class EventsDispatcher implements SessionHook {
 
     public void fire(final String primaryId, final String secondaryId, final String reason, final Result result, final Set<String> tags, final ExtensionContext context) {
         final Event event = Event.builder()
+                .uniqueId(context == null ? "" : context.getUniqueId())
                 .primaryId(primaryId)
                 .secondaryId(secondaryId)
                 .reason(reason)

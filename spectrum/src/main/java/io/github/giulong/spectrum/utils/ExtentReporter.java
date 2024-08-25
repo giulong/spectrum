@@ -46,6 +46,8 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     protected final FileUtils fileUtils = FileUtils.getInstance();
     protected final Configuration configuration = Configuration.getInstance();
 
+    private final ContextManager contextManager = ContextManager.getInstance();
+
     private ExtentReports extentReports;
 
     public static ExtentReporter getInstance() {
@@ -182,14 +184,15 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     public void logTestEnd(final ExtensionContext context, final Status status) {
-        final ExtensionContext.Store store = context.getStore(GLOBAL);
-        final StatefulExtentTest statefulExtentTest = store.getOrComputeIfAbsent(STATEFUL_EXTENT_TEST, e -> {
-            final String className = context.getRequiredTestClass().getSimpleName();
-            final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
-            final String methodDisplayName = context.getDisplayName();
+        final TestContext testContext = contextManager.get(context.getUniqueId());
+        final StatefulExtentTest statefulExtentTest = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, e -> {
+            final TestData testData = testContext.get(TEST_DATA, TestData.class);
+            final String className = testData.getClassName();
+            final String classDisplayName = testData.getClassDisplayName();
+            final String methodDisplayName = testData.getMethodDisplayName();
             final String testId = buildTestIdFrom(className, methodDisplayName);
 
-            store.put(TEST_DATA, TestData
+            context.getStore(GLOBAL).put(TEST_DATA, TestData
                     .builder()
                     .classDisplayName(classDisplayName)
                     .methodDisplayName(methodDisplayName)

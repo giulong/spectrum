@@ -57,6 +57,12 @@ class ExtentReporterTest {
     private ExtentSparkReporterConfig.ExtentSparkReporterConfigBuilder<?, ?> extentSparkReporterConfigBuilder;
 
     @Mock
+    private ContextManager contextManager;
+
+    @Mock
+    private TestContext testContext;
+
+    @Mock
     private Configuration configuration;
 
     @Mock
@@ -156,6 +162,8 @@ class ExtentReporterTest {
     public void beforeEach() {
         Reflections.setField("fileUtils", extentReporter, fileUtils);
         Reflections.setField("configuration", extentReporter, configuration);
+        Reflections.setField("contextManager", extentReporter, contextManager);
+
         testDataMockedStatic = mockStatic(TestData.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         pathMockedStatic = mockStatic(Path.class);
@@ -474,12 +482,8 @@ class ExtentReporterTest {
             "reasonMethod,specific reason"
     })
     public void logTestEndDisabled(final String methodName, String expected) throws NoSuchMethodException {
-        final String classDisplayName = "classDisplayName";
-
         logTestEndStubs();
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
-        when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, SKIP);
@@ -492,12 +496,8 @@ class ExtentReporterTest {
     @Test
     @DisplayName("logTestEnd should add a screenshot to the report and delegate to finalizeTest")
     public void logTestEndFailed() {
-        final String classDisplayName = "classDisplayName";
-
         logTestEndStubs();
         when(context.getRequiredTestInstance()).thenReturn(spectrumTest);
-        when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(context.getExecutionException()).thenReturn(Optional.of(exception));
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
@@ -511,11 +511,7 @@ class ExtentReporterTest {
     @Test
     @DisplayName("logTestEnd should add a log in the extent report by default")
     public void logTestEndDefault() {
-        final String classDisplayName = "classDisplayName";
-
         logTestEndStubs();
-        when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, PASS);
@@ -536,25 +532,27 @@ class ExtentReporterTest {
     }
 
     private void logTestEndStubs() {
+        final String uniqueId = "uniqueId";
         final String classDisplayName = "classDisplayName";
         final String methodDisplayName = "methodDisplayName";
         final String testId = "string-methoddisplayname";
 
         when(TestData.builder()).thenReturn(testDataBuilder);
-        doReturn(String.class).when(context).getRequiredTestClass();
-        when(context.getDisplayName()).thenReturn(methodDisplayName);
         when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.methodDisplayName(methodDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
         when(testData.getTestId()).thenReturn(testId);
+        when(testData.getClassName()).thenReturn("String");
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getMethodDisplayName()).thenReturn(methodDisplayName);
         when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, methodDisplayName))).thenReturn(extentTest);
 
         when(context.getStore(GLOBAL)).thenReturn(store);
-        when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
-        when(store.getOrComputeIfAbsent(eq(STATEFUL_EXTENT_TEST), functionArgumentCaptor.capture(), eq(StatefulExtentTest.class))).thenReturn(statefulExtentTest);
+        when(context.getUniqueId()).thenReturn(uniqueId);
+        when(contextManager.get(uniqueId)).thenReturn(testContext);
+        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(testContext.computeIfAbsent(eq(STATEFUL_EXTENT_TEST), functionArgumentCaptor.capture(), eq(StatefulExtentTest.class))).thenReturn(statefulExtentTest);
     }
 }

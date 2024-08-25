@@ -2,24 +2,25 @@ package io.github.giulong.spectrum.utils.events;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
-import org.junit.jupiter.api.extension.ExtensionContext;
 
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 
 @JsonView(Internal.class)
 public class TestBookConsumer extends EventsConsumer {
 
+    private final Configuration configuration = Configuration.getInstance();
+    private final ContextManager contextManager = ContextManager.getInstance();
+
     @Override
     public void accept(final Event event) {
-        final ExtensionContext context = event.getContext();
-        final TestBook testBook = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getTestBook();
-        final String className = context.getParent().orElseThrow().getDisplayName();
-        final String testName = context.getDisplayName();
+        final TestBook testBook = configuration.getTestBook();
+        final TestData testData = contextManager.get(event.getUniqueId()).get(TEST_DATA, TestData.class);
 
-        testBook.updateWithResult(className, testName, event.getResult());
+        testBook.updateWithResult(testData.getClassDisplayName(), testData.getDisplayName(), event.getResult());
     }
 }

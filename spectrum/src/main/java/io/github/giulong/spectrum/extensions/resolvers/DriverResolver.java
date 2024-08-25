@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.internals.EventsListener;
+import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -25,6 +26,8 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
 
     public static final String DRIVER = "driver";
 
+    private final ContextManager contextManager = ContextManager.getInstance();
+
     @Override
     public WebDriver resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         log.debug("Resolving {}", DRIVER);
@@ -44,6 +47,8 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final WebDriver decoratedDriver = new EventFiringDecorator<>(eventListener).decorate(driver);
 
         store.put(DRIVER, decoratedDriver);
+        contextManager.get(context.getUniqueId()).put(DRIVER, decoratedDriver);
+
         return decoratedDriver;
     }
 }
