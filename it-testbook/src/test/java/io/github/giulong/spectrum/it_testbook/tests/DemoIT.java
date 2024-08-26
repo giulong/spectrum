@@ -27,6 +27,6 @@ public class DemoIT extends SpectrumTest<Void> {
     @DisplayName("Skipped Test")
     @Disabled("for demonstration purposes")
     public void skipped() {
-        // this one will be skipped
+        throw new RuntimeException("This should not be thrown!!!");
     }
 }
