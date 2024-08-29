@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -26,5 +27,9 @@ public final class ContextManager {
 
     public TestContext get(final String uniqueId) {
         return testContexts.get(uniqueId);
+    }
+
+    public TestContext computeIfAbsent(final String key, final Function<String, TestContext> mappingFunction) {
+        return testContexts.computeIfAbsent(key, mappingFunction);
     }
 }

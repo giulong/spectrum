@@ -34,7 +34,6 @@ import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.T
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
 import static java.util.Comparator.comparingLong;
 import static lombok.AccessLevel.PROTECTED;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 @NoArgsConstructor(access = PROTECTED)
@@ -157,7 +156,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     public ExtentTest createExtentTestFrom(final ExtensionContext context) {
-        final TestData testData = context.getStore(GLOBAL).get(TEST_DATA, TestData.class);
+        final TestData testData = contextManager.get(context.getUniqueId()).get(TEST_DATA, TestData.class);
 
         return extentReports
                 .createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getMethodDisplayName()))
@@ -184,16 +183,18 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     public void logTestEnd(final ExtensionContext context, final Status status) {
-        final TestContext testContext = contextManager.get(context.getUniqueId());
-        final StatefulExtentTest statefulExtentTest = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, e -> {
-            final TestData testData = testContext.get(TEST_DATA, TestData.class);
-            final String className = testData.getClassName();
-            final String classDisplayName = testData.getClassDisplayName();
-            final String methodDisplayName = testData.getMethodDisplayName();
+        final TestContext testContext = contextManager.computeIfAbsent(context.getUniqueId(), k -> new TestContext());
+        final StatefulExtentTest statefulExtentTest = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, k -> {
+            final String className = context.getRequiredTestClass().getSimpleName();
+            final String methodName = context.getRequiredTestMethod().getName();
+            final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
+            final String methodDisplayName = context.getDisplayName();
             final String testId = buildTestIdFrom(className, methodDisplayName);
 
-            context.getStore(GLOBAL).put(TEST_DATA, TestData
+            testContext.put(TEST_DATA, TestData
                     .builder()
+                    .className(className)
+                    .methodName(methodName)
                     .classDisplayName(classDisplayName)
                     .methodDisplayName(methodDisplayName)
                     .testId(testId)

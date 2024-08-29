@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -14,6 +16,9 @@ class ContextManagerTest {
 
     @Mock
     private TestContext testContext;
+
+    @Mock
+    private Function<String, TestContext> function;
 
     @InjectMocks
     private ContextManager contextManager;
@@ -46,5 +51,18 @@ class ContextManagerTest {
         Reflections.setField("testContexts", contextManager, testContexts);
 
         assertEquals(testContext, contextManager.get(uniqueId));
+    }
+
+    @Test
+    @DisplayName("computeIfAbsent should call computeIfAbsent on the internal map")
+    public void computeIfAbsent() {
+        final String uniqueId = "uniqueId";
+        final Map<String, TestContext> testContexts = new HashMap<>() {{
+            put(uniqueId, testContext);
+        }};
+
+        Reflections.setField("testContexts", contextManager, testContexts);
+
+        assertEquals(testContext, contextManager.computeIfAbsent(uniqueId, function));
     }
 }

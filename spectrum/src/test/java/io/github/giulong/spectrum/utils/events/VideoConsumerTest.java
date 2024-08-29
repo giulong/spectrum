@@ -33,6 +33,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
+import static io.github.giulong.spectrum.enums.Result.DISABLED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.Assertions.*;
@@ -154,6 +156,8 @@ class VideoConsumerTest {
         final int width = 1;
         final int height = 3;
 
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
@@ -217,6 +221,8 @@ class VideoConsumerTest {
         final int width = 1;
         final int height = 3;
 
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
@@ -278,6 +284,8 @@ class VideoConsumerTest {
         final int width = 1;
         final int height = 3;
 
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
@@ -332,6 +340,8 @@ class VideoConsumerTest {
     public void acceptNoFramesAdded() throws IOException, URISyntaxException {
         final String uniqueId = "uniqueId";
 
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
@@ -362,6 +372,25 @@ class VideoConsumerTest {
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(true);
+
+        when(event.getUniqueId()).thenReturn(uniqueId);
+        when(contextManager.get(uniqueId)).thenReturn(testContext);
+        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+
+        videoConsumer.accept(event);
+
+        verify(encoder, never()).encodeImage(any());
+    }
+
+    @Test
+    @DisplayName("accept shouldn't do nothing when the test is skipped")
+    public void acceptTestSkipped() throws IOException {
+        final String uniqueId = "uniqueId";
+
+        when(event.getResult()).thenReturn(DISABLED);
+
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(false);
 
         when(event.getUniqueId()).thenReturn(uniqueId);
         when(contextManager.get(uniqueId)).thenReturn(testContext);

@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import static io.github.giulong.spectrum.enums.Result.DISABLED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static org.mockito.Mockito.*;
 
 class DriverConsumerTest {
@@ -39,8 +41,20 @@ class DriverConsumerTest {
     }
 
     @Test
+    @DisplayName("accept should do nothing when the test is skipped")
+    public void acceptSkipped() {
+        when(event.getResult()).thenReturn(DISABLED);
+
+        driverConsumer.accept(event);
+
+        verifyNoInteractions(driver);
+        verifyNoInteractions(environment);
+    }
+
+    @Test
     @DisplayName("accept should shutdown the driver")
     public void accept() {
+        when(event.getResult()).thenReturn(SUCCESSFUL);
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
         doReturn(environment).when(runtime).getEnvironment();

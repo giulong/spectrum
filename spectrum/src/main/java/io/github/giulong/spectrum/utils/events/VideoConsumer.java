@@ -28,6 +28,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
+import static io.github.giulong.spectrum.enums.Result.DISABLED;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -51,8 +52,8 @@ public class VideoConsumer extends EventsConsumer {
         final TestContext testContext = contextManager.get(event.getUniqueId());
         final TestData testData = testContext.get(TEST_DATA, TestData.class);
 
-        if (video.isDisabled()) {
-            log.debug("Video is disabled. Returning");
+        if (video.isDisabled() || event.getResult().equals(DISABLED)) {
+            log.debug("Video is disabled or test is skipped. Returning");
             return;
         }
 

@@ -21,6 +21,6 @@ public class TestBookConsumer extends EventsConsumer {
         final TestBook testBook = configuration.getTestBook();
         final TestData testData = contextManager.get(event.getUniqueId()).get(TEST_DATA, TestData.class);
 
-        testBook.updateWithResult(testData.getClassDisplayName(), testData.getDisplayName(), event.getResult());
+        testBook.updateWithResult(testData.getClassDisplayName(), testData.getMethodDisplayName(), event.getResult());
     }
 }
