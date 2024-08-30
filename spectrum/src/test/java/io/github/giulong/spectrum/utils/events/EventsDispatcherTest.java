@@ -74,7 +74,6 @@ class EventsDispatcherTest {
         final Set<String> tags = Set.of(SUITE);
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.uniqueId("")).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.reason(BEFORE)).thenReturn(eventBuilder);
@@ -96,7 +95,6 @@ class EventsDispatcherTest {
         when(summary.toResult()).thenReturn(result);
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.uniqueId("")).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.reason(AFTER)).thenReturn(eventBuilder);
@@ -117,7 +115,6 @@ class EventsDispatcherTest {
         when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.uniqueId("")).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
@@ -142,7 +139,6 @@ class EventsDispatcherTest {
         when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.uniqueId("")).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
@@ -166,7 +162,6 @@ class EventsDispatcherTest {
         when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.uniqueId("")).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(primaryId)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
         when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
@@ -191,7 +186,6 @@ class EventsDispatcherTest {
         when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.uniqueId("")).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(primaryId)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(secondaryId)).thenReturn(eventBuilder);
         when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
@@ -209,7 +203,6 @@ class EventsDispatcherTest {
     @Test
     @DisplayName("fire should build an event with all the provided parameters and call match on every consumer")
     public void fireAllParams() {
-        final String uniqueId = "uniqueId";
         final String className = "className";
         final String testName = "testName";
         final String reason = AFTER;
@@ -217,10 +210,8 @@ class EventsDispatcherTest {
         final Set<String> tags = Set.of();
 
         when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
-        when(extensionContext.getUniqueId()).thenReturn(uniqueId);
 
         when(Event.builder()).thenReturn(eventBuilder);
-        when(eventBuilder.uniqueId(uniqueId)).thenReturn(eventBuilder);
         when(eventBuilder.primaryId(className)).thenReturn(eventBuilder);
         when(eventBuilder.secondaryId(testName)).thenReturn(eventBuilder);
         when(eventBuilder.reason(reason)).thenReturn(eventBuilder);

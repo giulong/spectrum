@@ -12,6 +12,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -53,6 +54,9 @@ class VideoConsumerTest {
     private static MockedStatic<AWTSequenceEncoder> awtSequenceEncoderMockedStatic;
     private static MockedStatic<ImageIO> imageIOMockedStatic;
     private static MockedStatic<Files> filesMockedStatic;
+
+    @Mock
+    private ExtensionContext context;
 
     @Mock
     private AWTSequenceEncoder encoder;
@@ -173,7 +177,8 @@ class VideoConsumerTest {
         when(screenshot2.isFile()).thenReturn(false);
         when(screenshot3.isFile()).thenReturn(true);
 
-        when(event.getUniqueId()).thenReturn(uniqueId);
+        when(event.getContext()).thenReturn(context);
+        when(context.getUniqueId()).thenReturn(uniqueId);
         when(contextManager.get(uniqueId)).thenReturn(testContext);
         when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
@@ -238,7 +243,8 @@ class VideoConsumerTest {
         when(screenshot2.isFile()).thenReturn(false);
         when(screenshot3.isFile()).thenReturn(true);
 
-        when(event.getUniqueId()).thenReturn(uniqueId);
+        when(event.getContext()).thenReturn(context);
+        when(context.getUniqueId()).thenReturn(uniqueId);
         when(contextManager.get(uniqueId)).thenReturn(testContext);
         when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
@@ -301,7 +307,8 @@ class VideoConsumerTest {
         when(screenshot2.isFile()).thenReturn(false);
         when(screenshot3.isFile()).thenReturn(true);
 
-        when(event.getUniqueId()).thenReturn(uniqueId);
+        when(event.getContext()).thenReturn(context);
+        when(context.getUniqueId()).thenReturn(uniqueId);
         when(contextManager.get(uniqueId)).thenReturn(testContext);
         when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
@@ -351,7 +358,8 @@ class VideoConsumerTest {
         when(videoPath.toFile()).thenReturn(videoFile);
         when(Files.walk(screenshotFolderPath)).thenReturn(Stream.of());
 
-        when(event.getUniqueId()).thenReturn(uniqueId);
+        when(event.getContext()).thenReturn(context);
+        when(context.getUniqueId()).thenReturn(uniqueId);
         when(contextManager.get(uniqueId)).thenReturn(testContext);
         when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
@@ -373,7 +381,8 @@ class VideoConsumerTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(true);
 
-        when(event.getUniqueId()).thenReturn(uniqueId);
+        when(event.getContext()).thenReturn(context);
+        when(context.getUniqueId()).thenReturn(uniqueId);
         when(contextManager.get(uniqueId)).thenReturn(testContext);
         when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
@@ -392,7 +401,8 @@ class VideoConsumerTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
-        when(event.getUniqueId()).thenReturn(uniqueId);
+        when(event.getContext()).thenReturn(context);
+        when(context.getUniqueId()).thenReturn(uniqueId);
         when(contextManager.get(uniqueId)).thenReturn(testContext);
         when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
 

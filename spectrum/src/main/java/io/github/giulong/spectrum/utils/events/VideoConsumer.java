@@ -49,7 +49,7 @@ public class VideoConsumer extends EventsConsumer {
     @Override
     public void accept(final Event event) {
         final Video video = configuration.getVideo();
-        final TestContext testContext = contextManager.get(event.getUniqueId());
+        final TestContext testContext = contextManager.get(event.getContext().getUniqueId());
         final TestData testData = testContext.get(TEST_DATA, TestData.class);
 
         if (video.isDisabled() || event.getResult().equals(DISABLED)) {

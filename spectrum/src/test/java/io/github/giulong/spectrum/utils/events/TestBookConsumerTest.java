@@ -11,6 +11,7 @@ import io.github.giulong.spectrum.utils.testbook.TestBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -20,6 +21,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class TestBookConsumerTest {
+
+    @Mock
+    private ExtensionContext context;
 
     @Mock
     private ContextManager contextManager;
@@ -59,7 +63,8 @@ class TestBookConsumerTest {
         when(contextManager.get(uniqueId)).thenReturn(testContext);
         when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
-        when(event.getUniqueId()).thenReturn(uniqueId);
+        when(event.getContext()).thenReturn(context);
+        when(context.getUniqueId()).thenReturn(uniqueId);
         when(event.getResult()).thenReturn(result);
         when(configuration.getTestBook()).thenReturn(testBook);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);

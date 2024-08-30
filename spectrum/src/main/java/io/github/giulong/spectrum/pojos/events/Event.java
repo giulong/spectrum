@@ -23,8 +23,4 @@ public class Event {
     @JsonIgnore
     @ToString.Exclude
     private ExtensionContext context;
-
-    @JsonIgnore
-    @ToString.Exclude
-    private String uniqueId;
 }
