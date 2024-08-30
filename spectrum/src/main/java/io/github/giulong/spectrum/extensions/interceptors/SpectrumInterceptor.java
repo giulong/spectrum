@@ -46,7 +46,7 @@ public class SpectrumInterceptor implements InvocationInterceptor {
         final ExtentTest currentNode = statefulExtentTest.createNode(testName);
         final TestContext parentTestContext = contextManager.get(context.getParent().orElseThrow().getUniqueId());
 
-        testData.setMethodDisplayName(testName);
+        testData.setDisplayName(testName);
         testData.setDynamicVideoPath(dynamicVideoPath);
         statefulExtentTest.setDisplayName(testName);
         contextManager.put(context.getUniqueId(), parentTestContext);

@@ -35,17 +35,17 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final String className = context.getRequiredTestClass().getSimpleName();
         final String methodName = context.getRequiredTestMethod().getName();
         final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
-        final String methodDisplayName = context.getDisplayName();
-        final String testId = buildTestIdFrom(className, methodDisplayName);
+        final String displayName = context.getDisplayName();
+        final String testId = buildTestIdFrom(className, displayName);
         final String fileName = fileUtils.removeExtensionFrom(extent.getFileName());
-        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, classDisplayName, methodDisplayName);
-        final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, classDisplayName, methodDisplayName);
+        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, classDisplayName, displayName);
+        final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, classDisplayName, displayName);
         final TestData testData = TestData
                 .builder()
                 .className(className)
                 .methodName(methodName)
                 .classDisplayName(classDisplayName)
-                .methodDisplayName(methodDisplayName)
+                .displayName(displayName)
                 .testId(testId)
                 .screenshotFolderPath(screenshotFolderPath)
                 .videoPath(videoPath)

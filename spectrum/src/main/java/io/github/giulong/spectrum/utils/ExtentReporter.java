@@ -159,7 +159,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         final TestData testData = contextManager.get(context.getUniqueId()).get(TEST_DATA, TestData.class);
 
         return extentReports
-                .createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getMethodDisplayName()))
+                .createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getDisplayName()))
                 .assignCategory(context.getTags().toArray(new String[0]));
     }
 
@@ -188,15 +188,15 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
             final String className = context.getRequiredTestClass().getSimpleName();
             final String methodName = context.getRequiredTestMethod().getName();
             final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
-            final String methodDisplayName = context.getDisplayName();
-            final String testId = buildTestIdFrom(className, methodDisplayName);
+            final String displayName = context.getDisplayName();
+            final String testId = buildTestIdFrom(className, displayName);
 
             testContext.put(TEST_DATA, TestData
                     .builder()
                     .className(className)
                     .methodName(methodName)
                     .classDisplayName(classDisplayName)
-                    .methodDisplayName(methodDisplayName)
+                    .displayName(displayName)
                     .testId(testId)
                     .build());
 

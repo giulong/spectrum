@@ -20,5 +20,5 @@ public class TestData {
     private Path dynamicVideoPath;
 
     @Setter
-    private String methodDisplayName;
+    private String displayName;
 }

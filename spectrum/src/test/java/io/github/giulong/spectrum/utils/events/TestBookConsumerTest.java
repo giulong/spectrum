@@ -56,7 +56,7 @@ class TestBookConsumerTest {
     @DisplayName("accept should tell the testbook to update")
     public void accept() {
         final String uniqueId = "uniqueId";
-        final String methodDisplayName = "methodDisplayName";
+        final String displayName = "displayName";
         final String classDisplayName = "classDisplayName";
         final Result result = FAILED;
 
@@ -68,11 +68,11 @@ class TestBookConsumerTest {
         when(event.getResult()).thenReturn(result);
         when(configuration.getTestBook()).thenReturn(testBook);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
-        when(testData.getMethodDisplayName()).thenReturn(methodDisplayName);
+        when(testData.getDisplayName()).thenReturn(displayName);
 
 
         testBookConsumer.accept(event);
 
-        verify(testBook).updateWithResult(classDisplayName, methodDisplayName, result);
+        verify(testBook).updateWithResult(classDisplayName, displayName, result);
     }
 }

@@ -135,9 +135,6 @@ class ExtentReporterTest {
     private ExtensionContext parentContext;
 
     @Mock
-    private ExtensionContext.Store store;
-
-    @Mock
     private Desktop desktop;
 
     @Mock
@@ -423,7 +420,7 @@ class ExtentReporterTest {
         final String uniqueId = "uniqueId";
         final String testId = "testId";
         final String classDisplayName = "classDisplayName";
-        final String methodDisplayName = "methodDisplayName";
+        final String displayName = "displayName";
         final Set<String> tags = Set.of("t1", "t2");
 
         when(context.getUniqueId()).thenReturn(uniqueId);
@@ -431,9 +428,9 @@ class ExtentReporterTest {
         when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getTestId()).thenReturn(testId);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
-        when(testData.getMethodDisplayName()).thenReturn(methodDisplayName);
+        when(testData.getDisplayName()).thenReturn(displayName);
         when(context.getTags()).thenReturn(tags);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, methodDisplayName))).thenReturn(extentTest);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, displayName))).thenReturn(extentTest);
         when(extentTest.assignCategory(tags.toArray(new String[0]))).thenReturn(extentTest);
 
         assertEquals(extentTest, extentReporter.createExtentTestFrom(context));
@@ -559,23 +556,23 @@ class ExtentReporterTest {
         final String className = "String";
         final String uniqueId = "uniqueId";
         final String classDisplayName = "classDisplayName";
-        final String methodDisplayName = "methodDisplayName";
-        final String testId = "string-methoddisplayname";
+        final String displayName = "displayName";
+        final String testId = "string-displayname";
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         doReturn(String.class).when(context).getRequiredTestClass();
-        when(context.getDisplayName()).thenReturn(methodDisplayName);
+        when(context.getDisplayName()).thenReturn(displayName);
         when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
         when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.methodDisplayName(methodDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.displayName(displayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
         when(testData.getTestId()).thenReturn(testId);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
-        when(testData.getMethodDisplayName()).thenReturn(methodDisplayName);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, methodDisplayName))).thenReturn(extentTest);
+        when(testData.getDisplayName()).thenReturn(displayName);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, displayName))).thenReturn(extentTest);
 
         when(context.getUniqueId()).thenReturn(uniqueId);
         when(contextManager.get(uniqueId)).thenReturn(testContext);

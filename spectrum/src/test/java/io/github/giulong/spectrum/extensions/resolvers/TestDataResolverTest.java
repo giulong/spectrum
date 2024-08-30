@@ -107,8 +107,8 @@ class TestDataResolverTest {
         final String className = clazz.getSimpleName();
         final String classDisplayName = "classDisplayName";
         final String methodName = "resolveParameter";
-        final String methodDisplayName = "methodDisplayName";
-        final String testId = "string-methoddisplayname";
+        final String displayName = "displayName";
+        final String testId = "string-displayname";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
         final String uniqueId = "uniqueId";
@@ -116,10 +116,10 @@ class TestDataResolverTest {
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
 
         // getScreenshotFolderPathForCurrentTest
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", classDisplayName, methodDisplayName).toAbsolutePath())).thenReturn(path);
+        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", classDisplayName, displayName).toAbsolutePath())).thenReturn(path);
 
         // getVideoPathForCurrentTest
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", classDisplayName, methodDisplayName).toAbsolutePath())).thenReturn(path);
+        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", classDisplayName, displayName).toAbsolutePath())).thenReturn(path);
 
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(extensionContext.getRoot()).thenReturn(rootContext);
@@ -135,12 +135,12 @@ class TestDataResolverTest {
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
-        when(extensionContext.getDisplayName()).thenReturn(methodDisplayName);
+        when(extensionContext.getDisplayName()).thenReturn(displayName);
         when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.methodDisplayName(methodDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.displayName(displayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.screenshotFolderPath(path)).thenReturn(testDataBuilder);
         when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
