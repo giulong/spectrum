@@ -31,12 +31,12 @@ public class VideoDynamicConsumer extends VideoConsumer {
     protected boolean filter(final File file, final TestData testData) {
         final Matcher matcher = PATTERN.matcher(file.getName());
 
-        return matcher.find() && testData.getDisplayName().equals(matcher.group("displayName"));
+        return matcher.find() && testData.getMethodDisplayName().equals(matcher.group("displayName"));
     }
 
     @Override
     protected boolean isNewFrame(final File screenshot, final TestData testData) {
-        final String displayName = testData.getDisplayName();
+        final String displayName = testData.getMethodDisplayName();
 
         if (!displayName.equals(lastFrameDisplayName)) {
             lastFrameDisplayName = displayName;

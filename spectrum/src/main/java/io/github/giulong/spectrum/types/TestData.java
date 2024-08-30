@@ -12,7 +12,6 @@ public class TestData {
     private String className;
     private String methodName;
     private String classDisplayName;
-    private String methodDisplayName;
     private String testId;
     private Path screenshotFolderPath;
     private Path videoPath;
@@ -21,5 +20,5 @@ public class TestData {
     private Path dynamicVideoPath;
 
     @Setter
-    private String displayName;
+    private String methodDisplayName;
 }
