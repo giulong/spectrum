@@ -47,7 +47,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final WebDriver decoratedDriver = new EventFiringDecorator<>(eventListener).decorate(driver);
 
         store.put(DRIVER, decoratedDriver);
-        contextManager.get(context.getUniqueId()).put(DRIVER, decoratedDriver);
+        contextManager.put(context, DRIVER, decoratedDriver);
 
         return decoratedDriver;
     }

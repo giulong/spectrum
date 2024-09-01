@@ -6,7 +6,6 @@ import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.Reflections;
-import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,9 +26,6 @@ class TestBookConsumerTest {
 
     @Mock
     private ContextManager contextManager;
-
-    @Mock
-    private TestContext testContext;
 
     @Mock
     private Configuration configuration;
@@ -55,16 +51,13 @@ class TestBookConsumerTest {
     @Test
     @DisplayName("accept should tell the testbook to update")
     public void accept() {
-        final String uniqueId = "uniqueId";
         final String displayName = "displayName";
         final String classDisplayName = "classDisplayName";
         final Result result = FAILED;
 
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         when(event.getContext()).thenReturn(context);
-        when(context.getUniqueId()).thenReturn(uniqueId);
         when(event.getResult()).thenReturn(result);
         when(configuration.getTestBook()).thenReturn(testBook);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);

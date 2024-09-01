@@ -147,9 +147,6 @@ class ExtentReporterTest {
     private ArgumentCaptor<Function<String, StatefulExtentTest>> statefulExtentTestArgumentCaptor;
 
     @Captor
-    private ArgumentCaptor<Function<String, TestContext>> testContextArgumentCaptor;
-
-    @Captor
     private ArgumentCaptor<Markup> markupArgumentCaptor;
 
     @Captor
@@ -417,15 +414,12 @@ class ExtentReporterTest {
     @Test
     @DisplayName("createExtentTestFrom should create the test from the provided testData and return it")
     public void createExtentTestFrom() {
-        final String uniqueId = "uniqueId";
         final String testId = "testId";
         final String classDisplayName = "classDisplayName";
         final String displayName = "displayName";
         final Set<String> tags = Set.of("t1", "t2");
 
-        when(context.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getTestId()).thenReturn(testId);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getDisplayName()).thenReturn(displayName);
@@ -491,7 +485,6 @@ class ExtentReporterTest {
 
         extentReporter.logTestEnd(context, SKIP);
 
-        testContextArgumentCaptor.getValue().apply("value");
         statefulExtentTestArgumentCaptor.getValue().apply("value");
 
         verify(extentTest).skip(skipMarkupArgumentCaptor.capture());
@@ -536,7 +529,6 @@ class ExtentReporterTest {
         extentReporter.logTestEnd(context, PASS);
 
         statefulExtentTestArgumentCaptor.getValue().apply("value");
-        testContextArgumentCaptor.getValue().apply("value");
         verify(extentTest).log(eq(PASS), markupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text green'>END TEST</span>", markupArgumentCaptor.getValue().getMarkup());
     }
@@ -554,7 +546,6 @@ class ExtentReporterTest {
     @SneakyThrows
     private void logTestEndStubs() {
         final String className = "String";
-        final String uniqueId = "uniqueId";
         final String classDisplayName = "classDisplayName";
         final String displayName = "displayName";
         final String testId = "string-displayname";
@@ -574,10 +565,8 @@ class ExtentReporterTest {
         when(testData.getDisplayName()).thenReturn(displayName);
         when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, displayName))).thenReturn(extentTest);
 
-        when(context.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(contextManager.computeIfAbsent(eq(uniqueId), testContextArgumentCaptor.capture())).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context)).thenReturn(testContext);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
         when(testContext.computeIfAbsent(eq(STATEFUL_EXTENT_TEST), statefulExtentTestArgumentCaptor.capture(), eq(StatefulExtentTest.class))).thenReturn(statefulExtentTest);
     }
 }

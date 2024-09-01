@@ -52,7 +52,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
                 .build();
 
         store.put(TEST_DATA, testData);
-        contextManager.get(context.getUniqueId()).put(TEST_DATA, testData);
+        contextManager.put(context, TEST_DATA, testData);
         return testData;
     }
 

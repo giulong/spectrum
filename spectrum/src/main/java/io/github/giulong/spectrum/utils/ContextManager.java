@@ -2,10 +2,10 @@ package io.github.giulong.spectrum.utils;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -21,15 +21,35 @@ public final class ContextManager {
 
     private final Map<String, TestContext> testContexts = new ConcurrentHashMap<>();
 
-    public void put(final String uniqueId, final TestContext testContext) {
-        testContexts.put(uniqueId, testContext);
+    public TestContext initFor(final ExtensionContext context, final TestContext testContext) {
+        testContexts.put(context.getUniqueId(), testContext);
+
+        return testContext;
     }
 
-    public TestContext get(final String uniqueId) {
-        return testContexts.get(uniqueId);
+    public TestContext initFor(final ExtensionContext context) {
+        return initFor(context, new TestContext());
     }
 
-    public TestContext computeIfAbsent(final String key, final Function<String, TestContext> mappingFunction) {
-        return testContexts.computeIfAbsent(key, mappingFunction);
+    public TestContext initWithParentFor(final ExtensionContext context) {
+        return initFor(context, testContexts.get(context.getParent().orElseThrow().getUniqueId()));
+    }
+
+    public void put(final ExtensionContext context, final String key, final Object value) {
+        get(context).put(key, value);
+    }
+
+    public TestContext get(final ExtensionContext context) {
+        final TestContext testContext = testContexts.get(context.getUniqueId());
+
+        if (testContext != null) {
+            return testContext;
+        }
+
+        return initFor(context);
+    }
+
+    public <T> T get(final ExtensionContext context, final String key, final Class<T> clazz) {
+        return get(context).get(key, clazz);
     }
 }

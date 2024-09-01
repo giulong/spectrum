@@ -21,10 +21,8 @@ public class TestContextResolver extends TypeBasedParameterResolver<TestContext>
     public TestContext resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         log.debug("Resolving {}", TEST_CONTEXT);
 
-        final TestContext testContext = new TestContext();
-
+        final TestContext testContext = contextManager.initFor(context);
         context.getStore(GLOBAL).put(TEST_CONTEXT, testContext);
-        contextManager.put(context.getUniqueId(), testContext);
 
         return testContext;
     }

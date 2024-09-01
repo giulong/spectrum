@@ -45,7 +45,7 @@ public class StatefulExtentTestResolver extends TypeBasedParameterResolver<State
 
         extentReporter.logTestStartOf(extentTest);
         store.put(STATEFUL_EXTENT_TEST, statefulExtentTest);
-        contextManager.get(context.getUniqueId()).put(STATEFUL_EXTENT_TEST, statefulExtentTest);
+        contextManager.put(context, STATEFUL_EXTENT_TEST, statefulExtentTest);
 
         return statefulExtentTest;
     }

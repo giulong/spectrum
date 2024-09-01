@@ -43,13 +43,10 @@ class TestDataResolverTest {
     private ContextManager contextManager;
 
     @Mock
-    private TestContext testContext;
-
-    @Mock
     private ParameterContext parameterContext;
 
     @Mock
-    private ExtensionContext extensionContext;
+    private ExtensionContext context;
 
     @Mock
     private ExtensionContext parentContext;
@@ -111,7 +108,6 @@ class TestDataResolverTest {
         final String testId = "string-displayname";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
-        final String uniqueId = "uniqueId";
 
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
 
@@ -121,22 +117,22 @@ class TestDataResolverTest {
         // getVideoPathForCurrentTest
         when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", classDisplayName, displayName).toAbsolutePath())).thenReturn(path);
 
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(extensionContext.getRoot()).thenReturn(rootContext);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(REPORTS_FOLDER);
         when(extent.getFileName()).thenReturn(fileName);
-        doReturn(String.class).when(extensionContext).getRequiredTestClass();
-        when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
+        doReturn(String.class).when(context).getRequiredTestClass();
+        when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
-        when(extensionContext.getDisplayName()).thenReturn(displayName);
-        when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
+        when(context.getDisplayName()).thenReturn(displayName);
+        when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
@@ -146,14 +142,11 @@ class TestDataResolverTest {
         when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
 
-        when(extensionContext.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-
-        final TestData actual = testDataResolver.resolveParameter(parameterContext, extensionContext);
+        final TestData actual = testDataResolver.resolveParameter(parameterContext, context);
 
         assertEquals(testData, actual);
         verify(store).put(TEST_DATA, actual);
-        verify(testContext).put(TEST_DATA, actual);
+        verify(contextManager).put(context, TEST_DATA, actual);
     }
 
     @Test

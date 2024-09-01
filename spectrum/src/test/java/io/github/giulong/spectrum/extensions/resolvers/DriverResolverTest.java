@@ -38,13 +38,10 @@ class DriverResolverTest {
     private ContextManager contextManager;
 
     @Mock
-    private TestContext testContext;
-
-    @Mock
     private ParameterContext parameterContext;
 
     @Mock
-    private ExtensionContext extensionContext;
+    private ExtensionContext context;
 
     @Mock
     private ExtensionContext rootContext;
@@ -119,10 +116,9 @@ class DriverResolverTest {
     @SuppressWarnings("unchecked")
     public void resolveParameter() {
         final String locatorRegex = "locatorRegex";
-        final String uniqueId = "uniqueId";
 
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(extensionContext.getRoot()).thenReturn(rootContext);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getRuntime()).thenReturn(runtime);
@@ -147,18 +143,15 @@ class DriverResolverTest {
         when(eventsListenerBuilder.events(events)).thenReturn(eventsListenerBuilder);
         when(eventsListenerBuilder.build()).thenReturn(eventsListener);
 
-        when(extensionContext.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-
         //noinspection rawtypes
         MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, context) -> {
             assertEquals(eventsListener, ((WebDriverListener[]) context.arguments().getFirst())[0]);
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         });
-        WebDriver actual = driverResolver.resolveParameter(parameterContext, extensionContext);
+        WebDriver actual = driverResolver.resolveParameter(parameterContext, context);
         verify(store).put(DRIVER, actual);
-        verify(testContext).put(DRIVER, actual);
+        verify(contextManager).put(context, DRIVER, actual);
 
         assertEquals(decoratedWebDriver, actual);
 

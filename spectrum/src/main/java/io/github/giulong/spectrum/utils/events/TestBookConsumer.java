@@ -19,7 +19,7 @@ public class TestBookConsumer extends EventsConsumer {
     @Override
     public void accept(final Event event) {
         final TestBook testBook = configuration.getTestBook();
-        final TestData testData = contextManager.get(event.getContext().getUniqueId()).get(TEST_DATA, TestData.class);
+        final TestData testData = contextManager.get(event.getContext(), TEST_DATA, TestData.class);
 
         testBook.updateWithResult(testData.getClassDisplayName(), testData.getDisplayName(), event.getResult());
     }

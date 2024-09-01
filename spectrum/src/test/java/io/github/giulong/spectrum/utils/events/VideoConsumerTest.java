@@ -5,7 +5,6 @@ import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.Reflections;
-import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.jcodec.api.awt.AWTSequenceEncoder;
 import org.junit.jupiter.api.AfterEach;
@@ -36,6 +35,7 @@ import java.util.stream.Stream;
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.enums.Result.DISABLED;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,7 +71,7 @@ class VideoConsumerTest {
     private Graphics2D graphics2D;
 
     @Mock
-    private WebDriver webDriver;
+    private WebDriver driver;
 
     @Mock
     private WebDriver.Options options;
@@ -87,9 +87,6 @@ class VideoConsumerTest {
 
     @Mock
     private ContextManager contextManager;
-
-    @Mock
-    private TestContext testContext;
 
     @Mock
     private TestData testData;
@@ -156,7 +153,6 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept should notify the VideoEncoder that the test is done")
     public void accept() throws IOException {
-        final String uniqueId = "uniqueId";
         final int width = 1;
         final int height = 3;
 
@@ -178,9 +174,7 @@ class VideoConsumerTest {
         when(screenshot3.isFile()).thenReturn(true);
 
         when(event.getContext()).thenReturn(context);
-        when(context.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
@@ -222,7 +216,6 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept should notify the VideoEncoder that the test is done, with a skipped duplicate frame")
     public void acceptOneDuplicateFrame() throws IOException {
-        final String uniqueId = "uniqueId";
         final int width = 1;
         final int height = 3;
 
@@ -244,9 +237,8 @@ class VideoConsumerTest {
         when(screenshot3.isFile()).thenReturn(true);
 
         when(event.getContext()).thenReturn(context);
-        when(context.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, DRIVER, WebDriver.class)).thenReturn(driver);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
@@ -286,7 +278,6 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept should notify the VideoEncoder that the test is done without skipping duplicate frames")
     public void acceptNoSkipDuplicates() throws IOException {
-        final String uniqueId = "uniqueId";
         final int width = 1;
         final int height = 3;
 
@@ -308,9 +299,7 @@ class VideoConsumerTest {
         when(screenshot3.isFile()).thenReturn(true);
 
         when(event.getContext()).thenReturn(context);
-        when(context.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
@@ -345,8 +334,6 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept should add the no-video.png if no frames were added")
     public void acceptNoFramesAdded() throws IOException, URISyntaxException {
-        final String uniqueId = "uniqueId";
-
         when(event.getResult()).thenReturn(SUCCESSFUL);
 
         when(configuration.getVideo()).thenReturn(video);
@@ -359,9 +346,7 @@ class VideoConsumerTest {
         when(Files.walk(screenshotFolderPath)).thenReturn(Stream.of());
 
         when(event.getContext()).thenReturn(context);
-        when(context.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(urlArgumentCaptor.capture())).thenReturn(bufferedImage);
@@ -376,15 +361,12 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept shouldn't do nothing when video recording is disabled")
     public void acceptDisabled() throws IOException {
-        final String uniqueId = "uniqueId";
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(true);
 
         when(event.getContext()).thenReturn(context);
-        when(context.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         videoConsumer.accept(event);
 
@@ -394,17 +376,13 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept shouldn't do nothing when the test is skipped")
     public void acceptTestSkipped() throws IOException {
-        final String uniqueId = "uniqueId";
-
         when(event.getResult()).thenReturn(DISABLED);
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
         when(event.getContext()).thenReturn(context);
-        when(context.getUniqueId()).thenReturn(uniqueId);
-        when(contextManager.get(uniqueId)).thenReturn(testContext);
-        when(testContext.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         videoConsumer.accept(event);
 
@@ -444,7 +422,7 @@ class VideoConsumerTest {
         when(video.getWidth()).thenReturn(1);
         when(video.getHeight()).thenReturn(3);
 
-        final Dimension actual = videoConsumer.chooseDimensionFor(webDriver, video);
+        final Dimension actual = videoConsumer.chooseDimensionFor(driver, video);
         assertEquals(2, actual.getWidth());
         assertEquals(4, actual.getHeight());
     }
@@ -461,14 +439,14 @@ class VideoConsumerTest {
         if (width >= 1) {   // short-circuit
             when(video.getHeight()).thenReturn(height);
         }
-        when(webDriver.manage()).thenReturn(options);
+        when(driver.manage()).thenReturn(options);
         when(options.window()).thenReturn(window);
         when(window.getSize()).thenReturn(dimension);
         when(dimension.getWidth()).thenReturn(WIDTH);
         when(dimension.getHeight()).thenReturn(HEIGHT);
         when(video.getMenuBarsHeight()).thenReturn(menuBarsHeight);
 
-        final Dimension actual = videoConsumer.chooseDimensionFor(webDriver, video);
+        final Dimension actual = videoConsumer.chooseDimensionFor(driver, video);
 
         assertEquals(EVEN_WIDTH, actual.getWidth());
         assertEquals(EVEN_HEIGHT - menuBarsHeight - 1, actual.getHeight());

@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.utils.events;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
@@ -11,6 +10,7 @@ import io.github.giulong.spectrum.utils.video.Video;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.jcodec.api.awt.AWTSequenceEncoder;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 
@@ -49,8 +49,8 @@ public class VideoConsumer extends EventsConsumer {
     @Override
     public void accept(final Event event) {
         final Video video = configuration.getVideo();
-        final TestContext testContext = contextManager.get(event.getContext().getUniqueId());
-        final TestData testData = testContext.get(TEST_DATA, TestData.class);
+        final ExtensionContext context = event.getContext();
+        final TestData testData = contextManager.get(context, TEST_DATA, TestData.class);
 
         if (video.isDisabled() || event.getResult().equals(DISABLED)) {
             log.debug("Video is disabled or test is skipped. Returning");
@@ -76,7 +76,7 @@ public class VideoConsumer extends EventsConsumer {
                 final URL noVideoPng = Objects.requireNonNull(classLoader.getResource("no-video.png"));
                 encoder.encodeImage(ImageIO.read(noVideoPng));
             } else {
-                final Dimension dimension = chooseDimensionFor(testContext.get(DRIVER, WebDriver.class), video);
+                final Dimension dimension = chooseDimensionFor(contextManager.get(context, DRIVER, WebDriver.class), video);
 
                 for (File frame : frames) {
                     encoder.encodeImage(resize(ImageIO.read(frame), dimension));
