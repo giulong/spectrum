@@ -74,6 +74,7 @@ jobs:
       VERSION: ${{ needs.build.outputs.version }}
     steps:
       - name: Free Disk Space
+        if: ${{ matrix.os != 'windows-latest' }}
         shell: bash
         run: |
           sudo rm -rf /usr/share/dotnet
