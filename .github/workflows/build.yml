@@ -66,6 +66,9 @@ jobs:
           - os: macos-latest
             profiles: macos
             directives: -DmacosTests
+          - os: windows-latest
+            profiles: browsers
+            directives: -DbrowsersTests
     runs-on: ${{ matrix.os }}
     env:
       VERSION: ${{ needs.build.outputs.version }}
