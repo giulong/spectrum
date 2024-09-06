@@ -163,4 +163,13 @@ class FileUtilsTest {
 
         filesMockedStatic.close();
     }
+
+    @Test
+    @DisplayName("sanitize should strip the illegal chars from the provided string")
+    public void sanitize() {
+        final String name = "hello123 /\\*][ -+.";
+        final String sanitizedName = "hello123 ][ -+.";
+
+        assertEquals(sanitizedName, fileUtils.sanitize(name));
+    }
 }

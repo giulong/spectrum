@@ -103,19 +103,23 @@ class TestDataResolverTest {
         final Class<String> clazz = String.class;
         final String className = clazz.getSimpleName();
         final String classDisplayName = "classDisplayName";
+        final String sanitizedClassDisplayName = "sanitizedClassDisplayName";
         final String methodName = "resolveParameter";
         final String displayName = "displayName";
-        final String testId = "string-displayname";
+        final String sanitizedDisplayName = "sanitizedDisplayName";
+        final String testId = "string-sanitizeddisplayname";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
 
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(fileUtils.sanitize(classDisplayName)).thenReturn(sanitizedClassDisplayName);
+        when(fileUtils.sanitize(displayName)).thenReturn(sanitizedDisplayName);
 
         // getScreenshotFolderPathForCurrentTest
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", classDisplayName, displayName).toAbsolutePath())).thenReturn(path);
+        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath())).thenReturn(path);
 
         // getVideoPathForCurrentTest
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", classDisplayName, displayName).toAbsolutePath())).thenReturn(path);
+        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath())).thenReturn(path);
 
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(context.getRoot()).thenReturn(rootContext);
@@ -135,8 +139,8 @@ class TestDataResolverTest {
         when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.displayName(displayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.classDisplayName(sanitizedClassDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.displayName(sanitizedDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.screenshotFolderPath(path)).thenReturn(testDataBuilder);
         when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
