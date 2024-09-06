@@ -56,7 +56,7 @@ jobs:
   browsers:
     name: Browsers IT
     needs: build
-    continue-on-error: true
+    if: ${{ success() || failure() }}
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
