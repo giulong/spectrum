@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -26,6 +27,8 @@ public final class FileUtils {
     private static final String DEFAULT_TIMESTAMP_PATTERN = "dd-MM-yyyy_HH-mm-ss";
     private static final String TIMESTAMP_TO_REPLACE = "\\$\\{timestamp:?(?<pattern>.*)}";
     private static final Pattern TIMESTAMP_PATTERN = Pattern.compile(".*\\$\\{timestamp:(?<pattern>.*)}.*");
+    private final static int[] ILLEGAL_CHARS =
+            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 47, 58, 60, 62, 63, 92, 124};
 
     public static FileUtils getInstance() {
         return INSTANCE;
@@ -33,7 +36,7 @@ public final class FileUtils {
 
     public String read(final String file) {
         log.debug("Reading file {}", file);
-        final InputStream inputStream = FileUtils.class.getResourceAsStream(file);
+        final InputStream inputStream = FileUtils.class.getResourceAsStream(String.format("/%s", file));
 
         if (inputStream == null) {
             log.warn("File {} not found.", file);
@@ -46,7 +49,7 @@ public final class FileUtils {
     }
 
     public String readTemplate(final String file) {
-        return read(String.format("/templates/%s", file));
+        return read(String.format("templates/%s", file));
     }
 
     public String interpolate(final String file, final Map<String, String> vars) {
@@ -102,5 +105,20 @@ public final class FileUtils {
         log.trace("Folders created? {}. Writing {} to file {}", foldersCreated, content, path);
 
         Files.write(path, content.getBytes());
+    }
+
+    public String sanitize(final String name) {
+        final StringBuilder stringBuilder = new StringBuilder();
+        final int charLength = name.codePointCount(0, name.length());
+
+        for (int i = 0; i < charLength; i++) {
+            final int c = name.codePointAt(i);
+
+            if (Arrays.binarySearch(ILLEGAL_CHARS, c) < 0) {
+                stringBuilder.appendCodePoint(c);
+            }
+        }
+
+        return stringBuilder.toString();
     }
 }

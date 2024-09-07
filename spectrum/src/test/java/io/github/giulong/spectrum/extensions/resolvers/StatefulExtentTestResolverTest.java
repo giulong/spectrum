@@ -1,11 +1,8 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentTest;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
-import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,13 +36,16 @@ class StatefulExtentTestResolverTest {
     private StatefulExtentTest.StatefulExtentTestBuilder statefulExtentTestBuilder;
 
     @Mock
+    private ContextManager contextManager;
+
+    @Mock
     private ExtentReporter extentReporter;
 
     @Mock
     private ParameterContext parameterContext;
 
     @Mock
-    private ExtensionContext extensionContext;
+    private ExtensionContext context;
 
     @Mock
     private ExtensionContext.Store store;
@@ -74,6 +74,8 @@ class StatefulExtentTestResolverTest {
     @BeforeEach
     public void beforeEach() {
         Reflections.setField("extentReporter", statefulExtentTestResolver, extentReporter);
+        Reflections.setField("contextManager", statefulExtentTestResolver, contextManager);
+
         extentReporterMockedStatic = mockStatic(ExtentReporter.class);
         statefulExtentTestMockedStatic = mockStatic(StatefulExtentTest.class);
     }
@@ -87,7 +89,7 @@ class StatefulExtentTestResolverTest {
     @Test
     @DisplayName("resolveParameter should return the initialized ExtentTest adding the video")
     public void testResolveParameter() {
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
+        when(context.getStore(GLOBAL)).thenReturn(store);
 
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getVideo()).thenReturn(video);
@@ -97,16 +99,17 @@ class StatefulExtentTestResolverTest {
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
         when(ExtentReporter.getInstance()).thenReturn(extentReporter);
-        when(extentReporter.createExtentTestFrom(extensionContext)).thenReturn(extentTest);
+        when(extentReporter.createExtentTestFrom(context)).thenReturn(extentTest);
 
         when(StatefulExtentTest.builder()).thenReturn(statefulExtentTestBuilder);
         when(statefulExtentTestBuilder.currentNode(extentTest)).thenReturn(statefulExtentTestBuilder);
         when(statefulExtentTestBuilder.build()).thenReturn(statefulExtentTest);
 
-        StatefulExtentTest actual = statefulExtentTestResolver.resolveParameter(parameterContext, extensionContext);
+        StatefulExtentTest actual = statefulExtentTestResolver.resolveParameter(parameterContext, context);
 
         verify(extentReporter).logTestStartOf(extentTest);
         verify(store).put(STATEFUL_EXTENT_TEST, actual);
+        verify(contextManager).put(context, STATEFUL_EXTENT_TEST, actual);
         assertEquals(statefulExtentTest, actual);
     }
 
@@ -114,7 +117,7 @@ class StatefulExtentTestResolverTest {
     @ParameterizedTest(name = "with video disabled {0} and video attach {1}")
     @MethodSource("noVideoValuesProvider")
     public void testResolveParameterNoVideo(final boolean disabled, final boolean attach) {
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
+        when(context.getStore(GLOBAL)).thenReturn(store);
 
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getVideo()).thenReturn(video);
@@ -123,7 +126,7 @@ class StatefulExtentTestResolverTest {
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
         when(ExtentReporter.getInstance()).thenReturn(extentReporter);
-        when(extentReporter.createExtentTestFrom(extensionContext)).thenReturn(extentTest);
+        when(extentReporter.createExtentTestFrom(context)).thenReturn(extentTest);
 
         when(StatefulExtentTest.builder()).thenReturn(statefulExtentTestBuilder);
         when(statefulExtentTestBuilder.currentNode(extentTest)).thenReturn(statefulExtentTestBuilder);
@@ -131,10 +134,11 @@ class StatefulExtentTestResolverTest {
 
         lenient().when(videoExtentTest.isAttach()).thenReturn(attach);
 
-        StatefulExtentTest actual = statefulExtentTestResolver.resolveParameter(parameterContext, extensionContext);
+        StatefulExtentTest actual = statefulExtentTestResolver.resolveParameter(parameterContext, context);
 
         verifyNoMoreInteractions(extentTest);
         verify(store).put(STATEFUL_EXTENT_TEST, actual);
+        verify(contextManager).put(context, STATEFUL_EXTENT_TEST, actual);
         assertEquals(statefulExtentTest, actual);
     }
 

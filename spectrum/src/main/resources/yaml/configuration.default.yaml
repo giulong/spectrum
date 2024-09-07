@@ -6,7 +6,7 @@ vars:
 
 # Variables related to the runtime environment, meaning the machine where the tests will run, for example your local pc or a remote server
 runtime:
-  profiles: ${spectrum.profiles:-local} # Profiles to be activated. By default, it's 'local', so the configuration-local.yaml will be loaded (if present). This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
+  profiles: ${spectrum.profiles:-} # Profiles to be activated. By default, no profile is active. This property is read only from the base configuration.yaml: it doesn't make sense to change it in a profile-specific file
   driver: ${spectrum.driver:-chrome}  # Driver to use
   environment: ${spectrum.environment:-local} # Active runtime environment. Can be local, grid, or appium
   filesFolder: src/test/resources/files # Folder where you will store files to be checked against downloaded ones
@@ -57,6 +57,8 @@ extent:
   inline: false # Set to true to generate an inline report alongside the main one
   inlineReportFolder: target/spectrum/inline-reports # Where to generate the inline report
   openAtEnd: false # Set to true if you want the report to be automatically opened when the suite execution is finished
+  css: css/report.css # Path to the custom css to apply. Relative to the resources folder
+  js: js/report.js
 
 # Environments configuration
 environments:

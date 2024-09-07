@@ -2,9 +2,8 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.EventsListener;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,10 +35,13 @@ class DriverResolverTest {
     private static MockedStatic<Pattern> patternMockedStatic;
 
     @Mock
+    private ContextManager contextManager;
+
+    @Mock
     private ParameterContext parameterContext;
 
     @Mock
-    private ExtensionContext extensionContext;
+    private ExtensionContext context;
 
     @Mock
     private ExtensionContext rootContext;
@@ -97,6 +99,8 @@ class DriverResolverTest {
 
     @BeforeEach
     public void beforeEach() {
+        Reflections.setField("contextManager", driverResolver, contextManager);
+
         eventsListenerMockedStatic = mockStatic(EventsListener.class);
         patternMockedStatic = mockStatic(Pattern.class);
     }
@@ -113,8 +117,8 @@ class DriverResolverTest {
     public void resolveParameter() {
         final String locatorRegex = "locatorRegex";
 
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(extensionContext.getRoot()).thenReturn(rootContext);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getRuntime()).thenReturn(runtime);
@@ -145,8 +149,9 @@ class DriverResolverTest {
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         });
-        WebDriver actual = driverResolver.resolveParameter(parameterContext, extensionContext);
-        verify(store).put(DRIVER, decoratedWebDriver);
+        WebDriver actual = driverResolver.resolveParameter(parameterContext, context);
+        verify(store).put(DRIVER, actual);
+        verify(contextManager).put(context, DRIVER, actual);
 
         assertEquals(decoratedWebDriver, actual);
 

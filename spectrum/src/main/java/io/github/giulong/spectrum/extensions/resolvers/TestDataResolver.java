@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -21,33 +22,37 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
     public static final String TEST_DATA = "testData";
 
     private final FileUtils fileUtils = FileUtils.getInstance();
+    private final ContextManager contextManager = ContextManager.getInstance();
 
     @Override
     public TestData resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
         log.debug("Resolving {}", TEST_DATA);
+
+        final ExtensionContext.Store store = context.getStore(GLOBAL);
         final Configuration configuration = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class);
         final Configuration.Extent extent = configuration.getExtent();
         final String reportFolder = extent.getReportFolder();
         final String className = context.getRequiredTestClass().getSimpleName();
         final String methodName = context.getRequiredTestMethod().getName();
-        final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
-        final String methodDisplayName = context.getDisplayName();
-        final String testId = buildTestIdFrom(className, methodDisplayName);
+        final String classDisplayName = fileUtils.sanitize(context.getParent().orElseThrow().getDisplayName());
+        final String displayName = fileUtils.sanitize(context.getDisplayName());
+        final String testId = buildTestIdFrom(className, displayName);
         final String fileName = fileUtils.removeExtensionFrom(extent.getFileName());
-        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, classDisplayName, methodDisplayName);
-        final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, classDisplayName, methodDisplayName);
+        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, classDisplayName, displayName);
+        final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, classDisplayName, displayName);
         final TestData testData = TestData
                 .builder()
                 .className(className)
                 .methodName(methodName)
                 .classDisplayName(classDisplayName)
-                .methodDisplayName(methodDisplayName)
+                .displayName(displayName)
                 .testId(testId)
                 .screenshotFolderPath(screenshotFolderPath)
                 .videoPath(videoPath)
                 .build();
 
-        context.getStore(GLOBAL).put(TEST_DATA, testData);
+        store.put(TEST_DATA, testData);
+        contextManager.put(context, TEST_DATA, testData);
         return testData;
     }
 

@@ -6,7 +6,7 @@ import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -33,6 +33,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     @RegisterExtension
     public static final EventsWatcher EVENTS_WATCHER = new EventsWatcher();
+
+    @RegisterExtension
+    public static final TestContextResolver TEST_CONTEXT_RESOLVER = new TestContextResolver();
 
     @RegisterExtension
     public static final ConfigurationResolver CONFIGURATION_RESOLVER = new ConfigurationResolver();
@@ -85,8 +88,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     @BeforeEach
     @SuppressWarnings({"checkstyle:ParameterNumber", "checkstyle:HiddenField", "unused"})
-    public void beforeEach(final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest, final WebDriver driver,
-                           final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
+    public void beforeEach(final TestContext testContext, final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest,
+                           final WebDriver driver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
                            final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js,
                            final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
         this.configuration = configuration;

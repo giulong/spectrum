@@ -1,20 +1,21 @@
 package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.enums.Result;
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ContextManager;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Optional;
-
 import static io.github.giulong.spectrum.enums.Result.FAILED;
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -24,13 +25,7 @@ class TestBookConsumerTest {
     private ExtensionContext context;
 
     @Mock
-    private ExtensionContext rootContext;
-
-    @Mock
-    private ExtensionContext parentContext;
-
-    @Mock
-    private ExtensionContext.Store rootStore;
+    private ContextManager contextManager;
 
     @Mock
     private Configuration configuration;
@@ -39,28 +34,38 @@ class TestBookConsumerTest {
     private TestBook testBook;
 
     @Mock
+    private TestData testData;
+
+    @Mock
     private Event event;
 
     @InjectMocks
     private TestBookConsumer testBookConsumer;
 
+    @BeforeEach
+    public void beforeEach() {
+        Reflections.setField("configuration", testBookConsumer, configuration);
+        Reflections.setField("contextManager", testBookConsumer, contextManager);
+    }
+
     @Test
     @DisplayName("accept should tell the testbook to update")
     public void accept() {
+        final String displayName = "displayName";
+        final String classDisplayName = "classDisplayName";
         final Result result = FAILED;
+
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         when(event.getContext()).thenReturn(context);
         when(event.getResult()).thenReturn(result);
-        when(context.getRoot()).thenReturn(rootContext);
-        when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
-        when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getTestBook()).thenReturn(testBook);
-        when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn("className");
-        when(context.getDisplayName()).thenReturn("testName");
+        when(testData.getClassDisplayName()).thenReturn(classDisplayName);
+        when(testData.getDisplayName()).thenReturn(displayName);
+
 
         testBookConsumer.accept(event);
 
-        verify(testBook).updateWithResult("className", "testName", result);
+        verify(testBook).updateWithResult(classDisplayName, displayName, result);
     }
 }

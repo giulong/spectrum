@@ -111,7 +111,7 @@ class SpectrumSessionListenerTest {
 
         System.setProperty("os.name", "Win");
 
-        when(fileUtils.read("/banner.txt")).thenReturn(banner);
+        when(fileUtils.read("banner.txt")).thenReturn(banner);
         when(yamlUtils.readInternal("banner.yaml", Map.class)).thenReturn(spectrumProperties);
         when(freeMarkerWrapper.interpolate(banner, spectrumProperties)).thenReturn(interpolatedBanner);
 
@@ -159,6 +159,24 @@ class SpectrumSessionListenerTest {
         verify(extentReporterInline).sessionClosed();
         verify(eventsDispatcher).sessionClosed();
         verify(metadataManager).sessionClosed();
+    }
+
+    @Test
+    @DisplayName("parseConfiguration should parse all the configurations considering no active profile")
+    public void parseConfigurationNoProfile() {
+        System.setProperty("os.name", "Win");
+
+        // parseProfile
+        when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn("");
+        when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultProfile");
+
+        // parseVars
+        when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class)).thenReturn(Map.of("one", "one"));
+
+        spectrumSessionListener.parseConfiguration();
+
+        verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
+        verify(yamlUtils).updateWithFile(configuration, CONFIGURATION);
     }
 
     @Test
@@ -220,9 +238,11 @@ class SpectrumSessionListenerTest {
     public static Stream<Arguments> profilesValuesProvider() {
         return Stream.of(
                 arguments("overridden-profile", "default-profile,first", List.of("overridden-profile")),
+                arguments("overridden-profile,, ", "default-profile,first", List.of("overridden-profile")),
                 arguments("overridden-profile,second", "default-profile", List.of("overridden-profile", "second")),
                 arguments(null, "default-profile", List.of("default-profile")),
-                arguments(null, "default-profile,another", List.of("default-profile", "another"))
+                arguments(null, "default-profile,another", List.of("default-profile", "another")),
+                arguments(null, " ,,default-profile,another", List.of("default-profile", "another"))
         );
     }
 

@@ -1,9 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,10 +40,13 @@ class TestDataResolverTest {
     private FileUtils fileUtils;
 
     @Mock
+    private ContextManager contextManager;
+
+    @Mock
     private ParameterContext parameterContext;
 
     @Mock
-    private ExtensionContext extensionContext;
+    private ExtensionContext context;
 
     @Mock
     private ExtensionContext parentContext;
@@ -86,6 +87,7 @@ class TestDataResolverTest {
     @BeforeEach
     public void beforeEach() throws IOException {
         Reflections.setField("fileUtils", testDataResolver, fileUtils);
+        Reflections.setField("contextManager", testDataResolver, contextManager);
 
         testDataMockedStatic = mockStatic(TestData.class);
     }
@@ -101,49 +103,54 @@ class TestDataResolverTest {
         final Class<String> clazz = String.class;
         final String className = clazz.getSimpleName();
         final String classDisplayName = "classDisplayName";
+        final String sanitizedClassDisplayName = "sanitizedClassDisplayName";
         final String methodName = "resolveParameter";
-        final String methodDisplayName = "methodDisplayName";
-        final String testId = "string-methoddisplayname";
+        final String displayName = "displayName";
+        final String sanitizedDisplayName = "sanitizedDisplayName";
+        final String testId = "string-sanitizeddisplayname";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
 
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(fileUtils.sanitize(classDisplayName)).thenReturn(sanitizedClassDisplayName);
+        when(fileUtils.sanitize(displayName)).thenReturn(sanitizedDisplayName);
 
         // getScreenshotFolderPathForCurrentTest
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", classDisplayName, methodDisplayName).toAbsolutePath())).thenReturn(path);
+        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath())).thenReturn(path);
 
         // getVideoPathForCurrentTest
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", classDisplayName, methodDisplayName).toAbsolutePath())).thenReturn(path);
+        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath())).thenReturn(path);
 
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(extensionContext.getRoot()).thenReturn(rootContext);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(REPORTS_FOLDER);
         when(extent.getFileName()).thenReturn(fileName);
-        doReturn(String.class).when(extensionContext).getRequiredTestClass();
-        when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
+        doReturn(String.class).when(context).getRequiredTestClass();
+        when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
-        when(extensionContext.getDisplayName()).thenReturn(methodDisplayName);
-        when(extensionContext.getParent()).thenReturn(Optional.of(parentContext));
+        when(context.getDisplayName()).thenReturn(displayName);
+        when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.methodDisplayName(methodDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.classDisplayName(sanitizedClassDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.displayName(sanitizedDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.screenshotFolderPath(path)).thenReturn(testDataBuilder);
         when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
 
-        final TestData actual = testDataResolver.resolveParameter(parameterContext, extensionContext);
+        final TestData actual = testDataResolver.resolveParameter(parameterContext, context);
 
         assertEquals(testData, actual);
         verify(store).put(TEST_DATA, actual);
+        verify(contextManager).put(context, TEST_DATA, actual);
     }
 
     @Test

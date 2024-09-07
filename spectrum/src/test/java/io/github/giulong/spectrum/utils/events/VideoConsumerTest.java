@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.utils.events;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.jcodec.api.awt.AWTSequenceEncoder;
@@ -32,11 +33,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.enums.Result.DISABLED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -54,6 +56,9 @@ class VideoConsumerTest {
     private static MockedStatic<Files> filesMockedStatic;
 
     @Mock
+    private ExtensionContext context;
+
+    @Mock
     private AWTSequenceEncoder encoder;
 
     @Mock
@@ -66,7 +71,7 @@ class VideoConsumerTest {
     private Graphics2D graphics2D;
 
     @Mock
-    private WebDriver webDriver;
+    private WebDriver driver;
 
     @Mock
     private WebDriver.Options options;
@@ -79,6 +84,9 @@ class VideoConsumerTest {
 
     @Mock
     private Video video;
+
+    @Mock
+    private ContextManager contextManager;
 
     @Mock
     private TestData testData;
@@ -111,12 +119,6 @@ class VideoConsumerTest {
     private MessageDigest messageDigest;
 
     @Mock
-    private ExtensionContext extensionContext;
-
-    @Mock
-    private ExtensionContext.Store store;
-
-    @Mock
     private Event event;
 
     @Mock
@@ -133,6 +135,9 @@ class VideoConsumerTest {
 
     @BeforeEach
     public void beforeEach() throws IOException {
+        Reflections.setField("configuration", videoConsumer, configuration);
+        Reflections.setField("contextManager", videoConsumer, contextManager);
+
         awtSequenceEncoderMockedStatic = mockStatic(AWTSequenceEncoder.class);
         imageIOMockedStatic = mockStatic(ImageIO.class);
         filesMockedStatic = mockStatic(Files.class);
@@ -151,12 +156,10 @@ class VideoConsumerTest {
         final int width = 1;
         final int height = 3;
 
-        when(event.getContext()).thenReturn(extensionContext);
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
-        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
@@ -169,6 +172,9 @@ class VideoConsumerTest {
         when(screenshot1.isFile()).thenReturn(true);
         when(screenshot2.isFile()).thenReturn(false);
         when(screenshot3.isFile()).thenReturn(true);
+
+        when(event.getContext()).thenReturn(context);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
@@ -213,12 +219,10 @@ class VideoConsumerTest {
         final int width = 1;
         final int height = 3;
 
-        when(event.getContext()).thenReturn(extensionContext);
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
-        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
@@ -231,6 +235,10 @@ class VideoConsumerTest {
         when(screenshot1.isFile()).thenReturn(true);
         when(screenshot2.isFile()).thenReturn(false);
         when(screenshot3.isFile()).thenReturn(true);
+
+        when(event.getContext()).thenReturn(context);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, DRIVER, WebDriver.class)).thenReturn(driver);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
@@ -273,12 +281,10 @@ class VideoConsumerTest {
         final int width = 1;
         final int height = 3;
 
-        when(event.getContext()).thenReturn(extensionContext);
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
-        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
@@ -291,6 +297,9 @@ class VideoConsumerTest {
         when(screenshot1.isFile()).thenReturn(true);
         when(screenshot2.isFile()).thenReturn(false);
         when(screenshot3.isFile()).thenReturn(true);
+
+        when(event.getContext()).thenReturn(context);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);
@@ -325,18 +334,19 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept should add the no-video.png if no frames were added")
     public void acceptNoFramesAdded() throws IOException, URISyntaxException {
-        when(event.getContext()).thenReturn(extensionContext);
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
-        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
         when(testData.getVideoPath()).thenReturn(videoPath);
         when(videoPath.toFile()).thenReturn(videoFile);
         when(Files.walk(screenshotFolderPath)).thenReturn(Stream.of());
+
+        when(event.getContext()).thenReturn(context);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(urlArgumentCaptor.capture())).thenReturn(bufferedImage);
@@ -351,11 +361,28 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept shouldn't do nothing when video recording is disabled")
     public void acceptDisabled() throws IOException {
-        when(event.getContext()).thenReturn(extensionContext);
-        when(extensionContext.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(true);
+
+        when(event.getContext()).thenReturn(context);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
+
+        videoConsumer.accept(event);
+
+        verify(encoder, never()).encodeImage(any());
+    }
+
+    @Test
+    @DisplayName("accept shouldn't do nothing when the test is skipped")
+    public void acceptTestSkipped() throws IOException {
+        when(event.getResult()).thenReturn(DISABLED);
+
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.isDisabled()).thenReturn(false);
+
+        when(event.getContext()).thenReturn(context);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
 
         videoConsumer.accept(event);
 
@@ -395,7 +422,7 @@ class VideoConsumerTest {
         when(video.getWidth()).thenReturn(1);
         when(video.getHeight()).thenReturn(3);
 
-        final Dimension actual = videoConsumer.chooseDimensionFor(webDriver, video);
+        final Dimension actual = videoConsumer.chooseDimensionFor(driver, video);
         assertEquals(2, actual.getWidth());
         assertEquals(4, actual.getHeight());
     }
@@ -412,14 +439,14 @@ class VideoConsumerTest {
         if (width >= 1) {   // short-circuit
             when(video.getHeight()).thenReturn(height);
         }
-        when(webDriver.manage()).thenReturn(options);
+        when(driver.manage()).thenReturn(options);
         when(options.window()).thenReturn(window);
         when(window.getSize()).thenReturn(dimension);
         when(dimension.getWidth()).thenReturn(WIDTH);
         when(dimension.getHeight()).thenReturn(HEIGHT);
         when(video.getMenuBarsHeight()).thenReturn(menuBarsHeight);
 
-        final Dimension actual = videoConsumer.chooseDimensionFor(webDriver, video);
+        final Dimension actual = videoConsumer.chooseDimensionFor(driver, video);
 
         assertEquals(EVEN_WIDTH, actual.getWidth());
         assertEquals(EVEN_HEIGHT - menuBarsHeight - 1, actual.getHeight());

@@ -24,9 +24,7 @@ public abstract class SimpleTestBookParser extends TestBookParser {
         final Pattern PATTERN = Pattern.compile(regex);
 
         return Arrays
-                .stream(FileUtils.getInstance()
-                        .read(String.format("/%s", path))
-                        .split(lineSeparator()))
+                .stream(FileUtils.getInstance().read(path).split(lineSeparator()))
                 .map(line -> {
                     Matcher matcher = PATTERN.matcher(line);
                     if (!matcher.matches()) {

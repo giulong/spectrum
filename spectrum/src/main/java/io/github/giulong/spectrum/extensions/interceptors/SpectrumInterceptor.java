@@ -1,11 +1,8 @@
 package io.github.giulong.spectrum.extensions.interceptors;
 
 import com.aventstack.extentreports.ExtentTest;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.FileUtils;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +27,7 @@ public class SpectrumInterceptor implements InvocationInterceptor {
     private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
+    private final ContextManager contextManager = ContextManager.getInstance();
 
     @SuppressWarnings("checkstyle:IllegalCatch")
     @Override
@@ -49,6 +47,7 @@ public class SpectrumInterceptor implements InvocationInterceptor {
         testData.setDisplayName(testName);
         testData.setDynamicVideoPath(dynamicVideoPath);
         statefulExtentTest.setDisplayName(testName);
+        contextManager.initWithParentFor(context);
 
         if (!video.isDisabled() && videoExtentTest.isAttach()) {
             final String fullId = String.format("%s-%s", testData.getTestId(), testName);

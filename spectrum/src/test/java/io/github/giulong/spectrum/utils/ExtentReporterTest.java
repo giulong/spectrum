@@ -10,6 +10,7 @@ import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterCo
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,10 +24,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -38,7 +37,6 @@ import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTest
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
@@ -53,6 +51,16 @@ class ExtentReporterTest {
     private MockedStatic<Files> filesMockedStatic;
     private MockedStatic<MetadataManager> metadataManagerMockedStatic;
     private MockedStatic<Desktop> desktopMockedStatic;
+    private MockedStatic<ExtentSparkReporterConfig> extentSparkReporterConfigMockedStatic;
+
+    @Mock
+    private ExtentSparkReporterConfig.ExtentSparkReporterConfigBuilder<?, ?> extentSparkReporterConfigBuilder;
+
+    @Mock
+    private ContextManager contextManager;
+
+    @Mock
+    private TestContext testContext;
 
     @Mock
     private Configuration configuration;
@@ -127,9 +135,6 @@ class ExtentReporterTest {
     private ExtensionContext parentContext;
 
     @Mock
-    private ExtensionContext.Store store;
-
-    @Mock
     private Desktop desktop;
 
     @Mock
@@ -139,7 +144,7 @@ class ExtentReporterTest {
     private MetadataManager metadataManager;
 
     @Captor
-    private ArgumentCaptor<Function<String, StatefulExtentTest>> functionArgumentCaptor;
+    private ArgumentCaptor<Function<String, StatefulExtentTest>> statefulExtentTestArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<Markup> markupArgumentCaptor;
@@ -154,6 +159,8 @@ class ExtentReporterTest {
     public void beforeEach() {
         Reflections.setField("fileUtils", extentReporter, fileUtils);
         Reflections.setField("configuration", extentReporter, configuration);
+        Reflections.setField("contextManager", extentReporter, contextManager);
+
         testDataMockedStatic = mockStatic(TestData.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         pathMockedStatic = mockStatic(Path.class);
@@ -161,6 +168,7 @@ class ExtentReporterTest {
         filesMockedStatic = mockStatic(Files.class);
         metadataManagerMockedStatic = mockStatic(MetadataManager.class);
         desktopMockedStatic = mockStatic(Desktop.class);
+        extentSparkReporterConfigMockedStatic = mockStatic(ExtentSparkReporterConfig.class);
     }
 
     @AfterEach
@@ -172,6 +180,7 @@ class ExtentReporterTest {
         filesMockedStatic.close();
         metadataManagerMockedStatic.close();
         desktopMockedStatic.close();
+        extentSparkReporterConfigMockedStatic.close();
     }
 
     private void cleanupOldReportsStubs() {
@@ -223,6 +232,9 @@ class ExtentReporterTest {
         final String theme = "DARK";
         final String timeStampFormat = "timeStampFormat";
         final String css = "css";
+        final String js = "js";
+        final String extentCss = "extentCss";
+        final String extentJs = "extentJs";
         final String absolutePathToString = "absolute\\Path\\To\\String";
         final String absolutePathToStringReplaced = "absolute/Path/To/String";
 
@@ -237,22 +249,28 @@ class ExtentReporterTest {
         when(extent.getTheme()).thenReturn(theme);
         when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
         when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.read("/css/report.css")).thenReturn(css);
+        when(extent.getCss()).thenReturn(extentCss);
+        when(fileUtils.read(extentCss)).thenReturn(css);
+        when(extent.getJs()).thenReturn(extentJs);
+        when(fileUtils.read(extentJs)).thenReturn(js);
+
+        extentSparkReporterConfigMockedStatic.when(ExtentSparkReporterConfig::builder).thenReturn(extentSparkReporterConfigBuilder);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).documentTitle(documentTitle);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).reportName(reportName);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).theme(DARK);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).timeStampFormat(timeStampFormat);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).css(css);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).js(js);
+        doReturn(extentSparkReporterConfig).when(extentSparkReporterConfigBuilder).build();
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
 
         MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
             assertEquals(absolutePathToStringReplaced, context.arguments().getFirst());
-            when(mock.config()).thenReturn(extentSparkReporterConfig);
+            when(mock.config(extentSparkReporterConfig)).thenReturn(mock);
         });
 
         extentReporter.sessionOpened();
-
-        verify(extentSparkReporterConfig).setDocumentTitle(documentTitle);
-        verify(extentSparkReporterConfig).setReportName(reportName);
-        verify(extentSparkReporterConfig).setTheme(DARK);
-        verify(extentSparkReporterConfig).setTimeStampFormat(timeStampFormat);
-        verify(extentSparkReporterConfig).setCss(css);
 
         final ExtentReports extentReports = extentReportsMockedConstruction.constructed().getFirst();
         verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
@@ -398,14 +416,16 @@ class ExtentReporterTest {
     public void createExtentTestFrom() {
         final String testId = "testId";
         final String classDisplayName = "classDisplayName";
-        final String methodDisplayName = "methodDisplayName";
+        final String displayName = "displayName";
+        final Set<String> tags = Set.of("t1", "t2");
 
-        when(context.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getTestId()).thenReturn(testId);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
-        when(testData.getMethodDisplayName()).thenReturn(methodDisplayName);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, methodDisplayName))).thenReturn(extentTest);
+        when(testData.getDisplayName()).thenReturn(displayName);
+        when(context.getTags()).thenReturn(tags);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, displayName))).thenReturn(extentTest);
+        when(extentTest.assignCategory(tags.toArray(new String[0]))).thenReturn(extentTest);
 
         assertEquals(extentTest, extentReporter.createExtentTestFrom(context));
     }
@@ -458,16 +478,14 @@ class ExtentReporterTest {
             "reasonMethod,specific reason"
     })
     public void logTestEndDisabled(final String methodName, String expected) throws NoSuchMethodException {
-        final String classDisplayName = "classDisplayName";
-
         logTestEndStubs();
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
-        when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
+        when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, SKIP);
-        functionArgumentCaptor.getValue().apply("value");
+
+        statefulExtentTestArgumentCaptor.getValue().apply("value");
 
         verify(extentTest).skip(skipMarkupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text amber'>Skipped: " + expected + "</span>", skipMarkupArgumentCaptor.getValue().getMarkup());
@@ -475,18 +493,21 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("logTestEnd should add a screenshot to the report and delegate to finalizeTest")
-    public void logTestEndFailed() {
+    public void logTestEndFailed() throws NoSuchMethodException {
         final String classDisplayName = "classDisplayName";
+        final String methodName = "logTestEndStubs";
 
         logTestEndStubs();
         when(context.getRequiredTestInstance()).thenReturn(spectrumTest);
+        when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
+        when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(context.getExecutionException()).thenReturn(Optional.of(exception));
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, FAIL);
-        functionArgumentCaptor.getValue().apply("value");
+        statefulExtentTestArgumentCaptor.getValue().apply("value");
 
         verify(extentTest).fail(exception);
         verify(spectrumTest).screenshotFail("<span class='badge white-text red'>TEST FAILED</span>");
@@ -494,17 +515,20 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("logTestEnd should add a log in the extent report by default")
-    public void logTestEndDefault() {
+    public void logTestEndDefault() throws NoSuchMethodException {
         final String classDisplayName = "classDisplayName";
+        final String methodName = "logTestEndStubs";
 
         logTestEndStubs();
+        when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
+        when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, PASS);
 
-        functionArgumentCaptor.getValue().apply("value");
+        statefulExtentTestArgumentCaptor.getValue().apply("value");
         verify(extentTest).log(eq(PASS), markupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text green'>END TEST</span>", markupArgumentCaptor.getValue().getMarkup());
     }
@@ -519,26 +543,30 @@ class ExtentReporterTest {
     private void reasonMethod() {
     }
 
+    @SneakyThrows
     private void logTestEndStubs() {
+        final String className = "String";
         final String classDisplayName = "classDisplayName";
-        final String methodDisplayName = "methodDisplayName";
-        final String testId = "string-methoddisplayname";
+        final String displayName = "displayName";
+        final String testId = "string-displayname";
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         doReturn(String.class).when(context).getRequiredTestClass();
-        when(context.getDisplayName()).thenReturn(methodDisplayName);
+        when(context.getDisplayName()).thenReturn(displayName);
+        when(context.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
+        when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
         when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.methodDisplayName(methodDisplayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.displayName(displayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
         when(testData.getTestId()).thenReturn(testId);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
-        when(testData.getMethodDisplayName()).thenReturn(methodDisplayName);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, methodDisplayName))).thenReturn(extentTest);
+        when(testData.getDisplayName()).thenReturn(displayName);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, displayName))).thenReturn(extentTest);
 
-        when(context.getStore(GLOBAL)).thenReturn(store);
-        when(context.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
-        when(store.getOrComputeIfAbsent(eq(STATEFUL_EXTENT_TEST), functionArgumentCaptor.capture(), eq(StatefulExtentTest.class))).thenReturn(statefulExtentTest);
+        when(contextManager.get(context)).thenReturn(testContext);
+        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
+        when(testContext.computeIfAbsent(eq(STATEFUL_EXTENT_TEST), statefulExtentTestArgumentCaptor.capture(), eq(StatefulExtentTest.class))).thenReturn(statefulExtentTest);
     }
 }

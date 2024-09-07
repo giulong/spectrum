@@ -93,7 +93,7 @@ public abstract class EventsConsumer implements Consumer<Event> {
         try {
             accept(event);
         } catch (Exception e) {
-            log.error(e.getMessage(), e);
+            log.error(String.format("%s: %s", getClass().getSimpleName(), e.getMessage()), e);
         }
     }
 }

@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentTest;
+import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -22,6 +23,7 @@ public class StatefulExtentTestResolver extends TypeBasedParameterResolver<State
     public static final String STATEFUL_EXTENT_TEST = "statefulExtentTest";
 
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
+    private final ContextManager contextManager = ContextManager.getInstance();
 
     @Override
     public StatefulExtentTest resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
@@ -43,6 +45,7 @@ public class StatefulExtentTestResolver extends TypeBasedParameterResolver<State
 
         extentReporter.logTestStartOf(extentTest);
         store.put(STATEFUL_EXTENT_TEST, statefulExtentTest);
+        contextManager.put(context, STATEFUL_EXTENT_TEST, statefulExtentTest);
 
         return statefulExtentTest;
     }

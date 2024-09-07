@@ -5,6 +5,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.interfaces.SessionHook;
@@ -33,7 +34,6 @@ import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.T
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
 import static java.util.Comparator.comparingLong;
 import static lombok.AccessLevel.PROTECTED;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 @NoArgsConstructor(access = PROTECTED)
@@ -44,6 +44,8 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     protected final FileUtils fileUtils = FileUtils.getInstance();
     protected final Configuration configuration = Configuration.getInstance();
+
+    private final ContextManager contextManager = ContextManager.getInstance();
 
     private ExtentReports extentReports;
 
@@ -58,16 +60,18 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         final Configuration.Extent extent = configuration.getExtent();
         final String reportPath = getReportPathFrom(extent).toString().replace("\\", "/");
         final String reportName = extent.getReportName();
-        final ExtentSparkReporter sparkReporter = new ExtentSparkReporter(reportPath);
-
-        sparkReporter.config().setDocumentTitle(extent.getDocumentTitle());
-        sparkReporter.config().setReportName(reportName);
-        sparkReporter.config().setTheme(Theme.valueOf(extent.getTheme()));
-        sparkReporter.config().setTimeStampFormat(extent.getTimeStampFormat());
-        sparkReporter.config().setCss(fileUtils.read("/css/report.css"));
 
         extentReports = new ExtentReports();
-        extentReports.attachReporter(sparkReporter);
+        extentReports.attachReporter(new ExtentSparkReporter(reportPath)
+                .config(ExtentSparkReporterConfig
+                        .builder()
+                        .documentTitle(extent.getDocumentTitle())
+                        .reportName(reportName)
+                        .theme(Theme.valueOf(extent.getTheme()))
+                        .timeStampFormat(extent.getTimeStampFormat())
+                        .css(fileUtils.read(extent.getCss()))
+                        .js(fileUtils.read(extent.getJs()))
+                        .build()));
 
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
     }
@@ -152,9 +156,11 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     public ExtentTest createExtentTestFrom(final ExtensionContext context) {
-        final TestData testData = context.getStore(GLOBAL).get(TEST_DATA, TestData.class);
+        final TestData testData = contextManager.get(context, TEST_DATA, TestData.class);
 
-        return extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getMethodDisplayName()));
+        return extentReports
+                .createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getDisplayName()))
+                .assignCategory(context.getTags().toArray(new String[0]));
     }
 
     public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final String testId, final Path path) {
@@ -177,17 +183,20 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     public void logTestEnd(final ExtensionContext context, final Status status) {
-        final ExtensionContext.Store store = context.getStore(GLOBAL);
-        final StatefulExtentTest statefulExtentTest = store.getOrComputeIfAbsent(STATEFUL_EXTENT_TEST, e -> {
+        final TestContext testContext = contextManager.get(context);
+        final StatefulExtentTest statefulExtentTest = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, k -> {
             final String className = context.getRequiredTestClass().getSimpleName();
+            final String methodName = context.getRequiredTestMethod().getName();
             final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
-            final String methodDisplayName = context.getDisplayName();
-            final String testId = buildTestIdFrom(className, methodDisplayName);
+            final String displayName = context.getDisplayName();
+            final String testId = buildTestIdFrom(className, displayName);
 
-            store.put(TEST_DATA, TestData
+            testContext.put(TEST_DATA, TestData
                     .builder()
+                    .className(className)
+                    .methodName(methodName)
                     .classDisplayName(classDisplayName)
-                    .methodDisplayName(methodDisplayName)
+                    .displayName(displayName)
                     .testId(testId)
                     .build());
 
