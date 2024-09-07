@@ -7,9 +7,6 @@ on:
     branches: [ "develop" ]
     types: [ opened, reopened, edited ]
 
-env:
-  EDGE_BINARY: /usr/bin/microsoft-edge
-
 jobs:
   build:
     name: Build
@@ -64,10 +61,14 @@ jobs:
             name: ubuntu
             profiles: browsers
             directives: -DbrowsersTests
+            env:
+              EDGE_BINARY: /usr/bin/microsoft-edge
           - os: macos-latest
             name: macos
             profiles: macos
             directives: -DmacosTests
+            env:
+              EDGE_BINARY: /usr/bin/microsoft-edge
           - os: windows-latest
             name: windows
             profiles: browsers
