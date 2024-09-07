@@ -51,26 +51,23 @@ jobs:
           path: spectrum/target/spectrum-${{ env.VERSION }}.jar
 
   browsers:
-    name: Browsers IT on ${{ matrix.include.name }}
+    name: Browsers IT
     needs: build
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
         include:
           - os: ubuntu-latest
-            name: ubuntu
             profiles: browsers
             directives: -DbrowsersTests
             env:
               EDGE_BINARY: /usr/bin/microsoft-edge
           - os: macos-latest
-            name: macos
             profiles: macos
             directives: -DmacosTests
             env:
               EDGE_BINARY: /usr/bin/microsoft-edge
           - os: windows-latest
-            name: windows
             profiles: browsers
             directives: -DbrowsersTests
     runs-on: ${{ matrix.os }}
