@@ -31,10 +31,10 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(id = "demoit-this-one-should-fail-for-demonstration-purposes")
     private WebElement fail;
 
-    @FindBy(id = "loginformit-with-user-giulio-we-expect-login-to-be-successful:-false")
+    @FindBy(id = "loginformit-with-user-giulio-we-expect-login-to-be-successful-false")
     private WebElement loginFalse;
 
-    @FindBy(id = "loginformit-with-user-tom-we-expect-login-to-be-successful:-true")
+    @FindBy(id = "loginformit-with-user-tom-we-expect-login-to-be-successful-true")
     private WebElement loginTrue;
 
     @FindBy(id = "checkboxit-testwithnodisplayname()")
@@ -94,10 +94,10 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(id = "video-demoit-this-one-should-fail-for-demonstration-purposes")
     private WebElement videoDemoItThisOneShouldFailForDemonstrationPurposes;
 
-    @FindBy(id = "video-loginformit-with-user-giulio-we-expect-login-to-be-successful:-false")
+    @FindBy(id = "video-loginformit-with-user-giulio-we-expect-login-to-be-successful-false")
     private WebElement videoLoginFormItWithUserGiulioWeExpectLoginToBeSuccessfulFalse;
 
-    @FindBy(id = "video-loginformit-with-user-tom-we-expect-login-to-be-successful:-true")
+    @FindBy(id = "video-loginformit-with-user-tom-we-expect-login-to-be-successful-true")
     private WebElement videoLoginFormItWithUserTomWeExpectLoginToBeSuccessfulTrue;
 
     @FindBy(id = "video-filesit-download")
