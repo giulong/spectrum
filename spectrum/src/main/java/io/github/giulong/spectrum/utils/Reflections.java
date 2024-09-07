@@ -34,6 +34,10 @@ public final class Reflections {
         return getField(fieldName, object).get(object);
     }
 
+    public static <T> T getFieldValue(final String fieldName, final Object object, final Class<T> clazz) {
+        return clazz.cast(getFieldValue(fieldName, object));
+    }
+
     public static void setField(final String fieldName, final Object object, final Object value) {
         final Field field = getField(fieldName, object);
         setField(field, object, value);

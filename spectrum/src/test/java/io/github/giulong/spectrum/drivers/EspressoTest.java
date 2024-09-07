@@ -62,7 +62,7 @@ class EspressoTest {
 
         espresso.buildCapabilities();
 
-        final EspressoOptions actual = (EspressoOptions) Reflections.getFieldValue("capabilities", espresso);
+        final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso, EspressoOptions.class);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -87,7 +87,7 @@ class EspressoTest {
 
         espresso.buildCapabilities();
 
-        final EspressoOptions actual = (EspressoOptions) Reflections.getFieldValue("capabilities", espresso);
+        final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso, EspressoOptions.class);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

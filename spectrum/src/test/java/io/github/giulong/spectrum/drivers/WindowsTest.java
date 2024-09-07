@@ -89,7 +89,7 @@ class WindowsTest {
 
         windows.buildCapabilities();
 
-        final WindowsOptions actual = (WindowsOptions) Reflections.getFieldValue("capabilities", windows);
+        final WindowsOptions actual = Reflections.getFieldValue("capabilities", windows, WindowsOptions.class);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

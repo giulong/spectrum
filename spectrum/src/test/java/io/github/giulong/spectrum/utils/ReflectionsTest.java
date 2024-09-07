@@ -53,6 +53,16 @@ class ReflectionsTest {
     }
 
     @Test
+    @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object, casted to the provided class")
+    public void getFieldValueCast() {
+        final String fieldName = "fieldString";
+        final String value = "value";
+        final Dummy dummy = new Dummy(value);
+
+        assertEquals(value, Reflections.getFieldValue(fieldName, dummy, String.class));
+    }
+
+    @Test
     @DisplayName("setField should set the field with the provided name on the provided object with the provided value")
     public void setFieldString() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";

@@ -55,7 +55,7 @@ class AppiumLogTest {
         final char c = '\n';
 
         appiumLog.write(c);
-        final StringBuffer stringBuffer = (StringBuffer) Reflections.getFieldValue("stringBuffer", appiumLog);
+        final StringBuffer stringBuffer = Reflections.getFieldValue("stringBuffer", appiumLog, StringBuffer.class);
 
         verify(stringBuffer).setLength(0);
     }
@@ -67,7 +67,7 @@ class AppiumLogTest {
         assertEquals(stringBuffers.getFirst(), Reflections.getFieldValue("stringBuffer", appiumLog));
 
         appiumLog.flush();
-        final StringBuffer stringBuffer = (StringBuffer) Reflections.getFieldValue("stringBuffer", appiumLog);
+        final StringBuffer stringBuffer = Reflections.getFieldValue("stringBuffer", appiumLog, StringBuffer.class);
 
         verify(stringBuffer).setLength(0);
     }

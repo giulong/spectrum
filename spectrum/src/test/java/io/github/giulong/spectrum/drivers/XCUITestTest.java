@@ -67,7 +67,7 @@ class XCUITestTest {
 
         xcuiTest.buildCapabilities();
 
-        final XCUITestOptions actual = (XCUITestOptions) Reflections.getFieldValue("capabilities", xcuiTest);
+        final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest, XCUITestOptions.class);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -92,7 +92,7 @@ class XCUITestTest {
 
         xcuiTest.buildCapabilities();
 
-        final XCUITestOptions actual = (XCUITestOptions) Reflections.getFieldValue("capabilities", xcuiTest);
+        final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest, XCUITestOptions.class);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();
