@@ -5,12 +5,22 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 
 @Slf4j
 @UtilityClass
 @SuppressWarnings("checkstyle:HideUtilityClassConstructor")
 public final class Reflections {
+
+    public static ParameterizedType getGenericSuperclassOf(Class<?> clazz, final Class<?> limit) {
+        while (clazz.getSuperclass() != limit) {
+            clazz = clazz.getSuperclass();
+            log.error("super: {}", clazz.getTypeName());
+        }
+
+        return (ParameterizedType) clazz.getGenericSuperclass();
+    }
 
     @SneakyThrows
     public static Field getField(final String fieldName, final Object object) {

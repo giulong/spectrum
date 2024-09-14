@@ -5,3 +5,5 @@ users:
   giulio:
     name: Giulio Longfils
     password: pwd
+
+checkboxEndpoint: https://the-internet.herokuapp.com/checkboxes

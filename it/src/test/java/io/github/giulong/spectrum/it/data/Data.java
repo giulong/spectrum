@@ -9,6 +9,7 @@ import java.util.Map;
 public class Data {
 
     private Map<String, User> users;
+    private String checkboxEndpoint;
 
     @Getter
     public static class User {

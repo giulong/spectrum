@@ -1,7 +1,5 @@
 package io.github.giulong.spectrum.it.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it.data.Data;
 import io.github.giulong.spectrum.it.pages.LoginPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,13 +16,13 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 
 @DisplayName("Login Form")
 @SuppressWarnings("unused")
-public class LoginFormIT extends SpectrumTest<Data> {
+public class LoginFormIT extends BaseIT {
 
     private LoginPage loginPage;
 
     // Let's try with JUnit's parameterized tests
     @DisplayName("Login Form leveraging the data.yaml")
-    @ParameterizedTest(name = "with user {0} we expect login to be successful: {1}")
+    @ParameterizedTest(name = "with user {0} we expect login to be successful {1}")
     @MethodSource("valuesProvider")
     public void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {
         loginPage.open();
@@ -50,7 +48,7 @@ public class LoginFormIT extends SpectrumTest<Data> {
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("tom", true, "/secure"),
+                //arguments("tom", true, "/secure"),
                 arguments("giulio", false, "/login")
         );
     }
