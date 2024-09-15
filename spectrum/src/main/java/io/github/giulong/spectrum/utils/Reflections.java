@@ -14,9 +14,11 @@ import java.util.Arrays;
 public final class Reflections {
 
     public static ParameterizedType getGenericSuperclassOf(Class<?> clazz, final Class<?> limit) {
+        log.trace("Getting generic superclass of {} up to {}", clazz.getTypeName(), limit.getTypeName());
+
         while (clazz.getSuperclass() != limit) {
             clazz = clazz.getSuperclass();
-            log.error("super: {}", clazz.getTypeName());
+            log.trace("Checking {}", clazz.getTypeName());
         }
 
         return (ParameterizedType) clazz.getGenericSuperclass();

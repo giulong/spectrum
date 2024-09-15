@@ -48,7 +48,7 @@ public class LoginFormIT extends BaseIT {
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                //arguments("tom", true, "/secure"),
+                arguments("tom", true, "/secure"),
                 arguments("giulio", false, "/login")
         );
     }

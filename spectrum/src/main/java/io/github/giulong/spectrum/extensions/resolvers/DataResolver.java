@@ -28,8 +28,7 @@ public class DataResolver<Data> implements ParameterResolver {
 
     @Override
     public Data resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        final Class<?> clazz = context.getRequiredTestClass();
-        final Type type = getGenericSuperclassOf(clazz, SpectrumTest.class).getActualTypeArguments()[0];
+        final Type type = getGenericSuperclassOf(context.getRequiredTestClass(), SpectrumTest.class).getActualTypeArguments()[0];
 
         if (Void.class.equals(type)) {
             log.debug("Running an instance of SpectrumTest<Void>. No Data class injected in test '{}'", context.getDisplayName());
