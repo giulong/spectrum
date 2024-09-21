@@ -1,6 +1,8 @@
 package io.github.giulong.spectrum.it.tests;
 
 import io.github.giulong.spectrum.it.pages.LoginPage;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,11 +16,17 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.openqa.selenium.By.id;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 
+@Slf4j
 @DisplayName("Login Form")
 @SuppressWarnings("unused")
 public class LoginFormIT extends BaseIT {
 
     private LoginPage loginPage;
+
+    @BeforeEach
+    public void beforeEach() {
+        log.info("Here just to check we're not overriding the internal beforeEach");
+    }
 
     // Let's try with JUnit's parameterized tests
     @DisplayName("Login Form leveraging the data.yaml")
