@@ -8,6 +8,8 @@ import org.junit.platform.launcher.LauncherSessionListener;
 
 import java.util.*;
 
+import static java.util.function.Predicate.not;
+
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {
 
@@ -81,7 +83,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
                         .ofNullable(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class))
                         .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
                         .split(","))
-                .filter(profile -> !profile.isBlank())
+                .filter(not(String::isBlank))
                 .toList();
     }
 

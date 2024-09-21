@@ -33,6 +33,7 @@ import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTest
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
 import static java.util.Comparator.comparingLong;
+import static java.util.function.Predicate.not;
 import static lombok.AccessLevel.PROTECTED;
 
 @Slf4j
@@ -126,7 +127,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
         final List<File> files = Arrays
                 .stream(folderContent)
-                .filter(file -> !file.isDirectory())
+                .filter(not(File::isDirectory))
                 .sorted(comparingLong(File::lastModified))
                 .toList();
 
