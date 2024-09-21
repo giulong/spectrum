@@ -27,7 +27,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class SpectrumTestTest<T> {
+class SpectrumTestTest {
 
     private MockedStatic<JsWebElementListInvocationHandler> jsWebElementListInvocationHandlerMockedStatic;
 
@@ -44,7 +44,10 @@ class SpectrumTestTest<T> {
     private WebDriver webDriver;
 
     @Mock
-    private T data;
+    private FakeData data;
+
+    @Mock
+    private Configuration.Data dataConfiguration;
 
     @Mock
     private ImplicitWait implicitWait;
@@ -100,6 +103,9 @@ class SpectrumTestTest<T> {
     @Mock
     private WebElement proxy;
 
+    @Mock
+    private YamlUtils yamlUtils;
+
     @Captor
     private ArgumentCaptor<WebElement> webElementArgumentCaptor;
 
@@ -113,10 +119,16 @@ class SpectrumTestTest<T> {
     private ArgumentCaptor<Class<?>[]> classesArgumentCaptor;
 
     @InjectMocks
-    private FakeSpectrumTest<T> spectrumTest;
+    private FakeSpectrumTest<FakeData> spectrumTest;
 
     @InjectMocks
-    private FakeChild<T> childTest;
+    private FakeChild<FakeData> childTest;
+
+    @InjectMocks
+    private FakeChild<Void> childTestVoid;
+
+    @InjectMocks
+    private FakeParentSpectrumTestVoid fakeParentSpectrumTestVoid;
 
     @BeforeEach
     public void beforeEach() {
@@ -124,6 +136,11 @@ class SpectrumTestTest<T> {
         spectrumTest.testPage.jsWebElement = webElement;
         spectrumTest.testPage.jsWebElementList = webElementList;
         jsWebElementListInvocationHandlerMockedStatic = mockStatic(JsWebElementListInvocationHandler.class);
+
+        Reflections.setField("yamlUtils", spectrumTest, yamlUtils);
+        Reflections.setField("yamlUtils", childTest, yamlUtils);
+        Reflections.setField("yamlUtils", childTestVoid, yamlUtils);
+        Reflections.setField("yamlUtils", fakeParentSpectrumTestVoid, yamlUtils);
     }
 
     @AfterEach
@@ -167,21 +184,51 @@ class SpectrumTestTest<T> {
     @Test
     @DisplayName("initPages should init also init pages from super classes")
     public void initPages() {
+        final String folder = "folder";
+
+        when(configuration.getData()).thenReturn(dataConfiguration);
+        when(dataConfiguration.getFolder()).thenReturn(folder);
+        when(yamlUtils.read(folder + "/data.yaml", FakeData.class)).thenReturn(data);
+
         childTest.initPages();
 
         assertNull(childTest.toSkip);
         assertNotNull(childTest.childTestPage);
         assertThat(childTest.childTestPage, instanceOf(FakeSpectrumPage.class));
+        assertEquals(data, childTest.childTestPage.data);
 
         assertNull(childTest.getParentToSkip());
         assertNotNull(childTest.getParentTestPage());
         assertThat(childTest.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
+        assertEquals(data, childTest.getParentTestPage().data);
+    }
+
+    @Test
+    @DisplayName("initPages should init also init pages from super classes, injecting data field in pages")
+    public void initPagesVoid() {
+        final String folder = "folder";
+
+        when(configuration.getData()).thenReturn(dataConfiguration);
+        when(dataConfiguration.getFolder()).thenReturn(folder);
+        when(yamlUtils.read(folder + "/data.yaml", FakeData.class)).thenReturn(data);
+
+        childTestVoid.initPages();
+
+        assertNull(childTestVoid.toSkip);
+        assertNotNull(childTestVoid.childTestPage);
+        assertThat(childTestVoid.childTestPage, instanceOf(FakeSpectrumPage.class));
+        assertEquals(data, childTestVoid.childTestPage.data);
+
+        assertNull(childTestVoid.getParentToSkip());
+        assertNotNull(childTestVoid.getParentTestPage());
+        assertThat(childTestVoid.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
+        assertEquals(data, childTestVoid.getParentTestPage().data);
     }
 
     @Test
     @DisplayName("initPage should init the provided field")
     public void testInitPage() {
-        final SpectrumPage<?, T> actual = spectrumTest.initPage(Reflections.getField("testPage", spectrumTest), spectrumTest.getSharedFields());
+        final SpectrumPage<?, FakeData> actual = spectrumTest.initPage(Reflections.getField("testPage", spectrumTest), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPage, actual);
         assertThat(spectrumTest.testPage, instanceOf(FakeSpectrumPage.class));
@@ -201,7 +248,7 @@ class SpectrumTestTest<T> {
     @Test
     @DisplayName("initPage without endpoint")
     public void initPageWithoutEndpoint() {
-        final SpectrumPage<?, T> actual = spectrumTest.initPage(Reflections.getField("testPageWithoutEndpoint", spectrumTest), spectrumTest.getSharedFields());
+        final SpectrumPage<?, FakeData> actual = spectrumTest.initPage(Reflections.getField("testPageWithoutEndpoint", spectrumTest), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPageWithoutEndpoint, actual);
         assertThat(spectrumTest.testPageWithoutEndpoint, instanceOf(FakeSpectrumPageWithoutEndpoint.class));
@@ -268,29 +315,77 @@ class SpectrumTestTest<T> {
         proxyMockedStatic.close();
     }
 
+    @Test
+    @DisplayName("injectDataInPages should do nothing if data was already injected from SpectrumTest")
+    public void injectDataInPagesNotNull() {
+        spectrumTest.injectDataInPages();
+
+        // we assert it's null since we have SpectrumTest<FakeData>
+        assertNull(spectrumTest.testPage.data);
+    }
+
+    @Test
+    @DisplayName("injectDataInPages should inject the data field in pages when we have SpectrumTest<Void>")
+    public void injectDataInPages() {
+        final String folder = "folder";
+
+        when(configuration.getData()).thenReturn(dataConfiguration);
+        when(dataConfiguration.getFolder()).thenReturn(folder);
+        when(yamlUtils.read(folder + "/data.yaml", FakeData.class)).thenReturn(data);
+
+        final FakeSpectrumPage fakeSpectrumPage = mock(FakeSpectrumPage.class);
+        final FakeSpectrumPageVoid fakeSpectrumPageVoid = mock(FakeSpectrumPageVoid.class);
+        childTestVoid.spectrumPages = List.of(fakeSpectrumPage, fakeSpectrumPageVoid);
+
+        childTestVoid.injectDataInPages();
+
+        assertEquals(data, fakeSpectrumPage.data);
+        assertNull(fakeSpectrumPageVoid.data);
+    }
+
+    @Test
+    @DisplayName("injectDataInPages should not inject the data field in pages when we have SpectrumTest<Void>, if all pages are SpectrumPage<Void>")
+    public void injectDataInPagesAllVoid() {
+        final FakeSpectrumPageVoid fakeSpectrumPageVoid1 = mock(FakeSpectrumPageVoid.class);
+        final FakeSpectrumPageVoid fakeSpectrumPageVoid2 = mock(FakeSpectrumPageVoid.class);
+        fakeParentSpectrumTestVoid.spectrumPages = List.of(fakeSpectrumPageVoid1, fakeSpectrumPageVoid2);
+
+        fakeParentSpectrumTestVoid.injectDataInPages();
+
+        assertNull(fakeSpectrumPageVoid1.data);
+        assertNull(fakeSpectrumPageVoid2.data);
+    }
+
     @SuppressWarnings("unused")
     static class FakeSpectrumTest<T> extends SpectrumTest<T> {
         private String toSkip;
-        private final FakeSpectrumPage<T> testPage = new FakeSpectrumPage<>();
+        private final FakeSpectrumPage testPage = new FakeSpectrumPage();
         private FakeSpectrumPageWithoutEndpoint<T> testPageWithoutEndpoint;
     }
 
     @SuppressWarnings("unused")
     static class FakeChild<T> extends FakeParentSpectrumTest<T> {
         private String toSkip;
-        private FakeSpectrumPage<T> childTestPage;
+        private FakeSpectrumPage childTestPage;
     }
 
     @Getter
     @SuppressWarnings("unused")
     static class FakeParentSpectrumTest<T> extends SpectrumTest<T> {
         private String parentToSkip;
-        private FakeSpectrumPage<T> parentTestPage;
+        private FakeSpectrumPage parentTestPage;
+    }
+
+    @Getter
+    @SuppressWarnings("unused")
+    static class FakeParentSpectrumTestVoid extends SpectrumTest<Void> {
+        private String parentToSkip;
+        private FakeSpectrumPageVoid parentTestPage;
     }
 
     @Endpoint("blah")
     @SuppressWarnings("unused")
-    static class FakeSpectrumPage<T> extends SpectrumPage<FakeSpectrumPage<T>, T> {
+    static class FakeSpectrumPage extends SpectrumPage<FakeSpectrumPage, FakeData> {
 
         @JsWebElement
         private WebElement jsWebElement;
@@ -299,6 +394,14 @@ class SpectrumTestTest<T> {
         private List<WebElement> jsWebElementList;
     }
 
+    @Endpoint("blah")
+    @SuppressWarnings("unused")
+    static class FakeSpectrumPageVoid extends SpectrumPage<FakeSpectrumPageVoid, Void> {
+    }
+
     static class FakeSpectrumPageWithoutEndpoint<T> extends SpectrumPage<FakeSpectrumPageWithoutEndpoint<T>, T> {
+    }
+
+    static class FakeData {
     }
 }

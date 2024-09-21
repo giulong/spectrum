@@ -10,6 +10,7 @@ public class Data {
 
     private Map<String, User> users;
     private String checkboxEndpoint;
+    private String flashMessageId;
 
     @Getter
     public static class User {

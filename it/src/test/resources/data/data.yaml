@@ -7,3 +7,4 @@ users:
     password: pwd
 
 checkboxEndpoint: https://the-internet.herokuapp.com/checkboxes
+flashMessageId: flash
