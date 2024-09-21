@@ -114,7 +114,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         initPages();
     }
 
-    public void initPages() {
+    void initPages() {
         final Class<?> clazz = this.getClass();
         log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
 
@@ -138,7 +138,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     }
 
     @SneakyThrows
-    public SpectrumPage<?, Data> initPage(final Field spectrumPageField, final List<Field> sharedFields) {
+    SpectrumPage<?, Data> initPage(final Field spectrumPageField, final List<Field> sharedFields) {
         log.debug("Initializing page {}", spectrumPageField.getName());
 
         @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
@@ -161,7 +161,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         return spectrumPage;
     }
 
-    protected void initJsWebElements(final SpectrumPage<?, Data> spectrumPage) {
+    void initJsWebElements(final SpectrumPage<?, Data> spectrumPage) {
         final String className = spectrumPage.getClass().getSimpleName();
 
         Arrays.stream(spectrumPage.getClass().getDeclaredFields())
@@ -172,7 +172,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     }
 
     @SneakyThrows
-    protected void setJsWebElementProxy(final Field field, final SpectrumPage<?, Data> spectrumPage) {
+    void setJsWebElementProxy(final Field field, final SpectrumPage<?, Data> spectrumPage) {
         final Object value = field.get(spectrumPage);
 
         if (value instanceof List<?>) {
@@ -193,7 +193,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         field.set(spectrumPage, jsWebElementProxyBuilder.buildFor(value));
     }
 
-    protected void injectDataInPages() {
+    void injectDataInPages() {
         if (data != null) {
             log.debug("Data field was already injected from SpectrumTest");
             return;

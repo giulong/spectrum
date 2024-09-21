@@ -82,7 +82,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     @Shared
     StatefulExtentTest statefulExtentTest;
 
-    protected List<Field> getSharedFields() {
+    List<Field> getSharedFields() {
         return Arrays
                 .stream(SpectrumEntity.class.getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(Shared.class))
