@@ -52,6 +52,6 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
         log.debug("Current url: {}", currentUrl);
         log.debug("Page url:    {}", pageUrl);
 
-        return currentUrl.equals(pageUrl);
+        return currentUrl != null && currentUrl.equals(pageUrl);
     }
 }

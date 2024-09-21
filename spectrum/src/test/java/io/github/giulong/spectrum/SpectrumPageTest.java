@@ -69,7 +69,8 @@ class SpectrumPageTest {
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("current", "current", true),
-                arguments("page", "current", false)
+                arguments("page", "current", false),
+                arguments("page", null, false)
         );
     }
 

@@ -288,7 +288,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @return true if the WebElement has the provided css class
      */
     public boolean hasClass(final WebElement webElement, final String className) {
-        return Arrays.asList(webElement.getAttribute("class").split(" ")).contains(className);
+        final String attribute = webElement.getAttribute("class");
+
+        return attribute != null && Arrays.asList(attribute.split(" ")).contains(className);
     }
 
     /**
