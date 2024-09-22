@@ -4,6 +4,8 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.model.Report;
+import com.aventstack.extentreports.model.Test;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
@@ -22,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,10 +85,10 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     public void sessionClosed() {
         log.debug("Session closed hook");
 
-        final Configuration.Extent extent = configuration.getExtent();
-
+        sortTests();
         extentReports.flush();
 
+        final Configuration.Extent extent = configuration.getExtent();
         if (extent.isOpenAtEnd()) {
             log.debug("Opening extent report in default browser");
             Desktop.getDesktop().open(getReportPathFrom(extent).toFile());
@@ -109,6 +112,15 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         log.debug("Adding metadata '{}'. Current size: {}, max capacity: {}", file, queue.size(), maxSize);
         queue.shrinkTo(maxSize - 1).add(file);
         metadataManager.setSuccessfulQueueOf(this, queue);
+    }
+
+    public void sortTests() {
+        final Report report = extentReports.getReport();
+        final List<Test> tests = new ArrayList<>(report.getTestList());
+
+        tests.stream().map(Test::getName).forEach(extentReports::removeTest);
+        tests.sort(configuration.getExtent().getSort());
+        tests.forEach(report::addTest);
     }
 
     public void cleanupOldReportsIn(final String folder) {
