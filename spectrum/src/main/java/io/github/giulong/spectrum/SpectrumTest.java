@@ -91,7 +91,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     @BeforeEach
     @SuppressWarnings({"checkstyle:ParameterNumber", "checkstyle:HiddenField", "unused"})
-    public void beforeEach(final TestContext testContext, final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest,
+    void beforeEach(final TestContext testContext, final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest,
                            final WebDriver driver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
                            final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js,
                            final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
