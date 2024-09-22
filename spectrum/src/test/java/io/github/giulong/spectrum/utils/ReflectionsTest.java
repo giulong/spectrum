@@ -4,13 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ReflectionsTest {
+
+    @DisplayName("getGenericSuperclassOf should return the generic superclass of the provided class, looking it up to the provided limit")
+    @ParameterizedTest(name = "with class {0}")
+    @ValueSource(classes = {TestClass.class, TestParentClass.class})
+    public void getGenericSuperclassOf(final Class<?> clazz) {
+        final ParameterizedType type = Reflections.getGenericSuperclassOf(clazz, Parameterized.class);
+
+        assertEquals(String.class, type.getActualTypeArguments()[0]);
+    }
 
     @Test
     @DisplayName("getField should return the field with the provided name on the provided object")
@@ -50,6 +62,16 @@ class ReflectionsTest {
         final Dummy dummy = new Dummy(value);
 
         assertEquals(value, Reflections.getFieldValue(fieldName, dummy));
+    }
+
+    @Test
+    @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object, casted to the provided class")
+    public void getFieldValueCast() {
+        final String fieldName = "fieldString";
+        final String value = "value";
+        final Dummy dummy = new Dummy(value);
+
+        assertEquals(value, Reflections.getFieldValue(fieldName, dummy, String.class));
     }
 
     @Test
@@ -128,5 +150,18 @@ class ReflectionsTest {
     @NoArgsConstructor
     private static class DummyParent {
         private String parentField;
+    }
+
+    @SuppressWarnings("unused")
+    private static class Parameterized<T> {
+    }
+
+    private static class Parent extends Parameterized<String> {
+    }
+
+    private static class TestClass extends Parameterized<String> {
+    }
+
+    private static class TestParentClass extends Parent {
     }
 }

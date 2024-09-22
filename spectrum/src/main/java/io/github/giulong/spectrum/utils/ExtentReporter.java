@@ -4,6 +4,8 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.model.Report;
+import com.aventstack.extentreports.model.Test;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
@@ -22,6 +24,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +36,7 @@ import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTest
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
 import static java.util.Comparator.comparingLong;
+import static java.util.function.Predicate.not;
 import static lombok.AccessLevel.PROTECTED;
 
 @Slf4j
@@ -81,10 +85,10 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     public void sessionClosed() {
         log.debug("Session closed hook");
 
-        final Configuration.Extent extent = configuration.getExtent();
-
+        sortTests();
         extentReports.flush();
 
+        final Configuration.Extent extent = configuration.getExtent();
         if (extent.isOpenAtEnd()) {
             log.debug("Opening extent report in default browser");
             Desktop.getDesktop().open(getReportPathFrom(extent).toFile());
@@ -110,6 +114,15 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         metadataManager.setSuccessfulQueueOf(this, queue);
     }
 
+    public void sortTests() {
+        final Report report = extentReports.getReport();
+        final List<Test> tests = new ArrayList<>(report.getTestList());
+
+        tests.stream().map(Test::getName).forEach(extentReports::removeTest);
+        tests.sort(configuration.getExtent().getSort());
+        tests.forEach(report::addTest);
+    }
+
     public void cleanupOldReportsIn(final String folder) {
         final Retention retention = configuration.getExtent().getRetention();
         log.info("Extent reports to keep in {}: {}", folder, retention.getTotal());
@@ -126,7 +139,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
         final List<File> files = Arrays
                 .stream(folderContent)
-                .filter(file -> !file.isDirectory())
+                .filter(not(File::isDirectory))
                 .sorted(comparingLong(File::lastModified))
                 .toList();
 

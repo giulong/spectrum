@@ -59,6 +59,7 @@ class SpectrumPageTest {
     public void isLoaded(final String pageUrl, final String currentUrl, final boolean expected) {
         Reflections.setField("endpoint", spectrumPage, endpoint);
 
+        //noinspection DataFlowIssue
         when(webDriver.getCurrentUrl()).thenReturn(currentUrl + endpoint);
         when(configuration.getApplication()).thenReturn(application);
         when(application.getBaseUrl()).thenReturn(pageUrl);

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Comparator.comparingLong;
+import static java.util.function.Predicate.not;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -243,7 +244,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private List<File> getRemainingFilesFrom(final File[] files, final String extension) {
         return Arrays
                 .stream(files)
-                .filter(file -> !file.isDirectory())
+                .filter(not(File::isDirectory))
                 .filter(file -> file.getName().endsWith(extension))
                 .sorted(comparingLong(File::lastModified))
                 .toList();

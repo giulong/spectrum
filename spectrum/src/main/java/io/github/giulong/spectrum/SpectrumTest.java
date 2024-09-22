@@ -6,7 +6,6 @@ import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
-import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -21,11 +20,13 @@ import org.openqa.selenium.support.PageFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -82,13 +83,15 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
-    protected List<SpectrumPage<?, Data>> spectrumPages;
+    protected List<SpectrumPage<?, ?>> spectrumPages;
 
     private JsWebElementProxyBuilder jsWebElementProxyBuilder;
 
+    private final YamlUtils yamlUtils = YamlUtils.getInstance();
+
     @BeforeEach
     @SuppressWarnings({"checkstyle:ParameterNumber", "checkstyle:HiddenField", "unused"})
-    public void beforeEach(final TestContext testContext, final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest,
+    void beforeEach(final TestContext testContext, final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest,
                            final WebDriver driver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
                            final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js,
                            final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
@@ -111,7 +114,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         initPages();
     }
 
-    public void initPages() {
+    void initPages() {
         final Class<?> clazz = this.getClass();
         log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
 
@@ -130,10 +133,12 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
                 .filter(f -> SpectrumPage.class.isAssignableFrom(f.getType()))
                 .map(f -> initPage(f, sharedFields))
                 .collect(toList());
+
+        injectDataInPages();
     }
 
     @SneakyThrows
-    public SpectrumPage<?, Data> initPage(final Field spectrumPageField, final List<Field> sharedFields) {
+    SpectrumPage<?, Data> initPage(final Field spectrumPageField, final List<Field> sharedFields) {
         log.debug("Initializing page {}", spectrumPageField.getName());
 
         @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
@@ -156,7 +161,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         return spectrumPage;
     }
 
-    protected void initJsWebElements(final SpectrumPage<?, Data> spectrumPage) {
+    void initJsWebElements(final SpectrumPage<?, Data> spectrumPage) {
         final String className = spectrumPage.getClass().getSimpleName();
 
         Arrays.stream(spectrumPage.getClass().getDeclaredFields())
@@ -167,7 +172,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     }
 
     @SneakyThrows
-    protected void setJsWebElementProxy(final Field field, final SpectrumPage<?, Data> spectrumPage) {
+    void setJsWebElementProxy(final Field field, final SpectrumPage<?, Data> spectrumPage) {
         final Object value = field.get(spectrumPage);
 
         if (value instanceof List<?>) {
@@ -186,5 +191,30 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         }
 
         field.set(spectrumPage, jsWebElementProxyBuilder.buildFor(value));
+    }
+
+    void injectDataInPages() {
+        if (data != null) {
+            log.debug("Data field was already injected from SpectrumTest");
+            return;
+        }
+
+        final List<SpectrumPage<?, ?>> dataSpectrumPages = spectrumPages
+                .stream()
+                .filter(not(spectrumPage -> Void.class.equals(Reflections.getGenericSuperclassOf(spectrumPage.getClass(), SpectrumPage.class).getActualTypeArguments()[1])))
+                .toList();
+
+        if (!dataSpectrumPages.isEmpty()) {
+            final Type type = Reflections.getGenericSuperclassOf(dataSpectrumPages.getFirst().getClass(), SpectrumPage.class).getActualTypeArguments()[1];
+            final String typeName = type.getTypeName();
+
+            @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
+            final Data data = yamlUtils.read(String.format("%s/data.yaml", configuration.getData().getFolder()), dataClass);
+
+            dataSpectrumPages
+                    .stream()
+                    .peek(dataSpectrumPage -> log.trace("Running SpectrumTest<Void> with {}<{}>. Injecting data field.", dataSpectrumPage.getClass().getTypeName(), typeName))
+                    .forEach(dataSpectrumPage -> Reflections.setField("data", dataSpectrumPage, data));
+        }
     }
 }

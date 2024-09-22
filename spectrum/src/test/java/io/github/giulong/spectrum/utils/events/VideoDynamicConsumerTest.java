@@ -72,7 +72,7 @@ class VideoDynamicConsumerTest {
 
         assertNull(Reflections.getFieldValue("lastFrameDigest", videoDynamicConsumer));
         assertNull(Reflections.getFieldValue("lastFrameDisplayName", videoDynamicConsumer));
-        assertEquals(MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(), ((MessageDigest) Reflections.getFieldValue("messageDigest", videoDynamicConsumer)).getAlgorithm());
+        assertEquals(MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(), (Reflections.getFieldValue("messageDigest", videoDynamicConsumer, MessageDigest.class)).getAlgorithm());
     }
 
     @Test
@@ -135,6 +135,6 @@ class VideoDynamicConsumerTest {
         assertTrue(videoDynamicConsumer.isNewFrame(screenshot, testData));
 
         assertArrayEquals(screenshotBytes, byteArrayArgumentCaptor.getValue());
-        assertArrayEquals(newFrameDigest, (byte[]) Reflections.getFieldValue("lastFrameDigest", videoDynamicConsumer));
+        assertArrayEquals(newFrameDigest, Reflections.getFieldValue("lastFrameDigest", videoDynamicConsumer, byte[].class));
     }
 }

@@ -15,7 +15,7 @@ import static org.openqa.selenium.By.id;
 @Slf4j
 @Endpoint("login")
 @SuppressWarnings("unused")
-public class LoginPage extends SpectrumPage<LoginPage, Void> {
+public class LoginPage extends SpectrumPage<LoginPage, Data> {
 
     @FindBy(id = "flash")
     private WebElement errorMessage;
@@ -38,7 +38,7 @@ public class LoginPage extends SpectrumPage<LoginPage, Void> {
     @Override
     public LoginPage waitForPageLoading() {
         log.info("Wait for page loading: waiting for errorMessage to disappear");
-        implicitWait.until((ExpectedCondition<Boolean>) driver -> isNotPresent(id("flash")));
+        implicitWait.until((ExpectedCondition<Boolean>) driver -> isNotPresent(id(data.getFlashMessageId())));
 
         return this;
     }

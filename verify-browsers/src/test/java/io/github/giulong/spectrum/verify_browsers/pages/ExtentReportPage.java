@@ -15,9 +15,15 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBys({
             @FindBy(className = "test-view"),
             @FindBy(className = "test-list"),
-            @FindBy(className = "test-item")
+            @FindBy(className = "test-item"),
     })
     private List<WebElement> testViewTests;
+
+    @FindBys({
+            @FindBy(className = "test-detail"),
+            @FindBy(tagName = "div"),
+    })
+    private List<WebElement> testViewTestsDetails;
 
     @FindBy(id = "demoit-skipped-test")
     private WebElement skippedTest;

@@ -1556,6 +1556,66 @@ extent:
 > Mind that the inline report has the same name of the regular one, so it's important to have them generated in separate folders
 > not to override each other.
 
+### Tests order
+
+By default, tests are shown in the html report in the order of execution. You can override this behaviour via the `extent.sort` key,
+which accepts an object.
+
+> 💡 **Tip**<br/>
+> Providing a fixed sorting can be particularly useful when running tests in parallel, so that they're shown in the same order
+> regardless of the execution randomness.
+
+The available sorters are:
+
+* `noOp`: leaves the tests in the order of execution. This is the default, as you can see in the internal
+  [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  sort: # How to sort tests in the produced report
+    noOp: { } # By default, no sort is applied
+```
+
+* `name`: sorts tests alphabetically by their name
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  sort:
+    name: { }
+```
+
+* `status`: sorts tests by their status (passed, failed...). You can decide which to show first via the `weights` map.
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  sort:
+    status:
+      weights: # Weights of tests statuses. A lower weight means the test is shown before those with a higher one in the Extent report
+        INFO: 10
+        PASS: 20
+        WARNING: 30
+        SKIP: 40
+        FAIL: 50
+```
+
+> ⚠️ **Default weights**<br/>
+> The weights shown in the snippet above are the default, meaning **passed** tests are shown before **skipped** ones,
+> which in turn are shown before those that **failed**. If this order is fine for you, there's no need to explicitly provide those weights. You can just write:
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  sort:
+    status: { }
+```
+
 ### Custom locators
 
 Selenium doesn't provide any way to get a webElement's locator, by design. So, Spectrum extracts the locator from the `webElement.toString()`.

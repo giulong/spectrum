@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
 import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
@@ -154,6 +155,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Path to the custom js to apply. Relative to the resources folder")
         private String js;
+
+        @JsonPropertyDescription("How to sort tests in the produced report")
+        private TestsComparator sort;
     }
 
     @Getter

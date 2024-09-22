@@ -11,6 +11,7 @@ import java.util.List;
 
 import static java.lang.Math.clamp;
 import static java.lang.Math.max;
+import static java.util.function.Predicate.not;
 
 @Slf4j
 @Getter
@@ -44,7 +45,7 @@ public class Retention {
 
         final List<File> deletableFiles = files
                 .stream()
-                .filter(file -> !successfulFilesToKeep.contains(file))
+                .filter(not(successfulFilesToKeep::contains))
                 .toList();
 
         for (int i = 0; i < toDelete; i++) {

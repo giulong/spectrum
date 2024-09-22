@@ -1,18 +1,22 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.TestYaml;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.YamlUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.*;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
@@ -90,9 +94,10 @@ class DataResolverTest {
         );
     }
 
-    @Test
     @DisplayName("resolveParameter should load the data class from client side and deserialize the data.yaml on it")
-    public void resolveParameter() {
+    @ParameterizedTest(name = "with class {0}")
+    @ValueSource(classes = {TestClass.class, TestParentClass.class})
+    public void resolveParameter(final Class<?> clazz) {
         final String dataFolder = "dataFolder";
 
         when(extensionContext.getRoot()).thenReturn(rootContext);
@@ -101,7 +106,7 @@ class DataResolverTest {
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(dataFolder);
 
-        doReturn(TestClass.class).when(extensionContext).getRequiredTestClass();
+        doReturn(clazz).when(extensionContext).getRequiredTestClass();
 
         when(yamlUtils.read(eq(dataFolder + "/data.yaml"), any())).thenReturn(data);
 
@@ -114,10 +119,11 @@ class DataResolverTest {
         assertEquals(data, actual);
     }
 
-    @Test
     @DisplayName("resolveParameter should return null if Void is provided as generic Data")
-    public void resolveParameterVoid() {
-        doReturn(VoidClass.class).when(extensionContext).getRequiredTestClass();
+    @ParameterizedTest(name = "with class {0}")
+    @ValueSource(classes = {VoidClass.class, VoidParentClass.class})
+    public void resolveParameterVoid(final Class<?> clazz) {
+        doReturn(clazz).when(extensionContext).getRequiredTestClass();
 
         assertNull(dataResolver.resolveParameter(parameterContext, extensionContext));
 
@@ -125,13 +131,21 @@ class DataResolverTest {
         verifyNoInteractions(rootContext);
     }
 
-    @SuppressWarnings("unused")
-    private static class Parameterized<T> {
+    private static class Parent extends SpectrumTest<String> {
     }
 
-    private static class TestClass extends Parameterized<String> {
+    private static class TestClass extends SpectrumTest<String> {
     }
 
-    private static class VoidClass extends Parameterized<Void> {
+    private static class TestParentClass extends Parent {
+    }
+
+    private static class ParentVoid extends SpectrumTest<Void> {
+    }
+
+    private static class VoidClass extends SpectrumTest<Void> {
+    }
+
+    private static class VoidParentClass extends ParentVoid {
     }
 }
