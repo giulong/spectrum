@@ -8,7 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -88,7 +91,16 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());
 
-        assertTrue(extentReportPage.getVideoFilesItUpload().getAttribute("class").contains("class-added-from-js"));
+        assertTrue(Objects.requireNonNull(extentReportPage.getVideoFilesItUpload().getAttribute("class")).contains("class-added-from-js"));
+
+        final List<String> originalTests = extentReportPage
+                .getTestViewTestsDetails()
+                .stream()
+                .map(webElement -> webElement.getAttribute("id"))
+                .toList();
+
+        final List<String> sortedTest = new ArrayList<>(originalTests).stream().sorted().toList();
+        assertEquals(originalTests, sortedTest);
     }
 
     @Test
@@ -102,11 +114,12 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
     public void inlineReport() {
         commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report.html", Path.of(System.getProperty("user.dir")).getParent()));
 
-        assertThat(extentReportPage.getVideoDemoItSendingCustomEvents().getAttribute("src"), matchesPattern(VIDEO_BASE64));
+        assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getAttribute("src")), matchesPattern(VIDEO_BASE64));
         extentReportPage
                 .getInlineImages()
                 .stream()
                 .map(inlineImage -> inlineImage.getAttribute("src"))
+                .map(Objects::requireNonNull)
                 .forEach(src -> assertThat(src, matchesPattern(IMAGE_BASE64)));
     }
 
@@ -114,7 +127,7 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
         return extentReportPage.getTestViewTests()
                 .stream()
                 .map(webElement -> webElement.getAttribute("status"))
-                .filter(s -> s.equals(status))
+                .filter(status::equals)
                 .count();
     }
 }
