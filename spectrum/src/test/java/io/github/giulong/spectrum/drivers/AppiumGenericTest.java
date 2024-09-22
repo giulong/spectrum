@@ -61,7 +61,7 @@ class AppiumGenericTest {
 
         appiumGeneric.buildCapabilities();
 
-        final Capabilities actual = (Capabilities) Reflections.getFieldValue("capabilities", appiumGeneric);
+        final Capabilities actual = Reflections.getFieldValue("capabilities", appiumGeneric, Capabilities.class);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

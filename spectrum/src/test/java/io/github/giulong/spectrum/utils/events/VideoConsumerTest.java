@@ -399,7 +399,7 @@ class VideoConsumerTest {
         videoConsumer.init();
 
         assertNull(Reflections.getFieldValue("lastFrameDigest", videoConsumer));
-        assertEquals(MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(), ((MessageDigest) Reflections.getFieldValue("messageDigest", videoConsumer)).getAlgorithm());
+        assertEquals(MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(), (Reflections.getFieldValue("messageDigest", videoConsumer, MessageDigest.class)).getAlgorithm());
     }
 
     @Test
@@ -490,7 +490,7 @@ class VideoConsumerTest {
         assertTrue(videoConsumer.isNewFrame(screenshot1, testData));
 
         assertArrayEquals(screenshotBytes, byteArrayArgumentCaptor.getValue());
-        assertArrayEquals(newFrameDigest, (byte[]) Reflections.getFieldValue("lastFrameDigest", videoConsumer));
+        assertArrayEquals(newFrameDigest, Reflections.getFieldValue("lastFrameDigest", videoConsumer, byte[].class));
     }
 
     @Test
@@ -508,7 +508,7 @@ class VideoConsumerTest {
         assertFalse(videoConsumer.isNewFrame(screenshot1, testData));
 
         assertArrayEquals(screenshotBytes, byteArrayArgumentCaptor.getValue());
-        assertArrayEquals(lastFrameDigest, (byte[]) Reflections.getFieldValue("lastFrameDigest", videoConsumer));
+        assertArrayEquals(lastFrameDigest, Reflections.getFieldValue("lastFrameDigest", videoConsumer, byte[].class));
     }
 
     @Test

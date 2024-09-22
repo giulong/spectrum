@@ -407,6 +407,7 @@ class SpectrumEntityTest {
 
     public static Stream<Arguments> hasClassProvider() {
         return Stream.of(
+                arguments(null, false),
                 arguments("", false),
                 arguments("cssClass", true),
                 arguments("one cssClass another", true)
@@ -424,6 +425,7 @@ class SpectrumEntityTest {
 
     public static Stream<Arguments> hasClassesProvider() {
         return Stream.of(
+                arguments(null, false),
                 arguments("", false),
                 arguments("cssClass", false),
                 arguments("one cssClass another", true)

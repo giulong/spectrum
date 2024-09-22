@@ -1,6 +1,8 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.YamlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -8,7 +10,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -27,8 +28,7 @@ public class DataResolver<Data> implements ParameterResolver {
 
     @Override
     public Data resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
-        final ParameterizedType dataType = (ParameterizedType) context.getRequiredTestClass().getGenericSuperclass();
-        final Type type = dataType.getActualTypeArguments()[0];
+        final Type type = Reflections.getGenericSuperclassOf(context.getRequiredTestClass(), SpectrumTest.class).getActualTypeArguments()[0];
 
         if (Void.class.equals(type)) {
             log.debug("Running an instance of SpectrumTest<Void>. No Data class injected in test '{}'", context.getDisplayName());

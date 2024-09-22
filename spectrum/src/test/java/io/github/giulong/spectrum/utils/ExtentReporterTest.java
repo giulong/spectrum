@@ -5,10 +5,12 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.markuputils.ExtentColor;
 import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.model.Report;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.*;
@@ -43,6 +45,8 @@ import static org.mockito.Mockito.*;
 class ExtentReporterTest {
 
     private static final String REPORT_FOLDER = "reportFolder";
+    private static final String NAME_1 = "name1";
+    private static final String NAME_2 = "name2";
 
     private MockedStatic<TestData> testDataMockedStatic;
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
@@ -141,6 +145,18 @@ class ExtentReporterTest {
     private SpectrumTest<?> spectrumTest;
 
     @Mock
+    private Report report;
+
+    @Mock
+    private com.aventstack.extentreports.model.Test test1;
+
+    @Mock
+    private com.aventstack.extentreports.model.Test test2;
+
+    @Mock
+    private TestsComparator sort;
+
+    @Mock
     private MetadataManager metadataManager;
 
     @Captor
@@ -181,6 +197,16 @@ class ExtentReporterTest {
         metadataManagerMockedStatic.close();
         desktopMockedStatic.close();
         extentSparkReporterConfigMockedStatic.close();
+    }
+
+    private void sortTestStubs() {
+        when(extentReports.getReport()).thenReturn(report);
+        when(report.getTestList()).thenReturn(List.of(test1, test2));
+        when(test1.getName()).thenReturn(NAME_1);
+        when(test2.getName()).thenReturn(NAME_2);
+
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getSort()).thenReturn(sort);
     }
 
     private void cleanupOldReportsStubs() {
@@ -285,6 +311,7 @@ class ExtentReporterTest {
         final int total = 123;
 
         cleanupOldReportsStubs();
+        sortTestStubs();
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
@@ -308,6 +335,7 @@ class ExtentReporterTest {
         final String fileName = "fileName";
 
         cleanupOldReportsStubs();
+        sortTestStubs();
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
@@ -395,6 +423,19 @@ class ExtentReporterTest {
 
         verify(fileFixedSizeQueue).add(file1);
         assertEquals(fileFixedSizeQueue, reports.get(namespace));
+    }
+
+    @Test
+    @DisplayName("sortTests should sort the tests with the configured comparator")
+    public void sortTests() {
+        sortTestStubs();
+
+        extentReporter.sortTests();
+
+        verify(extentReports).removeTest(NAME_1);
+        verify(extentReports).removeTest(NAME_2);
+        verify(report).addTest(test1);
+        verify(report).addTest(test2);
     }
 
     @Test
