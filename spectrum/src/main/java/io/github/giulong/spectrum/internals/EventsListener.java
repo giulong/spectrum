@@ -80,19 +80,21 @@ public class EventsListener implements WebDriverListener {
     @SneakyThrows
     protected void apply(final boolean condition, final Consumer<String> logConsumer, final Consumer<String> extentConsumer,
                          final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
+        if (!condition) {
+            return;
+        }
+
         final long wait = event.getWait();
         if (wait > 0) {
             log.debug("Waiting {} ms before event processing", wait);
             Thread.sleep(wait);
         }
 
-        if (condition) {
-            final String message = String.format(event.getMessage(), parse(args).toArray());
+        final String message = String.format(event.getMessage(), parse(args).toArray());
 
-            logConsumer.accept(message.replaceAll(TAG, ""));
-            record(frame);
-            extentConsumer.accept(message);
-        }
+        logConsumer.accept(message.replaceAll(TAG, ""));
+        record(frame);
+        extentConsumer.accept(message);
     }
 
     protected void listenTo(final Frame frame, final Configuration.Drivers.Event event, final Object... args) {

@@ -273,7 +273,6 @@ class EventsListenerTest {
     public void listenTraceOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(TRACE);
-        when(event.getWait()).thenReturn(wait);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
@@ -301,7 +300,6 @@ class EventsListenerTest {
     public void listenDebugOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(DEBUG);
-        when(event.getWait()).thenReturn(wait);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
@@ -329,7 +327,6 @@ class EventsListenerTest {
     public void listenInfoOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(INFO);
-        when(event.getWait()).thenReturn(wait);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
@@ -360,7 +357,6 @@ class EventsListenerTest {
     public void listenWarnOff() {
         ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(WARN);
-        when(event.getWait()).thenReturn(wait);
 
         eventsListener.listenTo(AUTO_BEFORE, event, arg);
         verify(event, never()).getMessage();
