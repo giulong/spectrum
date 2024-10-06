@@ -1,24 +1,28 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.drivers.Driver;
-import io.github.giulong.spectrum.internals.EventsListener;
+import io.github.giulong.spectrum.internals.SpectrumWebDriverListener;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
+import io.github.giulong.spectrum.utils.web_driver_events.HtmlReportConsumer;
+import io.github.giulong.spectrum.utils.web_driver_events.LogConsumer;
+import io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer;
+import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedConstruction;
-import org.mockito.MockedStatic;
+import org.mockito.*;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -31,8 +35,11 @@ import static org.mockito.Mockito.*;
 
 class DriverResolverTest {
 
-    private static MockedStatic<EventsListener> eventsListenerMockedStatic;
+    private static MockedStatic<SpectrumWebDriverListener> eventsListenerMockedStatic;
     private static MockedStatic<Pattern> patternMockedStatic;
+    private static MockedStatic<LogConsumer> logConsumerMockedStatic;
+    private static MockedStatic<HtmlReportConsumer> htmlReportConsumerMockedStatic;
+    private static MockedStatic<ScreenshotConsumer> screenshotConsumerMockedStatic;
 
     @Mock
     private ContextManager contextManager;
@@ -61,7 +68,7 @@ class DriverResolverTest {
     @Mock
     private Driver<?, ?, ?> driver;
 
-    @Mock
+    @Mock(extraInterfaces = TakesScreenshot.class)
     private WebDriver webDriver;
 
     @Mock
@@ -74,10 +81,28 @@ class DriverResolverTest {
     private Configuration.Drivers.Events events;
 
     @Mock
-    private EventsListener.EventsListenerBuilder eventsListenerBuilder;
+    private SpectrumWebDriverListener.SpectrumWebDriverListenerBuilder spectrumWebDriverListenerBuilder;
 
     @Mock
-    private EventsListener eventsListener;
+    private SpectrumWebDriverListener spectrumWebDriverListener;
+
+    @Mock
+    private LogConsumer.LogConsumerBuilder logConsumerBuilder;
+
+    @Mock
+    private LogConsumer logConsumer;
+
+    @Mock
+    private HtmlReportConsumer.HtmlReportConsumerBuilder htmlReportConsumerBuilder;
+
+    @Mock
+    private HtmlReportConsumer htmlReportConsumer;
+
+    @Mock
+    private ScreenshotConsumer.ScreenshotConsumerBuilder screenshotConsumerBuilder;
+
+    @Mock
+    private ScreenshotConsumer screenshotConsumer;
 
     @Mock
     private StatefulExtentTest statefulExtentTest;
@@ -94,6 +119,9 @@ class DriverResolverTest {
     @Mock
     private Pattern pattern;
 
+    @Captor
+    private ArgumentCaptor<List<Consumer<WebDriverEvent>>> consumersArgumentCaptor;
+
     @InjectMocks
     private DriverResolver driverResolver;
 
@@ -101,14 +129,20 @@ class DriverResolverTest {
     public void beforeEach() {
         Reflections.setField("contextManager", driverResolver, contextManager);
 
-        eventsListenerMockedStatic = mockStatic(EventsListener.class);
+        eventsListenerMockedStatic = mockStatic(SpectrumWebDriverListener.class);
         patternMockedStatic = mockStatic(Pattern.class);
+        logConsumerMockedStatic = mockStatic(LogConsumer.class);
+        htmlReportConsumerMockedStatic = mockStatic(HtmlReportConsumer.class);
+        screenshotConsumerMockedStatic = mockStatic(ScreenshotConsumer.class);
     }
 
     @AfterEach
     public void afterEach() {
         eventsListenerMockedStatic.close();
         patternMockedStatic.close();
+        logConsumerMockedStatic.close();
+        htmlReportConsumerMockedStatic.close();
+        screenshotConsumerMockedStatic.close();
     }
 
     @Test
@@ -134,18 +168,28 @@ class DriverResolverTest {
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(configuration.getVideo()).thenReturn(video);
 
-        when(EventsListener.builder()).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.locatorPattern(pattern)).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.statefulExtentTest(statefulExtentTest)).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.video(video)).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.testData(testData)).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.driver(webDriver)).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.events(events)).thenReturn(eventsListenerBuilder);
-        when(eventsListenerBuilder.build()).thenReturn(eventsListener);
+        when(LogConsumer.builder()).thenReturn(logConsumerBuilder);
+        when(logConsumerBuilder.build()).thenReturn(logConsumer);
+
+        when(HtmlReportConsumer.builder()).thenReturn(htmlReportConsumerBuilder);
+        when(htmlReportConsumerBuilder.statefulExtentTest(statefulExtentTest)).thenReturn(htmlReportConsumerBuilder);
+        when(htmlReportConsumerBuilder.build()).thenReturn(htmlReportConsumer);
+
+        when(ScreenshotConsumer.builder()).thenReturn(screenshotConsumerBuilder);
+        when(screenshotConsumerBuilder.driver((TakesScreenshot) webDriver)).thenReturn(screenshotConsumerBuilder);
+        when(screenshotConsumerBuilder.testData(testData)).thenReturn(screenshotConsumerBuilder);
+        when(screenshotConsumerBuilder.video(video)).thenReturn(screenshotConsumerBuilder);
+        when(screenshotConsumerBuilder.build()).thenReturn(screenshotConsumer);
+
+        when(SpectrumWebDriverListener.builder()).thenReturn(spectrumWebDriverListenerBuilder);
+        when(spectrumWebDriverListenerBuilder.locatorPattern(pattern)).thenReturn(spectrumWebDriverListenerBuilder);
+        when(spectrumWebDriverListenerBuilder.events(events)).thenReturn(spectrumWebDriverListenerBuilder);
+        when(spectrumWebDriverListenerBuilder.consumers(consumersArgumentCaptor.capture())).thenReturn(spectrumWebDriverListenerBuilder);
+        when(spectrumWebDriverListenerBuilder.build()).thenReturn(spectrumWebDriverListener);
 
         //noinspection rawtypes
         MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, context) -> {
-            assertEquals(eventsListener, ((WebDriverListener[]) context.arguments().getFirst())[0]);
+            assertEquals(spectrumWebDriverListener, ((WebDriverListener[]) context.arguments().getFirst())[0]);
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         });
@@ -154,6 +198,7 @@ class DriverResolverTest {
         verify(contextManager).put(context, DRIVER, actual);
 
         assertEquals(decoratedWebDriver, actual);
+        assertEquals(List.of(logConsumer, htmlReportConsumer, screenshotConsumer), consumersArgumentCaptor.getValue());
 
         mockedConstruction.close();
     }

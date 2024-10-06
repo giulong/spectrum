@@ -2,70 +2,47 @@ package io.github.giulong.spectrum.internals;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.markuputils.Markup;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Event;
-import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.video.Video;
-import lombok.SneakyThrows;
+import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
+import org.mockito.MockedStatic;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static ch.qos.logback.classic.Level.*;
-import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
+import static ch.qos.logback.classic.Level.ALL;
+import static ch.qos.logback.classic.Level.OFF;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
-import static org.openqa.selenium.OutputType.BYTES;
+import static org.slf4j.event.Level.*;
 
-class EventsListenerTest {
+class SpectrumWebDriverListenerTest {
 
-    private static final String UUID_REGEX = AUTO_AFTER.getValue() + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
+    private static MockedStatic<WebDriverEvent> webDriverEventMockedStatic;
 
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
-    private final String tagsMessage = "message <div>" + arg + "</div>";
     private final long wait = 1L;
 
     @Mock
-    private ExtensionContext.Store store;
-
-    @Mock
     private Event event;
-
-    @Mock
-    private ExtentTest extentTest;
-
-    @Mock
-    private StatefulExtentTest statefulExtentTest;
 
     @Mock
     private WebElement webElement1;
@@ -76,14 +53,23 @@ class EventsListenerTest {
     @Mock
     private WebElement webElement3;
 
-    @Mock(extraInterfaces = TakesScreenshot.class)
-    private WebDriver webDriver;
+    @Mock
+    private List<Consumer<WebDriverEvent>> consumers;
 
     @Mock
-    private TestData testData;
+    private Consumer<WebDriverEvent> consumer1;
 
     @Mock
-    private Video video;
+    private Consumer<WebDriverEvent> consumer2;
+
+    @Mock
+    private Iterator<Consumer<WebDriverEvent>> iterator;
+
+    @Mock
+    private WebDriverEvent.WebDriverEventBuilder webDriverEventBuilder;
+
+    @Mock
+    private WebDriverEvent webDriverEvent;
 
     @Mock
     private Pattern locatorPattern;
@@ -91,27 +77,35 @@ class EventsListenerTest {
     @Mock
     private Matcher matcher;
 
-    @Captor
-    private ArgumentCaptor<Markup> markupArgumentCaptor;
-
     @InjectMocks
-    private EventsListener eventsListener;
+    private SpectrumWebDriverListener spectrumWebDriverListener;
 
     @BeforeEach
     public void beforeEach() {
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(INFO);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
+
+        webDriverEventMockedStatic = mockStatic(WebDriverEvent.class);
     }
 
-    @SneakyThrows
-    private Path recordViewFrameForStubs() {
-        final Path path = Files.createTempDirectory("reportsFolder");
-        path.toFile().deleteOnExit();
+    @AfterEach
+    public void afterEach() {
+        webDriverEventMockedStatic.close();
+    }
 
-        when(testData.getScreenshotFolderPath()).thenReturn(path);
-        when(video.shouldRecord(path.resolve(anyString()).getFileName().toString())).thenReturn(true);
-        when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
+    @SuppressWarnings("unchecked")
+    private void webDriverEventStubsAtLevel(final org.slf4j.event.Level level) {
+        final String formattedMessage = "message <div>arg</div>";
 
-        return path;
+        when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.frame(AUTO_BEFORE)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.level(level)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.message(formattedMessage)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
+
+        when(consumers.iterator()).thenReturn(iterator);
+        doCallRealMethod().when(consumers).forEach(any());
+        when(iterator.hasNext()).thenReturn(true, true, false);
+        when(iterator.next()).thenReturn(consumer1, consumer2);
     }
 
     @DisplayName("extractSelectorFrom should extract just the relevant info from the webElement")
@@ -122,7 +116,7 @@ class EventsListenerTest {
         when(webElement1.toString()).thenReturn(fullWebElement);
         when(matcher.find()).thenReturn(true).thenReturn(false);
         when(matcher.group(1)).thenReturn(expected);
-        assertEquals(expected, eventsListener.extractSelectorFrom(webElement1));
+        assertEquals(expected, spectrumWebDriverListener.extractSelectorFrom(webElement1));
     }
 
     public static Stream<Arguments> valuesProvider() {
@@ -141,7 +135,7 @@ class EventsListenerTest {
         when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
         when(webElement1.toString()).thenReturn(fullWebElement);
         when(matcher.find()).thenReturn(false);
-        assertEquals("", eventsListener.extractSelectorFrom(webElement1));
+        assertEquals("", spectrumWebDriverListener.extractSelectorFrom(webElement1));
     }
 
     @Test
@@ -180,7 +174,7 @@ class EventsListenerTest {
 
         final Object[] args = new Object[]{webElement1, s, null, webElement2, webElement3};
 
-        assertEquals(expected, eventsListener.parse(args));
+        assertEquals(expected, spectrumWebDriverListener.parse(args));
     }
 
     @Test
@@ -219,159 +213,145 @@ class EventsListenerTest {
 
         final Object[] args = new Object[]{webElement1, s, null, webElement2, webElement3};
 
-        assertEquals(expected, eventsListener.parse(args));
-    }
-
-    @Test
-    @DisplayName("recordVideoFrameFor should take a webdriver screenshot")
-    public void recordVideoFrameFor() {
-        final Path path = recordViewFrameForStubs();
-        final Path screenshotPath = eventsListener.record(AUTO_AFTER);
-
-        assertEquals(path, screenshotPath.getParent());
-        assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
-    }
-
-    @Test
-    @DisplayName("recordVideoFrameFor should take a webdriver screenshot")
-    public void recordVideoFrameForDisabled() throws IOException {
-        final Path path = Files.createTempDirectory("reportsFolder");
-        path.toFile().deleteOnExit();
-
-        when(testData.getScreenshotFolderPath()).thenReturn(path);
-        when(video.shouldRecord(path.resolve(anyString()).getFileName().toString())).thenReturn(false);
-
-        assertNull(eventsListener.record(AUTO_AFTER));
-    }
-
-    @Test
-    @DisplayName("OFF level: listen should not log the provided event")
-    public void listenOff() {
-        when(event.getLevel()).thenReturn(Level.OFF);
-
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
-        verify(event, never()).getMessage();
+        assertEquals(expected, spectrumWebDriverListener.parse(args));
     }
 
     @Test
     @DisplayName("TRACE level: listen should log the provided event with its args")
     public void listenTrace() {
-        recordViewFrameForStubs();
+        webDriverEventStubsAtLevel(TRACE);
 
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(TRACE);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.TRACE);
         when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(TRACE);
+        when(event.getLevel()).thenReturn(Level.TRACE);
         when(event.getWait()).thenReturn(0L);
-        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
-        verify(extentTest).info(tagsMessage);
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
+        verify(consumer1).accept(webDriverEvent);
+        verify(consumer2).accept(webDriverEvent);
     }
 
     @Test
     @DisplayName("TRACE level off: listen should not log the provided event")
     public void listenTraceOff() {
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(TRACE);
-        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
+        when(event.getLevel()).thenReturn(Level.TRACE);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
         verify(event, never()).getMessage();
-        verify(extentTest, never()).info(tagsMessage);
+        verifyNoInteractions(consumers);
     }
 
     @Test
     @DisplayName("DEBUG level: listen should log the provided event with its args")
     public void listenDebug() {
-        recordViewFrameForStubs();
+        webDriverEventStubsAtLevel(DEBUG);
 
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(DEBUG);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.DEBUG);
         when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(DEBUG);
+        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.DEBUG);
         when(event.getWait()).thenReturn(wait);
-        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
-        verify(extentTest).info(tagsMessage);
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
+        verify(consumer1).accept(webDriverEvent);
+        verify(consumer2).accept(webDriverEvent);
     }
 
     @Test
     @DisplayName("DEBUG level off: listen should not log the provided event")
     public void listenDebugOff() {
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(DEBUG);
-        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
+        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.DEBUG);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
         verify(event, never()).getMessage();
-        verify(extentTest, never()).info(tagsMessage);
+        verifyNoInteractions(consumers);
     }
 
     @Test
     @DisplayName("INFO level: listen should log the provided event with its args")
     public void listenInfo() {
-        recordViewFrameForStubs();
+        webDriverEventStubsAtLevel(INFO);
 
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(INFO);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
         when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(INFO);
+        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
         when(event.getWait()).thenReturn(wait);
-        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
-        verify(extentTest).info(tagsMessage);
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
+        verify(consumer1).accept(webDriverEvent);
+        verify(consumer2).accept(webDriverEvent);
     }
 
     @Test
     @DisplayName("INFO level off: listen should not log the provided event")
     public void listenInfoOff() {
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(INFO);
-        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
+        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
         verify(event, never()).getMessage();
-        verify(extentTest, never()).info(tagsMessage);
+        verifyNoInteractions(consumers);
     }
 
     @Test
     @DisplayName("WARN level: listen should log the provided event with its args")
     public void listenWarn() {
-        recordViewFrameForStubs();
+        webDriverEventStubsAtLevel(WARN);
 
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(WARN);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.WARN);
         when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(WARN);
+        when(event.getLevel()).thenReturn(Level.WARN);
         when(event.getWait()).thenReturn(wait);
-        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
-        verify(extentTest).warning(markupArgumentCaptor.capture());
-        final Markup markup = markupArgumentCaptor.getValue();
-        assertEquals("<span class='badge white-text yellow'>" + tagsMessage + "</span>", markup.getMarkup());
+        verify(consumer1).accept(webDriverEvent);
+        verify(consumer2).accept(webDriverEvent);
     }
 
     @Test
     @DisplayName("WARN level off: listen should not log the provided event")
     public void listenWarnOff() {
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(WARN);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
+        when(event.getLevel()).thenReturn(Level.WARN);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
         verify(event, never()).getMessage();
-        verify(extentTest, never()).warning(markupArgumentCaptor.capture());
+        verifyNoInteractions(consumers);
     }
 
     @Test
-    @DisplayName("Not matching level: listen should not log the provided event")
+    @DisplayName("Default level: listen should log at DEBUG level as per logback default")
     public void listenDefault() {
-        ((Logger) LoggerFactory.getLogger(EventsListener.class)).setLevel(ALL);
+        webDriverEventStubsAtLevel(DEBUG);
+
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ALL);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(ALL);
 
-        eventsListener.listenTo(AUTO_BEFORE, event, arg);
-        verify(store, never()).get(STATEFUL_EXTENT_TEST, ExtentTest.class);
-        verify(extentTest, never()).warning(markupArgumentCaptor.capture());
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
+        verify(consumer1).accept(webDriverEvent);
+        verify(consumer2).accept(webDriverEvent);
+    }
+
+    @Test
+    @DisplayName("Default level: listen should log at DEBUG level as per logback default")
+    public void listenDefaultOFF() {
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
+        when(event.getLevel()).thenReturn(ALL);
+
+        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+
+        verify(event, never()).getMessage();
+        verifyNoInteractions(consumers);
     }
 }
