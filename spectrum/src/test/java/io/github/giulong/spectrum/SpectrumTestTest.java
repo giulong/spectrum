@@ -22,8 +22,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -174,11 +172,11 @@ class SpectrumTestTest {
         // initPages
         assertNull(childTest.toSkip);
         assertNotNull(childTest.childTestPage);
-        assertThat(childTest.childTestPage, instanceOf(FakeSpectrumPage.class));
+        assertInstanceOf(FakeSpectrumPage.class, childTest.childTestPage);
 
         assertNull(childTest.getParentToSkip());
         assertNotNull(childTest.getParentTestPage());
-        assertThat(childTest.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
+        assertInstanceOf(FakeSpectrumPage.class, childTest.getParentTestPage());
     }
 
     @Test
@@ -194,12 +192,12 @@ class SpectrumTestTest {
 
         assertNull(childTest.toSkip);
         assertNotNull(childTest.childTestPage);
-        assertThat(childTest.childTestPage, instanceOf(FakeSpectrumPage.class));
+        assertInstanceOf(FakeSpectrumPage.class, childTest.childTestPage);
         assertEquals(data, childTest.childTestPage.data);
 
         assertNull(childTest.getParentToSkip());
         assertNotNull(childTest.getParentTestPage());
-        assertThat(childTest.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
+        assertInstanceOf(FakeSpectrumPage.class, childTest.getParentTestPage());
         assertEquals(data, childTest.getParentTestPage().data);
     }
 
@@ -216,12 +214,12 @@ class SpectrumTestTest {
 
         assertNull(childTestVoid.toSkip);
         assertNotNull(childTestVoid.childTestPage);
-        assertThat(childTestVoid.childTestPage, instanceOf(FakeSpectrumPage.class));
+        assertInstanceOf(FakeSpectrumPage.class, childTestVoid.childTestPage);
         assertEquals(data, childTestVoid.childTestPage.data);
 
         assertNull(childTestVoid.getParentToSkip());
         assertNotNull(childTestVoid.getParentTestPage());
-        assertThat(childTestVoid.getParentTestPage(), instanceOf(FakeSpectrumPage.class));
+        assertInstanceOf(FakeSpectrumPage.class, childTestVoid.getParentTestPage());
         assertEquals(data, childTestVoid.getParentTestPage().data);
     }
 
@@ -231,7 +229,7 @@ class SpectrumTestTest {
         final SpectrumPage<?, FakeData> actual = spectrumTest.initPage(Reflections.getField("testPage", spectrumTest), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPage, actual);
-        assertThat(spectrumTest.testPage, instanceOf(FakeSpectrumPage.class));
+        assertInstanceOf(FakeSpectrumPage.class, spectrumTest.testPage);
 
         assertEquals("blah", spectrumTest.testPage.getEndpoint());
 
@@ -251,7 +249,7 @@ class SpectrumTestTest {
         final SpectrumPage<?, FakeData> actual = spectrumTest.initPage(Reflections.getField("testPageWithoutEndpoint", spectrumTest), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPageWithoutEndpoint, actual);
-        assertThat(spectrumTest.testPageWithoutEndpoint, instanceOf(FakeSpectrumPageWithoutEndpoint.class));
+        assertInstanceOf(FakeSpectrumPageWithoutEndpoint.class, spectrumTest.testPageWithoutEndpoint);
 
         assertEquals("", spectrumTest.testPageWithoutEndpoint.getEndpoint());
 
