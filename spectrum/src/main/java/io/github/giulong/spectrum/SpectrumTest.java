@@ -83,7 +83,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
-    protected List<SpectrumPage<?, ?>> spectrumPages;
+    private List<SpectrumPage<?, ?>> spectrumPages;
 
     private JsWebElementProxyBuilder jsWebElementProxyBuilder;
 

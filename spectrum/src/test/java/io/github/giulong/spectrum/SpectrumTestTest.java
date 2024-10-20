@@ -333,7 +333,7 @@ class SpectrumTestTest {
 
         final FakeSpectrumPage fakeSpectrumPage = mock(FakeSpectrumPage.class);
         final FakeSpectrumPageVoid fakeSpectrumPageVoid = mock(FakeSpectrumPageVoid.class);
-        childTestVoid.spectrumPages = List.of(fakeSpectrumPage, fakeSpectrumPageVoid);
+        Reflections.setField("spectrumPages", childTestVoid, List.of(fakeSpectrumPage, fakeSpectrumPageVoid));
 
         childTestVoid.injectDataInPages();
 
@@ -346,7 +346,7 @@ class SpectrumTestTest {
     void injectDataInPagesAllVoid() {
         final FakeSpectrumPageVoid fakeSpectrumPageVoid1 = mock(FakeSpectrumPageVoid.class);
         final FakeSpectrumPageVoid fakeSpectrumPageVoid2 = mock(FakeSpectrumPageVoid.class);
-        fakeParentSpectrumTestVoid.spectrumPages = List.of(fakeSpectrumPageVoid1, fakeSpectrumPageVoid2);
+        Reflections.setField("spectrumPages", fakeParentSpectrumTestVoid, List.of(fakeSpectrumPageVoid1, fakeSpectrumPageVoid2));
 
         fakeParentSpectrumTestVoid.injectDataInPages();
 
