@@ -2,7 +2,9 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.internals.SpectrumWebDriverListener;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ContextManager;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.utils.web_driver_events.HtmlReportConsumer;
 import io.github.giulong.spectrum.utils.web_driver_events.LogConsumer;
 import io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer;
@@ -54,10 +56,12 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .video(configuration.getVideo())
                 .build();
 
-        final WebDriverListener webDriverListener = SpectrumWebDriverListener.builder()
+        final WebDriverListener webDriverListener = SpectrumWebDriverListener
+                .builder()
                 .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
                 .events(events)
                 .consumers(List.of(logConsumer, htmlReportConsumer, screenshotConsumer))
+                .testContext(contextManager.get(context))
                 .build();
 
         final WebDriver decoratedDriver = new EventFiringDecorator<>(webDriverListener).decorate(driver);

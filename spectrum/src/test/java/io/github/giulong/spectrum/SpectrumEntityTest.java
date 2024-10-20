@@ -124,7 +124,7 @@ class SpectrumEntityTest {
                 .toList();
 
         // we're checking real size and names here, no mocks
-        assertEquals(14, actual.size());
+        assertEquals(15, actual.size());
         assertTrue(sharedFieldsNames.containsAll(List.of(
                 "configuration",
                 "extentReports",
@@ -138,7 +138,8 @@ class SpectrumEntityTest {
                 "downloadWait",
                 "js",
                 "data",
-                "statefulExtentTest"
+                "statefulExtentTest",
+                "testContext"
         )));
     }
 
@@ -400,7 +401,7 @@ class SpectrumEntityTest {
     @ParameterizedTest(name = "with class {0} we expect {1}")
     @MethodSource("hasClassProvider")
     public void hasClass(final String classes, final boolean expected) {
-        when(webElement.getAttribute("class")).thenReturn(classes);
+        doReturn(classes).when(webElement).getAttribute("class");
 
         assertEquals(expected, spectrumEntity.hasClass(webElement, "cssClass"));
     }
@@ -418,7 +419,7 @@ class SpectrumEntityTest {
     @ParameterizedTest(name = "with class {0} we expect {1}")
     @MethodSource("hasClassesProvider")
     public void hasClasses(final String classes, final boolean expected) {
-        when(webElement.getAttribute("class")).thenReturn(classes);
+        doReturn(classes).when(webElement).getAttribute("class");
 
         assertEquals(expected, spectrumEntity.hasClasses(webElement, "one", "cssClass"));
     }

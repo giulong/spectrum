@@ -92,9 +92,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     @BeforeEach
     @SuppressWarnings({"checkstyle:ParameterNumber", "checkstyle:HiddenField", "unused"})
     void beforeEach(final TestContext testContext, final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest,
-                           final WebDriver driver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
-                           final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js,
-                           final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
+                    final WebDriver driver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
+                    final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js,
+                    final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
         this.configuration = configuration;
         this.driver = driver;
         this.implicitWait = implicitWait;
@@ -110,6 +110,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.js = js;
         this.jsWebElementProxyBuilder = jsWebElementProxyBuilder;
         this.data = data;
+        this.testContext = testContext;
 
         initPages();
     }
@@ -156,6 +157,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         sharedFields.forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage));
 
         PageFactory.initElements(driver, spectrumPage);
+        spectrumPage.addSecuredWebElements();
         initJsWebElements(spectrumPage);
 
         return spectrumPage;

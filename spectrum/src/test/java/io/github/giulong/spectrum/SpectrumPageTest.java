@@ -1,7 +1,9 @@
 package io.github.giulong.spectrum;
 
+import io.github.giulong.spectrum.interfaces.Secured;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.TestContext;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,13 +12,13 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class SpectrumPageTest {
 
@@ -30,6 +32,9 @@ class SpectrumPageTest {
 
     @Mock
     private WebDriver webDriver;
+
+    @Mock
+    private TestContext testContext;
 
     @InjectMocks
     private DummySpectrumPage<?> spectrumPage;
@@ -74,7 +79,23 @@ class SpectrumPageTest {
         );
     }
 
+    @Test
+    @DisplayName("addSecuredWebElements should add all the @Secured web elements of the current page to its testContext")
+    public void addSecuredWebElements() {
+        spectrumPage.addSecuredWebElements();
+
+        verify(testContext).addSecuredWebElement(spectrumPage.securedWebElement);
+        verifyNoMoreInteractions(testContext);
+    }
+
     private static class DummySpectrumPage<T> extends SpectrumPage<DummySpectrumPage<T>, T> {
+
+        @SuppressWarnings("unused")
+        private WebElement webElement;
+
+        @Secured
+        @SuppressWarnings("unused")
+        private WebElement securedWebElement;
 
         public DummySpectrumPage() {
             configuration = SpectrumPageTest.configuration;

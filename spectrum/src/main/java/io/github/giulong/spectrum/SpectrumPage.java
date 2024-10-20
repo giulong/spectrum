@@ -1,7 +1,10 @@
 package io.github.giulong.spectrum;
 
+import io.github.giulong.spectrum.interfaces.Secured;
+import io.github.giulong.spectrum.utils.Reflections;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebElement;
 
 @Slf4j
 @Getter
@@ -53,5 +56,11 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
         log.debug("Page url:    {}", pageUrl);
 
         return pageUrl.equals(currentUrl);
+    }
+
+    void addSecuredWebElements() {
+        Reflections
+                .getAnnotatedFieldsValues(this, Secured.class, WebElement.class)
+                .forEach(testContext::addSecuredWebElement);
     }
 }

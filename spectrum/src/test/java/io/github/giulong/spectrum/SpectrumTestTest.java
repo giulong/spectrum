@@ -4,7 +4,6 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -152,8 +151,6 @@ class SpectrumTestTest {
         childTest.beforeEach(testContext, configuration, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
                 extentReports, actions, eventsDispatcher, js, jsWebElementProxyBuilder, data);
 
-        verifyNoInteractions(testContext);
-
         assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.driver);
         assertEquals(implicitWait, spectrumTest.implicitWait);
@@ -168,6 +165,7 @@ class SpectrumTestTest {
         assertEquals(testData, spectrumTest.testData);
         assertEquals(jsWebElementProxyBuilder, Reflections.getFieldValue("jsWebElementProxyBuilder", spectrumTest));
         assertEquals(data, spectrumTest.data);
+        assertEquals(testContext, spectrumTest.testContext);
 
         // initPages
         assertNull(childTest.toSkip);
@@ -225,7 +223,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("initPage should init the provided field")
-    public void testInitPage() {
+    public void initPage() {
         final SpectrumPage<?, FakeData> actual = spectrumTest.initPage(Reflections.getField("testPage", spectrumTest), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPage, actual);
@@ -241,6 +239,7 @@ class SpectrumTestTest {
         assertEquals(extentTest, spectrumTest.testPage.extentTest);
         assertEquals(actions, spectrumTest.testPage.actions);
         assertEquals(data, spectrumTest.testPage.data);
+        assertEquals(testContext, spectrumTest.testPage.testContext);
     }
 
     @Test
@@ -261,6 +260,7 @@ class SpectrumTestTest {
         assertEquals(extentTest, spectrumTest.testPageWithoutEndpoint.extentTest);
         assertEquals(actions, spectrumTest.testPageWithoutEndpoint.actions);
         assertEquals(data, spectrumTest.testPageWithoutEndpoint.data);
+        assertEquals(testContext, spectrumTest.testPageWithoutEndpoint.testContext);
     }
 
     @Test

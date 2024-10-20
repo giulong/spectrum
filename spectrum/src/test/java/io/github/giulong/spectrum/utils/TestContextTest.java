@@ -5,7 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.openqa.selenium.WebElement;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -20,6 +22,9 @@ class TestContextTest {
 
     @Mock
     private Function<String, String> function;
+
+    @Mock
+    private WebElement webElement;
 
     @InjectMocks
     private TestContext testContext;
@@ -60,5 +65,27 @@ class TestContextTest {
         when(store.computeIfAbsent(key, function)).thenReturn(value);
 
         assertEquals(value, testContext.computeIfAbsent(key, function, String.class));
+    }
+
+    @Test
+    @DisplayName("addSecuredWebElement should add the provided webElement to the internal list")
+    public void addSecuredWebElement() {
+        testContext.addSecuredWebElement(webElement);
+
+        assertEquals(List.of(webElement), Reflections.getFieldValue("securedWebElements", testContext));
+    }
+
+    @Test
+    @DisplayName("isSecuredWebElement should return true if the provided webElement is a secured one")
+    public void isSecuredWebElement() {
+        Reflections.setField("securedWebElements", testContext, List.of(webElement));
+
+        assertTrue(testContext.isSecuredWebElement(webElement));
+    }
+
+    @Test
+    @DisplayName("isSecuredWebElement should return false if the provided webElement is not a secured one")
+    public void isSecuredWebElementFalse() {
+        assertFalse(testContext.isSecuredWebElement(webElement));
     }
 }

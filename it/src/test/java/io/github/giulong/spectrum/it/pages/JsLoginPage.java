@@ -4,6 +4,7 @@ import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.it.data.Data;
+import io.github.giulong.spectrum.interfaces.Secured;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
@@ -28,6 +29,7 @@ public class JsLoginPage extends SpectrumPage<JsLoginPage, Void> {
 
     @FindBy(id = "password")
     @JsWebElement
+    @Secured
     private WebElement password;
 
     @FindBy(id = "login")

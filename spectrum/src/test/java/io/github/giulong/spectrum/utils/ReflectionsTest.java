@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
-import lombok.AllArgsConstructor;
+import io.github.giulong.spectrum.interfaces.Secured;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -75,6 +76,26 @@ class ReflectionsTest {
     }
 
     @Test
+    @DisplayName("getFieldValue should return the value of the provided field on the provided object, casted to the provided class")
+    public void getFieldValueField() {
+        final String fieldName = "fieldString";
+        final String value = "value";
+        final Dummy dummy = new Dummy(value);
+
+        assertEquals(value, Reflections.getFieldValue(Reflections.getField(fieldName, dummy), dummy, String.class));
+    }
+
+    @Test
+    @DisplayName("getValueOf should return the value of the provided field on the provided object, without looking into its superclasses")
+    public void getValueOf() {
+        final String fieldName = "fieldString";
+        final String value = "value";
+        final Dummy dummy = new Dummy(value);
+
+        assertEquals(value, Reflections.getValueOf(Reflections.getField(fieldName, dummy), dummy));
+    }
+
+    @Test
     @DisplayName("setField should set the field with the provided name on the provided object with the provided value")
     public void setFieldString() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";
@@ -124,15 +145,36 @@ class ReflectionsTest {
         assertEquals(parentField, Reflections.getFieldValue(parentField, dummyThird));
     }
 
+    @Test
+    @DisplayName("getAnnotatedFieldsValues should return the list of fields on the provided object which are annotated with the provided annotation, casting them to the provided class")
+    public void getAnnotatedFieldsValues() {
+        final String value = "value";
+        final Dummy dummy = new Dummy(null, value, null);
+        
+        assertEquals(List.of(value), Reflections.getAnnotatedFieldsValues(dummy, Secured.class, String.class));
+    }
+
     @SuppressWarnings({"unused", "FieldCanBeLocal"})
-    @AllArgsConstructor
     private static class Dummy extends DummyParent {
 
         private final String fieldString;
 
+        @Secured
+        private String secured;
+
+        public Dummy(String fieldString) {
+            this.fieldString = fieldString;
+        }
+
         public Dummy(String fieldString, String parentField) {
             super(parentField);
             this.fieldString = fieldString;
+        }
+
+        public Dummy(String fieldString, String secured, String parentField) {
+            super(parentField);
+            this.fieldString = fieldString;
+            this.secured = secured;
         }
     }
 
@@ -146,10 +188,15 @@ class ReflectionsTest {
     }
 
     @SuppressWarnings("unused")
-    @AllArgsConstructor
     @NoArgsConstructor
     private static class DummyParent {
+
+        @SuppressWarnings("FieldCanBeLocal")
         private String parentField;
+        
+        public DummyParent(String parentField) {
+            this.parentField = parentField;
+        }
     }
 
     @SuppressWarnings("unused")

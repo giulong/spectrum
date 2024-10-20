@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.internals;
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
+import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
 import lombok.Builder;
 import lombok.Generated;
@@ -35,6 +36,7 @@ public class SpectrumWebDriverListener implements WebDriverListener {
     private Pattern locatorPattern;
     private Events events;
     private List<Consumer<WebDriverEvent>> consumers;
+    private TestContext testContext;
 
     protected String extractSelectorFrom(final WebElement webElement) {
         final String fullWebElement = webElement.toString();
@@ -314,14 +316,26 @@ public class SpectrumWebDriverListener implements WebDriverListener {
     }
 
     @Override
-    @Generated
     public void beforeSendKeys(final WebElement element, final CharSequence... keysToSend) {
+        if (testContext.isSecuredWebElement(element)) {
+            log.debug("Masking keys to send to @Secured webElement");
+            listenTo(AUTO_BEFORE, events.getBeforeSendKeys(), element, "[***]");
+
+            return;
+        }
+
         listenTo(AUTO_BEFORE, events.getBeforeSendKeys(), element, Arrays.toString(keysToSend));
     }
 
     @Override
-    @Generated
     public void afterSendKeys(final WebElement element, final CharSequence... keysToSend) {
+        if (testContext.isSecuredWebElement(element)) {
+            log.debug("Masking keys sent to @Secured webElement");
+            listenTo(AUTO_AFTER, events.getAfterSendKeys(), element, "[***]");
+
+            return;
+        }
+
         listenTo(AUTO_AFTER, events.getAfterSendKeys(), element, Arrays.toString(keysToSend));
     }
 

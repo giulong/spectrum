@@ -4,9 +4,11 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @UtilityClass
@@ -50,6 +52,15 @@ public final class Reflections {
         return clazz.cast(getFieldValue(fieldName, object));
     }
 
+    public static <T> T getFieldValue(final Field field, final Object object, final Class<T> clazz) {
+        return getFieldValue(field.getName(), object, clazz);
+    }
+
+    @SneakyThrows
+    public static Object getValueOf(final Field field, final Object object) {
+        return field.get(object);
+    }
+
     public static void setField(final String fieldName, final Object object, final Object value) {
         final Field field = getField(fieldName, object);
         setField(field, object, value);
@@ -75,5 +86,15 @@ public final class Reflections {
         log.trace("Copying field {} from {} to {}", field.getName(), source.getClass().getSimpleName(), dest.getClass().getSimpleName());
         field.setAccessible(true);
         field.set(dest, field.get(source));
+    }
+
+    public static <T> List<T> getAnnotatedFieldsValues(final Object object, final Class<? extends Annotation> annotation, final Class<T> clazz) {
+        return Arrays
+                .stream(object.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(annotation))
+                .peek(f -> f.setAccessible(true))
+                .map(f -> getValueOf(f, object))
+                .map(clazz::cast)
+                .toList();
     }
 }
