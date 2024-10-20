@@ -8,7 +8,7 @@ import org.slf4j.event.Level;
 @Getter
 @Builder
 public class WebDriverEvent {
-    final Frame frame;
-    final Level level;
+    private Frame frame;
+    private Level level;
     private String message;
 }

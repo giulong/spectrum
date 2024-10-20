@@ -16,7 +16,8 @@ public class JsWebElementProxyBuilder {
     private Map<Method, Method> methods;
 
     public WebElement buildFor(final Object webElement) {
-        return (WebElement) Proxy.newProxyInstance(WebElement.class.getClassLoader(),
+        return (WebElement) Proxy.newProxyInstance(
+                WebElement.class.getClassLoader(),
                 new Class<?>[]{WebElement.class},
                 JsWebElementInvocationHandler
                         .builder()
