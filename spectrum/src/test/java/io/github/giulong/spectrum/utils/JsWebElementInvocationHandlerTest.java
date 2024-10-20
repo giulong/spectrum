@@ -67,7 +67,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("click should click with javascript on the provided webElement and return the Js instance")
-    public void click() {
+    void click() {
         jsWebElementInvocationHandler.click();
 
         verify(js).click(webElement);
@@ -75,7 +75,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("submit should delegate to js.submit")
-    public void submit() {
+    void submit() {
         jsWebElementInvocationHandler.submit();
 
         verify(js).submit(webElement);
@@ -83,7 +83,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("sendKeys should delegate to js.sendKeys")
-    public void sendKeys() {
+    void sendKeys() {
         jsWebElementInvocationHandler.sendKeys(Keys.END, "ok");
 
         verify(js).sendKeys(webElement, Keys.END, "ok");
@@ -91,7 +91,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("clear should delegate to js.clear")
-    public void clear() {
+    void clear() {
         jsWebElementInvocationHandler.clear();
 
         verify(js).clear(webElement);
@@ -99,7 +99,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getTagName should delegate to js.getTagName")
-    public void getTagName() {
+    void getTagName() {
         final String tagName = "tagName";
         when(js.getTagName(webElement)).thenReturn(tagName);
 
@@ -108,7 +108,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getDomProperty should delegate to js.getDomProperty")
-    public void getDomProperty() {
+    void getDomProperty() {
         final String name = "name";
         final String domProperty = "domProperty";
         when(js.getDomProperty(webElement, name)).thenReturn(domProperty);
@@ -118,7 +118,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getDomAttribute should delegate to js.getDomAttribute")
-    public void getDomAttribute() {
+    void getDomAttribute() {
         final String name = "name";
         final String domAttribute = "domAttribute";
         when(js.getDomAttribute(webElement, name)).thenReturn(domAttribute);
@@ -128,7 +128,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getAttribute should delegate to js.getAttribute")
-    public void getAttribute() {
+    void getAttribute() {
         final String name = "name";
         final String attribute = "attribute";
         when(js.getAttribute(webElement, name)).thenReturn(attribute);
@@ -138,19 +138,19 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getAriaRole should not be supported")
-    public void getAriaRole() {
+    void getAriaRole() {
         assertThrows(UnsupportedOperationException.class, () -> jsWebElementInvocationHandler.getAriaRole());
     }
 
     @Test
     @DisplayName("getAccessibleName should not be supported")
-    public void getAccessibleName() {
+    void getAccessibleName() {
         assertThrows(UnsupportedOperationException.class, () -> jsWebElementInvocationHandler.getAccessibleName());
     }
 
     @Test
     @DisplayName("isSelected should delegate to js.isSelected")
-    public void isSelected() {
+    void isSelected() {
         when(js.isSelected(webElement)).thenReturn(true);
 
         assertTrue(jsWebElementInvocationHandler.isSelected());
@@ -158,7 +158,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("isEnabled should delegate to js.isEnabled")
-    public void isEnabled() {
+    void isEnabled() {
         when(js.isEnabled(webElement)).thenReturn(true);
 
         assertTrue(jsWebElementInvocationHandler.isEnabled());
@@ -166,7 +166,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getText should delegate to js.getText")
-    public void getText() {
+    void getText() {
         final String text = "text";
         when(js.getText(webElement)).thenReturn(text);
 
@@ -175,7 +175,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("findElements should delegate to js.findElements")
-    public void findElements() {
+    void findElements() {
         final By by = By.id("id");
 
         when(js.findElements(webElement, LocatorType.from(by), "id")).thenReturn(webElements);
@@ -185,7 +185,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("findElement should delegate to js.findElement")
-    public void findElement() {
+    void findElement() {
         final By by = By.id("id");
         final WebElement anotherWebElement = mock(WebElement.class);
 
@@ -196,7 +196,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getShadowRoot should delegate to js.getShadowRoot")
-    public void getShadowRoot() {
+    void getShadowRoot() {
         final WebElement anotherWebElement = mock(WebElement.class);
 
         when(js.getShadowRoot(webElement)).thenReturn(anotherWebElement);
@@ -206,7 +206,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("isDisplayed should delegate to js.isDisplayed")
-    public void isDisplayed() {
+    void isDisplayed() {
         when(js.isDisplayed(webElement)).thenReturn(true);
 
         assertTrue(jsWebElementInvocationHandler.isDisplayed());
@@ -214,7 +214,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getLocation should delegate to js.getLocation")
-    public void getLocation() {
+    void getLocation() {
         when(js.getLocation(webElement)).thenReturn(point);
 
         assertEquals(point, jsWebElementInvocationHandler.getLocation());
@@ -222,7 +222,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getSize should delegate to js.getSize")
-    public void getSize() {
+    void getSize() {
         when(js.getSize(webElement)).thenReturn(dimension);
 
         assertEquals(dimension, jsWebElementInvocationHandler.getSize());
@@ -230,7 +230,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getRect should delegate to js.getRect")
-    public void getRect() {
+    void getRect() {
         when(js.getRect(webElement)).thenReturn(rectangle);
 
         assertEquals(rectangle, jsWebElementInvocationHandler.getRect());
@@ -238,7 +238,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getCssValue should delegate to js.getCssValue")
-    public void getCssValue() {
+    void getCssValue() {
         final String propertyName = "propertyName";
         final String cssValue = "cssValue";
         when(js.getCssValue(webElement, propertyName)).thenReturn(cssValue);
@@ -248,13 +248,13 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("getScreenshotAs should not be supported")
-    public void getScreenshotAs() {
+    void getScreenshotAs() {
         assertThrows(UnsupportedOperationException.class, () -> jsWebElementInvocationHandler.getScreenshotAs(BYTES));
     }
 
     @Test
     @DisplayName("invoke should find the wanted method with the same signature and call that instead of the original")
-    public void invoke() throws InvocationTargetException, IllegalAccessException {
+    void invoke() throws InvocationTargetException, IllegalAccessException {
         final String fullWebElement = "[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]";
         final String expected = "id: message";
         final String arg = "arg";
@@ -275,7 +275,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("invoke should find the wanted method with the same signature and call that instead of the original")
-    public void invokeNoLocatorMatch() throws InvocationTargetException, IllegalAccessException {
+    void invokeNoLocatorMatch() throws InvocationTargetException, IllegalAccessException {
         final String fullWebElement = "[[not matching]";
         final String arg = "arg";
         final String methodName = "methodName";
@@ -294,7 +294,7 @@ class JsWebElementInvocationHandlerTest {
 
     @Test
     @DisplayName("extractLocatorValueFrom should return the locator value of the provided by")
-    public void extractLocatorValueFrom() {
+    void extractLocatorValueFrom() {
         final By by = By.id("id");
 
         assertEquals("id", jsWebElementInvocationHandler.extractLocatorValueFrom(by));

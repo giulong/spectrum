@@ -116,7 +116,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("getSharedFields should return the list of fields of SpectrumEntity.class that are annotated with @Shared")
-    public void getSharedFields() {
+    void getSharedFields() {
         final List<Field> actual = spectrumEntity.getSharedFields();
         final List<String> sharedFieldsNames = actual
                 .stream()
@@ -145,7 +145,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("hover should move the pointer over the provided webElement")
-    public void hover() {
+    void hover() {
         when(actions.moveToElement(webElement)).thenReturn(actions);
         assertEquals(spectrumEntity, spectrumEntity.hover(webElement));
         verify(actions).perform();
@@ -153,7 +153,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("screenshot should delegate to addScreenshotToReport")
-    public void screenshot() {
+    void screenshot() {
         addScreenshotToReportStubs();
 
         assertEquals(spectrumEntity, spectrumEntity.screenshot());
@@ -163,7 +163,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("infoWithScreenshot should delegate to addScreenshotToReport")
-    public void infoWithScreenshot() {
+    void infoWithScreenshot() {
         final String msg = "msg";
         addScreenshotToReportStubs();
 
@@ -174,7 +174,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("warningWithScreenshot should delegate to addScreenshotToReport")
-    public void warningWithScreenshot() {
+    void warningWithScreenshot() {
         final String msg = "msg";
         addScreenshotToReportStubs();
 
@@ -185,7 +185,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("failWithScreenshot should delegate to addScreenshotToReport")
-    public void failWithScreenshot() {
+    void failWithScreenshot() {
         final String msg = "msg";
         addScreenshotToReportStubs();
 
@@ -196,7 +196,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("addScreenshotToReport should fall back to taking a screenshot of the visible page if an exception is thrown")
-    public void addScreenshotToReport() throws IOException {
+    void addScreenshotToReport() throws IOException {
         final Path reportsFolder = Files.createTempDirectory("reportsFolder");
         REPORTS_FOLDERS.add(reportsFolder);
 
@@ -224,7 +224,7 @@ class SpectrumEntityTest {
     @DisplayName("deleteDownloadsFolder should delete and recreate the downloads folder")
     @ParameterizedTest(name = "with value {0}")
     @MethodSource("valuesProvider")
-    public void deleteDownloadsFolder(final Path downloadsFolder) {
+    void deleteDownloadsFolder(final Path downloadsFolder) {
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder.toString());
 
@@ -244,7 +244,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("waitForDownloadOf should return true if the provided file is fully downloaded")
-    public void waitForDownloadOf() throws IOException {
+    void waitForDownloadOf() throws IOException {
         final Path path = Files.createTempFile("fakeFile", ".txt");
         Files.writeString(path, "I'm an airplane!!!");
 
@@ -258,7 +258,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("waitForDownloadOf should wait until the provided file is fully downloaded")
-    public void waitForDownloadOfNotYetDone() throws IOException {
+    void waitForDownloadOfNotYetDone() throws IOException {
         final Path path = Files.createTempFile("fakeFile", ".txt");
 
         spectrumEntity.waitForDownloadOf(path);
@@ -271,7 +271,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("waitForDownloadOf should wait until the provided file exist")
-    public void waitForDownloadOfNotYetCreated() {
+    void waitForDownloadOfNotYetCreated() {
         spectrumEntity.waitForDownloadOf(Path.of("not existing"));
 
         verify(downloadWait).until(functionArgumentCaptor.capture());
@@ -282,7 +282,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one")
-    public void checkDownloadedFile() throws IOException {
+    void checkDownloadedFile() throws IOException {
         final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
         final Path filesFolder = Files.createTempDirectory("filesFolder");
         final Path downloadedFile = Files.createFile(Path.of(downloadsFolder + "/fakeFile.txt"));
@@ -311,7 +311,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one, with different names")
-    public void checkDownloadedFileDifferentName() throws IOException {
+    void checkDownloadedFileDifferentName() throws IOException {
         final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
         final Path filesFolder = Files.createTempDirectory("filesFolder");
         final Path downloadedFile = Files.createFile(Path.of(downloadsFolder + "/fakeFileDownloaded.txt"));
@@ -333,7 +333,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("sha256Of should return the byte array of the sha digest of the provided file")
-    public void sha256Of() throws IOException {
+    void sha256Of() throws IOException {
         final Path path = Files.createTempFile("fakeFile", ".txt");
         Files.writeString(path, "I'm an airplane!!!");
         path.toFile().deleteOnExit();
@@ -344,7 +344,7 @@ class SpectrumEntityTest {
     @DisplayName("clearAndSendKeys should clear the provided webElement and send the provided keys to it")
     @ParameterizedTest(name = "with keys {0}")
     @ValueSource(strings = {"string", "another"})
-    public void clearAndSendKeys(final String string) {
+    void clearAndSendKeys(final String string) {
         assertEquals(webElement, spectrumEntity.clearAndSendKeys(webElement, string));
 
         verify(webElement).clear();
@@ -353,7 +353,7 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("upload should send the full path of the provided file to the provided webElement and return the SpectrumEntity instance")
-    public void upload() {
+    void upload() {
         final String filesFolder = "filesFolder";
         final String fileName = "fileName";
 
@@ -368,7 +368,7 @@ class SpectrumEntityTest {
     @DisplayName("isPresent should return true if the element located by the provided By is in the dom")
     @ParameterizedTest(name = "with list {0} we expect {1}")
     @MethodSource("isPresentProvider")
-    public void isPresent(final List<WebElement> webElements, final boolean expected) {
+    void isPresent(final List<WebElement> webElements, final boolean expected) {
         when(webDriver.findElements(by)).thenReturn(webElements);
 
         assertEquals(expected, spectrumEntity.isPresent(by));
@@ -384,7 +384,7 @@ class SpectrumEntityTest {
     @DisplayName("isNotPresent should return true if the element located by the provided By is not in the dom")
     @ParameterizedTest(name = "with list {0} we expect {1}")
     @MethodSource("isNotPresentProvider")
-    public void isNotPresent(final List<WebElement> webElements, final boolean expected) {
+    void isNotPresent(final List<WebElement> webElements, final boolean expected) {
         when(webDriver.findElements(by)).thenReturn(webElements);
 
         assertEquals(expected, spectrumEntity.isNotPresent(by));
@@ -400,7 +400,7 @@ class SpectrumEntityTest {
     @DisplayName("hasClass should check if the provided webElement has the provided css class")
     @ParameterizedTest(name = "with class {0} we expect {1}")
     @MethodSource("hasClassProvider")
-    public void hasClass(final String classes, final boolean expected) {
+    void hasClass(final String classes, final boolean expected) {
         doReturn(classes).when(webElement).getAttribute("class");
 
         assertEquals(expected, spectrumEntity.hasClass(webElement, "cssClass"));
@@ -418,7 +418,7 @@ class SpectrumEntityTest {
     @DisplayName("hasClasses should check if the provided webElement has all the provided css class")
     @ParameterizedTest(name = "with class {0} we expect {1}")
     @MethodSource("hasClassesProvider")
-    public void hasClasses(final String classes, final boolean expected) {
+    void hasClasses(final String classes, final boolean expected) {
         doReturn(classes).when(webElement).getAttribute("class");
 
         assertEquals(expected, spectrumEntity.hasClasses(webElement, "one", "cssClass"));

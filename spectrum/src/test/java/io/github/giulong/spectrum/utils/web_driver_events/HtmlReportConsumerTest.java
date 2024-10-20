@@ -37,7 +37,7 @@ class HtmlReportConsumerTest {
     @DisplayName("accept should log the message at info level")
     @ParameterizedTest
     @CsvSource({"INFO", "ERROR", "DEBUG", "TRACE"})
-    public void accept(final Level level) {
+    void accept(final Level level) {
         final String message = "message";
 
         when(statefulExtentTest.getCurrentNode()).thenReturn(currentNode);
@@ -52,7 +52,7 @@ class HtmlReportConsumerTest {
 
     @Test
     @DisplayName("accept should log the message at warn level")
-    public void acceptWarn() {
+    void acceptWarn() {
         final String message = "message";
 
         when(statefulExtentTest.getCurrentNode()).thenReturn(currentNode);

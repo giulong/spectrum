@@ -58,18 +58,18 @@ class ScreenshotConsumerTest {
     private ScreenshotConsumer screenshotConsumer;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         filesMockedStatic = mockStatic(Files.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         filesMockedStatic.close();
     }
 
     @Test
     @DisplayName("accept should record the screenshot")
-    public void accept() {
+    void accept() {
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
         when(screenshotFolderPath.resolve(stringArgumentCaptor.capture())).thenReturn(resolvedPath);
         when(resolvedPath.getFileName()).thenReturn(file);
@@ -86,7 +86,7 @@ class ScreenshotConsumerTest {
 
     @Test
     @DisplayName("accept should not record the screenshot")
-    public void acceptShouldNotRecord() {
+    void acceptShouldNotRecord() {
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
         when(screenshotFolderPath.resolve(stringArgumentCaptor.capture())).thenReturn(resolvedPath);
         when(resolvedPath.getFileName()).thenReturn(file);

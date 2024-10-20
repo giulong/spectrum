@@ -65,7 +65,7 @@ class SummaryTest {
     private Summary summary;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("freeMarkerWrapper", summary, freeMarkerWrapper);
         Reflections.setField("fileUtils", summary, fileUtils);
         Reflections.setField("summaryGeneratingListener", summary, summaryGeneratingListener);
@@ -74,14 +74,14 @@ class SummaryTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         mvelMockedStatic.close();
         Vars.getInstance().clear();
     }
 
     @Test
     @DisplayName("sessionOpened should log where to find the summary for each reporter")
-    public void sessionOpened() {
+    void sessionOpened() {
         final String output = "output";
         final String extension = "extension";
 
@@ -95,7 +95,7 @@ class SummaryTest {
 
     @Test
     @DisplayName("sessionClosed should put the summary in the vars and flush each reporter")
-    public void sessionClosed() {
+    void sessionClosed() {
         final long testsFoundCount = 1;
         final long testsSucceededCount = 2;
         final long testsFailedCount = 3;
@@ -151,7 +151,7 @@ class SummaryTest {
     @DisplayName("isExecutionSuccessful should evaluate the summary condition")
     @ParameterizedTest(name = "with condition evaluated to {0} we expect {0}")
     @ValueSource(booleans = {true, false})
-    public void isExecutionSuccessful(final boolean expected) {
+    void isExecutionSuccessful(final boolean expected) {
         final String condition = "condition";
         final String interpolatedCondition = "interpolatedCondition";
 
@@ -167,7 +167,7 @@ class SummaryTest {
     @DisplayName("toResult should map the execution to the Result enum")
     @ParameterizedTest(name = "with execution successful {0} we expect {0}")
     @MethodSource("valuesProvider")
-    public void toResult(final boolean successful, final Result expected) {
+    void toResult(final boolean successful, final Result expected) {
         final String condition = "condition";
         final String interpolatedCondition = "interpolatedCondition";
 

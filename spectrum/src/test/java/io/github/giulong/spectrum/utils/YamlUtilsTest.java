@@ -32,14 +32,14 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(YamlUtils.getInstance(), YamlUtils.getInstance());
     }
 
     @Test
     @DisplayName("on construction, all the dynamic deserializers should be registered on the yamlMapper, while not on the dynamicConfYamlMapper")
-    public void construction() {
+    void construction() {
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
                 "InterpolatedObjectDeserializer",
@@ -76,7 +76,7 @@ class YamlUtilsTest {
     @DisplayName("findValidPathsFor should return the list of resources paths with valid extensions from the provided file")
     @ParameterizedTest(name = "with file {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void findValidPathsFor(final String file, final Stream<String> strings) {
+    void findValidPathsFor(final String file, final Stream<String> strings) {
         final List<Path> paths = strings
                 .map(p -> Path.of("src", "test", "resources").resolve(p))
                 .toList();
@@ -93,7 +93,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("findTheFirstValidFileFrom should return the first file that exists among the provided list")
-    public void findTheFirstValidFileFrom() throws IOException {
+    void findTheFirstValidFileFrom() throws IOException {
         final Path path = Files.createTempFile("prefix", "suffix");
         final List<Path> paths = List.of(Path.of("non existing"), path);
 
@@ -104,7 +104,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("findTheFirstValidFileFrom should throw an exception if no file among the provided list exists")
-    public void findTheFirstValidFileFromThrows() {
+    void findTheFirstValidFileFromThrows() {
         final List<Path> paths = List.of(Path.of("non existing"), Path.of("another non existing"));
 
         assertThrows(RuntimeException.class, () -> yamlUtils.findTheFirstValidFileFrom(paths));
@@ -113,7 +113,7 @@ class YamlUtilsTest {
     @DisplayName("findFile should immediately return the file if it's internal: we know those exists!")
     @ParameterizedTest(name = "with internal {1} we expect {2}")
     @MethodSource("findFileValuesProvider")
-    public void findFileInternal(final boolean internal, final String expected) {
+    void findFileInternal(final boolean internal, final String expected) {
         assertEquals(expected, yamlUtils.findFile("file", internal));
     }
 
@@ -126,59 +126,59 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("read should return null if the provided client file doesn't exist")
-    public void readNotExistingClientFile() {
+    void readNotExistingClientFile() {
         assertNull(yamlUtils.read("not-existing", TestYaml.class, false));
     }
 
     @DisplayName("read should return an instance of the provided class deserializing the provided file")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    public void read(final String file) {
+    void read(final String file) {
         assertEquals("value", Objects.requireNonNull(yamlUtils.read(file, TestYaml.class, true)).getKey());
     }
 
     @DisplayName("overloaded read should return an instance of the provided class deserializing the provided file")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    public void readClient(final String file) {
+    void readClient(final String file) {
         assertEquals("value", yamlUtils.read(file, TestYaml.class).getKey());
     }
 
     @Test
     @DisplayName("readInternal should return an instance of the provided class deserializing the provided file")
-    public void readInternal() {
+    void readInternal() {
         assertEquals("value", yamlUtils.readInternal("test.yaml", TestYaml.class).getKey());
     }
 
     @Test
     @DisplayName("readNode should return null if the provided client file doesn't exist")
-    public void readNotExistingClientNode() {
+    void readNotExistingClientNode() {
         assertNull(yamlUtils.readNode("/objectKey", "not-existing", TestYaml.ObjectKey.class, false));
     }
 
     @DisplayName("readNode should check if the provided file exists and return the node requested")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    public void readNode(final String file) {
+    void readNode(final String file) {
         assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readNode("/objectKey", file, TestYaml.ObjectKey.class, true)).getObjectField());
     }
 
     @DisplayName("readNode for client-side files should just delegate to the readNode method")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    public void readClientNode(final String file) {
+    void readClientNode(final String file) {
         assertEquals("objectValue", yamlUtils.readNode("/objectKey", file, TestYaml.ObjectKey.class).getObjectField());
     }
 
     @Test
     @DisplayName("readInternalNode should just delegate to the readNode method")
-    public void readInternalNode() {
+    void readInternalNode() {
         assertEquals("objectValue", yamlUtils.readInternalNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
     }
 
     @Test
     @DisplayName("readDynamicDeserializable should read the internal dynamic deserializable configuration provided, and merge the jsonNode provided on the created instance")
-    public void readDynamicDeserializable() {
+    void readDynamicDeserializable() {
         final JsonNode jsonNode = JsonNodeFactory.instance
                 .objectNode()
                 .put("key", "merged");
@@ -191,7 +191,7 @@ class YamlUtilsTest {
     @DisplayName("updateWithFile should update the provided instance with the file provided, reading only public fields")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    public void updateWithFile(final String file) {
+    void updateWithFile(final String file) {
         final TestYaml testYaml = TestYaml.builder()
                 .key("original")
                 .internalKey(TestYaml.InternalKey.builder().field("field").build())
@@ -204,7 +204,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("updateWithFile should do nothing if the provided file doesn't exist")
-    public void updateWithNotExistingFile() {
+    void updateWithNotExistingFile() {
         final TestYaml testYaml = TestYaml.builder().key("original").build();
 
         yamlUtils.updateWithFile(testYaml, "not-existing");
@@ -213,7 +213,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("updateWithInternalFile should update the provided instance with the internal file provided")
-    public void updateWithInternalFile() {
+    void updateWithInternalFile() {
         final TestYaml testYaml = TestYaml.builder().key("original").build();
 
         yamlUtils.updateWithInternalFile(testYaml, "test.yaml");
@@ -222,7 +222,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("write should just call the writeValueAsString of the provided object, printing internal fields as well")
-    public void write() {
+    void write() {
         final TestYaml testYaml = mock(TestYaml.class);
         final TestYaml.ObjectKey objectKey = mock(TestYaml.ObjectKey.class);
         final TestYaml.InternalKey internalKey = mock(TestYaml.InternalKey.class);

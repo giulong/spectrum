@@ -23,7 +23,7 @@ class StatefulExtentTestTest {
     private StatefulExtentTest statefulExtentTest;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         // @InjectMocks doesn't work with multiple instances of the same type,
         // such as all the "nodes" here, that are all of type ExtentTest
         // See https://github.com/mockito/mockito/issues/1066
@@ -36,7 +36,7 @@ class StatefulExtentTestTest {
 
     @Test
     @DisplayName("createNode should create a new node, set the previous one and return the new")
-    public void createNode() {
+    void createNode() {
         final String name = "name";
 
         when(currentNode.createNode(name)).thenReturn(newNode);
@@ -49,7 +49,7 @@ class StatefulExtentTestTest {
 
     @Test
     @DisplayName("closeNode should set the previous node to the current one")
-    public void closeNode() {
+    void closeNode() {
         assertEquals(previousNode, statefulExtentTest.closeNode());
 
         assertEquals(previousNode, statefulExtentTest.getCurrentNode());

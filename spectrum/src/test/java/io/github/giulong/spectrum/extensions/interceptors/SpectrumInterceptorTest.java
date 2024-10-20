@@ -95,7 +95,7 @@ class SpectrumInterceptorTest {
     private SpectrumInterceptor spectrumInterceptor;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("eventsDispatcher", spectrumInterceptor, eventsDispatcher);
         Reflections.setField("extentReporter", spectrumInterceptor, extentReporter);
         Reflections.setField("fileUtils", spectrumInterceptor, fileUtils);
@@ -135,7 +135,7 @@ class SpectrumInterceptorTest {
     @DisplayName("interceptDynamicTest should fire the proper events and create nodes in the current extent test")
     @ParameterizedTest(name = "with video disabled {0} and attach video {1}")
     @MethodSource("valuesProvider")
-    public void interceptDynamicTest(final boolean videoDisabled, final boolean attach) throws Throwable {
+    void interceptDynamicTest(final boolean videoDisabled, final boolean attach) throws Throwable {
         commonStubs();
 
         when(video.isDisabled()).thenReturn(videoDisabled);
@@ -158,7 +158,7 @@ class SpectrumInterceptorTest {
 
     @Test
     @DisplayName("interceptDynamicTest should fire the proper events and create nodes in the current extent test attaching the video")
-    public void interceptDynamicTestAttachVideo() throws Throwable {
+    void interceptDynamicTestAttachVideo() throws Throwable {
         final String testId = "testId";
 
         commonStubs();
@@ -176,7 +176,7 @@ class SpectrumInterceptorTest {
 
     @Test
     @DisplayName("interceptDynamicTest should catch the invocation's exception, log it in extent test and fire the failed event")
-    public void interceptDynamicTestThrow() throws Throwable {
+    void interceptDynamicTestThrow() throws Throwable {
         commonStubs();
 
         when(invocation.proceed()).thenThrow(new RuntimeException());

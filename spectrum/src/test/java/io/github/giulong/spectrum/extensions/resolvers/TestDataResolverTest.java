@@ -85,7 +85,7 @@ class TestDataResolverTest {
     private TestDataResolver testDataResolver;
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    void beforeEach() throws IOException {
         Reflections.setField("fileUtils", testDataResolver, fileUtils);
         Reflections.setField("contextManager", testDataResolver, contextManager);
 
@@ -93,13 +93,13 @@ class TestDataResolverTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         testDataMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return an instance of testData")
-    public void resolveParameter() throws NoSuchMethodException {
+    void resolveParameter() throws NoSuchMethodException {
         final Class<String> clazz = String.class;
         final String className = clazz.getSimpleName();
         final String classDisplayName = "classDisplayName";
@@ -155,7 +155,7 @@ class TestDataResolverTest {
 
     @Test
     @DisplayName("getScreenshotFolderPathForCurrentTest should return the path for the current test and create the dirs")
-    public void getScreenshotFolderPathForCurrentTest() {
+    void getScreenshotFolderPathForCurrentTest() {
         final String extentFileName = "extentFileName";
 
         when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, extentFileName, "screenshots", CLASS_NAME, METHOD_NAME).toAbsolutePath())).thenReturn(path);
@@ -164,7 +164,7 @@ class TestDataResolverTest {
 
     @Test
     @DisplayName("getVideoPathForCurrentTest should return the path for the current test and create the directories")
-    public void getVideoPathForCurrentTest() {
+    void getVideoPathForCurrentTest() {
         final String extentFileName = "extentFileName";
 
         when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, extentFileName, "videos", CLASS_NAME, METHOD_NAME).toAbsolutePath())).thenReturn(path);
@@ -176,13 +176,13 @@ class TestDataResolverTest {
 
     @Test
     @DisplayName("getVideoPathForCurrentTest should return null if video is disabled")
-    public void getVideoPathForCurrentTestDisabled() {
+    void getVideoPathForCurrentTestDisabled() {
         assertNull(testDataResolver.getVideoPathForCurrentTest(true, REPORTS_FOLDER, "extentFileName", CLASS_NAME, METHOD_NAME));
     }
 
     @Test
     @DisplayName("transformInKebabCase should return the provided string with spaces replaced by dashes and in lowercase")
-    public void transformInKebabCase() {
+    void transformInKebabCase() {
         assertEquals("some-composite-string", TestDataResolver.transformInKebabCase("Some Composite STRING"));
     }
 }

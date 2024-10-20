@@ -90,14 +90,14 @@ class SpectrumWebDriverListenerTest {
     private SpectrumWebDriverListener spectrumWebDriverListener;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
 
         webDriverEventMockedStatic = mockStatic(WebDriverEvent.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         webDriverEventMockedStatic.close();
     }
 
@@ -120,7 +120,7 @@ class SpectrumWebDriverListenerTest {
     @DisplayName("extractSelectorFrom should extract just the relevant info from the webElement")
     @ParameterizedTest(name = "with WebElement {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void extractSelectorFrom(final String fullWebElement, final String expected) {
+    void extractSelectorFrom(final String fullWebElement, final String expected) {
         when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
         when(webElement1.toString()).thenReturn(fullWebElement);
         when(matcher.find()).thenReturn(true).thenReturn(false);
@@ -138,7 +138,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("extractSelectorFrom should extract just the relevant info from the webElement")
-    public void extractSelectorFromNoMatch() {
+    void extractSelectorFromNoMatch() {
         final String fullWebElement = "fullWebElement";
 
         when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
@@ -149,7 +149,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list, and using String.valueOf to avoid NPEs")
-    public void parse() {
+    void parse() {
         final String webElement1ToString = "[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]";
         final String webElement2ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]";
         final String webElement3ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]";
@@ -188,7 +188,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list, and using String.valueOf to avoid NPEs, applying no additional format by default")
-    public void parseDefault() {
+    void parseDefault() {
         final String webElement1ToString = "[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]";
         final String webElement2ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]";
         final String webElement3ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]";
@@ -227,7 +227,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("TRACE level: listen should log the provided event with its args")
-    public void listenTrace() {
+    void listenTrace() {
         webDriverEventStubsAtLevel(TRACE);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.TRACE);
@@ -243,7 +243,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("TRACE level off: listen should not log the provided event")
-    public void listenTraceOff() {
+    void listenTraceOff() {
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(Level.TRACE);
 
@@ -255,7 +255,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("DEBUG level: listen should log the provided event with its args")
-    public void listenDebug() {
+    void listenDebug() {
         webDriverEventStubsAtLevel(DEBUG);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.DEBUG);
@@ -271,7 +271,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("DEBUG level off: listen should not log the provided event")
-    public void listenDebugOff() {
+    void listenDebugOff() {
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.DEBUG);
 
@@ -283,7 +283,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("INFO level: listen should log the provided event with its args")
-    public void listenInfo() {
+    void listenInfo() {
         webDriverEventStubsAtLevel(INFO);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
@@ -299,7 +299,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("INFO level off: listen should not log the provided event")
-    public void listenInfoOff() {
+    void listenInfoOff() {
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
 
@@ -311,7 +311,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("WARN level: listen should log the provided event with its args")
-    public void listenWarn() {
+    void listenWarn() {
         webDriverEventStubsAtLevel(WARN);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.WARN);
@@ -327,7 +327,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("WARN level off: listen should not log the provided event")
-    public void listenWarnOff() {
+    void listenWarnOff() {
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(Level.WARN);
 
@@ -339,7 +339,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("Default level: listen should log at DEBUG level as per logback default")
-    public void listenDefault() {
+    void listenDefault() {
         webDriverEventStubsAtLevel(DEBUG);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ALL);
@@ -354,7 +354,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("Default level: listen should log at DEBUG level as per logback default")
-    public void listenDefaultOFF() {
+    void listenDefaultOFF() {
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
         when(event.getLevel()).thenReturn(ALL);
 
@@ -366,7 +366,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("beforeSendKeys should call listenTo passing the keysToSend for regular webElements")
-    public void beforeSendKeys() {
+    void beforeSendKeys() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
         final String message = "message %s %s";
@@ -405,7 +405,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("beforeSendKeys should call listenTo masking the keysToSend for secured webElements")
-    public void beforeSendKeysSecured() {
+    void beforeSendKeysSecured() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
         final String message = "message %s %s";
@@ -444,7 +444,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("afterSendKeys should call listenTo passing the keysToSend for regular webElements")
-    public void afterSendKeys() {
+    void afterSendKeys() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
         final String message = "message %s %s";
@@ -483,7 +483,7 @@ class SpectrumWebDriverListenerTest {
 
     @Test
     @DisplayName("afterSendKeys should call listenTo masking the keysToSend for secured webElements")
-    public void afterSendKeysSecured() {
+    void afterSendKeysSecured() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
         final String message = "message %s %s";

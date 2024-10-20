@@ -57,19 +57,19 @@ class RetentionTest {
     private Retention retention;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("metadataManager", retention, metadataManager);
     }
 
     @Test
     @DisplayName("the default total retention should be Integer.MAX_VALUE")
-    public void defaultRetention() {
+    void defaultRetention() {
         assertEquals(Integer.MAX_VALUE, retention.getTotal());
     }
 
     @Test
     @DisplayName("deleteOldArtifactsFrom should delete files if there are more reports than the total allowed")
-    public void deleteOldArtifactsFrom() {
+    void deleteOldArtifactsFrom() {
         final int total = 1;
         final List<File> files = List.of(file1, file2, file3);
 
@@ -84,7 +84,7 @@ class RetentionTest {
 
     @Test
     @DisplayName("deleteOldArtifactsFrom should delete no file if there are less reports than the total allowed")
-    public void deleteOldArtifactsFromMinimum() {
+    void deleteOldArtifactsFromMinimum() {
         final int total = 5;
         final List<File> files = List.of(file1, file2, file3);
 
@@ -99,7 +99,7 @@ class RetentionTest {
 
     @Test
     @DisplayName("#1 deleteOldArtifactsFrom should keep the configured number of successful reports")
-    public void deleteOldArtifactsFromSuccessfulOne() {
+    void deleteOldArtifactsFromSuccessfulOne() {
         final int total = 2;
         final int successful = 1;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
@@ -120,7 +120,7 @@ class RetentionTest {
 
     @Test
     @DisplayName("#2 deleteOldArtifactsFrom should keep the configured number of successful reports")
-    public void deleteOldArtifactsFromSuccessfulTwo() {
+    void deleteOldArtifactsFromSuccessfulTwo() {
         final int total = 5;
         final int successful = 1;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
@@ -141,7 +141,7 @@ class RetentionTest {
 
     @Test
     @DisplayName("#3 deleteOldArtifactsFrom should keep the configured number of successful reports")
-    public void deleteOldArtifactsFromSuccessfulThree() {
+    void deleteOldArtifactsFromSuccessfulThree() {
         final int total = 2;
         final int successful = 2;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
@@ -163,7 +163,7 @@ class RetentionTest {
 
     @Test
     @DisplayName("#4 deleteOldArtifactsFrom should keep the configured number of successful reports")
-    public void deleteOldArtifactsFromSuccessfulFour() {
+    void deleteOldArtifactsFromSuccessfulFour() {
         final int total = 3;
         final int successful = 2;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
@@ -188,7 +188,7 @@ class RetentionTest {
 
     @Test
     @DisplayName("#5 deleteOldArtifactsFrom should keep the configured number of successful reports")
-    public void deleteOldArtifactsFromSuccessfulFive() {
+    void deleteOldArtifactsFromSuccessfulFive() {
         final int total = 3;
         final int successful = 2;
         final List<File> files = List.of(file1, file2, file3, file4, file5);
@@ -211,7 +211,7 @@ class RetentionTest {
 
     @Test
     @DisplayName("#6 deleteOldArtifactsFrom should keep the configured number of successful reports")
-    public void deleteOldArtifactsFromSuccessfulSix() {
+    void deleteOldArtifactsFromSuccessfulSix() {
         final int total = 3;
         final int successful = 2;
         final List<File> files = List.of(file1, file2, file3, file4, file5);

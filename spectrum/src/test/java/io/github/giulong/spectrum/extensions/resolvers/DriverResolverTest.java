@@ -129,7 +129,7 @@ class DriverResolverTest {
     private DriverResolver driverResolver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("contextManager", driverResolver, contextManager);
 
         eventsListenerMockedStatic = mockStatic(SpectrumWebDriverListener.class);
@@ -140,7 +140,7 @@ class DriverResolverTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         eventsListenerMockedStatic.close();
         patternMockedStatic.close();
         logConsumerMockedStatic.close();
@@ -151,7 +151,7 @@ class DriverResolverTest {
     @Test
     @DisplayName("resolveParameter should return the instance of the webDriver decorated with the default event listener")
     @SuppressWarnings("unchecked")
-    public void resolveParameter() {
+    void resolveParameter() {
         final String locatorRegex = "locatorRegex";
 
         when(context.getStore(GLOBAL)).thenReturn(store);

@@ -38,14 +38,14 @@ class UiAutomator2Test {
     private UiAutomator2 uiAutomator2;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", uiAutomator2, configuration);
         Reflections.setField("capabilities", uiAutomator2, uiAutomator2Options);
     }
 
     @Test
     @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
-    public void buildCapabilities() {
+    void buildCapabilities() {
         final Path path = Path.of("relative", "path");
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
@@ -72,7 +72,7 @@ class UiAutomator2Test {
 
     @Test
     @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
-    public void buildCapabilitiesAbsoluteAppPath() {
+    void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
         MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {

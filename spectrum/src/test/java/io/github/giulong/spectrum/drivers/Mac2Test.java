@@ -42,14 +42,14 @@ class Mac2Test {
     private Mac2 mac2;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", mac2, configuration);
         Reflections.setField("capabilities", mac2, mac2Options);
     }
 
     @Test
     @DisplayName("buildCapabilities should build a new instance of mac2Options and set the capabilities from the yaml on it")
-    public void buildCapabilitiesAbsoluteAppPath() {
+    void buildCapabilitiesAbsoluteAppPath() {
         MockedConstruction<Mac2Options> desiredCapabilitiesMockedConstruction = mockConstruction(Mac2Options.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
         });
@@ -68,7 +68,7 @@ class Mac2Test {
 
     @Test
     @DisplayName("buildDriverFor should return a new instance of Mac2Driver for the provided url and the instance capabilities")
-    public void buildDriverFor() {
+    void buildDriverFor() {
         MockedConstruction<Mac2Driver> mac2DriverMockedConstruction = mockConstruction(Mac2Driver.class, (mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(mac2Options, context.arguments().get(1));

@@ -45,13 +45,13 @@ class AndroidTest {
     private UiAutomator2 android;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("capabilities", android, capabilities);
     }
 
     @Test
     @DisplayName("configureWaitsOf should configure just the implicitWait, since the others are not implemented")
-    public void configureWaitsOf() {
+    void configureWaitsOf() {
         when(waits.getImplicit()).thenReturn(duration);
 
         when(androidWebDriver.manage()).thenReturn(options);
@@ -64,7 +64,7 @@ class AndroidTest {
 
     @Test
     @DisplayName("buildDriverFor should return a new instance of AndroidDriver for the provided url and the instance capabilities")
-    public void buildDriverFor() {
+    void buildDriverFor() {
         MockedConstruction<AndroidDriver> androidDriverMockedConstruction = mockConstruction(AndroidDriver.class, (mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(capabilities, context.arguments().get(1));

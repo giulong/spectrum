@@ -20,7 +20,7 @@ class NoOpComparatorTest {
 
     @Test
     @DisplayName("compare should just return 0")
-    public void compare() {
+    void compare() {
         assertEquals(0, noOpComparator.compare(test1, test2));
     }
 }

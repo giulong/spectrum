@@ -77,7 +77,7 @@ class FileReporterTest {
     private DummyFileReporter fileReporter;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("output", fileReporter, OUTPUT);
         Reflections.setField("retention", fileReporter, retention);
         Reflections.setField("metadataManager", fileReporter, metadataManager);
@@ -88,7 +88,7 @@ class FileReporterTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         pathMockedStatic.close();
         filesMockedStatic.close();
         metadataManagerMockedStatic.close();
@@ -97,7 +97,7 @@ class FileReporterTest {
 
     @Test
     @DisplayName("cleanupOldReports should delete the proper number of old reports and the corresponding directories")
-    public void cleanupOldReports() {
+    void cleanupOldReports() {
         final int total = 123;
         final String file1Name = "file1Name.abc";
         final String file2Name = "file2Name.abc";
@@ -130,7 +130,7 @@ class FileReporterTest {
 
     @Test
     @DisplayName("cleanupOldReports should do nothing when the reports folder is empty")
-    public void cleanupOldReportsEmpty() {
+    void cleanupOldReportsEmpty() {
         final int total = 123;
 
         when(retention.getTotal()).thenReturn(total);
@@ -149,7 +149,7 @@ class FileReporterTest {
 
     @Test
     @DisplayName("doOutputFrom should interpolate the timestamp in the provided template name, create the output dir and write the file in it")
-    public void doOutputFrom() {
+    void doOutputFrom() {
         final String interpolatedTemplate = "interpolatedTemplate";
 
         when(Path.of(stringArgumentCaptor.capture())).thenReturn(path);
@@ -165,7 +165,7 @@ class FileReporterTest {
 
     @Test
     @DisplayName("produceMetadata should shrink the queue in the provided metadata bound to the given namespace, and add the new element to it")
-    public void produceMetadata() {
+    void produceMetadata() {
         final String namespace = "namespace";
         final int retentionSuccessful = 123;
         final Map<String, FixedSizeQueue<File>> reports = new HashMap<>(Map.of(namespace, fileFixedSizeQueue));
@@ -185,7 +185,7 @@ class FileReporterTest {
 
     @Test
     @DisplayName("open should open the report")
-    public void open() throws IOException {
+    void open() throws IOException {
         Reflections.setField("openAtEnd", fileReporter, true);
 
         when(Path.of(OUTPUT)).thenReturn(path);
@@ -199,7 +199,7 @@ class FileReporterTest {
 
     @Test
     @DisplayName("open should do nothing if openAtEnd is false")
-    public void openFalse() {
+    void openFalse() {
         fileReporter.open();
 
         verifyNoInteractions(desktop);

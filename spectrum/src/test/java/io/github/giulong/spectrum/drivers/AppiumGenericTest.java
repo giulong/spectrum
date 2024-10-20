@@ -43,14 +43,14 @@ class AppiumGenericTest {
     private AppiumGeneric appiumGeneric;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", appiumGeneric, configuration);
         Reflections.setField("capabilities", appiumGeneric, mutableCapabilities);
     }
 
     @Test
     @DisplayName("buildCapabilities should build a new instance of capabilities and set the capabilities from the yaml on it")
-    public void buildCapabilitiesAbsoluteAppPath() {
+    void buildCapabilitiesAbsoluteAppPath() {
         MockedConstruction<MutableCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(MutableCapabilities.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
         });
@@ -69,7 +69,7 @@ class AppiumGenericTest {
 
     @Test
     @DisplayName("buildDriverFor should return a new instance of AppiumDriver for the provided url and the instance capabilities")
-    public void buildDriverFor() {
+    void buildDriverFor() {
         MockedConstruction<AppiumDriver> appiumDriverMockedConstruction = mockConstruction(AppiumDriver.class, (mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(mutableCapabilities, context.arguments().get(1));

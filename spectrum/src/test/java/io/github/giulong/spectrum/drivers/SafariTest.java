@@ -36,14 +36,14 @@ class SafariTest {
     private Safari safari;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", safari, configuration);
     }
 
     @DisplayName("getDriverServiceBuilder should return a new instance of SafariDriverService.Builder()")
     @ParameterizedTest(name = "with logging {0}")
     @ValueSource(booleans = {true, false})
-    public void getDriverServiceBuilder(final boolean logging) {
+    void getDriverServiceBuilder(final boolean logging) {
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getSafari()).thenReturn(safariConfig);
         when(safariConfig.getService()).thenReturn(service);
@@ -61,7 +61,7 @@ class SafariTest {
 
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Safari based on the provided configuration")
-    public void buildCapabilitiesFrom() {
+    void buildCapabilitiesFrom() {
         MockedConstruction<SafariOptions> safariOptionsMockedConstruction = mockConstruction(SafariOptions.class);
 
         safari.buildCapabilities();

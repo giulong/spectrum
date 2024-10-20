@@ -18,7 +18,7 @@ class LogConsumerTest {
 
     @Test
     @DisplayName("accept should log the message without tags at the level of the provided webDriverEvent")
-    public void accept() {
+    void accept() {
         final String arg = "args";
         final String tagsMessage = "message <div>" + arg + "</div>";
 

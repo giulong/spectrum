@@ -45,7 +45,7 @@ class JsWebElementListInvocationHandlerTest {
 
     @Test
     @DisplayName("invoke should invoke the original method and return the original result if it's not a webElement")
-    public void invoke() throws InvocationTargetException, IllegalAccessException {
+    void invoke() throws InvocationTargetException, IllegalAccessException {
         final String arg = "arg";
 
         when(method.invoke(eq(webElements), argsArgumentCaptor.capture())).thenReturn(result);
@@ -58,7 +58,7 @@ class JsWebElementListInvocationHandlerTest {
 
     @Test
     @DisplayName("invoke should invoke the original method and return a proxy if the result is a webElement")
-    public void invokeWebElement() throws InvocationTargetException, IllegalAccessException {
+    void invokeWebElement() throws InvocationTargetException, IllegalAccessException {
         final String arg = "arg";
 
         when(method.invoke(eq(webElements), argsArgumentCaptor.capture())).thenReturn(webElement);

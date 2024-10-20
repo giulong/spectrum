@@ -31,14 +31,14 @@ class ContextManagerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(ContextManager.getInstance(), ContextManager.getInstance());
     }
 
     @Test
     @DisplayName("initFor should put the provided TestContext for the provided context")
-    public void initFor() {
+    void initFor() {
         final String uniqueId = "uniqueId";
         final Map<String, TestContext> testContexts = new HashMap<>();
 
@@ -53,7 +53,7 @@ class ContextManagerTest {
 
     @Test
     @DisplayName("initFor should put a new TestContext for the provided context and return it")
-    public void initForContext() {
+    void initForContext() {
         final String uniqueId = "uniqueId";
         final Map<String, TestContext> testContexts = new HashMap<>();
         final MockedConstruction<TestContext> testContextMockedConstruction = mockConstruction(TestContext.class);
@@ -71,7 +71,7 @@ class ContextManagerTest {
 
     @Test
     @DisplayName("initWithParentFor should put the parent TestContext for the provided context and return it")
-    public void initWithParentFor() {
+    void initWithParentFor() {
         final String uniqueId = "uniqueId";
         final String parentUniqueId = "parentUniqueId";
         final Map<String, TestContext> testContexts = new HashMap<>() {{
@@ -91,7 +91,7 @@ class ContextManagerTest {
 
     @Test
     @DisplayName("put should insert the provided key value pair in the testContext bound to the provided context")
-    public void put() {
+    void put() {
         final String uniqueId = "uniqueId";
         final String key = "key";
         final String value = "value";
@@ -106,7 +106,7 @@ class ContextManagerTest {
 
     @Test
     @DisplayName("get should return the testContext associated to the provided context if present")
-    public void get() {
+    void get() {
         final String uniqueId = "uniqueId";
 
         when(context.getUniqueId()).thenReturn(uniqueId);
@@ -118,7 +118,7 @@ class ContextManagerTest {
 
     @Test
     @DisplayName("get should return a new testContext if no one is yet associated to the provided context")
-    public void getNew() {
+    void getNew() {
         final String uniqueId = "uniqueId";
         final Map<String, TestContext> testContexts = new HashMap<>();
         final MockedConstruction<TestContext> testContextMockedConstruction = mockConstruction(TestContext.class);
@@ -137,7 +137,7 @@ class ContextManagerTest {
 
     @Test
     @DisplayName("get should return the value associated to the provided key in the provided context")
-    public void getKeyValue() {
+    void getKeyValue() {
         final String uniqueId = "uniqueId";
         final String key = "key";
         final String value = "value";

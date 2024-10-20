@@ -43,13 +43,13 @@ class AppiumTest {
     private UiAutomator2 appium;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", appium, configuration);
     }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return an instance of AppiumDriverServiceBuilder")
-    public void getDriverServiceBuilder() {
+    void getDriverServiceBuilder() {
         final String ipAddress = "ipAddress";
         final int port = 123;
 
@@ -74,7 +74,7 @@ class AppiumTest {
 
     @Test
     @DisplayName("adjustCapabilitiesFrom should do nothing if the app capability is not set")
-    public void adjustCapabilitiesFromNoApp() {
+    void adjustCapabilitiesFromNoApp() {
         when(capabilities.get(APP_CAPABILITY)).thenReturn(null);
 
         assertEquals(capabilities, appium.adjustCapabilitiesFrom(capabilities));
@@ -84,7 +84,7 @@ class AppiumTest {
 
     @Test
     @DisplayName("adjustCapabilitiesFrom should set the app path absolute if it's relative")
-    public void adjustCapabilitiesFrom() {
+    void adjustCapabilitiesFrom() {
         final Path path = Path.of("relative", "path");
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
@@ -98,7 +98,7 @@ class AppiumTest {
 
     @Test
     @DisplayName("adjustCapabilitiesFrom should just return the provided capabilities if the app path absolute is already absolute")
-    public void adjustCapabilitiesFromAbsolute() {
+    void adjustCapabilitiesFromAbsolute() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
         when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);

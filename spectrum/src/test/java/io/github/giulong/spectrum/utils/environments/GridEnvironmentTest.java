@@ -56,14 +56,14 @@ class GridEnvironmentTest {
     private GridEnvironment gridEnvironment;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
 
         Reflections.setField("configuration", gridEnvironment, configuration);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         remoteWebDriverMockedStatic.close();
     }
 
@@ -84,7 +84,7 @@ class GridEnvironmentTest {
 
     @Test
     @DisplayName("setupFrom should configure a remote webDriver with localFileDetector and return an instance of WebDriver")
-    public void setupFrom() throws MalformedURLException {
+    void setupFrom() throws MalformedURLException {
         commonStubs();
         when(grid.isLocalFileDetector()).thenReturn(true);
 
@@ -96,7 +96,7 @@ class GridEnvironmentTest {
 
     @Test
     @DisplayName("setFileDetectorFor should set the localFileDetector on the provided webDriver")
-    public void setFileDetectorForLocal() {
+    void setFileDetectorForLocal() {
         when(grid.isLocalFileDetector()).thenReturn(true);
 
         assertEquals(webDriver, gridEnvironment.setFileDetectorFor(webDriver, grid));
@@ -106,7 +106,7 @@ class GridEnvironmentTest {
 
     @Test
     @DisplayName("setFileDetectorFor should do nothing if set the localFileDetector is false")
-    public void setFileDetectorFor() {
+    void setFileDetectorFor() {
         assertEquals(webDriver, gridEnvironment.setFileDetectorFor(webDriver, grid));
 
         verifyNoInteractions(webDriver);
@@ -114,7 +114,7 @@ class GridEnvironmentTest {
 
     @Test
     @DisplayName("shutdown should do nothing for a remoteWebDriver")
-    public void shutdown() {
+    void shutdown() {
         gridEnvironment.shutdown();
     }
 }

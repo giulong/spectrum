@@ -29,7 +29,7 @@ class FileUtilsTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(FileUtils.getInstance(), FileUtils.getInstance());
     }
@@ -37,7 +37,7 @@ class FileUtilsTest {
     @DisplayName("read should return the correct result")
     @ParameterizedTest(name = "reading file {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void read(String file, String expected) {
+    void read(String file, String expected) {
         assertEquals(expected, fileUtils.read(file));
     }
 
@@ -50,7 +50,7 @@ class FileUtilsTest {
     @DisplayName("readTemplate should return the correct result")
     @ParameterizedTest(name = "reading file {0} we expect {1}")
     @MethodSource("readTemplateValuesProvider")
-    public void readTemplate(String file, String expected) {
+    void readTemplate(String file, String expected) {
         assertEquals(expected, fileUtils.readTemplate(file));
     }
 
@@ -62,7 +62,7 @@ class FileUtilsTest {
 
     @Test
     @DisplayName("interpolate should return the provided file with the placeholder replaced with vars from the provided map")
-    public void interpolate() {
+    void interpolate() {
         assertEquals(
                 "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue",
                 fileUtils.interpolate("interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
@@ -71,7 +71,7 @@ class FileUtilsTest {
     @DisplayName("interpolateTimestampFrom should replace the timestamp from the provided file name")
     @ParameterizedTest(name = "with fileName {0} we expect {2}")
     @MethodSource("fileNamesProvider")
-    public void interpolateTimestampFrom(final String fileName, final String expected) {
+    void interpolateTimestampFrom(final String fileName, final String expected) {
         assertThat(fileUtils.interpolateTimestampFrom(fileName), matchesPattern(expected));
     }
 
@@ -87,7 +87,7 @@ class FileUtilsTest {
     @DisplayName("getExtensionOf should return the extension of the provided fileName")
     @ParameterizedTest(name = "with fileName {0} we expect {1}")
     @MethodSource("getExtensionOfValuesProvider")
-    public void getExtensionOf(final String fileName, final String expected) {
+    void getExtensionOf(final String fileName, final String expected) {
         assertEquals(expected, fileUtils.getExtensionOf(fileName));
     }
 
@@ -102,7 +102,7 @@ class FileUtilsTest {
     @DisplayName("removeExtensionFrom should return the provided fileName without the extension")
     @ParameterizedTest(name = "with fileName {0} we expect {1}")
     @MethodSource("removeExtensionFromValuesProvider")
-    public void removeExtensionFrom(final String fileName, final String expected) {
+    void removeExtensionFrom(final String fileName, final String expected) {
         assertEquals(expected, fileUtils.removeExtensionFrom(fileName));
     }
 
@@ -117,7 +117,7 @@ class FileUtilsTest {
     @DisplayName("deleteDirectory should delete the provided folder and return the reference to it")
     @ParameterizedTest(name = "with value {0} which is existing? {1}")
     @MethodSource("deleteDirectoryValuesProvider")
-    public void deleteDirectory(final Path directory, final boolean existing) {
+    void deleteDirectory(final Path directory, final boolean existing) {
         directory.toFile().deleteOnExit();
         assertEquals(existing, Files.exists(directory));
 
@@ -135,7 +135,7 @@ class FileUtilsTest {
     @DisplayName("deleteContentOf should delete the provided directory, recreate it, and return the reference to it")
     @ParameterizedTest(name = "with value {0} which is existing? {1}")
     @MethodSource("deleteDirectoryValuesProvider")
-    public void deleteContentOf(final Path directory, final boolean existing) {
+    void deleteContentOf(final Path directory, final boolean existing) {
         directory.toFile().deleteOnExit();
         assertEquals(existing, Files.exists(directory));
 
@@ -146,7 +146,7 @@ class FileUtilsTest {
 
     @Test
     @DisplayName("write should write the provided content to a file in the provided path, creating the parent folders if needed")
-    public void write() {
+    void write() {
         final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
         final Path path = mock(Path.class);
         final Path parentPath = mock(Path.class);
@@ -166,7 +166,7 @@ class FileUtilsTest {
 
     @Test
     @DisplayName("sanitize should strip the illegal chars from the provided string")
-    public void sanitize() {
+    void sanitize() {
         final String name = "hello123 /\\*][ -+.";
         final String sanitizedName = "hello123 ][ -+.";
 

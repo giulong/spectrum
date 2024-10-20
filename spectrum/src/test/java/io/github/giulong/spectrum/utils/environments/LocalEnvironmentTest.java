@@ -67,7 +67,7 @@ class LocalEnvironmentTest {
     private LocalEnvironment localEnvironment;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
         driverLogMockedStatic = mockStatic(DriverLog.class);
         DRIVER_SERVICE_THREAD_LOCAL.remove();
@@ -76,14 +76,14 @@ class LocalEnvironmentTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         remoteWebDriverMockedStatic.close();
         driverLogMockedStatic.close();
     }
 
     @Test
     @DisplayName("setupFrom should set the driver service and return an instance of WebDriver")
-    public void setupFromDownload() {
+    void setupFromDownload() {
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getLogs()).thenReturn(logs);
         when(logs.getLevel()).thenReturn(DEBUG);
@@ -106,7 +106,7 @@ class LocalEnvironmentTest {
 
     @Test
     @DisplayName("shutdown should do close the driver service")
-    public void shutdown() {
+    void shutdown() {
         DRIVER_SERVICE_THREAD_LOCAL.set(chromeDriverService);
 
         localEnvironment.shutdown();

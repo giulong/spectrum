@@ -49,14 +49,14 @@ class FirefoxTest {
     private Firefox firefox;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", firefox, configuration);
         Reflections.setField("capabilities", firefox, firefoxOptions);
     }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of GeckoDriverService.Builder()")
-    public void getDriverServiceBuilder() {
+    void getDriverServiceBuilder() {
         final String allowHosts = "allowHosts";
 
         when(configuration.getDrivers()).thenReturn(driversConfig);
@@ -82,7 +82,7 @@ class FirefoxTest {
 
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Firefox based on the provided configuration")
-    public void buildCapabilitiesFrom() {
+    void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
         final String binary = "binary";
 
@@ -109,7 +109,7 @@ class FirefoxTest {
 
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Firefox based on the provided configuration")
-    public void buildCapabilitiesFromNoBinary() {
+    void buildCapabilitiesFromNoBinary() {
         final List<String> arguments = List.of("args");
 
         when(configuration.getDrivers()).thenReturn(driversConfig);
@@ -134,7 +134,7 @@ class FirefoxTest {
     @DisplayName("addPreference should add the correct preference based on the value type")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void addPreference(final Object value, final Object expected) {
+    void addPreference(final Object value, final Object expected) {
         firefox.capabilities = firefoxOptions;
 
         firefox.addPreference("key", value);

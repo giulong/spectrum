@@ -30,13 +30,13 @@ class TestContextTest {
     private TestContext testContext;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("store", testContext, store);
     }
 
     @Test
     @DisplayName("put should put the provided key-value pair in the internal store")
-    public void put() {
+    void put() {
         final String key = "key";
         final String value = "value";
 
@@ -47,7 +47,7 @@ class TestContextTest {
 
     @Test
     @DisplayName("get should return the object associated to the the provided key casting it to the provided class")
-    public void get() {
+    void get() {
         final String key = "key";
         final String value = "value";
 
@@ -58,7 +58,7 @@ class TestContextTest {
 
     @Test
     @DisplayName("computeIfAbsent should call computeIfAbsent on the internal store, casting the returned object to the provided class")
-    public void computeIfAbsent() {
+    void computeIfAbsent() {
         final String key = "key";
         final String value = "value";
 
@@ -69,7 +69,7 @@ class TestContextTest {
 
     @Test
     @DisplayName("addSecuredWebElement should add the provided webElement to the internal list")
-    public void addSecuredWebElement() {
+    void addSecuredWebElement() {
         testContext.addSecuredWebElement(webElement);
 
         assertEquals(List.of(webElement), Reflections.getFieldValue("securedWebElements", testContext));
@@ -77,7 +77,7 @@ class TestContextTest {
 
     @Test
     @DisplayName("isSecuredWebElement should return true if the provided webElement is a secured one")
-    public void isSecuredWebElement() {
+    void isSecuredWebElement() {
         Reflections.setField("securedWebElements", testContext, List.of(webElement));
 
         assertTrue(testContext.isSecuredWebElement(webElement));
@@ -85,7 +85,7 @@ class TestContextTest {
 
     @Test
     @DisplayName("isSecuredWebElement should return false if the provided webElement is not a secured one")
-    public void isSecuredWebElementFalse() {
+    void isSecuredWebElementFalse() {
         assertFalse(testContext.isSecuredWebElement(webElement));
     }
 }

@@ -47,19 +47,19 @@ class ExtentReportsResolverTest {
     private ExtentReportsResolver extentReportsResolver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("extentReporter", extentReportsResolver, extentReporter);
         extentReporterMockedStatic = mockStatic(ExtentReporter.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         extentReporterMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return the ExtentReports from SpectrumSessionListener")
-    public void resolveParameter() {
+    void resolveParameter() {
         when(extentReporter.getExtentReports()).thenReturn(extentReports);
 
         when(extensionContext.getRoot()).thenReturn(rootContext);

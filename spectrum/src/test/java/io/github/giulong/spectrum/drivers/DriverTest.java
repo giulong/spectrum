@@ -93,7 +93,7 @@ class DriverTest {
     private Chrome driver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         WEB_DRIVER_THREAD_LOCAL.remove();
 
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
@@ -103,14 +103,14 @@ class DriverTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         threadGuardMockedStatic.close();
         loggingPreferencesMockedConstruction.close();
     }
 
     @Test
     @DisplayName("mergeGridCapabilitiesFrom should add the provided grid capabilities and return the capabilities")
-    public void mergeGridCapabilitiesFrom() {
+    void mergeGridCapabilitiesFrom() {
         Reflections.setField("capabilities", driver, driverOptions);
         when(driverOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(driverOptions);
 
@@ -128,7 +128,7 @@ class DriverTest {
 
     @Test
     @DisplayName("build should return the instance of the requested webdriver")
-    public void build() {
+    void build() {
         // buildCapabilitiesFrom stubs
         final List<String> arguments = List.of("args");
         when(configuration.getDrivers()).thenReturn(driversConfig);
@@ -170,7 +170,7 @@ class DriverTest {
 
     @Test
     @DisplayName("configureWaitsOf should configure all the waits by default")
-    public void configureWaitsOf() {
+    void configureWaitsOf() {
         when(waits.getImplicit()).thenReturn(implicitDuration);
         when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);
         when(waits.getScriptTimeout()).thenReturn(scriptDuration);
@@ -187,7 +187,7 @@ class DriverTest {
 
     @Test
     @DisplayName("shutdown should quit the webDriver")
-    public void shutdown() {
+    void shutdown() {
         WEB_DRIVER_THREAD_LOCAL.set(webDriver);
 
         driver.shutdown();

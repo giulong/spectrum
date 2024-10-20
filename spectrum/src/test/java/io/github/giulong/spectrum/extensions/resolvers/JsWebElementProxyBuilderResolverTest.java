@@ -73,20 +73,20 @@ class JsWebElementProxyBuilderResolverTest {
     private JsWebElementProxyBuilderResolver jsWebElementProxyBuilderResolver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         patternMockedStatic = mockStatic(Pattern.class);
         jsWebElementProxyBuilderMockedStatic = mockStatic(JsWebElementProxyBuilder.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         patternMockedStatic.close();
         jsWebElementProxyBuilderMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return an instance of JsWebElementProxyBuilder")
-    public void resolveParameter() {
+    void resolveParameter() {
         final String locatorRegex = "locatorRegex";
 
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
@@ -113,7 +113,7 @@ class JsWebElementProxyBuilderResolverTest {
 
     @Test
     @DisplayName("methodsEqual should return true if the provided methods have the same signature")
-    public void methodsEqual() {
+    void methodsEqual() {
         final String name = "name";
         final Class<String> returnType = String.class;
         final Class<?>[] parameterTypes = new Class<?>[]{String.class, Integer.class};
@@ -130,7 +130,7 @@ class JsWebElementProxyBuilderResolverTest {
 
     @Test
     @DisplayName("methodsEqual should return false if the provided methods have different names")
-    public void methodsEqualFalse1() {
+    void methodsEqualFalse1() {
         final String name1 = "name1";
         final String name2 = "name2";
 
@@ -142,7 +142,7 @@ class JsWebElementProxyBuilderResolverTest {
 
     @Test
     @DisplayName("methodsEqual should return false if the provided methods have different return types")
-    public void methodsEqualFalse2() {
+    void methodsEqualFalse2() {
         final String name = "name";
         final Class<String> returnType1 = String.class;
         final Class<Integer> returnType2 = Integer.class;
@@ -157,7 +157,7 @@ class JsWebElementProxyBuilderResolverTest {
 
     @Test
     @DisplayName("methodsEqual should return false if the provided methods have different parameter types")
-    public void methodsEqualFalse3() {
+    void methodsEqualFalse3() {
         final String name = "name";
         final Class<String> returnType = String.class;
         final Class<?>[] parameterTypes1 = new Class<?>[]{String.class, Integer.class};

@@ -27,14 +27,14 @@ class DurationDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(DurationDeserializer.getInstance(), DurationDeserializer.getInstance());
     }
 
     @Test
     @DisplayName("deserialize should return the duration in seconds from the provided string")
-    public void deserialize() throws IOException {
+    void deserialize() throws IOException {
         int value = 123;
         when(jsonParser.getValueAsInt()).thenReturn(value);
 

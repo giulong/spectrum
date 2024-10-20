@@ -37,13 +37,13 @@ class JsTest {
     private Js js;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("stringUtils", js, stringUtils);
     }
 
     @Test
     @DisplayName("click should click with javascript on the provided webElement and return the Js instance")
-    public void testClick() {
+    void testClick() {
         assertEquals(js, js.click(webElement));
 
         verify(webDriver).executeScript("arguments[0].click();", webElement);
@@ -51,7 +51,7 @@ class JsTest {
 
     @Test
     @DisplayName("sendKeys should insert all the provided charSequences as value of the provided webElement and return the Js instance")
-    public void testSendKegitys() {
+    void testSendKegitys() {
         final String string = "string";
         final String escapedString = "escapedString";
         final CharSequence[] keysToSend = new CharSequence[]{string, Keys.END, Keys.ADD};
@@ -65,7 +65,7 @@ class JsTest {
 
     @Test
     @DisplayName("submit should submit with javascript the provided webElement and return the Js instance")
-    public void testSubmit() {
+    void testSubmit() {
         assertEquals(js, js.submit(webElement));
 
         verify(webDriver).executeScript("arguments[0].submit();", webElement);
@@ -73,7 +73,7 @@ class JsTest {
 
     @Test
     @DisplayName("clear should delete the values with javascript from the provided webElement and return the Js instance")
-    public void testClear() {
+    void testClear() {
         assertEquals(js, js.clear(webElement));
 
         verify(webDriver).executeScript("arguments[0].value='';", webElement);
@@ -113,7 +113,7 @@ class JsTest {
 
     @Test
     @DisplayName("findElements should be executed without a context passed")
-    public void testFindElementsNoContext() {
+    void testFindElementsNoContext() {
         String locatorValue = "locatorValue";
         String escapedLocatorValue = "escapedLocatorValue";
 

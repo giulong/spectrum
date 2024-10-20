@@ -29,19 +29,19 @@ class AppiumLogTest {
     private AppiumLog appiumLog;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         stringBufferMockedConstruction = mockConstruction(StringBuffer.class);
         Reflections.setField("stringBuffer", appiumLog, new StringBuffer(LOG_MESSAGE));
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         stringBufferMockedConstruction.close();
     }
 
     @Test
     @DisplayName("write should append the char provided if it's not a line break")
-    public void write() {
+    void write() {
         final char c = 'a';
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
 
@@ -51,7 +51,7 @@ class AppiumLogTest {
 
     @Test
     @DisplayName("write should flush the buffer when the char provided is a line break")
-    public void writeFlush() {
+    void writeFlush() {
         final char c = '\n';
 
         appiumLog.write(c);
@@ -62,7 +62,7 @@ class AppiumLogTest {
 
     @Test
     @DisplayName("flush should write the buffer's content at the provided level and re-initialise it")
-    public void flush() {
+    void flush() {
         final List<StringBuffer> stringBuffers = stringBufferMockedConstruction.constructed();
         assertEquals(stringBuffers.getFirst(), Reflections.getFieldValue("stringBuffer", appiumLog));
 

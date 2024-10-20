@@ -32,19 +32,19 @@ class ExtentTestConsumerTest {
     private ExtentTestConsumer extentTestConsumer;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("extentReporter", extentTestConsumer, extentReporter);
         extentReporterMockedStatic = mockStatic(ExtentReporter.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         extentReporterMockedStatic.close();
     }
 
     @Test
     @DisplayName("accept should add a log in the extent report by default")
-    public void accept() {
+    void accept() {
         when(event.getResult()).thenReturn(SUCCESSFUL);
         when(event.getContext()).thenReturn(context);
 

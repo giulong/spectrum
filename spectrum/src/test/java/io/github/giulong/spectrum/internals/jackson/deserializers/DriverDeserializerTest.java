@@ -32,7 +32,7 @@ class DriverDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(DriverDeserializer.getInstance(), DriverDeserializer.getInstance());
     }
@@ -40,7 +40,7 @@ class DriverDeserializerTest {
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserialize(final String value, final Driver<?, ?, ?> expected) throws IOException {
+    void deserialize(final String value, final Driver<?, ?, ?> expected) throws IOException {
         when(jsonParser.getValueAsString()).thenReturn(value);
         when(jsonParser.currentName()).thenReturn("key");
 
@@ -49,7 +49,7 @@ class DriverDeserializerTest {
 
     @Test
     @DisplayName("deserialize should throw an exception if the provided key is not a valid driver name")
-    public void deserializeNotExisting() throws IOException {
+    void deserializeNotExisting() throws IOException {
         String notValidDriver = "notValidDriver";
         when(jsonParser.getValueAsString()).thenReturn(notValidDriver);
         when(jsonParser.currentName()).thenReturn("key");

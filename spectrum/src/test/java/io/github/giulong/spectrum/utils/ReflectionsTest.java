@@ -19,7 +19,7 @@ class ReflectionsTest {
     @DisplayName("getGenericSuperclassOf should return the generic superclass of the provided class, looking it up to the provided limit")
     @ParameterizedTest(name = "with class {0}")
     @ValueSource(classes = {TestClass.class, TestParentClass.class})
-    public void getGenericSuperclassOf(final Class<?> clazz) {
+    void getGenericSuperclassOf(final Class<?> clazz) {
         final ParameterizedType type = Reflections.getGenericSuperclassOf(clazz, Parameterized.class);
 
         assertEquals(String.class, type.getActualTypeArguments()[0]);
@@ -27,7 +27,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("getField should return the field with the provided name on the provided object")
-    public void getField() throws NoSuchFieldException {
+    void getField() throws NoSuchFieldException {
         final String fieldName = "fieldString";
         final Dummy dummy = new Dummy(fieldName);
         final Field fieldString = Dummy.class.getDeclaredField(fieldName);
@@ -37,7 +37,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("getField should return the field with the provided name on the provided object even if it's in the parent class")
-    public void getFieldParent() throws NoSuchFieldException {
+    void getFieldParent() throws NoSuchFieldException {
         final String fieldName = "fieldString";
         final String parentField = "parentField";
         final Dummy dummy = new Dummy(fieldName, parentField);
@@ -48,7 +48,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("getField should return the field with the provided name on the provided object even if it's in the parent class")
-    public void getFieldNotFound() {
+    void getFieldNotFound() {
         final String fieldName = "notFound";
         final Dummy dummy = new Dummy(fieldName);
 
@@ -57,7 +57,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object")
-    public void getFieldValue() {
+    void getFieldValue() {
         final String fieldName = "fieldString";
         final String value = "value";
         final Dummy dummy = new Dummy(value);
@@ -67,7 +67,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object, casted to the provided class")
-    public void getFieldValueCast() {
+    void getFieldValueCast() {
         final String fieldName = "fieldString";
         final String value = "value";
         final Dummy dummy = new Dummy(value);
@@ -77,7 +77,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("getFieldValue should return the value of the provided field on the provided object, casted to the provided class")
-    public void getFieldValueField() {
+    void getFieldValueField() {
         final String fieldName = "fieldString";
         final String value = "value";
         final Dummy dummy = new Dummy(value);
@@ -87,7 +87,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("getValueOf should return the value of the provided field on the provided object, without looking into its superclasses")
-    public void getValueOf() {
+    void getValueOf() {
         final String fieldName = "fieldString";
         final String value = "value";
         final Dummy dummy = new Dummy(value);
@@ -97,7 +97,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("setField should set the field with the provided name on the provided object with the provided value")
-    public void setFieldString() throws NoSuchFieldException, IllegalAccessException {
+    void setFieldString() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";
         final String value = "value";
         final Dummy dummy = new Dummy(null);
@@ -109,7 +109,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("setField should set the provided field on the provided object with the provided value")
-    public void setField() throws NoSuchFieldException, IllegalAccessException {
+    void setField() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";
         final String value = "value";
         final Dummy dummy = new Dummy(null);
@@ -121,7 +121,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("copyField should copy the provided field")
-    public void copyField() throws NoSuchFieldException, IllegalAccessException {
+    void copyField() throws NoSuchFieldException, IllegalAccessException {
         final String fieldName = "fieldString";
         final String value = "value";
         final Dummy dummy = new Dummy(value);
@@ -135,7 +135,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("copyField should copy the provided field if it's the same on source and dest because it's inherited")
-    public void copyFieldSame() {
+    void copyFieldSame() {
         final String parentField = "parentField";
         final Dummy dummy = new Dummy(null, parentField);
         final DummyThird dummyThird = new DummyThird();
@@ -147,7 +147,7 @@ class ReflectionsTest {
 
     @Test
     @DisplayName("getAnnotatedFieldsValues should return the list of fields on the provided object which are annotated with the provided annotation, casting them to the provided class")
-    public void getAnnotatedFieldsValues() {
+    void getAnnotatedFieldsValues() {
         final String value = "value";
         final Dummy dummy = new Dummy(null, value, null);
         

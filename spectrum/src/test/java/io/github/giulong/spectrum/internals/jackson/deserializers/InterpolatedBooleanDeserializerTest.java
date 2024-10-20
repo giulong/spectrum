@@ -46,7 +46,7 @@ class InterpolatedBooleanDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(InterpolatedBooleanDeserializer.getInstance(), InterpolatedBooleanDeserializer.getInstance());
     }
@@ -54,7 +54,7 @@ class InterpolatedBooleanDeserializerTest {
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserialize(final String value, final boolean expected) throws IOException {
+    void deserialize(final String value, final boolean expected) throws IOException {
         when(jsonParser.getValueAsString()).thenReturn(value);
         when(jsonParser.currentName()).thenReturn("key");
 

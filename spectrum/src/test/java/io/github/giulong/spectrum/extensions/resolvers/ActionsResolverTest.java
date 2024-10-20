@@ -34,7 +34,7 @@ class ActionsResolverTest {
 
     @Test
     @DisplayName("resolveParameter should return an instance of Actions on the current stored WebDriver")
-    public void testResolveParameter() {
+    void testResolveParameter() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(DRIVER, WebDriver.class)).thenReturn(webDriver);
 

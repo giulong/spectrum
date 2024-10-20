@@ -94,7 +94,7 @@ class MetadataManagerTest {
     private MetadataManager metadataManager;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
 
         Reflections.setField("jsonUtils", metadataManager, jsonUtils);
@@ -105,21 +105,21 @@ class MetadataManagerTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         pathMockedStatic.close();
         ;
     }
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(MetadataManager.getInstance(), MetadataManager.getInstance());
     }
 
     @Test
     @DisplayName("sessionOpened should parse the existing metadata file cached")
-    public void sessionOpened() {
+    void sessionOpened() {
         final String cacheFolder = "cacheFolder";
 
         when(configuration.getRuntime()).thenReturn(runtime);
@@ -137,7 +137,7 @@ class MetadataManagerTest {
 
     @Test
     @DisplayName("sessionClosed should write the metadata.json in the configured cache folder")
-    public void sessionClosed() {
+    void sessionClosed() {
         final String cacheFolder = "cacheFolder";
         final String content = "content";
 
@@ -157,7 +157,7 @@ class MetadataManagerTest {
 
     @Test
     @DisplayName("sessionClosed should write the metadata.json updating the successful reports when the execution is successful")
-    public void sessionClosedFromSuccessful() {
+    void sessionClosedFromSuccessful() {
         final String cacheFolder = "cacheFolder";
         final String content = "content";
 
@@ -190,13 +190,13 @@ class MetadataManagerTest {
 
     @Test
     @DisplayName("getNamespaceOf should return the provided object's class simple name")
-    public void getNamespaceOf() {
+    void getNamespaceOf() {
         assertEquals("String", metadataManager.getNamespaceOf("a string"));
     }
 
     @Test
     @DisplayName("getSuccessfulQueueOf should return the successful reports queue for the provided producer if it exists already")
-    public void getSuccessfulQueueOf() {
+    void getSuccessfulQueueOf() {
         final Map<String, FixedSizeQueue<File>> reports = new HashMap<>(Map.of(extentReporter.getClass().getSimpleName(), fileFixedSizeQueue));
 
         when(metadata.getExecution()).thenReturn(execution);
@@ -208,7 +208,7 @@ class MetadataManagerTest {
 
     @Test
     @DisplayName("getSuccessfulQueueOf should return a new reports queue for the provided producer if it doesn't exists already")
-    public void getSuccessfulQueueOfNew() {
+    void getSuccessfulQueueOfNew() {
         final Map<String, FixedSizeQueue<File>> reports = new HashMap<>(Map.of());
 
         //noinspection rawtypes
@@ -226,7 +226,7 @@ class MetadataManagerTest {
 
     @Test
     @DisplayName("setSuccessfulQueueOf should set the provided queue in the namespace of the provided producer")
-    public void setSuccessfulQueueOf() {
+    void setSuccessfulQueueOf() {
         when(metadata.getExecution()).thenReturn(execution);
         when(execution.getSuccessful()).thenReturn(successful);
         when(successful.getReports()).thenReturn(reports);

@@ -30,7 +30,7 @@ class StatusComparatorTest {
     @DisplayName("compare should compare by tests' statuses")
     @ParameterizedTest(name = "with status1 {1} and status2 {2}, we expect {3}")
     @MethodSource("valuesProvider")
-    public void compare(final Status status1, final Status status2, final int expected) {
+    void compare(final Status status1, final Status status2, final int expected) {
         when(test1.getStatus()).thenReturn(status1);
         when(test2.getStatus()).thenReturn(status2);
 

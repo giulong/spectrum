@@ -50,18 +50,18 @@ class VideoDynamicConsumerTest {
     private VideoDynamicConsumer videoDynamicConsumer;
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    void beforeEach() throws IOException {
         filesMockedStatic = mockStatic(Files.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         filesMockedStatic.close();
     }
 
     @Test
     @DisplayName("init should init the needed fields")
-    public void init() throws NoSuchAlgorithmException {
+    void init() throws NoSuchAlgorithmException {
         final byte[] lastFrameDigest = new byte[]{1, 2, 3};
         final String displayName = "displayName";
 
@@ -77,7 +77,7 @@ class VideoDynamicConsumerTest {
 
     @Test
     @DisplayName("getVideoPathFrom should return the dynamic video path from the provided testData")
-    public void getVideoPathFrom() {
+    void getVideoPathFrom() {
         when(testData.getDynamicVideoPath()).thenReturn(dynamicVideoPath);
 
         assertEquals(dynamicVideoPath, videoDynamicConsumer.getVideoPathFrom(testData));
@@ -86,7 +86,7 @@ class VideoDynamicConsumerTest {
     @DisplayName("filter should return true if the provided file contains the displayName of the provided testData")
     @ParameterizedTest(name = "with file name {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void filter(final String fileName, final boolean expected) {
+    void filter(final String fileName, final boolean expected) {
         final String displayName = "displayName";
 
         when(screenshot.getName()).thenReturn(fileName);
@@ -106,7 +106,7 @@ class VideoDynamicConsumerTest {
 
     @Test
     @DisplayName("isNewFrame should return true if the display name of the provided testData is new")
-    public void isNewFrame() {
+    void isNewFrame() {
         final String displayName = "displayName";
 
         when(testData.getDisplayName()).thenReturn(displayName);
@@ -116,7 +116,7 @@ class VideoDynamicConsumerTest {
 
     @Test
     @DisplayName("isNewFrame should delegate to the parent's implementation when the displayName of the provided testData is not new")
-    public void isNewFrameOld() throws IOException {
+    void isNewFrameOld() throws IOException {
         final String displayName = "displayName";
 
         when(testData.getDisplayName()).thenReturn(displayName);

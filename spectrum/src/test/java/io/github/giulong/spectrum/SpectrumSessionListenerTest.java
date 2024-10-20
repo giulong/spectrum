@@ -83,7 +83,7 @@ class SpectrumSessionListenerTest {
     private SpectrumSessionListener spectrumSessionListener;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         osName = System.getProperty("os.name");
         Reflections.setField("yamlUtils", spectrumSessionListener, yamlUtils);
         Reflections.setField("fileUtils", spectrumSessionListener, fileUtils);
@@ -96,14 +96,14 @@ class SpectrumSessionListenerTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         Vars.getInstance().clear();
         System.setProperty("os.name", osName);
     }
 
     @Test
     @DisplayName("launcherSessionOpened should log the banner and initialize Spectrum")
-    public void launcherSessionOpened() {
+    void launcherSessionOpened() {
         final String profile = "profile";
         final String profileConfiguration = String.format("configuration-%s", profile);
         final String banner = "banner";
@@ -144,7 +144,7 @@ class SpectrumSessionListenerTest {
 
     @Test
     @DisplayName("launcherSessionClosed should flush the testbook and the extent report")
-    public void launcherSessionClosed() {
+    void launcherSessionClosed() {
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getEnvironment()).thenReturn(environment);
         when(configuration.getTestBook()).thenReturn(testBook);
@@ -163,7 +163,7 @@ class SpectrumSessionListenerTest {
 
     @Test
     @DisplayName("parseConfiguration should parse all the configurations considering no active profile")
-    public void parseConfigurationNoProfile() {
+    void parseConfigurationNoProfile() {
         System.setProperty("os.name", "Win");
 
         // parseProfile
@@ -181,7 +181,7 @@ class SpectrumSessionListenerTest {
 
     @Test
     @DisplayName("parseConfiguration should parse all the configurations considering the active profile")
-    public void parseConfiguration() {
+    void parseConfiguration() {
         final String profile = "profile";
         final String profileConfiguration = String.format("configuration-%s", profile);
 
@@ -203,7 +203,7 @@ class SpectrumSessionListenerTest {
 
     @Test
     @DisplayName("parseConfiguration should parse all the configurations considering also the internal configuration.default.unix.yaml")
-    public void parseConfigurationUnix() {
+    void parseConfigurationUnix() {
         final String profile = "profile";
         final String profileConfiguration = String.format("configuration-%s", profile);
 
@@ -228,7 +228,7 @@ class SpectrumSessionListenerTest {
     @DisplayName("parseProfiles should parse the profile node from both the internal configuration.yaml and the base configuration.yaml and return the merged value")
     @ParameterizedTest(name = "with profile {0} and default profile {1} we expect {2}")
     @MethodSource("profilesValuesProvider")
-    public void parseProfiles(final String profile, final String defaultProfile, final List<String> expected) {
+    void parseProfiles(final String profile, final String defaultProfile, final List<String> expected) {
         when(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn(defaultProfile);
 
@@ -249,7 +249,7 @@ class SpectrumSessionListenerTest {
     @DisplayName("parseVars should put in the VARS map all the variables read from the configuration yaml files")
     @ParameterizedTest
     @MethodSource("varsValuesProvider")
-    public void parseVars(final Map<String, String> defaultVars, final Map<String, String> vars, final Map<String, String> envVars, final Map<String, String> expected) {
+    void parseVars(final Map<String, String> defaultVars, final Map<String, String> vars, final Map<String, String> envVars, final Map<String, String> expected) {
         final String profileConfiguration = "profileConfiguration";
 
         System.setProperty("os.name", "Win");
@@ -265,7 +265,7 @@ class SpectrumSessionListenerTest {
     @DisplayName("parseVars should put in the VARS map also those read from the internal configuration.default.unix.yaml")
     @ParameterizedTest
     @MethodSource("varsValuesProvider")
-    public void parseVarsUnix(final Map<String, String> defaultVars, final Map<String, String> vars, final Map<String, String> envVars, final Map<String, String> expected) {
+    void parseVarsUnix(final Map<String, String> defaultVars, final Map<String, String> vars, final Map<String, String> envVars, final Map<String, String> expected) {
         final String profileConfiguration = "profileConfiguration";
 
         System.setProperty("os.name", "nix");
@@ -291,7 +291,7 @@ class SpectrumSessionListenerTest {
     @DisplayName("isUnix should check the OS")
     @ParameterizedTest(name = "with OS {0} we expect {1}")
     @MethodSource("isUnixValuesProvider")
-    public void isUnix(final String osName, final boolean expected) {
+    void isUnix(final String osName, final boolean expected) {
         System.setProperty("os.name", osName);
 
         assertEquals(expected, spectrumSessionListener.isUnix());

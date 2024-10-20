@@ -41,7 +41,7 @@ class SpectrumPageTest {
 
     @Test
     @DisplayName("open should get the configured base url and wait for the page to be loaded")
-    public void open() {
+    void open() {
         final String url = "url";
         Reflections.setField("endpoint", spectrumPage, endpoint);
 
@@ -54,14 +54,14 @@ class SpectrumPageTest {
 
     @Test
     @DisplayName("waitForPageLoading should do nothing but return the page instance")
-    public void waitForPageLoading() {
+    void waitForPageLoading() {
         assertEquals(spectrumPage, spectrumPage.waitForPageLoading());
     }
 
     @DisplayName("isLoaded should check if the current page url matches the endpoint")
     @ParameterizedTest(name = "with page url {0} and current url {1} we expect {2}")
     @MethodSource("valuesProvider")
-    public void isLoaded(final String pageUrl, final String currentUrl, final boolean expected) {
+    void isLoaded(final String pageUrl, final String currentUrl, final boolean expected) {
         Reflections.setField("endpoint", spectrumPage, endpoint);
 
         //noinspection DataFlowIssue
@@ -81,7 +81,7 @@ class SpectrumPageTest {
 
     @Test
     @DisplayName("addSecuredWebElements should add all the @Secured web elements of the current page to its testContext")
-    public void addSecuredWebElements() {
+    void addSecuredWebElements() {
         spectrumPage.addSecuredWebElements();
 
         verify(testContext).addSecuredWebElement(spectrumPage.securedWebElement);

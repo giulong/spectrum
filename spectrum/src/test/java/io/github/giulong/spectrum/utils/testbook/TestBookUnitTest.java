@@ -75,13 +75,13 @@ class TestBookUnitTest {
     private TestBook testBook;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         freeMarkerWrapperMockedStatic.close();
         fileUtilsMockedStatic.close();
     }
@@ -129,7 +129,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("parse should initialise the testbook")
-    public void parse() {
+    void parse() {
         final TestBookTest test1 = TestBookTest.builder()
                 .className("test 1")
                 .testName("one")
@@ -159,7 +159,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("parse should do nothing if not enabled")
-    public void parseNull() {
+    void parseNull() {
         testBook.sessionOpened();
 
         verify(testBookParser, never()).parse();
@@ -168,7 +168,7 @@ class TestBookUnitTest {
     @DisplayName("updateGroupedTests should add the provided test to the provided map of grouped tests")
     @ParameterizedTest(name = "with className {0} and grouped tests {1}")
     @MethodSource("valuesProvider")
-    public void updateGroupedTests(final String className, final Map<String, Set<TestBookTest>> groupedTests) {
+    void updateGroupedTests(final String className, final Map<String, Set<TestBookTest>> groupedTests) {
         testBook.getGroupedMappedTests().clear();
         testBook.getGroupedMappedTests().putAll(groupedTests);
         testBook.updateGroupedTests(groupedTests, className, test);
@@ -187,7 +187,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("updateWithResult should do nothing if no testBook is provided")
-    public void consumeTestBookNull() {
+    void consumeTestBookNull() {
         testBook.updateWithResult(null, null, FAILED);
 
         verifyNoInteractions(statistics);
@@ -195,7 +195,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("updateWithResult should update the testbook with the currently unmapped test")
-    public void updateWithResultUnmapped() {
+    void updateWithResultUnmapped() {
         final Result result = FAILED;
         final String className = "className";
         final String testName = "testName";
@@ -214,7 +214,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("updateWithResult should update the testbook with the currently finished test")
-    public void updateWithResult() {
+    void updateWithResult() {
         final Result result = FAILED;
         final String className = "className";
         final String testName = "testName";
@@ -237,7 +237,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("getWeightedTotalOf should return the sum of the weights of the provided map")
-    public void getWeightedTotalOf() {
+    void getWeightedTotalOf() {
         final TestBookTest test1 = TestBookTest.builder()
                 .className("test 1")
                 .testName("one")
@@ -260,7 +260,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("flush should update the statistics of the provided tests map")
-    public void flush() {
+    void flush() {
         final Map<Result, Statistics> statistics = new HashMap<>();
         final int totalSuccessful = 1;
         final int totalFailed = 2;
@@ -293,7 +293,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("flush should flush all reporters")
-    public void flushAll() {
+    void flushAll() {
         Vars.getInstance().put(globalVar, globalValue);
 
         Reflections.setField("reporters", testBook, List.of(reporter1, reporter2));
@@ -328,7 +328,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("flush should do nothing if the testBook is disabled")
-    public void flushAllDisabled() {
+    void flushAllDisabled() {
         Reflections.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());

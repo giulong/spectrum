@@ -29,7 +29,7 @@ class FixedSizeQueueTest {
 
     @Test
     @DisplayName("add should add the element to the list only if it's new")
-    public void add() {
+    void add() {
         assertTrue(fixedSizeQueue.add(file1));
         assertTrue(fixedSizeQueue.add(file2));
         assertFalse(fixedSizeQueue.add(file1));
@@ -39,7 +39,7 @@ class FixedSizeQueueTest {
     @DisplayName("shrinkTo should fluently poll elements while the queue is bigger than the provided size")
     @ParameterizedTest(name = "with currentSize {0} and maxSize {1} we expect {2}")
     @MethodSource("valuesProvider")
-    public void shrinkTo(final int currentSize, final int maxSize, final int expected) throws IOException {
+    void shrinkTo(final int currentSize, final int maxSize, final int expected) throws IOException {
         for (int i = 0; i < currentSize; i++) {
             final File tempFile = Files.createTempFile("prefix", ".txt").toFile();
             tempFile.deleteOnExit();

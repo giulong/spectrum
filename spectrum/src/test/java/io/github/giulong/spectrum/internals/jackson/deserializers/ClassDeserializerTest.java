@@ -25,14 +25,14 @@ class ClassDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(ClassDeserializer.getInstance(), ClassDeserializer.getInstance());
     }
 
     @Test
     @DisplayName("deserialize should return the class loaded from the provided string fqdn literal")
-    public void deserialize() throws IOException {
+    void deserialize() throws IOException {
         final String value = "java.lang.String";
         when(jsonParser.getValueAsString()).thenReturn(value);
 
@@ -41,7 +41,7 @@ class ClassDeserializerTest {
 
     @Test
     @DisplayName("deserialize should throw an exception if the provided value is not a valid fqdn literal")
-    public void deserializeThrows() throws IOException {
+    void deserializeThrows() throws IOException {
         final String value = "invalid";
         when(jsonParser.getValueAsString()).thenReturn(value);
 

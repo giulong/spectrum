@@ -53,20 +53,20 @@ class JsWebElementProxyBuilderTest {
     private JsWebElementProxyBuilder jsWebElementProxyBuilder;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         proxyMockedStatic = mockStatic(Proxy.class);
         jsWebElementInvocationHandlerMockedStatic = mockStatic(JsWebElementInvocationHandler.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         proxyMockedStatic.close();
         jsWebElementInvocationHandlerMockedStatic.close();
     }
 
     @Test
     @DisplayName("buildFor should return a proxy for the provided webElement")
-    public void buildFor() {
+    void buildFor() {
         when(JsWebElementInvocationHandler.builder()).thenReturn(jsWebElementInvocationHandlerBuilder);
         when(jsWebElementInvocationHandlerBuilder.js(js)).thenReturn(jsWebElementInvocationHandlerBuilder);
         when(jsWebElementInvocationHandlerBuilder.webElement(webElement)).thenReturn(jsWebElementInvocationHandlerBuilder);

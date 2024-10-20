@@ -134,7 +134,7 @@ class VideoConsumerTest {
     private VideoConsumer videoConsumer;
 
     @BeforeEach
-    public void beforeEach() throws IOException {
+    void beforeEach() throws IOException {
         Reflections.setField("configuration", videoConsumer, configuration);
         Reflections.setField("contextManager", videoConsumer, contextManager);
 
@@ -144,7 +144,7 @@ class VideoConsumerTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         awtSequenceEncoderMockedStatic.close();
         imageIOMockedStatic.close();
         filesMockedStatic.close();
@@ -152,7 +152,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("accept should notify the VideoEncoder that the test is done")
-    public void accept() throws IOException {
+    void accept() throws IOException {
         final int width = 1;
         final int height = 3;
 
@@ -215,7 +215,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("accept should notify the VideoEncoder that the test is done, with a skipped duplicate frame")
-    public void acceptOneDuplicateFrame() throws IOException {
+    void acceptOneDuplicateFrame() throws IOException {
         final int width = 1;
         final int height = 3;
 
@@ -277,7 +277,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("accept should notify the VideoEncoder that the test is done without skipping duplicate frames")
-    public void acceptNoSkipDuplicates() throws IOException {
+    void acceptNoSkipDuplicates() throws IOException {
         final int width = 1;
         final int height = 3;
 
@@ -333,7 +333,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("accept should add the no-video.png if no frames were added")
-    public void acceptNoFramesAdded() throws IOException, URISyntaxException {
+    void acceptNoFramesAdded() throws IOException, URISyntaxException {
         when(event.getResult()).thenReturn(SUCCESSFUL);
 
         when(configuration.getVideo()).thenReturn(video);
@@ -360,7 +360,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("accept shouldn't do nothing when video recording is disabled")
-    public void acceptDisabled() throws IOException {
+    void acceptDisabled() throws IOException {
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(true);
@@ -375,7 +375,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("accept shouldn't do nothing when the test is skipped")
-    public void acceptTestSkipped() throws IOException {
+    void acceptTestSkipped() throws IOException {
         when(event.getResult()).thenReturn(DISABLED);
 
         when(configuration.getVideo()).thenReturn(video);
@@ -391,7 +391,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("init should init the needed fields")
-    public void init() throws NoSuchAlgorithmException {
+    void init() throws NoSuchAlgorithmException {
         final byte[] lastFrameDigest = new byte[]{1, 2, 3};
 
         Reflections.setField("lastFrameDigest", videoConsumer, lastFrameDigest);
@@ -404,7 +404,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("getVideoPathFrom should return the video path from the provided testData")
-    public void getVideoPathFrom() {
+    void getVideoPathFrom() {
         when(testData.getVideoPath()).thenReturn(videoPath);
 
         assertEquals(videoPath, videoConsumer.getVideoPathFrom(testData));
@@ -412,13 +412,13 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("filter should always return true for any provided file")
-    public void filter() {
+    void filter() {
         assertTrue(videoConsumer.filter(screenshot1, testData));
     }
 
     @Test
     @DisplayName("chooseDimensionFor should return a new Dimension based on the provided video dimension")
-    public void chooseDimensionFor() {
+    void chooseDimensionFor() {
         when(video.getWidth()).thenReturn(1);
         when(video.getHeight()).thenReturn(3);
 
@@ -430,7 +430,7 @@ class VideoConsumerTest {
     @DisplayName("chooseDimensionFor should return a new Dimension based on webDriver's dimension, if at least one is lte 0")
     @ParameterizedTest(name = "with width {0} and height {1}")
     @MethodSource("dimensionProvider")
-    public void chooseDimensionForProvided(final int width, final int height) {
+    void chooseDimensionForProvided(final int width, final int height) {
         final int menuBarsHeight = 123;
 
         reset(video);
@@ -463,7 +463,7 @@ class VideoConsumerTest {
     @DisplayName("makeItEven should increment the provided int if it's odd")
     @ParameterizedTest(name = "with i {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void makeItEven(final int i, final int expected) {
+    void makeItEven(final int i, final int expected) {
         assertEquals(expected, videoConsumer.makeItEven(i));
     }
 
@@ -476,7 +476,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("isNewFrame should return true if the provided screenshot is new")
-    public void isNewFrame() throws IOException {
+    void isNewFrame() throws IOException {
         final byte[] lastFrameDigest = new byte[]{1, 2, 3};
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
         final byte[] newFrameDigest = new byte[]{7, 8, 9};
@@ -495,7 +495,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("isNewFrame should return false if the provided screenshot is not new")
-    public void isNewFrameFalse() throws IOException {
+    void isNewFrameFalse() throws IOException {
         final byte[] lastFrameDigest = new byte[]{1, 2, 3};
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
 
@@ -513,7 +513,7 @@ class VideoConsumerTest {
 
     @Test
     @DisplayName("resize should resize the image and return it")
-    public void resize() {
+    void resize() {
         final int width = 6;
         final int height = 100;
 

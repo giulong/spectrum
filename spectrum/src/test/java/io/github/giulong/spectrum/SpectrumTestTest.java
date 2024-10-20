@@ -128,7 +128,7 @@ class SpectrumTestTest {
     private FakeParentSpectrumTestVoid fakeParentSpectrumTestVoid;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         spectrumTest.data = data;
         spectrumTest.testPage.jsWebElement = webElement;
         spectrumTest.testPage.jsWebElementList = webElementList;
@@ -141,13 +141,13 @@ class SpectrumTestTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         jsWebElementListInvocationHandlerMockedStatic.close();
     }
 
     @Test
     @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call initPages")
-    public void testBeforeEach() {
+    void testBeforeEach() {
         childTest.beforeEach(testContext, configuration, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
                 extentReports, actions, eventsDispatcher, js, jsWebElementProxyBuilder, data);
 
@@ -179,7 +179,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("initPages should init also init pages from super classes")
-    public void initPages() {
+    void initPages() {
         final String folder = "folder";
 
         when(configuration.getData()).thenReturn(dataConfiguration);
@@ -201,7 +201,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("initPages should init also init pages from super classes, injecting data field in pages")
-    public void initPagesVoid() {
+    void initPagesVoid() {
         final String folder = "folder";
 
         when(configuration.getData()).thenReturn(dataConfiguration);
@@ -223,7 +223,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("initPage should init the provided field")
-    public void initPage() {
+    void initPage() {
         final SpectrumPage<?, FakeData> actual = spectrumTest.initPage(Reflections.getField("testPage", spectrumTest), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPage, actual);
@@ -244,7 +244,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("initPage without endpoint")
-    public void initPageWithoutEndpoint() {
+    void initPageWithoutEndpoint() {
         final SpectrumPage<?, FakeData> actual = spectrumTest.initPage(Reflections.getField("testPageWithoutEndpoint", spectrumTest), spectrumTest.getSharedFields());
 
         assertEquals(spectrumTest.testPageWithoutEndpoint, actual);
@@ -265,7 +265,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("initJsWebElements should call the setJsWebElementProxy on each field of the current page annotated with @JsWebElement")
-    public void initJsWebElements() {
+    void initJsWebElements() {
         when(jsWebElementProxyBuilder.buildFor(webElementArgumentCaptor.capture())).thenReturn(webElementProxy);
         when(JsWebElementListInvocationHandler.builder()).thenReturn(jsWebElementListInvocationHandlerBuilder);
         when(jsWebElementListInvocationHandlerBuilder.jsWebElementProxyBuilder(jsWebElementProxyBuilder)).thenReturn(jsWebElementListInvocationHandlerBuilder);
@@ -281,7 +281,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("setJsWebElementProxy should set a jsWebElementProxy instance on each webElement field")
-    public void setJsWebElementProxy() throws IllegalAccessException {
+    void setJsWebElementProxy() throws IllegalAccessException {
         when(field.get(spectrumTest.testPage)).thenReturn(webElement);
         when(jsWebElementProxyBuilder.buildFor(webElement)).thenReturn(webElementProxy);
 
@@ -292,7 +292,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("setJsWebElementProxy should set a JsWebElementListInvocationHandler instance on each List field annotated with @JsWebElement")
-    public void setJsWebElementProxyList() throws IllegalAccessException {
+    void setJsWebElementProxyList() throws IllegalAccessException {
         final MockedStatic<Proxy> proxyMockedStatic = mockStatic(Proxy.class);
 
         when(field.get(spectrumTest.testPage)).thenReturn(webElementList);
@@ -315,7 +315,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("injectDataInPages should do nothing if data was already injected from SpectrumTest")
-    public void injectDataInPagesNotNull() {
+    void injectDataInPagesNotNull() {
         spectrumTest.injectDataInPages();
 
         // we assert it's null since we have SpectrumTest<FakeData>
@@ -324,7 +324,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("injectDataInPages should inject the data field in pages when we have SpectrumTest<Void>")
-    public void injectDataInPages() {
+    void injectDataInPages() {
         final String folder = "folder";
 
         when(configuration.getData()).thenReturn(dataConfiguration);
@@ -343,7 +343,7 @@ class SpectrumTestTest {
 
     @Test
     @DisplayName("injectDataInPages should not inject the data field in pages when we have SpectrumTest<Void>, if all pages are SpectrumPage<Void>")
-    public void injectDataInPagesAllVoid() {
+    void injectDataInPagesAllVoid() {
         final FakeSpectrumPageVoid fakeSpectrumPageVoid1 = mock(FakeSpectrumPageVoid.class);
         final FakeSpectrumPageVoid fakeSpectrumPageVoid2 = mock(FakeSpectrumPageVoid.class);
         fakeParentSpectrumTestVoid.spectrumPages = List.of(fakeSpectrumPageVoid1, fakeSpectrumPageVoid2);

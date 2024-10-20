@@ -37,13 +37,13 @@ class ChromiumTest {
     private Chrome chrome;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("capabilities", chrome, chromeOptions);
     }
 
     @Test
     @DisplayName("setLoggingPreferencesFrom should set the LOGGING_PREFS in the capabilities")
-    public void setLoggingPreferencesFrom() {
+    void setLoggingPreferencesFrom() {
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);

@@ -28,7 +28,7 @@ class EventsConsumerTest {
     @DisplayName("tagsIntersect")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
     @MethodSource("tagsIntersectProvider")
-    public void tagsIntersect(final Set<String> value1, final Set<String> value2, final boolean expected) {
+    void tagsIntersect(final Set<String> value1, final Set<String> value2, final boolean expected) {
         final Event e1 = Event.builder().tags(value1).build();
         final Event e2 = Event.builder().tags(value2).build();
 
@@ -48,7 +48,7 @@ class EventsConsumerTest {
     @DisplayName("primaryAndSecondaryIdMatch")
     @ParameterizedTest(name = "with value1 {0}, value2 {1}, value3 {2}, value4 {3} we expect {5}")
     @MethodSource("primaryAndSecondaryIdMatchProvider")
-    public void primaryAndSecondaryIdMatch(final String value1, final String value2, final String value3, final String value4, final boolean expected) {
+    void primaryAndSecondaryIdMatch(final String value1, final String value2, final String value3, final String value4, final boolean expected) {
         final Event e1 = Event.builder().primaryId(value1).secondaryId(value2).build();
         final Event e2 = Event.builder().primaryId(value3).secondaryId(value4).build();
 
@@ -75,7 +75,7 @@ class EventsConsumerTest {
     @DisplayName("justPrimaryIdMatches")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
     @MethodSource("justPrimaryIdMatchesProvider")
-    public void justPrimaryIdMatches(final String value1, final String value2, final boolean expected) {
+    void justPrimaryIdMatches(final String value1, final String value2, final boolean expected) {
         final Event e1 = Event.builder().primaryId(value1).build();
         final Event e2 = Event.builder().primaryId(value2).build();
 
@@ -95,7 +95,7 @@ class EventsConsumerTest {
     @DisplayName("reasonMatches")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
     @MethodSource("reasonMatchesProvider")
-    public void reasonMatches(final String value1, final String value2, final boolean expected) {
+    void reasonMatches(final String value1, final String value2, final boolean expected) {
         final Event e1 = Event.builder().reason(value1).build();
         final Event e2 = Event.builder().reason(value2).build();
 
@@ -115,7 +115,7 @@ class EventsConsumerTest {
     @DisplayName("resultMatches")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
     @MethodSource("resultProvider")
-    public void resultMatches(final Result value1, final Result value2, final boolean expected) {
+    void resultMatches(final Result value1, final Result value2, final boolean expected) {
         final Event e1 = Event.builder().result(value1).build();
         final Event e2 = Event.builder().result(value2).build();
 
@@ -133,7 +133,7 @@ class EventsConsumerTest {
     @DisplayName("findMatchFor")
     @ParameterizedTest(name = "with event1 {0} and event2 {1} we expect {2}")
     @MethodSource("findMatchForProvider")
-    public void findMatchFor(final Event e1, final Event e2, final boolean expected) {
+    void findMatchFor(final Event e1, final Event e2, final boolean expected) {
         assertEquals(expected, eventsConsumer.findMatchFor(e1, e2));
     }
 
@@ -159,7 +159,7 @@ class EventsConsumerTest {
 
     @Test
     @DisplayName("match should filter all the consumers listening to the provided event and let them consume it")
-    public void match() {
+    void match() {
         final Event firedEvent = mock(Event.class);
         final Event matchingEvent = mock(Event.class);
         final Event neverMatchingEvent = mock(Event.class);
@@ -182,7 +182,7 @@ class EventsConsumerTest {
 
     @Test
     @DisplayName("acceptSilently should ignore any exception thrown when consuming the provided event")
-    public void acceptSilently() {
+    void acceptSilently() {
         final String exceptionMessage = "THE STACKTRACE BELOW IS EXPECTED!!!";
         final Event event = mock(Event.class);
 

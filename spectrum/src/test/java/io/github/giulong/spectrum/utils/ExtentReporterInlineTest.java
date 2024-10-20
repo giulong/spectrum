@@ -74,7 +74,7 @@ class ExtentReporterInlineTest {
     private ExtentReporterInline extentReporterInline;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("fileUtils", extentReporterInline, fileUtils);
         Reflections.setField("htmlUtils", extentReporterInline, htmlUtils);
         Reflections.setField("configuration", extentReporterInline, configuration);
@@ -84,7 +84,7 @@ class ExtentReporterInlineTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         pathMockedStatic.close();
         filesMockedStatic.close();
     }
@@ -128,7 +128,7 @@ class ExtentReporterInlineTest {
 
     @Test
     @DisplayName("sessionOpened should return immediately if inline report is not active")
-    public void sessionOpenedFalse() {
+    void sessionOpenedFalse() {
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.isInline()).thenReturn(false);
 
@@ -140,7 +140,7 @@ class ExtentReporterInlineTest {
 
     @Test
     @DisplayName("sessionOpened should just log the path of the report that will be produced in the end")
-    public void sessionOpened() {
+    void sessionOpened() {
         final String fileName = "fileName";
 
         when(configuration.getExtent()).thenReturn(extent);
@@ -159,7 +159,7 @@ class ExtentReporterInlineTest {
 
     @Test
     @DisplayName("sessionClosed should cleanup the old reports even if inline report is not active")
-    public void sessionClosedFalse() {
+    void sessionClosedFalse() {
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.isInline()).thenReturn(false);
 
@@ -173,7 +173,7 @@ class ExtentReporterInlineTest {
 
     @Test
     @DisplayName("sessionClosed should produce the inline report and cleanup the old ones")
-    public void sessionClosed() throws IOException {
+    void sessionClosed() throws IOException {
         final String fileName = "fileName";
         final String readString = "readString";
         final String inlineReport = "inlineReport";
@@ -205,7 +205,7 @@ class ExtentReporterInlineTest {
 
     @Test
     @DisplayName("getReportPathFrom should should return the absolute path resulting from the composition of extent's report folder and filename")
-    public void getReportPathFrom() {
+    void getReportPathFrom() {
         final String fileName = "fileName";
 
         when(extent.getInlineReportFolder()).thenReturn(INLINE_REPORT_FOLDER);

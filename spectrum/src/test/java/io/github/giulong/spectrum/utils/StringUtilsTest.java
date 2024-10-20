@@ -14,14 +14,14 @@ public class StringUtilsTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(StringUtils.getInstance(), StringUtils.getInstance());
     }
 
     @Test
     @DisplayName("escapeString method should return the input string with escaped characters")
-    public void testEscape() {
+    void testEscape() {
         assertThrows(NullPointerException.class, () -> stringUtils.escape(null), "The string to escape cannot be null");
         assertEquals("\\\\", stringUtils.escape("\\"), "Escapes backslashes");
         assertEquals("\\'", stringUtils.escape("'"), "Escapes single quotes");
