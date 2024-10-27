@@ -29,7 +29,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 public class FilesIT extends SpectrumTest<Void> {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String FILE_TO_DOWNLOAD = "empty.txt"; // this must be different from the downloaded file since herokuapp will randomly serve exactly the files used to test the upload
+
+    // this must be different from the downloaded file since herokuapp will randomly serve exactly the files used to test the upload
+    private static final String FILE_TO_DOWNLOAD = "empty.txt";
     private static final String FILE_TO_UPLOAD = "spectrum-logo.png";
 
     private DownloadPage downloadPage;
@@ -64,7 +66,7 @@ public class FilesIT extends SpectrumTest<Void> {
     public void additionalGridCapabilities() throws IOException {
         final HttpURLConnection connection = setupConnectionToGrid();
 
-        try (final OutputStream outputStream = connection.getOutputStream()) {
+        try (OutputStream outputStream = connection.getOutputStream()) {
             byte[] payload = "{\"query\":\"{ sessionsInfo { sessions { id, capabilities } } }\"}".getBytes(UTF_8);
             outputStream.write(payload, 0, payload.length);
         }
@@ -87,7 +89,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @SneakyThrows
     private Response mapResponseFrom(final HttpURLConnection connection) {
-        try (final Scanner scanner = new Scanner(connection.getInputStream())) {
+        try (Scanner scanner = new Scanner(connection.getInputStream())) {
             final String responseString = scanner.useDelimiter("\\A").next()
                     .replace("\\n", "")
                     .replace("\\", "")
@@ -99,19 +101,19 @@ public class FilesIT extends SpectrumTest<Void> {
     }
 
     @Getter
-    private static class Response {
+    private static final class Response {
         private Data data;
 
         @Getter
-        private static class Data {
+        private static final class Data {
             private SessionsInfo sessionsInfo;
 
             @Getter
-            private static class SessionsInfo {
+            private static final class SessionsInfo {
                 private List<Session> sessions;
 
                 @Getter
-                private static class Session {
+                private static final class Session {
                     private String id;
                     private Map<String, Object> capabilities;
                 }

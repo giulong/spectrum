@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import static ch.qos.logback.classic.Level.ALL;
 import static ch.qos.logback.classic.Level.OFF;
+import static ch.qos.logback.classic.Level.WARN;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -316,11 +317,11 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("WARN level: listen should log the provided event with its args")
     void listenWarn() {
-        webDriverEventStubsAtLevel(WARN);
+        webDriverEventStubsAtLevel(org.slf4j.event.Level.WARN);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.WARN);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(WARN);
         when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(Level.WARN);
+        when(event.getLevel()).thenReturn(WARN);
         when(event.getWait()).thenReturn(wait);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
@@ -333,7 +334,7 @@ class SpectrumWebDriverListenerTest {
     @DisplayName("WARN level off: listen should not log the provided event")
     void listenWarnOff() {
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(Level.WARN);
+        when(event.getLevel()).thenReturn(WARN);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 

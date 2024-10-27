@@ -17,7 +17,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 @SuppressWarnings("unused")
 public class FilesIT extends SpectrumTest<Void> {
 
-    private static final String FILE_TO_DOWNLOAD = "empty.txt"; // this must be different from the downloaded file since herokuapp will randomly serve exactly the files used to test the upload
+    // this must be different from the downloaded file since herokuapp will randomly serve exactly the files used to test the upload
+    private static final String FILE_TO_DOWNLOAD = "empty.txt";
     private static final String FILE_TO_UPLOAD = "spectrum-logo.png";
 
     private DownloadPage downloadPage;
