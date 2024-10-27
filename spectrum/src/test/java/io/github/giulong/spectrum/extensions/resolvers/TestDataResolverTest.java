@@ -116,10 +116,14 @@ class TestDataResolverTest {
         when(fileUtils.sanitize(displayName)).thenReturn(sanitizedDisplayName);
 
         // getScreenshotFolderPathForCurrentTest
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath())).thenReturn(path);
+        when(fileUtils.deleteContentOf(
+                Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath()))
+                .thenReturn(path);
 
         // getVideoPathForCurrentTest
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath())).thenReturn(path);
+        when(fileUtils.deleteContentOf(
+                Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath()))
+                .thenReturn(path);
 
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(context.getRoot()).thenReturn(rootContext);

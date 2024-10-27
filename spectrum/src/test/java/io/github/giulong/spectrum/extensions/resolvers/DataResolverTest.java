@@ -134,18 +134,18 @@ class DataResolverTest {
     private static class Parent extends SpectrumTest<String> {
     }
 
-    private static class TestClass extends SpectrumTest<String> {
+    private static final class TestClass extends SpectrumTest<String> {
     }
 
-    private static class TestParentClass extends Parent {
+    private static final class TestParentClass extends Parent {
     }
 
     private static class ParentVoid extends SpectrumTest<Void> {
     }
 
-    private static class VoidClass extends SpectrumTest<Void> {
+    private static final class VoidClass extends SpectrumTest<Void> {
     }
 
-    private static class VoidParentClass extends ParentVoid {
+    private static final class VoidParentClass extends ParentVoid {
     }
 }

@@ -43,7 +43,9 @@ class FileUtilsTest {
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
+                arguments("test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() +
+                        "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() +
+                        "  field: ignored"),
                 arguments("not-existing", ""));
     }
 
@@ -56,7 +58,9 @@ class FileUtilsTest {
 
     public static Stream<Arguments> readTemplateValuesProvider() {
         return Stream.of(
-                arguments("template-test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() + "  field: ignored"),
+                arguments("template-test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() +
+                        "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() +
+                        "  field: ignored"),
                 arguments("not-existing", ""));
     }
 

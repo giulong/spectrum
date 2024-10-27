@@ -107,7 +107,6 @@ class MetadataManagerTest {
     @AfterEach
     void afterEach() {
         pathMockedStatic.close();
-        ;
     }
 
     @Test
@@ -197,11 +196,11 @@ class MetadataManagerTest {
     @Test
     @DisplayName("getSuccessfulQueueOf should return the successful reports queue for the provided producer if it exists already")
     void getSuccessfulQueueOf() {
-        final Map<String, FixedSizeQueue<File>> reports = new HashMap<>(Map.of(extentReporter.getClass().getSimpleName(), fileFixedSizeQueue));
+        final Map<String, FixedSizeQueue<File>> localReports = new HashMap<>(Map.of(extentReporter.getClass().getSimpleName(), fileFixedSizeQueue));
 
         when(metadata.getExecution()).thenReturn(execution);
         when(execution.getSuccessful()).thenReturn(successful);
-        when(successful.getReports()).thenReturn(reports);
+        when(successful.getReports()).thenReturn(localReports);
 
         assertEquals(fileFixedSizeQueue, metadataManager.getSuccessfulQueueOf(extentReporter));
     }
@@ -209,14 +208,14 @@ class MetadataManagerTest {
     @Test
     @DisplayName("getSuccessfulQueueOf should return a new reports queue for the provided producer if it doesn't exists already")
     void getSuccessfulQueueOfNew() {
-        final Map<String, FixedSizeQueue<File>> reports = new HashMap<>(Map.of());
+        final Map<String, FixedSizeQueue<File>> localReports = new HashMap<>(Map.of());
 
         //noinspection rawtypes
         MockedConstruction<FixedSizeQueue> fixedSizeQueueMockedConstruction = mockConstruction(FixedSizeQueue.class);
 
         when(metadata.getExecution()).thenReturn(execution);
         when(execution.getSuccessful()).thenReturn(successful);
-        when(successful.getReports()).thenReturn(reports);
+        when(successful.getReports()).thenReturn(localReports);
 
         final FixedSizeQueue<File> actual = metadataManager.getSuccessfulQueueOf(extentReporter);
         assertEquals(fixedSizeQueueMockedConstruction.constructed().getFirst(), actual);

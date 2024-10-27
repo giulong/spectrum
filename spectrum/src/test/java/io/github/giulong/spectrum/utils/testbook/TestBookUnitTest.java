@@ -88,11 +88,11 @@ class TestBookUnitTest {
 
     private void mapVarsAssertions() {
         final Map<String, Object> vars = testBook.getVars();
-        final TestBookStatistics statistics = testBook.getStatistics();
-        final Map<Result, Statistics> totalCount = statistics.getTotalCount();
-        final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
-        final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
-        final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
+        final TestBookStatistics localStatistics = testBook.getStatistics();
+        final Map<Result, Statistics> totalCount = localStatistics.getTotalCount();
+        final Map<Result, Statistics> grandTotalCount = localStatistics.getGrandTotalCount();
+        final Map<Result, Statistics> totalWeightedCount = localStatistics.getTotalWeightedCount();
+        final Map<Result, Statistics> grandTotalWeightedCount = localStatistics.getGrandTotalWeightedCount();
 
         assertEquals(29, vars.size());
         assertEquals(globalValue, vars.get(globalVar));
@@ -261,7 +261,7 @@ class TestBookUnitTest {
     @Test
     @DisplayName("flush should update the statistics of the provided tests map")
     void flush() {
-        final Map<Result, Statistics> statistics = new HashMap<>();
+        final Map<Result, Statistics> localStatistics = new HashMap<>();
         final int totalSuccessful = 1;
         final int totalFailed = 2;
         final int totalAborted = 3;
@@ -269,26 +269,26 @@ class TestBookUnitTest {
         final int total = 123;
         final int totalNotRun = total - totalSuccessful - totalFailed - totalAborted - totalDisabled;
 
-        statistics.put(SUCCESSFUL, new Statistics());
-        statistics.put(FAILED, new Statistics());
-        statistics.put(ABORTED, new Statistics());
-        statistics.put(DISABLED, new Statistics());
-        statistics.put(NOT_RUN, new Statistics());
+        localStatistics.put(SUCCESSFUL, new Statistics());
+        localStatistics.put(FAILED, new Statistics());
+        localStatistics.put(ABORTED, new Statistics());
+        localStatistics.put(DISABLED, new Statistics());
+        localStatistics.put(NOT_RUN, new Statistics());
 
-        statistics.get(SUCCESSFUL).getTotal().set(totalSuccessful);
-        statistics.get(FAILED).getTotal().set(totalFailed);
-        statistics.get(ABORTED).getTotal().set(totalAborted);
-        statistics.get(DISABLED).getTotal().set(totalDisabled);
+        localStatistics.get(SUCCESSFUL).getTotal().set(totalSuccessful);
+        localStatistics.get(FAILED).getTotal().set(totalFailed);
+        localStatistics.get(ABORTED).getTotal().set(totalAborted);
+        localStatistics.get(DISABLED).getTotal().set(totalDisabled);
 
         Reflections.setField("enabled", testBook, true);
-        testBook.flush(total, statistics);
+        testBook.flush(total, localStatistics);
 
-        assertEquals((double) totalSuccessful / total * 100, statistics.get(SUCCESSFUL).getPercentage().get());
-        assertEquals((double) totalFailed / total * 100, statistics.get(FAILED).getPercentage().get());
-        assertEquals((double) totalAborted / total * 100, statistics.get(ABORTED).getPercentage().get());
-        assertEquals((double) totalDisabled / total * 100, statistics.get(DISABLED).getPercentage().get());
-        assertEquals((double) totalNotRun / total * 100, statistics.get(NOT_RUN).getPercentage().get());
-        assertEquals(totalNotRun, statistics.get(NOT_RUN).getTotal().get());
+        assertEquals((double) totalSuccessful / total * 100, localStatistics.get(SUCCESSFUL).getPercentage().get());
+        assertEquals((double) totalFailed / total * 100, localStatistics.get(FAILED).getPercentage().get());
+        assertEquals((double) totalAborted / total * 100, localStatistics.get(ABORTED).getPercentage().get());
+        assertEquals((double) totalDisabled / total * 100, localStatistics.get(DISABLED).getPercentage().get());
+        assertEquals((double) totalNotRun / total * 100, localStatistics.get(NOT_RUN).getPercentage().get());
+        assertEquals(totalNotRun, localStatistics.get(NOT_RUN).getTotal().get());
     }
 
     @Test

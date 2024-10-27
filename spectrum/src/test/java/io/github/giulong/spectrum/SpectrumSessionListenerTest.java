@@ -291,8 +291,8 @@ class SpectrumSessionListenerTest {
     @DisplayName("isUnix should check the OS")
     @ParameterizedTest(name = "with OS {0} we expect {1}")
     @MethodSource("isUnixValuesProvider")
-    void isUnix(final String osName, final boolean expected) {
-        System.setProperty("os.name", osName);
+    void isUnix(final String localOsName, final boolean expected) {
+        System.setProperty("os.name", localOsName);
 
         assertEquals(expected, spectrumSessionListener.isUnix());
     }

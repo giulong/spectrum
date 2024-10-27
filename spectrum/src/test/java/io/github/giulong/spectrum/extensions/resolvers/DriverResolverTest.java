@@ -194,8 +194,8 @@ class DriverResolverTest {
         when(spectrumWebDriverListenerBuilder.build()).thenReturn(spectrumWebDriverListener);
 
         //noinspection rawtypes
-        MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, context) -> {
-            assertEquals(spectrumWebDriverListener, ((WebDriverListener[]) context.arguments().getFirst())[0]);
+        MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, executionContext) -> {
+            assertEquals(spectrumWebDriverListener, ((WebDriverListener[]) executionContext.arguments().getFirst())[0]);
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
         });

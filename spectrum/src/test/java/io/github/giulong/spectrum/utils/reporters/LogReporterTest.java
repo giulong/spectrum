@@ -18,6 +18,6 @@ class LogReporterTest {
         // no verifications/assertions needed
     }
 
-    private static class DummyLogReporter extends LogReporter {
+    private static final class DummyLogReporter extends LogReporter {
     }
 }

@@ -97,7 +97,7 @@ class SpectrumPageTest {
         @SuppressWarnings("unused")
         private WebElement securedWebElement;
 
-        public DummySpectrumPage() {
+        DummySpectrumPage() {
             configuration = SpectrumPageTest.configuration;
         }
     }

@@ -169,7 +169,8 @@ class InterpolatedObjectDeserializerTest {
         when(jsonNode.textValue()).thenReturn(value);
 
         // We set the "systemProperty" env var with a random value just to check the precedence: system property wins
-        withEnvironmentVariable("systemProperty", "SOME VALUE").execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
+        withEnvironmentVariable("systemProperty", "SOME VALUE")
+                .execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
 
         System.clearProperty("systemProperty");
     }
@@ -186,7 +187,8 @@ class InterpolatedObjectDeserializerTest {
         when(jsonNode.getNodeType()).thenReturn(STRING);
         when(jsonNode.textValue()).thenReturn(value);
 
-        withEnvironmentVariable("envVar", String.valueOf(expected)).execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
+        withEnvironmentVariable("envVar", String.valueOf(expected))
+                .execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
     }
 
     @DisplayName("isNumber should check if the provided string can be parsed to a number")

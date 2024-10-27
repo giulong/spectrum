@@ -101,7 +101,8 @@ class InterpolatedStringDeserializerTest {
         when(jsonParser.currentName()).thenReturn("not important");
 
         // We set the "systemProperty" env var with a random value just to check the precedence: system property wins
-        withEnvironmentVariable("systemProperty", "SOME VALUE").execute(() -> assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext)));
+        withEnvironmentVariable("systemProperty", "SOME VALUE")
+                .execute(() -> assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext)));
 
         System.clearProperty("systemProperty");
     }

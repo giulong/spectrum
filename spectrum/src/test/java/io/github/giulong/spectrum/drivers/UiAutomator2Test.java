@@ -44,7 +44,8 @@ class UiAutomator2Test {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
+    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options " +
+            "and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
     void buildCapabilities() {
         final Path path = Path.of("relative", "path");
         final String appPath = path.toString();
@@ -71,7 +72,8 @@ class UiAutomator2Test {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
+    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options " +
+            "and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
     void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 

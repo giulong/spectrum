@@ -126,21 +126,21 @@ class SummaryTest {
 
         summary.sessionClosed();
 
-        final Map<String, Object> vars = summary.getVars();
+        final Map<String, Object> localVars = summary.getVars();
 
-        assertEquals(12, vars.size());
-        assertEquals(globalValue, vars.get(globalVar));
-        assertEquals(testExecutionSummary, vars.get("summary"));
-        assertEquals("00:04:10", vars.get("duration"));
-        assertThat(String.valueOf(vars.get("timestamp")), matchesPattern("[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}"));
-        assertEquals(testsFoundCount, vars.get("total"));
-        assertEquals((double) testsSucceededCount / testsFoundCount * 100, vars.get("successfulPercentage"));
-        assertEquals((double) testsFailedCount / testsFoundCount * 100, vars.get("failedPercentage"));
-        assertEquals((double) testsAbortedCount / testsFoundCount * 100, vars.get("abortedPercentage"));
-        assertEquals((double) testsSkippedCount / testsFoundCount * 100, vars.get("disabledPercentage"));
-        assertEquals(condition, vars.get("condition"));
-        assertEquals(interpolatedCondition, vars.get("interpolatedCondition"));
-        assertEquals(true, vars.get("executionSuccessful"));
+        assertEquals(12, localVars.size());
+        assertEquals(globalValue, localVars.get(globalVar));
+        assertEquals(testExecutionSummary, localVars.get("summary"));
+        assertEquals("00:04:10", localVars.get("duration"));
+        assertThat(String.valueOf(localVars.get("timestamp")), matchesPattern("[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}"));
+        assertEquals(testsFoundCount, localVars.get("total"));
+        assertEquals((double) testsSucceededCount / testsFoundCount * 100, localVars.get("successfulPercentage"));
+        assertEquals((double) testsFailedCount / testsFoundCount * 100, localVars.get("failedPercentage"));
+        assertEquals((double) testsAbortedCount / testsFoundCount * 100, localVars.get("abortedPercentage"));
+        assertEquals((double) testsSkippedCount / testsFoundCount * 100, localVars.get("disabledPercentage"));
+        assertEquals(condition, localVars.get("condition"));
+        assertEquals(interpolatedCondition, localVars.get("interpolatedCondition"));
+        assertEquals(true, localVars.get("executionSuccessful"));
 
         assertEquals(mvelVarsArgumentCaptor.getValue(), freeMarkerVarsArgumentCaptor.getValue());
 

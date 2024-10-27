@@ -99,10 +99,10 @@ class FirefoxTest {
 
         firefox.buildCapabilities();
 
-        final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
-        verify(firefoxOptions).addPreference("one", "value");
-        verify(firefoxOptions).setBinary(binary);
-        assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
+        final FirefoxOptions localFirefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
+        verify(localFirefoxOptions).addPreference("one", "value");
+        verify(localFirefoxOptions).setBinary(binary);
+        assertEquals(localFirefoxOptions, Reflections.getFieldValue("capabilities", firefox));
 
         firefoxOptionsMockedConstruction.close();
     }
@@ -123,10 +123,10 @@ class FirefoxTest {
 
         firefox.buildCapabilities();
 
-        final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
-        verify(firefoxOptions).addPreference("one", "value");
-        verify(firefoxOptions, never()).setBinary(anyString());
-        assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
+        final FirefoxOptions localFirefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
+        verify(localFirefoxOptions).addPreference("one", "value");
+        verify(localFirefoxOptions, never()).setBinary(anyString());
+        assertEquals(localFirefoxOptions, Reflections.getFieldValue("capabilities", firefox));
 
         firefoxOptionsMockedConstruction.close();
     }
@@ -153,7 +153,7 @@ class FirefoxTest {
         );
     }
 
-    private static class DummyObject {
+    private static final class DummyObject {
 
         @Override
         public String toString() {

@@ -433,6 +433,6 @@ class SpectrumEntityTest {
         );
     }
 
-    private static class DummySpectrumEntity<T> extends SpectrumEntity<DummySpectrumEntity<T>, T> {
+    private static final class DummySpectrumEntity<T> extends SpectrumEntity<DummySpectrumEntity<T>, T> {
     }
 }

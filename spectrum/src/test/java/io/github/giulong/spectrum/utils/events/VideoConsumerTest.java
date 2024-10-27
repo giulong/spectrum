@@ -194,10 +194,10 @@ class VideoConsumerTest {
         when(video.getHeight()).thenReturn(height);
 
         // resize
-        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
-            assertEquals(width + 1, context.arguments().getFirst());
-            assertEquals(height + 1, context.arguments().get(1));
-            assertEquals(TYPE_INT_RGB, context.arguments().get(2));
+        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, executionContext) -> {
+            assertEquals(width + 1, executionContext.arguments().getFirst());
+            assertEquals(height + 1, executionContext.arguments().get(1));
+            assertEquals(TYPE_INT_RGB, executionContext.arguments().get(2));
 
             when(mock.createGraphics()).thenReturn(graphics2D);
         });
@@ -258,10 +258,10 @@ class VideoConsumerTest {
         when(video.getHeight()).thenReturn(height);
 
         // resize
-        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
-            assertEquals(width + 1, context.arguments().getFirst());
-            assertEquals(height + 1, context.arguments().get(1));
-            assertEquals(TYPE_INT_RGB, context.arguments().get(2));
+        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, executionContext) -> {
+            assertEquals(width + 1, executionContext.arguments().getFirst());
+            assertEquals(height + 1, executionContext.arguments().get(1));
+            assertEquals(TYPE_INT_RGB, executionContext.arguments().get(2));
 
             when(mock.createGraphics()).thenReturn(graphics2D);
         });
@@ -312,10 +312,10 @@ class VideoConsumerTest {
         when(video.getHeight()).thenReturn(height);
 
         // resize
-        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
-            assertEquals(width + 1, context.arguments().getFirst());
-            assertEquals(height + 1, context.arguments().get(1));
-            assertEquals(TYPE_INT_RGB, context.arguments().get(2));
+        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, executionContext) -> {
+            assertEquals(width + 1, executionContext.arguments().getFirst());
+            assertEquals(height + 1, executionContext.arguments().get(1));
+            assertEquals(TYPE_INT_RGB, executionContext.arguments().get(2));
 
             when(mock.createGraphics()).thenReturn(graphics2D);
         });
@@ -517,10 +517,10 @@ class VideoConsumerTest {
         final int width = 6;
         final int height = 100;
 
-        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, context) -> {
-            assertEquals(EVEN_WIDTH, context.arguments().getFirst());
-            assertEquals(EVEN_HEIGHT, context.arguments().get(1));
-            assertEquals(TYPE_INT_RGB, context.arguments().get(2));
+        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, executionContext) -> {
+            assertEquals(EVEN_WIDTH, executionContext.arguments().getFirst());
+            assertEquals(EVEN_HEIGHT, executionContext.arguments().get(1));
+            assertEquals(TYPE_INT_RGB, executionContext.arguments().get(2));
 
             when(mock.createGraphics()).thenReturn(graphics2D);
         });

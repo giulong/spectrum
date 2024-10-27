@@ -45,8 +45,8 @@ import static org.mockito.Mockito.*;
 class ExtentReporterTest {
 
     private static final String REPORT_FOLDER = "reportFolder";
-    private static final String NAME_1 = "name1";
-    private static final String NAME_2 = "name2";
+    private static final String NAME_ONE = "name1";
+    private static final String NAME_TWO = "name2";
 
     private MockedStatic<TestData> testDataMockedStatic;
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
@@ -202,8 +202,8 @@ class ExtentReporterTest {
     private void sortTestStubs() {
         when(extentReports.getReport()).thenReturn(report);
         when(report.getTestList()).thenReturn(List.of(test1, test2));
-        when(test1.getName()).thenReturn(NAME_1);
-        when(test2.getName()).thenReturn(NAME_2);
+        when(test1.getName()).thenReturn(NAME_ONE);
+        when(test2.getName()).thenReturn(NAME_TWO);
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getSort()).thenReturn(sort);
@@ -291,15 +291,15 @@ class ExtentReporterTest {
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
 
-        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(absolutePathToStringReplaced, context.arguments().getFirst());
+        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, executionContext) -> {
+            assertEquals(absolutePathToStringReplaced, executionContext.arguments().getFirst());
             when(mock.config(extentSparkReporterConfig)).thenReturn(mock);
         });
 
         extentReporter.sessionOpened();
 
-        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().getFirst();
-        verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
+        final ExtentReports localExtentReports = extentReportsMockedConstruction.constructed().getFirst();
+        verify(localExtentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
 
         extentSparkReporterMockedConstruction.close();
         extentReportsMockedConstruction.close();
@@ -375,13 +375,13 @@ class ExtentReporterTest {
     @Test
     @DisplayName("cleanupOldReportsIn should return if the provided folder is empty")
     void cleanupOldReportsInEmptyFolder() {
-        final String folder = "folder";
+        final String localFolder = "localFolder";
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
-        when(Path.of(folder)).thenReturn(path);
+        when(Path.of(localFolder)).thenReturn(path);
         when(path.toFile()).thenReturn(file1);
 
-        extentReporter.cleanupOldReportsIn(folder);
+        extentReporter.cleanupOldReportsIn(localFolder);
 
         verifyNoInteractions(fileUtils);
     }
@@ -432,8 +432,8 @@ class ExtentReporterTest {
 
         extentReporter.sortTests();
 
-        verify(extentReports).removeTest(NAME_1);
-        verify(extentReports).removeTest(NAME_2);
+        verify(extentReports).removeTest(NAME_ONE);
+        verify(extentReports).removeTest(NAME_TWO);
         verify(report).addTest(test1);
         verify(report).addTest(test2);
     }
@@ -491,9 +491,9 @@ class ExtentReporterTest {
     void logTestStartOf() {
         extentReporter.logTestStartOf(extentTest);
 
-        ArgumentCaptor<Markup> markupArgumentCaptor = ArgumentCaptor.forClass(Markup.class);
-        verify(extentTest).info(markupArgumentCaptor.capture());
-        Markup markup = markupArgumentCaptor.getValue();
+        final ArgumentCaptor<Markup> localMarkupArgumentCaptor = ArgumentCaptor.forClass(Markup.class);
+        verify(extentTest).info(localMarkupArgumentCaptor.capture());
+        Markup markup = localMarkupArgumentCaptor.getValue();
         assertEquals(createLabel("START TEST", GREEN).getMarkup(), markup.getMarkup());
     }
 

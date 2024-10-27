@@ -33,7 +33,7 @@ class ReporterTest {
     }
 
     @Getter
-    private static class DummyReporter extends Reporter {
+    private static final class DummyReporter extends Reporter {
 
         private boolean doOutputCalled;
         private boolean cleanupOldReportsCalled;

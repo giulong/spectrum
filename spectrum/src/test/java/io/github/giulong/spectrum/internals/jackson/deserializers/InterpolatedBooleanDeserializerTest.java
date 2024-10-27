@@ -32,11 +32,11 @@ class InterpolatedBooleanDeserializerTest {
     @InjectMocks
     private InterpolatedBooleanDeserializer interpolatedBooleanDeserializer;
 
-    private static final String varInEnv = "varInEnv";
+    private static final String VAR_IN_ENV = "varInEnv";
 
     @BeforeAll
     public static void beforeAll() {
-        Vars.getInstance().put("varInEnv", varInEnv);
+        Vars.getInstance().put("varInEnv", VAR_IN_ENV);
     }
 
     @AfterAll

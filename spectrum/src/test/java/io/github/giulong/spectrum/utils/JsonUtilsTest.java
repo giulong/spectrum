@@ -73,6 +73,6 @@ class JsonUtilsTest {
 
         when(jsonWriter.writeValueAsString(object)).thenReturn(expected);
 
-        assertEquals(expected, jsonUtils.write(object));;
+        assertEquals(expected, jsonUtils.write(object));
     }
 }

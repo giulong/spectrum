@@ -130,9 +130,12 @@ class SpectrumWebDriverListenerTest {
 
     public static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]", "id: message"),
-                arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]", "css selector: #gettotal -> tag name: button"),
-                arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]", "css selector: #get1-.total -> tag name: button")
+                arguments("[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]",
+                        "id: message"),
+                arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]",
+                        "css selector: #gettotal -> tag name: button"),
+                arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]",
+                        "css selector: #get1-.total -> tag name: button")
         );
     }
 
@@ -187,7 +190,8 @@ class SpectrumWebDriverListenerTest {
     }
 
     @Test
-    @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list, and using String.valueOf to avoid NPEs, applying no additional format by default")
+    @DisplayName("parse should return a list of strings calling the extractSelectorFrom for each WebElement in the provided list, " +
+            "and using String.valueOf to avoid NPEs, applying no additional format by default")
     void parseDefault() {
         final String webElement1ToString = "[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]";
         final String webElement2ToString = "[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]";
@@ -369,14 +373,14 @@ class SpectrumWebDriverListenerTest {
     void beforeSendKeys() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
-        final String message = "message %s %s";
+        final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [" + keysToSend + "]";
 
         when(testContext.isSecuredWebElement(webElement1)).thenReturn(false);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
         when(events.getBeforeSendKeys()).thenReturn(event);
-        when(event.getMessage()).thenReturn(message);
+        when(event.getMessage()).thenReturn(localMessage);
         when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
         when(event.getWait()).thenReturn(wait);
 
@@ -408,14 +412,14 @@ class SpectrumWebDriverListenerTest {
     void beforeSendKeysSecured() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
-        final String message = "message %s %s";
+        final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [***]";
 
         when(testContext.isSecuredWebElement(webElement1)).thenReturn(true);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
         when(events.getBeforeSendKeys()).thenReturn(event);
-        when(event.getMessage()).thenReturn(message);
+        when(event.getMessage()).thenReturn(localMessage);
         when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
         when(event.getWait()).thenReturn(wait);
 
@@ -447,14 +451,14 @@ class SpectrumWebDriverListenerTest {
     void afterSendKeys() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
-        final String message = "message %s %s";
+        final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [" + keysToSend + "]";
 
         when(testContext.isSecuredWebElement(webElement1)).thenReturn(false);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
         when(events.getAfterSendKeys()).thenReturn(event);
-        when(event.getMessage()).thenReturn(message);
+        when(event.getMessage()).thenReturn(localMessage);
         when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
         when(event.getWait()).thenReturn(wait);
 
@@ -486,14 +490,14 @@ class SpectrumWebDriverListenerTest {
     void afterSendKeysSecured() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
-        final String message = "message %s %s";
+        final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [***]";
 
         when(testContext.isSecuredWebElement(webElement1)).thenReturn(true);
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
         when(events.getAfterSendKeys()).thenReturn(event);
-        when(event.getMessage()).thenReturn(message);
+        when(event.getMessage()).thenReturn(localMessage);
         when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
         when(event.getWait()).thenReturn(wait);
 

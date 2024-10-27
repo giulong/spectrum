@@ -142,14 +142,16 @@ class EventsConsumerTest {
                 arguments(Event.builder().build(), Event.builder().build(), false),
                 arguments(Event.builder().reason(BEFORE).build(), Event.builder().reason(BEFORE).build(), false),
                 arguments(Event.builder().reason(BEFORE).primaryId("class").secondaryId("test").build(), Event.builder().reason(BEFORE).primaryId("class").build(), false),
-                arguments(Event.builder().reason(BEFORE).primaryId("class").secondaryId("test").build(), Event.builder().reason(BEFORE).primaryId("class").secondaryId("test").build(), true),
+                arguments(Event.builder().reason(BEFORE).primaryId("class").secondaryId("test").build(),
+                        Event.builder().reason(BEFORE).primaryId("class").secondaryId("test").build(), true),
                 arguments(Event.builder().reason(BEFORE).primaryId("class").build(), Event.builder().reason(BEFORE).primaryId("nope").build(), false),
                 arguments(Event.builder().reason(BEFORE).primaryId("class").build(), Event.builder().reason(BEFORE).primaryId("class").build(), true),
                 arguments(Event.builder().reason(BEFORE).tags(Set.of(TEST)).build(), Event.builder().reason(BEFORE).tags(Set.of(SUITE)).build(), false),
                 arguments(Event.builder().reason(BEFORE).tags(Set.of(TEST)).build(), Event.builder().reason(BEFORE).tags(Set.of(TEST)).build(), true),
                 arguments(Event.builder().result(FAILED).build(), Event.builder().result(FAILED).build(), false),
                 arguments(Event.builder().result(FAILED).primaryId("class").secondaryId("test").build(), Event.builder().result(FAILED).primaryId("class").build(), false),
-                arguments(Event.builder().result(FAILED).primaryId("class").secondaryId("test").build(), Event.builder().result(FAILED).primaryId("class").secondaryId("test").build(), true),
+                arguments(Event.builder().result(FAILED).primaryId("class").secondaryId("test").build(),
+                        Event.builder().result(FAILED).primaryId("class").secondaryId("test").build(), true),
                 arguments(Event.builder().result(FAILED).primaryId("class").build(), Event.builder().result(FAILED).primaryId("nope").build(), false),
                 arguments(Event.builder().result(FAILED).primaryId("class").build(), Event.builder().result(FAILED).primaryId("class").build(), true),
                 arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(SUITE)).build(), false),
@@ -194,7 +196,7 @@ class EventsConsumerTest {
 
     private static class DummyEventsConsumer extends EventsConsumer {
 
-        public DummyEventsConsumer() {
+        DummyEventsConsumer() {
             events = List.of(
                     Event.builder().reason(BEFORE).primaryId("class").build()
             );

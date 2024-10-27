@@ -72,7 +72,9 @@ class VideoDynamicConsumerTest {
 
         assertNull(Reflections.getFieldValue("lastFrameDigest", videoDynamicConsumer));
         assertNull(Reflections.getFieldValue("lastFrameDisplayName", videoDynamicConsumer));
-        assertEquals(MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(), (Reflections.getFieldValue("messageDigest", videoDynamicConsumer, MessageDigest.class)).getAlgorithm());
+        assertEquals(
+                MessageDigest.getInstance(HASH_ALGORITHM).getAlgorithm(),
+                (Reflections.getFieldValue("messageDigest", videoDynamicConsumer, MessageDigest.class)).getAlgorithm());
     }
 
     @Test
@@ -102,7 +104,6 @@ class VideoDynamicConsumerTest {
                 arguments("notMatchingAtAll", false)
         );
     }
-
 
     @Test
     @DisplayName("isNewFrame should return true if the display name of the provided testData is new")

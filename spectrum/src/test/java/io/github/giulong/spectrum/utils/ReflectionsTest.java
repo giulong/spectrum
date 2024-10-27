@@ -146,11 +146,12 @@ class ReflectionsTest {
     }
 
     @Test
-    @DisplayName("getAnnotatedFieldsValues should return the list of fields on the provided object which are annotated with the provided annotation, casting them to the provided class")
+    @DisplayName("getAnnotatedFieldsValues should return the list of fields on the provided object " +
+            "which are annotated with the provided annotation, casting them to the provided class")
     void getAnnotatedFieldsValues() {
         final String value = "value";
         final Dummy dummy = new Dummy(null, value, null);
-        
+
         assertEquals(List.of(value), Reflections.getAnnotatedFieldsValues(dummy, Secured.class, String.class));
     }
 
@@ -162,16 +163,16 @@ class ReflectionsTest {
         @Secured
         private String secured;
 
-        public Dummy(String fieldString) {
+        Dummy(String fieldString) {
             this.fieldString = fieldString;
         }
 
-        public Dummy(String fieldString, String parentField) {
+        Dummy(String fieldString, String parentField) {
             super(parentField);
             this.fieldString = fieldString;
         }
 
-        public Dummy(String fieldString, String secured, String parentField) {
+        Dummy(String fieldString, String secured, String parentField) {
             super(parentField);
             this.fieldString = fieldString;
             this.secured = secured;
@@ -179,12 +180,12 @@ class ReflectionsTest {
     }
 
     @SuppressWarnings("unused")
-    private static class DummySecond {
+    private static final class DummySecond {
         private String fieldString;
     }
 
     @SuppressWarnings("unused")
-    private static class DummyThird extends DummyParent {
+    private static final class DummyThird extends DummyParent {
     }
 
     @SuppressWarnings("unused")
@@ -193,8 +194,8 @@ class ReflectionsTest {
 
         @SuppressWarnings("FieldCanBeLocal")
         private String parentField;
-        
-        public DummyParent(String parentField) {
+
+        DummyParent(String parentField) {
             this.parentField = parentField;
         }
     }
@@ -206,9 +207,9 @@ class ReflectionsTest {
     private static class Parent extends Parameterized<String> {
     }
 
-    private static class TestClass extends Parameterized<String> {
+    private static final class TestClass extends Parameterized<String> {
     }
 
-    private static class TestParentClass extends Parent {
+    private static final class TestParentClass extends Parent {
     }
 }

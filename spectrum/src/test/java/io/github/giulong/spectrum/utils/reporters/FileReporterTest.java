@@ -205,5 +205,6 @@ class FileReporterTest {
         verifyNoInteractions(desktop);
     }
 
-    private static class DummyFileReporter extends FileReporter {}
+    private static final class DummyFileReporter extends FileReporter {
+    }
 }

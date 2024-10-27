@@ -63,7 +63,6 @@ class TestBookConsumerTest {
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getDisplayName()).thenReturn(displayName);
 
-
         testBookConsumer.accept(event);
 
         verify(testBook).updateWithResult(classDisplayName, displayName, result);
