@@ -342,6 +342,7 @@ class SpectrumWebDriverListenerTest {
         verifyNoInteractions(consumers);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     @DisplayName("Default level: listen should log at DEBUG level as per logback default")
     void listenDefault() {
@@ -357,6 +358,7 @@ class SpectrumWebDriverListenerTest {
         verify(consumer2).accept(webDriverEvent);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     @DisplayName("Default level: listen should log at DEBUG level as per logback default")
     void listenDefaultOFF() {
