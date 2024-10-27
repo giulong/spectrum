@@ -1231,9 +1231,9 @@ Some web elements could be used for sensitive data, such as passwords input fiel
 Given [Spectrum intercepts web driver's events](#webdriver-events-listener), it might happen that some events,
 such as `beforeSendKeys` and `afterSendKeys`, send sensitive data to logs and html report in plain text.
 
-To avoid this, you just need to decorate the sensitive web elements with `@Secured`, and the sensitive data will be replaced
-with `[***]` as a placeholder. The replacement will only affect events' consumers such as logs and html report, 
-of course the actual value will still be sent to the web element.
+To avoid this, you just need to decorate the sensitive web elements with `@Secured`, and the sensitive data will be redacted
+with `[***]`. The replacement will only affect events' consumers such as logs and html report, 
+of course the actual value will still be sent to or read from the web element.
 
 {% include copyCode.html %}
 
@@ -1247,8 +1247,8 @@ private WebElement password;
 
 > 💡 **Example**<br/>
 > Given you execute `password.sendKeys("SuperSecretPassword!");` this is what is going to be logged if the `beforeSendKeys` event gets consumed:
-> * without `@Secured` &rarr; `Sending keys [SuperSecretPassword!] to id: password`
-> * with `@Secured` &rarr; `Sending keys [***] to id: password`
+> * without `@Secured` &rarr; "`Sending keys [SuperSecretPassword!] to id: password`"
+> * with `@Secured` &rarr; "`Sending keys [***] to id: password`"
 
 ---
 
