@@ -5,14 +5,18 @@ import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ReflectionsTest {
 
@@ -23,6 +27,22 @@ class ReflectionsTest {
         final ParameterizedType type = Reflections.getGenericSuperclassOf(clazz, Parameterized.class);
 
         assertEquals(String.class, type.getActualTypeArguments()[0]);
+    }
+
+    @DisplayName("getFieldsOf should return the list of fields collecting also those from superclasses, up to the provided limit excluded")
+    @ParameterizedTest(name = "with class {0} and limit {1} we expect fields {2}")
+    @MethodSource("valuesProvider")
+    void getFieldsOf(final Class<?> clazz, final Class<?> limit, final List<String> names) {
+        final List<Field> actual = Reflections.getFieldsOf(clazz, limit);
+
+        assertEquals(names, actual.stream().map(Field::getName).toList());
+    }
+
+    static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments(Dummy.class, DummyParent.class, List.of("fieldString", "secured")),
+                arguments(Dummy.class, Object.class, List.of("fieldString", "secured", "parentField"))
+        );
     }
 
     @Test
@@ -146,7 +166,19 @@ class ReflectionsTest {
     }
 
     @Test
-    @DisplayName("getAnnotatedFieldsValues should return the list of fields on the provided object " +
+    @DisplayName("getAnnotatedFields should return the list of fields on the provided object which are annotated with the provided annotation")
+    void getAnnotatedFields() throws IllegalAccessException {
+        final String value = "value";
+        final Dummy dummy = new Dummy(null, value, null);
+
+        final List<Field> actual = Reflections.getAnnotatedFields(dummy, Secured.class);
+
+        assertEquals(1, actual.size());
+        assertEquals(value, actual.getFirst().get(dummy));
+    }
+
+    @Test
+    @DisplayName("getAnnotatedFieldsValues should return the list of fields' values on the provided object " +
             "which are annotated with the provided annotation, casting them to the provided class")
     void getAnnotatedFieldsValues() {
         final String value = "value";

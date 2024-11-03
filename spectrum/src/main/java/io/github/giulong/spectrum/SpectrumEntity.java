@@ -82,6 +82,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     @Shared
     TestContext testContext;
 
+    @Shared
+    JsWebElementProxyBuilder jsWebElementProxyBuilder;
+
     List<Field> getSharedFields() {
         return Arrays
                 .stream(SpectrumEntity.class.getDeclaredFields())

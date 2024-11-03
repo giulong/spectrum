@@ -7,8 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.util.Arrays.asList;
 
 @Slf4j
 @UtilityClass
@@ -24,6 +27,20 @@ public final class Reflections {
         }
 
         return (ParameterizedType) clazz.getGenericSuperclass();
+    }
+
+    public static List<Field> getFieldsOf(Class<?> clazz, final Class<?> limit) {
+        log.trace("Getting fields of {}", clazz.getSimpleName());
+
+        final List<Field> fields = new ArrayList<>(asList(clazz.getDeclaredFields()));
+
+        while (clazz.getSuperclass() != limit) {
+            clazz = clazz.getSuperclass();
+            log.trace("Getting also fields of superclass {}", clazz.getSimpleName());
+            fields.addAll(asList(clazz.getDeclaredFields()));
+        }
+
+        return fields;
     }
 
     @SneakyThrows
@@ -88,11 +105,21 @@ public final class Reflections {
         field.set(dest, field.get(source));
     }
 
-    public static <T> List<T> getAnnotatedFieldsValues(final Object object, final Class<? extends Annotation> annotation, final Class<T> clazz) {
+    public static List<Field> getAnnotatedFields(final Object object, final Class<? extends Annotation> annotation) {
+        final String className = object.getClass().getTypeName();
+        final String annotationName = annotation.getTypeName();
+
         return Arrays
                 .stream(object.getClass().getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(annotation))
+                .peek(f -> log.debug("Field {}.{} is annotated with {}", className, f.getName(), annotationName))
                 .peek(f -> f.setAccessible(true))
+                .toList();
+    }
+
+    public static <T> List<T> getAnnotatedFieldsValues(final Object object, final Class<? extends Annotation> annotation, final Class<T> clazz) {
+        return getAnnotatedFields(object, annotation)
+                .stream()
                 .map(f -> getValueOf(f, object))
                 .map(clazz::cast)
                 .toList();

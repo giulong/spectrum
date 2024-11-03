@@ -4,8 +4,6 @@ import com.aventstack.extentreports.ExtentReports;
 import io.github.giulong.spectrum.extensions.interceptors.SpectrumInterceptor;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
-import io.github.giulong.spectrum.interfaces.Endpoint;
-import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -14,18 +12,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.PageFactory;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toList;
 
@@ -83,10 +75,6 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     @RegisterExtension
     public final DataResolver<Data> dataResolver = new DataResolver<>();
 
-    private List<SpectrumPage<?, ?>> spectrumPages;
-
-    private JsWebElementProxyBuilder jsWebElementProxyBuilder;
-
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
 
     @BeforeEach
@@ -112,90 +100,35 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.data = data;
         this.testContext = testContext;
 
-        initPages();
+        injectDataIn(injectPages());
     }
 
-    void initPages() {
+    List<SpectrumPage<?, ?>> injectPages() {
         final Class<?> clazz = this.getClass();
         log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
 
-        final List<Field> fields = new ArrayList<>(asList(clazz.getDeclaredFields()));
         final List<Field> sharedFields = getSharedFields();
 
-        Class<?> superClazz = clazz.getSuperclass();
-        while (superClazz.getSuperclass() != SpectrumEntity.class) {
-            log.debug("Initializing also pages in superclass {}", superClazz.getSimpleName());
-            fields.addAll(asList(superClazz.getDeclaredFields()));
-            superClazz = superClazz.getSuperclass();
-        }
-
-        spectrumPages = fields
+        return Reflections
+                .getFieldsOf(clazz, SpectrumTest.class)
                 .stream()
                 .filter(f -> SpectrumPage.class.isAssignableFrom(f.getType()))
-                .map(f -> initPage(f, sharedFields))
+                .peek(f -> log.debug("Initializing page {}", f.getName()))
+                .map(this::injectPageInto)
+                .peek(spectrumPage -> sharedFields.forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage)))
+                .map(SpectrumPage::init)
                 .collect(toList());
-
-        injectDataInPages();
     }
 
     @SneakyThrows
-    SpectrumPage<?, Data> initPage(final Field spectrumPageField, final List<Field> sharedFields) {
-        log.debug("Initializing page {}", spectrumPageField.getName());
-
-        @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) spectrumPageField.getType().getDeclaredConstructor().newInstance();
-        @SuppressWarnings("unchecked") final Class<SpectrumPage<?, Data>> spectrumPageClass = (Class<SpectrumPage<?, Data>>) spectrumPage.getClass();
-        Reflections.setField(spectrumPageField, this, spectrumPage);
-
-        final String className = spectrumPageClass.getSimpleName();
-        log.debug("Injecting already resolved fields into an instance of {}", className);
-
-        final Endpoint endpointAnnotation = spectrumPageClass.getAnnotation(Endpoint.class);
-        final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";
-
-        log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
-        Reflections.setField("endpoint", spectrumPage, endpointValue);
-        sharedFields.forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage));
-
-        PageFactory.initElements(driver, spectrumPage);
-        spectrumPage.addSecuredWebElements();
-        initJsWebElements(spectrumPage);
+    SpectrumPage<?, Data> injectPageInto(final Field field) {
+        @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) field.getType().getDeclaredConstructor().newInstance();
+        Reflections.setField(field, this, spectrumPage);
 
         return spectrumPage;
     }
 
-    void initJsWebElements(final SpectrumPage<?, Data> spectrumPage) {
-        final String className = spectrumPage.getClass().getSimpleName();
-
-        Arrays.stream(spectrumPage.getClass().getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(JsWebElement.class))
-                .peek(f -> log.debug("Field {}.{} is annotated with @JsWebElement", className, f.getName()))
-                .peek(f -> f.setAccessible(true))
-                .forEach(f -> setJsWebElementProxy(f, spectrumPage));
-    }
-
-    @SneakyThrows
-    void setJsWebElementProxy(final Field field, final SpectrumPage<?, Data> spectrumPage) {
-        final Object value = field.get(spectrumPage);
-
-        if (value instanceof List<?>) {
-            log.debug("Field {} is a list. Cannot build proxy eagerly", field.getName());
-            @SuppressWarnings("unchecked") final Object webElementProxy = Proxy.newProxyInstance(
-                    List.class.getClassLoader(),
-                    new Class<?>[]{List.class},
-                    JsWebElementListInvocationHandler
-                            .builder()
-                            .jsWebElementProxyBuilder(jsWebElementProxyBuilder)
-                            .webElements((List<WebElement>) value)
-                            .build());
-
-            field.set(spectrumPage, webElementProxy);
-            return;
-        }
-
-        field.set(spectrumPage, jsWebElementProxyBuilder.buildFor(value));
-    }
-
-    void injectDataInPages() {
+    void injectDataIn(final List<SpectrumPage<?, ?>> spectrumPages) {
         if (data != null) {
             log.debug("Data field was already injected from SpectrumTest");
             return;
@@ -206,17 +139,19 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
                 .filter(not(spectrumPage -> Void.class.equals(Reflections.getGenericSuperclassOf(spectrumPage.getClass(), SpectrumPage.class).getActualTypeArguments()[1])))
                 .toList();
 
-        if (!dataSpectrumPages.isEmpty()) {
-            final Type type = Reflections.getGenericSuperclassOf(dataSpectrumPages.getFirst().getClass(), SpectrumPage.class).getActualTypeArguments()[1];
-            final String typeName = type.getTypeName();
-
-            @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
-            final Data data = yamlUtils.read(String.format("%s/data.yaml", configuration.getData().getFolder()), dataClass);
-
-            dataSpectrumPages
-                    .stream()
-                    .peek(dataSpectrumPage -> log.trace("Running SpectrumTest<Void> with {}<{}>. Injecting data field.", dataSpectrumPage.getClass().getTypeName(), typeName))
-                    .forEach(dataSpectrumPage -> Reflections.setField("data", dataSpectrumPage, data));
+        if (dataSpectrumPages.isEmpty()) {
+            return;
         }
+
+        final Type type = Reflections.getGenericSuperclassOf(dataSpectrumPages.getFirst().getClass(), SpectrumPage.class).getActualTypeArguments()[1];
+        final String typeName = type.getTypeName();
+
+        @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
+        final Data data = yamlUtils.read(String.format("%s/data.yaml", configuration.getData().getFolder()), dataClass);
+
+        dataSpectrumPages
+                .stream()
+                .peek(dataSpectrumPage -> log.trace("Running SpectrumTest<Void> with {}<{}>. Injecting data field.", dataSpectrumPage.getClass().getTypeName(), typeName))
+                .forEach(dataSpectrumPage -> Reflections.setField("data", dataSpectrumPage, data));
     }
 }
