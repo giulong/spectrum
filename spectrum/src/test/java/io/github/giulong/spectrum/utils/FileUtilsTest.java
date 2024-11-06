@@ -41,7 +41,7 @@ class FileUtilsTest {
         assertEquals(expected, fileUtils.read(file));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() +
                         "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() +
@@ -56,7 +56,7 @@ class FileUtilsTest {
         assertEquals(expected, fileUtils.readTemplate(file));
     }
 
-    public static Stream<Arguments> readTemplateValuesProvider() {
+    static Stream<Arguments> readTemplateValuesProvider() {
         return Stream.of(
                 arguments("template-test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() +
                         "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() +
@@ -79,7 +79,7 @@ class FileUtilsTest {
         assertThat(fileUtils.interpolateTimestampFrom(fileName), matchesPattern(expected));
     }
 
-    public static Stream<Arguments> fileNamesProvider() {
+    static Stream<Arguments> fileNamesProvider() {
         return Stream.of(
                 arguments("fileName.html", "fileName.html"),
                 arguments("fileName-${timestamp}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
@@ -95,7 +95,7 @@ class FileUtilsTest {
         assertEquals(expected, fileUtils.getExtensionOf(fileName));
     }
 
-    public static Stream<Arguments> getExtensionOfValuesProvider() {
+    static Stream<Arguments> getExtensionOfValuesProvider() {
         return Stream.of(
                 arguments("fileName.abc", "abc"),
                 arguments("fileName", "fileName"),
@@ -110,7 +110,7 @@ class FileUtilsTest {
         assertEquals(expected, fileUtils.removeExtensionFrom(fileName));
     }
 
-    public static Stream<Arguments> removeExtensionFromValuesProvider() {
+    static Stream<Arguments> removeExtensionFromValuesProvider() {
         return Stream.of(
                 arguments("fileName.abc", "fileName"),
                 arguments("fileName", "fileName"),
@@ -130,7 +130,7 @@ class FileUtilsTest {
         assertFalse(Files.exists(directory));
     }
 
-    public static Stream<Arguments> deleteDirectoryValuesProvider() throws IOException {
+    static Stream<Arguments> deleteDirectoryValuesProvider() throws IOException {
         return Stream.of(
                 arguments(Path.of("abc not existing"), false),
                 arguments(Files.createTempDirectory("downloadsFolder"), true));

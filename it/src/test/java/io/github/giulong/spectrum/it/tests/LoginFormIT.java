@@ -55,7 +55,7 @@ public class LoginFormIT extends BaseIT {
         assertEquals(expected, Objects.requireNonNull(driver.getCurrentUrl()).endsWith("/secure"));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("tom", true, "/secure"),
                 arguments("giulio", false, "/login")

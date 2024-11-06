@@ -58,7 +58,7 @@ class DriverDeserializerTest {
         assertEquals("Value '" + notValidDriver + "' is not a valid driver!", exception.getMessage());
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("${justToTestInterpolation:-chrome}", mock(Chrome.class)),
                 arguments("chrome", mock(Chrome.class)),

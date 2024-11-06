@@ -34,7 +34,7 @@ class NameComparatorTest {
         assertEquals(expected, nameComparator.compare(test1, test2));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("aaa", "bbb", -1),
                 arguments("bbb", "aaa", 1),

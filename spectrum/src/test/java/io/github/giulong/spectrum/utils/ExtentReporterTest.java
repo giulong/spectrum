@@ -504,7 +504,7 @@ class ExtentReporterTest {
         assertEquals(expected, extentReporter.getColorOf(status));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(FAIL, RED),
                 arguments(SKIP, AMBER),

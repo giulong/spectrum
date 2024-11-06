@@ -47,7 +47,7 @@ class LogbackLogLevelDeserializerTest {
         assertEquals(expected, logbackLogLevelDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("OFF", OFF),
                 arguments("TRACE", TRACE),

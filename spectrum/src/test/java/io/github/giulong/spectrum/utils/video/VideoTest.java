@@ -29,7 +29,7 @@ class VideoTest {
         assertEquals(expected, video.isDisabled());
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(List.of(AUTO_BEFORE), false),
                 arguments(List.of(), true)
@@ -45,7 +45,7 @@ class VideoTest {
         assertEquals(expected, video.shouldRecord(frameName));
     }
 
-    public static Stream<Arguments> shouldRecordValuesProvider() {
+    static Stream<Arguments> shouldRecordValuesProvider() {
         return Stream.of(
                 arguments(List.of(AUTO_BEFORE), true),
                 arguments(List.of(MANUAL, AUTO_BEFORE), true),

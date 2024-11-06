@@ -51,7 +51,7 @@ class FixedSizeQueueTest {
         assertEquals(expected, fixedSizeQueue.size());
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(3, 2, 2),
                 arguments(1, 1, 1),

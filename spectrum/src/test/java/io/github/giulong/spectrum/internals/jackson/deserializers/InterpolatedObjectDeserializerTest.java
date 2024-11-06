@@ -107,7 +107,7 @@ class InterpolatedObjectDeserializerTest {
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> numbersValuesProvider() {
+    static Stream<Arguments> numbersValuesProvider() {
         return Stream.of(
                 arguments("123", 123),
                 arguments("123.5", 123.5),
@@ -142,7 +142,7 @@ class InterpolatedObjectDeserializerTest {
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("$<not.set:-123>", 123),
                 arguments("$<notSet:-123>", 123),
@@ -198,7 +198,7 @@ class InterpolatedObjectDeserializerTest {
         assertEquals(expected, interpolatedObjectDeserializer.isNumber(value));
     }
 
-    public static Stream<Arguments> isNumberValuesProvider() {
+    static Stream<Arguments> isNumberValuesProvider() {
         return Stream.of(
                 arguments("123", true),
                 arguments("123,5", true),

@@ -235,7 +235,7 @@ class SpectrumSessionListenerTest {
         assertEquals(expected, spectrumSessionListener.parseProfiles());
     }
 
-    public static Stream<Arguments> profilesValuesProvider() {
+    static Stream<Arguments> profilesValuesProvider() {
         return Stream.of(
                 arguments("overridden-profile", "default-profile,first", List.of("overridden-profile")),
                 arguments("overridden-profile,, ", "default-profile,first", List.of("overridden-profile")),
@@ -279,7 +279,7 @@ class SpectrumSessionListenerTest {
         assertEquals(expected, Vars.getInstance());
     }
 
-    public static Stream<Arguments> varsValuesProvider() {
+    static Stream<Arguments> varsValuesProvider() {
         return Stream.of(
                 arguments(Map.of("one", "one"), null, null, Map.of("one", "one")),
                 arguments(Map.of("one", "one"), Map.of("two", "two"), null, Map.of("one", "one", "two", "two")),
@@ -297,7 +297,7 @@ class SpectrumSessionListenerTest {
         assertEquals(expected, spectrumSessionListener.isUnix());
     }
 
-    public static Stream<Arguments> isUnixValuesProvider() {
+    static Stream<Arguments> isUnixValuesProvider() {
         return Stream.of(
                 arguments("nix", true),
                 arguments("blah", true),

@@ -87,7 +87,7 @@ class DataResolverTest {
         assertEquals(expected, dataResolver.supportsParameter(parameterContext, extensionContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("Data", true),
                 arguments("not-good", false)

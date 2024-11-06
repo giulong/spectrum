@@ -97,7 +97,7 @@ class VideoDynamicConsumerTest {
         assertEquals(expected, videoDynamicConsumer.filter(screenshot, testData));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("abc-displayName-def12345-1234-1234-1234-123412345678.png", true),
                 arguments("abc-notMatchingDisplayName-def12345-1234-1234-1234-123412345678.png", false),

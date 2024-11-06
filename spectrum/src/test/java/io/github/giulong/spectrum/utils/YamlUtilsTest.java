@@ -84,7 +84,7 @@ class YamlUtilsTest {
         assertEquals(paths, yamlUtils.findValidPathsFor(file));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("file", Stream.of("file", "file.yaml", "file.yml")),
                 arguments("folder/file", Stream.of("folder/file", "folder/file.yaml", "folder/file.yml"))
@@ -117,7 +117,7 @@ class YamlUtilsTest {
         assertEquals(expected, yamlUtils.findFile("file", internal));
     }
 
-    public static Stream<Arguments> findFileValuesProvider() {
+    static Stream<Arguments> findFileValuesProvider() {
         return Stream.of(
                 arguments(true, "file"),
                 arguments(false, null)

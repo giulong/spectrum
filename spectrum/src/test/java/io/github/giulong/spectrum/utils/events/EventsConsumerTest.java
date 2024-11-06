@@ -35,7 +35,7 @@ class EventsConsumerTest {
         assertEquals(expected, eventsConsumer.tagsIntersect(e1, e2));
     }
 
-    public static Stream<Arguments> tagsIntersectProvider() {
+    static Stream<Arguments> tagsIntersectProvider() {
         return Stream.of(
                 arguments(null, null, false),
                 arguments(Set.of(TEST), null, false),
@@ -55,7 +55,7 @@ class EventsConsumerTest {
         assertEquals(expected, eventsConsumer.primaryAndSecondaryIdMatch(e1, e2));
     }
 
-    public static Stream<Arguments> primaryAndSecondaryIdMatchProvider() {
+    static Stream<Arguments> primaryAndSecondaryIdMatchProvider() {
         return Stream.of(
                 arguments(null, null, "nope", "nope", false),
                 arguments(null, "test", "nope", "nope", false),
@@ -82,7 +82,7 @@ class EventsConsumerTest {
         assertEquals(expected, eventsConsumer.justPrimaryIdMatches(e1, e2));
     }
 
-    public static Stream<Arguments> justPrimaryIdMatchesProvider() {
+    static Stream<Arguments> justPrimaryIdMatchesProvider() {
         return Stream.of(
                 arguments(null, "nope", false),
                 arguments("class", null, false),
@@ -102,7 +102,7 @@ class EventsConsumerTest {
         assertEquals(expected, eventsConsumer.reasonMatches(e1, e2));
     }
 
-    public static Stream<Arguments> reasonMatchesProvider() {
+    static Stream<Arguments> reasonMatchesProvider() {
         return Stream.of(
                 arguments(null, BEFORE, false),
                 arguments(AFTER, null, false),
@@ -122,7 +122,7 @@ class EventsConsumerTest {
         assertEquals(expected, eventsConsumer.resultMatches(e1, e2));
     }
 
-    public static Stream<Arguments> resultProvider() {
+    static Stream<Arguments> resultProvider() {
         return Stream.of(
                 arguments(null, FAILED, false),
                 arguments(SUCCESSFUL, FAILED, false),
@@ -137,7 +137,7 @@ class EventsConsumerTest {
         assertEquals(expected, eventsConsumer.findMatchFor(e1, e2));
     }
 
-    public static Stream<Arguments> findMatchForProvider() {
+    static Stream<Arguments> findMatchForProvider() {
         return Stream.of(
                 arguments(Event.builder().build(), Event.builder().build(), false),
                 arguments(Event.builder().reason(BEFORE).build(), Event.builder().reason(BEFORE).build(), false),

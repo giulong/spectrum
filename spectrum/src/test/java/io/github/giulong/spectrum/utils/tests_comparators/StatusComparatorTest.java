@@ -37,7 +37,7 @@ class StatusComparatorTest {
         assertEquals(expected, statusComparator.compare(test1, test2));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(PASS, FAIL, -1),
                 arguments(FAIL, PASS, 1),

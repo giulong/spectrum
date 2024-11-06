@@ -33,7 +33,7 @@ class ColoredConverterTest {
         assertEquals(expected, coloredConverter.getForegroundColorCode(loggingEvent));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(ERROR, BOLD + RED_FG),
                 arguments(WARN, YELLOW_FG),

@@ -237,7 +237,7 @@ class SpectrumEntityTest {
         downloadsFolder.toFile().delete();
     }
 
-    public static Stream<Arguments> valuesProvider() throws IOException {
+    static Stream<Arguments> valuesProvider() throws IOException {
         return Stream.of(
                 arguments(Path.of("abc not existing")),
                 arguments(Files.createTempDirectory("downloadsFolder")));
@@ -375,7 +375,7 @@ class SpectrumEntityTest {
         assertEquals(expected, spectrumEntity.isPresent(by));
     }
 
-    public static Stream<Arguments> isPresentProvider() {
+    static Stream<Arguments> isPresentProvider() {
         return Stream.of(
                 arguments(List.of(), false),
                 arguments(List.of(mock(WebElement.class)), true)
@@ -391,7 +391,7 @@ class SpectrumEntityTest {
         assertEquals(expected, spectrumEntity.isNotPresent(by));
     }
 
-    public static Stream<Arguments> isNotPresentProvider() {
+    static Stream<Arguments> isNotPresentProvider() {
         return Stream.of(
                 arguments(List.of(), true),
                 arguments(List.of(mock(WebElement.class)), false)
@@ -407,7 +407,7 @@ class SpectrumEntityTest {
         assertEquals(expected, spectrumEntity.hasClass(webElement, "cssClass"));
     }
 
-    public static Stream<Arguments> hasClassProvider() {
+    static Stream<Arguments> hasClassProvider() {
         return Stream.of(
                 arguments(null, false),
                 arguments("", false),
@@ -425,7 +425,7 @@ class SpectrumEntityTest {
         assertEquals(expected, spectrumEntity.hasClasses(webElement, "one", "cssClass"));
     }
 
-    public static Stream<Arguments> hasClassesProvider() {
+    static Stream<Arguments> hasClassesProvider() {
         return Stream.of(
                 arguments(null, false),
                 arguments("", false),

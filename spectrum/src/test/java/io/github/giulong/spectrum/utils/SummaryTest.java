@@ -180,7 +180,7 @@ class SummaryTest {
         assertEquals(expected, summary.toResult());
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(true, SUCCESSFUL),
                 arguments(false, FAILED)

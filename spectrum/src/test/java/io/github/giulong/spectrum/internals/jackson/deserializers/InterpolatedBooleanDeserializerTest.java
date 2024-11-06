@@ -61,7 +61,7 @@ class InterpolatedBooleanDeserializerTest {
         assertEquals(expected, interpolatedBooleanDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("true", true),
                 arguments("false", false),

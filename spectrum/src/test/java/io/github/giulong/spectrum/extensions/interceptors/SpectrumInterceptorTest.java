@@ -150,7 +150,7 @@ class SpectrumInterceptorTest {
         verifyNoInteractions(extentReporter);
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(true, true),
                 arguments(true, false),

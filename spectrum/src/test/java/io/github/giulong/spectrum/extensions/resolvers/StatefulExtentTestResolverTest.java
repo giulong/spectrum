@@ -142,7 +142,7 @@ class StatefulExtentTestResolverTest {
         assertEquals(statefulExtentTest, actual);
     }
 
-    public static Stream<Arguments> noVideoValuesProvider() {
+    static Stream<Arguments> noVideoValuesProvider() {
         return Stream.of(
                 arguments(false, false),
                 arguments(true, false),

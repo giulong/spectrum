@@ -129,7 +129,7 @@ class SpectrumWebDriverListenerTest {
         assertEquals(expected, spectrumWebDriverListener.extractSelectorFrom(webElement1));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]",
                         "id: message"),

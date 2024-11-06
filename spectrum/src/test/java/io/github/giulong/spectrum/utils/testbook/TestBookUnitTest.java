@@ -176,7 +176,7 @@ class TestBookUnitTest {
         assertTrue(groupedTests.get(className).contains(test));
     }
 
-    public static Stream<Arguments> valuesProvider() throws IOException {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("className", new HashMap<>()),
                 arguments("className", new HashMap<>() {{

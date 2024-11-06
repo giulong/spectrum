@@ -60,7 +60,7 @@ class InterpolatedStringDeserializerTest {
         assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("value", "value"),
                 arguments("${not.set:-_-}", "_-"),

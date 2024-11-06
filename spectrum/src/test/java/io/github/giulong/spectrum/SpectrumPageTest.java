@@ -114,7 +114,7 @@ class SpectrumPageTest {
         assertEquals(expected, spectrumPage.isLoaded());
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("current", "current", true),
                 arguments("page", "current", false)

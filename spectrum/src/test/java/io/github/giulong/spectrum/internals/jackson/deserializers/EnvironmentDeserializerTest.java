@@ -61,7 +61,7 @@ class EnvironmentDeserializerTest {
         assertEquals("Value '" + notValidEnvironment + "' is not a valid environment!", exception.getMessage());
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("${justToTestInterpolation:-local}", mock(LocalEnvironment.class)),
                 arguments("local", mock(LocalEnvironment.class)),

@@ -452,7 +452,7 @@ class VideoConsumerTest {
         assertEquals(EVEN_HEIGHT - menuBarsHeight - 1, actual.getHeight());
     }
 
-    public static Stream<Arguments> dimensionProvider() {
+    static Stream<Arguments> dimensionProvider() {
         return Stream.of(
                 arguments(0, 0),
                 arguments(1, 0),
@@ -467,7 +467,7 @@ class VideoConsumerTest {
         assertEquals(expected, videoConsumer.makeItEven(i));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(0, 0),
                 arguments(1, 2)

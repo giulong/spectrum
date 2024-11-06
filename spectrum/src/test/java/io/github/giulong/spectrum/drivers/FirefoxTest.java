@@ -141,7 +141,7 @@ class FirefoxTest {
         verify(firefoxOptions).addPreference("key", expected);
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         final DummyObject dummyObject = new DummyObject();
 
         return Stream.of(
