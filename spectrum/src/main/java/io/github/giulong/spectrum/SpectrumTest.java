@@ -19,7 +19,6 @@ import java.lang.reflect.Type;
 import java.util.List;
 
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Data>, Data> {
@@ -103,7 +102,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         injectDataIn(injectPages());
     }
 
-    List<SpectrumPage<?, ?>> injectPages() {
+    List<? extends SpectrumPage<?, ?>> injectPages() {
         final Class<?> clazz = this.getClass();
         log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
 
@@ -117,7 +116,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
                 .map(this::injectPageInto)
                 .peek(spectrumPage -> sharedFields.forEach(sharedField -> Reflections.copyField(sharedField, this, spectrumPage)))
                 .map(SpectrumPage::init)
-                .collect(toList());
+                .toList();
     }
 
     @SneakyThrows
@@ -128,13 +127,13 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         return spectrumPage;
     }
 
-    void injectDataIn(final List<SpectrumPage<?, ?>> spectrumPages) {
+    void injectDataIn(final List<? extends SpectrumPage<?, ?>> spectrumPages) {
         if (data != null) {
             log.debug("Data field was already injected from SpectrumTest");
             return;
         }
 
-        final List<SpectrumPage<?, ?>> dataSpectrumPages = spectrumPages
+        final List<? extends SpectrumPage<?, ?>> dataSpectrumPages = spectrumPages
                 .stream()
                 .filter(not(spectrumPage -> Void.class.equals(Reflections.getGenericSuperclassOf(spectrumPage.getClass(), SpectrumPage.class).getActualTypeArguments()[1])))
                 .toList();

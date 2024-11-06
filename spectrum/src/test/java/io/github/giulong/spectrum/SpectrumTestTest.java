@@ -154,7 +154,7 @@ class SpectrumTestTest {
         assertNull(childTest.childTestPage);
         assertNull(childTest.getParentTestPage());
 
-        final List<SpectrumPage<?, ?>> actual = childTest.injectPages();
+        final List<? extends SpectrumPage<?, ?>> actual = childTest.injectPages();
 
         assertEquals(2, actual.size());
 

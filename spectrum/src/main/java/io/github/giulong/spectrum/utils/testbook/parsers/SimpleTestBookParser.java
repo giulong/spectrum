@@ -10,7 +10,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.lang.System.lineSeparator;
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public abstract class SimpleTestBookParser extends TestBookParser {
@@ -37,6 +36,6 @@ public abstract class SimpleTestBookParser extends TestBookParser {
                             .testName(matcher.group("testName"))
                             .weight(Integer.parseInt(weight != null ? weight : "1"))
                             .build();
-                }).collect(toList());
+                }).toList();
     }
 }
