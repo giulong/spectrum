@@ -27,14 +27,14 @@ class UtilLogLevelDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(UtilLogLevelDeserializer.getInstance(), UtilLogLevelDeserializer.getInstance());
     }
 
     @Test
     @DisplayName("deserialize should return the log level from the provided string")
-    public void deserialize() throws IOException {
+    void deserialize() throws IOException {
         String value = "INFO";
         when(jsonParser.getValueAsString()).thenReturn(value);
 

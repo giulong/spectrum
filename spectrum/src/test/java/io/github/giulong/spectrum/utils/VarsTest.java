@@ -9,7 +9,7 @@ class VarsTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(Vars.getInstance(), Vars.getInstance());
     }

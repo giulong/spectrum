@@ -42,13 +42,13 @@ class EventsWatcherTest {
     private EventsWatcher eventsWatcher;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("eventsDispatcher", eventsWatcher, eventsDispatcher);
         eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         eventsDispatcherMockedStatic.close();
     }
 
@@ -67,7 +67,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("beforeAll should dispatch an event")
-    public void testBeforeAll() {
+    void testBeforeAll() {
         notifyClassStubs();
         eventsWatcher.beforeAll(extensionContext);
         verify(eventsDispatcher).fire(className, null, BEFORE, null, Set.of(CLASS), extensionContext);
@@ -75,7 +75,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("beforeEach should dispatch an event")
-    public void testBeforeEach() {
+    void testBeforeEach() {
         notifyTestStubs();
         eventsWatcher.beforeEach(extensionContext);
         verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(TEST), extensionContext);
@@ -83,7 +83,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("afterAll should dispatch an event")
-    public void testAfterAll() {
+    void testAfterAll() {
         notifyClassStubs();
         eventsWatcher.afterAll(extensionContext);
         verify(eventsDispatcher).fire(className, null, AFTER, null, Set.of(CLASS), extensionContext);
@@ -91,7 +91,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("testDisabled should dispatch an event")
-    public void testDisabled() {
+    void testDisabled() {
         notifyTestStubs();
         eventsWatcher.testDisabled(extensionContext, Optional.of("reason"));
         verify(eventsDispatcher).fire(className, displayName, AFTER, DISABLED, Set.of(TEST), extensionContext);
@@ -99,7 +99,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("testSuccessful should dispatch an event")
-    public void testSuccessful() {
+    void testSuccessful() {
         notifyTestStubs();
         eventsWatcher.testSuccessful(extensionContext);
         verify(eventsDispatcher).fire(className, displayName, AFTER, SUCCESSFUL, Set.of(TEST), extensionContext);
@@ -107,7 +107,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("testAborted should dispatch an event")
-    public void testAborted() {
+    void testAborted() {
         notifyTestStubs();
         eventsWatcher.testAborted(extensionContext, new RuntimeException());
         verify(eventsDispatcher).fire(className, displayName, AFTER, ABORTED, Set.of(TEST), extensionContext);
@@ -115,7 +115,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("testFailed should dispatch an event")
-    public void testFailed() {
+    void testFailed() {
         notifyTestStubs();
         eventsWatcher.testFailed(extensionContext, new RuntimeException());
         verify(eventsDispatcher).fire(className, displayName, AFTER, FAILED, Set.of(TEST), extensionContext);
@@ -123,7 +123,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("notifyClass should dispatch an event with the className taken from the context and no test name")
-    public void testNotifyClass() {
+    void testNotifyClass() {
         final String reason = BEFORE;
         final Result result = SUCCESSFUL;
         final Set<String> tags = Set.of();
@@ -135,7 +135,7 @@ class EventsWatcherTest {
 
     @Test
     @DisplayName("notifyTest should dispatch an event with the className and testName taken from the context")
-    public void testNotifyTest() {
+    void testNotifyTest() {
         final String reason = BEFORE;
         final Result result = SUCCESSFUL;
         final Set<String> tags = Set.of();

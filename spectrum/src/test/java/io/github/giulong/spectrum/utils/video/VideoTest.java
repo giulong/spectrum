@@ -24,12 +24,12 @@ class VideoTest {
     @DisplayName("isDisabled should check if video is disabled")
     @ParameterizedTest(name = "with frames {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void isDisabled(final List<Frame> frames, final boolean expected) {
+    void isDisabled(final List<Frame> frames, final boolean expected) {
         Reflections.setField("frames", video, frames);
         assertEquals(expected, video.isDisabled());
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(List.of(AUTO_BEFORE), false),
                 arguments(List.of(), true)
@@ -39,13 +39,13 @@ class VideoTest {
     @DisplayName("shouldRecord should check if the provided frame name should be recorded")
     @ParameterizedTest(name = "with frames {0} we expect {1}")
     @MethodSource("shouldRecordValuesProvider")
-    public void shouldRecord(final List<Frame> frames, final boolean expected) {
+    void shouldRecord(final List<Frame> frames, final boolean expected) {
         final String frameName = "autoBefore-something";
         Reflections.setField("frames", video, frames);
         assertEquals(expected, video.shouldRecord(frameName));
     }
 
-    public static Stream<Arguments> shouldRecordValuesProvider() {
+    static Stream<Arguments> shouldRecordValuesProvider() {
         return Stream.of(
                 arguments(List.of(AUTO_BEFORE), true),
                 arguments(List.of(MANUAL, AUTO_BEFORE), true),

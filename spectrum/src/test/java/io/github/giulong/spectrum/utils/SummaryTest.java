@@ -65,7 +65,7 @@ class SummaryTest {
     private Summary summary;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("freeMarkerWrapper", summary, freeMarkerWrapper);
         Reflections.setField("fileUtils", summary, fileUtils);
         Reflections.setField("summaryGeneratingListener", summary, summaryGeneratingListener);
@@ -74,14 +74,14 @@ class SummaryTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         mvelMockedStatic.close();
         Vars.getInstance().clear();
     }
 
     @Test
     @DisplayName("sessionOpened should log where to find the summary for each reporter")
-    public void sessionOpened() {
+    void sessionOpened() {
         final String output = "output";
         final String extension = "extension";
 
@@ -95,7 +95,7 @@ class SummaryTest {
 
     @Test
     @DisplayName("sessionClosed should put the summary in the vars and flush each reporter")
-    public void sessionClosed() {
+    void sessionClosed() {
         final long testsFoundCount = 1;
         final long testsSucceededCount = 2;
         final long testsFailedCount = 3;
@@ -126,21 +126,21 @@ class SummaryTest {
 
         summary.sessionClosed();
 
-        final Map<String, Object> vars = summary.getVars();
+        final Map<String, Object> localVars = summary.getVars();
 
-        assertEquals(12, vars.size());
-        assertEquals(globalValue, vars.get(globalVar));
-        assertEquals(testExecutionSummary, vars.get("summary"));
-        assertEquals("00:04:10", vars.get("duration"));
-        assertThat(String.valueOf(vars.get("timestamp")), matchesPattern("[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}"));
-        assertEquals(testsFoundCount, vars.get("total"));
-        assertEquals((double) testsSucceededCount / testsFoundCount * 100, vars.get("successfulPercentage"));
-        assertEquals((double) testsFailedCount / testsFoundCount * 100, vars.get("failedPercentage"));
-        assertEquals((double) testsAbortedCount / testsFoundCount * 100, vars.get("abortedPercentage"));
-        assertEquals((double) testsSkippedCount / testsFoundCount * 100, vars.get("disabledPercentage"));
-        assertEquals(condition, vars.get("condition"));
-        assertEquals(interpolatedCondition, vars.get("interpolatedCondition"));
-        assertEquals(true, vars.get("executionSuccessful"));
+        assertEquals(12, localVars.size());
+        assertEquals(globalValue, localVars.get(globalVar));
+        assertEquals(testExecutionSummary, localVars.get("summary"));
+        assertEquals("00:04:10", localVars.get("duration"));
+        assertThat(String.valueOf(localVars.get("timestamp")), matchesPattern("[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}"));
+        assertEquals(testsFoundCount, localVars.get("total"));
+        assertEquals((double) testsSucceededCount / testsFoundCount * 100, localVars.get("successfulPercentage"));
+        assertEquals((double) testsFailedCount / testsFoundCount * 100, localVars.get("failedPercentage"));
+        assertEquals((double) testsAbortedCount / testsFoundCount * 100, localVars.get("abortedPercentage"));
+        assertEquals((double) testsSkippedCount / testsFoundCount * 100, localVars.get("disabledPercentage"));
+        assertEquals(condition, localVars.get("condition"));
+        assertEquals(interpolatedCondition, localVars.get("interpolatedCondition"));
+        assertEquals(true, localVars.get("executionSuccessful"));
 
         assertEquals(mvelVarsArgumentCaptor.getValue(), freeMarkerVarsArgumentCaptor.getValue());
 
@@ -151,7 +151,7 @@ class SummaryTest {
     @DisplayName("isExecutionSuccessful should evaluate the summary condition")
     @ParameterizedTest(name = "with condition evaluated to {0} we expect {0}")
     @ValueSource(booleans = {true, false})
-    public void isExecutionSuccessful(final boolean expected) {
+    void isExecutionSuccessful(final boolean expected) {
         final String condition = "condition";
         final String interpolatedCondition = "interpolatedCondition";
 
@@ -167,7 +167,7 @@ class SummaryTest {
     @DisplayName("toResult should map the execution to the Result enum")
     @ParameterizedTest(name = "with execution successful {0} we expect {0}")
     @MethodSource("valuesProvider")
-    public void toResult(final boolean successful, final Result expected) {
+    void toResult(final boolean successful, final Result expected) {
         final String condition = "condition";
         final String interpolatedCondition = "interpolatedCondition";
 
@@ -180,7 +180,7 @@ class SummaryTest {
         assertEquals(expected, summary.toResult());
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(true, SUCCESSFUL),
                 arguments(false, FAILED)

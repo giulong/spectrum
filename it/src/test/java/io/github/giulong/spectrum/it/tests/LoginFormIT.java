@@ -8,6 +8,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,10 +52,10 @@ public class LoginFormIT extends BaseIT {
                 .screenshotInfo("After successful login");
 
         pageLoadWait.until(urlContains(endpoint));
-        assertEquals(expected, driver.getCurrentUrl().endsWith("/secure"));
+        assertEquals(expected, Objects.requireNonNull(driver.getCurrentUrl()).endsWith("/secure"));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("tom", true, "/secure"),
                 arguments("giulio", false, "/login")

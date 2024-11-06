@@ -82,7 +82,7 @@ class AppiumEnvironmentTest {
     private AppiumEnvironment appiumEnvironment;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         appiumDriverLocalServiceMockedStatic = mockStatic(AppiumDriverLocalService.class);
         appiumLogMockedStatic = mockStatic(AppiumLog.class);
 
@@ -91,14 +91,14 @@ class AppiumEnvironmentTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         appiumDriverLocalServiceMockedStatic.close();
         appiumLogMockedStatic.close();
     }
 
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService redirecting the logs to slf4j")
-    public void sessionOpenedLogs() {
+    void sessionOpenedLogs() {
         final String ipAddress = "localhost";
         final int port = 123;
 
@@ -150,7 +150,7 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService without collecting server logs")
-    public void sessionOpened() {
+    void sessionOpened() {
         final String ipAddress = "localhost";
         final int port = 123;
 
@@ -195,7 +195,7 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("sessionOpened should initialise the AppiumDriverLocalService without collecting server logs")
-    public void sessionOpenedExternal() {
+    void sessionOpenedExternal() {
         final String ipAddress = "ipAddress";
         final int port = 123;
 
@@ -219,7 +219,7 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("sessionClosed should just stop the driverService")
-    public void sessionClosed() {
+    void sessionClosed() {
         appiumEnvironment.sessionClosed();
 
         verify(driverService).stop();
@@ -227,7 +227,7 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("sessionClosed should do nothing if Appium is an external service")
-    public void sessionClosedFalse() {
+    void sessionClosedFalse() {
         Reflections.setField("external", appiumEnvironment, true);
 
         appiumEnvironment.sessionClosed();
@@ -237,7 +237,7 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("setupFor should delegate the webDriver construction to the actual subclass, calling the super setFileDetectorFor")
-    public void setupFor() {
+    void setupFor() {
         when(configuration.getEnvironments()).thenReturn(environments);
         when(environments.getAppium()).thenReturn(appium);
         when(appium.isLocalFileDetector()).thenReturn(true);
@@ -251,7 +251,7 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("shutdown should just close the driverService")
-    public void shutdown() {
+    void shutdown() {
         appiumEnvironment.shutdown();
 
         verify(driverService).close();
@@ -259,7 +259,7 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("shutdown should do nothing if Appium is an external service")
-    public void shutdownFalse() {
+    void shutdownFalse() {
         Reflections.setField("external", appiumEnvironment, true);
 
         appiumEnvironment.shutdown();
@@ -269,7 +269,7 @@ class AppiumEnvironmentTest {
 
     @Test
     @DisplayName("isRunningAt should return true if the provided ip address is not local")
-    public void isRunningAtRemote() {
+    void isRunningAtRemote() {
         final String ipAddress = "ipAddress";
 
         assertTrue(appiumEnvironment.isRunningAt(ipAddress, 123));
@@ -278,7 +278,7 @@ class AppiumEnvironmentTest {
     @DisplayName("isRunningAt should return true if the provided port is already in use")
     @ParameterizedTest(name = "with ip address {0}")
     @ValueSource(strings = {"localhost", "127.0.0.1", "0.0.0.0"})
-    public void isRunningAt(final String ipAddress) {
+    void isRunningAt(final String ipAddress) {
         MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstructionWithAnswer(ServerSocket.class, answer -> {
             throw new IOException();
         });
@@ -291,7 +291,7 @@ class AppiumEnvironmentTest {
     @DisplayName("isRunningAt should return false if the provided port is free")
     @ParameterizedTest(name = "with ip address {0}")
     @ValueSource(strings = {"localhost", "127.0.0.1", "0.0.0.0"})
-    public void isRunningAtFalse(final String ipAddress) throws IOException {
+    void isRunningAtFalse(final String ipAddress) throws IOException {
         final int port = 123;
         MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction(ServerSocket.class);
         MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction(InetSocketAddress.class, (mock, context) -> {

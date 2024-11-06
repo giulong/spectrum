@@ -72,7 +72,7 @@ class StatefulExtentTestResolverTest {
     private StatefulExtentTestResolver statefulExtentTestResolver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("extentReporter", statefulExtentTestResolver, extentReporter);
         Reflections.setField("contextManager", statefulExtentTestResolver, contextManager);
 
@@ -81,14 +81,14 @@ class StatefulExtentTestResolverTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         extentReporterMockedStatic.close();
         statefulExtentTestMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return the initialized ExtentTest adding the video")
-    public void testResolveParameter() {
+    void testResolveParameter() {
         when(context.getStore(GLOBAL)).thenReturn(store);
 
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
@@ -116,7 +116,7 @@ class StatefulExtentTestResolverTest {
     @DisplayName("resolveParameter should return the initialized ExtentTest without adding the video")
     @ParameterizedTest(name = "with video disabled {0} and video attach {1}")
     @MethodSource("noVideoValuesProvider")
-    public void testResolveParameterNoVideo(final boolean disabled, final boolean attach) {
+    void testResolveParameterNoVideo(final boolean disabled, final boolean attach) {
         when(context.getStore(GLOBAL)).thenReturn(store);
 
         when(store.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
@@ -142,7 +142,7 @@ class StatefulExtentTestResolverTest {
         assertEquals(statefulExtentTest, actual);
     }
 
-    public static Stream<Arguments> noVideoValuesProvider() {
+    static Stream<Arguments> noVideoValuesProvider() {
         return Stream.of(
                 arguments(false, false),
                 arguments(true, false),

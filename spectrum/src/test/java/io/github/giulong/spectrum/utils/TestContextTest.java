@@ -5,7 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.openqa.selenium.WebElement;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -21,17 +23,20 @@ class TestContextTest {
     @Mock
     private Function<String, String> function;
 
+    @Mock
+    private WebElement webElement;
+
     @InjectMocks
     private TestContext testContext;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("store", testContext, store);
     }
 
     @Test
     @DisplayName("put should put the provided key-value pair in the internal store")
-    public void put() {
+    void put() {
         final String key = "key";
         final String value = "value";
 
@@ -42,7 +47,7 @@ class TestContextTest {
 
     @Test
     @DisplayName("get should return the object associated to the the provided key casting it to the provided class")
-    public void get() {
+    void get() {
         final String key = "key";
         final String value = "value";
 
@@ -53,12 +58,34 @@ class TestContextTest {
 
     @Test
     @DisplayName("computeIfAbsent should call computeIfAbsent on the internal store, casting the returned object to the provided class")
-    public void computeIfAbsent() {
+    void computeIfAbsent() {
         final String key = "key";
         final String value = "value";
 
         when(store.computeIfAbsent(key, function)).thenReturn(value);
 
         assertEquals(value, testContext.computeIfAbsent(key, function, String.class));
+    }
+
+    @Test
+    @DisplayName("addSecuredWebElement should add the provided webElement to the internal list")
+    void addSecuredWebElement() {
+        testContext.addSecuredWebElement(webElement);
+
+        assertEquals(List.of(webElement), Reflections.getFieldValue("securedWebElements", testContext));
+    }
+
+    @Test
+    @DisplayName("isSecuredWebElement should return true if the provided webElement is a secured one")
+    void isSecuredWebElement() {
+        Reflections.setField("securedWebElements", testContext, List.of(webElement));
+
+        assertTrue(testContext.isSecuredWebElement(webElement));
+    }
+
+    @Test
+    @DisplayName("isSecuredWebElement should return false if the provided webElement is not a secured one")
+    void isSecuredWebElementFalse() {
+        assertFalse(testContext.isSecuredWebElement(webElement));
     }
 }

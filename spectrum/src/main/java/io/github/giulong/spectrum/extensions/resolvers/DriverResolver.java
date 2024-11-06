@@ -1,19 +1,24 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.internals.EventsListener;
-import io.github.giulong.spectrum.utils.ContextManager;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.internals.SpectrumWebDriverListener;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ContextManager;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.web_driver_events.HtmlReportConsumer;
+import io.github.giulong.spectrum.utils.web_driver_events.LogConsumer;
+import io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -36,15 +41,30 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
         final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
         final WebDriver driver = configuration.getRuntime().getDriver().build();
-        final WebDriverListener eventListener = EventsListener.builder()
-                .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
+        final Configuration.Drivers.Events events = configuration.getDrivers().getEvents();
+        final LogConsumer logConsumer = LogConsumer.builder().build();
+
+        final HtmlReportConsumer htmlReportConsumer = HtmlReportConsumer
+                .builder()
                 .statefulExtentTest(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class))
-                .video(configuration.getVideo())
-                .testData(store.get(TEST_DATA, TestData.class))
-                .driver(driver)
-                .events(configuration.getDrivers().getEvents())
                 .build();
-        final WebDriver decoratedDriver = new EventFiringDecorator<>(eventListener).decorate(driver);
+
+        final ScreenshotConsumer screenshotConsumer = ScreenshotConsumer
+                .builder()
+                .driver((TakesScreenshot) driver)
+                .testData(store.get(TEST_DATA, TestData.class))
+                .video(configuration.getVideo())
+                .build();
+
+        final WebDriverListener webDriverListener = SpectrumWebDriverListener
+                .builder()
+                .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
+                .events(events)
+                .consumers(List.of(logConsumer, htmlReportConsumer, screenshotConsumer))
+                .testContext(contextManager.get(context))
+                .build();
+
+        final WebDriver decoratedDriver = new EventFiringDecorator<>(webDriverListener).decorate(driver);
 
         store.put(DRIVER, decoratedDriver);
         contextManager.put(context, DRIVER, decoratedDriver);

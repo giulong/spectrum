@@ -51,26 +51,26 @@ class EventsDispatcherTest {
     private EventsDispatcher eventsDispatcher;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         eventMockedStatic = mockStatic(Event.class);
         Reflections.setField("configuration", eventsDispatcher, configuration);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         eventMockedStatic.close();
     }
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(EventsDispatcher.getInstance(), EventsDispatcher.getInstance());
     }
 
     @Test
     @DisplayName("sessionOpened should fire the before suite event")
-    public void sessionOpened() {
+    void sessionOpened() {
         final Set<String> tags = Set.of(SUITE);
 
         when(Event.builder()).thenReturn(eventBuilder);
@@ -87,7 +87,7 @@ class EventsDispatcherTest {
 
     @Test
     @DisplayName("sessionClosed should fire the after suite event")
-    public void sessionClosed() {
+    void sessionClosed() {
         final Set<String> tags = Set.of(SUITE);
         final Result result = SUCCESSFUL;
 
@@ -108,7 +108,7 @@ class EventsDispatcherTest {
 
     @Test
     @DisplayName("fire should build an event with the provided reason and tags and call match on every consumer")
-    public void fire() {
+    void fire() {
         final String reason = AFTER;
         final Set<String> tags = Set.of();
 
@@ -131,7 +131,7 @@ class EventsDispatcherTest {
 
     @Test
     @DisplayName("fire should build an event with the provided reason, tags and result and call match on every consumer")
-    public void fireReasonTagsResult() {
+    void fireReasonTagsResult() {
         final String reason = AFTER;
         final Set<String> tags = Set.of();
         final Result result = SUCCESSFUL;
@@ -155,7 +155,7 @@ class EventsDispatcherTest {
 
     @Test
     @DisplayName("fire should build an event with the provided primaryId and reason and call match on every consumer")
-    public void firePrimaryIdAndReason() {
+    void firePrimaryIdAndReason() {
         final String reason = AFTER;
         final String primaryId = "primaryId";
 
@@ -178,7 +178,7 @@ class EventsDispatcherTest {
 
     @Test
     @DisplayName("fire should build an event with the provided primaryId, secondaryId and reason and call match on every consumer")
-    public void firePrimaryIdAndSecondaryIdAndReason() {
+    void firePrimaryIdAndSecondaryIdAndReason() {
         final String reason = AFTER;
         final String primaryId = "primaryId";
         final String secondaryId = "secondaryId";
@@ -202,7 +202,7 @@ class EventsDispatcherTest {
 
     @Test
     @DisplayName("fire should build an event with all the provided parameters and call match on every consumer")
-    public void fireAllParams() {
+    void fireAllParams() {
         final String className = "className";
         final String testName = "testName";
         final String reason = AFTER;

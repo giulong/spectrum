@@ -24,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -75,24 +74,24 @@ class TestBookUnitTest {
     private TestBook testBook;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         freeMarkerWrapperMockedStatic.close();
         fileUtilsMockedStatic.close();
     }
 
     private void mapVarsAssertions() {
         final Map<String, Object> vars = testBook.getVars();
-        final TestBookStatistics statistics = testBook.getStatistics();
-        final Map<Result, Statistics> totalCount = statistics.getTotalCount();
-        final Map<Result, Statistics> grandTotalCount = statistics.getGrandTotalCount();
-        final Map<Result, Statistics> totalWeightedCount = statistics.getTotalWeightedCount();
-        final Map<Result, Statistics> grandTotalWeightedCount = statistics.getGrandTotalWeightedCount();
+        final TestBookStatistics localStatistics = testBook.getStatistics();
+        final Map<Result, Statistics> totalCount = localStatistics.getTotalCount();
+        final Map<Result, Statistics> grandTotalCount = localStatistics.getGrandTotalCount();
+        final Map<Result, Statistics> totalWeightedCount = localStatistics.getTotalWeightedCount();
+        final Map<Result, Statistics> grandTotalWeightedCount = localStatistics.getGrandTotalWeightedCount();
 
         assertEquals(29, vars.size());
         assertEquals(globalValue, vars.get(globalVar));
@@ -129,7 +128,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("parse should initialise the testbook")
-    public void parse() {
+    void parse() {
         final TestBookTest test1 = TestBookTest.builder()
                 .className("test 1")
                 .testName("one")
@@ -159,7 +158,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("parse should do nothing if not enabled")
-    public void parseNull() {
+    void parseNull() {
         testBook.sessionOpened();
 
         verify(testBookParser, never()).parse();
@@ -168,7 +167,7 @@ class TestBookUnitTest {
     @DisplayName("updateGroupedTests should add the provided test to the provided map of grouped tests")
     @ParameterizedTest(name = "with className {0} and grouped tests {1}")
     @MethodSource("valuesProvider")
-    public void updateGroupedTests(final String className, final Map<String, Set<TestBookTest>> groupedTests) {
+    void updateGroupedTests(final String className, final Map<String, Set<TestBookTest>> groupedTests) {
         testBook.getGroupedMappedTests().clear();
         testBook.getGroupedMappedTests().putAll(groupedTests);
         testBook.updateGroupedTests(groupedTests, className, test);
@@ -176,7 +175,7 @@ class TestBookUnitTest {
         assertTrue(groupedTests.get(className).contains(test));
     }
 
-    public static Stream<Arguments> valuesProvider() throws IOException {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("className", new HashMap<>()),
                 arguments("className", new HashMap<>() {{
@@ -187,7 +186,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("updateWithResult should do nothing if no testBook is provided")
-    public void consumeTestBookNull() {
+    void consumeTestBookNull() {
         testBook.updateWithResult(null, null, FAILED);
 
         verifyNoInteractions(statistics);
@@ -195,7 +194,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("updateWithResult should update the testbook with the currently unmapped test")
-    public void updateWithResultUnmapped() {
+    void updateWithResultUnmapped() {
         final Result result = FAILED;
         final String className = "className";
         final String testName = "testName";
@@ -214,7 +213,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("updateWithResult should update the testbook with the currently finished test")
-    public void updateWithResult() {
+    void updateWithResult() {
         final Result result = FAILED;
         final String className = "className";
         final String testName = "testName";
@@ -237,7 +236,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("getWeightedTotalOf should return the sum of the weights of the provided map")
-    public void getWeightedTotalOf() {
+    void getWeightedTotalOf() {
         final TestBookTest test1 = TestBookTest.builder()
                 .className("test 1")
                 .testName("one")
@@ -260,8 +259,8 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("flush should update the statistics of the provided tests map")
-    public void flush() {
-        final Map<Result, Statistics> statistics = new HashMap<>();
+    void flush() {
+        final Map<Result, Statistics> localStatistics = new HashMap<>();
         final int totalSuccessful = 1;
         final int totalFailed = 2;
         final int totalAborted = 3;
@@ -269,31 +268,31 @@ class TestBookUnitTest {
         final int total = 123;
         final int totalNotRun = total - totalSuccessful - totalFailed - totalAborted - totalDisabled;
 
-        statistics.put(SUCCESSFUL, new Statistics());
-        statistics.put(FAILED, new Statistics());
-        statistics.put(ABORTED, new Statistics());
-        statistics.put(DISABLED, new Statistics());
-        statistics.put(NOT_RUN, new Statistics());
+        localStatistics.put(SUCCESSFUL, new Statistics());
+        localStatistics.put(FAILED, new Statistics());
+        localStatistics.put(ABORTED, new Statistics());
+        localStatistics.put(DISABLED, new Statistics());
+        localStatistics.put(NOT_RUN, new Statistics());
 
-        statistics.get(SUCCESSFUL).getTotal().set(totalSuccessful);
-        statistics.get(FAILED).getTotal().set(totalFailed);
-        statistics.get(ABORTED).getTotal().set(totalAborted);
-        statistics.get(DISABLED).getTotal().set(totalDisabled);
+        localStatistics.get(SUCCESSFUL).getTotal().set(totalSuccessful);
+        localStatistics.get(FAILED).getTotal().set(totalFailed);
+        localStatistics.get(ABORTED).getTotal().set(totalAborted);
+        localStatistics.get(DISABLED).getTotal().set(totalDisabled);
 
         Reflections.setField("enabled", testBook, true);
-        testBook.flush(total, statistics);
+        testBook.flush(total, localStatistics);
 
-        assertEquals((double) totalSuccessful / total * 100, statistics.get(SUCCESSFUL).getPercentage().get());
-        assertEquals((double) totalFailed / total * 100, statistics.get(FAILED).getPercentage().get());
-        assertEquals((double) totalAborted / total * 100, statistics.get(ABORTED).getPercentage().get());
-        assertEquals((double) totalDisabled / total * 100, statistics.get(DISABLED).getPercentage().get());
-        assertEquals((double) totalNotRun / total * 100, statistics.get(NOT_RUN).getPercentage().get());
-        assertEquals(totalNotRun, statistics.get(NOT_RUN).getTotal().get());
+        assertEquals((double) totalSuccessful / total * 100, localStatistics.get(SUCCESSFUL).getPercentage().get());
+        assertEquals((double) totalFailed / total * 100, localStatistics.get(FAILED).getPercentage().get());
+        assertEquals((double) totalAborted / total * 100, localStatistics.get(ABORTED).getPercentage().get());
+        assertEquals((double) totalDisabled / total * 100, localStatistics.get(DISABLED).getPercentage().get());
+        assertEquals((double) totalNotRun / total * 100, localStatistics.get(NOT_RUN).getPercentage().get());
+        assertEquals(totalNotRun, localStatistics.get(NOT_RUN).getTotal().get());
     }
 
     @Test
     @DisplayName("flush should flush all reporters")
-    public void flushAll() {
+    void flushAll() {
         Vars.getInstance().put(globalVar, globalValue);
 
         Reflections.setField("reporters", testBook, List.of(reporter1, reporter2));
@@ -328,7 +327,7 @@ class TestBookUnitTest {
 
     @Test
     @DisplayName("flush should do nothing if the testBook is disabled")
-    public void flushAllDisabled() {
+    void flushAllDisabled() {
         Reflections.setField("reporters", testBook, List.of(reporter1, reporter2));
         testBook.getMappedTests().put("a", TestBookTest.builder().weight(1).build());
         testBook.getUnmappedTests().put("b", TestBookTest.builder().weight(2).build());

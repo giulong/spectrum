@@ -44,18 +44,18 @@ class ConfigurationResolverTest {
     private ConfigurationResolver configurationResolver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         configurationMockedStatic = mockStatic(Configuration.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         configurationMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return an instance of Actions on the current stored WebDriver")
-    public void testResolveParameter() {
+    void testResolveParameter() {
         when(Configuration.getInstance()).thenReturn(configuration);
 
         when(extensionContext.getRoot()).thenReturn(rootContext);

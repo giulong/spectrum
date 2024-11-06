@@ -18,7 +18,7 @@ class YamlTestBookParserTest {
 
     @Test
     @DisplayName("parse should read the provided file line by line and return the list of test names")
-    public void parse() {
+    void parse() {
         Reflections.setField("path", testBookParser, "testbook.yaml");
         List<TestBookTest> actual = testBookParser.parse();
         assertEquals(3, actual.size());

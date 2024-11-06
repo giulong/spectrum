@@ -33,21 +33,21 @@ class JsonUtilsTest {
     private JsonUtils jsonUtils;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("jsonMapper", jsonUtils, jsonMapper);
         Reflections.setField("writer", jsonUtils, jsonWriter);
     }
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(JsonUtils.getInstance(), JsonUtils.getInstance());
     }
 
     @Test
     @DisplayName("read should deserialize the provided file onto an instance of the provided class")
-    public void read() throws IOException {
+    void read() throws IOException {
         final String expected = "expected";
         when(file.exists()).thenReturn(true);
         when(jsonMapper.readValue(file, String.class)).thenReturn(expected);
@@ -57,7 +57,7 @@ class JsonUtilsTest {
 
     @Test
     @DisplayName("read should deserialize an empty json onto an instance of the provided class when the provided file doesn't exist")
-    public void readNotExisting() throws IOException {
+    void readNotExisting() throws IOException {
         final String expected = "expected";
         when(file.exists()).thenReturn(false);
         when(jsonMapper.readValue(eq("{}"), eq(String.class))).thenReturn(expected);
@@ -67,12 +67,12 @@ class JsonUtilsTest {
 
     @Test
     @DisplayName("write should write the provided object")
-    public void write() throws JsonProcessingException {
+    void write() throws JsonProcessingException {
         final Object object = mock(Object.class);
         final String expected = "expected";
 
         when(jsonWriter.writeValueAsString(object)).thenReturn(expected);
 
-        assertEquals(expected, jsonUtils.write(object));;
+        assertEquals(expected, jsonUtils.write(object));
     }
 }

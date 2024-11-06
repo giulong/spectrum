@@ -36,20 +36,20 @@ class FreeMarkerWrapperTest {
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("spectrumConfiguration", freeMarkerWrapper, spectrumConfiguration);
     }
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(FreeMarkerWrapper.getInstance(), FreeMarkerWrapper.getInstance());
     }
 
     @Test
     @DisplayName("sessionOpened should setup the configuration from the freemarker node in the configuration.yaml")
-    public void sessionOpened() {
+    void sessionOpened() {
         final String version = "version";
         final String numberFormat = "numberFormat";
 
@@ -76,7 +76,7 @@ class FreeMarkerWrapperTest {
 
     @Test
     @DisplayName("interpolate should create a template from the provided source, interpolating it with the provided vars and returning the interpolated string")
-    public void interpolate() throws TemplateException, IOException {
+    void interpolate() throws TemplateException, IOException {
         final String source = "source";
         final Map<String, Object> vars = Map.of("one", "value");
 

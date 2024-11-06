@@ -58,14 +58,14 @@ class WindowsTest {
     private Windows windows;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", windows, configuration);
         Reflections.setField("capabilities", windows, windowsOptions);
     }
 
     @Test
     @DisplayName("configureWaitsOf should configure just the implicitWait, since the others are not implemented")
-    public void configureWaitsOf() {
+    void configureWaitsOf() {
         when(waits.getImplicit()).thenReturn(duration);
 
         when(windowsWebDriver.manage()).thenReturn(options);
@@ -78,7 +78,7 @@ class WindowsTest {
 
     @Test
     @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it")
-    public void buildCapabilitiesAbsoluteAppPath() {
+    void buildCapabilitiesAbsoluteAppPath() {
         MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class, (mock, context) -> {
             assertEquals(capabilities, context.arguments().getFirst());
         });
@@ -97,7 +97,7 @@ class WindowsTest {
 
     @Test
     @DisplayName("buildDriverFor should return a new instance of WindowsDriver for the provided url and the instance capabilities")
-    public void buildDriverFor() {
+    void buildDriverFor() {
         MockedConstruction<WindowsDriver> windowsDriverMockedConstruction = mockConstruction(WindowsDriver.class, (mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(windowsOptions, context.arguments().get(1));

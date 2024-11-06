@@ -52,13 +52,13 @@ class EdgeTest {
     private Edge edge;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", edge, configuration);
     }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of EdgeDriverService.Builder()")
-    public void getDriverServiceBuilder() {
+    void getDriverServiceBuilder() {
         final String allowedListIps = "allowedListIps";
 
         when(configuration.getDrivers()).thenReturn(driversConfig);
@@ -90,7 +90,7 @@ class EdgeTest {
 
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
-    public void buildCapabilitiesFrom() {
+    void buildCapabilitiesFrom() {
         final List<String> arguments = List.of("args");
 
         when(configuration.getDrivers()).thenReturn(driversConfig);

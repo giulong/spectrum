@@ -10,6 +10,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
 
+import java.util.Objects;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 
@@ -97,7 +99,7 @@ public class JsWebElementIT extends SpectrumTest<Void> {
         assertNotNull(usernameField.getRect().getDimension());
 
         usernameField.clear();
-        assertTrue(usernameField.getDomProperty("value").isEmpty());
+        assertTrue(Objects.requireNonNull(usernameField.getDomProperty("value")).isEmpty());
         usernameField.sendKeys("tomsmith");
         passwordField.sendKeys("SuperSecretPassword!");
 

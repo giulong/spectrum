@@ -28,12 +28,12 @@ class ColoredConverterTest {
     @DisplayName("getForegroundColorCode should override the default logback colors")
     @ParameterizedTest(name = "with level {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void getForegroundColorCode(final Level level, final String expected) {
+    void getForegroundColorCode(final Level level, final String expected) {
         when(loggingEvent.getLevel()).thenReturn(level);
         assertEquals(expected, coloredConverter.getForegroundColorCode(loggingEvent));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(ERROR, BOLD + RED_FG),
                 arguments(WARN, YELLOW_FG),

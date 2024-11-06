@@ -38,14 +38,14 @@ class EspressoTest {
     private Espresso espresso;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", espresso, configuration);
         Reflections.setField("capabilities", espresso, espressoOptions);
     }
 
     @Test
     @DisplayName("buildCapabilities should build a new instance of espresso and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
-    public void buildCapabilities() {
+    void buildCapabilities() {
         final Path path = Path.of("relative", "path");
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
@@ -72,7 +72,7 @@ class EspressoTest {
 
     @Test
     @DisplayName("buildCapabilities should build a new instance of espresso and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
-    public void buildCapabilitiesAbsoluteAppPath() {
+    void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
         MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(EspressoOptions.class, (mock, context) -> {

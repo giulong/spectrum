@@ -4,9 +4,14 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static java.util.Arrays.asList;
 
 @Slf4j
 @UtilityClass
@@ -22,6 +27,20 @@ public final class Reflections {
         }
 
         return (ParameterizedType) clazz.getGenericSuperclass();
+    }
+
+    public static List<Field> getFieldsOf(Class<?> clazz, final Class<?> limit) {
+        log.trace("Getting fields of {}", clazz.getSimpleName());
+
+        final List<Field> fields = new ArrayList<>(asList(clazz.getDeclaredFields()));
+
+        while (clazz.getSuperclass() != limit) {
+            clazz = clazz.getSuperclass();
+            log.trace("Getting also fields of superclass {}", clazz.getSimpleName());
+            fields.addAll(asList(clazz.getDeclaredFields()));
+        }
+
+        return fields;
     }
 
     @SneakyThrows
@@ -50,6 +69,15 @@ public final class Reflections {
         return clazz.cast(getFieldValue(fieldName, object));
     }
 
+    public static <T> T getFieldValue(final Field field, final Object object, final Class<T> clazz) {
+        return getFieldValue(field.getName(), object, clazz);
+    }
+
+    @SneakyThrows
+    public static Object getValueOf(final Field field, final Object object) {
+        return field.get(object);
+    }
+
     public static void setField(final String fieldName, final Object object, final Object value) {
         final Field field = getField(fieldName, object);
         setField(field, object, value);
@@ -75,5 +103,25 @@ public final class Reflections {
         log.trace("Copying field {} from {} to {}", field.getName(), source.getClass().getSimpleName(), dest.getClass().getSimpleName());
         field.setAccessible(true);
         field.set(dest, field.get(source));
+    }
+
+    public static List<Field> getAnnotatedFields(final Object object, final Class<? extends Annotation> annotation) {
+        final String className = object.getClass().getTypeName();
+        final String annotationName = annotation.getTypeName();
+
+        return Arrays
+                .stream(object.getClass().getDeclaredFields())
+                .filter(f -> f.isAnnotationPresent(annotation))
+                .peek(f -> log.debug("Field {}.{} is annotated with {}", className, f.getName(), annotationName))
+                .peek(f -> f.setAccessible(true))
+                .toList();
+    }
+
+    public static <T> List<T> getAnnotatedFieldsValues(final Object object, final Class<? extends Annotation> annotation, final Class<T> clazz) {
+        return getAnnotatedFields(object, annotation)
+                .stream()
+                .map(f -> getValueOf(f, object))
+                .map(clazz::cast)
+                .toList();
     }
 }

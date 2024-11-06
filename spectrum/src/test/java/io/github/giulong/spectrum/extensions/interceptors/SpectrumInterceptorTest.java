@@ -95,7 +95,7 @@ class SpectrumInterceptorTest {
     private SpectrumInterceptor spectrumInterceptor;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("eventsDispatcher", spectrumInterceptor, eventsDispatcher);
         Reflections.setField("extentReporter", spectrumInterceptor, extentReporter);
         Reflections.setField("fileUtils", spectrumInterceptor, fileUtils);
@@ -120,6 +120,7 @@ class SpectrumInterceptorTest {
         when(fileUtils.removeExtensionFrom(videoPath.toString())).thenReturn(fileName);
     }
 
+    @SuppressWarnings("checkstyle:IllegalThrows")
     private void commonVerifications() throws Throwable {
         verify(testData).setDisplayName(displayName);
         verify(testData).setDynamicVideoPath(dynamicVideoPath);
@@ -135,7 +136,8 @@ class SpectrumInterceptorTest {
     @DisplayName("interceptDynamicTest should fire the proper events and create nodes in the current extent test")
     @ParameterizedTest(name = "with video disabled {0} and attach video {1}")
     @MethodSource("valuesProvider")
-    public void interceptDynamicTest(final boolean videoDisabled, final boolean attach) throws Throwable {
+    @SuppressWarnings("checkstyle:IllegalThrows")
+    void interceptDynamicTest(final boolean videoDisabled, final boolean attach) throws Throwable {
         commonStubs();
 
         when(video.isDisabled()).thenReturn(videoDisabled);
@@ -148,7 +150,7 @@ class SpectrumInterceptorTest {
         verifyNoInteractions(extentReporter);
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(true, true),
                 arguments(true, false),
@@ -158,7 +160,8 @@ class SpectrumInterceptorTest {
 
     @Test
     @DisplayName("interceptDynamicTest should fire the proper events and create nodes in the current extent test attaching the video")
-    public void interceptDynamicTestAttachVideo() throws Throwable {
+    @SuppressWarnings("checkstyle:IllegalThrows")
+    void interceptDynamicTestAttachVideo() throws Throwable {
         final String testId = "testId";
 
         commonStubs();
@@ -176,7 +179,8 @@ class SpectrumInterceptorTest {
 
     @Test
     @DisplayName("interceptDynamicTest should catch the invocation's exception, log it in extent test and fire the failed event")
-    public void interceptDynamicTestThrow() throws Throwable {
+    @SuppressWarnings("checkstyle:IllegalThrows")
+    void interceptDynamicTestThrow() throws Throwable {
         commonStubs();
 
         when(invocation.proceed()).thenThrow(new RuntimeException());

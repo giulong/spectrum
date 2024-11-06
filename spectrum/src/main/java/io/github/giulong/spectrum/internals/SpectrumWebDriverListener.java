@@ -1,11 +1,10 @@
 package io.github.giulong.spectrum.internals;
 
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
-import io.github.giulong.spectrum.utils.video.Video;
+import io.github.giulong.spectrum.utils.TestContext;
+import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
 import lombok.Builder;
 import lombok.Generated;
 import lombok.SneakyThrows;
@@ -13,37 +12,31 @@ import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.support.events.WebDriverListener;
+import org.slf4j.event.Level;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.aventstack.extentreports.markuputils.ExtentColor.YELLOW;
-import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static java.util.UUID.randomUUID;
-import static org.openqa.selenium.OutputType.BYTES;
+import static org.slf4j.event.Level.*;
 
 @Slf4j
 @Builder
-public class EventsListener implements WebDriverListener {
+public class SpectrumWebDriverListener implements WebDriverListener {
 
-    private static final String TAG = "<.*?>";
+    private static final Map<String, Level> LEVELS = Map.of("TRACE", TRACE, "INFO", INFO, "WARN", WARN);
 
     private Pattern locatorPattern;
-    private StatefulExtentTest statefulExtentTest;
-    private Video video;
-    private TestData testData;
-    private WebDriver driver;
     private Events events;
+    private List<Consumer<WebDriverEvent>> consumers;
+    private TestContext testContext;
 
     protected String extractSelectorFrom(final WebElement webElement) {
         final String fullWebElement = webElement.toString();
@@ -65,47 +58,27 @@ public class EventsListener implements WebDriverListener {
     }
 
     @SneakyThrows
-    public Path record(final Frame frame) {
-        final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", frame.getValue(), randomUUID()));
+    protected void listenTo(final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
+        final Level level = LEVELS.getOrDefault(event.getLevel().levelStr, DEBUG);
 
-        if (video.shouldRecord(screenshotPath.getFileName().toString())) {
-            log.trace("Recording frame {}", frame);
-            return Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));
+        if (!log.isEnabledForLevel(level)) {
+            return;
         }
 
-        log.trace("Not recording frame {}", frame);
-        return null;
-    }
-
-    @SneakyThrows
-    protected void apply(final boolean condition, final Consumer<String> logConsumer, final Consumer<String> extentConsumer,
-                         final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
         final long wait = event.getWait();
         if (wait > 0) {
             log.debug("Waiting {} ms before event processing", wait);
             Thread.sleep(wait);
         }
 
-        if (condition) {
-            final String message = String.format(event.getMessage(), parse(args).toArray());
+        final WebDriverEvent webDriverEvent = WebDriverEvent
+                .builder()
+                .frame(frame)
+                .level(level)
+                .message(String.format(event.getMessage(), parse(args).toArray()))
+                .build();
 
-            logConsumer.accept(message.replaceAll(TAG, ""));
-            record(frame);
-            extentConsumer.accept(message);
-        }
-    }
-
-    protected void listenTo(final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
-        switch (event.getLevel().levelStr) {
-            case "OFF" -> {
-            }
-            case "TRACE" -> apply(log.isTraceEnabled(), log::trace, statefulExtentTest.getCurrentNode()::info, frame, event, args);
-            case "DEBUG" -> apply(log.isDebugEnabled(), log::debug, statefulExtentTest.getCurrentNode()::info, frame, event, args);
-            case "INFO" -> apply(log.isInfoEnabled(), log::info, statefulExtentTest.getCurrentNode()::info, frame, event, args);
-            case "WARN" -> apply(log.isWarnEnabled(), log::warn, message -> statefulExtentTest.getCurrentNode().warning(createLabel(message, YELLOW)), frame, event, args);
-            default -> log.warn("Message '{}' won't be logged. Wrong log level set in configuration.yaml. Choose one among OFF, TRACE, DEBUG, INFO, WARN",
-                    String.format(event.getMessage(), parse(args).toArray()));
-        }
+        consumers.forEach(consumer -> consumer.accept(webDriverEvent));
     }
 
     @Override
@@ -343,14 +316,26 @@ public class EventsListener implements WebDriverListener {
     }
 
     @Override
-    @Generated
     public void beforeSendKeys(final WebElement element, final CharSequence... keysToSend) {
+        if (testContext.isSecuredWebElement(element)) {
+            log.debug("Masking keys to send to @Secured webElement");
+            listenTo(AUTO_BEFORE, events.getBeforeSendKeys(), element, "[***]");
+
+            return;
+        }
+
         listenTo(AUTO_BEFORE, events.getBeforeSendKeys(), element, Arrays.toString(keysToSend));
     }
 
     @Override
-    @Generated
     public void afterSendKeys(final WebElement element, final CharSequence... keysToSend) {
+        if (testContext.isSecuredWebElement(element)) {
+            log.debug("Masking keys sent to @Secured webElement");
+            listenTo(AUTO_AFTER, events.getAfterSendKeys(), element, "[***]");
+
+            return;
+        }
+
         listenTo(AUTO_AFTER, events.getAfterSendKeys(), element, Arrays.toString(keysToSend));
     }
 

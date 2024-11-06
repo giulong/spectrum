@@ -330,18 +330,31 @@
                         </dependency>
                     </dependencies>
                     <configuration>
-                        <configLocation>checkstyle.xml</configLocation>
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>true</failsOnError>
                         <linkXRef>false</linkXRef>
                     </configuration>
                     <executions>
                         <execution>
-                            <id>validate</id>
+                            <id>validate-sources</id>
                             <phase>validate</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
+                            <configuration>
+                                <configLocation>checkstyle.xml</configLocation>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>validate-tests</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <configLocation>checkstyle-tests.xml</configLocation>
+                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

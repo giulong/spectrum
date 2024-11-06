@@ -55,7 +55,7 @@ class PageLoadWaitResolverTest {
 
     @Test
     @DisplayName("resolveParameter should return an instance of PageLoadWaits on the current stored WebDriver")
-    public void testResolveParameter() {
+    void testResolveParameter() {
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);

@@ -48,7 +48,7 @@ class SlackConsumerTest {
     private ChatPostMessageRequest chatPostMessageRequest;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         slackMockedStatic = mockStatic(Slack.class);
@@ -56,7 +56,7 @@ class SlackConsumerTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         fileUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
         slackMockedStatic.close();
@@ -65,7 +65,7 @@ class SlackConsumerTest {
 
     @Test
     @DisplayName("accept should send a notification to the provided channel using the provided token")
-    public void accept() throws SlackApiException, IOException {
+    void accept() throws SlackApiException, IOException {
         final String template = "template";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String channel = "channel";

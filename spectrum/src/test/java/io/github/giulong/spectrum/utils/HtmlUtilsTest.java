@@ -34,27 +34,27 @@ class HtmlUtilsTest {
     private HtmlUtils htmlUtils;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         pathMockedStatic.close();
         filesMockedStatic.close();
     }
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(HtmlUtils.getInstance(), HtmlUtils.getInstance());
     }
 
     @Test
     @DisplayName("inline should call both the inlineImagesOf and inlineVideosOf on the provided html and return the one with all of those replaced")
-    public void inline() throws IOException {
+    void inline() throws IOException {
         final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";
         when(Path.of("src1")).thenReturn(path);
         when(Path.of("src2")).thenReturn(path2);
@@ -68,7 +68,7 @@ class HtmlUtilsTest {
 
     @Test
     @DisplayName("inlineImagesOf should return the provided html with all the images replaced with their own base64")
-    public void inlineImagesOf() throws IOException {
+    void inlineImagesOf() throws IOException {
         final String html = "abc<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src1\"/></div></div>def" +
                 "<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>ghi";
 
@@ -85,7 +85,7 @@ class HtmlUtilsTest {
 
     @Test
     @DisplayName("inlineVideosOf should return the provided html with all the videos replaced with their own base64")
-    public void inlineVideosOf() throws IOException {
+    void inlineVideosOf() throws IOException {
         final String html = "abc<video src=\"src1\"/>def<video src=\"src2\"/>ghi";
 
         when(Path.of("src1")).thenReturn(path);

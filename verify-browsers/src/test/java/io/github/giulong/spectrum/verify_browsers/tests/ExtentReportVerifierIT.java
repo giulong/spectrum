@@ -20,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SuppressWarnings("unused")
 public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
-    private static final String VIDEO_BASE64 = "data:video/mp4;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";
-    private static final String IMAGE_BASE64 = "data:image/png;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";
+    private static final String VIDEO_PATTERN = "data:video/mp4;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";
+    private static final String IMAGE_PATTERN = "data:image/png;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";
 
     private ExtentReportPage extentReportPage;
 
@@ -114,13 +114,13 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
     public void inlineReport() {
         commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report.html", Path.of(System.getProperty("user.dir")).getParent()));
 
-        assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getAttribute("src")), matchesPattern(VIDEO_BASE64));
+        assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getAttribute("src")), matchesPattern(VIDEO_PATTERN));
         extentReportPage
                 .getInlineImages()
                 .stream()
                 .map(inlineImage -> inlineImage.getAttribute("src"))
                 .map(Objects::requireNonNull)
-                .forEach(src -> assertThat(src, matchesPattern(IMAGE_BASE64)));
+                .forEach(src -> assertThat(src, matchesPattern(IMAGE_PATTERN)));
     }
 
     private long countTestsWithStatus(final String status) {

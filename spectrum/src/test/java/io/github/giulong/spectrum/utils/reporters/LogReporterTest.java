@@ -11,13 +11,13 @@ class LogReporterTest {
 
     @Test
     @DisplayName("doOutputFrom should just log the interpolated template")
-    public void doOutputFrom() {
+    void doOutputFrom() {
         final String interpolatedTemplate = "interpolatedTemplate";
         logReporter.doOutputFrom(interpolatedTemplate);
 
         // no verifications/assertions needed
     }
 
-    private static class DummyLogReporter extends LogReporter {
+    private static final class DummyLogReporter extends LogReporter {
     }
 }

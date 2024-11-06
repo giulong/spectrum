@@ -27,14 +27,14 @@ class NameComparatorTest {
     @DisplayName("compare should compare by tests' names")
     @ParameterizedTest(name = "with name1 {1} and name2 {2}, we expect {3}")
     @MethodSource("valuesProvider")
-    public void compare(final String name1, final String name2, final int expected) {
+    void compare(final String name1, final String name2, final int expected) {
         when(test1.getName()).thenReturn(name1);
         when(test2.getName()).thenReturn(name2);
 
         assertEquals(expected, nameComparator.compare(test1, test2));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("aaa", "bbb", -1),
                 arguments("bbb", "aaa", 1),

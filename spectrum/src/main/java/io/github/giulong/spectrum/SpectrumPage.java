@@ -1,7 +1,19 @@
 package io.github.giulong.spectrum;
 
+import io.github.giulong.spectrum.interfaces.Endpoint;
+import io.github.giulong.spectrum.interfaces.JsWebElement;
+import io.github.giulong.spectrum.interfaces.Secured;
+import io.github.giulong.spectrum.utils.JsWebElementListInvocationHandler;
+import io.github.giulong.spectrum.utils.Reflections;
 import lombok.Getter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.PageFactory;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
+import java.util.List;
 
 @Slf4j
 @Getter
@@ -53,5 +65,50 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
         log.debug("Page url:    {}", pageUrl);
 
         return pageUrl.equals(currentUrl);
+    }
+
+    SpectrumPage<?, Data> init() {
+        final String className = getClass().getSimpleName();
+        log.debug("Injecting already resolved fields into an instance of {}", className);
+
+        final Endpoint endpointAnnotation = getClass().getAnnotation(Endpoint.class);
+        final String endpointValue = endpointAnnotation != null ? endpointAnnotation.value() : "";
+
+        log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
+        Reflections.setField("endpoint", this, endpointValue);
+
+        PageFactory.initElements(driver, this);
+
+        Reflections
+                .getAnnotatedFieldsValues(this, Secured.class, WebElement.class)
+                .forEach(testContext::addSecuredWebElement);
+
+        Reflections
+                .getAnnotatedFields(this, JsWebElement.class)
+                .forEach(this::injectJsWebElementProxyInto);
+
+        return this;
+    }
+
+    @SneakyThrows
+    void injectJsWebElementProxyInto(final Field field) {
+        final Object value = field.get(this);
+
+        if (value instanceof List<?>) {
+            log.debug("Field {} is a list. Cannot build proxy eagerly", field.getName());
+            @SuppressWarnings("unchecked") final Object webElementProxy = Proxy.newProxyInstance(
+                    List.class.getClassLoader(),
+                    new Class<?>[]{List.class},
+                    JsWebElementListInvocationHandler
+                            .builder()
+                            .jsWebElementProxyBuilder(jsWebElementProxyBuilder)
+                            .webElements((List<WebElement>) value)
+                            .build());
+
+            field.set(this, webElementProxy);
+            return;
+        }
+
+        field.set(this, jsWebElementProxyBuilder.buildFor(value));
     }
 }

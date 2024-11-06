@@ -45,18 +45,18 @@ class JsResolverTest {
     private JsResolver jsResolver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         jsMockedStatic = mockStatic(Js.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         jsMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return the instance of Js")
-    public void resolveParameter() {
+    void resolveParameter() {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(DRIVER, WebDriver.class)).thenReturn(webDriver);
         when(Js.builder()).thenReturn(jsBuilder);

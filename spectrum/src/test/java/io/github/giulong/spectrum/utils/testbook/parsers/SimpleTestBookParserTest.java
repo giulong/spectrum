@@ -17,7 +17,7 @@ class SimpleTestBookParserTest {
 
     @Test
     @DisplayName("parse should read the configured file line by line and return the corresponding list of TestBookTests")
-    public void parse() {
+    void parse() {
         Reflections.setField("path", testBookParser, "testbook.csv");
 
         List<TestBookTest> actual = testBookParser.parse();
