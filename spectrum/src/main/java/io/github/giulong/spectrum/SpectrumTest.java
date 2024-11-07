@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import io.github.giulong.spectrum.extensions.interceptors.SpectrumInterceptor;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
+import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -106,7 +107,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         final Class<?> clazz = this.getClass();
         log.debug("Initializing pages of test '{}'", clazz.getSimpleName());
 
-        final List<Field> sharedFields = getSharedFields();
+        final List<Field> sharedFields = Reflections.getAnnotatedFields(SpectrumEntity.class, Shared.class);
 
         return Reflections
                 .getFieldsOf(clazz, SpectrumTest.class)
