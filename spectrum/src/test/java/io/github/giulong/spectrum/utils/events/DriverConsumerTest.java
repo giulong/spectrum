@@ -36,13 +36,13 @@ class DriverConsumerTest {
     private DriverConsumer driverConsumer;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", driverConsumer, configuration);
     }
 
     @Test
     @DisplayName("accept should do nothing when the test is skipped")
-    public void acceptSkipped() {
+    void acceptSkipped() {
         when(event.getResult()).thenReturn(DISABLED);
 
         driverConsumer.accept(event);
@@ -53,7 +53,7 @@ class DriverConsumerTest {
 
     @Test
     @DisplayName("accept should shutdown the driver")
-    public void accept() {
+    void accept() {
         when(event.getResult()).thenReturn(SUCCESSFUL);
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();

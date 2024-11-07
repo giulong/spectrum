@@ -32,11 +32,11 @@ class InterpolatedBooleanDeserializerTest {
     @InjectMocks
     private InterpolatedBooleanDeserializer interpolatedBooleanDeserializer;
 
-    private static final String varInEnv = "varInEnv";
+    private static final String VAR_IN_ENV = "varInEnv";
 
     @BeforeAll
     public static void beforeAll() {
-        Vars.getInstance().put("varInEnv", varInEnv);
+        Vars.getInstance().put("varInEnv", VAR_IN_ENV);
     }
 
     @AfterAll
@@ -46,7 +46,7 @@ class InterpolatedBooleanDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(InterpolatedBooleanDeserializer.getInstance(), InterpolatedBooleanDeserializer.getInstance());
     }
@@ -54,14 +54,14 @@ class InterpolatedBooleanDeserializerTest {
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserialize(final String value, final boolean expected) throws IOException {
+    void deserialize(final String value, final boolean expected) throws IOException {
         when(jsonParser.getValueAsString()).thenReturn(value);
         when(jsonParser.currentName()).thenReturn("key");
 
         assertEquals(expected, interpolatedBooleanDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("true", true),
                 arguments("false", false),

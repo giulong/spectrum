@@ -38,13 +38,13 @@ class TestContextResolverTest {
     private TestContextResolver testContextResolver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("contextManager", testContextResolver, contextManager);
     }
 
     @Test
     @DisplayName("resolveParameter should return an instance of TestContext")
-    public void resolveParameter() {
+    void resolveParameter() {
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(contextManager.initFor(context)).thenReturn(testContext);
 

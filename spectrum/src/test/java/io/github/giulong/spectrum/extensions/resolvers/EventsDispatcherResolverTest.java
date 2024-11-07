@@ -42,18 +42,18 @@ class EventsDispatcherResolverTest {
     private ArgumentCaptor<Function<String, EventsDispatcher>> functionArgumentCaptor;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         eventsDispatcherMockedStatic.close();
     }
 
     @Test
     @DisplayName("resolveParameter should return an instance of EventsDispatcher")
-    public void testResolveParameter() {
+    void testResolveParameter() {
         when(EventsDispatcher.getInstance()).thenReturn(eventsDispatcher);
 
         when(extensionContext.getRoot()).thenReturn(rootContext);

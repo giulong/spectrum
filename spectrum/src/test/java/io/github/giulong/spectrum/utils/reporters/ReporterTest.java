@@ -22,7 +22,7 @@ class ReporterTest {
 
     @Test
     @DisplayName("flush should call the doOutputFrom method with the template interpolated with the testbook vars")
-    public void flush() {
+    void flush() {
         final Map<String, Object> vars = Map.of();
 
         when(testBook.getVars()).thenReturn(vars);
@@ -33,7 +33,7 @@ class ReporterTest {
     }
 
     @Getter
-    private static class DummyReporter extends Reporter {
+    private static final class DummyReporter extends Reporter {
 
         private boolean doOutputCalled;
         private boolean cleanupOldReportsCalled;

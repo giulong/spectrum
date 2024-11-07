@@ -43,14 +43,14 @@ class TestBookConsumerTest {
     private TestBookConsumer testBookConsumer;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", testBookConsumer, configuration);
         Reflections.setField("contextManager", testBookConsumer, contextManager);
     }
 
     @Test
     @DisplayName("accept should tell the testbook to update")
-    public void accept() {
+    void accept() {
         final String displayName = "displayName";
         final String classDisplayName = "classDisplayName";
         final Result result = FAILED;
@@ -62,7 +62,6 @@ class TestBookConsumerTest {
         when(configuration.getTestBook()).thenReturn(testBook);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getDisplayName()).thenReturn(displayName);
-
 
         testBookConsumer.accept(event);
 

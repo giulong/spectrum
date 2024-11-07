@@ -72,14 +72,14 @@ class DataResolverTest {
     private DataResolver<TestYaml> dataResolver;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("yamlUtils", dataResolver, yamlUtils);
     }
 
     @DisplayName("supportsParameter should check if the generic type name is exactly Data")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void supportsParameter(final String typeName, final boolean expected) {
+    void supportsParameter(final String typeName, final boolean expected) {
         when(parameterContext.getParameter()).thenReturn(parameter);
         when(parameter.getParameterizedType()).thenReturn(type);
         when(type.getTypeName()).thenReturn(typeName);
@@ -87,7 +87,7 @@ class DataResolverTest {
         assertEquals(expected, dataResolver.supportsParameter(parameterContext, extensionContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("Data", true),
                 arguments("not-good", false)
@@ -97,7 +97,7 @@ class DataResolverTest {
     @DisplayName("resolveParameter should load the data class from client side and deserialize the data.yaml on it")
     @ParameterizedTest(name = "with class {0}")
     @ValueSource(classes = {TestClass.class, TestParentClass.class})
-    public void resolveParameter(final Class<?> clazz) {
+    void resolveParameter(final Class<?> clazz) {
         final String dataFolder = "dataFolder";
 
         when(extensionContext.getRoot()).thenReturn(rootContext);
@@ -122,7 +122,7 @@ class DataResolverTest {
     @DisplayName("resolveParameter should return null if Void is provided as generic Data")
     @ParameterizedTest(name = "with class {0}")
     @ValueSource(classes = {VoidClass.class, VoidParentClass.class})
-    public void resolveParameterVoid(final Class<?> clazz) {
+    void resolveParameterVoid(final Class<?> clazz) {
         doReturn(clazz).when(extensionContext).getRequiredTestClass();
 
         assertNull(dataResolver.resolveParameter(parameterContext, extensionContext));
@@ -134,18 +134,18 @@ class DataResolverTest {
     private static class Parent extends SpectrumTest<String> {
     }
 
-    private static class TestClass extends SpectrumTest<String> {
+    private static final class TestClass extends SpectrumTest<String> {
     }
 
-    private static class TestParentClass extends Parent {
+    private static final class TestParentClass extends Parent {
     }
 
     private static class ParentVoid extends SpectrumTest<Void> {
     }
 
-    private static class VoidClass extends SpectrumTest<Void> {
+    private static final class VoidClass extends SpectrumTest<Void> {
     }
 
-    private static class VoidParentClass extends ParentVoid {
+    private static final class VoidParentClass extends ParentVoid {
     }
 }

@@ -113,7 +113,8 @@ public class TestBookSessionListener implements LauncherSessionListener {
         final List<File> remainingExtentReportsDirectories = getRemainingDirectoriesFrom(extentReportsDirectory.toFile().listFiles());
         final List<String> remainingExtentReportsDirectoriesNames = getNamesOf(remainingExtentReportsDirectories);
         assertEquals(extentTotalRetention, remainingExtentReportsDirectories.size());
-        assertFalse(remainingExtentReportsDirectoriesNames.contains(fakeExtentReportsDirectories.getFirst()), "The first extent report directory should have been deleted due to retention policies");
+        assertFalse(remainingExtentReportsDirectoriesNames.contains(fakeExtentReportsDirectories.getFirst()),
+                "The first extent report directory should have been deleted due to retention policies");
 
         final List<File> remainingExtentReports = getRemainingFilesFrom(extentReportsDirectory.toFile().listFiles(), "html");
         final List<String> remainingExtentReportsNames = getNamesOf(remainingExtentReports);
@@ -130,7 +131,8 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .map(Path::toFile)
                 .toList()
                 .containsAll(successfulReports.get("HtmlTestBookReporter")));
-        assertTrue(getNamesOf(remainingHtmlTestBooks).containsAll(fakeHtmlTestBooks), "Html reporter should have the default total retention of Integer.MAX_VALUE, so no one should be deleted");
+        assertTrue(getNamesOf(remainingHtmlTestBooks).containsAll(fakeHtmlTestBooks),
+                "Html reporter should have the default total retention of Integer.MAX_VALUE, so no one should be deleted");
 
         final List<File> remainingTxtTestBooks = getRemainingFilesFrom(txtTestBooksDirectory.toFile().listFiles(), "txt");
         final List<String> remainingTxtTestBooksNames = getNamesOf(remainingTxtTestBooks);
@@ -157,7 +159,8 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .map(Path::toFile)
                 .toList()
                 .containsAll(successfulReports.get("HtmlSummaryReporter")));
-        assertTrue(getNamesOf(remainingHtmlSummaries).containsAll(fakeHtmlSummaries), "Html reporter should have the default total retention of Integer.MAX_VALUE, so no one should be deleted");
+        assertTrue(getNamesOf(remainingHtmlSummaries).containsAll(fakeHtmlSummaries),
+                "Html reporter should have the default total retention of Integer.MAX_VALUE, so no one should be deleted");
 
         final List<File> remainingTxtSummaries = getRemainingFilesFrom(txtSummaryReportsDirectory.toFile().listFiles(), "txt");
         assertTrue(remainingTxtSummaries.size() <= txtSummaryTotalRetention);
@@ -169,7 +172,8 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .map(Path::toFile)
                 .toList()
                 .containsAll(successfulReports.get("TxtSummaryReporter")));
-        assertTrue(getNamesOf(remainingTxtSummaries).containsAll(fakeTxtSummaries), "Txt reporter should have the default total retention of Integer.MAX_VALUE, so no one should be deleted");
+        assertTrue(getNamesOf(remainingTxtSummaries).containsAll(fakeTxtSummaries),
+                "Txt reporter should have the default total retention of Integer.MAX_VALUE, so no one should be deleted");
 
         deleteDirectories(fakeExtentReportsDirectories, extentReportsDirectory);
         deleteFiles(fakeExtentReports, extentReportsDirectory);

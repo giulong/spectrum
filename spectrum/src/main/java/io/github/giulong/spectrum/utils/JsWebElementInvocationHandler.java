@@ -4,6 +4,7 @@ import io.github.giulong.spectrum.enums.LocatorType;
 import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.openqa.selenium.*;
 
 import java.lang.reflect.InvocationHandler;
@@ -33,7 +34,7 @@ public class JsWebElementInvocationHandler implements WebElement, InvocationHand
     }
 
     @Override
-    public void sendKeys(final CharSequence... keysToSend) {
+    public void sendKeys(@NotNull final CharSequence... keysToSend) {
         js.sendKeys(webElement, keysToSend);
     }
 
@@ -42,23 +43,24 @@ public class JsWebElementInvocationHandler implements WebElement, InvocationHand
         js.clear(webElement);
     }
 
+    @NotNull
     @Override
     public String getTagName() {
         return js.getTagName(webElement);
     }
 
     @Override
-    public String getDomProperty(final String name) {
+    public String getDomProperty(@NotNull final String name) {
         return js.getDomProperty(webElement, name);
     }
 
     @Override
-    public String getDomAttribute(final String name) {
+    public String getDomAttribute(@NotNull final String name) {
         return js.getDomAttribute(webElement, name);
     }
 
     @Override
-    public String getAttribute(final String name) {
+    public String getAttribute(@NotNull final String name) {
         return js.getAttribute(webElement, name);
     }
 
@@ -82,21 +84,25 @@ public class JsWebElementInvocationHandler implements WebElement, InvocationHand
         return js.isEnabled(webElement);
     }
 
+    @NotNull
     @Override
     public String getText() {
         return js.getText(webElement);
     }
 
+    @NotNull
     @Override
-    public List<WebElement> findElements(final By by) {
+    public List<WebElement> findElements(@NotNull final By by) {
         return js.findElements(webElement, LocatorType.from(by), extractLocatorValueFrom(by));
     }
 
+    @NotNull
     @Override
-    public WebElement findElement(final By by) {
+    public WebElement findElement(@NotNull final By by) {
         return js.findElement(webElement, LocatorType.from(by), extractLocatorValueFrom(by));
     }
 
+    @NotNull
     @Override
     public SearchContext getShadowRoot() {
         return js.getShadowRoot(webElement);
@@ -107,28 +113,33 @@ public class JsWebElementInvocationHandler implements WebElement, InvocationHand
         return js.isDisplayed(webElement);
     }
 
+    @NotNull
     @Override
     public Point getLocation() {
         return js.getLocation(webElement);
     }
 
+    @NotNull
     @Override
     public Dimension getSize() {
         return js.getSize(webElement);
     }
 
+    @NotNull
     @Override
     public Rectangle getRect() {
         return js.getRect(webElement);
     }
 
+    @NotNull
     @Override
-    public String getCssValue(final String propertyName) {
+    public String getCssValue(@NotNull final String propertyName) {
         return js.getCssValue(webElement, propertyName);
     }
 
+    @NotNull
     @Override
-    public <X> X getScreenshotAs(final OutputType<X> target) throws WebDriverException {
+    public <X> X getScreenshotAs(@NotNull final OutputType<X> target) throws WebDriverException {
         throw new UnsupportedOperationException("getScreenshotAs");
     }
 

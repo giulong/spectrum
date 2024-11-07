@@ -27,19 +27,19 @@ class TxtTestBookParserTest {
     private TxtTestBookParser testBookParser;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         fileUtilsMockedStatic.close();
     }
 
     @DisplayName("parse should throw an IllegalArgumentException")
     @ParameterizedTest(name = "with line {0}")
     @ValueSource(strings = {"a", "a::", "::a", "a::b##", "a::b::c"})
-    public void parseException(final String line) {
+    void parseException(final String line) {
         final String path = "path";
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read(path)).thenReturn(line);
@@ -52,7 +52,7 @@ class TxtTestBookParserTest {
     @DisplayName("parse should work")
     @ParameterizedTest(name = "with line {0}")
     @ValueSource(strings = {"a::b", "a::b##23"})
-    public void parseValid(final String line) {
+    void parseValid(final String line) {
         final String path = "path";
         when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.read(path)).thenReturn(line);

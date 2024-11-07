@@ -54,12 +54,12 @@ class InterpolatedObjectDeserializerTest {
     }
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         interpolatedStringDeserializerMockedStatic = mockStatic(InterpolatedStringDeserializer.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         interpolatedStringDeserializerMockedStatic.close();
     }
 
@@ -70,14 +70,14 @@ class InterpolatedObjectDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(InterpolatedObjectDeserializer.getInstance(), InterpolatedObjectDeserializer.getInstance());
     }
 
     @Test
     @DisplayName("deserialize should delegate to the interpolatedStringDeserializer when the value is a string")
-    public void deserializeStrings() throws IOException {
+    void deserializeStrings() throws IOException {
         final String value = "value";
         final String expected = "expected";
         final String currentName = "currentName";
@@ -95,7 +95,7 @@ class InterpolatedObjectDeserializerTest {
     @DisplayName("deserialize should return the numberValue when the value is a number")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("numbersValuesProvider")
-    public void deserializeNumbers(final String value, final Number expected) throws IOException {
+    void deserializeNumbers(final String value, final Number expected) throws IOException {
         final String currentName = "currentName";
 
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
@@ -107,7 +107,7 @@ class InterpolatedObjectDeserializerTest {
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> numbersValuesProvider() {
+    static Stream<Arguments> numbersValuesProvider() {
         return Stream.of(
                 arguments("123", 123),
                 arguments("123.5", 123.5),
@@ -119,7 +119,7 @@ class InterpolatedObjectDeserializerTest {
     @DisplayName("deserialize should return the jsonNode when the value is not a string nor a number")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @EnumSource(value = JsonNodeType.class, mode = EXCLUDE, names = {"STRING", "NUMBER"})
-    public void deserializeObjects(final JsonNodeType jsonNodeType) throws IOException {
+    void deserializeObjects(final JsonNodeType jsonNodeType) throws IOException {
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(jsonParser.currentName()).thenReturn("currentName");
         when(jsonNode.getNodeType()).thenReturn(jsonNodeType);
@@ -131,7 +131,7 @@ class InterpolatedObjectDeserializerTest {
     @DisplayName("deserialize should apply the INT_PATTERN when deserializing numbers from strings")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserializeStringNumbers(final String value, final int expected) throws IOException {
+    void deserializeStringNumbers(final String value, final int expected) throws IOException {
         final String currentName = "currentName";
 
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
@@ -142,7 +142,7 @@ class InterpolatedObjectDeserializerTest {
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("$<not.set:-123>", 123),
                 arguments("$<notSet:-123>", 123),
@@ -157,7 +157,7 @@ class InterpolatedObjectDeserializerTest {
 
     @Test
     @DisplayName("deserialize should consider system properties")
-    public void deserializeFromSystemProperty() throws Exception {
+    void deserializeFromSystemProperty() throws Exception {
         final String currentName = "currentName";
         final int expected = 123;
         final String value = "$<systemProperty:-456>";
@@ -169,14 +169,15 @@ class InterpolatedObjectDeserializerTest {
         when(jsonNode.textValue()).thenReturn(value);
 
         // We set the "systemProperty" env var with a random value just to check the precedence: system property wins
-        withEnvironmentVariable("systemProperty", "SOME VALUE").execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
+        withEnvironmentVariable("systemProperty", "SOME VALUE")
+                .execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
 
         System.clearProperty("systemProperty");
     }
 
     @Test
     @DisplayName("deserialize should consider env variables")
-    public void deserializeFromEnvVariables() throws Exception {
+    void deserializeFromEnvVariables() throws Exception {
         final String currentName = "currentName";
         final int expected = 123;
         final String value = "$<envVar:-456>";
@@ -186,17 +187,18 @@ class InterpolatedObjectDeserializerTest {
         when(jsonNode.getNodeType()).thenReturn(STRING);
         when(jsonNode.textValue()).thenReturn(value);
 
-        withEnvironmentVariable("envVar", String.valueOf(expected)).execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
+        withEnvironmentVariable("envVar", String.valueOf(expected))
+                .execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));
     }
 
     @DisplayName("isNumber should check if the provided string can be parsed to a number")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("isNumberValuesProvider")
-    public void isNumber(final String value, final boolean expected) {
+    void isNumber(final String value, final boolean expected) {
         assertEquals(expected, interpolatedObjectDeserializer.isNumber(value));
     }
 
-    public static Stream<Arguments> isNumberValuesProvider() {
+    static Stream<Arguments> isNumberValuesProvider() {
         return Stream.of(
                 arguments("123", true),
                 arguments("123,5", true),

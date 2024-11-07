@@ -7,8 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Slf4j
 public class YamlTestBookParser extends TestBookParser {
 
@@ -27,6 +25,6 @@ public class YamlTestBookParser extends TestBookParser {
                                 .testName(v.getName())
                                 .weight(v.getWeight())
                                 .build()))
-                .collect(toList());
+                .toList();
     }
 }

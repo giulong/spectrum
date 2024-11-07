@@ -45,7 +45,7 @@ class InterpolatedStringDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(InterpolatedStringDeserializer.getInstance(), InterpolatedStringDeserializer.getInstance());
     }
@@ -53,14 +53,14 @@ class InterpolatedStringDeserializerTest {
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserialize(final String value, final String expected) throws IOException {
+    void deserialize(final String value, final String expected) throws IOException {
         when(jsonParser.getValueAsString()).thenReturn(value);
         when(jsonParser.currentName()).thenReturn("not important");
 
         assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("value", "value"),
                 arguments("${not.set:-_-}", "_-"),
@@ -82,7 +82,7 @@ class InterpolatedStringDeserializerTest {
 
     @Test
     @DisplayName("deserialize should interpolate the timestamp")
-    public void deserializeTimestamp() throws IOException {
+    void deserializeTimestamp() throws IOException {
         final String value = "value-${timestamp}";
 
         when(jsonParser.getValueAsString()).thenReturn(value);
@@ -93,7 +93,7 @@ class InterpolatedStringDeserializerTest {
 
     @Test
     @DisplayName("deserialize should consider system properties")
-    public void deserializeFromSystemProperty() throws Exception {
+    void deserializeFromSystemProperty() throws Exception {
         final String expected = "expected";
         System.setProperty("systemProperty", expected);
 
@@ -101,14 +101,15 @@ class InterpolatedStringDeserializerTest {
         when(jsonParser.currentName()).thenReturn("not important");
 
         // We set the "systemProperty" env var with a random value just to check the precedence: system property wins
-        withEnvironmentVariable("systemProperty", "SOME VALUE").execute(() -> assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext)));
+        withEnvironmentVariable("systemProperty", "SOME VALUE")
+                .execute(() -> assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext)));
 
         System.clearProperty("systemProperty");
     }
 
     @Test
     @DisplayName("deserialize should consider env variables")
-    public void deserializeFromEnvVariables() throws Exception {
+    void deserializeFromEnvVariables() throws Exception {
         final String expected = "expected";
 
         when(jsonParser.getValueAsString()).thenReturn("${envVar:-local}");

@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule {
@@ -73,7 +72,7 @@ public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule
                     .stream()
                     .filter(not(subtype -> isInternal(subtype.getErasedType())))
                     .peek(subtype -> log.info("Polymorphic type '{}' is public", subtype.getErasedType().getSimpleName()))
-                    .collect(toList());
+                    .toList();
         }
     }
 }

@@ -33,7 +33,7 @@ class LogbackLogLevelDeserializerTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(LogbackLogLevelDeserializer.getInstance(), LogbackLogLevelDeserializer.getInstance());
     }
@@ -41,13 +41,13 @@ class LogbackLogLevelDeserializerTest {
     @DisplayName("deserialize should return the Logback level from the provided string")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    public void deserialize(final String value, final Level expected) throws IOException {
+    void deserialize(final String value, final Level expected) throws IOException {
         when(jsonParser.getValueAsString()).thenReturn(value);
 
         assertEquals(expected, logbackLogLevelDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("OFF", OFF),
                 arguments("TRACE", TRACE),

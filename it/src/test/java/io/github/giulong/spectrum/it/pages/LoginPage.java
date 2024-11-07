@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.it.pages;
 
 import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
+import io.github.giulong.spectrum.interfaces.Secured;
 import io.github.giulong.spectrum.it.data.Data;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class LoginPage extends SpectrumPage<LoginPage, Data> {
     private WebElement username;
 
     @FindBy(id = "password")
+    @Secured
     private WebElement password;
 
     @FindBy(id = "login")

@@ -9,7 +9,7 @@ class ConfigurationTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(Configuration.getInstance(), Configuration.getInstance());
     }

@@ -45,8 +45,8 @@ import static org.mockito.Mockito.*;
 class ExtentReporterTest {
 
     private static final String REPORT_FOLDER = "reportFolder";
-    private static final String NAME_1 = "name1";
-    private static final String NAME_2 = "name2";
+    private static final String NAME_ONE = "name1";
+    private static final String NAME_TWO = "name2";
 
     private MockedStatic<TestData> testDataMockedStatic;
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
@@ -172,7 +172,7 @@ class ExtentReporterTest {
     private ExtentReporter extentReporter;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("fileUtils", extentReporter, fileUtils);
         Reflections.setField("configuration", extentReporter, configuration);
         Reflections.setField("contextManager", extentReporter, contextManager);
@@ -188,7 +188,7 @@ class ExtentReporterTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         testDataMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
         pathMockedStatic.close();
@@ -202,8 +202,8 @@ class ExtentReporterTest {
     private void sortTestStubs() {
         when(extentReports.getReport()).thenReturn(report);
         when(report.getTestList()).thenReturn(List.of(test1, test2));
-        when(test1.getName()).thenReturn(NAME_1);
-        when(test2.getName()).thenReturn(NAME_2);
+        when(test1.getName()).thenReturn(NAME_ONE);
+        when(test2.getName()).thenReturn(NAME_TWO);
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getSort()).thenReturn(sort);
@@ -244,14 +244,14 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("getInstance should return the singleton")
-    public void getInstance() {
+    void getInstance() {
         //noinspection EqualsWithItself
         assertSame(ExtentReporter.getInstance(), ExtentReporter.getInstance());
     }
 
     @Test
     @DisplayName("sessionOpened should init the extent report")
-    public void sessionOpened() {
+    void sessionOpened() {
         final String fileName = "fileName";
         final String reportName = "reportName";
         final String documentTitle = "documentTitle";
@@ -291,15 +291,15 @@ class ExtentReporterTest {
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
 
-        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, context) -> {
-            assertEquals(absolutePathToStringReplaced, context.arguments().getFirst());
+        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, executionContext) -> {
+            assertEquals(absolutePathToStringReplaced, executionContext.arguments().getFirst());
             when(mock.config(extentSparkReporterConfig)).thenReturn(mock);
         });
 
         extentReporter.sessionOpened();
 
-        final ExtentReports extentReports = extentReportsMockedConstruction.constructed().getFirst();
-        verify(extentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
+        final ExtentReports localExtentReports = extentReportsMockedConstruction.constructed().getFirst();
+        verify(localExtentReports).attachReporter(extentSparkReporterMockedConstruction.constructed().toArray(new ExtentSparkReporter[0]));
 
         extentSparkReporterMockedConstruction.close();
         extentReportsMockedConstruction.close();
@@ -307,7 +307,7 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("sessionClosed should flush the extent report and cleanup old ones")
-    public void sessionClosed() {
+    void sessionClosed() {
         final int total = 123;
 
         cleanupOldReportsStubs();
@@ -329,7 +329,7 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("sessionClosed should open the report")
-    public void sessionClosedOpenReport() throws IOException {
+    void sessionClosedOpenReport() throws IOException {
         final int total = 123;
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
@@ -363,7 +363,7 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("cleanupOldReportsIn should delete the proper number of old reports and the corresponding directories")
-    public void cleanupOldReportsIn() {
+    void cleanupOldReportsIn() {
         cleanupOldReportsStubs();
 
         extentReporter.cleanupOldReportsIn(REPORT_FOLDER);
@@ -374,21 +374,21 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("cleanupOldReportsIn should return if the provided folder is empty")
-    public void cleanupOldReportsInEmptyFolder() {
-        final String folder = "folder";
+    void cleanupOldReportsInEmptyFolder() {
+        final String localFolder = "localFolder";
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
-        when(Path.of(folder)).thenReturn(path);
+        when(Path.of(localFolder)).thenReturn(path);
         when(path.toFile()).thenReturn(file1);
 
-        extentReporter.cleanupOldReportsIn(folder);
+        extentReporter.cleanupOldReportsIn(localFolder);
 
         verifyNoInteractions(fileUtils);
     }
 
     @Test
     @DisplayName("getRetention should return the extent's retention")
-    public void getRetention() {
+    void getRetention() {
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
 
@@ -397,7 +397,7 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("produceMetadata should shrink the queue in the provided metadata bound to the given namespace, and add the new element to it")
-    public void produceMetadata() {
+    void produceMetadata() {
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
         final String namespace = "namespace";
@@ -427,20 +427,20 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("sortTests should sort the tests with the configured comparator")
-    public void sortTests() {
+    void sortTests() {
         sortTestStubs();
 
         extentReporter.sortTests();
 
-        verify(extentReports).removeTest(NAME_1);
-        verify(extentReports).removeTest(NAME_2);
+        verify(extentReports).removeTest(NAME_ONE);
+        verify(extentReports).removeTest(NAME_TWO);
         verify(report).addTest(test1);
         verify(report).addTest(test2);
     }
 
     @Test
     @DisplayName("getReportPathFrom should return the absolute path resulting from the composition of extent's report folder and filename")
-    public void getReportPathFrom() {
+    void getReportPathFrom() {
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
 
@@ -454,7 +454,7 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("createExtentTestFrom should create the test from the provided testData and return it")
-    public void createExtentTestFrom() {
+    void createExtentTestFrom() {
         final String testId = "testId";
         final String classDisplayName = "classDisplayName";
         final String displayName = "displayName";
@@ -473,7 +473,7 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("attachVideo should add the video in the provided extent test")
-    public void attachVideo() {
+    void attachVideo() {
         final String testId = "testId";
         final int width = 123;
         final int height = 456;
@@ -488,23 +488,23 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("logTestStartOf should log the start label in the provided test")
-    public void logTestStartOf() {
+    void logTestStartOf() {
         extentReporter.logTestStartOf(extentTest);
 
-        ArgumentCaptor<Markup> markupArgumentCaptor = ArgumentCaptor.forClass(Markup.class);
-        verify(extentTest).info(markupArgumentCaptor.capture());
-        Markup markup = markupArgumentCaptor.getValue();
+        final ArgumentCaptor<Markup> localMarkupArgumentCaptor = ArgumentCaptor.forClass(Markup.class);
+        verify(extentTest).info(localMarkupArgumentCaptor.capture());
+        Markup markup = localMarkupArgumentCaptor.getValue();
         assertEquals(createLabel("START TEST", GREEN).getMarkup(), markup.getMarkup());
     }
 
     @DisplayName("getColorOf should return the color corresponding to the provided status")
     @ParameterizedTest()
     @MethodSource("valuesProvider")
-    public void getColorOf(final Status status, final ExtentColor expected) {
+    void getColorOf(final Status status, final ExtentColor expected) {
         assertEquals(expected, extentReporter.getColorOf(status));
     }
 
-    public static Stream<Arguments> valuesProvider() {
+    static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(FAIL, RED),
                 arguments(SKIP, AMBER),
@@ -518,7 +518,7 @@ class ExtentReporterTest {
             "noReasonMethod,no reason",
             "reasonMethod,specific reason"
     })
-    public void logTestEndDisabled(final String methodName, String expected) throws NoSuchMethodException {
+    void logTestEndDisabled(final String methodName, String expected) throws NoSuchMethodException {
         logTestEndStubs();
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
@@ -534,7 +534,7 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("logTestEnd should add a screenshot to the report and delegate to finalizeTest")
-    public void logTestEndFailed() throws NoSuchMethodException {
+    void logTestEndFailed() throws NoSuchMethodException {
         final String classDisplayName = "classDisplayName";
         final String methodName = "logTestEndStubs";
 
@@ -556,7 +556,7 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("logTestEnd should add a log in the extent report by default")
-    public void logTestEndDefault() throws NoSuchMethodException {
+    void logTestEndDefault() throws NoSuchMethodException {
         final String classDisplayName = "classDisplayName";
         final String methodName = "logTestEndStubs";
 

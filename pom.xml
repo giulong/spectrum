@@ -46,12 +46,12 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <junit.version>5.11.2</junit.version>
-        <jackson.version>2.18.0</jackson.version>
+        <junit.version>5.11.3</junit.version>
+        <jackson.version>2.18.1</jackson.version>
         <simplejavamail.version>8.12.2</simplejavamail.version>
         <jsonschemagenerator.version>4.36.0</jsonschemagenerator.version>
         <slf4j.version>2.0.16</slf4j.version>
-        <selenium.version>4.25.0</selenium.version>
+        <selenium.version>4.26.0</selenium.version>
     </properties>
 
     <profiles>
@@ -142,7 +142,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
-                <version>1.11.2</version>
+                <version>1.11.3</version>
             </dependency>
 
             <dependency>
@@ -192,7 +192,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.10</version>
+                <version>1.5.12</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.janino</groupId>
@@ -219,7 +219,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.43.1</version>
+                <version>1.44.1</version>
             </dependency>
 
             <dependency>
@@ -255,7 +255,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>5.14.1</version>
+                <version>5.14.2</version>
                 <scope>test</scope>
             </dependency>
 
@@ -299,7 +299,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.8.0</version>
+                    <version>3.8.1</version>
                     <executions>
                         <execution>
                             <goals>
@@ -316,12 +316,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.6.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.18.2</version>
+                            <version>10.20.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
@@ -330,18 +330,31 @@
                         </dependency>
                     </dependencies>
                     <configuration>
-                        <configLocation>checkstyle.xml</configLocation>
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>true</failsOnError>
                         <linkXRef>false</linkXRef>
                     </configuration>
                     <executions>
                         <execution>
-                            <id>validate</id>
+                            <id>validate-sources</id>
                             <phase>validate</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
+                            <configuration>
+                                <configLocation>checkstyle.xml</configLocation>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>validate-tests</id>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <configLocation>checkstyle-tests.xml</configLocation>
+                                <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -368,7 +381,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.5.2</version>
                     <configuration>
                         <argLine>@{argLine} -Dfile.encoding=UTF-8 -javaagent:${org.mockito:mockito-core:jar}</argLine>
                         <reportsDirectory>${reportsDirectory}</reportsDirectory>
@@ -381,7 +394,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.5.2</version>
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <failIfNoTests>true</failIfNoTests>

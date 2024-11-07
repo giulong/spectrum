@@ -59,7 +59,7 @@ class MailConsumerTest {
     private ArgumentCaptor<List<AttachmentResource>> listArgumentCaptor;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         fileUtilsMockedStatic = mockStatic(FileUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         mailerBuilderMockedStatic = mockStatic(MailerBuilder.class);
@@ -67,7 +67,7 @@ class MailConsumerTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         fileUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
         mailerBuilderMockedStatic.close();
@@ -76,7 +76,7 @@ class MailConsumerTest {
 
     @Test
     @DisplayName("accept should send an email with the provided attachments interpolating the provided template")
-    public void accept() {
+    void accept() {
         final String template = "template";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String name1 = "name1";

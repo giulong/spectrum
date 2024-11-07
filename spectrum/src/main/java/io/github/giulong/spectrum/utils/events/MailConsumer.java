@@ -16,8 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toList;
-
 @Getter
 public class MailConsumer extends EventsConsumer {
 
@@ -44,7 +42,7 @@ public class MailConsumer extends EventsConsumer {
                 .withAttachments(attachments
                         .stream()
                         .map(a -> new AttachmentResource(a.getName(), new FileDataSource(a.getFile())))
-                        .collect(toList()))
+                        .toList())
                 .buildEmail());
     }
 }

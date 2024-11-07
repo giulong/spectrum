@@ -39,18 +39,18 @@ class DynamicDeserializerTest {
     private DynamicDeserializer<String> dynamicDeserializer;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         yamlUtilsMockedStatic.close();
     }
 
     @Test
     @DisplayName("deserialize should return the class loaded from the provided string fqdn literal")
-    public void deserialize() throws IOException {
+    void deserialize() throws IOException {
         final String expected = "expected";
         final String configFile = "configFile";
         Reflections.setField("configFile", dynamicDeserializer, configFile);

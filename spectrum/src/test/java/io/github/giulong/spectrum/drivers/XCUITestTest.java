@@ -43,14 +43,15 @@ class XCUITestTest {
     private XCUITest xcuiTest;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         Reflections.setField("configuration", xcuiTest, configuration);
         Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of xcuiTestOptions and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
-    public void buildCapabilities() {
+    @DisplayName("buildCapabilities should build a new instance of xcuiTestOptions " +
+            "and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
+    void buildCapabilities() {
         final Path path = Path.of("relative", "path");
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
@@ -76,8 +77,9 @@ class XCUITestTest {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
-    public void buildCapabilitiesAbsoluteAppPath() {
+    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options " +
+            "and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
+    void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
         MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class, (mock, context) -> {
@@ -100,7 +102,7 @@ class XCUITestTest {
 
     @Test
     @DisplayName("buildDriverFor should return a new instance of IOSDriver for the provided url and the instance capabilities")
-    public void buildDriverFor() {
+    void buildDriverFor() {
         MockedConstruction<IOSDriver> iosDriverMockedConstruction = mockConstruction(IOSDriver.class, (mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(xcuiTestOptions, context.arguments().get(1));
