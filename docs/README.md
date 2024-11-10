@@ -28,7 +28,7 @@ and **mobile and desktop applications** via [Appium](http://appium.io/docs/en/la
 ## Setup
 
 > ⚠️ **JDK**<br/>
-> Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/21/){:target="_blank"} to be able to run your tests.
+> Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/archive/){:target="_blank"} to be able to run your tests.
 > If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
 ### Spectrum Archetype
