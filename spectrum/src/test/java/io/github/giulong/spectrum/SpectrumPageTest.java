@@ -25,8 +25,6 @@ import static org.mockito.Mockito.*;
 
 class SpectrumPageTest {
 
-    private final String endpoint = "/endpoint";
-
     private MockedStatic<JsWebElementListInvocationHandler> jsWebElementListInvocationHandlerMockedStatic;
 
     @Mock
@@ -85,6 +83,7 @@ class SpectrumPageTest {
     @DisplayName("open should get the configured base url and wait for the page to be loaded")
     void open() {
         final String url = "url";
+        final String endpoint = "/endpoint";
         Reflections.setField("endpoint", spectrumPage, endpoint);
 
         when(configuration.getApplication()).thenReturn(application);
@@ -101,23 +100,24 @@ class SpectrumPageTest {
     }
 
     @DisplayName("isLoaded should check if the current page url matches the endpoint")
-    @ParameterizedTest(name = "with page url {0} and current url {1} we expect {2}")
+    @ParameterizedTest(name = "with base url {0}, endpoint {1}, and current url {2} we expect {3}")
     @MethodSource("valuesProvider")
-    void isLoaded(final String pageUrl, final String currentUrl, final boolean expected) {
+    void isLoaded(final String baseUrl, final String endpoint, final String currentUrl, final boolean expected) {
         Reflections.setField("endpoint", spectrumPage, endpoint);
 
         //noinspection DataFlowIssue
-        when(webDriver.getCurrentUrl()).thenReturn(currentUrl + endpoint);
+        when(webDriver.getCurrentUrl()).thenReturn(currentUrl);
         when(configuration.getApplication()).thenReturn(application);
-        when(application.getBaseUrl()).thenReturn(pageUrl);
+        when(application.getBaseUrl()).thenReturn(baseUrl);
 
         assertEquals(expected, spectrumPage.isLoaded());
     }
 
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("current", "current", true),
-                arguments("page", "current", false)
+                arguments("baseUrl", "/endpoint", "baseUrl/endpoint", true),
+                arguments("baseUrl", "endpoint", "baseUrl/endpoint", true),
+                arguments("baseUrl", "/endpoint", "nope", false)
         );
     }
 
