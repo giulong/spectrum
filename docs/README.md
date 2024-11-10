@@ -1232,7 +1232,7 @@ Given [Spectrum intercepts web driver's events](#webdriver-events-listener), it 
 such as `beforeSendKeys` and `afterSendKeys`, send sensitive data to logs and html report in plain text.
 
 To avoid this, you just need to decorate the sensitive web elements with `@Secured`, and the sensitive data will be redacted
-with `[***]`. The replacement will only affect events' consumers such as logs and html report, 
+with `[***]`. The replacement will only affect events' consumers such as logs and html report,
 of course the actual value will still be sent to or read from the web element.
 
 {% include copyCode.html %}
@@ -1313,11 +1313,11 @@ Spectrum
 with an events listener used to automatically take actions such as logging and generating reports.
 You can tweak each event in your `configuration.yaml`, by providing these:
 
-| Key     | Type                                                                                        | Default | Description                                         |
-|---------|---------------------------------------------------------------------------------------------|---------|-----------------------------------------------------|
-| level   | [Level](https://logback.qos.ch/apidocs/ch/qos/logback/classic/Level.html){:target="_blank"} | `OFF`   | Level at which this event will be logged            |
-| message | String                                                                                      | `null`  | Message to be logged upon receiving this event      |
-| wait    | long                                                                                        | `0`     | Milliseconds to wait before listening to this event |
+| Key     | Type                                                                            | Default | Description                                         |
+|---------|---------------------------------------------------------------------------------|---------|-----------------------------------------------------|
+| level   | [Level](https://www.slf4j.org/api/org/slf4j/event/Level.html){:target="_blank"} | `null`  | Level at which this event will be logged            |
+| message | String                                                                          | `null`  | Message to be logged upon receiving this event      |
+| wait    | long                                                                            | `0`     | Milliseconds to wait before listening to this event |
 
 For example, you can set these:
 

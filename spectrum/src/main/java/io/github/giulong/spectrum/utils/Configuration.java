@@ -26,7 +26,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
-import static ch.qos.logback.classic.Level.OFF;
 import static lombok.AccessLevel.PRIVATE;
 
 @SuppressWarnings("unused")
@@ -499,8 +498,8 @@ public class Configuration {
         public static class Event {
 
             @JsonPropertyDescription("Level at which this event will be logged")
-            @JsonSchemaTypes(value = String.class, valueList = {"OFF", "ERROR", "WARN", "INFO", "DEBUG", "TRACE", "ALL"})
-            private final ch.qos.logback.classic.Level level = OFF;
+            @JsonSchemaTypes(value = String.class, valueList = {"ERROR", "WARN", "INFO", "DEBUG", "TRACE"})
+            private org.slf4j.event.Level level;
 
             @JsonPropertyDescription("Message to be logged upon receiving this event")
             private String message;
