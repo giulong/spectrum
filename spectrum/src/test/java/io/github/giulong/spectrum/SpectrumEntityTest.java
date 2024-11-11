@@ -3,8 +3,10 @@ package io.github.giulong.spectrum;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
+import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
@@ -115,9 +117,9 @@ class SpectrumEntityTest {
     }
 
     @Test
-    @DisplayName("getSharedFields should return the list of fields of SpectrumEntity.class that are annotated with @Shared")
+    @DisplayName("checking shared fields")
     void getSharedFields() {
-        final List<Field> actual = spectrumEntity.getSharedFields();
+        final List<Field> actual = Reflections.getAnnotatedFields(SpectrumEntity.class, Shared.class);
         final List<String> sharedFieldsNames = actual
                 .stream()
                 .map(Field::getName)

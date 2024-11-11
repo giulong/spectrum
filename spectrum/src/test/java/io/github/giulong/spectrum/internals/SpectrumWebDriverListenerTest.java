@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -27,9 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static ch.qos.logback.classic.Level.ALL;
-import static ch.qos.logback.classic.Level.OFF;
-import static ch.qos.logback.classic.Level.WARN;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -237,7 +235,7 @@ class SpectrumWebDriverListenerTest {
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.TRACE);
         when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(Level.TRACE);
+        when(event.getLevel()).thenReturn(TRACE);
         when(event.getWait()).thenReturn(0L);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
@@ -249,8 +247,8 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("TRACE level off: listen should not log the provided event")
     void listenTraceOff() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(Level.TRACE);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.OFF);
+        when(event.getLevel()).thenReturn(TRACE);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
@@ -263,9 +261,9 @@ class SpectrumWebDriverListenerTest {
     void listenDebug() {
         webDriverEventStubsAtLevel(DEBUG);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.DEBUG);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.DEBUG);
         when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.DEBUG);
+        when(event.getLevel()).thenReturn(DEBUG);
         when(event.getWait()).thenReturn(wait);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
@@ -277,8 +275,8 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("DEBUG level off: listen should not log the provided event")
     void listenDebugOff() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.DEBUG);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.OFF);
+        when(event.getLevel()).thenReturn(DEBUG);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
@@ -291,9 +289,9 @@ class SpectrumWebDriverListenerTest {
     void listenInfo() {
         webDriverEventStubsAtLevel(INFO);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
         when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
+        when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
@@ -305,8 +303,8 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("INFO level off: listen should not log the provided event")
     void listenInfoOff() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.OFF);
+        when(event.getLevel()).thenReturn(INFO);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
@@ -319,7 +317,7 @@ class SpectrumWebDriverListenerTest {
     void listenWarn() {
         webDriverEventStubsAtLevel(org.slf4j.event.Level.WARN);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(WARN);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.WARN);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(WARN);
         when(event.getWait()).thenReturn(wait);
@@ -333,7 +331,7 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("WARN level off: listen should not log the provided event")
     void listenWarnOff() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.OFF);
         when(event.getLevel()).thenReturn(WARN);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
@@ -342,28 +340,12 @@ class SpectrumWebDriverListenerTest {
         verifyNoInteractions(consumers);
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    @DisplayName("Default level: listen should log at DEBUG level as per logback default")
-    void listenDefault() {
-        webDriverEventStubsAtLevel(DEBUG);
-
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ALL);
-        when(event.getMessage()).thenReturn(message);
-        when(event.getLevel()).thenReturn(ALL);
-
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
-
-        verify(consumer1).accept(webDriverEvent);
-        verify(consumer2).accept(webDriverEvent);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    @DisplayName("Default level: listen should log at DEBUG level as per logback default")
-    void listenDefaultOFF() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(OFF);
-        when(event.getLevel()).thenReturn(ALL);
+    @DisplayName("Default level (null): listen should not log regardless of the log's level")
+    @ParameterizedTest(name = "with log level {0}")
+    @ValueSource(strings = {"ERROR", "WARN", "INFO", "DEBUG", "TRACE"})
+    void listenDefault(final String level) {
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.toLevel(level));
+        when(event.getLevel()).thenReturn(null);
 
         spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
@@ -381,10 +363,10 @@ class SpectrumWebDriverListenerTest {
 
         when(testContext.isSecuredWebElement(webElement1)).thenReturn(false);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getBeforeSendKeys()).thenReturn(event);
         when(event.getMessage()).thenReturn(localMessage);
-        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
+        when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
@@ -420,10 +402,10 @@ class SpectrumWebDriverListenerTest {
 
         when(testContext.isSecuredWebElement(webElement1)).thenReturn(true);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getBeforeSendKeys()).thenReturn(event);
         when(event.getMessage()).thenReturn(localMessage);
-        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
+        when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
@@ -459,10 +441,10 @@ class SpectrumWebDriverListenerTest {
 
         when(testContext.isSecuredWebElement(webElement1)).thenReturn(false);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getAfterSendKeys()).thenReturn(event);
         when(event.getMessage()).thenReturn(localMessage);
-        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
+        when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
@@ -498,10 +480,10 @@ class SpectrumWebDriverListenerTest {
 
         when(testContext.isSecuredWebElement(webElement1)).thenReturn(true);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getAfterSendKeys()).thenReturn(event);
         when(event.getMessage()).thenReturn(localMessage);
-        when(event.getLevel()).thenReturn(ch.qos.logback.classic.Level.INFO);
+        when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);

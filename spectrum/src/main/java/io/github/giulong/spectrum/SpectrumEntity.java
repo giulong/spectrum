@@ -5,8 +5,8 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -17,12 +17,10 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.Arrays;
-import java.util.List;
 
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
@@ -84,13 +82,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     JsWebElementProxyBuilder jsWebElementProxyBuilder;
-
-    List<Field> getSharedFields() {
-        return Arrays
-                .stream(SpectrumEntity.class.getDeclaredFields())
-                .filter(f -> f.isAnnotationPresent(Shared.class))
-                .toList();
-    }
 
     /**
      * Hovers on the provided WebElement, leveraging the {@code actions} field

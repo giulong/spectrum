@@ -61,7 +61,7 @@ All you need to do is take the three steps listed below, as shown in this video:
 https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e66b3907d
 
 > ⚠️ JDK<br/>
-> Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/21/) to be able to run your tests.
+> Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/archive/) to be able to run your tests.
 
 1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) via your IDE or by running this in a terminal
    and providing values when prompted:
