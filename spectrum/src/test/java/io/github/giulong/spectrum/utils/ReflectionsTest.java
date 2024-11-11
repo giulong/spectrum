@@ -166,6 +166,18 @@ class ReflectionsTest {
     }
 
     @Test
+    @DisplayName("getAnnotatedFields should return the list of fields on the provided class which are annotated with the provided annotation")
+    void getAnnotatedFieldsClass() throws IllegalAccessException {
+        final String value = "value";
+        final Dummy dummy = new Dummy(null, value, null);
+
+        final List<Field> actual = Reflections.getAnnotatedFields(Dummy.class, Secured.class);
+
+        assertEquals(1, actual.size());
+        assertEquals(value, actual.getFirst().get(dummy));
+    }
+
+    @Test
     @DisplayName("getAnnotatedFields should return the list of fields on the provided object which are annotated with the provided annotation")
     void getAnnotatedFields() throws IllegalAccessException {
         final String value = "value";

@@ -105,16 +105,20 @@ public final class Reflections {
         field.set(dest, field.get(source));
     }
 
-    public static List<Field> getAnnotatedFields(final Object object, final Class<? extends Annotation> annotation) {
-        final String className = object.getClass().getTypeName();
+    public static List<Field> getAnnotatedFields(final Class<?> clazz, final Class<? extends Annotation> annotation) {
+        final String className = clazz.getTypeName();
         final String annotationName = annotation.getTypeName();
 
         return Arrays
-                .stream(object.getClass().getDeclaredFields())
+                .stream(clazz.getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(annotation))
                 .peek(f -> log.debug("Field {}.{} is annotated with {}", className, f.getName(), annotationName))
                 .peek(f -> f.setAccessible(true))
                 .toList();
+    }
+
+    public static List<Field> getAnnotatedFields(final Object object, final Class<? extends Annotation> annotation) {
+        return getAnnotatedFields(object.getClass(), annotation);
     }
 
     public static <T> List<T> getAnnotatedFieldsValues(final Object object, final Class<? extends Annotation> annotation, final Class<T> clazz) {

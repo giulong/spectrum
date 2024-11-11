@@ -320,7 +320,6 @@ drivers:
     beforeGetSize:
       message: Getting size of <code>%1$s</code>
     afterGetSize:
-      level: OFF
       message: Size of <code>%1$s</code> is <code>%2$s</code>
     beforeGetCssValue:
       message: Getting css property <code>%2$s</code> of element <code>%1$s</code>

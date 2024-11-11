@@ -60,7 +60,7 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
      */
     public boolean isLoaded() {
         final String currentUrl = driver.getCurrentUrl();
-        final String pageUrl = configuration.getApplication().getBaseUrl() + endpoint;
+        final String pageUrl = String.format("%s/%s", configuration.getApplication().getBaseUrl(), endpoint.replaceFirst("/", ""));
         log.debug("Current url: {}", currentUrl);
         log.debug("Page url:    {}", pageUrl);
 

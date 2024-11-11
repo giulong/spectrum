@@ -25,13 +25,10 @@ import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static org.slf4j.event.Level.*;
 
 @Slf4j
 @Builder
 public class SpectrumWebDriverListener implements WebDriverListener {
-
-    private static final Map<String, Level> LEVELS = Map.of("TRACE", TRACE, "INFO", INFO, "WARN", WARN);
 
     private Pattern locatorPattern;
     private Events events;
@@ -59,9 +56,9 @@ public class SpectrumWebDriverListener implements WebDriverListener {
 
     @SneakyThrows
     protected void listenTo(final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
-        final Level level = LEVELS.getOrDefault(event.getLevel().levelStr, DEBUG);
+        final Level level = event.getLevel();
 
-        if (!log.isEnabledForLevel(level)) {
+        if (level == null || !log.isEnabledForLevel(level)) {
             return;
         }
 
