@@ -1,9 +1,6 @@
 package io.github.giulong.spectrum.utils.reporters;
 
-import io.github.giulong.spectrum.utils.FixedSizeQueue;
-import io.github.giulong.spectrum.utils.MetadataManager;
-import io.github.giulong.spectrum.utils.Reflections;
-import io.github.giulong.spectrum.utils.Retention;
+import io.github.giulong.spectrum.utils.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,8 +25,12 @@ class FileReporterTest {
 
     private MockedStatic<Path> pathMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
+    private MockedStatic<FileUtils> fileUtilsMockedStatic;
     private MockedStatic<MetadataManager> metadataManagerMockedStatic;
     private MockedStatic<Desktop> desktopMockedStatic;
+
+    @Mock
+    private FileUtils fileUtils;
 
     @Mock
     private Desktop desktop;
@@ -80,9 +81,11 @@ class FileReporterTest {
     void beforeEach() {
         Reflections.setField("output", fileReporter, OUTPUT);
         Reflections.setField("retention", fileReporter, retention);
+        Reflections.setField("fileUtils", fileReporter, fileUtils);
         Reflections.setField("metadataManager", fileReporter, metadataManager);
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
+        fileUtilsMockedStatic = mockStatic(FileUtils.class);
         metadataManagerMockedStatic = mockStatic(MetadataManager.class);
         desktopMockedStatic = mockStatic(Desktop.class);
     }
@@ -91,6 +94,7 @@ class FileReporterTest {
     void afterEach() {
         pathMockedStatic.close();
         filesMockedStatic.close();
+        fileUtilsMockedStatic.close();
         metadataManagerMockedStatic.close();
         desktopMockedStatic.close();
     }
@@ -104,6 +108,7 @@ class FileReporterTest {
         final String file3Name = "file3Name.notMatching";
         final long lastModified = 1L;
 
+        when(fileUtils.getExtensionOf(OUTPUT)).thenReturn("abc");
         when(retention.getTotal()).thenReturn(total);
 
         when(Path.of(stringArgumentCaptor.capture())).thenReturn(path);
@@ -151,16 +156,11 @@ class FileReporterTest {
     @DisplayName("doOutputFrom should interpolate the timestamp in the provided template name, create the output dir and write the file in it")
     void doOutputFrom() {
         final String interpolatedTemplate = "interpolatedTemplate";
-
         when(Path.of(stringArgumentCaptor.capture())).thenReturn(path);
-        when(path.getParent()).thenReturn(parentPath);
 
         fileReporter.doOutputFrom(interpolatedTemplate);
-        filesMockedStatic.verify(() -> Files.createDirectories(parentPath));
-        filesMockedStatic.verify(() -> {
-            Files.write(path, interpolatedTemplate.getBytes());
-            assertEquals(OUTPUT, stringArgumentCaptor.getValue());
-        });
+
+        verify(fileUtils).write(path, interpolatedTemplate);
     }
 
     @Test
