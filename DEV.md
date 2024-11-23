@@ -55,6 +55,11 @@ To avoid manual operations, at the end of the full build, the `cleanup` module w
 You can leverage the [Maven wrapper](https://maven.apache.org/wrapper/) bundled in this repo.
 Below you can see how to build the entire project or just few submodules.
 
+> ⚠️ Run configurations<br/>
+> IntelliJ run configurations are versioned in the [.run](.run) folder. If you use IntelliJ IDEA,
+> they're imported automatically, meaning you can already leverage a set of useful configurations
+> to build the framework and to run unit and integration tests for each module.
+
 ## Full build
 
 This is how to trigger the full build:
