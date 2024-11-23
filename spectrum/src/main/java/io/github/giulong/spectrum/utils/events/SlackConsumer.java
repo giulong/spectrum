@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.events;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.slack.api.Slack;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
@@ -14,9 +15,11 @@ import java.util.Map;
 @Getter
 public class SlackConsumer extends EventsConsumer {
 
-    private static final FileUtils FILE_UTILS = FileUtils.getInstance();
+    @JsonIgnore
+    private final FileUtils fileUtils = FileUtils.getInstance();
 
-    private static final FreeMarkerWrapper FREE_MARKER_WRAPPER = FreeMarkerWrapper.getInstance();
+    @JsonIgnore
+    private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
 
     @JsonPropertyDescription("Template to be used when creating the message")
     private final String template = "slack.json";
@@ -31,7 +34,7 @@ public class SlackConsumer extends EventsConsumer {
     @SneakyThrows
     public void accept(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
-        final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate(FILE_UTILS.readTemplate(template), vars);
+        final String interpolatedTemplate = freeMarkerWrapper.interpolate(fileUtils.readTemplate(template), vars);
 
         Slack
                 .getInstance()
