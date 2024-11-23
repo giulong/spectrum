@@ -156,11 +156,10 @@ class FileReporterTest {
     @DisplayName("doOutputFrom should interpolate the timestamp in the provided template name, create the output dir and write the file in it")
     void doOutputFrom() {
         final String interpolatedTemplate = "interpolatedTemplate";
-        when(Path.of(stringArgumentCaptor.capture())).thenReturn(path);
 
         fileReporter.doOutputFrom(interpolatedTemplate);
 
-        verify(fileUtils).write(path, interpolatedTemplate);
+        verify(fileUtils).write(OUTPUT, interpolatedTemplate);
     }
 
     @Test

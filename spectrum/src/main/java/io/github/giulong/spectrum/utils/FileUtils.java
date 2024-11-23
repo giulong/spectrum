@@ -107,6 +107,10 @@ public final class FileUtils {
         Files.write(path, content.getBytes());
     }
 
+    public void write(final String path, final String content) {
+        write(Path.of(path), content);
+    }
+
     public String sanitize(final String name) {
         final StringBuilder stringBuilder = new StringBuilder();
         final int charLength = name.codePointCount(0, name.length());
