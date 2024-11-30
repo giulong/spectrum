@@ -40,4 +40,4 @@ eventsConsumers:
   - testSteps:
       events:
         - reason: after
-          tags: [ test ]
+          tags: [ test, dynamicTest ]
