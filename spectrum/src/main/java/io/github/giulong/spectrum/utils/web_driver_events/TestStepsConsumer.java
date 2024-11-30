@@ -28,8 +28,8 @@ public class TestStepsConsumer extends EventsConsumer {
     @JsonIgnore
     private final FileUtils fileUtils = FileUtils.getInstance();
 
-    @JsonPropertyDescription("Path to the template to be used, relative to src/test/resources")
-    private final String template = "templates/test-steps.txt";
+    @JsonPropertyDescription("Path to the template to be used, relative to src/test/resources/template. The report produced will match the template's extension")
+    private final String template = "test-steps.txt";
 
     @JsonPropertyDescription("Where to produce the output, relative to the root of the project")
     private final String output = "target/spectrum/tests-steps";
@@ -43,7 +43,7 @@ public class TestStepsConsumer extends EventsConsumer {
         final TestStepBuilderConsumer testStepBuilderConsumer = store.get(TEST_STEP_BUILDER_CONSUMER, TestStepBuilderConsumer.class);
         final String fileName = String.format("%s.%s", testData.getTestId(), fileUtils.getExtensionOf(template));
         final Path path = Path.of(output, fileName);
-        final String interpolatedTemplate = freeMarkerWrapper.interpolate(fileUtils.read(template), Map.of("steps", testStepBuilderConsumer.getTestSteps()));
+        final String interpolatedTemplate = freeMarkerWrapper.interpolate(fileUtils.readTemplate(template), Map.of("steps", testStepBuilderConsumer.getTestSteps()));
 
         fileUtils.write(path, interpolatedTemplate);
     }
