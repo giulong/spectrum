@@ -33,9 +33,6 @@
         </encoder>
     </appender>
 
-    <logger name="io.netty" level="INFO"/>
-    <logger name="org.asynchttpclient" level="INFO"/>
-
     <root level="${spectrum.log.level:-INFO}">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="FILE"/>
