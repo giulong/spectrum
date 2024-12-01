@@ -1,0 +1,5 @@
+${'Time'?right_pad(26)} | Time taken | Message
+----------------------------------------------------------------------------------------------------
+<#list steps as step>
+${step.time} | ${step.delta?left_pad(9)}s | ${step.message}
+</#list>

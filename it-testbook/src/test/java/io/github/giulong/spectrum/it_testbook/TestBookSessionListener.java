@@ -19,6 +19,7 @@ import static java.util.function.Predicate.not;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
+@SuppressWarnings("unused")
 public class TestBookSessionListener implements LauncherSessionListener {
 
     private final MetadataManager metadataManager = MetadataManager.getInstance();

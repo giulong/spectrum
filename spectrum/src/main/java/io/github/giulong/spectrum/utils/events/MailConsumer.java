@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.events;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.pojos.events.Attachment;
 import io.github.giulong.spectrum.pojos.events.Event;
@@ -19,11 +20,14 @@ import java.util.Map;
 @Getter
 public class MailConsumer extends EventsConsumer {
 
-    private static final FileUtils FILE_UTILS = FileUtils.getInstance();
+    @JsonIgnore
+    private final FileUtils fileUtils = FileUtils.getInstance();
 
-    private static final FreeMarkerWrapper FREE_MARKER_WRAPPER = FreeMarkerWrapper.getInstance();
+    @JsonIgnore
+    private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
 
-    private static final Mailer MAILER = MailerBuilder.buildMailer();
+    @JsonIgnore
+    private final Mailer mailer = MailerBuilder.buildMailer();
 
     @JsonPropertyDescription("Template to be used when creating the message")
     private final String template = "mail.html";
@@ -34,9 +38,9 @@ public class MailConsumer extends EventsConsumer {
     @Override
     public void accept(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
-        final String interpolatedTemplate = FREE_MARKER_WRAPPER.interpolate(FILE_UTILS.readTemplate(template), vars);
+        final String interpolatedTemplate = freeMarkerWrapper.interpolate(fileUtils.readTemplate(template), vars);
 
-        MAILER.sendMail(EmailBuilder
+        mailer.sendMail(EmailBuilder
                 .startingBlank()
                 .withHTMLText(interpolatedTemplate)
                 .withAttachments(attachments

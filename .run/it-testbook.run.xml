@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="it-testbook" type="JUnit" factoryName="JUnit">
+    <module name="it-testbook" />
+    <option name="MAIN_CLASS_NAME" value="" />
+    <option name="METHOD_NAME" value="" />
+    <option name="TEST_OBJECT" value="directory" />
+    <option name="VM_PARAMETERS" value="-ea --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/sun.nio.fs=ALL-UNNAMED" />
+    <dir value="$PROJECT_DIR$/it-testbook/src/test/java" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="Maven.BeforeRunTask" enabled="true" file="$PROJECT_DIR$/pom.xml" goal="install -DskipTests -DskipSign -Dmaven.plugin.validation=BRIEF -ntp -P framework-only" />
+    </method>
+  </configuration>
+</component>

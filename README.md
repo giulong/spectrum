@@ -74,7 +74,8 @@ https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e
 3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` report with the execution video attached.
 
 > ⚠️ Default Browser<br/>
-> Tests run on Chrome by default. If you don't have it, you can run the demo test with `-Dspectrum.driver=firefox` or `-Dspectrum.driver=edge`
+> Tests run on Chrome by default. If you don't have it, you can run the demo test with:<br/>
+> `-Dspectrum.driver=firefox`, `-Dspectrum.driver=edge` or `-Dspectrum.driver=safari`
 
 Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:<br/><br/>
 <img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it.jpg" alt="login-form"/>
@@ -88,7 +89,7 @@ Additionally, you can configure Spectrum to automatically produce a html summary
 <img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>
 &nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
 
-For more details, please refer to the [full documentation](https://giulong.github.io/spectrum/).
+For all the available reports, how to customise them, and many more, please refer to the [full documentation](https://giulong.github.io/spectrum/).
 
 # Contributing
 

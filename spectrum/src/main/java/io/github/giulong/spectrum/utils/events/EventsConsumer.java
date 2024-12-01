@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.web_driver_events.TestStepsConsumer;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,6 +24,7 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),
         @JsonSubTypes.Type(value = VideoConsumer.class, name = "video"),
         @JsonSubTypes.Type(value = VideoDynamicConsumer.class, name = "videoDynamic"),
+        @JsonSubTypes.Type(value = TestStepsConsumer.class, name = "testSteps"),
 })
 @Getter
 @Slf4j

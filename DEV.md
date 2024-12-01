@@ -55,6 +55,11 @@ To avoid manual operations, at the end of the full build, the `cleanup` module w
 You can leverage the [Maven wrapper](https://maven.apache.org/wrapper/) bundled in this repo.
 Below you can see how to build the entire project or just few submodules.
 
+> ⚠️ Run configurations<br/>
+> IntelliJ run configurations are versioned in the [.run](.run) folder. If you use IntelliJ IDEA,
+> they're imported automatically, meaning you can already leverage a set of useful configurations
+> to build the framework and to run unit and integration tests for each module.
+
 ## Full build
 
 This is how to trigger the full build:
@@ -151,5 +156,7 @@ To be able to run it locally so to make and review your changes before pushing t
 
 1. Setup your local environment as explained
    in [Testing your GitHub Pages site locally with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll)
-2. Run Jekyll under the `docs` folder with `cd docs && bundle exec jekyll serve --config _config.yml,_config_local.yml`
-3. Browse the docs at http://127.0.0.1:4000/spectrum/
+2. Run Jekyll under the `docs` folder with `cd docs && bundle install && bundle exec jekyll serve --config _config.yml,_config_local.yml --open-url http://127.0.0.1:4000/spectrum/`
+
+> 💡 **Tip**<br/>
+> You can leverage the [docs](.run/docs.run.xml) run configuration, which is automatically loaded in IntelliJ

@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +46,7 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
 
     @Override
     public void cleanupOldReports() {
-        final String extension = FILE_UTILS.getExtensionOf(output);
+        final String extension = fileUtils.getExtensionOf(output);
         log.info("{} testBooks to keep: {}", extension, retention.getTotal());
 
         final File[] folderContent = Path
@@ -73,9 +72,7 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
     @Override
     @SneakyThrows
     public void doOutputFrom(final String interpolatedTemplate) {
-        final Path outputPath = Path.of(output);
-        Files.createDirectories(outputPath.getParent());
-        Files.write(outputPath, interpolatedTemplate.getBytes());
+        fileUtils.write(output, interpolatedTemplate);
     }
 
     @Override
