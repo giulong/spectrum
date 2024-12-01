@@ -30,11 +30,14 @@ extent:
   sort:
     name: { }
 
-# these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
 eventsConsumers:
-  - slack:
+  - slack: # these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
       events:
         - primaryId: primary.*  # custom event by primaryId regex
           reason: custom-event
         - primaryId: primaryId  # custom event by reason regex
           reason: .*condReas.*
+  - testSteps:
+      events:
+        - reason: after
+          tags: [ test, dynamicTest ]

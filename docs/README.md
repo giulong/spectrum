@@ -2457,7 +2457,6 @@ eventsConsumers:
           tags: [ test ]
 ```
 
->
 > If you want to provide a custom template there are two ways:
 > * provide a template with a custom name under `src/test/resources/templates`:
 
@@ -2473,10 +2472,68 @@ eventsConsumers:
 ```
 
 > * simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
->
 
 > 💡 **Tip**<br/>
 > To test the slack handler works as expected, you can provide a simple `template.txt` with just an "Hello World from Spectrum" in it.
+
+### Test Steps Consumer
+
+You can leverage this consumer to have a minimalistic report with the list of web driver's events, along with the time at which they
+were fired and the time delta between each. To have one generated for each test, you need to declare this:
+
+{% include copyCode.html %}
+
+```yaml
+eventsConsumers:
+  - testSteps:
+      events:
+        - reason: after
+          tags: [ test, dynamicTest ]
+```
+
+> ⚠️ **Template and output path**<br/>
+> By default, the [test-steps.txt template]({{ site.repository_url }}/spectrum/src/main/resources/templates/test-steps.txt){:target="_blank"} is used.
+> If you want to provide a custom template there are two ways:
+> * provide a template with a custom name under `src/test/resources/templates`:
+
+{% include copyCode.html %}
+
+```yaml
+eventsConsumers:
+  - testSteps:
+      template: my-template.html # The report produced will match the template's extension.
+      output: target/spectrum/tests-steps # This is the default output path, no need to set it unless you want to change it.
+      events:
+        - reason: after
+          tags: [ test, dynamicTest ]
+```
+
+> * simply create the file `src/test/resources/templates/test-steps.txt`. This will override the internal default, so there's no need to explicitly provide the path.
+> 
+> The template is interpolated with [FreeMarker](https://freemarker.apache.org/){:target="_blank"}. All the steps recorded are exposed in the `steps` variable and each is mapped
+> onto the [TestStep.java template]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/events/TestStep.java){:target="_blank"}.
+
+By default, a report like this will be produced:
+
+{% include copyCode.html %}
+
+```text
+Time                       | Time taken | Message
+----------------------------------------------------------------------------------------------------
+2024-11-30T21:53:00.516414 |     0.400s | About to get https://the-internet.herokuapp.com/
+2024-11-30T21:53:02.849405 |     2.332s | Text of tag name: h1 is 'Welcome to the-internet'
+2024-11-30T21:53:02.870003 |     0.200s | Clicking on link text: Checkboxes
+2024-11-30T21:53:03.053361 |     0.183s | Element css selector: #checkboxes -> tag name: input is selected? false
+2024-11-30T21:53:03.067100 |     0.130s | Element css selector: #checkboxes -> tag name: input is selected? true
+2024-11-30T21:53:03.067445 |     0.000s | Clicking on css selector: #checkboxes -> tag name: input
+2024-11-30T21:53:03.291913 |     0.224s | Element css selector: #checkboxes -> tag name: input is selected? true
+```
+
+> 💡 **Tip**<br/>
+> Remember you can customise the messages logged: take a look at the [WebDriver Events Listener section](#webdriver-events-listener).
+
+> ⚠️ **Tags**<br/>
+> This consumer is specific to single tests, so it won't work on tags other than `test` and `dynamicTest`.
 
 ---
 

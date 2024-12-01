@@ -152,9 +152,9 @@ class FileUtilsTest {
     @DisplayName("write should write the provided content to a file in the provided path, creating the parent folders if needed")
     void write() {
         final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
-        final Path path = mock(Path.class);
-        final Path parentPath = mock(Path.class);
-        final File file = mock(File.class);
+        final Path path = mock();
+        final Path parentPath = mock();
+        final File file = mock();
         final String content = "content";
 
         when(path.getParent()).thenReturn(parentPath);
@@ -166,6 +166,30 @@ class FileUtilsTest {
         filesMockedStatic.verify(() -> Files.write(path, content.getBytes()));
 
         filesMockedStatic.close();
+    }
+
+    @Test
+    @DisplayName("write should write the provided content to a file in the provided string path, creating the parent folders if needed")
+    void writeString() {
+        final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
+        final MockedStatic<Path> pathMockedStatic = mockStatic(Path.class);
+        final String stringPath = "stringPath";
+        final Path path = mock();
+        final Path parentPath = mock();
+        final File file = mock();
+        final String content = "content";
+
+        when(Path.of(stringPath)).thenReturn(path);
+        when(path.getParent()).thenReturn(parentPath);
+        when(parentPath.toFile()).thenReturn(file);
+
+        fileUtils.write(stringPath, content);
+
+        verify(file).mkdirs();
+        filesMockedStatic.verify(() -> Files.write(path, content.getBytes()));
+
+        filesMockedStatic.close();
+        pathMockedStatic.close();
     }
 
     @Test
