@@ -35,9 +35,10 @@ public final class YamlUtils {
 
     private final ClassLoader classLoader = YamlUtils.class.getClassLoader();
 
-    private final ObjectMapper yamlMapper = new YAMLMapper()
-            .setDefaultMergeable(true)
-            .registerModules(
+    private final ObjectMapper yamlMapper = YAMLMapper
+            .builder()
+            .defaultMergeable(true)
+            .addModules(
                     new JavaTimeModule(),
                     buildModuleFor(Object.class, InterpolatedObjectDeserializer.getInstance()),
                     buildModuleFor(String.class, InterpolatedStringDeserializer.getInstance()),
@@ -47,24 +48,27 @@ public final class YamlUtils {
                     buildModuleFor(Duration.class, DurationDeserializer.getInstance()),
                     buildModuleFor(Driver.class, DriverDeserializer.getInstance()),
                     buildModuleFor(Environment.class, EnvironmentDeserializer.getInstance()),
-                    buildModuleFor(Class.class, ClassDeserializer.getInstance())
-            );
+                    buildModuleFor(Class.class, ClassDeserializer.getInstance()))
+            .build();
 
-    private final ObjectMapper dynamicConfYamlMapper = new YAMLMapper()
-            .setDefaultMergeable(true)
-            .registerModules(
+    private final ObjectMapper dynamicConfYamlMapper = YAMLMapper
+            .builder()
+            .defaultMergeable(true)
+            .addModules(
                     new JavaTimeModule(),
                     buildModuleFor(Object.class, InterpolatedObjectDeserializer.getInstance()),
                     buildModuleFor(String.class, InterpolatedStringDeserializer.getInstance()),
                     buildModuleFor(boolean.class, InterpolatedBooleanDeserializer.getInstance()),
                     buildModuleFor(java.util.logging.Level.class, UtilLogLevelDeserializer.getInstance()),
                     buildModuleFor(Level.class, LogbackLogLevelDeserializer.getInstance()),
-                    buildModuleFor(Duration.class, DurationDeserializer.getInstance())
-            );
+                    buildModuleFor(Duration.class, DurationDeserializer.getInstance()))
+            .build();
 
-    private final ObjectWriter writer = new YAMLMapper()
+    private final ObjectWriter writer = YAMLMapper
+            .builder()
             .configure(FAIL_ON_EMPTY_BEANS, false)
-            .registerModules(new JavaTimeModule())
+            .addModules(new JavaTimeModule())
+            .build()
             .writerWithDefaultPrettyPrinter();
 
     @SuppressWarnings("unchecked")
