@@ -42,15 +42,14 @@ class YamlUtilsTest {
     void construction() {
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
-                "InterpolatedObjectDeserializer",
-                "InterpolatedStringDeserializer",
-                "InterpolatedBooleanDeserializer",
-                "UtilLogLevelDeserializer",
-                "LogbackLogLevelDeserializer",
-                "DurationDeserializer",
-                "DriverDeserializer",
-                "EnvironmentDeserializer",
-                "ClassDeserializer",
+                "Object",
+                "String",
+                "boolean",
+                "Level",
+                "Duration",
+                "Driver",
+                "Environment",
+                "Class",
                 "LogTestBookReporter",
                 "TxtTestBookReporter",
                 "HtmlTestBookReporter",
@@ -61,12 +60,11 @@ class YamlUtilsTest {
 
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
-                "InterpolatedObjectDeserializer",
-                "InterpolatedStringDeserializer",
-                "InterpolatedBooleanDeserializer",
-                "UtilLogLevelDeserializer",
-                "LogbackLogLevelDeserializer",
-                "DurationDeserializer"
+                "Object",
+                "String",
+                "boolean",
+                "Level",
+                "Duration"
         ), yamlUtils.getDynamicConfYamlMapper().getRegisteredModuleIds());
 
         assertFalse(yamlUtils.getWriter().isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));

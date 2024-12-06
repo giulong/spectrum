@@ -5,19 +5,17 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.github.giulong.spectrum.utils.YamlUtils;
-import lombok.Getter;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
 @Slf4j
-@Getter
+@AllArgsConstructor
 public class DynamicDeserializer<T> extends JsonDeserializer<T> {
 
-    @SuppressWarnings("unused")
     private Class<T> clazz;
 
-    @SuppressWarnings("unused")
     private String configFile;
 
     @Override

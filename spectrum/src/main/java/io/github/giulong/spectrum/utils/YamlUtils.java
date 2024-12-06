@@ -11,8 +11,13 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Public;
-import io.github.giulong.spectrum.pojos.DynamicDeserializersConfiguration;
 import io.github.giulong.spectrum.utils.environments.Environment;
+import io.github.giulong.spectrum.utils.reporters.FileReporter.HtmlSummaryReporter;
+import io.github.giulong.spectrum.utils.reporters.FileReporter.HtmlTestBookReporter;
+import io.github.giulong.spectrum.utils.reporters.FileReporter.TxtSummaryReporter;
+import io.github.giulong.spectrum.utils.reporters.FileReporter.TxtTestBookReporter;
+import io.github.giulong.spectrum.utils.reporters.LogReporter.LogSummaryReporter;
+import io.github.giulong.spectrum.utils.reporters.LogReporter.LogTestBookReporter;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +53,13 @@ public final class YamlUtils {
                     buildModuleFor(Duration.class, DurationDeserializer.getInstance()),
                     buildModuleFor(Driver.class, DriverDeserializer.getInstance()),
                     buildModuleFor(Environment.class, EnvironmentDeserializer.getInstance()),
-                    buildModuleFor(Class.class, ClassDeserializer.getInstance()))
+                    buildModuleFor(Class.class, ClassDeserializer.getInstance()),
+                    buildDynamicModuleFor(LogTestBookReporter.class, "yaml/dynamic/testbook/logReporter.yaml"),
+                    buildDynamicModuleFor(TxtTestBookReporter.class, "yaml/dynamic/testbook/txtReporter.yaml"),
+                    buildDynamicModuleFor(HtmlTestBookReporter.class, "yaml/dynamic/testbook/htmlReporter.yaml"),
+                    buildDynamicModuleFor(LogSummaryReporter.class, "yaml/dynamic/summary/logReporter.yaml"),
+                    buildDynamicModuleFor(TxtSummaryReporter.class, "yaml/dynamic/summary/txtReporter.yaml"),
+                    buildDynamicModuleFor(HtmlSummaryReporter.class, "yaml/dynamic/summary/htmlReporter.yaml"))
             .build();
 
     private final ObjectMapper dynamicConfYamlMapper = YAMLMapper
@@ -71,26 +82,17 @@ public final class YamlUtils {
             .build()
             .writerWithDefaultPrettyPrinter();
 
-    @SuppressWarnings("unchecked")
-    private YamlUtils() {
-        readInternal("yaml/dynamicDeserializersConfiguration.yaml", DynamicDeserializersConfiguration.class)
-                .getDynamicDeserializers()
-                .stream()
-                .map(DynamicDeserializer.class::cast)
-                .peek(deserializer -> log.trace("Registering dynamic deserializer module {}", deserializer.getClazz().getSimpleName()))
-                .forEach(deserializer -> {
-                    final Class<?> clazz = deserializer.getClazz();
-                    yamlMapper.registerModule(new SimpleModule(clazz.getSimpleName()).addDeserializer(clazz, deserializer));
-                });
-    }
-
     public static YamlUtils getInstance() {
         return INSTANCE;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     public SimpleModule buildModuleFor(final Class<?> clazz, final JsonDeserializer jsonDeserializer) {
-        return new SimpleModule(jsonDeserializer.getClass().getSimpleName()).addDeserializer(clazz, jsonDeserializer);
+        return new SimpleModule(clazz.getSimpleName()).addDeserializer(clazz, jsonDeserializer);
+    }
+
+    public SimpleModule buildDynamicModuleFor(final Class<?> clazz, final String file) {
+        return buildModuleFor(clazz, new DynamicDeserializer<>(clazz, file));
     }
 
     public List<Path> findValidPathsFor(final String file) {
