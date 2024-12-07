@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.testbook;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Result;
@@ -34,7 +35,8 @@ public class TestBook implements SessionHook, Reportable {
     @JsonIgnore
     private final FileUtils fileUtils = FileUtils.getInstance();
 
-    @JsonPropertyDescription("Enables the testBook")
+    @JsonIgnore
+    @JacksonInject("enabledFromClient")
     @SuppressWarnings("unused")
     private boolean enabled;
 

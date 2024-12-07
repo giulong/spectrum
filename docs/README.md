@@ -3116,7 +3116,6 @@ As you can see, it has a quality gate already set, as well as a yaml parser but 
 ```yaml
 # internal configuration.default.yaml
 testBook:
-  enabled: false
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -3125,21 +3124,17 @@ testBook:
   reporters: [ ] # List of testBook reporters that will produce the execution report in specific formats
 ```
 
-It's disabled by default. You need to enable it in your `configuration.yaml`, while providing the reporters you want:
+In your `configuration.yaml` you need to provide the reporters you want:
 
 {% include copyCode.html %}
 
 ```yaml
 testBook:
-  enabled: true
   reporters:
     - log: { }  # the report will be logged
     - html:
         output: ${testBookReportOutput}/testbook.html # a html report will be produced at this path
 ```
-
-> ⚠️ **Enabling testBook**<br/>
-> Remember the `enabled: true` flag must be explicitly set, otherwise the testBook won't be considered.
 
 ## Full TestBook Examples
 
@@ -3147,7 +3142,6 @@ testBook:
 
 ```yaml
 testBook:
-  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -3165,7 +3159,6 @@ testBook:
 
 ```yaml
 testBook:
-  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -3183,7 +3176,6 @@ testBook:
 
 ```yaml
 testBook:
-  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 40 || ${failed} < 10  # We want the testbook to be marked as successful if we have at least 40% of successful weighted tests or less than 10 tests (not considering their weights!!) failed
   parser:
