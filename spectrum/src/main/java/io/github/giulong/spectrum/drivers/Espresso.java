@@ -5,7 +5,7 @@ import io.appium.java_client.android.options.EspressoOptions;
 public class Espresso extends Android<EspressoOptions> {
 
     @Override
-    public void buildCapabilities() {
+    void buildCapabilities() {
         capabilities = new EspressoOptions(adjustCapabilitiesFrom(configuration
                 .getDrivers()
                 .getEspresso()

@@ -29,7 +29,7 @@ public abstract class Appium<T extends MutableCapabilities, U extends AppiumDriv
                 .withTimeout(service.getTimeout());
     }
 
-    protected Map<String, Object> adjustCapabilitiesFrom(final Map<String, Object> configurationCapabilities) {
+    Map<String, Object> adjustCapabilitiesFrom(final Map<String, Object> configurationCapabilities) {
         final String app = (String) configurationCapabilities.get(APP_CAPABILITY);
         if (app != null) {
             log.debug("Adjusting capabilities for {}", getClass().getSimpleName());

@@ -27,7 +27,7 @@ public abstract class Driver<T extends MutableCapabilities, U extends DriverServ
 
     public abstract DriverService.Builder<U, V> getDriverServiceBuilder();
 
-    public abstract void buildCapabilities();
+    abstract void buildCapabilities();
 
     @SuppressWarnings("unchecked")
     public T mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
@@ -47,16 +47,16 @@ public abstract class Driver<T extends MutableCapabilities, U extends DriverServ
         return WEB_DRIVER_THREAD_LOCAL.get();
     }
 
-    public void configureWaitsOf(final WebDriver webDriver, final Configuration.Drivers.Waits waits) {
+    public void shutdown() {
+        WEB_DRIVER_THREAD_LOCAL.get().quit();
+    }
+
+    void configureWaitsOf(final WebDriver webDriver, final Configuration.Drivers.Waits waits) {
         webDriver
                 .manage()
                 .timeouts()
                 .implicitlyWait(waits.getImplicit())
                 .pageLoadTimeout(waits.getPageLoadTimeout())
                 .scriptTimeout(waits.getScriptTimeout());
-    }
-
-    public void shutdown() {
-        WEB_DRIVER_THREAD_LOCAL.get().quit();
     }
 }

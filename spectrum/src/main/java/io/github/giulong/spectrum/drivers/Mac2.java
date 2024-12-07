@@ -8,15 +8,15 @@ import java.net.URL;
 public class Mac2 extends Appium<Mac2Options, Mac2Driver> {
 
     @Override
-    public void buildCapabilities() {
+    public Mac2Driver buildDriverFor(final URL url) {
+        return new Mac2Driver(url, capabilities);
+    }
+
+    @Override
+    void buildCapabilities() {
         capabilities = new Mac2Options(configuration
                 .getDrivers()
                 .getMac2()
                 .getCapabilities());
-    }
-
-    @Override
-    public Mac2Driver buildDriverFor(final URL url) {
-        return new Mac2Driver(url, capabilities);
     }
 }
