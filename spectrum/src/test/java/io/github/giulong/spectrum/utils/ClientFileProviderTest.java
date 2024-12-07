@@ -24,9 +24,9 @@ class ClientFileProviderTest {
     private ClientFileProvider fileProvider;
 
     @Test
-    @DisplayName("getViews should return Views.Public.class")
+    @DisplayName("getViews should return Views.Client.class")
     void getViews() {
-        assertEquals(Views.Public.class, fileProvider.getViews());
+        assertEquals(Views.Client.class, fileProvider.getViews());
     }
 
     @Test

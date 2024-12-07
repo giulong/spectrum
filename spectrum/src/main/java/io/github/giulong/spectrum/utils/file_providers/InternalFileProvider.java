@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.file_providers;
 
+import io.github.giulong.spectrum.internals.jackson.views.Views;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 public final class InternalFileProvider implements FileProvider {
 
     @Override
-    public Class<?> getViews() {
+    public Class<? extends Views> getViews() {
         return Internal.class;
     }
 

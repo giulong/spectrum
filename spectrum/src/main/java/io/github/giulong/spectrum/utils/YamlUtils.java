@@ -10,6 +10,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
+import io.github.giulong.spectrum.internals.jackson.views.Views;
 import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.file_providers.ClientFileProvider;
 import io.github.giulong.spectrum.utils.file_providers.FileProvider;
@@ -160,7 +161,7 @@ public final class YamlUtils {
     }
 
     @SneakyThrows
-    <T> void updateWithFile(final T t, final String file, final Class<?> views) {
+    <T> void updateWithFile(final T t, final String file, final Class<? extends Views> views) {
         if (file == null) {
             log.warn("File not found. Skipping update of the instance of {}", t.getClass().getSimpleName());
             return;

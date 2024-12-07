@@ -146,7 +146,7 @@ class YamlUtilsTest {
     void updateWithNotExistingFile() {
         final TestYaml testYaml = TestYaml.builder().key("original").build();
 
-        yamlUtils.updateWithFile(testYaml, null, Views.Public.class);
+        yamlUtils.updateWithFile(testYaml, null, Views.Client.class);
         assertEquals("original", testYaml.getKey());
     }
 

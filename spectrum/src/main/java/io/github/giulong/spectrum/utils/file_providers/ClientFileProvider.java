@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.file_providers;
 
-import io.github.giulong.spectrum.internals.jackson.views.Views.Public;
+import io.github.giulong.spectrum.internals.jackson.views.Views;
+import io.github.giulong.spectrum.internals.jackson.views.Views.Client;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,8 +18,8 @@ public final class ClientFileProvider implements FileProvider {
     private static final List<String> EXTENSIONS = List.of(".yaml", ".yml");
 
     @Override
-    public Class<?> getViews() {
-        return Public.class;
+    public Class<? extends Views> getViews() {
+        return Client.class;
     }
 
     @Override
