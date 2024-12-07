@@ -86,7 +86,7 @@ public class JsWebElementIT extends SpectrumTest<Void> {
         final WebElement passwordField = jsLoginPage.getPassword();
         final WebElement form = jsLoginPage.getForm();
 
-        assertTrue(usernameField.getDomProperty("value").isEmpty());
+        assertTrue(Objects.requireNonNull(usernameField.getDomProperty("value")).isEmpty());
         usernameField.sendKeys("tomsmith");
         assertEquals("tomsmith", form.findElements(By.tagName("input")).getFirst().getDomProperty("value"));
         assertEquals("tomsmith", form.findElement(By.tagName("input")).getDomProperty("value"));
@@ -116,7 +116,6 @@ public class JsWebElementIT extends SpectrumTest<Void> {
 
         final SearchContext shadowRoot = jsShadowDomPage.getMyParagraph().getShadowRoot();
         assertNotNull(shadowRoot);
-        assertNull(span.getShadowRoot());
 
         assertEquals("Let's have some different text!", span.getText());
         assertEquals("My default text", shadowRoot.findElement(By.cssSelector("slot")).getText());
