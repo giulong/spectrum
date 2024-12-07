@@ -10,8 +10,10 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
-import io.github.giulong.spectrum.internals.jackson.views.Views.Public;
 import io.github.giulong.spectrum.utils.environments.Environment;
+import io.github.giulong.spectrum.utils.file_providers.ClientFileProvider;
+import io.github.giulong.spectrum.utils.file_providers.FileProvider;
+import io.github.giulong.spectrum.utils.file_providers.InternalFileProvider;
 import io.github.giulong.spectrum.utils.reporters.FileReporter.HtmlSummaryReporter;
 import io.github.giulong.spectrum.utils.reporters.FileReporter.HtmlTestBookReporter;
 import io.github.giulong.spectrum.utils.reporters.FileReporter.TxtSummaryReporter;
@@ -19,26 +21,25 @@ import io.github.giulong.spectrum.utils.reporters.FileReporter.TxtTestBookReport
 import io.github.giulong.spectrum.utils.reporters.LogReporter.LogSummaryReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter.LogTestBookReporter;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Duration;
-import java.util.List;
-import java.util.stream.Stream;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
+import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
 @Getter
+@NoArgsConstructor(access = PRIVATE)
 public final class YamlUtils {
 
     private static final YamlUtils INSTANCE = new YamlUtils();
-    private static final Path RESOURCES = Path.of("src", "test", "resources");
-    private static final List<String> EXTENSIONS = List.of(".yaml", ".yml");
 
     private final ClassLoader classLoader = YamlUtils.class.getClassLoader();
+    private final FileProvider internalFileProvider = InternalFileProvider.builder().build();
+    private final FileProvider clientFileProvider = ClientFileProvider.builder().build();
 
     private final ObjectMapper yamlMapper = YAMLMapper
             .builder()
@@ -86,94 +87,33 @@ public final class YamlUtils {
         return INSTANCE;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public SimpleModule buildModuleFor(final Class<?> clazz, final JsonDeserializer jsonDeserializer) {
-        return new SimpleModule(clazz.getSimpleName()).addDeserializer(clazz, jsonDeserializer);
-    }
-
-    public SimpleModule buildDynamicModuleFor(final Class<?> clazz, final String file) {
-        return buildModuleFor(clazz, new DynamicDeserializer<>(clazz, file));
-    }
-
-    public List<Path> findValidPathsFor(final String file) {
-        return Stream.concat(Stream.of(file), EXTENSIONS
-                        .stream()
-                        .map(e -> String.format("%s%s", file, e)))
-                .map(RESOURCES::resolve)
-                .toList();
-    }
-
-    public String findTheFirstValidFileFrom(List<Path> paths) {
-        return paths
-                .stream()
-                .peek(f -> log.debug("Looking for file {}", f))
-                .filter(Files::exists)
-                .peek(f -> log.debug("Found file {}", f))
-                .findFirst()
-                .orElseThrow()
-                .getFileName()
-                .toString();
-    }
-
-    public String findFile(final String file, final boolean internal) {
-        if (internal) {
-            return file;
-        }
-
-        final List<Path> paths = findValidPathsFor(file);
-
-        if (paths
-                .stream()
-                .peek(f -> log.debug("Checking if file {} exists", f))
-                .noneMatch(Files::exists)) {
-            log.warn("File {} not found.", file);
-            return null;
-        }
-
-        final String fileWithExtension = findTheFirstValidFileFrom(paths);
-        final Path directory = Path.of(file).getParent();
-
-        return directory != null
-                ? directory.resolve(fileWithExtension).toString()
-                : fileWithExtension;
-    }
-
-    public <T> T read(final String file, final Class<T> clazz, final boolean internal) {
-        final String fileFound = findFile(file, internal);
-        if (fileFound == null) {
-            return null;
-        }
-
-        log.debug("Reading {} file '{}' onto an instance of {}", internal ? "internal" : "client", fileFound, clazz.getSimpleName());
-        return read(yamlMapper, fileFound, clazz);
-    }
-
-    public <T> T read(final String file, final Class<T> clazz) {
-        return read(file, clazz, false);
+    public <T> T readClient(final String file, final Class<T> clazz) {
+        return read(clientFileProvider.find(file), clazz);
     }
 
     public <T> T readInternal(final String file, final Class<T> clazz) {
-        return read(file, clazz, true);
+        return read(internalFileProvider.find(file), clazz);
     }
 
-    @SneakyThrows
-    public <T> T readNode(final String node, final String file, final Class<T> clazz, final boolean internal) {
-        final String fileFound = findFile(file, internal);
-        if (fileFound == null) {
-            return null;
-        }
-
-        log.debug("Reading node '{}' of {} file '{}' onto an instance of {}", node, internal ? "internal" : "client", fileFound, clazz.getSimpleName());
-        final JsonNode root = yamlMapper.readTree(classLoader.getResource(fileFound));
-        return yamlMapper.convertValue(root.at(node), clazz);
-    }
-
-    public <T> T readNode(final String node, final String file, final Class<T> clazz) {
-        return readNode(node, file, clazz, false);
+    public <T> T readClientNode(final String node, final String file, final Class<T> clazz) {
+        return readNode(node, clientFileProvider.find(file), clazz);
     }
 
     public <T> T readInternalNode(final String node, final String file, final Class<T> clazz) {
-        return readNode(node, file, clazz, true);
+        return readNode(node, internalFileProvider.find(file), clazz);
+    }
+
+    public <T> void updateWithClientFile(final T t, final String file) {
+        updateWithFile(t, clientFileProvider.find(file), clientFileProvider.getViews());
+    }
+
+    public <T> void updateWithInternalFile(final T t, final String file) {
+        updateWithFile(t, internalFileProvider.find(file), internalFileProvider.getViews());
+    }
+
+    @SneakyThrows
+    public String write(final Object object) {
+        return writer.writeValueAsString(object);
     }
 
     @SneakyThrows
@@ -185,36 +125,51 @@ public final class YamlUtils {
                 .readValue(jsonNode);
     }
 
-    @SneakyThrows
-    public <T> void updateWithFile(final T t, final String file) {
-        final String fileFound = findFile(file, false);
-        if (fileFound == null) {
-            log.warn("File {} not found. Skipping update of the instance of {}", file, t.getClass().getSimpleName());
-            return;
-        }
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    SimpleModule buildModuleFor(final Class<?> clazz, final JsonDeserializer jsonDeserializer) {
+        return new SimpleModule(clazz.getSimpleName()).addDeserializer(clazz, jsonDeserializer);
+    }
 
-        log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), fileFound);
-        yamlMapper
-                .readerForUpdating(t)
-                .withView(Public.class)
-                .readValue(classLoader.getResource(fileFound));
+    SimpleModule buildDynamicModuleFor(final Class<?> clazz, final String file) {
+        return buildModuleFor(clazz, new DynamicDeserializer<>(clazz, file));
     }
 
     @SneakyThrows
-    public <T> void updateWithInternalFile(final T t, final String file) {
-        log.debug("Updating the instance of {} with internal file '{}'", t.getClass().getSimpleName(), file);
-        yamlMapper
-                .readerForUpdating(t)
-                .readValue(classLoader.getResource(file));
-    }
-
-    @SneakyThrows
-    public <T> T read(final ObjectMapper objectMapper, final String fileName, final Class<T> clazz) {
+    <T> T read(final ObjectMapper objectMapper, final String fileName, final Class<T> clazz) {
         return objectMapper.readValue(classLoader.getResource(fileName), clazz);
     }
 
+    <T> T read(final String file, final Class<T> clazz) {
+        if (file == null) {
+            return null;
+        }
+
+        log.debug("Reading file '{}' onto an instance of {}", file, clazz.getSimpleName());
+        return read(yamlMapper, file, clazz);
+    }
+
     @SneakyThrows
-    public String write(final Object object) {
-        return writer.writeValueAsString(object);
+    <T> T readNode(final String node, final String file, final Class<T> clazz) {
+        if (file == null) {
+            return null;
+        }
+
+        log.debug("Reading node '{}' of file '{}' onto an instance of {}", node, file, clazz.getSimpleName());
+        final JsonNode root = yamlMapper.readTree(classLoader.getResource(file));
+        return yamlMapper.convertValue(root.at(node), clazz);
+    }
+
+    @SneakyThrows
+    <T> void updateWithFile(final T t, final String file, final Class<?> views) {
+        if (file == null) {
+            log.warn("File not found. Skipping update of the instance of {}", t.getClass().getSimpleName());
+            return;
+        }
+
+        log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), file);
+        yamlMapper
+                .readerForUpdating(t)
+                .withView(views)
+                .readValue(classLoader.getResource(file));
     }
 }

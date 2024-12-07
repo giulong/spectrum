@@ -4,24 +4,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import io.github.giulong.spectrum.TestYaml;
+import io.github.giulong.spectrum.internals.jackson.views.Views;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -70,68 +63,17 @@ class YamlUtilsTest {
         assertFalse(yamlUtils.getWriter().isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
     }
 
-    @DisplayName("findValidPathsFor should return the list of resources paths with valid extensions from the provided file")
-    @ParameterizedTest(name = "with file {0} we expect {1}")
-    @MethodSource("valuesProvider")
-    void findValidPathsFor(final String file, final Stream<String> strings) {
-        final List<Path> paths = strings
-                .map(p -> Path.of("src", "test", "resources").resolve(p))
-                .toList();
-
-        assertEquals(paths, yamlUtils.findValidPathsFor(file));
-    }
-
-    static Stream<Arguments> valuesProvider() {
-        return Stream.of(
-                arguments("file", Stream.of("file", "file.yaml", "file.yml")),
-                arguments("folder/file", Stream.of("folder/file", "folder/file.yaml", "folder/file.yml"))
-        );
-    }
-
-    @Test
-    @DisplayName("findTheFirstValidFileFrom should return the first file that exists among the provided list")
-    void findTheFirstValidFileFrom() throws IOException {
-        final Path path = Files.createTempFile("prefix", "suffix");
-        final List<Path> paths = List.of(Path.of("non existing"), path);
-
-        path.toFile().deleteOnExit();
-
-        assertEquals(path.getFileName().toString(), yamlUtils.findTheFirstValidFileFrom(paths));
-    }
-
-    @Test
-    @DisplayName("findTheFirstValidFileFrom should throw an exception if no file among the provided list exists")
-    void findTheFirstValidFileFromThrows() {
-        final List<Path> paths = List.of(Path.of("non existing"), Path.of("another non existing"));
-
-        assertThrows(RuntimeException.class, () -> yamlUtils.findTheFirstValidFileFrom(paths));
-    }
-
-    @DisplayName("findFile should immediately return the file if it's internal: we know those exists!")
-    @ParameterizedTest(name = "with internal {1} we expect {2}")
-    @MethodSource("findFileValuesProvider")
-    void findFileInternal(final boolean internal, final String expected) {
-        assertEquals(expected, yamlUtils.findFile("file", internal));
-    }
-
-    static Stream<Arguments> findFileValuesProvider() {
-        return Stream.of(
-                arguments(true, "file"),
-                arguments(false, null)
-        );
-    }
-
     @Test
     @DisplayName("read should return null if the provided client file doesn't exist")
     void readNotExistingClientFile() {
-        assertNull(yamlUtils.read("not-existing", TestYaml.class, false));
+        assertNull(yamlUtils.readClient("not-existing", TestYaml.class));
     }
 
     @DisplayName("read should return an instance of the provided class deserializing the provided file")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
     void read(final String file) {
-        assertEquals("value", Objects.requireNonNull(yamlUtils.read(file, TestYaml.class, true)).getKey());
+        assertEquals("value", Objects.requireNonNull(yamlUtils.readInternal(file, TestYaml.class)).getKey());
     }
 
     @DisplayName("overloaded read should return an instance of the provided class deserializing the provided file")
@@ -150,14 +92,14 @@ class YamlUtilsTest {
     @Test
     @DisplayName("readNode should return null if the provided client file doesn't exist")
     void readNotExistingClientNode() {
-        assertNull(yamlUtils.readNode("/objectKey", "not-existing", TestYaml.ObjectKey.class, false));
+        assertNull(yamlUtils.readClientNode("/objectKey", "not-existing", TestYaml.ObjectKey.class));
     }
 
     @DisplayName("readNode should check if the provided file exists and return the node requested")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
     void readNode(final String file) {
-        assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readNode("/objectKey", file, TestYaml.ObjectKey.class, true)).getObjectField());
+        assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readInternalNode("/objectKey", file, TestYaml.ObjectKey.class)).getObjectField());
     }
 
     @DisplayName("readNode for client-side files should just delegate to the readNode method")
@@ -194,7 +136,7 @@ class YamlUtilsTest {
                 .internalKey(TestYaml.InternalKey.builder().field("field").build())
                 .build();
 
-        yamlUtils.updateWithFile(testYaml, file);
+        yamlUtils.updateWithClientFile(testYaml, file);
         assertEquals("value", testYaml.getKey());
         assertEquals("field", testYaml.getInternalKey().getField()); // from the original pojo above: it's not updated with the content of test.yaml
     }
@@ -204,7 +146,7 @@ class YamlUtilsTest {
     void updateWithNotExistingFile() {
         final TestYaml testYaml = TestYaml.builder().key("original").build();
 
-        yamlUtils.updateWithFile(testYaml, "not-existing");
+        yamlUtils.updateWithFile(testYaml, null, Views.Public.class);
         assertEquals("original", testYaml.getKey());
     }
 

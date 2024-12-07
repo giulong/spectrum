@@ -72,15 +72,15 @@ public class SpectrumSessionListener implements LauncherSessionListener {
             yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
         }
 
-        yamlUtils.updateWithFile(configuration, CONFIGURATION);
-        profileConfigurations.forEach(pc -> yamlUtils.updateWithFile(configuration, pc));
+        yamlUtils.updateWithClientFile(configuration, CONFIGURATION);
+        profileConfigurations.forEach(pc -> yamlUtils.updateWithClientFile(configuration, pc));
 
         log.trace("Configuration:\n{}", yamlUtils.write(configuration));
     }
 
     protected List<String> parseProfiles() {
         return Arrays.stream(Optional
-                        .ofNullable(yamlUtils.readNode(PROFILE_NODE, CONFIGURATION, String.class))
+                        .ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION, String.class))
                         .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
                         .split(","))
                 .filter(not(String::isBlank))
@@ -95,8 +95,8 @@ public class SpectrumSessionListener implements LauncherSessionListener {
             vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
         }
 
-        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
-        vars.putAll(Optional.ofNullable(yamlUtils.readNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional.ofNullable(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional.ofNullable(yamlUtils.readClientNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
     }
 
     protected boolean isUnix() {

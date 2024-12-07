@@ -15,7 +15,7 @@ public class YamlTestBookParser extends TestBookParser {
         log.debug("Reading lines of yaml testbook");
 
         return YamlUtils.getInstance()
-                .read(path, TestBookYamlData.class)
+                .readClient(path, TestBookYamlData.class)
                 .entrySet()
                 .stream()
                 .flatMap(e -> e.getValue()
