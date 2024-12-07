@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import com.fasterxml.jackson.databind.InjectableValues;
 import io.github.giulong.spectrum.internals.jackson.views.Views;
 import io.github.giulong.spectrum.utils.file_providers.ClientFileProvider;
 import org.junit.jupiter.api.DisplayName;
@@ -8,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
+import org.mockito.MockedConstruction;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,6 +19,8 @@ import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
 
 class ClientFileProviderTest {
 
@@ -30,9 +34,38 @@ class ClientFileProviderTest {
     }
 
     @Test
+    @DisplayName("getInjectableValues should return the client injectables")
+    void getInjectableValues() {
+        final MockedConstruction<InjectableValues.Std> mockedConstruction = mockConstruction(InjectableValues.Std.class, (mock, context) ->
+                when(mock.addValue("enabledFromClient", true)).thenReturn(mock));
+
+        final InjectableValues actual = fileProvider.getInjectableValues();
+
+        assertEquals(mockedConstruction.constructed().getFirst(), actual);
+
+        mockedConstruction.close();
+    }
+
+    @Test
     @DisplayName("findFile should return null when the client file isn't found")
     void find() {
         assertNull(fileProvider.find("file"));
+    }
+
+    @Test
+    @DisplayName("findFile should return the file with extension when it has no parent directory")
+    void findFound() {
+        final String file = "testbook";
+
+        assertEquals("testbook.yaml", fileProvider.find(file));
+    }
+
+    @Test
+    @DisplayName("findFile should return the file with extension and parent folder")
+    void findFoundParent() {
+        final String file = "data/data";
+
+        assertEquals("data/data.yaml", fileProvider.find(file));
     }
 
     @DisplayName("findValidPathsFor should return the list of resources paths with valid extensions from the provided file")

@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.file_providers;
 
+import com.fasterxml.jackson.databind.InjectableValues;
 import io.github.giulong.spectrum.internals.jackson.views.Views;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Client;
 import lombok.Builder;
@@ -23,6 +24,13 @@ public final class ClientFileProvider implements FileProvider {
     }
 
     @Override
+    public InjectableValues getInjectableValues() {
+        return new InjectableValues
+                .Std()
+                .addValue("enabledFromClient", true);
+    }
+
+    @Override
     public String find(final String file) {
         final List<Path> paths = findValidPathsFor(file);
 
@@ -43,14 +51,15 @@ public final class ClientFileProvider implements FileProvider {
     }
 
     public List<Path> findValidPathsFor(final String file) {
-        return Stream.concat(Stream.of(file), EXTENSIONS
+        return Stream
+                .concat(Stream.of(file), EXTENSIONS
                         .stream()
                         .map(e -> String.format("%s%s", file, e)))
                 .map(RESOURCES::resolve)
                 .toList();
     }
 
-    public String findTheFirstValidFileFrom(List<Path> paths) {
+    public String findTheFirstValidFileFrom(final List<Path> paths) {
         return paths
                 .stream()
                 .peek(f -> log.debug("Looking for file {}", f))

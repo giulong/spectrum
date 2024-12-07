@@ -1,16 +1,12 @@
 package io.github.giulong.spectrum.utils;
 
 import ch.qos.logback.classic.Level;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
-import io.github.giulong.spectrum.internals.jackson.views.Views;
 import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.file_providers.ClientFileProvider;
 import io.github.giulong.spectrum.utils.file_providers.FileProvider;
@@ -21,7 +17,6 @@ import io.github.giulong.spectrum.utils.reporters.FileReporter.TxtSummaryReporte
 import io.github.giulong.spectrum.utils.reporters.FileReporter.TxtTestBookReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter.LogSummaryReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter.LogTestBookReporter;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +27,6 @@ import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
-@Getter
 @NoArgsConstructor(access = PRIVATE)
 public final class YamlUtils {
 
@@ -89,27 +83,27 @@ public final class YamlUtils {
     }
 
     public <T> T readClient(final String file, final Class<T> clazz) {
-        return read(clientFileProvider.find(file), clazz);
+        return read(clientFileProvider, file, clazz);
     }
 
     public <T> T readInternal(final String file, final Class<T> clazz) {
-        return read(internalFileProvider.find(file), clazz);
+        return read(internalFileProvider, file, clazz);
     }
 
     public <T> T readClientNode(final String node, final String file, final Class<T> clazz) {
-        return readNode(node, clientFileProvider.find(file), clazz);
+        return readNode(clientFileProvider, node, file, clazz);
     }
 
     public <T> T readInternalNode(final String node, final String file, final Class<T> clazz) {
-        return readNode(node, internalFileProvider.find(file), clazz);
+        return readNode(internalFileProvider, node, file, clazz);
     }
 
     public <T> void updateWithClientFile(final T t, final String file) {
-        updateWithFile(t, clientFileProvider.find(file), clientFileProvider.getViews());
+        updateWithFile(t, file, clientFileProvider);
     }
 
     public <T> void updateWithInternalFile(final T t, final String file) {
-        updateWithFile(t, internalFileProvider.find(file), internalFileProvider.getViews());
+        updateWithFile(t, file, internalFileProvider);
     }
 
     @SneakyThrows
@@ -120,9 +114,11 @@ public final class YamlUtils {
     @SneakyThrows
     public <T> T readDynamicDeserializable(final String configFile, final Class<T> clazz, final JsonNode jsonNode) {
         log.debug("Reading dynamic conf file '{}' onto an instance of {}", configFile, clazz.getSimpleName());
-        final T t = read(dynamicConfYamlMapper, configFile, clazz);
-        return dynamicConfYamlMapper
-                .readerForUpdating(t)
+        final ObjectReader reader = dynamicConfYamlMapper.reader();
+        final T t = read(reader, configFile, clazz);
+
+        return reader
+                .withValueToUpdate(t)
                 .readValue(jsonNode);
     }
 
@@ -136,41 +132,47 @@ public final class YamlUtils {
     }
 
     @SneakyThrows
-    <T> T read(final ObjectMapper objectMapper, final String fileName, final Class<T> clazz) {
-        return objectMapper.readValue(classLoader.getResource(fileName), clazz);
+    <T> T read(final ObjectReader reader, final String file, final Class<T> clazz) {
+        return reader.readValue(classLoader.getResource(file), clazz);
     }
 
-    <T> T read(final String file, final Class<T> clazz) {
-        if (file == null) {
+    <T> T read(final FileProvider fileProvider, final String file, final Class<T> clazz) {
+        final String fileFound = fileProvider.find(file);
+        if (fileFound == null) {
             return null;
         }
 
-        log.debug("Reading file '{}' onto an instance of {}", file, clazz.getSimpleName());
-        return read(yamlMapper, file, clazz);
+        log.debug("Reading file '{}' onto an instance of {}", fileFound, clazz.getSimpleName());
+        return read(fileProvider.augment(yamlMapper), fileFound, clazz);
     }
 
     @SneakyThrows
-    <T> T readNode(final String node, final String file, final Class<T> clazz) {
-        if (file == null) {
+    <T> T readNode(final FileProvider fileProvider, final String node, final String file, final Class<T> clazz) {
+        final String fileFound = fileProvider.find(file);
+        if (fileFound == null) {
             return null;
         }
 
-        log.debug("Reading node '{}' of file '{}' onto an instance of {}", node, file, clazz.getSimpleName());
-        final JsonNode root = yamlMapper.readTree(classLoader.getResource(file));
+        log.debug("Reading node '{}' of file '{}' onto an instance of {}", node, fileFound, clazz.getSimpleName());
+        final JsonNode root = fileProvider
+                .augment(yamlMapper)
+                .readTree(classLoader.getResourceAsStream(fileFound));
+
         return yamlMapper.convertValue(root.at(node), clazz);
     }
 
     @SneakyThrows
-    <T> void updateWithFile(final T t, final String file, final Class<? extends Views> views) {
-        if (file == null) {
+    <T> void updateWithFile(final T t, final String file, final FileProvider fileProvider) {
+        final String fileFound = fileProvider.find(file);
+        if (fileFound == null) {
             log.warn("File not found. Skipping update of the instance of {}", t.getClass().getSimpleName());
             return;
         }
 
-        log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), file);
-        yamlMapper
-                .readerForUpdating(t)
-                .withView(views)
-                .readValue(classLoader.getResource(file));
+        log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), fileFound);
+        fileProvider
+                .augment(yamlMapper)
+                .withValueToUpdate(t)
+                .readValue(classLoader.getResource(fileFound));
     }
 }

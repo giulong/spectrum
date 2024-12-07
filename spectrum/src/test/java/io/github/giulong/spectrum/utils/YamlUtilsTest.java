@@ -1,24 +1,53 @@
 package io.github.giulong.spectrum.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.github.giulong.spectrum.TestYaml;
-import io.github.giulong.spectrum.internals.jackson.views.Views;
+import io.github.giulong.spectrum.utils.file_providers.FileProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Objects;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 class YamlUtilsTest {
+
+    @Mock
+    private YAMLMapper yamlMapper;
+
+    @Mock
+    private ObjectReader reader;
+
+    @Mock
+    private ObjectWriter writer;
+
+    @Mock
+    private JsonNode jsonNode;
+
+    @Mock
+    private TestYaml testYaml;
+
+    @Mock
+    private TestYaml.ObjectKey objectKey;
+
+    @Mock
+    private FileProvider fileProvider;
 
     @InjectMocks
     private YamlUtils yamlUtils;
@@ -49,7 +78,7 @@ class YamlUtilsTest {
                 "LogSummaryReporter",
                 "TxtSummaryReporter",
                 "HtmlSummaryReporter"
-        ), yamlUtils.getYamlMapper().getRegisteredModuleIds());
+        ), Reflections.getFieldValue("yamlMapper", yamlUtils, YAMLMapper.class).getRegisteredModuleIds());
 
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
@@ -58,9 +87,9 @@ class YamlUtilsTest {
                 "boolean",
                 "Level",
                 "Duration"
-        ), yamlUtils.getDynamicConfYamlMapper().getRegisteredModuleIds());
+        ), Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils, YAMLMapper.class).getRegisteredModuleIds());
 
-        assertFalse(yamlUtils.getWriter().isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
+        assertFalse(Reflections.getFieldValue("writer", yamlUtils, ObjectWriter.class).isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
     }
 
     @Test
@@ -80,7 +109,7 @@ class YamlUtilsTest {
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
     void readClient(final String file) {
-        assertEquals("value", yamlUtils.read(file, TestYaml.class).getKey());
+        assertEquals("value", yamlUtils.read(new YAMLMapper().reader(), file, TestYaml.class).getKey());
     }
 
     @Test
@@ -105,8 +134,19 @@ class YamlUtilsTest {
     @DisplayName("readNode for client-side files should just delegate to the readNode method")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    void readClientNode(final String file) {
-        assertEquals("objectValue", yamlUtils.readNode("/objectKey", file, TestYaml.ObjectKey.class).getObjectField());
+    void readClientNode(final String file) throws IOException {
+        final Class<TestYaml.ObjectKey> clazz = TestYaml.ObjectKey.class;
+        final String node = "/objectKey";
+
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.readTree(any(InputStream.class))).thenReturn(jsonNode);
+        when(jsonNode.at(node)).thenReturn(jsonNode);
+        when(yamlMapper.convertValue(jsonNode, clazz)).thenReturn(objectKey);
+
+        assertEquals(objectKey, yamlUtils.readNode(fileProvider, node, file, clazz));
     }
 
     @Test
@@ -117,60 +157,71 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("readDynamicDeserializable should read the internal dynamic deserializable configuration provided, and merge the jsonNode provided on the created instance")
-    void readDynamicDeserializable() {
-        final JsonNode jsonNode = JsonNodeFactory.instance
-                .objectNode()
-                .put("key", "merged");
+    void readDynamicDeserializable() throws IOException {
+        final Class<TestYaml> clazz = TestYaml.class;
+        Reflections.setField("dynamicConfYamlMapper", yamlUtils, yamlMapper);
 
-        final TestYaml mergedYaml = yamlUtils.readDynamicDeserializable("test.yaml", TestYaml.class, jsonNode);
-        assertEquals("merged", mergedYaml.getKey());
-        assertEquals("objectValue", mergedYaml.getObjectKey().getObjectField());
+        when(yamlMapper.reader()).thenReturn(reader);
+        when(reader.readValue(any(URL.class), eq(clazz))).thenReturn(testYaml);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(reader.readValue(jsonNode)).thenReturn(testYaml);
+
+        assertEquals(testYaml, yamlUtils.readDynamicDeserializable("test.yaml", clazz, jsonNode));
     }
 
     @DisplayName("updateWithFile should update the provided instance with the file provided, reading only public fields")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    void updateWithFile(final String file) {
-        final TestYaml testYaml = TestYaml.builder()
-                .key("original")
-                .internalKey(TestYaml.InternalKey.builder().field("field").build())
-                .build();
+    void updateWithFile(final String file) throws IOException {
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+        Reflections.setField("clientFileProvider", yamlUtils, fileProvider);
+
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(reader.readValue(any(URL.class))).thenReturn(testYaml);
 
         yamlUtils.updateWithClientFile(testYaml, file);
-        assertEquals("value", testYaml.getKey());
-        assertEquals("field", testYaml.getInternalKey().getField()); // from the original pojo above: it's not updated with the content of test.yaml
     }
 
     @Test
     @DisplayName("updateWithFile should do nothing if the provided file doesn't exist")
     void updateWithNotExistingFile() {
-        final TestYaml testYaml = TestYaml.builder().key("original").build();
+        final String file = "file";
 
-        yamlUtils.updateWithFile(testYaml, null, Views.Client.class);
-        assertEquals("original", testYaml.getKey());
+        when(fileProvider.find(file)).thenReturn(null);
+
+        yamlUtils.updateWithFile(testYaml, file, fileProvider);
+
+        verifyNoInteractions(testYaml);
+        verifyNoMoreInteractions(fileProvider);
     }
 
     @Test
     @DisplayName("updateWithInternalFile should update the provided instance with the internal file provided")
-    void updateWithInternalFile() {
-        final TestYaml testYaml = TestYaml.builder().key("original").build();
+    void updateWithInternalFile() throws IOException {
+        final String file = "test.yaml";
 
-        yamlUtils.updateWithInternalFile(testYaml, "test.yaml");
-        assertEquals("value", testYaml.getKey());
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+        Reflections.setField("internalFileProvider", yamlUtils, fileProvider);
+
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(reader.readValue(any(URL.class))).thenReturn(testYaml);
+
+        yamlUtils.updateWithInternalFile(testYaml, file);
     }
 
     @Test
     @DisplayName("write should just call the writeValueAsString of the provided object, printing internal fields as well")
-    void write() {
-        final TestYaml testYaml = mock(TestYaml.class);
-        final TestYaml.ObjectKey objectKey = mock(TestYaml.ObjectKey.class);
-        final TestYaml.InternalKey internalKey = mock(TestYaml.InternalKey.class);
+    void write() throws JsonProcessingException {
+        final String string = "string";
 
-        when(testYaml.getKey()).thenReturn("value");
-        when(testYaml.getObjectKey()).thenReturn(objectKey);
-        when(testYaml.getInternalKey()).thenReturn(internalKey);
-        when(objectKey.getObjectField()).thenReturn("field");
-        when(internalKey.getField()).thenReturn("internalField");
-        assertEquals("---\nkey: \"value\"\nobjectKey:\n  objectField: \"field\"\ninternalKey:\n  field: \"internalField\"\n", yamlUtils.write(testYaml));
+        Reflections.setField("writer", yamlUtils, writer);
+
+        when(writer.writeValueAsString(testYaml)).thenReturn(string);
+
+        assertEquals(string, yamlUtils.write(testYaml));
     }
 }
