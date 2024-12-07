@@ -21,10 +21,10 @@ public abstract class LogReporter extends Reporter {
     }
 
     @Generated
-    @SuppressWarnings("checkstyle:WhitespaceAround")
-    public static class LogTestBookReporter extends LogReporter implements CanReportTestBook {}
+    public static class LogTestBookReporter extends LogReporter implements CanReportTestBook {
+    }
 
     @Generated
-    @SuppressWarnings("checkstyle:WhitespaceAround")
-    public static class LogSummaryReporter extends LogReporter implements CanReportSummary {}
+    public static class LogSummaryReporter extends LogReporter implements CanReportSummary {
+    }
 }
