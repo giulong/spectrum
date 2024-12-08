@@ -59,7 +59,7 @@ public class JsWebElementProxyBuilderResolver extends TypeBasedParameterResolver
         return jsWebElementProxyBuilder;
     }
 
-    protected boolean methodsEqual(final Method m1, final Method m2) {
+    boolean methodsEqual(final Method m1, final Method m2) {
         final boolean result = m1.getName().equals(m2.getName()) &&
                 m1.getReturnType().equals(m2.getReturnType()) &&
                 Arrays.equals(m1.getParameterTypes(), m2.getParameterTypes());

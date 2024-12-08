@@ -1,10 +1,12 @@
 package io.github.giulong.spectrum.utils;
 
-import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
-@Getter
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
 public final class StringUtils {
 
     private static final StringUtils INSTANCE = new StringUtils();

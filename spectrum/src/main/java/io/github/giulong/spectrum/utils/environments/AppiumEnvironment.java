@@ -92,7 +92,7 @@ public class AppiumEnvironment extends GridEnvironment {
         driverService.close();
     }
 
-    protected boolean isRunningAt(final String ipAddress, final int port) {
+    boolean isRunningAt(final String ipAddress, final int port) {
         if (!ipAddress.matches("(localhost|127\\.0\\.0\\.1|0\\.0\\.0\\.0)")) {
             log.info("Running on Appium server at {}:{}", ipAddress, port);
             return true;

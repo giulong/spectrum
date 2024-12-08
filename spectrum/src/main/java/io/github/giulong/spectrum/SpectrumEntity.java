@@ -301,7 +301,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     @SneakyThrows
-    protected static byte[] sha256Of(final Path file) {
+    static byte[] sha256Of(final Path file) {
         final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(Files.readAllBytes(file));
 
         log.trace("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));

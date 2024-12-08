@@ -58,7 +58,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         metadataManager.sessionClosed();
     }
 
-    protected void parseConfiguration() {
+    void parseConfiguration() {
         final List<String> profileConfigurations = parseProfiles()
                 .stream()
                 .map(profile -> String.format("configuration-%s", profile))
@@ -78,7 +78,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         log.trace("Configuration:\n{}", yamlUtils.write(configuration));
     }
 
-    protected List<String> parseProfiles() {
+    List<String> parseProfiles() {
         return Arrays.stream(Optional
                         .ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION, String.class))
                         .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
@@ -88,7 +88,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     }
 
     @SuppressWarnings("unchecked")
-    protected void parseVars(final String profileConfiguration) {
+    void parseVars(final String profileConfiguration) {
         vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
 
         if (isUnix()) {
@@ -99,7 +99,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         vars.putAll(Optional.ofNullable(yamlUtils.readClientNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
     }
 
-    protected boolean isUnix() {
+    boolean isUnix() {
         return !System.getProperty("os.name").toLowerCase().contains("win");
     }
 }

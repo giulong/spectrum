@@ -50,7 +50,7 @@ public final class ClientFileProvider implements FileProvider {
                 : fileWithExtension;
     }
 
-    public List<Path> findValidPathsFor(final String file) {
+    List<Path> findValidPathsFor(final String file) {
         return Stream
                 .concat(Stream.of(file), EXTENSIONS
                         .stream()
@@ -59,7 +59,7 @@ public final class ClientFileProvider implements FileProvider {
                 .toList();
     }
 
-    public String findTheFirstValidFileFrom(final List<Path> paths) {
+    String findTheFirstValidFileFrom(final List<Path> paths) {
         return paths
                 .stream()
                 .peek(f -> log.debug("Looking for file {}", f))
