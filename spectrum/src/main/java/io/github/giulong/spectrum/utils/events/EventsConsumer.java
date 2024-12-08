@@ -85,7 +85,7 @@ public abstract class EventsConsumer implements Consumer<Event> {
         return matches;
     }
 
-    boolean findMatchFor(Event e1, Event e2) {
+    boolean findMatchFor(final Event e1, final Event e2) {
         return (reasonMatches(e1, e2) || resultMatches(e1, e2)) &&
                 (primaryAndSecondaryIdMatch(e1, e2) || justPrimaryIdMatches(e1, e2) || tagsIntersect(e1, e2));
     }
