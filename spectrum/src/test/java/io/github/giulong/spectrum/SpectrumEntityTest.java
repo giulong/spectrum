@@ -404,7 +404,7 @@ class SpectrumEntityTest {
     @ParameterizedTest(name = "with class {0} we expect {1}")
     @MethodSource("hasClassProvider")
     void hasClass(final String classes, final boolean expected) {
-        doReturn(classes).when(webElement).getAttribute("class");
+        doReturn(classes).when(webElement).getDomAttribute("class");
 
         assertEquals(expected, spectrumEntity.hasClass(webElement, "cssClass"));
     }
@@ -422,7 +422,7 @@ class SpectrumEntityTest {
     @ParameterizedTest(name = "with class {0} we expect {1}")
     @MethodSource("hasClassesProvider")
     void hasClasses(final String classes, final boolean expected) {
-        doReturn(classes).when(webElement).getAttribute("class");
+        doReturn(classes).when(webElement).getDomAttribute("class");
 
         assertEquals(expected, spectrumEntity.hasClasses(webElement, "one", "cssClass"));
     }

@@ -105,7 +105,7 @@ public class Summary implements SessionHook, Reportable {
         return isExecutionSuccessful() ? SUCCESSFUL : FAILED;
     }
 
-    protected String interpolateCondition() {
+    String interpolateCondition() {
         return freeMarkerWrapper.interpolate(condition, vars);
     }
 }

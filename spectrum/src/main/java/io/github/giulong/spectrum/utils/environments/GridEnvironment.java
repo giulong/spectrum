@@ -39,7 +39,7 @@ public class GridEnvironment extends Environment {
         log.debug("Nothing to shutdown in a grid environment");
     }
 
-    protected RemoteWebDriver setFileDetectorFor(final RemoteWebDriver webDriver, final Configuration.Environments.Grid grid) {
+    RemoteWebDriver setFileDetectorFor(final RemoteWebDriver webDriver, final Configuration.Environments.Grid grid) {
         if (grid.isLocalFileDetector()) {
             webDriver.setFileDetector(new LocalFileDetector());
         }

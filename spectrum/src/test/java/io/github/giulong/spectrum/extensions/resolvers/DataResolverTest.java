@@ -108,7 +108,7 @@ class DataResolverTest {
 
         doReturn(clazz).when(extensionContext).getRequiredTestClass();
 
-        when(yamlUtils.read(eq(dataFolder + "/data.yaml"), any())).thenReturn(data);
+        when(yamlUtils.readClient(eq(dataFolder + "/data.yaml"), any())).thenReturn(data);
 
         dataResolver.resolveParameter(parameterContext, extensionContext);
 

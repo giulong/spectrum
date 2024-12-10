@@ -42,7 +42,7 @@ public class DataResolver<Data> implements ParameterResolver {
             log.debug("Resolving {}", DATA);
 
             final Configuration.Data dataConfiguration = rootStore.get(CONFIGURATION, Configuration.class).getData();
-            final Data data = yamlUtils.read(String.format("%s/data.yaml", dataConfiguration.getFolder()), dataClass);
+            final Data data = yamlUtils.readClient(String.format("%s/data.yaml", dataConfiguration.getFolder()), dataClass);
             log.trace("Data:\n{}", yamlUtils.write(data));
 
             return data;

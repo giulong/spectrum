@@ -35,7 +35,7 @@ public class SpectrumWebDriverListener implements WebDriverListener {
     private List<Consumer<WebDriverEvent>> consumers;
     private TestContext testContext;
 
-    protected String extractSelectorFrom(final WebElement webElement) {
+    String extractSelectorFrom(final WebElement webElement) {
         final String fullWebElement = webElement.toString();
         final Matcher matcher = locatorPattern.matcher(fullWebElement);
 
@@ -47,7 +47,7 @@ public class SpectrumWebDriverListener implements WebDriverListener {
         return String.join(" -> ", locators);
     }
 
-    protected List<String> parse(final Object[] args) {
+    List<String> parse(final Object[] args) {
         return Arrays
                 .stream(args)
                 .map(arg -> arg instanceof WebElement ? extractSelectorFrom((WebElement) arg) : String.valueOf(arg))
@@ -55,7 +55,7 @@ public class SpectrumWebDriverListener implements WebDriverListener {
     }
 
     @SneakyThrows
-    protected void listenTo(final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
+    void listenTo(final Frame frame, final Configuration.Drivers.Event event, final Object... args) {
         final Level level = event.getLevel();
 
         if (level == null || !log.isEnabledForLevel(level)) {

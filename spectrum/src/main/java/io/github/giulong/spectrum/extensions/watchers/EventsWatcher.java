@@ -49,13 +49,13 @@ public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEach
         notifyTest(context, AFTER, FAILED, Set.of(TEST));
     }
 
-    public void notifyClass(final ExtensionContext context, final String reason, final Result result, final Set<String> tags) {
+    void notifyClass(final ExtensionContext context, final String reason, final Result result, final Set<String> tags) {
         final String className = context.getDisplayName();
 
         eventsDispatcher.fire(className, null, reason, result, tags, context);
     }
 
-    public void notifyTest(final ExtensionContext context, final String reason, final Result result, final Set<String> tags) {
+    void notifyTest(final ExtensionContext context, final String reason, final Result result, final Set<String> tags) {
         final String className = context.getParent().orElse(context.getRoot()).getDisplayName();
         final String testName = context.getDisplayName();
 

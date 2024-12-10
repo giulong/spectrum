@@ -114,7 +114,69 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         metadataManager.setSuccessfulQueueOf(this, queue);
     }
 
-    public void sortTests() {
+    public ExtentTest createExtentTestFrom(final ExtensionContext context) {
+        final TestData testData = contextManager.get(context, TEST_DATA, TestData.class);
+
+        return extentReports
+                .createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getDisplayName()))
+                .assignCategory(context.getTags().toArray(new String[0]));
+    }
+
+    public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final String testId, final Path path) {
+        final int width = videoExtentTest.getWidth();
+        final int height = videoExtentTest.getHeight();
+
+        extentTest.info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", testId, width, height, path));
+    }
+
+    public void logTestStartOf(final ExtentTest extentTest) {
+        extentTest.info(createLabel("START TEST", getColorOf(INFO)));
+    }
+
+    public void logTestEnd(final ExtensionContext context, final Status status) {
+        final TestContext testContext = contextManager.get(context);
+        final StatefulExtentTest statefulExtentTest = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, k -> {
+            final String className = context.getRequiredTestClass().getSimpleName();
+            final String methodName = context.getRequiredTestMethod().getName();
+            final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
+            final String displayName = context.getDisplayName();
+            final String testId = buildTestIdFrom(className, displayName);
+
+            testContext.put(TEST_DATA, TestData
+                    .builder()
+                    .className(className)
+                    .methodName(methodName)
+                    .classDisplayName(classDisplayName)
+                    .displayName(displayName)
+                    .testId(testId)
+                    .build());
+
+            return StatefulExtentTest
+                    .builder()
+                    .currentNode(createExtentTestFrom(context))
+                    .build();
+        }, StatefulExtentTest.class);
+
+        switch (status) {
+            case SKIP -> {
+                final String disabledValue = context.getRequiredTestMethod().getAnnotation(Disabled.class).value();
+                final String reason = "".equals(disabledValue) ? "no reason" : disabledValue;
+                statefulExtentTest.getCurrentNode().skip(createLabel("Skipped: " + reason, getColorOf(SKIP)));
+            }
+            case FAIL -> {
+                final SpectrumTest<?> spectrumTest = (SpectrumTest<?>) context.getRequiredTestInstance();
+                statefulExtentTest.getCurrentNode().fail(context.getExecutionException().orElse(new RuntimeException("Test Failed with no exception")));
+                spectrumTest.screenshotFail(createLabel("TEST FAILED", RED).getMarkup());
+            }
+            default -> statefulExtentTest.getCurrentNode().log(status, createLabel("END TEST", getColorOf(status)));
+        }
+    }
+
+    protected Path getReportPathFrom(final Configuration.Extent extent) {
+        return Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath();
+    }
+
+    void sortTests() {
         final Report report = extentReports.getReport();
         final List<Test> tests = new ArrayList<>(report.getTestList());
 
@@ -123,7 +185,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         tests.forEach(report::addTest);
     }
 
-    public void cleanupOldReportsIn(final String folder) {
+    void cleanupOldReportsIn(final String folder) {
         final Retention retention = configuration.getExtent().getRetention();
         log.info("Extent reports to keep in {}: {}", folder, retention.getTotal());
 
@@ -164,73 +226,11 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         }
     }
 
-    public Path getReportPathFrom(final Configuration.Extent extent) {
-        return Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath();
-    }
-
-    public ExtentTest createExtentTestFrom(final ExtensionContext context) {
-        final TestData testData = contextManager.get(context, TEST_DATA, TestData.class);
-
-        return extentReports
-                .createTest(String.format("<div id=\"%s\">%s</div>%s", testData.getTestId(), testData.getClassDisplayName(), testData.getDisplayName()))
-                .assignCategory(context.getTags().toArray(new String[0]));
-    }
-
-    public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final String testId, final Path path) {
-        final int width = videoExtentTest.getWidth();
-        final int height = videoExtentTest.getHeight();
-
-        extentTest.info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", testId, width, height, path));
-    }
-
-    public void logTestStartOf(final ExtentTest extentTest) {
-        extentTest.info(createLabel("START TEST", getColorOf(INFO)));
-    }
-
-    protected ExtentColor getColorOf(final Status status) {
+    ExtentColor getColorOf(final Status status) {
         return switch (status) {
             case FAIL -> RED;
             case SKIP -> AMBER;
             default -> GREEN;
         };
-    }
-
-    public void logTestEnd(final ExtensionContext context, final Status status) {
-        final TestContext testContext = contextManager.get(context);
-        final StatefulExtentTest statefulExtentTest = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, k -> {
-            final String className = context.getRequiredTestClass().getSimpleName();
-            final String methodName = context.getRequiredTestMethod().getName();
-            final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
-            final String displayName = context.getDisplayName();
-            final String testId = buildTestIdFrom(className, displayName);
-
-            testContext.put(TEST_DATA, TestData
-                    .builder()
-                    .className(className)
-                    .methodName(methodName)
-                    .classDisplayName(classDisplayName)
-                    .displayName(displayName)
-                    .testId(testId)
-                    .build());
-
-            return StatefulExtentTest
-                    .builder()
-                    .currentNode(createExtentTestFrom(context))
-                    .build();
-        }, StatefulExtentTest.class);
-
-        switch (status) {
-            case SKIP -> {
-                final String disabledValue = context.getRequiredTestMethod().getAnnotation(Disabled.class).value();
-                final String reason = "".equals(disabledValue) ? "no reason" : disabledValue;
-                statefulExtentTest.getCurrentNode().skip(createLabel("Skipped: " + reason, getColorOf(SKIP)));
-            }
-            case FAIL -> {
-                final SpectrumTest<?> spectrumTest = (SpectrumTest<?>) context.getRequiredTestInstance();
-                statefulExtentTest.getCurrentNode().fail(context.getExecutionException().orElse(new RuntimeException("Test Failed with no exception")));
-                spectrumTest.screenshotFail(createLabel("TEST FAILED", RED).getMarkup());
-            }
-            default -> statefulExtentTest.getCurrentNode().log(status, createLabel("END TEST", getColorOf(status)));
-        }
     }
 }

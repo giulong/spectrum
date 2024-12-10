@@ -101,7 +101,20 @@ public class VideoConsumer extends EventsConsumer {
         return true;
     }
 
-    protected Dimension chooseDimensionFor(final WebDriver driver, final Video video) {
+    @SneakyThrows
+    protected boolean isNewFrame(final File screenshot, final TestData testData) {
+        final byte[] digest = messageDigest.digest(Files.readAllBytes(screenshot.toPath()));
+
+        if (!Arrays.equals(lastFrameDigest, digest)) {
+            lastFrameDigest = digest;
+            return true;
+        }
+
+        log.trace("Discarding duplicate frame {}", screenshot.getName());
+        return false;
+    }
+
+    Dimension chooseDimensionFor(final WebDriver driver, final Video video) {
         int width = video.getWidth();
         int height = video.getHeight();
 
@@ -118,24 +131,11 @@ public class VideoConsumer extends EventsConsumer {
         return new Dimension(evenWidth, evenHeight);
     }
 
-    protected int makeItEven(final int i) {
+    int makeItEven(final int i) {
         return i % 2 == 0 ? i : i + 1;
     }
 
-    @SneakyThrows
-    protected boolean isNewFrame(final File screenshot, final TestData testData) {
-        final byte[] digest = messageDigest.digest(Files.readAllBytes(screenshot.toPath()));
-
-        if (!Arrays.equals(lastFrameDigest, digest)) {
-            lastFrameDigest = digest;
-            return true;
-        }
-
-        log.trace("Discarding duplicate frame {}", screenshot.getName());
-        return false;
-    }
-
-    protected BufferedImage resize(final BufferedImage bufferedImage, final Dimension dimension) {
+    BufferedImage resize(final BufferedImage bufferedImage, final Dimension dimension) {
         final int width = dimension.getWidth();
         final int height = dimension.getHeight();
         final int minWidth = Math.min(width, bufferedImage.getWidth());

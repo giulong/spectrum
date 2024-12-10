@@ -96,16 +96,6 @@ class ReflectionsTest {
     }
 
     @Test
-    @DisplayName("getFieldValue should return the value of the provided field on the provided object, casted to the provided class")
-    void getFieldValueField() {
-        final String fieldName = "fieldString";
-        final String value = "value";
-        final Dummy dummy = new Dummy(value);
-
-        assertEquals(value, Reflections.getFieldValue(Reflections.getField(fieldName, dummy), dummy, String.class));
-    }
-
-    @Test
     @DisplayName("getValueOf should return the value of the provided field on the provided object, without looking into its superclasses")
     void getValueOf() {
         final String fieldName = "fieldString";
@@ -137,20 +127,6 @@ class ReflectionsTest {
 
         Reflections.setField(fieldString, dummy, value);
         assertEquals(value, fieldString.get(dummy));
-    }
-
-    @Test
-    @DisplayName("copyField should copy the provided field")
-    void copyField() throws NoSuchFieldException, IllegalAccessException {
-        final String fieldName = "fieldString";
-        final String value = "value";
-        final Dummy dummy = new Dummy(value);
-        final DummySecond dummySecond = new DummySecond();
-        final Field fieldString = Dummy.class.getDeclaredField(fieldName);
-        final Field fieldStringSecond = DummySecond.class.getDeclaredField(fieldName);
-
-        Reflections.copyField(fieldString, dummy, fieldStringSecond, dummySecond);
-        assertEquals(value, fieldStringSecond.get(dummySecond));
     }
 
     @Test

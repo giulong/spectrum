@@ -16,7 +16,7 @@ public class Safari extends Driver<SafariOptions, SafariDriverService, SafariDri
     }
 
     @Override
-    public void buildCapabilities() {
+    void buildCapabilities() {
         capabilities = new SafariOptions();
     }
 }

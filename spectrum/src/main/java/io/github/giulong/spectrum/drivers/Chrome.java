@@ -22,7 +22,7 @@ public class Chrome extends Chromium<ChromeOptions, ChromeDriverService, ChromeD
     }
 
     @Override
-    public void buildCapabilities() {
+    void buildCapabilities() {
         final Configuration.Drivers driversConfiguration = configuration.getDrivers();
         final Configuration.Drivers.Chrome chrome = driversConfiguration.getChrome();
 
