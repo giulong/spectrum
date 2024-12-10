@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.testbook;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Result;
@@ -34,7 +35,8 @@ public class TestBook implements SessionHook, Reportable {
     @JsonIgnore
     private final FileUtils fileUtils = FileUtils.getInstance();
 
-    @JsonPropertyDescription("Enables the testBook")
+    @JsonIgnore
+    @JacksonInject("enabledFromClient")
     @SuppressWarnings("unused")
     private boolean enabled;
 
@@ -175,12 +177,6 @@ public class TestBook implements SessionHook, Reportable {
         reporters.forEach(reporter -> reporter.flush(this));
     }
 
-    protected void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
-        final Set<TestBookTest> tests = groupedTests.getOrDefault(className, new HashSet<>());
-        tests.add(test);
-        groupedTests.put(className, tests);
-    }
-
     public void updateWithResult(final String className, final String testName, final Result result) {
         if (!enabled) {
             log.debug("TestBook disabled. Skipping consumer");
@@ -215,7 +211,13 @@ public class TestBook implements SessionHook, Reportable {
         }
     }
 
-    public int getWeightedTotalOf(final Map<String, TestBookTest> tests) {
+    void updateGroupedTests(final Map<String, Set<TestBookTest>> groupedTests, final String className, final TestBookTest test) {
+        final Set<TestBookTest> tests = groupedTests.getOrDefault(className, new HashSet<>());
+        tests.add(test);
+        groupedTests.put(className, tests);
+    }
+
+    int getWeightedTotalOf(final Map<String, TestBookTest> tests) {
         return tests
                 .values()
                 .stream()
@@ -223,7 +225,7 @@ public class TestBook implements SessionHook, Reportable {
                 .reduce(0, Integer::sum);
     }
 
-    protected void flush(final int total, final Map<Result, Statistics> map) {
+    void flush(final int total, final Map<Result, Statistics> map) {
         final Statistics successful = map.get(SUCCESSFUL);
         final Statistics failed = map.get(FAILED);
         final Statistics aborted = map.get(ABORTED);

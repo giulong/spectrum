@@ -147,7 +147,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         final String typeName = type.getTypeName();
 
         @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
-        final Data data = yamlUtils.read(String.format("%s/data.yaml", configuration.getData().getFolder()), dataClass);
+        final Data data = yamlUtils.readClient(String.format("%s/data.yaml", configuration.getData().getFolder()), dataClass);
 
         dataSpectrumPages
                 .stream()

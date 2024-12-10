@@ -87,7 +87,7 @@ public class MetadataManager implements SessionHook {
                 .put(getNamespaceOf(canProduceMetadata), queue);
     }
 
-    public String getNamespaceOf(final Object object) {
+    String getNamespaceOf(final Object object) {
         return object.getClass().getSimpleName();
     }
 

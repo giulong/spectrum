@@ -115,7 +115,7 @@ class SpectrumTestTest {
         final String folder = "folder";
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(folder);
-        when(yamlUtils.read(folder + "/data.yaml", FakeData.class)).thenReturn(data);
+        when(yamlUtils.readClient(folder + "/data.yaml", FakeData.class)).thenReturn(data);
 
         assertNull(childTestVoid.childTestPage);
         assertNull(childTestVoid.getParentTestPage());
@@ -194,7 +194,7 @@ class SpectrumTestTest {
 
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(folder);
-        when(yamlUtils.read(folder + "/data.yaml", FakeData.class)).thenReturn(data);
+        when(yamlUtils.readClient(folder + "/data.yaml", FakeData.class)).thenReturn(data);
 
         childTestVoid.injectDataIn(List.of(fakeSpectrumPage, fakeSpectrumPageVoid));
 

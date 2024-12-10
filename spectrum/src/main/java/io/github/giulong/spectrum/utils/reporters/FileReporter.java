@@ -98,22 +98,18 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
     }
 
     @Generated
-    @SuppressWarnings("checkstyle:WhitespaceAround")
     public static class TxtTestBookReporter extends FileReporter implements CanReportTestBook {
     }
 
     @Generated
-    @SuppressWarnings("checkstyle:WhitespaceAround")
     public static class HtmlTestBookReporter extends FileReporter implements CanReportTestBook {
     }
 
     @Generated
-    @SuppressWarnings("checkstyle:WhitespaceAround")
     public static class TxtSummaryReporter extends FileReporter implements CanReportSummary {
     }
 
     @Generated
-    @SuppressWarnings("checkstyle:WhitespaceAround")
     public static class HtmlSummaryReporter extends FileReporter implements CanReportSummary {
     }
 }

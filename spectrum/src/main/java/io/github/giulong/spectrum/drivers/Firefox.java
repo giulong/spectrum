@@ -19,7 +19,7 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
     }
 
     @Override
-    public void buildCapabilities() {
+    void buildCapabilities() {
         final Configuration.Drivers.Firefox firefox = configuration.getDrivers().getFirefox();
         final String binary = firefox.getBinary();
 
@@ -35,7 +35,7 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
                 .forEach(this::addPreference);
     }
 
-    public void addPreference(final String key, final Object value) {
+    void addPreference(final String key, final Object value) {
         capabilities.addPreference(key, value instanceof Boolean || value instanceof Integer ? value : String.valueOf(value));
     }
 }

@@ -10,15 +10,15 @@ import java.net.URL;
 public abstract class Android<T extends MutableCapabilities> extends Appium<T, AndroidDriver> {
 
     @Override
-    public void configureWaitsOf(final WebDriver webDriver, final Configuration.Drivers.Waits waits) {
+    public AndroidDriver buildDriverFor(final URL url) {
+        return new AndroidDriver(url, capabilities);
+    }
+
+    @Override
+    void configureWaitsOf(final WebDriver webDriver, final Configuration.Drivers.Waits waits) {
         webDriver
                 .manage()
                 .timeouts()
                 .implicitlyWait(waits.getImplicit());
-    }
-
-    @Override
-    public AndroidDriver buildDriverFor(final URL url) {
-        return new AndroidDriver(url, capabilities);
     }
 }

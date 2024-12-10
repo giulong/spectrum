@@ -30,7 +30,7 @@ public class HtmlUtils {
     }
 
     @SneakyThrows
-    public String inlineImagesOf(final String html) {
+    String inlineImagesOf(final String html) {
         final Matcher matcher = IMAGE_TAG.matcher(html);
         String inlineHtml = html;
 
@@ -50,7 +50,7 @@ public class HtmlUtils {
     }
 
     @SneakyThrows
-    public String inlineVideosOf(final String html) {
+    String inlineVideosOf(final String html) {
         final Matcher matcher = VIDEO_SRC.matcher(html);
         String inlineHtml = html;
 

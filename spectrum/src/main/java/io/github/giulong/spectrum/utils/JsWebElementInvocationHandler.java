@@ -153,7 +153,7 @@ public class JsWebElementInvocationHandler implements WebElement, InvocationHand
         return methods.getOrDefault(method, method).invoke(this, args);
     }
 
-    protected String extractLocatorValueFrom(final By by) {
+    String extractLocatorValueFrom(final By by) {
         return by.toString().split(": ")[1];
     }
 }

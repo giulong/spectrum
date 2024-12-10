@@ -56,11 +56,15 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         return testData;
     }
 
-    public Path getScreenshotFolderPathForCurrentTest(final String reportsFolder, final String extentFileName, final String className, final String methodName) {
+    public static String buildTestIdFrom(final String className, final String testName) {
+        return String.format("%s-%s", transformInKebabCase(className), transformInKebabCase(testName));
+    }
+
+    Path getScreenshotFolderPathForCurrentTest(final String reportsFolder, final String extentFileName, final String className, final String methodName) {
         return fileUtils.deleteContentOf(Path.of(reportsFolder, extentFileName, "screenshots", className, methodName).toAbsolutePath());
     }
 
-    public Path getVideoPathForCurrentTest(final boolean disabled, final String reportsFolder, final String extentFileName, final String className, final String methodName) {
+    Path getVideoPathForCurrentTest(final boolean disabled, final String reportsFolder, final String extentFileName, final String className, final String methodName) {
         if (disabled) {
             log.trace("Video disabled: avoiding video folder creation");
             return null;
@@ -71,11 +75,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
                 .resolve(String.format("%s.mp4", randomUUID()));
     }
 
-    public static String buildTestIdFrom(final String className, final String testName) {
-        return String.format("%s-%s", transformInKebabCase(className), transformInKebabCase(testName));
-    }
-
-    protected static String transformInKebabCase(final String string) {
+    static String transformInKebabCase(final String string) {
         return string.replaceAll("\\s", "-").toLowerCase();
     }
 }

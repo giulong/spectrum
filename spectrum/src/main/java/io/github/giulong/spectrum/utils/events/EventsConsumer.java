@@ -33,7 +33,16 @@ public abstract class EventsConsumer implements Consumer<Event> {
     @JsonPropertyDescription("List of events that will be consumed")
     protected List<Event> events;
 
-    protected boolean tagsIntersect(final Event e1, final Event e2) {
+    public void match(final Event event) {
+        events
+                .stream()
+                .peek(h -> log.trace("{} matchers for {}", getClass().getSimpleName(), event))
+                .filter(h -> findMatchFor(event, h))
+                .peek(h -> log.debug("{} is consuming {}", getClass().getSimpleName(), event))
+                .forEach(h -> acceptSilently(event));
+    }
+
+    boolean tagsIntersect(final Event e1, final Event e2) {
         final boolean matches = e1.getTags() != null && e2.getTags() != null &&
                 !e1
                         .getTags()
@@ -46,7 +55,7 @@ public abstract class EventsConsumer implements Consumer<Event> {
         return matches;
     }
 
-    protected boolean primaryAndSecondaryIdMatch(final Event e1, final Event e2) {
+    boolean primaryAndSecondaryIdMatch(final Event e1, final Event e2) {
         final boolean matches = e1.getPrimaryId() != null && e2.getPrimaryId() != null && e1.getPrimaryId().matches(e2.getPrimaryId()) &&
                 e1.getSecondaryId() != null && e2.getSecondaryId() != null && e1.getSecondaryId().matches(e2.getSecondaryId());
 
@@ -54,7 +63,7 @@ public abstract class EventsConsumer implements Consumer<Event> {
         return matches;
     }
 
-    protected boolean justPrimaryIdMatches(final Event e1, final Event e2) {
+    boolean justPrimaryIdMatches(final Event e1, final Event e2) {
         final boolean matches = e1.getPrimaryId() != null && e2.getPrimaryId() != null && e1.getPrimaryId().matches(e2.getPrimaryId())
                 && e1.getSecondaryId() == null;
 
@@ -62,36 +71,27 @@ public abstract class EventsConsumer implements Consumer<Event> {
         return matches;
     }
 
-    protected boolean reasonMatches(final Event e1, final Event e2) {
+    boolean reasonMatches(final Event e1, final Event e2) {
         final boolean matches = e1.getReason() != null && e2.getReason() != null && e1.getReason().matches(e2.getReason());
 
         log.trace("reasonMatches: {}", matches);
         return matches;
     }
 
-    protected boolean resultMatches(final Event e1, final Event e2) {
+    boolean resultMatches(final Event e1, final Event e2) {
         final boolean matches = e1.getResult() != null && e1.getResult().equals(e2.getResult());
 
         log.trace("resultMatches: {}", matches);
         return matches;
     }
 
-    protected boolean findMatchFor(Event e1, Event e2) {
+    boolean findMatchFor(final Event e1, final Event e2) {
         return (reasonMatches(e1, e2) || resultMatches(e1, e2)) &&
                 (primaryAndSecondaryIdMatch(e1, e2) || justPrimaryIdMatches(e1, e2) || tagsIntersect(e1, e2));
     }
 
-    public void match(final Event event) {
-        events
-                .stream()
-                .peek(h -> log.trace("{} matchers for {}", getClass().getSimpleName(), event))
-                .filter(h -> findMatchFor(event, h))
-                .peek(h -> log.debug("{} is consuming {}", getClass().getSimpleName(), event))
-                .forEach(h -> acceptSilently(event));
-    }
-
     @SuppressWarnings("checkstyle:IllegalCatch")
-    protected void acceptSilently(final Event event) {
+    void acceptSilently(final Event event) {
         try {
             accept(event);
         } catch (Exception e) {

@@ -61,42 +61,42 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 
-        assertEquals("3", extentReportPage.getVideoJsWebElementItCheckingJsWebElements().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoJsWebElementItTestFindElementsMethod().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoJsWebElementItShadowDom().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoJsWebElementItTestInputFieldActions().getAttribute("duration"));
+        assertEquals("3", extentReportPage.getVideoJsWebElementItCheckingJsWebElements().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoJsWebElementItTestFindElementsMethod().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoJsWebElementItShadowDom().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoJsWebElementItTestInputFieldActions().getDomProperty("duration"));
 
-        assertEquals("1", extentReportPage.getVideoJavascriptItTestInputFieldActions().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoJavascriptItTestFindElementMethod().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoJavascriptItShadowDom().getAttribute("duration"));
-        assertEquals("4", extentReportPage.getVideoJavascriptItTestWithNoDisplayName().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoJavascriptItTestWebElementGetMethods().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoJavascriptItTestFindElementsMethod().getAttribute("duration"));
+        assertEquals("1", extentReportPage.getVideoJavascriptItTestInputFieldActions().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoJavascriptItTestFindElementMethod().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoJavascriptItShadowDom().getDomProperty("duration"));
+        assertEquals("4", extentReportPage.getVideoJavascriptItTestWithNoDisplayName().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoJavascriptItTestWebElementGetMethods().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoJavascriptItTestFindElementsMethod().getDomProperty("duration"));
 
-        assertEquals("5", extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers().getAttribute("duration"));
+        assertEquals("5", extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers().getDomProperty("duration"));
 
-        assertEquals("15", extentReportPage.getVideoNavigationItTestToShowNavigationAndProducedVideo().getAttribute("duration"));
+        assertEquals("15", extentReportPage.getVideoNavigationItTestToShowNavigationAndProducedVideo().getDomProperty("duration"));
 
-        assertEquals("5", extentReportPage.getVideoCheckboxItTestWithNoDisplayName().getAttribute("duration"));
+        assertEquals("5", extentReportPage.getVideoCheckboxItTestWithNoDisplayName().getDomProperty("duration"));
 
-        assertEquals("1", extentReportPage.getVideoDemoItSendingCustomEvents().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoDemoItThisOneShouldFailForDemonstrationPurposes().getAttribute("duration"));
+        assertEquals("1", extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoDemoItThisOneShouldFailForDemonstrationPurposes().getDomProperty("duration"));
 
-        assertEquals("3", extentReportPage.getVideoLoginFormItWithUserGiulioWeExpectLoginToBeSuccessfulFalse().getAttribute("duration"));
-        assertEquals("3", extentReportPage.getVideoLoginFormItWithUserTomWeExpectLoginToBeSuccessfulTrue().getAttribute("duration"));
+        assertEquals("3", extentReportPage.getVideoLoginFormItWithUserGiulioWeExpectLoginToBeSuccessfulFalse().getDomProperty("duration"));
+        assertEquals("3", extentReportPage.getVideoLoginFormItWithUserTomWeExpectLoginToBeSuccessfulTrue().getDomProperty("duration"));
 
-        assertEquals("2", extentReportPage.getVideoFilesItUpload().getAttribute("duration"));
-        assertEquals("1", extentReportPage.getVideoFilesItDownload().getAttribute("duration"));
+        assertEquals("2", extentReportPage.getVideoFilesItUpload().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoFilesItDownload().getDomProperty("duration"));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());
 
-        assertTrue(Objects.requireNonNull(extentReportPage.getVideoFilesItUpload().getAttribute("class")).contains("class-added-from-js"));
+        assertTrue(Objects.requireNonNull(extentReportPage.getVideoFilesItUpload().getDomAttribute("class")).contains("class-added-from-js"));
 
         final List<String> originalTests = extentReportPage
                 .getTestViewTestsDetails()
                 .stream()
-                .map(webElement -> webElement.getAttribute("id"))
+                .map(webElement -> webElement.getDomProperty("id"))
                 .toList();
 
         final List<String> sortedTest = new ArrayList<>(originalTests).stream().sorted().toList();
@@ -114,11 +114,11 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
     public void inlineReport() {
         commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report.html", Path.of(System.getProperty("user.dir")).getParent()));
 
-        assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getAttribute("src")), matchesPattern(VIDEO_PATTERN));
+        assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("src")), matchesPattern(VIDEO_PATTERN));
         extentReportPage
                 .getInlineImages()
                 .stream()
-                .map(inlineImage -> inlineImage.getAttribute("src"))
+                .map(inlineImage -> inlineImage.getDomProperty("src"))
                 .map(Objects::requireNonNull)
                 .forEach(src -> assertThat(src, matchesPattern(IMAGE_PATTERN)));
     }
@@ -126,7 +126,7 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
     private long countTestsWithStatus(final String status) {
         return extentReportPage.getTestViewTests()
                 .stream()
-                .map(webElement -> webElement.getAttribute("status"))
+                .map(webElement -> webElement.getDomAttribute("status"))
                 .filter(status::equals)
                 .count();
     }

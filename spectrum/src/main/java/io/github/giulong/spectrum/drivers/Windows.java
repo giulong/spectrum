@@ -10,15 +10,12 @@ import java.net.URL;
 public class Windows extends Appium<WindowsOptions, WindowsDriver> {
 
     @Override
-    public void configureWaitsOf(final WebDriver webDriver, final Configuration.Drivers.Waits waits) {
-        webDriver
-                .manage()
-                .timeouts()
-                .implicitlyWait(waits.getImplicit());
+    public WindowsDriver buildDriverFor(final URL url) {
+        return new WindowsDriver(url, capabilities);
     }
 
     @Override
-    public void buildCapabilities() {
+    void buildCapabilities() {
         capabilities = new WindowsOptions(configuration
                 .getDrivers()
                 .getWindows()
@@ -26,7 +23,10 @@ public class Windows extends Appium<WindowsOptions, WindowsDriver> {
     }
 
     @Override
-    public WindowsDriver buildDriverFor(final URL url) {
-        return new WindowsDriver(url, capabilities);
+    void configureWaitsOf(final WebDriver webDriver, final Configuration.Drivers.Waits waits) {
+        webDriver
+                .manage()
+                .timeouts()
+                .implicitlyWait(waits.getImplicit());
     }
 }

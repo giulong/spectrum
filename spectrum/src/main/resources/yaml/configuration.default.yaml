@@ -19,7 +19,6 @@ application:
 
 # TestBook (coverage)
 testBook:
-  enabled: false
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:

@@ -282,7 +282,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @return true if the WebElement has the provided css class
      */
     public boolean hasClass(final WebElement webElement, final String className) {
-        final String attribute = webElement.getAttribute("class");
+        final String attribute = webElement.getDomAttribute("class");
 
         return attribute != null && Arrays.asList(attribute.split(" ")).contains(className);
     }
@@ -301,7 +301,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     @SneakyThrows
-    protected static byte[] sha256Of(final Path file) {
+    static byte[] sha256Of(final Path file) {
         final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(Files.readAllBytes(file));
 
         log.trace("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));

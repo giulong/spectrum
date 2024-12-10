@@ -33,7 +33,6 @@ extent:
   inline: true
 
 testBook:
-  enabled: true
   reporters:
     - log: { } # the report will be logged
     - html:

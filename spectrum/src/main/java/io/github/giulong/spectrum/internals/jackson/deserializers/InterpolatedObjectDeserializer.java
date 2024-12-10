@@ -50,7 +50,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
         };
     }
 
-    protected int interpolate(final String value, final String currentName, final Matcher matcher) {
+    int interpolate(final String value, final String currentName, final Matcher matcher) {
         final String varName = matcher.group("varName");
         final String placeholder = matcher.group("placeholder");
         final String defaultValue = matcher.group("defaultValue");
@@ -74,7 +74,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
         return isNumber(interpolatedValue) ? Integer.parseInt(interpolatedValue) : 0;
     }
 
-    protected boolean isNumber(final String value) {
+    boolean isNumber(final String value) {
         return NUMBER.matcher(value).matches();
     }
 }

@@ -1217,38 +1217,16 @@ public void testInputFieldActions() {
 }
 ```
 
+> ⚠️ **WebDriver Events**<br/>
+> Since `js` relies on JavaScript to interact with the `AUT`, regular [events](#webdriver-events-listener) such as those when clicking buttons or filling forms won't be fired.
+> The only events emitted are `beforeExecuteScript` and `afterExecuteScript`, so be sure to configure those if you want to rely on automatic screenshots
+> and video generation.
+
 > ⚠️ **Methods not supported**<br/>
 > Currently, the `js` object doesn't support these WebElement methods:
 > * getAriaRole
 > * getAccessibleName
 > * getScreenshotAs
-
----
-
-# Secured WebElements
-
-Some web elements could be used for sensitive data, such as passwords input fields.
-Given [Spectrum intercepts web driver's events](#webdriver-events-listener), it might happen that some events,
-such as `beforeSendKeys` and `afterSendKeys`, send sensitive data to logs and html report in plain text.
-
-To avoid this, you just need to decorate the sensitive web elements with `@Secured`, and the sensitive data will be redacted
-with `[***]`. The replacement will only affect events' consumers such as logs and html report,
-of course the actual value will still be sent to or read from the web element.
-
-{% include copyCode.html %}
-
-```java
-import io.github.giulong.spectrum.interfaces.Secured;
-
-@FindBy(id = "password")
-@Secured
-private WebElement password;
-```
-
-> 💡 **Example**<br/>
-> Given you execute `password.sendKeys("SuperSecretPassword!");` this is what is going to be logged if the `beforeSendKeys` event gets consumed:
-> * without `@Secured` &rarr; "`Sending keys [SuperSecretPassword!] to id: password`"
-> * with `@Secured` &rarr; "`Sending keys [***] to id: password`"
 
 ---
 
@@ -1288,6 +1266,38 @@ webElement(s) via Javascript. That's it!
 
 Be sure to check the [JsWebElementIT]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/JsWebElementIT.java){:target="_blank"}
 to see some working example tests.
+
+> ⚠️ **WebDriver Events**<br/>
+> Since elements annotated with `@JsWebElement` relies on JavaScript to interact with the `AUT`, regular [events](#webdriver-events-listener) such as those when clicking buttons or
+> filling forms won't be fired. The only events emitted are `beforeExecuteScript` and `afterExecuteScript`, so be sure to configure those if you want to rely on automatic
+> screenshots and video generation.
+
+---
+
+# Secured WebElements
+
+Some web elements could be used for sensitive data, such as passwords input fields.
+Given [Spectrum intercepts web driver's events](#webdriver-events-listener), it might happen that some events,
+such as `beforeSendKeys` and `afterSendKeys`, send sensitive data to logs and html report in plain text.
+
+To avoid this, you just need to decorate the sensitive web elements with `@Secured`, and the sensitive data will be redacted
+with `[***]`. The replacement will only affect events' consumers such as logs and html report,
+of course the actual value will still be sent to or read from the web element.
+
+{% include copyCode.html %}
+
+```java
+import io.github.giulong.spectrum.interfaces.Secured;
+
+@FindBy(id = "password")
+@Secured
+private WebElement password;
+```
+
+> 💡 **Example**<br/>
+> Given you execute `password.sendKeys("SuperSecretPassword!");` this is what is going to be logged if the `beforeSendKeys` event gets consumed:
+> * without `@Secured` &rarr; "`Sending keys [SuperSecretPassword!] to id: password`"
+> * with `@Secured` &rarr; "`Sending keys [***] to id: password`"
 
 ---
 
@@ -2509,7 +2519,7 @@ eventsConsumers:
 ```
 
 > * simply create the file `src/test/resources/templates/test-steps.txt`. This will override the internal default, so there's no need to explicitly provide the path.
-> 
+>
 > The template is interpolated with [FreeMarker](https://freemarker.apache.org/){:target="_blank"}. All the steps recorded are exposed in the `steps` variable and each is mapped
 > onto the [TestStep.java template]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/pojos/events/TestStep.java){:target="_blank"}.
 
@@ -3116,7 +3126,6 @@ As you can see, it has a quality gate already set, as well as a yaml parser but 
 ```yaml
 # internal configuration.default.yaml
 testBook:
-  enabled: false
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -3125,21 +3134,17 @@ testBook:
   reporters: [ ] # List of testBook reporters that will produce the execution report in specific formats
 ```
 
-It's disabled by default. You need to enable it in your `configuration.yaml`, while providing the reporters you want:
+In your `configuration.yaml` you need to provide the reporters you want:
 
 {% include copyCode.html %}
 
 ```yaml
 testBook:
-  enabled: true
   reporters:
     - log: { }  # the report will be logged
     - html:
         output: ${testBookReportOutput}/testbook.html # a html report will be produced at this path
 ```
-
-> ⚠️ **Enabling testBook**<br/>
-> Remember the `enabled: true` flag must be explicitly set, otherwise the testBook won't be considered.
 
 ## Full TestBook Examples
 
@@ -3147,7 +3152,6 @@ testBook:
 
 ```yaml
 testBook:
-  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -3165,7 +3169,6 @@ testBook:
 
 ```yaml
 testBook:
-  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 60  # Execution successful if more than 60% of the weighted tests are successful
   parser:
@@ -3183,7 +3186,6 @@ testBook:
 
 ```yaml
 testBook:
-  enabled: true
   qualityGate:
     condition: ${weightedSuccessful.percentage} > 40 || ${failed} < 10  # We want the testbook to be marked as successful if we have at least 40% of successful weighted tests or less than 10 tests (not considering their weights!!) failed
   parser:

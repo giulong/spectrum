@@ -21,12 +21,6 @@ public final class ContextManager {
 
     private final Map<String, TestContext> testContexts = new ConcurrentHashMap<>();
 
-    public TestContext initFor(final ExtensionContext context, final TestContext testContext) {
-        testContexts.put(context.getUniqueId(), testContext);
-
-        return testContext;
-    }
-
     public TestContext initFor(final ExtensionContext context) {
         return initFor(context, new TestContext());
     }
@@ -51,5 +45,11 @@ public final class ContextManager {
 
     public <T> T get(final ExtensionContext context, final String key, final Class<T> clazz) {
         return get(context).get(key, clazz);
+    }
+
+    TestContext initFor(final ExtensionContext context, final TestContext testContext) {
+        testContexts.put(context.getUniqueId(), testContext);
+
+        return testContext;
     }
 }

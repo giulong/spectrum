@@ -1,31 +1,53 @@
 package io.github.giulong.spectrum.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.github.giulong.spectrum.TestYaml;
+import io.github.giulong.spectrum.utils.file_providers.FileProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 class YamlUtilsTest {
+
+    @Mock
+    private YAMLMapper yamlMapper;
+
+    @Mock
+    private ObjectReader reader;
+
+    @Mock
+    private ObjectWriter writer;
+
+    @Mock
+    private JsonNode jsonNode;
+
+    @Mock
+    private TestYaml testYaml;
+
+    @Mock
+    private TestYaml.ObjectKey objectKey;
+
+    @Mock
+    private FileProvider fileProvider;
 
     @InjectMocks
     private YamlUtils yamlUtils;
@@ -42,106 +64,52 @@ class YamlUtilsTest {
     void construction() {
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
-                "InterpolatedObjectDeserializer",
-                "InterpolatedStringDeserializer",
-                "InterpolatedBooleanDeserializer",
-                "UtilLogLevelDeserializer",
-                "LogbackLogLevelDeserializer",
-                "DurationDeserializer",
-                "DriverDeserializer",
-                "EnvironmentDeserializer",
-                "ClassDeserializer",
+                "Object",
+                "String",
+                "boolean",
+                "Level",
+                "Duration",
+                "Driver",
+                "Environment",
+                "Class",
                 "LogTestBookReporter",
                 "TxtTestBookReporter",
                 "HtmlTestBookReporter",
                 "LogSummaryReporter",
                 "TxtSummaryReporter",
-                "HtmlSummaryReporter",
-                "AppiumEnvironment"
-        ), yamlUtils.getYamlMapper().getRegisteredModuleIds());
+                "HtmlSummaryReporter"
+        ), Reflections.getFieldValue("yamlMapper", yamlUtils, YAMLMapper.class).getRegisteredModuleIds());
 
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
-                "InterpolatedObjectDeserializer",
-                "InterpolatedStringDeserializer",
-                "InterpolatedBooleanDeserializer",
-                "UtilLogLevelDeserializer",
-                "LogbackLogLevelDeserializer",
-                "DurationDeserializer"
-        ), yamlUtils.getDynamicConfYamlMapper().getRegisteredModuleIds());
+                "Object",
+                "String",
+                "boolean",
+                "Level",
+                "Duration"
+        ), Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils, YAMLMapper.class).getRegisteredModuleIds());
 
-        assertFalse(yamlUtils.getWriter().isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
-    }
-
-    @DisplayName("findValidPathsFor should return the list of resources paths with valid extensions from the provided file")
-    @ParameterizedTest(name = "with file {0} we expect {1}")
-    @MethodSource("valuesProvider")
-    void findValidPathsFor(final String file, final Stream<String> strings) {
-        final List<Path> paths = strings
-                .map(p -> Path.of("src", "test", "resources").resolve(p))
-                .toList();
-
-        assertEquals(paths, yamlUtils.findValidPathsFor(file));
-    }
-
-    static Stream<Arguments> valuesProvider() {
-        return Stream.of(
-                arguments("file", Stream.of("file", "file.yaml", "file.yml")),
-                arguments("folder/file", Stream.of("folder/file", "folder/file.yaml", "folder/file.yml"))
-        );
-    }
-
-    @Test
-    @DisplayName("findTheFirstValidFileFrom should return the first file that exists among the provided list")
-    void findTheFirstValidFileFrom() throws IOException {
-        final Path path = Files.createTempFile("prefix", "suffix");
-        final List<Path> paths = List.of(Path.of("non existing"), path);
-
-        path.toFile().deleteOnExit();
-
-        assertEquals(path.getFileName().toString(), yamlUtils.findTheFirstValidFileFrom(paths));
-    }
-
-    @Test
-    @DisplayName("findTheFirstValidFileFrom should throw an exception if no file among the provided list exists")
-    void findTheFirstValidFileFromThrows() {
-        final List<Path> paths = List.of(Path.of("non existing"), Path.of("another non existing"));
-
-        assertThrows(RuntimeException.class, () -> yamlUtils.findTheFirstValidFileFrom(paths));
-    }
-
-    @DisplayName("findFile should immediately return the file if it's internal: we know those exists!")
-    @ParameterizedTest(name = "with internal {1} we expect {2}")
-    @MethodSource("findFileValuesProvider")
-    void findFileInternal(final boolean internal, final String expected) {
-        assertEquals(expected, yamlUtils.findFile("file", internal));
-    }
-
-    static Stream<Arguments> findFileValuesProvider() {
-        return Stream.of(
-                arguments(true, "file"),
-                arguments(false, null)
-        );
+        assertFalse(Reflections.getFieldValue("writer", yamlUtils, ObjectWriter.class).isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
     }
 
     @Test
     @DisplayName("read should return null if the provided client file doesn't exist")
     void readNotExistingClientFile() {
-        assertNull(yamlUtils.read("not-existing", TestYaml.class, false));
+        assertNull(yamlUtils.readClient("not-existing", TestYaml.class));
     }
 
     @DisplayName("read should return an instance of the provided class deserializing the provided file")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
     void read(final String file) {
-        assertEquals("value", Objects.requireNonNull(yamlUtils.read(file, TestYaml.class, true)).getKey());
+        assertEquals("value", Objects.requireNonNull(yamlUtils.readInternal(file, TestYaml.class)).getKey());
     }
 
     @DisplayName("overloaded read should return an instance of the provided class deserializing the provided file")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
     void readClient(final String file) {
-        assertEquals("value", yamlUtils.read(file, TestYaml.class).getKey());
+        assertEquals("value", yamlUtils.read(new YAMLMapper().reader(), file, TestYaml.class).getKey());
     }
 
     @Test
@@ -153,21 +121,32 @@ class YamlUtilsTest {
     @Test
     @DisplayName("readNode should return null if the provided client file doesn't exist")
     void readNotExistingClientNode() {
-        assertNull(yamlUtils.readNode("/objectKey", "not-existing", TestYaml.ObjectKey.class, false));
+        assertNull(yamlUtils.readClientNode("/objectKey", "not-existing", TestYaml.ObjectKey.class));
     }
 
     @DisplayName("readNode should check if the provided file exists and return the node requested")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
     void readNode(final String file) {
-        assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readNode("/objectKey", file, TestYaml.ObjectKey.class, true)).getObjectField());
+        assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readInternalNode("/objectKey", file, TestYaml.ObjectKey.class)).getObjectField());
     }
 
     @DisplayName("readNode for client-side files should just delegate to the readNode method")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    void readClientNode(final String file) {
-        assertEquals("objectValue", yamlUtils.readNode("/objectKey", file, TestYaml.ObjectKey.class).getObjectField());
+    void readClientNode(final String file) throws IOException {
+        final Class<TestYaml.ObjectKey> clazz = TestYaml.ObjectKey.class;
+        final String node = "/objectKey";
+
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.readTree(any(InputStream.class))).thenReturn(jsonNode);
+        when(jsonNode.at(node)).thenReturn(jsonNode);
+        when(yamlMapper.convertValue(jsonNode, clazz)).thenReturn(objectKey);
+
+        assertEquals(objectKey, yamlUtils.readNode(fileProvider, node, file, clazz));
     }
 
     @Test
@@ -178,60 +157,71 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("readDynamicDeserializable should read the internal dynamic deserializable configuration provided, and merge the jsonNode provided on the created instance")
-    void readDynamicDeserializable() {
-        final JsonNode jsonNode = JsonNodeFactory.instance
-                .objectNode()
-                .put("key", "merged");
+    void readDynamicDeserializable() throws IOException {
+        final Class<TestYaml> clazz = TestYaml.class;
+        Reflections.setField("dynamicConfYamlMapper", yamlUtils, yamlMapper);
 
-        final TestYaml mergedYaml = yamlUtils.readDynamicDeserializable("test.yaml", TestYaml.class, jsonNode);
-        assertEquals("merged", mergedYaml.getKey());
-        assertEquals("objectValue", mergedYaml.getObjectKey().getObjectField());
+        when(yamlMapper.reader()).thenReturn(reader);
+        when(reader.readValue(any(URL.class), eq(clazz))).thenReturn(testYaml);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(reader.readValue(jsonNode)).thenReturn(testYaml);
+
+        assertEquals(testYaml, yamlUtils.readDynamicDeserializable("test.yaml", clazz, jsonNode));
     }
 
     @DisplayName("updateWithFile should update the provided instance with the file provided, reading only public fields")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    void updateWithFile(final String file) {
-        final TestYaml testYaml = TestYaml.builder()
-                .key("original")
-                .internalKey(TestYaml.InternalKey.builder().field("field").build())
-                .build();
+    void updateWithFile(final String file) throws IOException {
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+        Reflections.setField("clientFileProvider", yamlUtils, fileProvider);
 
-        yamlUtils.updateWithFile(testYaml, file);
-        assertEquals("value", testYaml.getKey());
-        assertEquals("field", testYaml.getInternalKey().getField()); // from the original pojo above: it's not updated with the content of test.yaml
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(reader.readValue(any(URL.class))).thenReturn(testYaml);
+
+        yamlUtils.updateWithClientFile(testYaml, file);
     }
 
     @Test
     @DisplayName("updateWithFile should do nothing if the provided file doesn't exist")
     void updateWithNotExistingFile() {
-        final TestYaml testYaml = TestYaml.builder().key("original").build();
+        final String file = "file";
 
-        yamlUtils.updateWithFile(testYaml, "not-existing");
-        assertEquals("original", testYaml.getKey());
+        when(fileProvider.find(file)).thenReturn(null);
+
+        yamlUtils.updateWithFile(testYaml, file, fileProvider);
+
+        verifyNoInteractions(testYaml);
+        verifyNoMoreInteractions(fileProvider);
     }
 
     @Test
     @DisplayName("updateWithInternalFile should update the provided instance with the internal file provided")
-    void updateWithInternalFile() {
-        final TestYaml testYaml = TestYaml.builder().key("original").build();
+    void updateWithInternalFile() throws IOException {
+        final String file = "test.yaml";
 
-        yamlUtils.updateWithInternalFile(testYaml, "test.yaml");
-        assertEquals("value", testYaml.getKey());
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+        Reflections.setField("internalFileProvider", yamlUtils, fileProvider);
+
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(reader.readValue(any(URL.class))).thenReturn(testYaml);
+
+        yamlUtils.updateWithInternalFile(testYaml, file);
     }
 
     @Test
     @DisplayName("write should just call the writeValueAsString of the provided object, printing internal fields as well")
-    void write() {
-        final TestYaml testYaml = mock(TestYaml.class);
-        final TestYaml.ObjectKey objectKey = mock(TestYaml.ObjectKey.class);
-        final TestYaml.InternalKey internalKey = mock(TestYaml.InternalKey.class);
+    void write() throws JsonProcessingException {
+        final String string = "string";
 
-        when(testYaml.getKey()).thenReturn("value");
-        when(testYaml.getObjectKey()).thenReturn(objectKey);
-        when(testYaml.getInternalKey()).thenReturn(internalKey);
-        when(objectKey.getObjectField()).thenReturn("field");
-        when(internalKey.getField()).thenReturn("internalField");
-        assertEquals("---\nkey: \"value\"\nobjectKey:\n  objectField: \"field\"\ninternalKey:\n  field: \"internalField\"\n", yamlUtils.write(testYaml));
+        Reflections.setField("writer", yamlUtils, writer);
+
+        when(writer.writeValueAsString(testYaml)).thenReturn(string);
+
+        assertEquals(string, yamlUtils.write(testYaml));
     }
 }

@@ -69,15 +69,6 @@ public final class Reflections {
         return clazz.cast(getFieldValue(fieldName, object));
     }
 
-    public static <T> T getFieldValue(final Field field, final Object object, final Class<T> clazz) {
-        return getFieldValue(field.getName(), object, clazz);
-    }
-
-    @SneakyThrows
-    public static Object getValueOf(final Field field, final Object object) {
-        return field.get(object);
-    }
-
     public static void setField(final String fieldName, final Object object, final Object value) {
         final Field field = getField(fieldName, object);
         setField(field, object, value);
@@ -88,14 +79,6 @@ public final class Reflections {
         log.trace("Setting field {}.{} to {}", object.getClass().getSimpleName(), field.getName(), value);
         field.setAccessible(true);
         field.set(object, value);
-    }
-
-    @SneakyThrows
-    public static void copyField(final Field sourceField, final Object source, final Field destField, final Object dest) {
-        log.trace("Copying field {}.{} to {}.{}", source.getClass().getSimpleName(), sourceField.getName(), dest.getClass().getSimpleName(), destField.getName());
-        sourceField.setAccessible(true);
-        destField.setAccessible(true);
-        destField.set(dest, sourceField.get(source));
     }
 
     @SneakyThrows
@@ -127,5 +110,10 @@ public final class Reflections {
                 .map(f -> getValueOf(f, object))
                 .map(clazz::cast)
                 .toList();
+    }
+
+    @SneakyThrows
+    static Object getValueOf(final Field field, final Object object) {
+        return field.get(object);
     }
 }
