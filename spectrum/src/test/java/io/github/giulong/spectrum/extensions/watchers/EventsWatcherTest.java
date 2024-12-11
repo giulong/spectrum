@@ -3,10 +3,7 @@ package io.github.giulong.spectrum.extensions.watchers;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -65,6 +62,11 @@ class EventsWatcherTest {
         when(parentContext.getDisplayName()).thenReturn(className);
     }
 
+    @TestFactory
+    @SuppressWarnings("unused")
+    private void testFactoryMethod() {
+    }
+
     @Test
     @DisplayName("beforeAll should dispatch an event")
     void testBeforeAll() {
@@ -79,6 +81,26 @@ class EventsWatcherTest {
         notifyTestStubs();
         eventsWatcher.beforeEach(extensionContext);
         verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(TEST), extensionContext);
+    }
+
+    @Test
+    @DisplayName("afterEach should dispatch an event only for methods annotated with TestFactory")
+    void testAfterEachTestFactory() throws NoSuchMethodException {
+        notifyTestStubs();
+
+        when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod("testFactoryMethod"));
+
+        eventsWatcher.afterEach(extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, AFTER, SUCCESSFUL, Set.of(TEST_FACTORY), extensionContext);
+    }
+
+    @Test
+    @DisplayName("afterEach should dispatch no event for methods not annotated with TestFactory")
+    void testAfterEach() throws NoSuchMethodException {
+        when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod("testAfterEach"));
+
+        eventsWatcher.afterEach(extensionContext);
+        verifyNoInteractions(eventsDispatcher);
     }
 
     @Test
