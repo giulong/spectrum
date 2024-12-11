@@ -479,4 +479,4 @@ eventsConsumers:
   - driver: # We need to close the driver once each test is done
       events:
         - reason: after
-          tags: [ test ]
+          tags: [ test, testFactory ]

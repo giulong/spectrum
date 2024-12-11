@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.extensions.watchers;
 
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.extension.*;
 
 import java.util.Optional;
@@ -10,7 +11,7 @@ import java.util.Set;
 import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 
-public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEachCallback, AfterAllCallback {
+public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
 
     private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
 
@@ -22,6 +23,13 @@ public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEach
     @Override
     public void beforeEach(final ExtensionContext context) {
         notifyTest(context, BEFORE, null, Set.of(TEST));
+    }
+
+    @Override
+    public void afterEach(final ExtensionContext context) {
+        if (context.getRequiredTestMethod().isAnnotationPresent(TestFactory.class)) {
+            notifyTest(context, AFTER, SUCCESSFUL, Set.of(TEST_FACTORY));
+        }
     }
 
     @Override
