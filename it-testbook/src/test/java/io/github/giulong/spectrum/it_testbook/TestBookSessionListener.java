@@ -48,7 +48,6 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private int txtSummarySuccessfulRetention;
 
     @Override
-    @SneakyThrows
     public void launcherSessionOpened(final LauncherSession session) {
         final Configuration configuration = yamlUtils.readInternal("configuration.yml", Configuration.class);
         final Configuration.Extent extent = configuration.getExtent();
@@ -65,16 +64,11 @@ public class TestBookSessionListener implements LauncherSessionListener {
         htmlSummaryReportsDirectory = summaryReportsPath;
         txtSummaryReportsDirectory = summaryReportsPath;
 
-        fileUtils.deleteDirectory(extentReportsDirectory);
-        fileUtils.deleteDirectory(htmlTestBooksDirectory);
-        fileUtils.deleteDirectory(txtTestBooksDirectory);
-        fileUtils.deleteDirectory(htmlSummaryReportsDirectory);
-        fileUtils.deleteDirectory(txtSummaryReportsDirectory);
-        Files.createDirectories(extentReportsDirectory);
-        Files.createDirectories(htmlTestBooksDirectory);
-        Files.createDirectories(txtTestBooksDirectory);
-        Files.createDirectories(htmlSummaryReportsDirectory);
-        Files.createDirectories(txtSummaryReportsDirectory);
+        fileUtils.deleteContentOf(extentReportsDirectory);
+        fileUtils.deleteContentOf(htmlTestBooksDirectory);
+        fileUtils.deleteContentOf(txtTestBooksDirectory);
+        fileUtils.deleteContentOf(htmlSummaryReportsDirectory);
+        fileUtils.deleteContentOf(txtSummaryReportsDirectory);
 
         extentTotalRetention = extent.getRetention().getTotal();
         assertEquals(3, extentTotalRetention);
