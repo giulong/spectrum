@@ -237,7 +237,6 @@ class ExtentReporterTest {
 
         when(retention.deleteOldArtifactsFrom(List.of(file1, file2), extentReporter)).thenReturn(2);
 
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(fileUtils.removeExtensionFrom(file1Name)).thenReturn(directory1Name);
         when(fileUtils.removeExtensionFrom(file2Name)).thenReturn(directory2Name);
     }
@@ -253,6 +252,7 @@ class ExtentReporterTest {
     @DisplayName("sessionOpened should init the extent report")
     void sessionOpened() {
         final String fileName = "fileName";
+        final String fileNameWithoutExtension = "fileNameWithoutExtension";
         final String reportName = "reportName";
         final String documentTitle = "documentTitle";
         final String theme = "DARK";
@@ -267,14 +267,14 @@ class ExtentReporterTest {
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(REPORT_FOLDER);
         when(extent.getFileName()).thenReturn(fileName);
-        when(Path.of(REPORT_FOLDER, fileName)).thenReturn(path);
+        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(Path.of(REPORT_FOLDER, fileNameWithoutExtension, fileName)).thenReturn(path);
         when(path.toAbsolutePath()).thenReturn(absolutePath);
         when(absolutePath.toString()).thenReturn(absolutePathToString);
         when(extent.getReportName()).thenReturn(reportName);
         when(extent.getDocumentTitle()).thenReturn(documentTitle);
         when(extent.getTheme()).thenReturn(theme);
         when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
         when(extent.getCss()).thenReturn(extentCss);
         when(fileUtils.read(extentCss)).thenReturn(css);
         when(extent.getJs()).thenReturn(extentJs);
@@ -333,6 +333,7 @@ class ExtentReporterTest {
         final int total = 123;
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
+        final String fileNameWithoutExtension = "fileNameWithoutExtension";
 
         cleanupOldReportsStubs();
         sortTestStubs();
@@ -346,7 +347,8 @@ class ExtentReporterTest {
 
         when(extent.getReportFolder()).thenReturn(reportFolder);
         when(extent.getFileName()).thenReturn(fileName);
-        when(Path.of(reportFolder, fileName)).thenReturn(path);
+        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(Path.of(reportFolder, fileNameWithoutExtension, fileName)).thenReturn(path);
         when(path.toAbsolutePath()).thenReturn(absolutePath);
         when(absolutePath.toFile()).thenReturn(file1);
         when(Desktop.getDesktop()).thenReturn(desktop);
@@ -400,6 +402,7 @@ class ExtentReporterTest {
     void produceMetadata() {
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
+        final String fileNameWithoutExtension = "fileNameWithoutExtension";
         final String namespace = "namespace";
         final int retentionSuccessful = 123;
         final Map<String, FixedSizeQueue<File>> reports = new HashMap<>(Map.of(namespace, fileFixedSizeQueue));
@@ -410,7 +413,8 @@ class ExtentReporterTest {
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(reportFolder);
         when(extent.getFileName()).thenReturn(fileName);
-        when(Path.of(reportFolder, fileName)).thenReturn(path);
+        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(Path.of(reportFolder, fileNameWithoutExtension, fileName)).thenReturn(path);
         when(path.toAbsolutePath()).thenReturn(absolutePath);
         when(absolutePath.toFile()).thenReturn(file1);
         when(retention.getSuccessful()).thenReturn(retentionSuccessful);
@@ -443,10 +447,12 @@ class ExtentReporterTest {
     void getReportPathFrom() {
         final String reportFolder = "reportFolder";
         final String fileName = "fileName";
+        final String fileNameWithoutExtension = "fileNameWithoutExtension";
 
         when(extent.getReportFolder()).thenReturn(reportFolder);
         when(extent.getFileName()).thenReturn(fileName);
-        when(Path.of(reportFolder, fileName)).thenReturn(path);
+        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(Path.of(reportFolder, fileNameWithoutExtension, fileName)).thenReturn(path);
         when(path.toAbsolutePath()).thenReturn(absolutePath);
 
         assertEquals(absolutePath, extentReporter.getReportPathFrom(extent));
