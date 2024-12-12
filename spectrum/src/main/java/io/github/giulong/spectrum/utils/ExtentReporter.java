@@ -173,7 +173,8 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     protected Path getReportPathFrom(final Configuration.Extent extent) {
-        return Path.of(extent.getReportFolder(), extent.getFileName()).toAbsolutePath();
+        final String fileName = extent.getFileName();
+        return Path.of(extent.getReportFolder(), fileUtils.removeExtensionFrom(fileName), fileName).toAbsolutePath();
     }
 
     void sortTests() {

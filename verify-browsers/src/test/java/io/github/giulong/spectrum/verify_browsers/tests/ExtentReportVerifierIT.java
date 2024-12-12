@@ -106,7 +106,7 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
     @Test
     @DisplayName("should check the report")
     public void report() {
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report/report.html", Path.of(System.getProperty("user.dir")).getParent()));
     }
 
     @Test
