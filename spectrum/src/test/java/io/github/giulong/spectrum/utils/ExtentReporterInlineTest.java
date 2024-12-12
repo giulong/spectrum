@@ -175,6 +175,7 @@ class ExtentReporterInlineTest {
     @DisplayName("sessionClosed should produce the inline report and cleanup the old ones")
     void sessionClosed() throws IOException {
         final String fileName = "fileName";
+        final String fileNameWithoutExtension = "fileNameWithoutExtension";
         final String readString = "readString";
         final String inlineReport = "inlineReport";
 
@@ -187,7 +188,8 @@ class ExtentReporterInlineTest {
         // getReportPathFrom
         when(extent.getReportFolder()).thenReturn(REPORT_FOLDER);
         when(extent.getFileName()).thenReturn(fileName);
-        when(Path.of(REPORT_FOLDER, fileName)).thenReturn(path);
+        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(Path.of(REPORT_FOLDER, fileNameWithoutExtension, fileName)).thenReturn(path);
         when(path.toAbsolutePath()).thenReturn(absolutePath);
 
         cleanupOldReportsStubsFor(REPORT_FOLDER);
