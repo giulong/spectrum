@@ -20,6 +20,9 @@ public class Retention {
     @JsonIgnore
     private final MetadataManager metadataManager = MetadataManager.getInstance();
 
+    @JsonIgnore
+    private final FileUtils fileUtils = FileUtils.getInstance();
+
     @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Number of reports to retain. Older ones will be deleted")
     private int total = Integer.MAX_VALUE;
@@ -28,7 +31,7 @@ public class Retention {
     @JsonPropertyDescription("Number of successful reports to retain. Older ones will be deleted")
     private int successful;
 
-    public int deleteOldArtifactsFrom(final List<File> files, final CanProduceMetadata metadataProducer) {
+    public void deleteOldArtifactsFrom(final List<File> files, final CanProduceMetadata metadataProducer) {
         final int currentCount = files.size();
         final int toKeep = clamp(total, 0, currentCount);
         final int toDelete = max(0, currentCount - toKeep);
@@ -43,16 +46,10 @@ public class Retention {
                 .limit(successful)
                 .toList();
 
-        final List<File> deletableFiles = files
+        files
                 .stream()
                 .filter(not(successfulFilesToKeep::contains))
-                .toList();
-
-        for (int i = 0; i < toDelete; i++) {
-            final File file = deletableFiles.get(i);
-            log.trace("File '{}' deleted? {}", file, file.delete());
-        }
-
-        return toDelete;
+                .limit(toDelete)
+                .forEach(file -> log.trace("File '{}' deleted? {}", file, fileUtils.deleteDirectory(file.toPath())));
     }
 }

@@ -88,10 +88,7 @@ class ExtentReporterTest {
     private Path absolutePath;
 
     @Mock
-    private Path directory1Path;
-
-    @Mock
-    private Path directory2Path;
+    private Path parentPath;
 
     @Mock
     private File folder;
@@ -211,10 +208,6 @@ class ExtentReporterTest {
 
     private void cleanupOldReportsStubs() {
         final int total = 123;
-        final String file1Name = "file1Name";
-        final String file2Name = "file2Name";
-        final String directory1Name = "directory1Name";
-        final String directory2Name = "directory2Name";
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
@@ -223,22 +216,6 @@ class ExtentReporterTest {
         when(Path.of(REPORT_FOLDER)).thenReturn(path);
         when(path.toFile()).thenReturn(folder);
         when(folder.listFiles()).thenReturn(new File[]{file1, file2, directory1, directory2});
-
-        when(file1.isDirectory()).thenReturn(false);
-        when(file2.isDirectory()).thenReturn(false);
-        when(directory1.isDirectory()).thenReturn(true);
-        when(directory2.isDirectory()).thenReturn(true);
-        when(file1.getName()).thenReturn(file1Name);
-        when(file2.getName()).thenReturn(file2Name);
-        when(directory1.getName()).thenReturn(directory1Name);
-        when(directory2.getName()).thenReturn(directory2Name);
-        when(directory1.toPath()).thenReturn(directory1Path);
-        when(directory2.toPath()).thenReturn(directory2Path);
-
-        when(retention.deleteOldArtifactsFrom(List.of(file1, file2), extentReporter)).thenReturn(2);
-
-        when(fileUtils.removeExtensionFrom(file1Name)).thenReturn(directory1Name);
-        when(fileUtils.removeExtensionFrom(file2Name)).thenReturn(directory2Name);
     }
 
     @Test
@@ -323,8 +300,7 @@ class ExtentReporterTest {
         verify(extentReports).flush();
 
         // cleanupOldReports
-        verify(fileUtils).deleteDirectory(directory1Path);
-        verify(fileUtils).deleteDirectory(directory2Path);
+        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
     }
 
     @Test
@@ -358,8 +334,7 @@ class ExtentReporterTest {
         verify(extentReports).flush();
 
         // cleanupOldReports
-        verify(fileUtils).deleteDirectory(directory1Path);
-        verify(fileUtils).deleteDirectory(directory2Path);
+        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
         verify(desktop).open(file1);
     }
 
@@ -370,8 +345,7 @@ class ExtentReporterTest {
 
         extentReporter.cleanupOldReportsIn(REPORT_FOLDER);
 
-        verify(fileUtils).deleteDirectory(directory1Path);
-        verify(fileUtils).deleteDirectory(directory2Path);
+        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
     }
 
     @Test
@@ -416,8 +390,9 @@ class ExtentReporterTest {
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
         when(Path.of(reportFolder, fileNameWithoutExtension, fileName)).thenReturn(path);
         when(path.toAbsolutePath()).thenReturn(absolutePath);
-        when(absolutePath.toFile()).thenReturn(file1);
         when(retention.getSuccessful()).thenReturn(retentionSuccessful);
+        when(absolutePath.getParent()).thenReturn(parentPath);
+        when(parentPath.toFile()).thenReturn(file1);
 
         when(MetadataManager.getInstance()).thenReturn(metadataManager);
         when(metadataManager.getSuccessfulQueueOf(extentReporter)).thenReturn(fileFixedSizeQueue);
@@ -440,6 +415,24 @@ class ExtentReporterTest {
         verify(extentReports).removeTest(NAME_TWO);
         verify(report).addTest(test1);
         verify(report).addTest(test2);
+    }
+
+    @Test
+    @DisplayName("getMetadata should return the reports path's parent")
+    void getMetadata() {
+        final String reportFolder = "reportFolder";
+        final String fileName = "fileName";
+        final String fileNameWithoutExtension = "fileNameWithoutExtension";
+
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getReportFolder()).thenReturn(reportFolder);
+        when(extent.getFileName()).thenReturn(fileName);
+        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(Path.of(reportFolder, fileNameWithoutExtension, fileName)).thenReturn(path);
+        when(path.toAbsolutePath()).thenReturn(absolutePath);
+        when(absolutePath.getParent()).thenReturn(parentPath);
+
+        assertEquals(parentPath, extentReporter.getMetadata());
     }
 
     @Test

@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.platform.launcher.Launcher;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
+import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -24,8 +25,7 @@ import java.util.stream.Stream;
 import static io.github.giulong.spectrum.SpectrumSessionListener.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class SpectrumSessionListenerTest {
 
@@ -150,15 +150,17 @@ class SpectrumSessionListenerTest {
         when(configuration.getTestBook()).thenReturn(testBook);
         when(configuration.getSummary()).thenReturn(summary);
 
+        final InOrder inOrder = inOrder(environment, testBook, summary, metadataManager, extentReporter, extentReporterInline, eventsDispatcher);
+
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
-        verify(environment).sessionClosed();
-        verify(testBook).sessionClosed();
-        verify(summary).sessionClosed();
-        verify(extentReporter).sessionClosed();
-        verify(extentReporterInline).sessionClosed();
-        verify(eventsDispatcher).sessionClosed();
-        verify(metadataManager).sessionClosed();
+        inOrder.verify(environment).sessionClosed();
+        inOrder.verify(testBook).sessionClosed();
+        inOrder.verify(summary).sessionClosed();
+        inOrder.verify(metadataManager).sessionClosed();
+        inOrder.verify(extentReporter).sessionClosed();
+        inOrder.verify(extentReporterInline).sessionClosed();
+        inOrder.verify(eventsDispatcher).sessionClosed();
     }
 
     @Test

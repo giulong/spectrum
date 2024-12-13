@@ -25,7 +25,6 @@ import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.aventstack.extentreports.Status.INFO;
@@ -35,8 +34,6 @@ import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
-import static java.util.Comparator.comparingLong;
-import static java.util.function.Predicate.not;
 import static lombok.AccessLevel.PROTECTED;
 
 @Slf4j
@@ -105,7 +102,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     @Override
     public void produceMetadata() {
         final MetadataManager metadataManager = MetadataManager.getInstance();
-        final File file = getReportPathFrom(configuration.getExtent()).toFile();
+        final File file = getMetadata().toFile();
         final int maxSize = getRetention().getSuccessful();
         final FixedSizeQueue<File> queue = metadataManager.getSuccessfulQueueOf(this);
 
@@ -172,7 +169,11 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         }
     }
 
-    protected Path getReportPathFrom(final Configuration.Extent extent) {
+    Path getMetadata() {
+        return getReportPathFrom(configuration.getExtent()).getParent();
+    }
+
+    Path getReportPathFrom(final Configuration.Extent extent) {
         final String fileName = extent.getFileName();
         return Path.of(extent.getReportFolder(), fileUtils.removeExtensionFrom(fileName), fileName).toAbsolutePath();
     }
@@ -200,31 +201,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
             return;
         }
 
-        final List<File> files = Arrays
-                .stream(folderContent)
-                .filter(not(File::isDirectory))
-                .sorted(comparingLong(File::lastModified))
-                .toList();
-
-        final List<File> directories = Arrays
-                .stream(folderContent)
-                .filter(File::isDirectory)
-                .toList();
-
-        final int toDelete = retention.deleteOldArtifactsFrom(files, this);
-
-        for (int i = 0; i < toDelete; i++) {
-            final String directoryName = fileUtils.removeExtensionFrom(files.get(i).getName());
-
-            directories
-                    .stream()
-                    .peek(directory -> log.debug("Checking if directory needs to be deleted: {}", directory))
-                    .filter(directory -> directory.getName().equals(directoryName))
-                    .peek(directory -> log.debug("Found directory to delete: {}", directory))
-                    .findFirst()
-                    .map(File::toPath)
-                    .ifPresent(fileUtils::deleteDirectory);
-        }
+        retention.deleteOldArtifactsFrom(List.of(folderContent), this);
     }
 
     ExtentColor getColorOf(final Status status) {

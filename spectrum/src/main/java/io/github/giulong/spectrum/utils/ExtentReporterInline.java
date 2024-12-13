@@ -42,14 +42,18 @@ public class ExtentReporterInline extends ExtentReporter {
         log.debug("Session closed hook");
 
         final Configuration.Extent extent = configuration.getExtent();
-        final String inlineReportFolder = extent.getInlineReportFolder();
         if (extent.isInline()) {
             final String inlineReport = htmlUtils.inline(Files.readString(super.getReportPathFrom(extent)));
 
-            fileUtils.write(Path.of(inlineReportFolder, extent.getFileName()), inlineReport);
+            fileUtils.write(getReportPathFrom(extent), inlineReport);
         }
 
-        cleanupOldReportsIn(inlineReportFolder);
+        cleanupOldReportsIn(extent.getInlineReportFolder());
+    }
+
+    @Override
+    Path getMetadata() {
+        return getReportPathFrom(configuration.getExtent());
     }
 
     @Override
