@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.jcodec.codecs.mjpeg.tools.Asserts.assertEquals;
@@ -16,6 +17,9 @@ class RetentionTest {
 
     @Mock
     private MetadataManager metadataManager;
+
+    @Mock
+    private FileUtils fileUtils;
 
     @Mock
     private ExtentReporter metadataProducer;
@@ -39,6 +43,21 @@ class RetentionTest {
     private File file5;
 
     @Mock
+    private Path path1;
+
+    @Mock
+    private Path path2;
+
+    @Mock
+    private Path path3;
+
+    @Mock
+    private Path path4;
+
+    @Mock
+    private Path path5;
+
+    @Mock
     private File absoluteFile1;
 
     @Mock
@@ -59,6 +78,7 @@ class RetentionTest {
     @BeforeEach
     void beforeEach() {
         Reflections.setField("metadataManager", retention, metadataManager);
+        Reflections.setField("fileUtils", retention, fileUtils);
     }
 
     @Test
@@ -76,10 +96,13 @@ class RetentionTest {
         Reflections.setField("total", retention, total);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
 
-        assertEquals(2, retention.deleteOldArtifactsFrom(files, metadataProducer));
-        verify(file1).delete();
-        verify(file2).delete();
-        verify(file3, never()).delete();
+        when(file1.toPath()).thenReturn(path1);
+        when(file2.toPath()).thenReturn(path2);
+
+        retention.deleteOldArtifactsFrom(files, metadataProducer);
+        verify(fileUtils).deleteDirectory(path1);
+        verify(fileUtils).deleteDirectory(path2);
+        verify(fileUtils, never()).deleteDirectory(path3);
     }
 
     @Test
@@ -91,7 +114,7 @@ class RetentionTest {
         Reflections.setField("total", retention, total);
         when(metadataManager.getSuccessfulQueueOf(metadataProducer)).thenReturn(successfulQueue);
 
-        assertEquals(0, retention.deleteOldArtifactsFrom(files, metadataProducer));
+        retention.deleteOldArtifactsFrom(files, metadataProducer);
         verify(file1, never()).delete();
         verify(file2, never()).delete();
         verify(file3, never()).delete();
@@ -110,12 +133,16 @@ class RetentionTest {
         when(file1.getAbsoluteFile()).thenReturn(absoluteFile1);
         when(successfulQueue.contains(absoluteFile1)).thenReturn(true);
 
-        assertEquals(3, retention.deleteOldArtifactsFrom(files, metadataProducer));
-        verify(file1, never()).delete();
-        verify(file2).delete();
-        verify(file3).delete();
-        verify(file4).delete();
-        verify(file5, never()).delete();
+        when(file2.toPath()).thenReturn(path2);
+        when(file3.toPath()).thenReturn(path3);
+        when(file4.toPath()).thenReturn(path4);
+
+        retention.deleteOldArtifactsFrom(files, metadataProducer);
+        verify(fileUtils, never()).deleteDirectory(path1);
+        verify(fileUtils).deleteDirectory(path2);
+        verify(fileUtils).deleteDirectory(path3);
+        verify(fileUtils).deleteDirectory(path4);
+        verify(fileUtils, never()).deleteDirectory(path5);
     }
 
     @Test
@@ -131,7 +158,7 @@ class RetentionTest {
         when(file1.getAbsoluteFile()).thenReturn(absoluteFile1);
         when(successfulQueue.contains(absoluteFile1)).thenReturn(true);
 
-        assertEquals(0, retention.deleteOldArtifactsFrom(files, metadataProducer));
+        retention.deleteOldArtifactsFrom(files, metadataProducer);
         verify(file1, never()).delete();
         verify(file2, never()).delete();
         verify(file3, never()).delete();
@@ -153,12 +180,16 @@ class RetentionTest {
         when(file5.getAbsoluteFile()).thenReturn(absoluteFile5);
         when(successfulQueue.contains(absoluteFile1)).thenReturn(true);
 
-        assertEquals(3, retention.deleteOldArtifactsFrom(files, metadataProducer));
-        verify(file1, never()).delete();
-        verify(file2).delete();
-        verify(file3).delete();
-        verify(file4).delete();
-        verify(file5, never()).delete();
+        when(file2.toPath()).thenReturn(path2);
+        when(file3.toPath()).thenReturn(path3);
+        when(file4.toPath()).thenReturn(path4);
+
+        retention.deleteOldArtifactsFrom(files, metadataProducer);
+        verify(fileUtils, never()).deleteDirectory(path1);
+        verify(fileUtils).deleteDirectory(path2);
+        verify(fileUtils).deleteDirectory(path3);
+        verify(fileUtils).deleteDirectory(path4);
+        verify(fileUtils, never()).deleteDirectory(path5);
     }
 
     @Test
@@ -178,12 +209,15 @@ class RetentionTest {
         when(successfulQueue.contains(absoluteFile2)).thenReturn(false);
         when(successfulQueue.contains(absoluteFile3)).thenReturn(true);
 
-        assertEquals(2, retention.deleteOldArtifactsFrom(files, metadataProducer));
-        verify(file1, never()).delete();
-        verify(file2).delete();
-        verify(file3, never()).delete();
-        verify(file4).delete();
-        verify(file5, never()).delete();
+        when(file2.toPath()).thenReturn(path2);
+        when(file4.toPath()).thenReturn(path4);
+
+        retention.deleteOldArtifactsFrom(files, metadataProducer);
+        verify(fileUtils, never()).deleteDirectory(path1);
+        verify(fileUtils).deleteDirectory(path2);
+        verify(fileUtils, never()).deleteDirectory(path3);
+        verify(fileUtils).deleteDirectory(path4);
+        verify(fileUtils, never()).deleteDirectory(path5);
     }
 
     @Test
@@ -201,12 +235,15 @@ class RetentionTest {
         when(successfulQueue.contains(absoluteFile1)).thenReturn(true);
         when(successfulQueue.contains(absoluteFile2)).thenReturn(true);
 
-        assertEquals(2, retention.deleteOldArtifactsFrom(files, metadataProducer));
-        verify(file1, never()).delete();
-        verify(file2, never()).delete();
-        verify(file3).delete();
-        verify(file4).delete();
-        verify(file5, never()).delete();
+        when(file3.toPath()).thenReturn(path3);
+        when(file4.toPath()).thenReturn(path4);
+
+        retention.deleteOldArtifactsFrom(files, metadataProducer);
+        verify(fileUtils, never()).deleteDirectory(path1);
+        verify(fileUtils, never()).deleteDirectory(path2);
+        verify(fileUtils).deleteDirectory(path3);
+        verify(fileUtils).deleteDirectory(path4);
+        verify(fileUtils, never()).deleteDirectory(path5);
     }
 
     @Test
@@ -228,11 +265,14 @@ class RetentionTest {
         when(successfulQueue.contains(absoluteFile3)).thenReturn(false);
         when(successfulQueue.contains(absoluteFile4)).thenReturn(true);
 
-        assertEquals(2, retention.deleteOldArtifactsFrom(files, metadataProducer));
-        verify(file1, never()).delete();
-        verify(file2).delete();
-        verify(file3).delete();
-        verify(file4, never()).delete();
-        verify(file5, never()).delete();
+        when(file2.toPath()).thenReturn(path2);
+        when(file3.toPath()).thenReturn(path3);
+
+        retention.deleteOldArtifactsFrom(files, metadataProducer);
+        verify(fileUtils, never()).deleteDirectory(path1);
+        verify(fileUtils).deleteDirectory(path2);
+        verify(fileUtils).deleteDirectory(path3);
+        verify(fileUtils, never()).deleteDirectory(path4);
+        verify(fileUtils, never()).deleteDirectory(path5);
     }
 }
