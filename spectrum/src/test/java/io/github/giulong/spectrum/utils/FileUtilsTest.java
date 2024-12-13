@@ -118,27 +118,27 @@ class FileUtilsTest {
         );
     }
 
-    @DisplayName("deleteDirectory should delete the provided folder and return the reference to it")
+    @DisplayName("delete should delete the provided folder and return the reference to it")
     @ParameterizedTest(name = "with value {0} which is existing? {1}")
-    @MethodSource("deleteDirectoryValuesProvider")
-    void deleteDirectory(final Path directory, final boolean existing) {
+    @MethodSource("deleteValuesProvider")
+    void delete(final Path directory, final boolean existing) {
         directory.toFile().deleteOnExit();
         assertEquals(existing, Files.exists(directory));
 
-        assertEquals(directory, fileUtils.deleteDirectory(directory));
+        assertEquals(directory, fileUtils.delete(directory));
 
         assertFalse(Files.exists(directory));
     }
 
-    static Stream<Arguments> deleteDirectoryValuesProvider() throws IOException {
+    static Stream<Arguments> deleteValuesProvider() throws IOException {
         return Stream.of(
                 arguments(Path.of("abc not existing"), false),
                 arguments(Files.createTempDirectory("downloadsFolder"), true));
     }
 
-    @DisplayName("deleteContentOf should delete the provided directory, recreate it, and return the reference to it")
+    @DisplayName("delete should delete the provided directory, recreate it, and return the reference to it")
     @ParameterizedTest(name = "with value {0} which is existing? {1}")
-    @MethodSource("deleteDirectoryValuesProvider")
+    @MethodSource("deleteValuesProvider")
     void deleteContentOf(final Path directory, final boolean existing) {
         directory.toFile().deleteOnExit();
         assertEquals(existing, Files.exists(directory));

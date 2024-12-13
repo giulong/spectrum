@@ -76,27 +76,27 @@ public final class FileUtils {
     }
 
     @SneakyThrows
-    public Path deleteDirectory(final Path directory) {
-        if (!Files.exists(directory)) {
-            log.debug("Avoid deleting non-existing directory '{}'", directory);
-            return directory;
+    public Path delete(final Path path) {
+        if (!Files.exists(path)) {
+            log.debug("Avoid deleting non-existing path '{}'", path);
+            return path;
         }
 
-        log.debug("About to delete directory '{}'", directory);
+        log.debug("About to delete path '{}'", path);
 
-        try (Stream<Path> files = Files.walk(directory)) {
+        try (Stream<Path> files = Files.walk(path)) {
             files
                     .sorted(reverseOrder())
                     .map(Path::toFile)
                     .forEach(f -> log.trace("File '{}' deleted? {}", f, f.delete()));
         }
 
-        return directory;
+        return path;
     }
 
     @SneakyThrows
     public Path deleteContentOf(final Path directory) {
-        return Files.createDirectories(deleteDirectory(directory));
+        return Files.createDirectories(delete(directory));
     }
 
     @SneakyThrows

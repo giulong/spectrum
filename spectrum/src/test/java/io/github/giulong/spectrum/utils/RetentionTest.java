@@ -100,9 +100,9 @@ class RetentionTest {
         when(file2.toPath()).thenReturn(path2);
 
         retention.deleteOldArtifactsFrom(files, metadataProducer);
-        verify(fileUtils).deleteDirectory(path1);
-        verify(fileUtils).deleteDirectory(path2);
-        verify(fileUtils, never()).deleteDirectory(path3);
+        verify(fileUtils).delete(path1);
+        verify(fileUtils).delete(path2);
+        verify(fileUtils, never()).delete(path3);
     }
 
     @Test
@@ -138,11 +138,11 @@ class RetentionTest {
         when(file4.toPath()).thenReturn(path4);
 
         retention.deleteOldArtifactsFrom(files, metadataProducer);
-        verify(fileUtils, never()).deleteDirectory(path1);
-        verify(fileUtils).deleteDirectory(path2);
-        verify(fileUtils).deleteDirectory(path3);
-        verify(fileUtils).deleteDirectory(path4);
-        verify(fileUtils, never()).deleteDirectory(path5);
+        verify(fileUtils, never()).delete(path1);
+        verify(fileUtils).delete(path2);
+        verify(fileUtils).delete(path3);
+        verify(fileUtils).delete(path4);
+        verify(fileUtils, never()).delete(path5);
     }
 
     @Test
@@ -185,11 +185,11 @@ class RetentionTest {
         when(file4.toPath()).thenReturn(path4);
 
         retention.deleteOldArtifactsFrom(files, metadataProducer);
-        verify(fileUtils, never()).deleteDirectory(path1);
-        verify(fileUtils).deleteDirectory(path2);
-        verify(fileUtils).deleteDirectory(path3);
-        verify(fileUtils).deleteDirectory(path4);
-        verify(fileUtils, never()).deleteDirectory(path5);
+        verify(fileUtils, never()).delete(path1);
+        verify(fileUtils).delete(path2);
+        verify(fileUtils).delete(path3);
+        verify(fileUtils).delete(path4);
+        verify(fileUtils, never()).delete(path5);
     }
 
     @Test
@@ -213,11 +213,11 @@ class RetentionTest {
         when(file4.toPath()).thenReturn(path4);
 
         retention.deleteOldArtifactsFrom(files, metadataProducer);
-        verify(fileUtils, never()).deleteDirectory(path1);
-        verify(fileUtils).deleteDirectory(path2);
-        verify(fileUtils, never()).deleteDirectory(path3);
-        verify(fileUtils).deleteDirectory(path4);
-        verify(fileUtils, never()).deleteDirectory(path5);
+        verify(fileUtils, never()).delete(path1);
+        verify(fileUtils).delete(path2);
+        verify(fileUtils, never()).delete(path3);
+        verify(fileUtils).delete(path4);
+        verify(fileUtils, never()).delete(path5);
     }
 
     @Test
@@ -239,11 +239,11 @@ class RetentionTest {
         when(file4.toPath()).thenReturn(path4);
 
         retention.deleteOldArtifactsFrom(files, metadataProducer);
-        verify(fileUtils, never()).deleteDirectory(path1);
-        verify(fileUtils, never()).deleteDirectory(path2);
-        verify(fileUtils).deleteDirectory(path3);
-        verify(fileUtils).deleteDirectory(path4);
-        verify(fileUtils, never()).deleteDirectory(path5);
+        verify(fileUtils, never()).delete(path1);
+        verify(fileUtils, never()).delete(path2);
+        verify(fileUtils).delete(path3);
+        verify(fileUtils).delete(path4);
+        verify(fileUtils, never()).delete(path5);
     }
 
     @Test
@@ -269,10 +269,10 @@ class RetentionTest {
         when(file3.toPath()).thenReturn(path3);
 
         retention.deleteOldArtifactsFrom(files, metadataProducer);
-        verify(fileUtils, never()).deleteDirectory(path1);
-        verify(fileUtils).deleteDirectory(path2);
-        verify(fileUtils).deleteDirectory(path3);
-        verify(fileUtils, never()).deleteDirectory(path4);
-        verify(fileUtils, never()).deleteDirectory(path5);
+        verify(fileUtils, never()).delete(path1);
+        verify(fileUtils).delete(path2);
+        verify(fileUtils).delete(path3);
+        verify(fileUtils, never()).delete(path4);
+        verify(fileUtils, never()).delete(path5);
     }
 }
