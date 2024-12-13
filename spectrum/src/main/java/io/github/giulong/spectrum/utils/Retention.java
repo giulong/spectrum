@@ -50,6 +50,6 @@ public class Retention {
                 .stream()
                 .filter(not(successfulFilesToKeep::contains))
                 .limit(toDelete)
-                .forEach(file -> log.trace("File '{}' deleted? {}", file, fileUtils.deleteDirectory(file.toPath())));
+                .forEach(file -> log.trace("File '{}' deleted? {}", file, fileUtils.delete(file.toPath())));
     }
 }
