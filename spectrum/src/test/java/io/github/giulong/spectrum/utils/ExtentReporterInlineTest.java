@@ -12,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
@@ -39,12 +38,6 @@ class ExtentReporterInlineTest {
 
     @Mock
     private Path absolutePath;
-
-    @Mock
-    private Path directory1Path;
-
-    @Mock
-    private Path directory2Path;
 
     @Mock
     private File folder;
@@ -92,10 +85,6 @@ class ExtentReporterInlineTest {
     // cleanupOldReports stubs from parent
     private void cleanupOldReportsStubsFor(final String reportFolder) {
         final int total = 123;
-        final String file1Name = "file1Name";
-        final String file2Name = "file2Name";
-        final String directory1Name = "directory1Name";
-        final String directory2Name = "directory2Name";
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
@@ -104,22 +93,6 @@ class ExtentReporterInlineTest {
         when(Path.of(reportFolder)).thenReturn(path);
         when(path.toFile()).thenReturn(folder);
         when(folder.listFiles()).thenReturn(new File[]{file1, file2, directory1, directory2});
-
-        when(file1.isDirectory()).thenReturn(false);
-        when(file2.isDirectory()).thenReturn(false);
-        when(directory1.isDirectory()).thenReturn(true);
-        when(directory2.isDirectory()).thenReturn(true);
-        when(file1.getName()).thenReturn(file1Name);
-        when(file2.getName()).thenReturn(file2Name);
-        when(directory1.getName()).thenReturn(directory1Name);
-        when(directory2.getName()).thenReturn(directory2Name);
-        when(directory1.toPath()).thenReturn(directory1Path);
-        when(directory2.toPath()).thenReturn(directory2Path);
-
-        when(retention.deleteOldArtifactsFrom(List.of(file1, file2), extentReporterInline)).thenReturn(2);
-
-        when(fileUtils.removeExtensionFrom(file1Name)).thenReturn(directory1Name);
-        when(fileUtils.removeExtensionFrom(file2Name)).thenReturn(directory2Name);
 
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getRetention()).thenReturn(retention);
@@ -199,10 +172,25 @@ class ExtentReporterInlineTest {
         when(htmlUtils.inline(readString)).thenReturn(inlineReport);
         when(extent.getInlineReportFolder()).thenReturn(INLINE_REPORT_FOLDER);
         when(Path.of(INLINE_REPORT_FOLDER, fileName)).thenReturn(inlinePath);
+        when(inlinePath.toAbsolutePath()).thenReturn(absolutePath);
 
         extentReporterInline.sessionClosed();
 
-        verify(fileUtils).write(inlinePath, inlineReport);
+        verify(fileUtils).write(absolutePath, inlineReport);
+    }
+
+    @Test
+    @DisplayName("getMetadata should return the reports path")
+    void getMetadata() {
+        final String fileName = "fileName";
+
+        when(configuration.getExtent()).thenReturn(extent);
+        when(extent.getInlineReportFolder()).thenReturn(INLINE_REPORT_FOLDER);
+        when(extent.getFileName()).thenReturn(fileName);
+        when(Path.of(INLINE_REPORT_FOLDER, fileName)).thenReturn(path);
+        when(path.toAbsolutePath()).thenReturn(absolutePath);
+
+        assertEquals(absolutePath, extentReporterInline.getMetadata());
     }
 
     @Test

@@ -52,10 +52,10 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         configuration.getRuntime().getEnvironment().sessionClosed();
         configuration.getTestBook().sessionClosed();
         configuration.getSummary().sessionClosed();
+        metadataManager.sessionClosed();
         extentReporter.sessionClosed();
         extentReporterInline.sessionClosed();
         eventsDispatcher.sessionClosed();
-        metadataManager.sessionClosed();
     }
 
     void parseConfiguration() {
