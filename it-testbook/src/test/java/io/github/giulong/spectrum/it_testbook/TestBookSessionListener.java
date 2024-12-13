@@ -213,7 +213,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .stream()
                 .map(Path::of)
                 .map(parentDirectory::resolve)
-                .forEach(fileUtils::deleteDirectory);
+                .forEach(fileUtils::delete);
     }
 
     private FileReporter getTestBookReporterFrom(final Configuration configuration, final String extension) {
