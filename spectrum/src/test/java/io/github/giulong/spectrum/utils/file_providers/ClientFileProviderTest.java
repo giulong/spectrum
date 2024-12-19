@@ -64,7 +64,7 @@ class ClientFileProviderTest {
     void findFoundParent() {
         final String file = "data/data";
 
-        assertEquals("data/data.yaml", fileProvider.find(file));
+        assertEquals(Path.of("data", "data.yaml").toString(), fileProvider.find(file));
     }
 
     @DisplayName("findValidPathsFor should return the list of resources paths with valid extensions from the provided file")
