@@ -3268,10 +3268,10 @@ root
 |     |─ logs
 |     |  └─ spectrum.log   # rotated daily
 |     |─ reports
-|     |  |─ report         # each report file (report.html in this example) has an associated folder
-|     |  |  |─ screenshots    # folder where Extent Reports screenshots are saved
-|     |  |  └─ videos         # folder where videos are saved
-|     |  └─ report.html    # by default the name ends with the timestamp
+|     |  └─ report         # each report is in its own folder
+|     |     |─ screenshots    # folder where screenshots are saved
+|     |     |─ videos         # folder where videos are saved
+|     |     └─ report.html    # by default the name ends with the timestamp
 |     └─ testbook
 |        |─ testbook.html  # by default the name ends with the timestamp
 |        └─ testbook.txt   # by default the name ends with the timestamp
@@ -3291,6 +3291,12 @@ Found a bug? Want to request a new feature? Just follow these links and provide 
 
 If you're not sure about what to ask, or for anything else related to Spectrum, you can also choose a
 proper [discussion category](https://github.com/giulong/spectrum/discussions/new/choose){:target="_blank"}.
+
+---
+
+# Releases
+
+You can find details about Spectrum releases [here](https://github.com/giulong/spectrum/releases){:target="_blank"}.
 
 ---
 
