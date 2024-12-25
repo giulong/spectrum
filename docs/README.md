@@ -1710,14 +1710,14 @@ You can configure the retention policies for the artifacts produced by each exec
 * TestBook reports (both txt and html)
 
 For each, you can define a `retention` node like the one below.
-As an example, let's say we'd like to keep a total of 10 reports, of which 1 at least one successful.
-This means that, considering the last 10 executions, we will have:
+As an example, let's say we'd like to keep a total of 10 reports, of which at least 1 successful.
+This means that, considering the last 10 executions, we can have one of these:
 
-* 10 failed reports, if there are no successful ones **at all**, even before those.
-* 9 failed reports and 1 successful, if there was at least 1 successful execution, **even if the last 10 runs failed**.
+* 10 failed reports, if there are no successful ones **at all**, even before those, or
+* 9 failed reports and 1 successful, if there was at least 1 successful execution, **even if the last 10 runs failed**, or
 * a mixed number of failed and successful reports, if the last 10 executions are mixed.
 
-So, when configured, the `successful` report(s) to be kept are retained even if they're older than the last `total` number of failed executions.
+So, when configured, a `successful` number of report(s), if present, are retained even if they're older than the last `total` number of failed executions.
 This is meant to have an evidence of the last successful run(s), even if there's a long recent history of failed ones.
 This snippet shows how to configure the example we just saw:
 
@@ -1729,10 +1729,30 @@ retention:
   successful: 1
 ```
 
+Additionally, you can configure a number of `days` after which reports will be deleted. A `successful` number of reports, if present, will still be kept,
+regardless of their age. Let's make another example. Say we configured this:
+
+{% include copyCode.html %}
+
+```yaml
+retention:
+  total: 5
+  successful: 2
+  days: 3
+```
+
+In this scenario:
+* 2 successful reports (if present) will always be kept, regardless of the date they were produced:
+the last successful execution could have been 10 days ago, and with this configuration it will still be retained.
+* Among *young* reports (those produced in the last 2 days as per this configuration), at most a total of 5 (if present) will be kept.
+These could be either successful or not.
+* All remaining reports that are 3 or more days old will be deleted.
+
 | Field Name | Default             | Description                                                        |
 |------------|---------------------|--------------------------------------------------------------------|
 | total      | `Integer.MAX_VALUE` | Number of reports to retain. Older ones will be deleted            |
 | successful | 0                   | Number of successful reports to retain. Older ones will be deleted |
+| days       | `Integer.MAX_VALUE` | Number of days after which reports will be deleted                 |
 
 As you can see, by default no report will be deleted, regardless of the execution status. As a further example,
 this is how you can configure it for the extent report:
@@ -1744,6 +1764,7 @@ extent:
   retention:
     total: 10
     successful: 1
+    days: 30
 ```
 
 ---
