@@ -4,9 +4,12 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -94,6 +97,10 @@ public final class FileUtils {
         return path;
     }
 
+    public Path delete(final File file) {
+        return delete(file.toPath());
+    }
+
     @SneakyThrows
     public Path deleteContentOf(final Path directory) {
         return Files.createDirectories(delete(directory));
@@ -124,5 +131,10 @@ public final class FileUtils {
         }
 
         return stringBuilder.toString();
+    }
+
+    @SneakyThrows
+    public FileTime getCreationTimeOf(final File file) {
+        return Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime();
     }
 }

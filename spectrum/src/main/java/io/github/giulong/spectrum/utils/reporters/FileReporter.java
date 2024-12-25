@@ -19,7 +19,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Comparator.comparingLong;
 import static java.util.function.Predicate.not;
 
 @Slf4j
@@ -63,10 +62,9 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
                 .stream(folderContent)
                 .filter(not(File::isDirectory))
                 .filter(file -> file.getName().endsWith(extension))
-                .sorted(comparingLong(File::lastModified))
                 .toList();
 
-        retention.deleteOldArtifactsFrom(files, this);
+        retention.deleteArtifactsFrom(files, this);
     }
 
     @Override
