@@ -163,6 +163,9 @@ public class Configuration {
     @Generated
     public static class Drivers {
 
+        @JsonPropertyDescription("Whether to keep the driver open after the execution")
+        private boolean keepOpen;
+
         @JsonPropertyDescription("Driver's fluent waits")
         private Waits waits;
 

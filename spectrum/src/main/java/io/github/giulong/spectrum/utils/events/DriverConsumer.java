@@ -23,7 +23,10 @@ public class DriverConsumer extends EventsConsumer {
 
         final Configuration.Runtime runtime = configuration.getRuntime();
 
-        runtime.getDriver().shutdown();
+        if (!configuration.getDrivers().isKeepOpen()) {
+            runtime.getDriver().shutdown();
+        }
+
         runtime.getEnvironment().shutdown();
     }
 }

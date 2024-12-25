@@ -24,6 +24,9 @@ class DriverConsumerTest {
     private Configuration.Runtime runtime;
 
     @Mock
+    private Configuration.Drivers drivers;
+
+    @Mock
     private Event event;
 
     @Mock
@@ -52,16 +55,33 @@ class DriverConsumerTest {
     }
 
     @Test
-    @DisplayName("accept should shutdown the driver")
+    @DisplayName("accept should shutdown the driver and the environment")
     void accept() {
         when(event.getResult()).thenReturn(SUCCESSFUL);
         when(configuration.getRuntime()).thenReturn(runtime);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.isKeepOpen()).thenReturn(false);
         doReturn(driver).when(runtime).getDriver();
         doReturn(environment).when(runtime).getEnvironment();
 
         driverConsumer.accept(event);
 
         verify(driver).shutdown();
+        verify(environment).shutdown();
+    }
+
+    @Test
+    @DisplayName("accept should not shutdown the driver if drivers.keepOpen is true")
+    void acceptKeepOpen() {
+        when(event.getResult()).thenReturn(SUCCESSFUL);
+        when(configuration.getRuntime()).thenReturn(runtime);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.isKeepOpen()).thenReturn(true);
+        doReturn(environment).when(runtime).getEnvironment();
+
+        driverConsumer.accept(event);
+
+        verify(driver, never()).shutdown();
         verify(environment).shutdown();
     }
 }

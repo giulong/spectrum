@@ -75,6 +75,8 @@ environments:
 
 # Drivers configuration
 drivers:
+  keepOpen: false # Whether to keep the driver open after the execution
+
   waits:
     implicit: 0    # Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found
     pageLoadTimeout: 10   # Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet
