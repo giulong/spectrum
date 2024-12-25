@@ -201,7 +201,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
             return;
         }
 
-        retention.deleteOldArtifactsFrom(List.of(folderContent), this);
+        retention.deleteArtifactsFrom(List.of(folderContent), this);
     }
 
     ExtentColor getColorOf(final Status status) {
