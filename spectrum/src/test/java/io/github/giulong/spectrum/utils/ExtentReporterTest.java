@@ -300,7 +300,7 @@ class ExtentReporterTest {
         verify(extentReports).flush();
 
         // cleanupOldReports
-        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
+        verify(retention).deleteArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
     }
 
     @Test
@@ -334,7 +334,7 @@ class ExtentReporterTest {
         verify(extentReports).flush();
 
         // cleanupOldReports
-        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
+        verify(retention).deleteArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
         verify(desktop).open(file1);
     }
 
@@ -345,7 +345,7 @@ class ExtentReporterTest {
 
         extentReporter.cleanupOldReportsIn(REPORT_FOLDER);
 
-        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
+        verify(retention).deleteArtifactsFrom(List.of(file1, file2, directory1, directory2), extentReporter);
     }
 
     @Test

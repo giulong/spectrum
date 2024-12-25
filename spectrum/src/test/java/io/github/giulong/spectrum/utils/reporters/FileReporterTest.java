@@ -106,7 +106,6 @@ class FileReporterTest {
         final String file1Name = "file1Name.abc";
         final String file2Name = "file2Name.abc";
         final String file3Name = "file3Name.notMatching";
-        final long lastModified = 1L;
 
         when(fileUtils.getExtensionOf(OUTPUT)).thenReturn("abc");
         when(retention.getTotal()).thenReturn(total);
@@ -123,14 +122,12 @@ class FileReporterTest {
         when(file1.getName()).thenReturn(file1Name);
         when(file2.getName()).thenReturn(file2Name);
         when(file3.getName()).thenReturn(file3Name);
-        when(file1.lastModified()).thenReturn(lastModified);
-        when(file2.lastModified()).thenReturn(lastModified);
 
         fileReporter.cleanupOldReports();
 
         assertEquals(OUTPUT, stringArgumentCaptor.getValue());
 
-        verify(retention).deleteOldArtifactsFrom(List.of(file1, file2), fileReporter);
+        verify(retention).deleteArtifactsFrom(List.of(file1, file2), fileReporter);
     }
 
     @Test

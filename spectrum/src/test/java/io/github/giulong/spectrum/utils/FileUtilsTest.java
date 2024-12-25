@@ -6,12 +6,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -23,6 +26,21 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class FileUtilsTest {
+
+    @Mock
+    private BasicFileAttributes basicFileAttributes;
+
+    @Mock
+    private FileTime creationTime;
+
+    @Mock
+    private Path path;
+
+    @Mock
+    private Path parentPath;
+
+    @Mock
+    private File file;
 
     @InjectMocks
     private FileUtils fileUtils;
@@ -136,6 +154,17 @@ class FileUtilsTest {
                 arguments(Files.createTempDirectory("downloadsFolder"), true));
     }
 
+    @Test
+    @DisplayName("overloaded delete that takes a file should delegate to the one taking its path")
+    void deleteFile() throws IOException {
+        final File directory = Files.createTempDirectory("downloadsFolder").toFile();
+        directory.deleteOnExit();
+
+        assertEquals(directory.toPath(), fileUtils.delete(directory));
+
+        assertFalse(directory.exists());
+    }
+
     @DisplayName("delete should delete the provided directory, recreate it, and return the reference to it")
     @ParameterizedTest(name = "with value {0} which is existing? {1}")
     @MethodSource("deleteValuesProvider")
@@ -152,9 +181,6 @@ class FileUtilsTest {
     @DisplayName("write should write the provided content to a file in the provided path, creating the parent folders if needed")
     void write() {
         final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
-        final Path path = mock();
-        final Path parentPath = mock();
-        final File file = mock();
         final String content = "content";
 
         when(path.getParent()).thenReturn(parentPath);
@@ -174,9 +200,6 @@ class FileUtilsTest {
         final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
         final MockedStatic<Path> pathMockedStatic = mockStatic(Path.class);
         final String stringPath = "stringPath";
-        final Path path = mock();
-        final Path parentPath = mock();
-        final File file = mock();
         final String content = "content";
 
         when(Path.of(stringPath)).thenReturn(path);
@@ -199,5 +222,19 @@ class FileUtilsTest {
         final String sanitizedName = "hello123 ][ -+.";
 
         assertEquals(sanitizedName, fileUtils.sanitize(name));
+    }
+
+    @Test
+    @DisplayName("getCreationTimeOf should return the creation time of the provided file")
+    void getCreationTimeOf() throws IOException {
+        final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
+
+        when(file.toPath()).thenReturn(path);
+        when(Files.readAttributes(path, BasicFileAttributes.class)).thenReturn(basicFileAttributes);
+        when(basicFileAttributes.creationTime()).thenReturn(creationTime);
+
+        assertEquals(creationTime, fileUtils.getCreationTimeOf(file));
+
+        filesMockedStatic.close();
     }
 }
