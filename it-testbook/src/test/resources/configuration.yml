@@ -45,7 +45,7 @@ testBook:
           total: 3
           successful: 2
 
-# these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
+# these will fail since custom events lack the extension context used in the default slack.json template. We use them to check the log file and verify they're consumed
 eventsConsumers:
   - slack:
       events:

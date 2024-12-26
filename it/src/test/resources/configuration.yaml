@@ -31,7 +31,7 @@ extent:
     name: { }
 
 eventsConsumers:
-  - slack: # these will fail since the slack consumer is lacking the token. We use them to check the log file and verify they're consumed
+  - slack: # these will fail since custom events lack the extension context used in the default slack.json template. We use them to check the log file and verify they're consumed
       events:
         - primaryId: primary.*  # custom event by primaryId regex
           reason: custom-event

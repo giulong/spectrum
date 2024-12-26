@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -192,6 +193,22 @@ class EventsConsumerTest {
 
         eventsConsumer.events = List.of(event);
         assertDoesNotThrow(() -> eventsConsumer.acceptSilently(event), exceptionMessage);
+    }
+
+    @Test
+    @DisplayName("acceptSilently should rethrow the exception if failOnError is true")
+    void acceptSilentlyThrow() {
+        final String exceptionMessage = "THE STACKTRACE BELOW IS EXPECTED!!!";
+        final Event event = mock(Event.class);
+
+        Reflections.setField("failOnError", eventsConsumer, true);
+
+        when(event.getContext()).thenThrow(new RuntimeException(exceptionMessage));
+
+        eventsConsumer.events = List.of(event);
+        final Exception exception = assertThrows(RuntimeException.class, () -> eventsConsumer.acceptSilently(event));
+
+        assertEquals(exceptionMessage, exception.getMessage());
     }
 
     private static class DummyEventsConsumer extends EventsConsumer {

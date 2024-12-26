@@ -33,6 +33,10 @@ public abstract class EventsConsumer implements Consumer<Event> {
     @JsonPropertyDescription("List of events that will be consumed")
     protected List<Event> events;
 
+    @SuppressWarnings("unused")
+    @JsonPropertyDescription("Set to true to fail the test on consumer's exceptions")
+    private boolean failOnError;
+
     public void match(final Event event) {
         events
                 .stream()
@@ -96,6 +100,10 @@ public abstract class EventsConsumer implements Consumer<Event> {
             accept(event);
         } catch (Exception e) {
             log.error(String.format("%s: %s", getClass().getSimpleName(), e.getMessage()), e);
+
+            if (failOnError) {
+                throw e;
+            }
         }
     }
 }
