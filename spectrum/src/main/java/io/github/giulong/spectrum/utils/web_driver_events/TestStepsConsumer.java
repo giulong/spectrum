@@ -43,7 +43,7 @@ public class TestStepsConsumer extends EventsConsumer {
         final TestStepBuilderConsumer testStepBuilderConsumer = store.get(TEST_STEP_BUILDER_CONSUMER, TestStepBuilderConsumer.class);
         final String fileName = String.format("%s.%s", testData.getTestId(), fileUtils.getExtensionOf(template));
         final Path path = Path.of(output, fileName);
-        final String interpolatedTemplate = freeMarkerWrapper.interpolate(fileUtils.readTemplate(template), Map.of("steps", testStepBuilderConsumer.getTestSteps()));
+        final String interpolatedTemplate = freeMarkerWrapper.interpolateTemplate(template, Map.of("steps", testStepBuilderConsumer.getTestSteps()));
 
         fileUtils.write(path, interpolatedTemplate);
     }

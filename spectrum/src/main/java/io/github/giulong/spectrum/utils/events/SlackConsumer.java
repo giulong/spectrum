@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.slack.api.Slack;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -14,9 +13,6 @@ import java.util.Map;
 
 @Getter
 public class SlackConsumer extends EventsConsumer {
-
-    @JsonIgnore
-    private final FileUtils fileUtils = FileUtils.getInstance();
 
     @JsonIgnore
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
@@ -39,7 +35,7 @@ public class SlackConsumer extends EventsConsumer {
     @SneakyThrows
     public void accept(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
-        final String interpolatedTemplate = freeMarkerWrapper.interpolate(fileUtils.readTemplate(template), vars);
+        final String interpolatedTemplate = freeMarkerWrapper.interpolateTemplate(template, vars);
 
         Slack
                 .getInstance()

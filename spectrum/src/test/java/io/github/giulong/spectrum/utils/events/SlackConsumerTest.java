@@ -1,12 +1,11 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import com.slack.api.Slack;
 import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,9 +34,6 @@ class SlackConsumerTest {
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
-    private FileUtils fileUtils;
-
-    @Mock
     private Slack slack;
 
     @Mock
@@ -57,7 +53,6 @@ class SlackConsumerTest {
         slackMockedStatic = mockStatic(Slack.class);
         chatPostMessageRequestMockedStatic = mockStatic(ChatPostMessageRequest.class);
 
-        Reflections.setField("fileUtils", consumer, fileUtils);
         Reflections.setField("freeMarkerWrapper", consumer, freeMarkerWrapper);
     }
 
@@ -79,7 +74,6 @@ class SlackConsumerTest {
     @Test
     @DisplayName("accept should send a notification to the provided channel using the provided token")
     void accept() throws SlackApiException, IOException {
-        final String template = "template";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String channel = "channel";
         final String token = "token";
@@ -87,9 +81,7 @@ class SlackConsumerTest {
         Reflections.setField("channel", consumer, channel);
         Reflections.setField("token", consumer, token);
 
-        when(fileUtils.readTemplate("slack.json")).thenReturn(template);
-
-        when(freeMarkerWrapper.interpolate(template, Map.of("event", event))).thenReturn(interpolatedTemplate);
+        when(freeMarkerWrapper.interpolateTemplate("slack.json", Map.of("event", event))).thenReturn(interpolatedTemplate);
 
         when(ChatPostMessageRequest.builder()).thenReturn(chatPostMessageRequestBuilder);
         when(chatPostMessageRequestBuilder.channel(channel)).thenReturn(chatPostMessageRequestBuilder);

@@ -68,7 +68,7 @@ class FreeMarkerWrapperTest {
         });
 
         freeMarkerWrapper.sessionOpened();
-        assertEquals(freeMarkerWrapper.getConfiguration(), configurationMockedConstruction.constructed().getFirst());
+        assertEquals(Reflections.getFieldValue("configuration", freeMarkerWrapper), configurationMockedConstruction.constructed().getFirst());
 
         versionMockedConstruction.close();
         configurationMockedConstruction.close();

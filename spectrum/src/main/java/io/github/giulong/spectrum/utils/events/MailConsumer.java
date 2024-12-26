@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.pojos.events.Attachment;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import jakarta.activation.FileDataSource;
 import lombok.Getter;
@@ -21,9 +20,6 @@ import java.util.Map;
 public class MailConsumer extends EventsConsumer {
 
     @JsonIgnore
-    private final FileUtils fileUtils = FileUtils.getInstance();
-
-    @JsonIgnore
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
 
     @JsonIgnore
@@ -38,7 +34,7 @@ public class MailConsumer extends EventsConsumer {
     @Override
     public void accept(final Event event) {
         final Map<String, Object> vars = Map.of("event", event);
-        final String interpolatedTemplate = freeMarkerWrapper.interpolate(fileUtils.readTemplate(template), vars);
+        final String interpolatedTemplate = freeMarkerWrapper.interpolateTemplate(template, vars);
 
         mailer.sendMail(EmailBuilder
                 .startingBlank()

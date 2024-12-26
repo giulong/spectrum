@@ -5,7 +5,6 @@ import freemarker.template.Template;
 import freemarker.template.Version;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.utils.Configuration.FreeMarker;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +17,14 @@ import java.util.Map;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
-@Getter
 @NoArgsConstructor(access = PRIVATE)
 public final class FreeMarkerWrapper implements SessionHook {
 
     private static final FreeMarkerWrapper INSTANCE = new FreeMarkerWrapper();
 
     private final io.github.giulong.spectrum.utils.Configuration spectrumConfiguration = io.github.giulong.spectrum.utils.Configuration.getInstance();
+
+    private final FileUtils fileUtils = FileUtils.getInstance();
 
     private Configuration configuration;
 
@@ -52,5 +52,9 @@ public final class FreeMarkerWrapper implements SessionHook {
 
         template.process(vars, writer);
         return writer.toString();
+    }
+
+    public String interpolateTemplate(final String templateName, final Map<String, Object> vars) {
+        return interpolate(fileUtils.readTemplate(templateName), vars);
     }
 }

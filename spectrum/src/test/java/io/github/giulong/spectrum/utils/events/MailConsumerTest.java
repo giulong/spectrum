@@ -2,7 +2,6 @@ package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.pojos.events.Attachment;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.Reflections;
 import jakarta.activation.FileDataSource;
@@ -26,7 +25,6 @@ import static org.mockito.Mockito.*;
 
 class MailConsumerTest {
 
-    private static MockedStatic<FileUtils> fileUtilsMockedStatic;
     private static MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private static MockedStatic<MailerBuilder> mailerBuilderMockedStatic;
     private static MockedStatic<EmailBuilder> emailBuilderMockedStatic;
@@ -36,9 +34,6 @@ class MailConsumerTest {
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
-
-    @Mock
-    private FileUtils fileUtils;
 
     @Mock
     private EmailPopulatingBuilder emailPopulatingBuilder;
@@ -60,7 +55,6 @@ class MailConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        fileUtilsMockedStatic = mockStatic(FileUtils.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         mailerBuilderMockedStatic = mockStatic(MailerBuilder.class);
         emailBuilderMockedStatic = mockStatic(EmailBuilder.class);
@@ -68,7 +62,6 @@ class MailConsumerTest {
 
     @AfterEach
     void afterEach() {
-        fileUtilsMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
         mailerBuilderMockedStatic.close();
         emailBuilderMockedStatic.close();
@@ -77,7 +70,6 @@ class MailConsumerTest {
     @Test
     @DisplayName("accept should send an email with the provided attachments interpolating the provided template")
     void accept() {
-        final String template = "template";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String name1 = "name1";
         final String name2 = "name2";
@@ -104,11 +96,8 @@ class MailConsumerTest {
             }
         });
 
-        when(FileUtils.getInstance()).thenReturn(fileUtils);
-        when(fileUtils.readTemplate("mail.html")).thenReturn(template);
-
         when(FreeMarkerWrapper.getInstance()).thenReturn(freeMarkerWrapper);
-        when(freeMarkerWrapper.interpolate(template, Map.of("event", event))).thenReturn(interpolatedTemplate);
+        when(freeMarkerWrapper.interpolateTemplate("mail.html", Map.of("event", event))).thenReturn(interpolatedTemplate);
 
         when(MailerBuilder.buildMailer()).thenReturn(mailer);
 

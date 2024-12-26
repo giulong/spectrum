@@ -81,7 +81,6 @@ class TestStepsConsumerTest {
         final String extension = "extension";
         final String output = "target/spectrum/tests-steps";
         final String template = "test-steps.txt";
-        final String readTemplate = "readTemplate";
         final String interpolatedTemplate = "interpolatedTemplate";
         final String fileName = String.format("%s.%s", testId, extension);
         final List<TestStep> testSteps = List.of(testStep1, testStep2);
@@ -93,9 +92,8 @@ class TestStepsConsumerTest {
         when(testData.getTestId()).thenReturn(testId);
         when(fileUtils.getExtensionOf(template)).thenReturn(extension);
         when(Path.of(output, fileName)).thenReturn(path);
-        when(fileUtils.readTemplate(template)).thenReturn(readTemplate);
         when(testStepBuilderConsumer.getTestSteps()).thenReturn(testSteps);
-        when(freeMarkerWrapper.interpolate(readTemplate, Map.of("steps", testSteps))).thenReturn(interpolatedTemplate);
+        when(freeMarkerWrapper.interpolateTemplate(template, Map.of("steps", testSteps))).thenReturn(interpolatedTemplate);
 
         testStepsConsumer.accept(event);
 
