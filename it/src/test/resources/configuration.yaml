@@ -38,6 +38,7 @@ eventsConsumers:
         - primaryId: primaryId  # custom event by reason regex
           reason: .*condReas.*
   - testSteps:
+      failOnError: true
       events:
         - reason: after
           tags: [ test, dynamicTest ]
