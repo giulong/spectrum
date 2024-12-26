@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
+import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FixedSizeQueue;
 import io.github.giulong.spectrum.utils.MetadataManager;
 import io.github.giulong.spectrum.utils.Retention;
@@ -27,6 +28,9 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
 
     @JsonIgnore
     private final MetadataManager metadataManager = MetadataManager.getInstance();
+
+    @JsonIgnore
+    private final FileUtils fileUtils = FileUtils.getInstance();
 
     @JsonPropertyDescription("Path to the template to be used, relative to src/test/resources")
     @SuppressWarnings("unused")

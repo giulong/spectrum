@@ -1,5 +1,5 @@
 html:
-  template: templates/summary.html # Path to the template to be used, relative to src/test/resources
+  template: summary.html # Path to the template to be used, relative to src/test/resources
   output: ${summaryReportOutput}/summary-${timestamp}.html # Where to produce the output, relative to the root of the project
   retention: { } # Retention rules configuration
   openAtEnd: false # Set to true if you want the report to be automatically opened when the suite execution is finished

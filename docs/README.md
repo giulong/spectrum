@@ -2666,7 +2666,7 @@ This is the internal
 
 ```yaml
 log:
-  template: summary/template.txt
+  template: summary.txt
 ```
 
 Here is the output produced by the default internal template, for tests of the `it-testbook` module:
@@ -2709,7 +2709,7 @@ This is the internal
 
 ```yaml
 txt:
-  template: templates/summary.txt
+  template: summary.txt
   output: ${summaryReportOutput}/summary-${timestamp}.txt
   retention: { }
   openAtEnd: false
@@ -2728,7 +2728,7 @@ This is the internal
 
 ```yaml
 html:
-  template: templates/summary.html
+  template: summary.html
   output: ${summaryReportOutput}/summary-${timestamp}.html
   retention: { }
   openAtEnd: false
@@ -2747,7 +2747,7 @@ Beside the default template, these are already available, you just need to pick 
 
 ```yaml
 html:
-  template: templates/summary-pies.html
+  template: summary-pies.html
 ```
 
 ![Html Summary Pies Reporter](assets/images/html-summary-pies.png)
@@ -2983,7 +2983,7 @@ This is the internal
 
 ```yaml
 log:
-  template: testbook/template.txt
+  template: testbook.txt
 ```
 
 Here is the output produced by the default internal template, for tests of the `it-testbook` module:
@@ -3103,7 +3103,7 @@ This is the internal
 
 ```yaml
 txt:
-  template: templates/testbook.txt
+  template: testbook.txt
   output: ${testBookReportOutput}/testbook-${timestamp}.txt
   retention: { }
   openAtEnd: false
@@ -3122,7 +3122,7 @@ This is the internal
 
 ```yaml
 html:
-  template: templates/testbook.html
+  template: testbook.html
   output: ${testBookReportOutput}/testBook-${timestamp}.html
   retention: { }
   openAtEnd: false
@@ -3141,7 +3141,7 @@ Beside the default template, these are already available, you just need to pick 
 
 ```yaml
 html:
-  template: templates/testbook-pies.html
+  template: testbook-pies.html
 ```
 
 ![Html TestBook Pies Reporter](assets/images/html-testbook-pies.png)
@@ -3207,9 +3207,9 @@ testBook:
       path: testbook.yaml # we provided the yaml testbook in src/test/resources/testbook.yaml
   reporters:
     - txt:
-        template: template.txt  # we want to produce a text report based on a custom template in src/test/resources
+        template: template.txt  # we want to produce a text report based on a custom template in src/test/resources/templates
     - html:
-        template: my-custom-template.html # src/test/resources/my-custom-template.html
+        template: my-custom-template.html # src/test/resources/templates/my-custom-template.html
         output: some/path/testbook.html # a html report will be produced at this path
 ```
 
