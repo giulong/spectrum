@@ -94,7 +94,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
         assertEquals(0, txtSummarySuccessfulRetention);
 
         createDirectories(fakeExtentReportsDirectories, extentReportsDirectory);
-        createFiles(fakeExtentReports, extentReportsDirectory);
+        createExtentFiles(fakeExtentReports, extentReportsDirectory);
         createFiles(fakeHtmlTestBooks, htmlTestBooksDirectory);
         createFiles(fakeTxtTestBooks, txtTestBooksDirectory);
         createFiles(fakeHtmlSummaries, htmlSummaryReportsDirectory);
@@ -110,11 +110,6 @@ public class TestBookSessionListener implements LauncherSessionListener {
         assertEquals(extentTotalRetention, remainingExtentReportsDirectories.size());
         assertFalse(remainingExtentReportsDirectoriesNames.contains(fakeExtentReportsDirectories.getFirst()),
                 "The first extent report directory should have been deleted due to retention policies");
-
-        final List<File> remainingExtentReports = getRemainingFilesFrom(extentReportsDirectory.toFile().listFiles(), "html");
-        final List<String> remainingExtentReportsNames = getNamesOf(remainingExtentReports);
-        assertEquals(extentTotalRetention, remainingExtentReports.size());
-        assertFalse(remainingExtentReportsNames.contains(fakeExtentReports.getFirst()), "The first extent report should have been deleted due to retention policies");
 
         final List<File> remainingHtmlTestBooks = getRemainingFilesFrom(htmlTestBooksDirectory.toFile().listFiles(), "html");
         assertTrue(remainingHtmlTestBooks.size() <= htmlTestBookTotalRetention);
@@ -171,7 +166,6 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 "Txt reporter should have the default total retention of Integer.MAX_VALUE, so no one should be deleted");
 
         deleteDirectories(fakeExtentReportsDirectories, extentReportsDirectory);
-        deleteFiles(fakeExtentReports, extentReportsDirectory);
         deleteFiles(fakeHtmlTestBooks, htmlTestBooksDirectory);
         deleteFiles(fakeTxtTestBooks, txtTestBooksDirectory);
         deleteFiles(fakeTxtTestBooks, htmlSummaryReportsDirectory);
@@ -179,10 +173,18 @@ public class TestBookSessionListener implements LauncherSessionListener {
     }
 
     @SneakyThrows
+    private void createExtentFiles(final List<String> fileNames, final Path directory) {
+        for (String fileName : fileNames) {
+            assertTrue(Files.createFile(directory.resolve(fileUtils.removeExtensionFrom(fileName)).resolve(fileName)).toFile().exists());
+            Thread.sleep(1000);   // just to be sure files have different creation dates
+        }
+    }
+
+    @SneakyThrows
     private void createFiles(final List<String> fileNames, final Path directory) {
         for (String fileName : fileNames) {
             assertTrue(Files.createFile(directory.resolve(fileName)).toFile().exists());
-            Thread.sleep(10);   // just to be sure files have different creation dates
+            Thread.sleep(1000);   // just to be sure files have different creation dates
         }
     }
 
@@ -190,7 +192,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private void createDirectories(final List<String> directoryNames, final Path parentDirectory) {
         for (String fileName : directoryNames) {
             assertTrue(Files.createDirectories(parentDirectory.resolve(fileName)).toFile().exists());
-            Thread.sleep(10);   // just to be sure files have different creation dates
+            Thread.sleep(1000);   // just to be sure files have different creation dates
         }
     }
 
