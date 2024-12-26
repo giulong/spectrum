@@ -15,7 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.lang.System.lineSeparator;
@@ -80,14 +79,6 @@ class FileUtilsTest {
                         "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() +
                         "  field: ignored"),
                 arguments("not-existing", ""));
-    }
-
-    @Test
-    @DisplayName("interpolate should return the provided file with the placeholder replaced with vars from the provided map")
-    void interpolate() {
-        assertEquals(
-                "key: value" + lineSeparator() + "objectKey:" + lineSeparator() + "  objectField: objectValue",
-                fileUtils.interpolate("interpolate.yaml", Map.of("{{value}}", "value", "{{objectValue}}", "objectValue")));
     }
 
     @DisplayName("interpolateTimestampFrom should replace the timestamp from the provided file name")

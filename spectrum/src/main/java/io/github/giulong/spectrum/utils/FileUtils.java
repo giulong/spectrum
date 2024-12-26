@@ -13,7 +13,6 @@ import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,15 +52,6 @@ public final class FileUtils {
 
     public String readTemplate(final String file) {
         return read(String.format("templates/%s", file));
-    }
-
-    public String interpolate(final String file, final Map<String, String> vars) {
-        String source = read(file);
-        for (Map.Entry<String, String> entry : vars.entrySet()) {
-            source = source.replace(entry.getKey(), entry.getValue());
-        }
-
-        return source;
     }
 
     public String interpolateTimestampFrom(final String value) {
