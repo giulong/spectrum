@@ -24,11 +24,16 @@ public class SlackConsumer extends EventsConsumer {
     @JsonPropertyDescription("Template to be used when creating the message")
     private final String template = "slack.json";
 
+    @SuppressWarnings("unused")
     @JsonPropertyDescription("Target channel where to send the message")
-    protected String channel;
+    private String channel;
 
+    @SuppressWarnings("unused")
     @JsonPropertyDescription("Bot User OAuth Token")
-    protected String token;
+    private String token;
+
+    @JsonPropertyDescription("Notification text")
+    private final String text = "Spectrum notification";
 
     @Override
     @SneakyThrows
@@ -41,7 +46,7 @@ public class SlackConsumer extends EventsConsumer {
                 .methods(token)
                 .chatPostMessage(ChatPostMessageRequest.builder()
                         .channel(channel)
-                        .text("Spectrum notification")
+                        .text(text)
                         .blocksAsString(interpolatedTemplate)
                         .build());
     }
