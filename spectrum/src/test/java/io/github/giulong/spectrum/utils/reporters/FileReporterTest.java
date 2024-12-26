@@ -25,8 +25,6 @@ class FileReporterTest {
 
     private MockedStatic<Path> pathMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
-    private MockedStatic<FileUtils> fileUtilsMockedStatic;
-    private MockedStatic<MetadataManager> metadataManagerMockedStatic;
     private MockedStatic<Desktop> desktopMockedStatic;
 
     @Mock
@@ -85,8 +83,6 @@ class FileReporterTest {
         Reflections.setField("metadataManager", fileReporter, metadataManager);
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
-        fileUtilsMockedStatic = mockStatic(FileUtils.class);
-        metadataManagerMockedStatic = mockStatic(MetadataManager.class);
         desktopMockedStatic = mockStatic(Desktop.class);
     }
 
@@ -94,8 +90,6 @@ class FileReporterTest {
     void afterEach() {
         pathMockedStatic.close();
         filesMockedStatic.close();
-        fileUtilsMockedStatic.close();
-        metadataManagerMockedStatic.close();
         desktopMockedStatic.close();
     }
 

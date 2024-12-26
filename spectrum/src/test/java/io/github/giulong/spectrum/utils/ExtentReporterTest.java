@@ -51,7 +51,6 @@ class ExtentReporterTest {
     private MockedStatic<TestData> testDataMockedStatic;
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
     private MockedStatic<Path> pathMockedStatic;
-    private MockedStatic<FileUtils> fileUtilsMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
     private MockedStatic<MetadataManager> metadataManagerMockedStatic;
     private MockedStatic<Desktop> desktopMockedStatic;
@@ -177,7 +176,6 @@ class ExtentReporterTest {
         testDataMockedStatic = mockStatic(TestData.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
         pathMockedStatic = mockStatic(Path.class);
-        fileUtilsMockedStatic = mockStatic(FileUtils.class);
         filesMockedStatic = mockStatic(Files.class);
         metadataManagerMockedStatic = mockStatic(MetadataManager.class);
         desktopMockedStatic = mockStatic(Desktop.class);
@@ -189,7 +187,6 @@ class ExtentReporterTest {
         testDataMockedStatic.close();
         freeMarkerWrapperMockedStatic.close();
         pathMockedStatic.close();
-        fileUtilsMockedStatic.close();
         filesMockedStatic.close();
         metadataManagerMockedStatic.close();
         desktopMockedStatic.close();
