@@ -1777,6 +1777,20 @@ testBook:
           total: 3
 ```
 
+> ⚠️ **Artifacts output folders**<br/>
+> Mind that retention policies are applied to the whole folder where artifacts are produced. 
+> This means you should always generate reports in their own dedicated folder: 
+> * one for extent reports
+> * one for html summaries
+> * one for txt summaries
+> * one for html testbook
+> * one for txt testbook
+> * ...
+> 
+> If you use the same folder for many report kinds, the retention policy will not manage them correctly,
+> possibly deleting files that should not be deleted.
+> By default, such reports are already produced in dedicated folders.
+
 ---
 
 # Common Use Cases
