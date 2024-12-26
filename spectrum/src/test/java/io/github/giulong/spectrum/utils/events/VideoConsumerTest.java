@@ -134,7 +134,7 @@ class VideoConsumerTest {
     private VideoConsumer videoConsumer;
 
     @BeforeEach
-    void beforeEach() throws IOException {
+    void beforeEach() {
         Reflections.setField("configuration", videoConsumer, configuration);
         Reflections.setField("contextManager", videoConsumer, contextManager);
 

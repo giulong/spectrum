@@ -50,7 +50,7 @@ class VideoDynamicConsumerTest {
     private VideoDynamicConsumer videoDynamicConsumer;
 
     @BeforeEach
-    void beforeEach() throws IOException {
+    void beforeEach() {
         filesMockedStatic = mockStatic(Files.class);
     }
 
