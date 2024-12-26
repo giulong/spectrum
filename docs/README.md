@@ -1755,7 +1755,8 @@ These could be either successful or not.
 | days       | `Integer.MAX_VALUE` | Number of days after which reports will be deleted                 |
 
 As you can see, by default no report will be deleted, regardless of the execution status. As a further example,
-this is how you can configure it for the extent report:
+this is how you can configure it for the extent report and testbook.
+Mind how you can have just the retention parameters you need, it's not mandatory to use them all:
 
 {% include copyCode.html %}
 
@@ -1765,6 +1766,15 @@ extent:
     total: 10
     successful: 1
     days: 30
+
+testBook:
+  reporters:
+    - html:
+        retention:
+          days: 10
+    - txt:
+        retention:
+          total: 3
 ```
 
 ---
