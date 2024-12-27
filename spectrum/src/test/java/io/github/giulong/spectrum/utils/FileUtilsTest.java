@@ -54,8 +54,8 @@ class FileUtilsTest {
     @DisplayName("read should return the correct result")
     @ParameterizedTest(name = "reading file {0} we expect {1}")
     @MethodSource("valuesProvider")
-    void read(String file, String expected) {
-        assertEquals(expected, fileUtils.read(file));
+    void read(final String template, final String expected) {
+        assertEquals(expected, fileUtils.read(template));
     }
 
     static Stream<Arguments> valuesProvider() {
@@ -69,8 +69,8 @@ class FileUtilsTest {
     @DisplayName("readTemplate should return the correct result")
     @ParameterizedTest(name = "reading file {0} we expect {1}")
     @MethodSource("readTemplateValuesProvider")
-    void readTemplate(String file, String expected) {
-        assertEquals(expected, fileUtils.readTemplate(file));
+    void readTemplate(final String template, final String expected) {
+        assertEquals(expected, fileUtils.readTemplate(template));
     }
 
     static Stream<Arguments> readTemplateValuesProvider() {
