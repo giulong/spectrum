@@ -90,7 +90,7 @@ public class MetadataManager implements SessionHook {
     }
 
     Path buildPath() {
-        @SuppressWarnings("unchecked") final Map<String, Object> bannerYaml = yamlUtils.readInternal("banner.yaml", Map.class);
+        @SuppressWarnings("unchecked") final Map<String, Object> bannerYaml = yamlUtils.readInternal("properties.yaml", Map.class);
         final String fileName = String.format("%s-metadata.json", bannerYaml.get("name"));
 
         return Path.of(configuration.getRuntime().getCacheFolder()).resolve(fileName);

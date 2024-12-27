@@ -116,7 +116,7 @@ class MetadataManagerTest {
         final String name = "name";
         final String fileName = name + "-metadata.json";
         final String cacheFolder = "cacheFolder";
-        when(yamlUtils.readInternal("banner.yaml", Map.class)).thenReturn(Map.of("name", name));
+        when(yamlUtils.readInternal("properties.yaml", Map.class)).thenReturn(Map.of("name", name));
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getCacheFolder()).thenReturn(cacheFolder);
         when(Path.of(cacheFolder)).thenReturn(path);
