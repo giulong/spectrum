@@ -3251,7 +3251,8 @@ Spectrum tests can be run in parallel by leveraging
 
 # Cache
 
-Spectrum caches a `metadata.json` file to store some cross-executions metadata, such as the last successful executions.
+Spectrum caches a `<PROJECT NAME>-metadata.json` file to store some cross-executions metadata, such as the last successful executions.
+The `<PROJECT NAME>` prefix ensures to avoid clashes between different projects that use Spectrum in your workspace.
 This is purely internal implementation and you should never edit that file manually.
 Still, you can specify its location via the `runtime.cacheFolder` parameter in your `configuration.yaml`.
 

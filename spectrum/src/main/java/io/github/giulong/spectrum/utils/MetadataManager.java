@@ -14,20 +14,20 @@ import java.util.Map;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@Getter
-@NoArgsConstructor(access = PRIVATE)
 @Slf4j
+@NoArgsConstructor(access = PRIVATE)
 public class MetadataManager implements SessionHook {
 
-    public static final String FILE_NAME = "metadata.json";
     private static final MetadataManager INSTANCE = new MetadataManager();
 
+    private final YamlUtils yamlUtils = YamlUtils.getInstance();
     private final JsonUtils jsonUtils = JsonUtils.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
     private final ExtentReporterInline extentReporterInline = ExtentReporterInline.getInstance();
     private final Configuration configuration = Configuration.getInstance();
 
+    @Getter
     private Metadata metadata;
 
     public static MetadataManager getInstance() {
@@ -38,8 +38,7 @@ public class MetadataManager implements SessionHook {
     public void sessionOpened() {
         log.debug("Session opened hook");
 
-        final Path path = Path.of(configuration.getRuntime().getCacheFolder()).resolve(FILE_NAME);
-        metadata = jsonUtils.readOrEmpty(path.toFile(), Metadata.class);
+        metadata = jsonUtils.readOrEmpty(buildPath().toFile(), Metadata.class);
     }
 
     @Override
@@ -67,8 +66,7 @@ public class MetadataManager implements SessionHook {
                     .forEach(CanProduceMetadata::produceMetadata);
         }
 
-        final Path path = Path.of(configuration.getRuntime().getCacheFolder()).resolve(FILE_NAME);
-        fileUtils.write(path, jsonUtils.write(metadata));
+        fileUtils.write(buildPath(), jsonUtils.write(metadata));
     }
 
     public FixedSizeQueue<File> getSuccessfulQueueOf(final CanProduceMetadata canProduceMetadata) {
@@ -89,6 +87,13 @@ public class MetadataManager implements SessionHook {
 
     String getNamespaceOf(final Object object) {
         return object.getClass().getSimpleName();
+    }
+
+    Path buildPath() {
+        @SuppressWarnings("unchecked") final Map<String, Object> bannerYaml = yamlUtils.readInternal("banner.yaml", Map.class);
+        final String fileName = String.format("%s-metadata.json", bannerYaml.get("name"));
+
+        return Path.of(configuration.getRuntime().getCacheFolder()).resolve(fileName);
     }
 
     @Getter

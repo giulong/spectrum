@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.giulong.spectrum.utils.MetadataManager.FILE_NAME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.*;
@@ -56,6 +55,9 @@ class MetadataManagerTest {
 
     @Mock
     private Path filePath;
+
+    @Mock
+    private YamlUtils yamlUtils;
 
     @Mock
     private FileUtils fileUtils;
@@ -97,6 +99,7 @@ class MetadataManagerTest {
     void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
 
+        Reflections.setField("yamlUtils", metadataManager, yamlUtils);
         Reflections.setField("jsonUtils", metadataManager, jsonUtils);
         Reflections.setField("fileUtils", metadataManager, fileUtils);
         Reflections.setField("extentReporter", metadataManager, extentReporter);
@@ -109,6 +112,17 @@ class MetadataManagerTest {
         pathMockedStatic.close();
     }
 
+    private void buildPathStubs() {
+        final String name = "name";
+        final String fileName = name + "-metadata.json";
+        final String cacheFolder = "cacheFolder";
+        when(yamlUtils.readInternal("banner.yaml", Map.class)).thenReturn(Map.of("name", name));
+        when(configuration.getRuntime()).thenReturn(runtime);
+        when(runtime.getCacheFolder()).thenReturn(cacheFolder);
+        when(Path.of(cacheFolder)).thenReturn(path);
+        when(path.resolve(fileName)).thenReturn(filePath);
+    }
+
     @Test
     @DisplayName("getInstance should return the singleton")
     void getInstance() {
@@ -119,12 +133,8 @@ class MetadataManagerTest {
     @Test
     @DisplayName("sessionOpened should parse the existing metadata file cached")
     void sessionOpened() {
-        final String cacheFolder = "cacheFolder";
+        buildPathStubs();
 
-        when(configuration.getRuntime()).thenReturn(runtime);
-        when(runtime.getCacheFolder()).thenReturn(cacheFolder);
-        when(Path.of(cacheFolder)).thenReturn(path);
-        when(path.resolve(FILE_NAME)).thenReturn(filePath);
         when(filePath.toFile()).thenReturn(file);
         when(jsonUtils.readOrEmpty(file, MetadataManager.Metadata.class)).thenReturn(parsedMetadata);
 
@@ -137,16 +147,12 @@ class MetadataManagerTest {
     @Test
     @DisplayName("sessionClosed should write the metadata.json in the configured cache folder")
     void sessionClosed() {
-        final String cacheFolder = "cacheFolder";
         final String content = "content";
+
+        buildPathStubs();
 
         when(configuration.getSummary()).thenReturn(summary);
         when(summary.isExecutionSuccessful()).thenReturn(false);
-
-        when(configuration.getRuntime()).thenReturn(runtime);
-        when(runtime.getCacheFolder()).thenReturn(cacheFolder);
-        when(Path.of(cacheFolder)).thenReturn(path);
-        when(path.resolve(FILE_NAME)).thenReturn(filePath);
         when(jsonUtils.write(metadata)).thenReturn(content);
 
         metadataManager.sessionClosed();
@@ -157,21 +163,14 @@ class MetadataManagerTest {
     @Test
     @DisplayName("sessionClosed should write the metadata.json updating the successful reports when the execution is successful")
     void sessionClosedFromSuccessful() {
-        final String cacheFolder = "cacheFolder";
         final String content = "content";
 
+        buildPathStubs();
         when(configuration.getSummary()).thenReturn(summary);
         when(summary.isExecutionSuccessful()).thenReturn(true);
-
         when(configuration.getTestBook()).thenReturn(testBook);
         when(testBook.getReporters()).thenReturn(List.of(testBookReporter1, testBookReporter2));
-
         when(summary.getReporters()).thenReturn(List.of(summaryReporter1, summaryReporter2));
-
-        when(configuration.getRuntime()).thenReturn(runtime);
-        when(runtime.getCacheFolder()).thenReturn(cacheFolder);
-        when(Path.of(cacheFolder)).thenReturn(path);
-        when(path.resolve(FILE_NAME)).thenReturn(filePath);
         when(jsonUtils.write(metadata)).thenReturn(content);
 
         metadataManager.sessionClosed();
@@ -232,5 +231,13 @@ class MetadataManagerTest {
 
         metadataManager.setSuccessfulQueueOf(extentReporter, fileFixedSizeQueue);
         verify(reports).put(extentReporter.getClass().getSimpleName(), fileFixedSizeQueue);
+    }
+
+    @Test
+    @DisplayName("buildPath should return the path of the project-specific metadata.json")
+    void buildPath() {
+        buildPathStubs();
+
+        assertEquals(filePath, metadataManager.buildPath());
     }
 }
