@@ -1742,10 +1742,11 @@ retention:
 ```
 
 In this scenario:
+
 * 2 successful reports (if present) will always be kept, regardless of the date they were produced:
-the last successful execution could have been 10 days ago, and with this configuration it will still be retained.
+  the last successful execution could have been 10 days ago, and with this configuration it will still be retained.
 * Among *young* reports (those produced in the last 2 days as per this configuration), at most a total of 5 (if present) will be kept.
-These could be either successful or not.
+  These could be either successful or not.
 * All remaining reports that are 3 or more days old will be deleted.
 
 | Field Name | Default             | Description                                                        |
@@ -1778,15 +1779,15 @@ testBook:
 ```
 
 > ⚠️ **Artifacts output folders**<br/>
-> Mind that retention policies are applied to the whole folder where artifacts are produced. 
-> This means you should always generate reports in their own dedicated folder: 
+> Mind that retention policies are applied to the whole folder where artifacts are produced.
+> This means you should always generate reports in their own dedicated folder:
 > * one for extent reports
 > * one for html summaries
 > * one for txt summaries
 > * one for html testbook
 > * one for txt testbook
 > * ...
-> 
+>
 > If you use the same folder for many report kinds, the retention policy will not manage them correctly,
 > possibly deleting files that should not be deleted.
 > By default, such reports are already produced in dedicated folders.
@@ -2765,6 +2766,7 @@ html:
 ```
 
 ![Html Summary Pies Reporter](assets/images/html-summary-pies.png)
+
 ---
 
 # TestBook - Coverage
