@@ -370,8 +370,10 @@ Let's see a configuration snippet to have a clear picture:
 {% include copyCode.html %}
 
 ```yaml
-# All needed drivers' configurations
+# All needed drivers' configurations. You need to configure just those you'll use.
 drivers:
+  keepOpen: false # Whether to keep the driver open after the execution. This is the default, no need to set it unless "true"
+
   waits:
     implicit: 2
     downloadTimeout: 5
@@ -387,8 +389,8 @@ drivers:
     capabilities:
       binary: /usr/bin/microsoft-edge
 
-# All needed environments' configuration. This is the default environments node, 
-# so no need to explicitly override this with these values
+# All needed environments' configuration. You need to configure just those you'll use.
+# This is the default environments node, so no need to explicitly override this with these values
 environments:
   local: { }
   grid:
@@ -2251,9 +2253,19 @@ Spectrum will proceed with inspecting the next consumer.
 | \[ tag1, tag2 ]    | \[ tag666 ]           | ❌            |
 
 > ⚠️ **Consumers exceptions**<br/>
-> Each consumer handles events silently, meaning if any exception is thrown during the handling of an event,
+> Each consumer handles events silently by default, meaning if any exception is thrown during the handling of an event,
 > that will be logged and the execution of the tests will continue without breaking. This is meant to avoid that errors like network issues
 > when sending an email can cause the whole suite to fail.
+>
+> If you'd like to change this behaviour, you can set the `failOnError: true` key on the specific consumer(s). For instance:
+
+{% include copyCode.html %}
+
+```yaml
+eventsConsumers:
+  - mail:
+      failOnError: true
+```
 
 > 💡 **Tip**<br/>
 > You can configure how many consumers you need. Each consumer can listen to many events.
@@ -2491,7 +2503,8 @@ A few steps are needed to configure your Slack Workspace to receive notification
      - slack:
          token: xoxb-***
          channel: C05***
-         template: slack-suite.json
+         text: Notification text    # Optional: defaults to "Spectrum notification"
+         template: slack-suite.json # Optional: defaults to "slack.json"
          events:
            - reason: before
              tags: [ suite ]
@@ -2499,8 +2512,8 @@ A few steps are needed to configure your Slack Workspace to receive notification
 6. If everything is configured correctly, with the consumer above you should receive a notification at the very beginning of your test suite.
 
 > ⚠️ **Slack Template**<br/>
-> The default [slack.json template]({{ site.repository_url }}/spectrum/src/main/resources/templates/slack.json){:target="_blank"} is meant to be used to notify about each
-> test result,
+> The default [slack.json template]({{ site.repository_url }}/spectrum/src/main/resources/templates/slack.json){:target="_blank"}
+> is meant to be used to notify about each test result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
 
 {% include copyCode.html %}
