@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils;
 
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
+import io.github.giulong.spectrum.types.ProjectProperties;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -90,8 +91,8 @@ public class MetadataManager implements SessionHook {
     }
 
     Path buildPath() {
-        @SuppressWarnings("unchecked") final Map<String, Object> bannerYaml = yamlUtils.readInternal("properties.yaml", Map.class);
-        final String fileName = String.format("%s-metadata.json", bannerYaml.get("name"));
+        final ProjectProperties projectProperties = yamlUtils.readInternal("properties.yaml", ProjectProperties.class);
+        final String fileName = String.format("%s-metadata.json", projectProperties.get("name"));
 
         return Path.of(configuration.getRuntime().getCacheFolder()).resolve(fileName);
     }

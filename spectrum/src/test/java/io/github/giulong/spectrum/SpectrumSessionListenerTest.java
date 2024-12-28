@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum;
 
+import io.github.giulong.spectrum.types.ProjectProperties;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -56,7 +57,7 @@ class SpectrumSessionListenerTest {
     private EventsDispatcher eventsDispatcher;
 
     @Mock
-    private Map<String, Object> spectrumProperties;
+    private ProjectProperties projectProperties;
 
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
@@ -112,8 +113,8 @@ class SpectrumSessionListenerTest {
         System.setProperty("os.name", "Win");
 
         when(fileUtils.read("banner.txt")).thenReturn(banner);
-        when(yamlUtils.readInternal("properties.yaml", Map.class)).thenReturn(spectrumProperties);
-        when(freeMarkerWrapper.interpolate(banner, spectrumProperties)).thenReturn(interpolatedBanner);
+        when(yamlUtils.readInternal("properties.yaml", ProjectProperties.class)).thenReturn(projectProperties);
+        when(freeMarkerWrapper.interpolate(banner, projectProperties)).thenReturn(interpolatedBanner);
 
         when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION, String.class)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class)).thenReturn("defaultProfile");

@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum;
 
+import io.github.giulong.spectrum.types.ProjectProperties;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +32,8 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
-        @SuppressWarnings("unchecked") final Map<String, Object> bannerYaml = yamlUtils.readInternal("properties.yaml", Map.class);
-        log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), bannerYaml));
+        final ProjectProperties projectProperties = yamlUtils.readInternal("properties.yaml", ProjectProperties.class);
+        log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), projectProperties));
 
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());

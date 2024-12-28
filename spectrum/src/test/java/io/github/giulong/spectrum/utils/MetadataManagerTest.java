@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.types.ProjectProperties;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
@@ -90,6 +91,9 @@ class MetadataManagerTest {
     private FixedSizeQueue<File> fileFixedSizeQueue;
 
     @Mock
+    private ProjectProperties projectProperties;
+
+    @Mock
     private File file;
 
     @InjectMocks
@@ -116,7 +120,9 @@ class MetadataManagerTest {
         final String name = "name";
         final String fileName = name + "-metadata.json";
         final String cacheFolder = "cacheFolder";
-        when(yamlUtils.readInternal("properties.yaml", Map.class)).thenReturn(Map.of("name", name));
+
+        when(yamlUtils.readInternal("properties.yaml", ProjectProperties.class)).thenReturn(projectProperties);
+        when(projectProperties.get("name")).thenReturn(name);
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getCacheFolder()).thenReturn(cacheFolder);
         when(Path.of(cacheFolder)).thenReturn(path);
