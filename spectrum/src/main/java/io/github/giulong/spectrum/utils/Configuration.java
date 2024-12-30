@@ -236,6 +236,9 @@ public class Configuration {
             @JsonPropertyDescription("Chrome's capabilities")
             private Map<String, Object> capabilities;
 
+            @JsonPropertyDescription("Chrome's experimental options")
+            private Map<String, Object> experimentalOptions;
+
             @JsonPropertyDescription("Chrome service options")
             private Service service;
 
@@ -289,6 +292,9 @@ public class Configuration {
 
             @JsonPropertyDescription("Edge's capabilities")
             private Map<String, Object> capabilities;
+
+            @JsonPropertyDescription("Edge's experimental options")
+            private Map<String, Object> experimentalOptions;
 
             @JsonPropertyDescription("Edge service options")
             private Chrome.Service service;

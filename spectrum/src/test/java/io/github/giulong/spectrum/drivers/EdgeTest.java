@@ -15,6 +15,7 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.service.DriverService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -100,6 +101,8 @@ class EdgeTest {
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);
         when(edgeConfig.getArgs()).thenReturn(arguments);
+        when(edgeConfig.getCapabilities()).thenReturn(Map.of("capability", "value1"));
+        when(edgeConfig.getExperimentalOptions()).thenReturn(Map.of("experimental", "value2"));
 
         MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class, (mock, context) -> {
             when(mock.addArguments(arguments)).thenReturn(mock);
@@ -114,6 +117,9 @@ class EdgeTest {
         verify(loggingPreferences).enable(DRIVER, driverLevel);
         verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
         verify(edgeOptions).setCapability(LOGGING_PREFS, loggingPreferences);
+
+        verify(edgeOptions).setCapability("capability", (Object) "value1");
+        verify(edgeOptions).setExperimentalOption("experimental", "value2");
 
         assertEquals(edgeOptions, Reflections.getFieldValue("capabilities", edge));
 
