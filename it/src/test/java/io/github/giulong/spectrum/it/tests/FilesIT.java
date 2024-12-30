@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -65,7 +66,7 @@ public class FilesIT extends SpectrumTest<Void> {
         driver.get("https://demo.automationtesting.in/FileDownload.html");
 
         // not displayed in GH actions
-        if (successfulDownloadPage.getDoNotConsent().isDisplayed()) {
+        if (isPresent(By.cssSelector("button[aria-label='Do not consent']"))) {
             successfulDownloadPage.getDoNotConsent().click();
         }
         successfulDownloadPage.createAndDownloadFileWithText("hello world");
