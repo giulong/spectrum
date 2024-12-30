@@ -28,7 +28,8 @@ public class Edge extends Chromium<EdgeOptions, EdgeDriverService, EdgeDriverSer
 
         capabilities = new EdgeOptions().addArguments(edge.getArgs());
 
-        edge.getCapabilities().forEach(capabilities::setExperimentalOption);
+        edge.getCapabilities().forEach(capabilities::setCapability);
+        edge.getExperimentalOptions().forEach(capabilities::setExperimentalOption);
         setLoggingPreferencesFrom(drivers.getLogs());
     }
 }

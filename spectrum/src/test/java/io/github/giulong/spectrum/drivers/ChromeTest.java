@@ -101,7 +101,8 @@ class ChromeTest {
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);
-        when(chromeConfig.getCapabilities()).thenReturn(Map.of("one", "value"));
+        when(chromeConfig.getCapabilities()).thenReturn(Map.of("capability", "value1"));
+        when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of("experimental", "value2"));
 
         MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
             when(mock.addArguments(arguments)).thenReturn(mock);
@@ -118,7 +119,8 @@ class ChromeTest {
         verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
         verify(chromeOptions).setCapability(LOGGING_PREFS, loggingPreferences);
 
-        verify(chromeOptions).setExperimentalOption("one", "value");
+        verify(chromeOptions).setCapability("capability", (Object) "value1");
+        verify(chromeOptions).setExperimentalOption("experimental", "value2");
 
         assertEquals(chromeOptions, Reflections.getFieldValue("capabilities", chrome));
 

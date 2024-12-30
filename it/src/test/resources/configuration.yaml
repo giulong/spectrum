@@ -14,7 +14,7 @@ drivers:
   edge:
     args:
       - --headless=new
-    capabilities:
+    experimentalOptions:
       binary: ${EDGE_BINARY:-}
 
 video:
