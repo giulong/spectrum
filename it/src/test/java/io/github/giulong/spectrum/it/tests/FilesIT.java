@@ -64,7 +64,10 @@ public class FilesIT extends SpectrumTest<Void> {
 
         driver.get("https://demo.automationtesting.in/FileDownload.html");
 
-        successfulDownloadPage.getDoNotConsent().click();
+        // not displayed in GH actions
+        if (successfulDownloadPage.getDoNotConsent().isDisplayed()) {
+            successfulDownloadPage.getDoNotConsent().click();
+        }
         successfulDownloadPage.createAndDownloadFileWithText("hello world");
 
         assertTrue(checkDownloadedFile("info.txt"));
