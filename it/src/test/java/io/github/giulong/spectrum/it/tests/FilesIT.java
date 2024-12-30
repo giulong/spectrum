@@ -12,6 +12,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Files Test")
@@ -67,6 +68,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
         // not displayed in GH actions
         if (isPresent(By.cssSelector("button[aria-label='Do not consent']"))) {
+            pageLoadWait.until(elementToBeClickable(successfulDownloadPage.getDoNotConsent()));
             successfulDownloadPage.getDoNotConsent().click();
         }
         successfulDownloadPage.createAndDownloadFileWithText("hello world");
