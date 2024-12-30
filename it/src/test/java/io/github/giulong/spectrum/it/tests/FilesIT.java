@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.it.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.DownloadPage;
+import io.github.giulong.spectrum.it.pages.SuccessfulDownloadPage;
 import io.github.giulong.spectrum.it.pages.UploadPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
@@ -9,8 +10,7 @@ import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Files Test")
@@ -22,7 +22,7 @@ public class FilesIT extends SpectrumTest<Void> {
     private static final String FILE_TO_UPLOAD = "spectrum-logo.png";
 
     private DownloadPage downloadPage;
-
+    private SuccessfulDownloadPage successfulDownloadPage;
     private UploadPage uploadPage;
 
     @Test
@@ -54,5 +54,19 @@ public class FilesIT extends SpectrumTest<Void> {
 
         pageLoadWait.until(visibilityOf(uploadPage.getUploadedFiles()));
         assertEquals(FILE_TO_UPLOAD, uploadPage.getUploadedFiles().getText());
+    }
+
+    @Test
+    @DisplayName("successful download")
+    public void successfulDownload() {
+        // We call the inherited helper method to ensure a fresh download
+        deleteDownloadsFolder();
+
+        driver.get("https://demo.automationtesting.in/FileDownload.html");
+
+        successfulDownloadPage.getDoNotConsent().click();
+        successfulDownloadPage.createAndDownloadFileWithText("hello world");
+
+        assertTrue(checkDownloadedFile("info.txt"));
     }
 }
