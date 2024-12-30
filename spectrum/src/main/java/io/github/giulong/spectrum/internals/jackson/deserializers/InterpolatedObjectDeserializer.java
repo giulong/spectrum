@@ -4,15 +4,20 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.github.giulong.spectrum.utils.Vars;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.stream.Collectors.toMap;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -24,6 +29,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
     private static final Pattern NUMBER = Pattern.compile("-?\\d+(.\\d+|,\\d+)?");
 
     private final Vars vars = Vars.getInstance();
+    private final ObjectMapper objectMapper = YAMLMapper.builder().build();
 
     public static InterpolatedObjectDeserializer getInstance() {
         return INSTANCE;
@@ -34,19 +40,32 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
         final JsonNode jsonNode = jsonParser.readValueAsTree();
         final String currentName = jsonParser.currentName();
         final JsonNodeType jsonNodeType = jsonNode.getNodeType();
-        final String textValue = jsonNode.textValue();
 
         log.trace("Deserializing {} from {} -> {}", jsonNodeType, currentName, jsonNode);
 
         return switch (jsonNodeType) {
-            case STRING -> {
-                final Matcher matcher = INT_PATTERN.matcher(textValue);
-                yield matcher.matches()
-                        ? interpolate(textValue, currentName, matcher)
-                        : InterpolatedStringDeserializer.getInstance().interpolate(textValue, currentName);
-            }
             case NUMBER -> jsonNode.numberValue();
-            default -> jsonNode;
+            case STRING -> traverse(jsonNode.textValue(), currentName);
+            case OBJECT -> traverse(objectMapper.convertValue(jsonNode, Map.class), currentName);
+            case ARRAY -> traverse(objectMapper.convertValue(jsonNode, List.class), currentName);
+            default -> traverse(jsonNode, currentName);
+        };
+    }
+
+    Object traverse(final Object value, final String currentName) {
+        return switch (value) {
+            case String v -> {
+                final Matcher matcher = INT_PATTERN.matcher(v);
+                yield matcher.matches()
+                        ? interpolate(v, currentName, matcher)
+                        : InterpolatedStringDeserializer.getInstance().interpolate(v, currentName);
+            }
+            case Map<?, ?> m -> m
+                    .entrySet()
+                    .stream()
+                    .collect(toMap(Map.Entry::getKey, e -> traverse(e.getValue(), currentName)));
+            case List<?> l -> l.stream().map(e -> traverse(e, currentName)).toList();
+            default -> value;
         };
     }
 
