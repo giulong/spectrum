@@ -87,7 +87,8 @@ drivers:
   chrome:
     args:
       - --disable-search-engine-choice-screen
-    capabilities:
+    capabilities: { }
+    experimentalOptions:
       prefs:
         download.prompt_for_download: false
         download.directory_upgrade: true
@@ -121,7 +122,8 @@ drivers:
   # Edge capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/edge/
   edge:
     args: [ ]
-    capabilities:
+    capabilities: { }
+    experimentalOptions:
       prefs:
         download.default_directory: ${downloadsFolder}
     service:

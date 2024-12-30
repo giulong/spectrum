@@ -127,7 +127,7 @@ class DriverTest {
     }
 
     @Test
-    @DisplayName("build should return the instance of the requested webdriver")
+    @DisplayName("build should return the instance of the requested driver")
     void build() {
         // buildCapabilitiesFrom stubs
         final List<String> arguments = List.of("args");
@@ -138,7 +138,8 @@ class DriverTest {
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);
-        when(chromeConfig.getCapabilities()).thenReturn(Map.of("one", "value"));
+        when(chromeConfig.getCapabilities()).thenReturn(Map.of());
+        when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of());
 
         MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
             when(mock.addArguments(arguments)).thenReturn(mock);

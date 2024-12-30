@@ -28,7 +28,8 @@ public class Chrome extends Chromium<ChromeOptions, ChromeDriverService, ChromeD
 
         capabilities = new ChromeOptions().addArguments(chrome.getArgs());
 
-        chrome.getCapabilities().forEach(capabilities::setExperimentalOption);
+        chrome.getCapabilities().forEach(capabilities::setCapability);
+        chrome.getExperimentalOptions().forEach(capabilities::setExperimentalOption);
         setLoggingPreferencesFrom(driversConfiguration.getLogs());
     }
 }

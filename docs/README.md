@@ -384,7 +384,7 @@ drivers:
   edge:
     args:
       - --headless=new
-    capabilities:
+    experimentalOptions:
       binary: /usr/bin/microsoft-edge
 
 # All needed environments' configuration. This is the default environments node, 
@@ -751,8 +751,10 @@ See [https://www.selenium.dev/documentation/webdriver/browsers/chrome/](https://
 ```yaml
 drivers:
   chrome:
-    args: [ ]
-    capabilities:
+    args:
+      - --disable-search-engine-choice-screen
+    capabilities: { }
+    experimentalOptions:
       prefs:
         download.prompt_for_download: false
         download.directory_upgrade: true
@@ -778,7 +780,7 @@ you can provide the path to any Chromium based browser in Chrome's `binary` capa
 ```yaml
 drivers:
   chrome:
-    capabilities:
+    experimentalOptions:
       binary: /Applications/Iron.app/Contents/MacOS/Chromium
     service:
       buildCheckDisabled: true # this is needed if the Chromium based browser is not compatible with the ChromeDriver you have in local
@@ -845,7 +847,8 @@ target="_blank"}
 drivers:
   edge:
     args: [ ]
-    capabilities:
+    capabilities: { }
+    experimentalOptions:
       prefs:
         download.default_directory: ${downloadsFolder}
     service:
