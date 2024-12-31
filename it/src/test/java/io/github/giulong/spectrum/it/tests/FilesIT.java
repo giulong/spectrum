@@ -3,15 +3,10 @@ package io.github.giulong.spectrum.it.tests;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.DownloadPage;
 import io.github.giulong.spectrum.it.pages.UploadPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Tag;
-import org.junit.jupiter.api.Tags;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Files Test")
@@ -25,6 +20,12 @@ public class FilesIT extends SpectrumTest<Void> {
     private DownloadPage downloadPage;
     private UploadPage uploadPage;
 
+    @BeforeEach
+    void beforeEach() {
+        // We call the inherited helper method to ensure a fresh download
+        deleteDownloadsFolder();
+    }
+
     @Test
     @DisplayName("download")
     @Tags({
@@ -32,11 +33,11 @@ public class FilesIT extends SpectrumTest<Void> {
             @Tag("tag2"),
     })
     public void download() {
-        // We call the inherited helper method to ensure a fresh download
-        deleteDownloadsFolder();
-
-        downloadPage.open();
-        downloadPage.getDownloadLinks().getFirst().click();
+        downloadPage
+                .open()
+                .getDownloadLinks()
+                .getFirst()
+                .click();
 
         // We call the inherited helper method to check if the downloaded file is the one we expect
         // This is expected to fail since we're comparing it with a wrong file
@@ -54,18 +55,16 @@ public class FilesIT extends SpectrumTest<Void> {
 
         pageLoadWait.until(visibilityOf(uploadPage.getUploadedFiles()));
         assertEquals(FILE_TO_UPLOAD, uploadPage.getUploadedFiles().getText());
-    }
 
-    @Test
-    @DisplayName("successful download")
-    public void successfulDownload() {
-        // We call the inherited helper method to ensure a fresh download
-        deleteDownloadsFolder();
+        downloadPage
+                .open()
+                .getDownloadLinks()
+                .stream()
+                .filter(webElement -> webElement.getText().equals(FILE_TO_UPLOAD))
+                .findFirst()
+                .orElseThrow()
+                .click();
 
-        driver.get("https://demoqa.com/upload-download");
-
-        pageLoadWait.until(elementToBeClickable(By.id("downloadButton"))).click();
-
-        assertTrue(checkDownloadedFile("sampleFile.jpeg"));
+        assertTrue(checkDownloadedFile(FILE_TO_UPLOAD));
     }
 }
