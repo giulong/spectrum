@@ -8,11 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Files Test")
@@ -64,15 +62,9 @@ public class FilesIT extends SpectrumTest<Void> {
         // We call the inherited helper method to ensure a fresh download
         deleteDownloadsFolder();
 
-        driver.get("https://demo.automationtesting.in/FileDownload.html");
+        driver.get("https://demoqa.com/upload-download");
+        successfulDownloadPage.getDownloadButton().click();
 
-        // not displayed in GH actions
-        if (isPresent(By.cssSelector("button[aria-label='Do not consent']"))) {
-            pageLoadWait.until(elementToBeClickable(successfulDownloadPage.getDoNotConsent()));
-            successfulDownloadPage.getDoNotConsent().click();
-        }
-        successfulDownloadPage.createAndDownloadFileWithText("hello world");
-
-        assertTrue(checkDownloadedFile("info.txt"));
+        assertTrue(checkDownloadedFile("sampleFile.jpeg"));
     }
 }
