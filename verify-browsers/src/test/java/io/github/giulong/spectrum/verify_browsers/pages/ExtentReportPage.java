@@ -49,9 +49,6 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(id = "filesit-download")
     private WebElement download;
 
-    @FindBy(id = "filesit-successful-download")
-    private WebElement successfulDownload;
-
     @FindBy(className = "screenshot-container")
     private List<WebElement> screenshotContainers;
 
@@ -111,9 +108,6 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
 
     @FindBy(id = "video-filesit-download")
     private WebElement videoFilesItDownload;
-
-    @FindBy(id = "video-filesit-successful-download")
-    private WebElement videoFilesItSuccessfulDownload;
 
     @FindBy(className = "inline")
     private List<WebElement> inlineImages;

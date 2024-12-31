@@ -42,3 +42,4 @@ drivers:
 extent:
   theme: DARK
   fileName: report.html
+  inline: true
