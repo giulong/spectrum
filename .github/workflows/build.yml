@@ -60,16 +60,19 @@ jobs:
           - os: ubuntu-latest
             profiles: browsers
             directives: -DbrowsersTests
+            moduleName: it
             env:
               EDGE_BINARY: /usr/bin/microsoft-edge
           - os: macos-latest
             profiles: macos
             directives: -DmacosTests
+            moduleName: it-macos
             env:
               EDGE_BINARY: /usr/bin/microsoft-edge
           - os: windows-latest
             profiles: browsers
             directives: -DbrowsersTests
+            moduleName: it
     runs-on: ${{ matrix.os }}
     env:
       VERSION: ${{ needs.build.outputs.version }}
@@ -103,6 +106,13 @@ jobs:
         run: |
           ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
           ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE ${{ matrix.directives }} -ntp -P ${{ matrix.profiles }}
+
+      - name: Publish html report
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-${{ matrix.moduleName }}-${{ matrix.os }}
+          path: ${{ matrix.moduleName }}/target/spectrum/inline-reports/report.html
 
   appium:
     name: Appium IT
@@ -176,3 +186,10 @@ jobs:
           script: |
             ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
             ./mvnw install -DskipSign -Denforcer.skip -Dmaven.plugin.validation=NONE -DappiumTests -ntp -P appium
+
+      - name: Publish html report
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-it-appium
+          path: it-appium/target/spectrum/inline-reports/report.html

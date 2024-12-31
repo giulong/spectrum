@@ -49,7 +49,6 @@ extentReport:
     loginTrue: Login Form leveraging the data.yaml
     noDisplayName: Checkbox Page
     download: Files Test
-    successfulDownload: Files Test
 
 summary:
   title: Execution Summary

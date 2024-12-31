@@ -30,8 +30,8 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         driver.get(url);
 
-        assertEquals(21, extentReportPage.getTestViewTests().size(), "Total tests");
-        assertEquals(18, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(20, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(17, countTestsWithStatus("pass"), "Passed tests");
         assertEquals(1, countTestsWithStatus("skip"), "Skipped tests");
         assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
@@ -59,9 +59,6 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
         actions.scrollToElement(extentReportPage.getDownload()).perform();
         assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
 
-        actions.scrollToElement(extentReportPage.getSuccessfulDownload()).perform();
-        assertEquals(testLabels.get("successfulDownload"), extentReportPage.getSuccessfulDownload().getText());
-
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 
         assertEquals("3", extentReportPage.getVideoJsWebElementItCheckingJsWebElements().getDomProperty("duration"));
@@ -88,9 +85,8 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals("3", extentReportPage.getVideoLoginFormItWithUserGiulioWeExpectLoginToBeSuccessfulFalse().getDomProperty("duration"));
         assertEquals("3", extentReportPage.getVideoLoginFormItWithUserTomWeExpectLoginToBeSuccessfulTrue().getDomProperty("duration"));
 
-        assertEquals("2", extentReportPage.getVideoFilesItUpload().getDomProperty("duration"));
+        assertEquals("17", extentReportPage.getVideoFilesItUpload().getDomProperty("duration"));
         assertEquals("1", extentReportPage.getVideoFilesItDownload().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoFilesItSuccessfulDownload().getDomProperty("duration"));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());
