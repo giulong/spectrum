@@ -13,9 +13,8 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 @SuppressWarnings("unused")
 public class FilesIT extends SpectrumTest<Void> {
 
-    // this must be different from the downloaded file since herokuapp will randomly serve exactly the files used to test the upload
+    public static final String FILE_TO_UPLOAD = "spectrum-logo.png";
     private static final String FILE_TO_DOWNLOAD = "empty.txt";
-    private static final String FILE_TO_UPLOAD = "spectrum-logo.png";
 
     private DownloadPage downloadPage;
     private UploadPage uploadPage;
@@ -58,11 +57,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
         downloadPage
                 .open()
-                .getDownloadLinks()
-                .stream()
-                .filter(webElement -> webElement.getText().equals(FILE_TO_UPLOAD))
-                .findFirst()
-                .orElseThrow()
+                .getSpectrumLogo()
                 .click();
 
         assertTrue(checkDownloadedFile(FILE_TO_UPLOAD));
