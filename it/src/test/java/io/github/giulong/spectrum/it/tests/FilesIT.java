@@ -2,12 +2,12 @@ package io.github.giulong.spectrum.it.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.DownloadPage;
-import io.github.giulong.spectrum.it.pages.SuccessfulDownloadPage;
 import io.github.giulong.spectrum.it.pages.UploadPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +23,6 @@ public class FilesIT extends SpectrumTest<Void> {
 
     private DownloadPage downloadPage;
     private UploadPage uploadPage;
-    private SuccessfulDownloadPage successfulDownloadPage;
 
     @Test
     @DisplayName("download")
@@ -63,7 +62,7 @@ public class FilesIT extends SpectrumTest<Void> {
         deleteDownloadsFolder();
 
         driver.get("https://demoqa.com/upload-download");
-        successfulDownloadPage.downloadFile();
+        driver.findElement(By.id("downloadButton")).click();
 
         assertTrue(checkDownloadedFile("sampleFile.jpeg"));
     }
