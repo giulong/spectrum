@@ -90,7 +90,7 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertEquals("2", extentReportPage.getVideoFilesItUpload().getDomProperty("duration"));
         assertEquals("1", extentReportPage.getVideoFilesItDownload().getDomProperty("duration"));
-        assertEquals("2", extentReportPage.getVideoFilesItSuccessfulDownload().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoFilesItSuccessfulDownload().getDomProperty("duration"));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());
