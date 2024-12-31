@@ -8,16 +8,12 @@ drivers:
   chrome:
     args:
       - --headless=new
-      - window-size=1920,1080
   firefox:
     args:
       - -headless
-      - --width=1920
-      - --height=1080
   edge:
     args:
       - --headless=new
-      - window-size=1920,1080
     experimentalOptions:
       binary: ${EDGE_BINARY:-}
 
