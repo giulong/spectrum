@@ -9,21 +9,6 @@ import org.openqa.selenium.support.FindBy;
 @SuppressWarnings("unused")
 public class SuccessfulDownloadPage extends SpectrumPage<SuccessfulDownloadPage, Void> {
 
-    @FindBy(css = "button[aria-label='Do not consent']")
-    private WebElement doNotConsent;
-
-    @FindBy(id = "textbox")
-    private WebElement textbox;
-
-    @FindBy(id = "createTxt")
-    private WebElement createTxt;
-
-    @FindBy(id = "link-to-download")
-    private WebElement downloadLink;
-
-    public void createAndDownloadFileWithText(final String text) {
-        clearAndSendKeys(textbox, text);
-        createTxt.click();
-        downloadLink.click();
-    }
+    @FindBy(id = "downloadButton")
+    private WebElement downloadButton;
 }
