@@ -104,6 +104,13 @@ jobs:
           ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
           ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE ${{ matrix.directives }} -ntp -P ${{ matrix.profiles }}
 
+      - name: Publish html report
+        if: success() || failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report.html
+          path: it/target/spectrum/inline-reports/report.html
+
   appium:
     name: Appium IT
     needs: build
