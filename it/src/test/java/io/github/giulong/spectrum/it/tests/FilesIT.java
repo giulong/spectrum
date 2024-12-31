@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TimeoutException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,13 +59,15 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("successful download")
-    public void successfulDownload() throws InterruptedException {
+    public void successfulDownload() {
         // We call the inherited helper method to ensure a fresh download
         deleteDownloadsFolder();
 
         driver.get("https://demoqa.com/upload-download");
+        driver
+                .findElements(By.tagName("iframe"))
+                .forEach(iframe -> ((JavascriptExecutor) driver).executeScript("arguments[0].hidden = true", iframe));
 
-        Thread.sleep(2000); // waiting for ads to be shown to not intercept clicks
         pageLoadWait.until(elementToBeClickable(By.id("downloadButton"))).click();
 
         assertTrue(checkDownloadedFile("sampleFile.jpeg"));
