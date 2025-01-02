@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("Test Factory")
-public class TestFactoryIT extends SpectrumTest<Void> {
+class TestFactoryIT extends SpectrumTest<Void> {
 
     // You just need to declare your pages here: Spectrum will take care of instantiating them
     // and will inject all the needed fields like the driver
@@ -22,7 +22,7 @@ public class TestFactoryIT extends SpectrumTest<Void> {
     private CheckboxPage checkboxPage;
 
     @TestFactory
-    public Stream<DynamicNode> dynamicTestsWithContainers() {
+    Stream<DynamicNode> dynamicTestsWithContainers() {
         return Stream
                 .of(1, 2)
                 .map(number -> dynamicTest("Dynamic test " + number, () -> {

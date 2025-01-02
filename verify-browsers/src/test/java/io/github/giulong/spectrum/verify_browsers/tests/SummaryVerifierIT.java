@@ -14,7 +14,7 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("unused")
-public class SummaryVerifierIT extends SpectrumTest<Data> {
+class SummaryVerifierIT extends SpectrumTest<Data> {
 
     private static final Pattern DATE_PATTERN = Pattern.compile("\\d{4} \\w{3} \\d{1,2} \\d{2}:\\d{2}:\\d{2}");
     private static final Pattern DURATION_PATTERN = Pattern.compile("\\d{2}:\\d{2}:\\d{2}");
@@ -23,7 +23,7 @@ public class SummaryVerifierIT extends SpectrumTest<Data> {
 
     @Test
     @DisplayName("should check the testbook")
-    public void testbook() {
+    void testbook() {
         final Data.Summary summary = data.getSummary();
 
         driver.get(String.format("file:///%s/it-testbook/target/spectrum/summary/summary.html", Path.of(System.getProperty("user.dir")).getParent()));

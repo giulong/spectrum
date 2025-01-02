@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 
 @DisplayName("JsWebElement")
-public class JsWebElementIT extends SpectrumTest<Void> {
+class JsWebElementIT extends SpectrumTest<Void> {
 
     @SuppressWarnings("unused")
     private JsLoginPage jsLoginPage;
@@ -31,7 +31,7 @@ public class JsWebElementIT extends SpectrumTest<Void> {
     private JsShadowDomPage jsShadowDomPage;
 
     @Test
-    public void checkingJsWebElements() {
+    void checkingJsWebElements() {
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", jsLandingPage.getTitle().getDomProperty("innerText"));
 
@@ -55,7 +55,7 @@ public class JsWebElementIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void testFindElementsMethod() {
+    void testFindElementsMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
         final WebElement mainContentDiv = js.findElement(LocatorType.ID, "content");
@@ -79,7 +79,7 @@ public class JsWebElementIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void testInputFieldActions() {
+    void testInputFieldActions() {
         jsLoginPage.open();
 
         final WebElement usernameField = jsLoginPage.getUsername();
@@ -109,7 +109,7 @@ public class JsWebElementIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void shadowDom() {
+    void shadowDom() {
         jsShadowDomPage.open();
 
         final WebElement span = jsShadowDomPage.getSpan();

@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("It TestBook Module Verifier")
 @SuppressWarnings("unused")
-public class TestBookVerifierIT extends SpectrumTest<Data> {
+class TestBookVerifierIT extends SpectrumTest<Data> {
 
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##", new DecimalFormatSymbols(US));
 
@@ -26,7 +26,7 @@ public class TestBookVerifierIT extends SpectrumTest<Data> {
 
     @Test
     @DisplayName("should check the testbook")
-    public void testbook() {
+    void testbook() {
         final Data.TestBook.Statistics statistics = data.getTestBook().getStatistics();
 
         driver.get(String.format("file:///%s/it-testbook/target/spectrum/testbook/testbook.html", Path.of(System.getProperty("user.dir")).getParent()));

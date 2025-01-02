@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Checkbox Page")
-public class CheckboxIT extends SpectrumTest<Void> {
+class CheckboxIT extends SpectrumTest<Void> {
 
     // You just need to declare your pages here: Spectrum will take care of instantiating them
     // and will inject all the needed fields like the driver
@@ -19,7 +19,7 @@ public class CheckboxIT extends SpectrumTest<Void> {
     private CheckboxPage checkboxPage;
 
     @Test
-    public void testWithNoDisplayName() {
+    void testWithNoDisplayName() {
         // Open the base url of the application under test
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());

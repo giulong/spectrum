@@ -6,11 +6,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("Demo test")
-public class DemoIT extends SpectrumTest<Void> {
+class DemoIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("Sending custom events")
-    public void events() {
+    void events() {
         driver.get(configuration.getApplication().getBaseUrl());
         eventsDispatcher.fire("primaryId", "custom-event");
         eventsDispatcher.fire("primaryId", "secondReason");
@@ -18,7 +18,7 @@ public class DemoIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("This one should fail for demonstration purposes")
-    public void failing() {
+    void failing() {
         driver.get(configuration.getApplication().getBaseUrl());
         throw new RuntimeException("Exception thrown to demonstrate how failed tests will be displayed");
     }
@@ -26,7 +26,7 @@ public class DemoIT extends SpectrumTest<Void> {
     @Test
     @DisplayName("Skipped Test")
     @Disabled("for demonstration purposes")
-    public void skipped() {
+    void skipped() {
         throw new RuntimeException("This should not be thrown!!!");
     }
 }

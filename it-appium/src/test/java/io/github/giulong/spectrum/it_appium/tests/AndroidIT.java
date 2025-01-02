@@ -9,13 +9,13 @@ import org.junit.jupiter.api.RepeatedTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SuppressWarnings("unused")
-public class AndroidIT extends SpectrumTest<Data> {
+class AndroidIT extends SpectrumTest<Data> {
 
     private AndroidPage androidPage;
 
     @RepeatedTest(2)
     @DisplayName("Android test")
-    public void androidTest() {
+    void androidTest() {
         assertEquals(data.getText(), androidPage.getTextView().getText());
     }
 }

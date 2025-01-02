@@ -26,7 +26,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Files Test")
 @SuppressWarnings("unused")
-public class FilesIT extends SpectrumTest<Void> {
+class FilesIT extends SpectrumTest<Void> {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -40,7 +40,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("download")
-    public void download() {
+    void download() {
         deleteDownloadsFolder();
 
         downloadPage.open();
@@ -51,7 +51,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("upload")
-    public void upload() {
+    void upload() {
         uploadPage
                 .open()
                 .upload(uploadPage.getFileUpload(), FILE_TO_UPLOAD)
@@ -63,7 +63,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("additional grid capabilities")
-    public void additionalGridCapabilities() throws IOException {
+    void additionalGridCapabilities() throws IOException {
         final HttpURLConnection connection = setupConnectionToGrid();
 
         try (OutputStream outputStream = connection.getOutputStream()) {

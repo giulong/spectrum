@@ -14,7 +14,7 @@ import org.openqa.selenium.WebElement;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
 
-public class JavascriptIT extends SpectrumTest<Void> {
+class JavascriptIT extends SpectrumTest<Void> {
 
     @SuppressWarnings("unused")
     private LandingPage landingPage;
@@ -29,7 +29,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
     private ShadowDomPage shadowDomPage;
 
     @Test
-    public void testWithNoDisplayName() {
+    void testWithNoDisplayName() {
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
@@ -53,7 +53,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void testFindElementMethod() {
+    void testFindElementMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
         assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.LINK_TEXT, "Form Authentication"));
@@ -77,7 +77,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void testFindElementsMethod() {
+    void testFindElementsMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
         final WebElement mainContentDiv = js.findElement(LocatorType.ID, "content");
@@ -108,7 +108,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void testWebElementGetMethods() {
+    void testWebElementGetMethods() {
         driver.get(configuration.getApplication().getBaseUrl());
 
         js.click(landingPage.getFormLoginLink());
@@ -134,7 +134,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void testInputFieldActions() {
+    void testInputFieldActions() {
         driver.get(configuration.getApplication().getBaseUrl());
 
         js.click(landingPage.getFormLoginLink());
@@ -156,7 +156,7 @@ public class JavascriptIT extends SpectrumTest<Void> {
     }
 
     @Test
-    public void shadowDom() {
+    void shadowDom() {
         shadowDomPage.open();
 
         final WebElement span = shadowDomPage.getSpan();

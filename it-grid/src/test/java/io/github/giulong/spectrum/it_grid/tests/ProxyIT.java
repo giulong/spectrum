@@ -8,11 +8,11 @@ import org.openqa.selenium.WebDriverException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Proxy Test")
-public class ProxyIT extends SpectrumTest<Void> {
+class ProxyIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("should prove that connections towards domains in the proxy bypass list are allowed, while others are not reachable")
-    public void proxyShouldAllowOnlyCertainDomains() {
+    void proxyShouldAllowOnlyCertainDomains() {
         driver.get("https://the-internet.herokuapp.com");
         assertThrows(WebDriverException.class, () -> driver.get("https://www.google.com"));
     }

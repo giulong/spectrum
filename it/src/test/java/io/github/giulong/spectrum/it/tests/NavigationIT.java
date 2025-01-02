@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Navigation")
-public class NavigationIT extends SpectrumTest<Void> {
+class NavigationIT extends SpectrumTest<Void> {
 
     // You just need to declare your pages here: Spectrum will take care of instantiating them
     // and will inject all the needed fields like the driver
@@ -20,7 +20,7 @@ public class NavigationIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("Test to show navigation and produced video")
-    public void testWithNoDisplayName() {
+    void testWithNoDisplayName() {
         // Open the base url of the application under test
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());

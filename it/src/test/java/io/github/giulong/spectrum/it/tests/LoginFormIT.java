@@ -24,13 +24,13 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 @Slf4j
 @DisplayName("Login Form")
 @SuppressWarnings("unused")
-public class LoginFormIT extends BaseIT {
+class LoginFormIT extends BaseIT {
 
     private LoginPage loginPage;
     private InputsPage inputsPage;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         log.info("Here just to check we're not overriding the internal beforeEach");
     }
 
@@ -38,7 +38,7 @@ public class LoginFormIT extends BaseIT {
     @DisplayName("Login Form leveraging the data.yaml")
     @ParameterizedTest(name = "with user {0} we expect login to be successful {1}")
     @MethodSource("valuesProvider")
-    public void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {
+    void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {
         loginPage.open();
         assertTrue(isNotPresent(id("flash")));
 

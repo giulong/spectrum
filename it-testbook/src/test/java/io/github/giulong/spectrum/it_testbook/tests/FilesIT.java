@@ -13,7 +13,7 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Files Test")
 @SuppressWarnings("unused")
-public class FilesIT extends SpectrumTest<Void> {
+class FilesIT extends SpectrumTest<Void> {
 
     // this must be different from the downloaded file since herokuapp will randomly serve exactly the files used to test the upload
     private static final String FILE_TO_DOWNLOAD = "empty.txt";
@@ -25,7 +25,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("download")
-    public void download() {
+    void download() {
         deleteDownloadsFolder();
 
         downloadPage.open();
@@ -36,7 +36,7 @@ public class FilesIT extends SpectrumTest<Void> {
 
     @Test
     @DisplayName("upload")
-    public void upload() {
+    void upload() {
         uploadPage
                 .open()
                 .upload(uploadPage.getFileUpload(), FILE_TO_UPLOAD)

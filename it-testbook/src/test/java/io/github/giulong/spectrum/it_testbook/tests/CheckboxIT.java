@@ -11,14 +11,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
 @DisplayName("Checkbox Page")
-public class CheckboxIT extends SpectrumTest<Void> {
+class CheckboxIT extends SpectrumTest<Void> {
 
     private LandingPage landingPage;
 
     private CheckboxPage checkboxPage;
 
     @Test
-    public void testWithNoDisplayName() {
+    void testWithNoDisplayName() {
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 

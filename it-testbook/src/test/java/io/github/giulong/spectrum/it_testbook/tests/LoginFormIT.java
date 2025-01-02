@@ -19,14 +19,14 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 
 @DisplayName("Login Form")
 @SuppressWarnings("unused")
-public class LoginFormIT extends SpectrumTest<Data> {
+class LoginFormIT extends SpectrumTest<Data> {
 
     private LoginPage loginPage;
 
     @DisplayName("Login Form leveraging the data.yaml")
     @ParameterizedTest(name = "with user {0} we expect login to be successful: {1}")
     @MethodSource("valuesProvider")
-    public void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {
+    void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {
         loginPage.open();
         assertTrue(isNotPresent(id("flash")));
 

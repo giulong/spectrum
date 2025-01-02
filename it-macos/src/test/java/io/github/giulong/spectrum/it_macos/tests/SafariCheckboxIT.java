@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.condition.OS.MAC;
 @DisplayName("Checkbox Page")
 @EnabledOnOs(MAC)
 @EnabledIf("onMac")
-public class SafariCheckboxIT extends SpectrumTest<Void> {
+class SafariCheckboxIT extends SpectrumTest<Void> {
 
     private static final String DRIVER_PROPERTY = "spectrum.driver";
 
@@ -24,12 +24,12 @@ public class SafariCheckboxIT extends SpectrumTest<Void> {
 
     private CheckboxPage checkboxPage;
 
-    public static boolean onMac() {
+    static boolean onMac() {
         return "safari".equals(System.getProperty(DRIVER_PROPERTY, System.getenv(DRIVER_PROPERTY)));
     }
 
     @Test
-    public void testWithNoDisplayName() {
+    void testWithNoDisplayName() {
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 

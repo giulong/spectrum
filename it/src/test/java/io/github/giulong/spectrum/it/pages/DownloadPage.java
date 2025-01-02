@@ -9,8 +9,6 @@ import org.openqa.selenium.support.FindBys;
 
 import java.util.List;
 
-import static io.github.giulong.spectrum.it.tests.FilesIT.FILE_TO_UPLOAD;
-
 @Getter
 @Endpoint("download")
 @SuppressWarnings("unused")
@@ -23,6 +21,6 @@ public class DownloadPage extends SpectrumPage<DownloadPage, Void> {
     })
     private List<WebElement> downloadLinks;
 
-    @FindBy(linkText = FILE_TO_UPLOAD)
+    @FindBy(linkText = "spectrum-logo.png")
     private WebElement spectrumLogo;
 }

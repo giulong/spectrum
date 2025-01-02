@@ -18,7 +18,7 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
-public class ExtentReportVerifierIT extends SpectrumTest<Data> {
+class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
     private static final String VIDEO_PATTERN = "data:video/mp4;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";
     private static final String IMAGE_PATTERN = "data:image/png;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";
@@ -105,13 +105,13 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
     @Test
     @DisplayName("should check the report")
-    public void report() {
+    void report() {
         commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report/report.html", Path.of(System.getProperty("user.dir")).getParent()));
     }
 
     @Test
     @DisplayName("should check the inline report")
-    public void inlineReport() {
+    void inlineReport() {
         commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report.html", Path.of(System.getProperty("user.dir")).getParent()));
 
         assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("src")), matchesPattern(VIDEO_PATTERN));

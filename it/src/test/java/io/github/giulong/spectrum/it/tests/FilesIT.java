@@ -11,9 +11,9 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Files Test")
 @SuppressWarnings("unused")
-public class FilesIT extends SpectrumTest<Void> {
+class FilesIT extends SpectrumTest<Void> {
 
-    public static final String FILE_TO_UPLOAD = "spectrum-logo.png";
+    private static final String FILE_TO_UPLOAD = "spectrum-logo.png";
     private static final String FILE_TO_DOWNLOAD = "empty.txt";
 
     private DownloadPage downloadPage;
@@ -31,7 +31,7 @@ public class FilesIT extends SpectrumTest<Void> {
             @Tag("tag1"),
             @Tag("tag2"),
     })
-    public void download() {
+    void download() {
         downloadPage
                 .open()
                 .getDownloadLinks()
@@ -46,7 +46,7 @@ public class FilesIT extends SpectrumTest<Void> {
     @Test
     @DisplayName("upload")
     @Tag("tag2")
-    public void upload() {
+    void upload() {
         uploadPage
                 .open()
                 .upload(uploadPage.getFileUpload(), FILE_TO_UPLOAD)
