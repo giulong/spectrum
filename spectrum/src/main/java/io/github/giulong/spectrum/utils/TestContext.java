@@ -1,13 +1,21 @@
 package io.github.giulong.spectrum.utils;
 
+import lombok.extern.slf4j.Slf4j;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static java.time.Duration.ZERO;
+
+@Slf4j
 public class TestContext {
 
     private final Map<String, Object> store = new ConcurrentHashMap<>();
@@ -30,6 +38,26 @@ public class TestContext {
     }
 
     public boolean isSecuredWebElement(final WebElement webElement) {
-        return securedWebElements.contains(webElement);
+        final WebDriver driver = (WebDriver) store.get(DRIVER);
+        final WebDriver.Timeouts timeouts = driver.manage().timeouts();
+        final Duration implicitWaitTimeout = timeouts.getImplicitWaitTimeout();
+
+        timeouts.implicitlyWait(ZERO);
+
+        final boolean secured = securedWebElements
+                .stream()
+                .filter(securedWebElement -> {
+                    try {
+                        securedWebElement.getAccessibleName();
+                        return true;
+                    } catch (NoSuchElementException | UnsupportedOperationException ignored) {
+                        log.error("Skipping SecureWebElement not in current page -> {}", securedWebElement);
+                        return false;
+                    }
+                })
+                .anyMatch(webElement::equals);
+
+        timeouts.implicitlyWait(implicitWaitTimeout);
+        return secured;
     }
 }

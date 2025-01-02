@@ -5,17 +5,34 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static java.time.Duration.ZERO;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class TestContextTest {
+
+    @Mock
+    private WebDriver driver;
+
+    @Mock
+    private WebDriver.Options options;
+
+    @Mock
+    private WebDriver.Timeouts timeouts;
+
+    @Mock
+    private Duration implicitWaitTimeout;
 
     @Mock
     private Map<String, Object> store;
@@ -24,7 +41,10 @@ class TestContextTest {
     private Function<String, String> function;
 
     @Mock
-    private WebElement webElement;
+    private WebElement webElement1;
+
+    @Mock
+    private WebElement webElement2;
 
     @InjectMocks
     private TestContext testContext;
@@ -70,22 +90,40 @@ class TestContextTest {
     @Test
     @DisplayName("addSecuredWebElement should add the provided webElement to the internal list")
     void addSecuredWebElement() {
-        testContext.addSecuredWebElement(webElement);
+        testContext.addSecuredWebElement(webElement1);
 
-        assertEquals(List.of(webElement), Reflections.getFieldValue("securedWebElements", testContext));
+        assertEquals(List.of(webElement1), Reflections.getFieldValue("securedWebElements", testContext));
     }
 
+    @SuppressWarnings("DataFlowIssue")
     @Test
-    @DisplayName("isSecuredWebElement should return true if the provided webElement is a secured one")
+    @DisplayName("isSecuredWebElement should return true if the provided webElement is a secured one, skipping secured web elements that are not in the currently displayed page")
     void isSecuredWebElement() {
-        Reflections.setField("securedWebElements", testContext, List.of(webElement));
+        Reflections.setField("securedWebElements", testContext, List.of(webElement1, webElement2));
 
-        assertTrue(testContext.isSecuredWebElement(webElement));
+        when(store.get(DRIVER)).thenReturn(driver);
+        when(driver.manage()).thenReturn(options);
+        when(options.timeouts()).thenReturn(timeouts);
+        when(timeouts.getImplicitWaitTimeout()).thenReturn(implicitWaitTimeout);
+        when(timeouts.implicitlyWait(ZERO)).thenReturn(timeouts);
+
+        when(webElement1.getAccessibleName()).thenThrow(NoSuchElementException.class);
+        when(webElement2.getAccessibleName()).thenReturn("");
+
+        assertTrue(testContext.isSecuredWebElement(webElement2));
+
+        verify(timeouts).implicitlyWait(implicitWaitTimeout);
     }
 
     @Test
     @DisplayName("isSecuredWebElement should return false if the provided webElement is not a secured one")
     void isSecuredWebElementFalse() {
-        assertFalse(testContext.isSecuredWebElement(webElement));
+        when(store.get(DRIVER)).thenReturn(driver);
+        when(driver.manage()).thenReturn(options);
+        when(options.timeouts()).thenReturn(timeouts);
+        when(timeouts.getImplicitWaitTimeout()).thenReturn(implicitWaitTimeout);
+        when(timeouts.implicitlyWait(ZERO)).thenReturn(timeouts);
+
+        assertFalse(testContext.isSecuredWebElement(webElement1));
     }
 }

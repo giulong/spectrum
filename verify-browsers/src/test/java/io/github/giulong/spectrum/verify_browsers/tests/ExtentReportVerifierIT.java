@@ -30,8 +30,8 @@ public class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         driver.get(url);
 
-        assertEquals(20, extentReportPage.getTestViewTests().size(), "Total tests");
-        assertEquals(17, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(21, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(18, countTestsWithStatus("pass"), "Passed tests");
         assertEquals(1, countTestsWithStatus("skip"), "Skipped tests");
         assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
