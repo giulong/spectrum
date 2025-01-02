@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Js;
-import io.github.giulong.spectrum.utils.JsWebElementProxyBuilder;
+import io.github.giulong.spectrum.utils.js.Js;
+import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

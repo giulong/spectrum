@@ -1,6 +1,8 @@
-package io.github.giulong.spectrum.utils;
+package io.github.giulong.spectrum.utils.js;
 
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
+import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

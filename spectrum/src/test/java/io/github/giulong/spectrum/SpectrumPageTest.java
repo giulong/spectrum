@@ -3,6 +3,8 @@ package io.github.giulong.spectrum;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.interfaces.Secured;
 import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.js.JsWebElementListInvocationHandler;
+import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

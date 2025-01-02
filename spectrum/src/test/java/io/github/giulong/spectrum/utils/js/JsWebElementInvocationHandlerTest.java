@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.utils;
+package io.github.giulong.spectrum.utils.js;
 
 import io.github.giulong.spectrum.enums.LocatorType;
 import org.junit.jupiter.api.DisplayName;

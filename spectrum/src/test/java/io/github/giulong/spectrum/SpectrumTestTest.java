@@ -7,6 +7,8 @@ import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.types.*;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.js.Js;
+import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import lombok.Getter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

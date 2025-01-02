@@ -1,9 +1,9 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Js;
-import io.github.giulong.spectrum.utils.JsWebElementInvocationHandler;
-import io.github.giulong.spectrum.utils.JsWebElementProxyBuilder;
+import io.github.giulong.spectrum.utils.js.Js;
+import io.github.giulong.spectrum.utils.js.JsWebElementInvocationHandler;
+import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -49,7 +49,8 @@ public class JsWebElementProxyBuilderResolver extends TypeBasedParameterResolver
             remainingWebElementMethods.remove(webElementMethod);
         } while (!remainingWebElementMethods.isEmpty());
 
-        final JsWebElementProxyBuilder jsWebElementProxyBuilder = JsWebElementProxyBuilder.builder()
+        final JsWebElementProxyBuilder jsWebElementProxyBuilder = JsWebElementProxyBuilder
+                .builder()
                 .js(store.get(JS, Js.class))
                 .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
                 .methods(methods)

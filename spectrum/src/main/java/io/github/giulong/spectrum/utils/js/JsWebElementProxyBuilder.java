@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.utils;
+package io.github.giulong.spectrum.utils.js;
 
 import lombok.Builder;
 import org.openqa.selenium.WebElement;

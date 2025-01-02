@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.utils;
+package io.github.giulong.spectrum.utils.js;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

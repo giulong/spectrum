@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.utils;
+package io.github.giulong.spectrum.utils.js;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

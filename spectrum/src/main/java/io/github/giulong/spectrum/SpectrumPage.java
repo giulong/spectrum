@@ -3,7 +3,7 @@ package io.github.giulong.spectrum;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.interfaces.Secured;
-import io.github.giulong.spectrum.utils.JsWebElementListInvocationHandler;
+import io.github.giulong.spectrum.utils.js.JsWebElementListInvocationHandler;
 import io.github.giulong.spectrum.utils.Reflections;
 import lombok.Getter;
 import lombok.SneakyThrows;
