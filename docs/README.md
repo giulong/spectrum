@@ -3353,8 +3353,8 @@ You can find details about Spectrum releases [here](https://github.com/giulong/s
 
 # Contacts
 
-| Creator         | GitHub ![github logo](assets/images/github-mark.png)    | Linkedin ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)                        | Email ![gmail logo](assets/images/gmail-icon.png)           |
-|-----------------|---------------------------------------------------------|----------------------------------------------------------------------------------|-------------------------------------------------------------|
-| Giulio Longfils | [giulong](https://github.com/giulong){:target="_blank"} | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/){:target="_blank"} | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
+| Creator         | GitHub                                | Linkedin                                                       | Email                                                       |
+|-----------------|---------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|
+| Giulio Longfils | [giulong](https://github.com/giulong) | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
 
-If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏
+If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐
