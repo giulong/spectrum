@@ -2,6 +2,7 @@ package io.github.giulong.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import net.datafaker.Faker;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.types.*;
@@ -58,6 +59,9 @@ class SpectrumTestTest {
 
     @Mock
     private Actions actions;
+
+    @Mock
+    private Faker faker;
 
     @Mock
     private EventsDispatcher eventsDispatcher;
@@ -123,8 +127,9 @@ class SpectrumTestTest {
         assertNull(childTestVoid.getParentTestPage());
 
         childTestVoid.beforeEach(testContext, configuration, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
-                extentReports, actions, eventsDispatcher, js, jsWebElementProxyBuilder, null);
+                extentReports, actions, eventsDispatcher, js, faker, jsWebElementProxyBuilder, null);
 
+        assertEquals(testContext, spectrumTest.testContext);
         assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.driver);
         assertEquals(implicitWait, spectrumTest.implicitWait);
@@ -137,9 +142,10 @@ class SpectrumTestTest {
         assertEquals(actions, spectrumTest.actions);
         assertEquals(eventsDispatcher, spectrumTest.eventsDispatcher);
         assertEquals(testData, spectrumTest.testData);
+        assertEquals(js, spectrumTest.js);
+        assertEquals(faker, spectrumTest.faker);
         assertEquals(jsWebElementProxyBuilder, spectrumTest.jsWebElementProxyBuilder);
         assertEquals(data, spectrumTest.data);
-        assertEquals(testContext, spectrumTest.testContext);
 
         // injectPages
         assertNull(childTestVoid.toSkip);

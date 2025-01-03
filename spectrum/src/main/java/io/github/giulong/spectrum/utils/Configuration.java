@@ -20,10 +20,7 @@ import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import java.io.File;
 import java.net.URL;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -69,6 +66,9 @@ public class Configuration {
 
     @JsonPropertyDescription("FreeMarker template engine configuration. See https://freemarker.apache.org/")
     private FreeMarker freeMarker;
+
+    @JsonPropertyDescription("Datafaker configuration. See https://www.datafaker.net/documentation/getting-started/")
+    private Faker faker;
 
     @JsonPropertyDescription("Events consumers, such as those to send email notifications, for example")
     private List<EventsConsumer> eventsConsumers;
@@ -599,5 +599,18 @@ public class Configuration {
 
         @JsonPropertyDescription("Number format to be used. See https://freemarker.apache.org/docs/ref_directive_setting.html")
         private String numberFormat;
+    }
+
+    @Getter
+    @Generated
+    public static class Faker {
+
+        @JsonSchemaTypes(String.class)
+        @JsonPropertyDescription("Locale to be used. See https://www.datafaker.net/documentation/getting-started/")
+        private Locale locale;
+
+        @JsonSchemaTypes(int.class)
+        @JsonPropertyDescription("Random seed to be used. See https://www.datafaker.net/documentation/getting-started/")
+        private Random random;
     }
 }

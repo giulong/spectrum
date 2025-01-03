@@ -118,3 +118,4 @@ Spectrum leverages these projects you should definitely check out!
 * [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
 * [Jekyll](https://jekyllrb.com/)
 * [Modernist Theme](https://github.com/pages-themes/modernist)
+* [Datafaker](https://github.com/datafaker-net/datafaker)

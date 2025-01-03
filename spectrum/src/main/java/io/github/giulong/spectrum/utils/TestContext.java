@@ -51,7 +51,7 @@ public class TestContext {
                         securedWebElement.getAccessibleName();
                         return true;
                     } catch (NoSuchElementException | UnsupportedOperationException ignored) {
-                        log.error("Skipping SecureWebElement not in current page -> {}", securedWebElement);
+                        log.debug("Skipping SecureWebElement not in current page -> {}", securedWebElement);
                         return false;
                     }
                 })

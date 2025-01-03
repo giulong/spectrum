@@ -22,6 +22,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Duration;
+import java.util.Random;
 
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static lombok.AccessLevel.PRIVATE;
@@ -50,6 +51,7 @@ public final class YamlUtils {
                     buildModuleFor(Driver.class, DriverDeserializer.getInstance()),
                     buildModuleFor(Environment.class, EnvironmentDeserializer.getInstance()),
                     buildModuleFor(Class.class, ClassDeserializer.getInstance()),
+                    buildModuleFor(Random.class, RandomDeserializer.getInstance()),
                     buildDynamicModuleFor(LogTestBookReporter.class, "yaml/dynamic/testbook/logReporter.yaml"),
                     buildDynamicModuleFor(TxtTestBookReporter.class, "yaml/dynamic/testbook/txtReporter.yaml"),
                     buildDynamicModuleFor(HtmlTestBookReporter.class, "yaml/dynamic/testbook/htmlReporter.yaml"),
