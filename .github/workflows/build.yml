@@ -112,7 +112,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: report-${{ matrix.moduleName }}-${{ matrix.os }}
-          path: ${{ matrix.moduleName }}/target/spectrum/inline-reports/report.html
+          path: ${{ matrix.moduleName }}/target/spectrum/inline-reports
 
   appium:
     name: Appium IT
@@ -192,4 +192,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: report-it-appium
-          path: it-appium/target/spectrum/inline-reports/report.html
+          path: it-appium/target/spectrum/inline-reports
