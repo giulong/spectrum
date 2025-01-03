@@ -463,7 +463,7 @@ freeMarker:
   numberFormat: 0.##;; roundingMode=halfUp
 
 faker:
-  locale: ENGLISH
+  locale: en
   random: null
 
 # Internal events consumers. Cannot be removed, modified, nor added from client side configuration*.yaml, as lists' elements are appended when merging yaml files. You can add yours
