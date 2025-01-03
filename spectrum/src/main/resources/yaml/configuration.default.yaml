@@ -113,6 +113,7 @@ drivers:
       browser.download.dir: ${downloadsFolder}
       browser.helperApps.neverAsk.saveToDisk: application/pdf
       pdfjs.disabled: true
+    capabilities: { }
     service:
       allowHosts: null
       logLevel: ERROR

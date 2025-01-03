@@ -67,6 +67,7 @@
                 <module>it-testbook</module>
                 <module>it-macos</module>
                 <module>it-appium</module>
+                <module>it-bidi</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>verify-macos</module>

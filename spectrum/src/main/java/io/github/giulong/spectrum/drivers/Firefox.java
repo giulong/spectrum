@@ -23,12 +23,15 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
         final Configuration.Drivers.Firefox firefox = configuration.getDrivers().getFirefox();
         final String binary = firefox.getBinary();
 
-        capabilities = new FirefoxOptions()
-                .addArguments(firefox.getArgs());
+        capabilities = new FirefoxOptions().addArguments(firefox.getArgs());
 
         if (binary != null) {
             capabilities.setBinary(binary);
         }
+
+        firefox
+                .getCapabilities()
+                .forEach(capabilities::setCapability);
 
         firefox
                 .getPreferences()

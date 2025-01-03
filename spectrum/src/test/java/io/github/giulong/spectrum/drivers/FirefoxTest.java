@@ -90,7 +90,8 @@ class FirefoxTest {
         when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getBinary()).thenReturn(binary);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
-        when(firefoxConfig.getPreferences()).thenReturn(Map.of("one", "value"));
+        when(firefoxConfig.getPreferences()).thenReturn(Map.of("preference", "value1"));
+        when(firefoxConfig.getCapabilities()).thenReturn(Map.of("capability", "value2"));
 
         MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {
             when(mock.addArguments(arguments)).thenReturn(mock);
@@ -100,8 +101,10 @@ class FirefoxTest {
         firefox.buildCapabilities();
 
         final FirefoxOptions localFirefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
-        verify(localFirefoxOptions).addPreference("one", "value");
+        verify(localFirefoxOptions).addPreference("preference", "value1");
         verify(localFirefoxOptions).setBinary(binary);
+        verify(localFirefoxOptions).setCapability("capability", (Object) "value2");
+
         assertEquals(localFirefoxOptions, Reflections.getFieldValue("capabilities", firefox));
 
         firefoxOptionsMockedConstruction.close();
@@ -115,7 +118,8 @@ class FirefoxTest {
         when(configuration.getDrivers()).thenReturn(driversConfig);
         when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
-        when(firefoxConfig.getPreferences()).thenReturn(Map.of("one", "value"));
+        when(firefoxConfig.getPreferences()).thenReturn(Map.of("preference", "value1"));
+        when(firefoxConfig.getCapabilities()).thenReturn(Map.of("capability", "value2"));
 
         MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {
             when(mock.addArguments(arguments)).thenReturn(mock);
@@ -124,8 +128,10 @@ class FirefoxTest {
         firefox.buildCapabilities();
 
         final FirefoxOptions localFirefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
-        verify(localFirefoxOptions).addPreference("one", "value");
+        verify(localFirefoxOptions).addPreference("preference", "value1");
         verify(localFirefoxOptions, never()).setBinary(anyString());
+        verify(localFirefoxOptions).setCapability("capability", (Object) "value2");
+
         assertEquals(localFirefoxOptions, Reflections.getFieldValue("capabilities", firefox));
 
         firefoxOptionsMockedConstruction.close();
