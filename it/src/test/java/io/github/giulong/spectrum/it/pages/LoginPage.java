@@ -46,8 +46,12 @@ public class LoginPage extends SpectrumPage<LoginPage, Data> {
     }
 
     public LoginPage loginWith(final Data.User user) {
-        clearAndSendKeys(username, user.getName());
-        clearAndSendKeys(password, user.getPassword());
+        return loginWith(user.getName(), user.getPassword());
+    }
+
+    public LoginPage loginWith(final String name, final String pwd) {
+        clearAndSendKeys(username, name);
+        clearAndSendKeys(password, pwd);
 
         form.submit();
         return this;

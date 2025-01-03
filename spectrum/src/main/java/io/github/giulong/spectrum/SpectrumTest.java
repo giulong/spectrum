@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
+import net.datafaker.Faker;
 import io.github.giulong.spectrum.extensions.interceptors.SpectrumInterceptor;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
@@ -69,6 +70,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final JsResolver JS_RESOLVER = new JsResolver();
 
     @RegisterExtension
+    public static final FakerResolver FAKER_RESOLVER = new FakerResolver();
+
+    @RegisterExtension
     public static final SpectrumInterceptor SPECTRUM_INTERCEPTOR = new SpectrumInterceptor();
 
     @RegisterExtension
@@ -83,7 +87,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     @SuppressWarnings({"checkstyle:ParameterNumber", "checkstyle:HiddenField", "unused"})
     void beforeEach(final TestContext testContext, final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest,
                     final WebDriver driver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
-                    final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js,
+                    final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js, final Faker faker,
                     final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
         this.configuration = configuration;
         this.driver = driver;
@@ -98,6 +102,7 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.eventsDispatcher = eventsDispatcher;
         this.testData = testData;
         this.js = js;
+        this.faker = faker;
         this.jsWebElementProxyBuilder = jsWebElementProxyBuilder;
         this.data = data;
         this.testContext = testContext;

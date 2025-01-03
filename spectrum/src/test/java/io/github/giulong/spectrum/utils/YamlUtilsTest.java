@@ -72,6 +72,7 @@ class YamlUtilsTest {
                 "Driver",
                 "Environment",
                 "Class",
+                "Random",
                 "LogTestBookReporter",
                 "TxtTestBookReporter",
                 "HtmlTestBookReporter",
