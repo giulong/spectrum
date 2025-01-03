@@ -27,7 +27,7 @@ summary:
 
 extent:
   theme: DARK
-  fileName: report.html
+  fileName: report-${spectrum.driver:-chrome}.html
   retention:
     total: 3
   inline: true
