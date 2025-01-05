@@ -5,9 +5,6 @@ import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
@@ -19,10 +16,8 @@ import org.openqa.selenium.remote.service.DriverService;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class FirefoxTest {
@@ -135,35 +130,5 @@ class FirefoxTest {
         assertEquals(localFirefoxOptions, Reflections.getFieldValue("capabilities", firefox));
 
         firefoxOptionsMockedConstruction.close();
-    }
-
-    @DisplayName("addPreference should add the correct preference based on the value type")
-    @ParameterizedTest(name = "with value {0} we expect {1}")
-    @MethodSource("valuesProvider")
-    void addPreference(final Object value, final Object expected) {
-        firefox.capabilities = firefoxOptions;
-
-        firefox.addPreference("key", value);
-        verify(firefoxOptions).addPreference("key", expected);
-    }
-
-    static Stream<Arguments> valuesProvider() {
-        final DummyObject dummyObject = new DummyObject();
-
-        return Stream.of(
-                arguments(true, true),
-                arguments(123, 123),
-                arguments("123", "123"),
-                arguments("true", "true"),
-                arguments(dummyObject, dummyObject.toString())
-        );
-    }
-
-    private static final class DummyObject {
-
-        @Override
-        public String toString() {
-            return "toString";
-        }
     }
 }

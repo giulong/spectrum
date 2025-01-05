@@ -35,10 +35,6 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
 
         firefox
                 .getPreferences()
-                .forEach(this::addPreference);
-    }
-
-    void addPreference(final String key, final Object value) {
-        capabilities.addPreference(key, value instanceof Boolean || value instanceof Integer ? value : String.valueOf(value));
+                .forEach(capabilities::addPreference);
     }
 }
