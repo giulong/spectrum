@@ -6,7 +6,10 @@ import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.FileUtils;
+import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
@@ -38,10 +41,13 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     private final FileUtils fileUtils = FileUtils.getInstance();
 
     @Shared
-    protected Configuration configuration;
+    protected static Configuration configuration;
 
     @Shared
-    protected ExtentReports extentReports;
+    protected static EventsDispatcher eventsDispatcher;
+
+    @Shared
+    protected static ExtentReports extentReports;
 
     @Shared
     protected ExtentTest extentTest;
@@ -66,9 +72,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected WebDriverWait downloadWait;
-
-    @Shared
-    protected EventsDispatcher eventsDispatcher;
 
     @Shared
     protected Js js;
