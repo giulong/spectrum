@@ -64,10 +64,10 @@
                 <module>spectrum</module>
                 <module>it</module>
                 <module>it-grid</module>
+                <module>it-bidi</module>
                 <module>it-testbook</module>
                 <module>it-macos</module>
                 <module>it-appium</module>
-                <module>it-bidi</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>verify-macos</module>
@@ -89,6 +89,7 @@
             <modules>
                 <module>it</module>
                 <module>it-grid</module>
+                <module>it-bidi</module>
                 <module>it-testbook</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
