@@ -268,6 +268,9 @@ public class Configuration {
             @JsonPropertyDescription("Firefox's preferences")
             private Map<String, Object> preferences;
 
+            @JsonPropertyDescription("Firefox's capabilities")
+            private Map<String, Object> capabilities;
+
             @JsonPropertyDescription("Firefox service options")
             private Service service;
 

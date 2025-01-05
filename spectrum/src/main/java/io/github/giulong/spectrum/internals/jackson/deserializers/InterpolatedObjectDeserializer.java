@@ -45,6 +45,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
 
         return switch (jsonNodeType) {
             case NUMBER -> jsonNode.numberValue();
+            case BOOLEAN -> jsonNode.booleanValue();
             case STRING -> traverse(jsonNode.textValue(), currentName);
             case OBJECT -> traverse(objectMapper.convertValue(jsonNode, Map.class), currentName);
             case ARRAY -> traverse(objectMapper.convertValue(jsonNode, List.class), currentName);
