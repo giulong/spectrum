@@ -116,9 +116,8 @@ class FirefoxTest {
         when(firefoxConfig.getPreferences()).thenReturn(Map.of("preference", "value1"));
         when(firefoxConfig.getCapabilities()).thenReturn(Map.of("capability", "value2"));
 
-        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {
-            when(mock.addArguments(arguments)).thenReturn(mock);
-        });
+        final MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class,
+                (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
 
         firefox.buildCapabilities();
 
