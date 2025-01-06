@@ -16,6 +16,8 @@ runtime:
 # Application under test
 application:
   baseUrl: http://localhost:8080  # Application's under test base url
+  highlight: # Highlight the web elements the test interacts with. Useful to visually debug the execution
+    js: js/highlight.js # Path to the js used to highlight. Relative to the resources folder
 
 # TestBook (coverage)
 testBook:

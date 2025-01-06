@@ -5,6 +5,7 @@ import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
 import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
+import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
 import lombok.Builder;
 import lombok.Generated;
 import lombok.SneakyThrows;
@@ -19,7 +20,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.time.Duration;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,7 +32,7 @@ public class SpectrumWebDriverListener implements WebDriverListener {
 
     private Pattern locatorPattern;
     private Events events;
-    private List<Consumer<WebDriverEvent>> consumers;
+    private List<WebDriverEventConsumer> consumers;
     private TestContext testContext;
 
     String extractSelectorFrom(final WebElement webElement) {
@@ -72,10 +72,14 @@ public class SpectrumWebDriverListener implements WebDriverListener {
                 .builder()
                 .frame(frame)
                 .level(level)
+                .args(Arrays.asList(args))
                 .message(String.format(event.getMessage(), parse(args).toArray()))
                 .build();
 
-        consumers.forEach(consumer -> consumer.accept(webDriverEvent));
+        consumers
+                .stream()
+                .filter(WebDriverEventConsumer::isEnabled)
+                .forEach(consumer -> consumer.accept(webDriverEvent));
     }
 
     @Override
