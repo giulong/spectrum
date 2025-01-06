@@ -1,0 +1,37 @@
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+drivers:
+  waits:
+    implicit: 2
+    downloadTimeout: 5
+  chrome:
+    args:
+      - --headless=new
+    capabilities:
+      webSocketUrl: true
+  firefox:
+    args:
+      - -headless
+    capabilities:
+      webSocketUrl: true
+  edge:
+    args:
+      - --headless=new
+    experimentalOptions:
+      binary: ${EDGE_BINARY:-}
+    capabilities:
+      webSocketUrl: true
+
+video:
+  frames:
+    - autoAfter
+    - manual
+  skipDuplicateFrames: false
+
+extent:
+  theme: DARK
+  fileName: report-${spectrum.driver:-chrome}.html
+  inline: true
+  sort:
+    name: { }

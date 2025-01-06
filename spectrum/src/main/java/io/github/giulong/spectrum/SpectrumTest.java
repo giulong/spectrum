@@ -12,6 +12,7 @@ import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
@@ -79,23 +80,26 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
 
+    @BeforeAll
+    static void beforeAll(final Configuration configuration, final EventsDispatcher eventsDispatcher, final ExtentReports extentReports) {
+        SpectrumTest.configuration = configuration;
+        SpectrumTest.eventsDispatcher = eventsDispatcher;
+        SpectrumTest.extentReports = extentReports;
+    }
+
     @BeforeEach
-    @SuppressWarnings({"checkstyle:ParameterNumber", "checkstyle:HiddenField", "unused"})
-    void beforeEach(final TestContext testContext, final Configuration configuration, final TestData testData, final StatefulExtentTest statefulExtentTest,
-                    final WebDriver driver, final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
-                    final ExtentReports extentReports, final Actions actions, final EventsDispatcher eventsDispatcher, final Js js,
-                    final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
-        this.configuration = configuration;
+    @SuppressWarnings({"checkstyle:ParameterNumber"})
+    void beforeEach(final TestContext testContext, final TestData testData, final StatefulExtentTest statefulExtentTest, final WebDriver driver,
+                    final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
+                    final Actions actions, final Js js, final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
         this.driver = driver;
         this.implicitWait = implicitWait;
         this.pageLoadWait = pageLoadWait;
         this.scriptWait = scriptWait;
         this.downloadWait = downloadWait;
-        this.extentReports = extentReports;
         this.statefulExtentTest = statefulExtentTest;
         this.extentTest = statefulExtentTest.getCurrentNode();
         this.actions = actions;
-        this.eventsDispatcher = eventsDispatcher;
         this.testData = testData;
         this.js = js;
         this.jsWebElementProxyBuilder = jsWebElementProxyBuilder;

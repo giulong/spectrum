@@ -1304,6 +1304,63 @@ private WebElement password;
 
 ---
 
+# Highlight WebElements
+
+For debugging purposes, it might be useful to highlight the web elements your test interacts with, such as
+input fields and buttons. You just need to configure this:
+
+{% include copyCode.html %}
+
+```yaml
+application:
+  highlight: { }
+```
+
+This is the `highlight` node in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+```yaml
+application:
+  highlight:
+    js: js/highlight.js # Path to the js used to highlight. Relative to the resources folder
+```
+
+The `js` points to the javascript to apply to the web elements. No need to provide it explicitly if you
+don't need to customise it. This is the internal 
+[highlight.js]({{ site.repository_url }}/spectrum/src/main/resources/js/highlight.js){:target="_blank"},
+that applies a 3px red border for 500ms to the web elements, as in the screenshot below:
+
+{% include copyCode.html %}
+
+```js
+const border = arguments[0].style.border;
+const borderRadius = arguments[0].style.borderRadius;
+
+arguments[0].style.border = '3px solid red';
+arguments[0].style.borderRadius = '5px';
+
+setTimeout(() => {
+    arguments[0].style.border = border;
+    arguments[0].style.borderRadius = borderRadius;
+}, 500);
+```
+
+![highlight-web-element.png](assets/images/highlight-web-element.png)
+
+Highlighting is bound to [WebDriver Events](#webdriver-events-listener), meaning only events occurring at a proper log level
+will lead to highlighting the corresponding web element(s). For instance, the `beforeSendKeys` event is logged at `INFO`
+by default, and this is why the input field in the screenshot above was highlighted:
+1. some text is being sent to an input field
+2. the web driver fires the `beforeSendKeys` event
+3. the `beforeSendKeys` event is configured at level `INFO`, and the default log level is `INFO`
+4. Spectrum consumes the event, highlighting the input
+
+If you'd like to customise the js applied when highlighting, you have 2 options where to place your own script:
+* at the `js/highlight.js` path, overriding the default, or
+* at a custom path, setting it explicitly in your configuration*.yaml
+
+---
+
 # JSON Schema
 
 JSON Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion
@@ -3353,8 +3410,8 @@ You can find details about Spectrum releases [here](https://github.com/giulong/s
 
 # Contacts
 
-| Creator         | GitHub ![github logo](assets/images/github-mark.png)    | Linkedin ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)                        | Email ![gmail logo](assets/images/gmail-icon.png)           |
-|-----------------|---------------------------------------------------------|----------------------------------------------------------------------------------|-------------------------------------------------------------|
-| Giulio Longfils | [giulong](https://github.com/giulong){:target="_blank"} | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/){:target="_blank"} | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
+| Creator         | GitHub                                | Linkedin                                                       | Email                                                       |
+|-----------------|---------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|
+| Giulio Longfils | [giulong](https://github.com/giulong) | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
 
-If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐. It would be really appreciated 🙏
+If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐

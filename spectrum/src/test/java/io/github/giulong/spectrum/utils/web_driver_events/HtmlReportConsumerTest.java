@@ -32,7 +32,7 @@ class HtmlReportConsumerTest {
     private ArgumentCaptor<Markup> markupArgumentCaptor;
 
     @InjectMocks
-    private HtmlReportConsumer htmlReportConsumer;
+    private HtmlReportConsumer htmlReportConsumer = new HtmlReportConsumer(HtmlReportConsumer.builder());
 
     @DisplayName("accept should log the message at info level")
     @ParameterizedTest

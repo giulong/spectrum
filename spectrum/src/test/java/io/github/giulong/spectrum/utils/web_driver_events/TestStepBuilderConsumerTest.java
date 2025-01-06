@@ -50,7 +50,7 @@ class TestStepBuilderConsumerTest {
     private Duration duration;
 
     @InjectMocks
-    private TestStepBuilderConsumer testStepBuilderConsumer;
+    private TestStepBuilderConsumer testStepBuilderConsumer = new TestStepBuilderConsumer(TestStepBuilderConsumer.builder());
 
     @BeforeEach
     void beforeEach() {
@@ -70,8 +70,7 @@ class TestStepBuilderConsumerTest {
     @ParameterizedTest(name = "with millisPart {0} we expect the zeros-right-padded delta millis part {1}")
     @MethodSource("valuesProvider")
     void accept(final int millisPart, final String paddedMillisPart) {
-        final String message = "<tag>message</tag>";
-        final String cleanMessage = "message";
+        final String removeTagsFromMessage = "removeTagsFromMessage";
         final long lastTimeDelta = 123L;
         final int secondsPart = 456;
         final String delta = "456." + paddedMillisPart;
@@ -84,12 +83,12 @@ class TestStepBuilderConsumerTest {
         when(Duration.ofMillis(lastTimeDelta)).thenReturn(duration);
         when(duration.toSecondsPart()).thenReturn(secondsPart);
         when(duration.toMillisPart()).thenReturn(millisPart);
-        when(webDriverEvent.getMessage()).thenReturn(message);
+        when(webDriverEvent.removeTagsFromMessage()).thenReturn(removeTagsFromMessage);
 
         when(TestStep.builder()).thenReturn(testStepBuilder);
         when(testStepBuilder.time(now)).thenReturn(testStepBuilder);
         when(testStepBuilder.delta(delta)).thenReturn(testStepBuilder);
-        when(testStepBuilder.message(cleanMessage)).thenReturn(testStepBuilder);
+        when(testStepBuilder.message(removeTagsFromMessage)).thenReturn(testStepBuilder);
         when(testStepBuilder.build()).thenReturn(testStep);
 
         testStepBuilderConsumer.accept(webDriverEvent);
