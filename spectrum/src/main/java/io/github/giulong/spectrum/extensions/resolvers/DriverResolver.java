@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.decorators.Decorated;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
 
     public static final String DRIVER = "driver";
+    public static final String ORIGINAL_DRIVER = "originalDriver";
     public static final String TEST_STEP_BUILDER_CONSUMER = "testStepBuilderConsumer";
 
     private final ContextManager contextManager = ContextManager.getInstance();
@@ -85,16 +87,18 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
                 .events(events)
                 .consumers(consumers)
-                .testContext(contextManager.get(context))
                 .build();
 
         final WebDriver decoratedDriver = new EventFiringDecorator<>(webDriverListener).decorate(driver);
+        @SuppressWarnings("unchecked") final WebDriver originalDriver = ((Decorated<WebDriver>) decoratedDriver).getOriginal();
 
         store.put(TEST_STEP_BUILDER_CONSUMER, testStepBuilderConsumer);
         store.put(DRIVER, decoratedDriver);
+        store.put(ORIGINAL_DRIVER, originalDriver);
 
         contextManager.put(context, TEST_STEP_BUILDER_CONSUMER, testStepBuilderConsumer);
         contextManager.put(context, DRIVER, decoratedDriver);
+        contextManager.put(context, ORIGINAL_DRIVER, originalDriver);
 
         return decoratedDriver;
     }
