@@ -2107,6 +2107,48 @@ The `Data` generic must be specified only in classes actually using it. There's 
 
 ---
 
+# Datafaker
+
+[Datafaker](https://www.datafaker.net/documentation/getting-started/){:target="_blank"}
+is a popular library to generate fake data. You can leverage the injected `faker` instance in both pages and tests:
+
+{% include copyCode.html %}
+
+```java
+
+@Test
+void test() {
+    String name = faker.name().fullName(); // Miss Samanta Schmidt
+    String number = faker.numerify("##");
+    String anotherNumber = faker.expression("#{numerify '##'}");
+    ...
+}
+```
+
+You can provide a custom random seed and a locale in your `configuration*.yaml`, for example:
+
+{% include copyCode.html %}
+
+```yaml
+faker:
+  locale: it
+  random: 24
+```
+
+The default in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
+is the following, meaning if you need no random seed and the english locale you can avoid configuring it explicitly:
+
+{% include copyCode.html %}
+
+```yaml
+faker:
+  locale: en
+  random: null
+```
+
+---
+
 # Event Sourcing - Notifications
 
 Spectrum leverages event sourcing, meaning throughout the execution it fires events at specific moments.

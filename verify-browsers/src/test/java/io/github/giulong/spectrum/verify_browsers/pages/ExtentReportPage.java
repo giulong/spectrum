@@ -49,6 +49,18 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(id = "filesit-download")
     private WebElement download;
 
+    @FindBy(id = "fakerit-the-login-should-fail-leveraging-random-name-generated-by-faker")
+    private WebElement fakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker;
+
+    @FindBy(id = "fakerit-with-0-increments")
+    private WebElement fakerItWith0Increments;
+
+    @FindBy(id = "fakerit-with-2-increments")
+    private WebElement fakerItWith2Increments;
+
+    @FindBy(id = "fakerit-with-5-increments")
+    private WebElement fakerItWith5Increments;
+
     @FindBy(className = "screenshot-container")
     private List<WebElement> screenshotContainers;
 
@@ -108,6 +120,18 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
 
     @FindBy(id = "video-filesit-download")
     private WebElement videoFilesItDownload;
+
+    @FindBy(id = "video-fakerit-the-login-should-fail-leveraging-random-name-generated-by-faker")
+    private WebElement videoFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker;
+
+    @FindBy(id = "video-fakerit-with-0-increments")
+    private WebElement videoFakerItWith0Increments;
+
+    @FindBy(id = "video-fakerit-with-2-increments")
+    private WebElement videoFakerItWith2Increments;
+
+    @FindBy(id = "video-fakerit-with-5-increments")
+    private WebElement videoFakerItWith5Increments;
 
     @FindBy(className = "inline")
     private List<WebElement> inlineImages;

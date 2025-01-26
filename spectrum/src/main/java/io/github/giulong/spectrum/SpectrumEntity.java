@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
+import net.datafaker.Faker;
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -48,6 +49,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected static ExtentReports extentReports;
+
+    @Shared
+    protected static Faker faker;
 
     @Shared
     protected ExtentTest extentTest;

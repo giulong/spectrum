@@ -12,6 +12,7 @@ import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -70,6 +71,9 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final JsResolver JS_RESOLVER = new JsResolver();
 
     @RegisterExtension
+    public static final FakerResolver FAKER_RESOLVER = new FakerResolver();
+
+    @RegisterExtension
     public static final SpectrumInterceptor SPECTRUM_INTERCEPTOR = new SpectrumInterceptor();
 
     @RegisterExtension
@@ -81,10 +85,11 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
 
     @BeforeAll
-    static void beforeAll(final Configuration configuration, final EventsDispatcher eventsDispatcher, final ExtentReports extentReports) {
+    static void beforeAll(final Configuration configuration, final EventsDispatcher eventsDispatcher, final ExtentReports extentReports, final Faker faker) {
         SpectrumTest.configuration = configuration;
         SpectrumTest.eventsDispatcher = eventsDispatcher;
         SpectrumTest.extentReports = extentReports;
+        SpectrumTest.faker = faker;
     }
 
     @BeforeEach
