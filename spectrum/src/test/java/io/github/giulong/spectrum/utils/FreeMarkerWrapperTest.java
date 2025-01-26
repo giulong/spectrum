@@ -30,6 +30,9 @@ class FreeMarkerWrapperTest {
     private Configuration spectrumConfiguration;
 
     @Mock
+    private FileUtils fileUtils;
+
+    @Mock
     private Configuration.FreeMarker freeMarker;
 
     @InjectMocks
@@ -38,6 +41,7 @@ class FreeMarkerWrapperTest {
     @BeforeEach
     void beforeEach() {
         Reflections.setField("spectrumConfiguration", freeMarkerWrapper, spectrumConfiguration);
+        Reflections.setField("fileUtils", freeMarkerWrapper, fileUtils);
     }
 
     @Test
@@ -93,6 +97,38 @@ class FreeMarkerWrapperTest {
         MockedConstruction<StringWriter> stringWriterMockedConstruction = mockConstruction(StringWriter.class, context -> withSettings());
 
         final String actual = freeMarkerWrapper.interpolate(source, vars);
+
+        final Template template = templateMockedConstruction.constructed().getFirst();
+        final Writer writer = stringWriterMockedConstruction.constructed().getFirst();
+        verify(template).process(vars, writer);
+        assertEquals(writer.toString(), actual);
+
+        stringReaderMockedConstruction.close();
+        templateMockedConstruction.close();
+        stringWriterMockedConstruction.close();
+    }
+
+    @Test
+    @DisplayName("interpolateTemplate should load the template and then just delegate to the interpolate method")
+    void interpolateTemplate() throws TemplateException, IOException {
+        final String templateName = "templateName";
+        final String source = "source";
+        final Map<String, Object> vars = Map.of("one", "value");
+
+        MockedConstruction<StringReader> stringReaderMockedConstruction = mockConstruction(StringReader.class, context -> {
+            assertEquals(source, context.arguments().getFirst());
+            return withSettings();
+        });
+        MockedConstruction<Template> templateMockedConstruction = mockConstruction(Template.class, context -> {
+            assertEquals("freemarker", context.arguments().getFirst());
+            assertEquals(stringReaderMockedConstruction.constructed().getFirst(), context.arguments().get(1));
+            assertEquals(configuration, context.arguments().get(2));
+            return withSettings();
+        });
+        MockedConstruction<StringWriter> stringWriterMockedConstruction = mockConstruction(StringWriter.class, context -> withSettings());
+        when(fileUtils.readTemplate(templateName)).thenReturn(source);
+
+        final String actual = freeMarkerWrapper.interpolateTemplate(templateName, vars);
 
         final Template template = templateMockedConstruction.constructed().getFirst();
         final Writer writer = stringWriterMockedConstruction.constructed().getFirst();
