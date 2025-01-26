@@ -30,8 +30,8 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         driver.get(url);
 
-        assertEquals(25, extentReportPage.getTestViewTests().size(), "Total tests");
-        assertEquals(22, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(27, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(24, countTestsWithStatus("pass"), "Passed tests");
         assertEquals(1, countTestsWithStatus("skip"), "Skipped tests");
         assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
@@ -58,6 +58,15 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         actions.scrollToElement(extentReportPage.getDownload()).perform();
         assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
+
+        actions.scrollToElement(extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker()).perform();
+        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker().getText());
+        actions.scrollToElement(extentReportPage.getFakerItWith0Increments()).perform();
+        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith0Increments().getText());
+        actions.scrollToElement(extentReportPage.getFakerItWith2Increments()).perform();
+        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith2Increments().getText());
+        actions.scrollToElement(extentReportPage.getFakerItWith5Increments()).perform();
+        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith5Increments().getText());
 
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 
@@ -87,6 +96,11 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertEquals("2", extentReportPage.getVideoFilesItUpload().getDomProperty("duration"));
         assertEquals("1", extentReportPage.getVideoFilesItDownload().getDomProperty("duration"));
+
+        assertEquals("1", extentReportPage.getVideoFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoFakerItWith0Increments().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoFakerItWith2Increments().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoFakerItWith5Increments().getDomProperty("duration"));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());

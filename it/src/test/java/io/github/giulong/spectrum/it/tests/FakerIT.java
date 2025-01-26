@@ -6,13 +6,17 @@ import net.datafaker.providers.base.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.openqa.selenium.Keys.ARROW_UP;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
 
@@ -55,5 +59,28 @@ public class FakerIT extends BaseIT {
         final int actual = Integer.parseInt(Objects.requireNonNull(input.getDomProperty("value")));
         final int expected = Integer.parseInt(number) + increments;
         assertEquals(expected, actual);
+    }
+
+    @DisplayName("expressions should generate random numbers from a values provider method, to prove the Faker instance is static")
+    @ParameterizedTest(name = "with numerify expression number: {0}")
+    @MethodSource("valuesProvider")
+    void inputsWithProvider(final String number) {
+        inputsPage.open();
+
+        final WebElement input = inputsPage.getInput();
+        input.sendKeys(number);
+        input.sendKeys(ARROW_UP);
+        input.sendKeys(ARROW_UP);
+
+        final int actual = Integer.parseInt(Objects.requireNonNull(input.getDomProperty("value")));
+        final int expected = Integer.parseInt(number) + 2;
+        assertEquals(expected, actual);
+    }
+
+    static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments(faker.numerify("##")),
+                arguments(faker.numerify("###"))
+        );
     }
 }
