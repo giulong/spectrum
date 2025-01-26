@@ -85,7 +85,6 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
                 .events(events)
                 .consumers(consumers)
-                .testContext(contextManager.get(context))
                 .build();
 
         final WebDriver decoratedDriver = new EventFiringDecorator<>(webDriverListener).decorate(driver);

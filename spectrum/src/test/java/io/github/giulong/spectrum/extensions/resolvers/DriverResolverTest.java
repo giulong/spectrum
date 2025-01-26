@@ -125,9 +125,6 @@ class DriverResolverTest {
     private HighlightElementConsumer highlightElementConsumer;
 
     @Mock
-    private TestContext testContext;
-
-    @Mock
     private StatefulExtentTest statefulExtentTest;
 
     @Mock
@@ -208,8 +205,6 @@ class DriverResolverTest {
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(configuration.getVideo()).thenReturn(video);
 
-        when(contextManager.get(context)).thenReturn(testContext);
-
         when(LogConsumer.builder()).thenReturn(logConsumerBuilder);
         when(logConsumerBuilder.enabled(true)).thenReturn(logConsumerBuilder);
         when(logConsumerBuilder.build()).thenReturn(logConsumer);
@@ -243,7 +238,6 @@ class DriverResolverTest {
         when(spectrumWebDriverListenerBuilder.locatorPattern(pattern)).thenReturn(spectrumWebDriverListenerBuilder);
         when(spectrumWebDriverListenerBuilder.events(events)).thenReturn(spectrumWebDriverListenerBuilder);
         when(spectrumWebDriverListenerBuilder.consumers(consumersArgumentCaptor.capture())).thenReturn(spectrumWebDriverListenerBuilder);
-        when(spectrumWebDriverListenerBuilder.testContext(testContext)).thenReturn(spectrumWebDriverListenerBuilder);
         when(spectrumWebDriverListenerBuilder.build()).thenReturn(spectrumWebDriverListener);
 
         //noinspection rawtypes
