@@ -136,4 +136,4 @@ jobs:
       - name: Ping latest Javadocs page
         uses: jtalk/url-health-check-action@v4
         with:
-          url: https://javadoc.io/doc/io.github.giulong/spectrum/$NEW_VERSION/index.html
+          url: https://javadoc.io/doc/io.github.giulong/spectrum/${{ env.NEW_VERSION }}/index.html
