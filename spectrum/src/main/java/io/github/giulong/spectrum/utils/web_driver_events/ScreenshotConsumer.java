@@ -3,21 +3,20 @@ package io.github.giulong.spectrum.utils.web_driver_events;
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
-import lombok.Builder;
 import lombok.SneakyThrows;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.TakesScreenshot;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.function.Consumer;
 
 import static java.util.UUID.randomUUID;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
-@Builder
-public class ScreenshotConsumer implements Consumer<WebDriverEvent> {
+@SuperBuilder
+public class ScreenshotConsumer extends WebDriverEventConsumer {
 
     private TakesScreenshot driver;
     private TestData testData;

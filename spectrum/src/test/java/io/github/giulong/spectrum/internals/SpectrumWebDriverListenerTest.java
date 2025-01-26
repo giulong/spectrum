@@ -4,8 +4,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Event;
-import io.github.giulong.spectrum.utils.TestContext;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
+import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,20 +18,19 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 import static org.slf4j.event.Level.*;
@@ -56,16 +56,16 @@ class SpectrumWebDriverListenerTest {
     private WebElement webElement3;
 
     @Mock
-    private List<Consumer<WebDriverEvent>> consumers;
+    private List<WebDriverEventConsumer> consumers;
 
     @Mock
-    private Consumer<WebDriverEvent> consumer1;
+    private WebDriverEventConsumer consumer1;
 
     @Mock
-    private Consumer<WebDriverEvent> consumer2;
+    private WebDriverEventConsumer consumer2;
 
     @Mock
-    private Iterator<Consumer<WebDriverEvent>> iterator;
+    private WebDriverEventConsumer consumer3;
 
     @Mock
     private WebDriverEvent.WebDriverEventBuilder webDriverEventBuilder;
@@ -82,9 +82,6 @@ class SpectrumWebDriverListenerTest {
     @Mock
     private Configuration.Drivers.Events events;
 
-    @Mock
-    private TestContext testContext;
-
     @InjectMocks
     private SpectrumWebDriverListener spectrumWebDriverListener;
 
@@ -100,20 +97,20 @@ class SpectrumWebDriverListenerTest {
         webDriverEventMockedStatic.close();
     }
 
-    @SuppressWarnings("unchecked")
     private void webDriverEventStubsAtLevel(final org.slf4j.event.Level level) {
         final String formattedMessage = "message <div>arg</div>";
+
+        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2));
 
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.frame(AUTO_BEFORE)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.level(level)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.args(List.of(arg))).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.message(formattedMessage)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
 
-        when(consumers.iterator()).thenReturn(iterator);
-        doCallRealMethod().when(consumers).forEach(any());
-        when(iterator.hasNext()).thenReturn(true, true, false);
-        when(iterator.next()).thenReturn(consumer1, consumer2);
+        when(consumer1.isEnabled()).thenReturn(true);
+        when(consumer2.isEnabled()).thenReturn(true);
     }
 
     @DisplayName("extractSelectorFrom should extract just the relevant info from the webElement")
@@ -361,7 +358,7 @@ class SpectrumWebDriverListenerTest {
         final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [" + keysToSend + "]";
 
-        when(testContext.isSecuredWebElement(webElement1)).thenReturn(false);
+        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2));
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getBeforeSendKeys()).thenReturn(event);
@@ -372,19 +369,18 @@ class SpectrumWebDriverListenerTest {
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.frame(AUTO_BEFORE)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.args(List.of(webElement1, Arrays.toString(new CharSequence[]{keysToSend})))).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.message(formattedMessage)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
-
-        when(consumers.iterator()).thenReturn(iterator);
-        doCallRealMethod().when(consumers).forEach(any());
-        when(iterator.hasNext()).thenReturn(true, true, false);
-        doReturn(consumer1, consumer2).when(iterator).next();
 
         // extractSelectorFrom
         when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
         when(webElement1.toString()).thenReturn(fullWebElement);
         when(matcher.find()).thenReturn(true).thenReturn(false);
         when(matcher.group(1)).thenReturn(fullWebElement);
+
+        when(consumer1.isEnabled()).thenReturn(true);
+        when(consumer2.isEnabled()).thenReturn(true);
 
         spectrumWebDriverListener.beforeSendKeys(webElement1, keysToSend);
 
@@ -395,12 +391,14 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("beforeSendKeys should call listenTo masking the keysToSend for secured webElements")
     void beforeSendKeysSecured() {
-        final String keysToSend = "keysToSend";
+        final String key = "key";
+        final String firstKeyToSend = "@Secured@" + key + "@Secured@";
+        final CharSequence[] keysToSend = new CharSequence[]{firstKeyToSend, Keys.ADD, "ok"};
         final String fullWebElement = "fullWebElement";
         final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [***]";
 
-        when(testContext.isSecuredWebElement(webElement1)).thenReturn(true);
+        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2));
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getBeforeSendKeys()).thenReturn(event);
@@ -411,13 +409,9 @@ class SpectrumWebDriverListenerTest {
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.frame(AUTO_BEFORE)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.args(List.of(webElement1, Arrays.toString(new CharSequence[]{"***"})))).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.message(formattedMessage)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
-
-        when(consumers.iterator()).thenReturn(iterator);
-        doCallRealMethod().when(consumers).forEach(any());
-        when(iterator.hasNext()).thenReturn(true, true, false);
-        doReturn(consumer1, consumer2).when(iterator).next();
 
         // extractSelectorFrom
         when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
@@ -425,21 +419,26 @@ class SpectrumWebDriverListenerTest {
         when(matcher.find()).thenReturn(true).thenReturn(false);
         when(matcher.group(1)).thenReturn(fullWebElement);
 
+        when(consumer1.isEnabled()).thenReturn(true);
+        when(consumer2.isEnabled()).thenReturn(true);
+
         spectrumWebDriverListener.beforeSendKeys(webElement1, keysToSend);
+
+        assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
     }
 
     @Test
-    @DisplayName("afterSendKeys should call listenTo passing the keysToSend for regular webElements")
+    @DisplayName("afterSendKeys should call listenTo passing the keysToSend for regular webElements, calling enabled consumers")
     void afterSendKeys() {
         final String keysToSend = "keysToSend";
         final String fullWebElement = "fullWebElement";
         final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [" + keysToSend + "]";
 
-        when(testContext.isSecuredWebElement(webElement1)).thenReturn(false);
+        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2, consumer3));
 
         ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getAfterSendKeys()).thenReturn(event);
@@ -450,13 +449,9 @@ class SpectrumWebDriverListenerTest {
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.frame(AUTO_AFTER)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.args(List.of(webElement1, Arrays.toString(new CharSequence[]{keysToSend})))).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.message(formattedMessage)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
-
-        when(consumers.iterator()).thenReturn(iterator);
-        doCallRealMethod().when(consumers).forEach(any());
-        when(iterator.hasNext()).thenReturn(true, true, false);
-        doReturn(consumer1, consumer2).when(iterator).next();
 
         // extractSelectorFrom
         when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
@@ -464,48 +459,77 @@ class SpectrumWebDriverListenerTest {
         when(matcher.find()).thenReturn(true).thenReturn(false);
         when(matcher.group(1)).thenReturn(fullWebElement);
 
+        when(consumer1.isEnabled()).thenReturn(true);
+        when(consumer2.isEnabled()).thenReturn(true);
+        when(consumer3.isEnabled()).thenReturn(false);
+
         spectrumWebDriverListener.afterSendKeys(webElement1, keysToSend);
+
+        verify(consumer1).accept(webDriverEvent);
+        verify(consumer2).accept(webDriverEvent);
+        verify(consumer3, never()).accept(webDriverEvent);
+    }
+
+    @Test
+    @DisplayName("afterSendKeys should call listenTo masking the keysToSend for secured webElements")
+    void afterSendKeysSecured() {
+        final String key = "key";
+        final String firstKeyToSend = "@Secured@" + key + "@Secured@";
+        final CharSequence[] keysToSend = new CharSequence[]{firstKeyToSend, Keys.ADD, "ok"};
+        final String fullWebElement = "fullWebElement";
+        final String localMessage = "message %s %s";
+        final String formattedMessage = "message " + fullWebElement + " [***]";
+
+        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2));
+
+        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
+        when(events.getAfterSendKeys()).thenReturn(event);
+        when(event.getMessage()).thenReturn(localMessage);
+        when(event.getLevel()).thenReturn(INFO);
+        when(event.getWait()).thenReturn(wait);
+
+        when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.frame(AUTO_AFTER)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.args(List.of(webElement1, Arrays.toString(new CharSequence[]{"***"})))).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.message(formattedMessage)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
+
+        // extractSelectorFrom
+        when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
+        when(webElement1.toString()).thenReturn(fullWebElement);
+        when(matcher.find()).thenReturn(true).thenReturn(false);
+        when(matcher.group(1)).thenReturn(fullWebElement);
+
+        when(consumer1.isEnabled()).thenReturn(true);
+        when(consumer2.isEnabled()).thenReturn(true);
+
+        spectrumWebDriverListener.afterSendKeys(webElement1, keysToSend);
+
+        assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
     }
 
     @Test
-    @DisplayName("afterSendKeys should call listenTo masking the keysToSend for secured webElements")
-    void afterSendKeysSecured() {
-        final String keysToSend = "keysToSend";
-        final String fullWebElement = "fullWebElement";
-        final String localMessage = "message %s %s";
-        final String formattedMessage = "message " + fullWebElement + " [***]";
+    @DisplayName("isSecured should unwrap the first keysToSend and return true check if it matches the secured pattern")
+    void isSecuredTrue() {
+        final String key = "key";
+        final String firstKeyToSend = "@Secured@" + key + "@Secured@";
+        final CharSequence[] keysToSend = new CharSequence[]{firstKeyToSend, Keys.ADD, "ok"};
 
-        when(testContext.isSecuredWebElement(webElement1)).thenReturn(true);
+        assertTrue(spectrumWebDriverListener.isSecured(keysToSend));
+        assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
+    }
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
-        when(events.getAfterSendKeys()).thenReturn(event);
-        when(event.getMessage()).thenReturn(localMessage);
-        when(event.getLevel()).thenReturn(INFO);
-        when(event.getWait()).thenReturn(wait);
+    @Test
+    @DisplayName("isSecured should just return false check if the first keyToSend doesn't match the secured pattern")
+    void isSecuredFalse() {
+        final String key = "key";
+        final CharSequence[] keysToSend = new CharSequence[]{key, Keys.ADD, "ok"};
 
-        when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
-        when(webDriverEventBuilder.frame(AUTO_AFTER)).thenReturn(webDriverEventBuilder);
-        when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
-        when(webDriverEventBuilder.message(formattedMessage)).thenReturn(webDriverEventBuilder);
-        when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
-
-        when(consumers.iterator()).thenReturn(iterator);
-        doCallRealMethod().when(consumers).forEach(any());
-        when(iterator.hasNext()).thenReturn(true, true, false);
-        doReturn(consumer1, consumer2).when(iterator).next();
-
-        // extractSelectorFrom
-        when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
-        when(webElement1.toString()).thenReturn(fullWebElement);
-        when(matcher.find()).thenReturn(true).thenReturn(false);
-        when(matcher.group(1)).thenReturn(fullWebElement);
-
-        spectrumWebDriverListener.afterSendKeys(webElement1, keysToSend);
-
-        verify(consumer1).accept(webDriverEvent);
-        verify(consumer2).accept(webDriverEvent);
+        assertFalse(spectrumWebDriverListener.isSecured(keysToSend));
+        assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
     }
 }

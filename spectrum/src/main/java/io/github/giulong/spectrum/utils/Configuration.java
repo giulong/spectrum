@@ -1,5 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -110,6 +112,21 @@ public class Configuration {
 
         @JsonPropertyDescription("Application's under test base url")
         private String baseUrl;
+
+        @JsonPropertyDescription("Highlight the web elements the test interacts with. Useful to visually debug the execution")
+        private Highlight highlight;
+
+        @Getter
+        @Generated
+        public static class Highlight {
+
+            @JsonIgnore
+            @JacksonInject("enabledFromClient")
+            private boolean enabled;
+
+            @JsonPropertyDescription("Path to the js used to highlight. Relative to the resources folder")
+            private String js;
+        }
     }
 
     @Getter
@@ -267,6 +284,9 @@ public class Configuration {
 
             @JsonPropertyDescription("Firefox's preferences")
             private Map<String, Object> preferences;
+
+            @JsonPropertyDescription("Firefox's capabilities")
+            private Map<String, Object> capabilities;
 
             @JsonPropertyDescription("Firefox service options")
             private Service service;

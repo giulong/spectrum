@@ -115,8 +115,26 @@ class SpectrumTestTest {
     }
 
     @Test
-    @DisplayName("beforeEach should set all the provided args resolved via JUnit, and call injectDataIn and injectPagesInto")
+    @DisplayName("beforeAll should inject all the provided static args")
+    void testBeforeAll() {
+        SpectrumTest.configuration = null;
+        SpectrumTest.eventsDispatcher = null;
+        SpectrumTest.extentReports = null;
+        SpectrumTest.faker = null;
+
+        SpectrumTest.beforeAll(configuration, eventsDispatcher, extentReports, faker);
+
+        assertEquals(configuration, SpectrumTest.configuration);
+        assertEquals(eventsDispatcher, SpectrumTest.eventsDispatcher);
+        assertEquals(extentReports, SpectrumTest.extentReports);
+        assertEquals(faker, SpectrumTest.faker);
+    }
+
+    @Test
+    @DisplayName("beforeEach should inject all the provided args resolved via JUnit, and call injectDataIn and injectPagesInto")
     void testBeforeEach() {
+        Reflections.setField("configuration", spectrumTest, configuration);
+
         // injectDataIn
         final String folder = "folder";
         when(configuration.getData()).thenReturn(dataConfiguration);
@@ -126,26 +144,22 @@ class SpectrumTestTest {
         assertNull(childTestVoid.childTestPage);
         assertNull(childTestVoid.getParentTestPage());
 
-        childTestVoid.beforeEach(testContext, configuration, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
-                extentReports, actions, eventsDispatcher, js, faker, jsWebElementProxyBuilder, null);
+        childTestVoid.beforeEach(testContext, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
+                actions, js, jsWebElementProxyBuilder, null);
 
-        assertEquals(testContext, spectrumTest.testContext);
-        assertEquals(configuration, spectrumTest.configuration);
         assertEquals(webDriver, spectrumTest.driver);
         assertEquals(implicitWait, spectrumTest.implicitWait);
         assertEquals(pageLoadWait, spectrumTest.pageLoadWait);
         assertEquals(scriptWait, spectrumTest.scriptWait);
         assertEquals(downloadWait, spectrumTest.downloadWait);
-        assertEquals(extentReports, spectrumTest.extentReports);
         assertEquals(statefulExtentTest, spectrumTest.statefulExtentTest);
         assertEquals(extentTest, spectrumTest.extentTest);
         assertEquals(actions, spectrumTest.actions);
-        assertEquals(eventsDispatcher, spectrumTest.eventsDispatcher);
         assertEquals(testData, spectrumTest.testData);
         assertEquals(js, spectrumTest.js);
-        assertEquals(faker, spectrumTest.faker);
         assertEquals(jsWebElementProxyBuilder, spectrumTest.jsWebElementProxyBuilder);
         assertEquals(data, spectrumTest.data);
+        assertEquals(testContext, spectrumTest.testContext);
 
         // injectPages
         assertNull(childTestVoid.toSkip);
@@ -199,6 +213,8 @@ class SpectrumTestTest {
         final FakeSpectrumPage fakeSpectrumPage = mock(FakeSpectrumPage.class);
         final FakeSpectrumPageVoid fakeSpectrumPageVoid = mock(FakeSpectrumPageVoid.class);
         final String folder = "folder";
+
+        Reflections.setField("configuration", spectrumTest, configuration);
 
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(folder);

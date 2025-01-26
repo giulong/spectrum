@@ -52,7 +52,7 @@ Spectrum manages all the boilerplate code to get these features and many more, a
 * It is fully configurable via a **declarative yaml file**
 * It provides **out-of-the-box defaults** to let you run tests with no additional configuration
 * supports **browsers automation** via Selenium
-* supports **mobile and desktop applications** via Appium
+* supports **mobile and desktop applications automation** via Appium
 
 # Getting Started
 
@@ -69,23 +69,23 @@ https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e
    ```text
    mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST
    ```
-   
+
 2. Run the `LoginFormIT` demo test injected by the archetype.
-3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>.html` report with the execution video attached.
+3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>/spectrum-report-<TIMESTAMP>.html` report with the execution video attached.
 
 > ⚠️ Default Browser<br/>
 > Tests run on Chrome by default. If you don't have it, you can run the demo test with:<br/>
 > `-Dspectrum.driver=firefox`, `-Dspectrum.driver=edge` or `-Dspectrum.driver=safari`
 
-Here's a quick overview of the project created by the archetype, along with the report generated after the first execution:<br/><br/>
-<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it.jpg" alt="login-form"/>
-&nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it-extent-report.jpg" alt="report"/>
+Here's a quick overview of the project created by the archetype, along with the generated report:<br/><br/>
+<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it.png" alt="login-form"/>
+&nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it-extent-report.png" alt="report"/>
 
 And here's the generated video:
 
 https://github.com/giulong/spectrum/assets/27963644/df6b801e-91ca-415b-b510-a45b7392de20
 
-Additionally, you can configure Spectrum to automatically produce a html summary and coverage report like these:<br/><br/>
+Additionally, you can configure Spectrum to automatically produce summary and coverage reports like these:<br/><br/>
 <img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>
 &nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
 
@@ -95,13 +95,13 @@ For all the available reports, how to customise them, and many more, please refe
 
 Contributions to Spectrum are welcome! If you're interested, please check out the [CONTRIBUTING.md](CONTRIBUTING.md).
 
-If you're using Spectrum, please consider giving it a GitHub Star ⭐. It would be really appreciated 🙏
+If you're using Spectrum, please consider giving it a GitHub Star ⭐
 
 # Contacts
 
-| Creator         | GitHub ![github logo](src/main/resources/images/github-mark.png) | Linkedin ![LinkedIn](https://i.stack.imgur.com/gVE0j.png)      | Email ![gmail logo](src/main/resources/images/gmail-icon.png) |
-|-----------------|------------------------------------------------------------------|----------------------------------------------------------------|---------------------------------------------------------------|
-| Giulio Longfils | [giulong](https://github.com/giulong)                            | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com)   |
+| Creator         | GitHub                                | Linkedin                                                       | Email                                                       |
+|-----------------|---------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|
+| Giulio Longfils | [giulong](https://github.com/giulong) | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
 
 # Acknowledgments
 

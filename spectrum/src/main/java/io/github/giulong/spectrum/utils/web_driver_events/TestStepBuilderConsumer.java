@@ -3,19 +3,17 @@ package io.github.giulong.spectrum.utils.web_driver_events;
 import io.github.giulong.spectrum.pojos.events.TestStep;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static java.time.temporal.ChronoUnit.MILLIS;
 
-@Builder
-public class TestStepBuilderConsumer implements Consumer<WebDriverEvent> {
-
-    private static final String TAG = "<.*?>";
+@SuperBuilder
+public class TestStepBuilderConsumer extends WebDriverEventConsumer {
 
     @Getter
     private final List<TestStep> testSteps = new ArrayList<>();
@@ -27,7 +25,7 @@ public class TestStepBuilderConsumer implements Consumer<WebDriverEvent> {
     public void accept(final WebDriverEvent webDriverEvent) {
         final LocalDateTime now = LocalDateTime.now();
         final Duration duration = Duration.ofMillis(lastTime.until(now, MILLIS));
-        final String message = webDriverEvent.getMessage().replaceAll(TAG, "");
+        final String message = webDriverEvent.removeTagsFromMessage();
         final String delta = String.format("%d.%-3d", duration.toSecondsPart(), duration.toMillisPart()).replace(' ', '0');
         final TestStep testStep = TestStep
                 .builder()

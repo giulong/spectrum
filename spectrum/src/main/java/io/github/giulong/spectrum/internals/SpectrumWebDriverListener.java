@@ -3,8 +3,8 @@ package io.github.giulong.spectrum.internals;
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
-import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
+import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
 import lombok.Builder;
 import lombok.Generated;
 import lombok.SneakyThrows;
@@ -19,7 +19,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.time.Duration;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,10 +29,11 @@ import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 @Builder
 public class SpectrumWebDriverListener implements WebDriverListener {
 
+    private static final Pattern SECURED_PATTERN = Pattern.compile("@Secured@(?<key>.*)@Secured@");
+
     private Pattern locatorPattern;
     private Events events;
-    private List<Consumer<WebDriverEvent>> consumers;
-    private TestContext testContext;
+    private List<WebDriverEventConsumer> consumers;
 
     String extractSelectorFrom(final WebElement webElement) {
         final String fullWebElement = webElement.toString();
@@ -72,10 +72,14 @@ public class SpectrumWebDriverListener implements WebDriverListener {
                 .builder()
                 .frame(frame)
                 .level(level)
+                .args(Arrays.asList(args))
                 .message(String.format(event.getMessage(), parse(args).toArray()))
                 .build();
 
-        consumers.forEach(consumer -> consumer.accept(webDriverEvent));
+        consumers
+                .stream()
+                .filter(WebDriverEventConsumer::isEnabled)
+                .forEach(consumer -> consumer.accept(webDriverEvent));
     }
 
     @Override
@@ -314,7 +318,7 @@ public class SpectrumWebDriverListener implements WebDriverListener {
 
     @Override
     public void beforeSendKeys(final WebElement element, final CharSequence... keysToSend) {
-        if (testContext.isSecuredWebElement(element)) {
+        if (isSecured(keysToSend)) {
             log.debug("Masking keys to send to @Secured webElement");
             listenTo(AUTO_BEFORE, events.getBeforeSendKeys(), element, "[***]");
 
@@ -326,7 +330,7 @@ public class SpectrumWebDriverListener implements WebDriverListener {
 
     @Override
     public void afterSendKeys(final WebElement element, final CharSequence... keysToSend) {
-        if (testContext.isSecuredWebElement(element)) {
+        if (isSecured(keysToSend)) {
             log.debug("Masking keys sent to @Secured webElement");
             listenTo(AUTO_AFTER, events.getAfterSendKeys(), element, "[***]");
 
@@ -826,5 +830,16 @@ public class SpectrumWebDriverListener implements WebDriverListener {
     @Generated
     public void afterFullscreen(final WebDriver.Window window) {
         listenTo(AUTO_AFTER, events.getAfterFullscreen(), window);
+    }
+
+    boolean isSecured(final CharSequence... keysToSend) {
+        final Matcher matcher = SECURED_PATTERN.matcher(keysToSend[0]);
+
+        if (matcher.find()) {
+            keysToSend[0] = matcher.group("key");
+            return true;
+        }
+
+        return false;
     }
 }

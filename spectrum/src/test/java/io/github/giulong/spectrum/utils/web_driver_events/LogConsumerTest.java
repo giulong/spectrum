@@ -14,16 +14,15 @@ class LogConsumerTest {
     private WebDriverEvent webDriverEvent;
 
     @InjectMocks
-    private LogConsumer logConsumer;
+    private LogConsumer logConsumer = new LogConsumer(LogConsumer.builder());
 
     @Test
     @DisplayName("accept should log the message without tags at the level of the provided webDriverEvent")
     void accept() {
-        final String arg = "args";
-        final String tagsMessage = "message <div>" + arg + "</div>";
+        final String removeTagsFromMessage = "removeTagsFromMessage";
 
         when(webDriverEvent.getLevel()).thenReturn(INFO);
-        when(webDriverEvent.getMessage()).thenReturn(tagsMessage);
+        when(webDriverEvent.removeTagsFromMessage()).thenReturn(removeTagsFromMessage);
 
         logConsumer.accept(webDriverEvent);
     }

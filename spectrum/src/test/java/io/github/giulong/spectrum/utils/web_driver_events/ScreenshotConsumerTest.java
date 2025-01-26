@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -42,8 +41,8 @@ class ScreenshotConsumerTest {
     @Mock
     private Path file;
 
-    @Mock(extraInterfaces = TakesScreenshot.class)
-    private WebDriver driver;
+    @Mock
+    private TakesScreenshot driver;
 
     @Mock
     private Video video;
@@ -55,7 +54,7 @@ class ScreenshotConsumerTest {
     private ArgumentCaptor<byte[]> byteArgumentCaptor;
 
     @InjectMocks
-    private ScreenshotConsumer screenshotConsumer;
+    private ScreenshotConsumer screenshotConsumer = new ScreenshotConsumer(ScreenshotConsumer.builder());
 
     @BeforeEach
     void beforeEach() {
@@ -74,7 +73,7 @@ class ScreenshotConsumerTest {
         when(screenshotFolderPath.resolve(stringArgumentCaptor.capture())).thenReturn(resolvedPath);
         when(resolvedPath.getFileName()).thenReturn(file);
         when(video.shouldRecord(eq("file"))).thenReturn(true);
-        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
+        when(driver.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
         when(webDriverEvent.getFrame()).thenReturn(AUTO_AFTER);
 
         screenshotConsumer.accept(webDriverEvent);

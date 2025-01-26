@@ -115,6 +115,20 @@ class InterpolatedObjectDeserializerTest {
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
 
+    @DisplayName("deserialize should return the booleanValue when the value is a boolean")
+    @ParameterizedTest(name = "with value {0}")
+    @ValueSource(booleans = {true, false})
+    void deserializeBooleans(final boolean expected) throws IOException {
+        final String currentName = "currentName";
+
+        when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
+        when(jsonParser.currentName()).thenReturn(currentName);
+        when(jsonNode.getNodeType()).thenReturn(BOOLEAN);
+        when(jsonNode.booleanValue()).thenReturn(expected);
+
+        assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
+    }
+
     @Test
     @DisplayName("deserialize should traverse the map and interpolate each entry")
     void deserializeMap() throws IOException {
@@ -217,7 +231,7 @@ class InterpolatedObjectDeserializerTest {
 
     @DisplayName("deserialize should return the jsonNode when the value is not string, number, object, array")
     @ParameterizedTest(name = "with value {0} we expect {1}")
-    @EnumSource(value = JsonNodeType.class, mode = EXCLUDE, names = {"STRING", "NUMBER", "OBJECT", "ARRAY"})
+    @EnumSource(value = JsonNodeType.class, mode = EXCLUDE, names = {"STRING", "NUMBER", "OBJECT", "ARRAY", "BOOLEAN"})
     void deserializeDefault(final JsonNodeType jsonNodeType) throws IOException {
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(jsonParser.currentName()).thenReturn("currentName");

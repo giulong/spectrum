@@ -229,6 +229,8 @@ class SpectrumEntityTest {
     @ParameterizedTest(name = "with value {0}")
     @MethodSource("valuesProvider")
     void deleteDownloadsFolder(final Path downloadsFolder) {
+        Reflections.setField("configuration", spectrumEntity, configuration);
+
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder.toString());
 
@@ -298,6 +300,8 @@ class SpectrumEntityTest {
         Files.writeString(wrongDownloadedFile, "I'm a teapot...");
         Files.writeString(wrongFileToCheck, "I should have been an airplane...");
 
+        Reflections.setField("configuration", spectrumEntity, configuration);
+
         downloadedFile.toFile().deleteOnExit();
         fileToCheck.toFile().deleteOnExit();
         wrongDownloadedFile.toFile().deleteOnExit();
@@ -322,6 +326,8 @@ class SpectrumEntityTest {
         final Path fileToCheck = Files.createFile(Path.of(filesFolder + "/fakeFile.txt"));
         Files.writeString(downloadedFile, "I'm an airplane!!!");
         Files.writeString(fileToCheck, "I'm an airplane!!!");
+
+        Reflections.setField("configuration", spectrumEntity, configuration);
 
         downloadedFile.toFile().deleteOnExit();
         fileToCheck.toFile().deleteOnExit();
@@ -360,6 +366,8 @@ class SpectrumEntityTest {
     void upload() {
         final String filesFolder = "filesFolder";
         final String fileName = "fileName";
+
+        Reflections.setField("configuration", spectrumEntity, configuration);
 
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getFilesFolder()).thenReturn(filesFolder);

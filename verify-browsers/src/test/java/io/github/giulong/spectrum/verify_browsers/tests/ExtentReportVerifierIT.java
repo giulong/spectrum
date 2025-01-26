@@ -106,13 +106,17 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
     @Test
     @DisplayName("should check the report")
     void report() {
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report/report.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report-chrome/report-chrome.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report-firefox/report-firefox.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report-edge/report-edge.html", Path.of(System.getProperty("user.dir")).getParent()));
     }
 
     @Test
     @DisplayName("should check the inline report")
     void inlineReport() {
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report-chrome.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report-firefox.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report-edge.html", Path.of(System.getProperty("user.dir")).getParent()));
 
         assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("src")), matchesPattern(VIDEO_PATTERN));
         extentReportPage
