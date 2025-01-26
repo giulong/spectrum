@@ -16,6 +16,7 @@ import org.mockito.*;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.decorators.Decorated;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
 
@@ -23,8 +24,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.TEST_STEP_BUILDER_CONSUMER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.*;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -74,7 +74,7 @@ class DriverResolverTest {
     @Mock(extraInterfaces = {TakesScreenshot.class, JavascriptExecutor.class})
     private WebDriver webDriver;
 
-    @Mock
+    @Mock(extraInterfaces = Decorated.class)
     private WebDriver decoratedWebDriver;
 
     @Mock
@@ -245,14 +245,17 @@ class DriverResolverTest {
             assertEquals(spectrumWebDriverListener, ((WebDriverListener[]) executionContext.arguments().getFirst())[0]);
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
+            when(((Decorated<WebDriver>) decoratedWebDriver).getOriginal()).thenReturn(webDriver);
         });
 
         final WebDriver actual = driverResolver.resolveParameter(parameterContext, context);
         verify(store).put(TEST_STEP_BUILDER_CONSUMER, testStepBuilderConsumer);
         verify(store).put(DRIVER, actual);
+        verify(store).put(ORIGINAL_DRIVER, webDriver);
 
         verify(contextManager).put(context, TEST_STEP_BUILDER_CONSUMER, testStepBuilderConsumer);
         verify(contextManager).put(context, DRIVER, actual);
+        verify(contextManager).put(context, ORIGINAL_DRIVER, webDriver);
 
         assertEquals(decoratedWebDriver, actual);
         assertEquals(List.of(logConsumer, htmlReportConsumer, screenshotConsumer, testStepBuilderConsumer, highlightElementConsumer), consumersArgumentCaptor.getValue());
