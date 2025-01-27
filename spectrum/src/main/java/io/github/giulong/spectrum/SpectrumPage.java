@@ -2,14 +2,15 @@ package io.github.giulong.spectrum;
 
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
-import io.github.giulong.spectrum.interfaces.Secured;
-import io.github.giulong.spectrum.utils.js.JsWebElementListInvocationHandler;
 import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.internals.page_factory.SpectrumFieldDecorator;
+import io.github.giulong.spectrum.utils.js.JsWebElementListInvocationHandler;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
@@ -77,11 +78,7 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         Reflections.setField("endpoint", this, endpointValue);
 
-        PageFactory.initElements(driver, this);
-
-        Reflections
-                .getAnnotatedFieldsValues(this, Secured.class, WebElement.class)
-                .forEach(testContext::addSecuredWebElement);
+        PageFactory.initElements(new SpectrumFieldDecorator(new DefaultElementLocatorFactory(driver)), this);
 
         Reflections
                 .getAnnotatedFields(this, JsWebElement.class)

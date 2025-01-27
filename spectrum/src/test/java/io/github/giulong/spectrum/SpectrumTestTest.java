@@ -2,6 +2,7 @@ package io.github.giulong.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import net.datafaker.Faker;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.types.*;
@@ -60,6 +61,9 @@ class SpectrumTestTest {
     private Actions actions;
 
     @Mock
+    private Faker faker;
+
+    @Mock
     private EventsDispatcher eventsDispatcher;
 
     @Mock
@@ -116,12 +120,14 @@ class SpectrumTestTest {
         SpectrumTest.configuration = null;
         SpectrumTest.eventsDispatcher = null;
         SpectrumTest.extentReports = null;
+        SpectrumTest.faker = null;
 
-        SpectrumTest.beforeAll(configuration, eventsDispatcher, extentReports);
+        SpectrumTest.beforeAll(configuration, eventsDispatcher, extentReports, faker);
 
         assertEquals(configuration, SpectrumTest.configuration);
         assertEquals(eventsDispatcher, SpectrumTest.eventsDispatcher);
         assertEquals(extentReports, SpectrumTest.extentReports);
+        assertEquals(faker, SpectrumTest.faker);
     }
 
     @Test
@@ -150,6 +156,7 @@ class SpectrumTestTest {
         assertEquals(extentTest, spectrumTest.extentTest);
         assertEquals(actions, spectrumTest.actions);
         assertEquals(testData, spectrumTest.testData);
+        assertEquals(js, spectrumTest.js);
         assertEquals(jsWebElementProxyBuilder, spectrumTest.jsWebElementProxyBuilder);
         assertEquals(data, spectrumTest.data);
         assertEquals(testContext, spectrumTest.testContext);

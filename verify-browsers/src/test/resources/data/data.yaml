@@ -49,6 +49,8 @@ extentReport:
     loginTrue: Login Form leveraging the data.yaml
     noDisplayName: Checkbox Page
     download: Files Test
+    faker: Faker
+    fakerExpression: expressions should generate random numbers
 
 summary:
   title: Execution Summary

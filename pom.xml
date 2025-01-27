@@ -51,7 +51,7 @@
         <simplejavamail.version>8.12.4</simplejavamail.version>
         <jsonschemagenerator.version>4.37.0</jsonschemagenerator.version>
         <slf4j.version>2.0.16</slf4j.version>
-        <selenium.version>4.27.0</selenium.version>
+        <selenium.version>4.28.1</selenium.version>
     </properties>
 
     <profiles>
@@ -182,7 +182,7 @@
             <dependency>
                 <groupId>io.appium</groupId>
                 <artifactId>java-client</artifactId>
-                <version>9.3.0</version>
+                <version>9.4.0</version>
             </dependency>
 
             <dependency>
@@ -239,6 +239,12 @@
                 <groupId>org.jcodec</groupId>
                 <artifactId>jcodec-javase</artifactId>
                 <version>0.2.5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>net.datafaker</groupId>
+                <artifactId>datafaker</artifactId>
+                <version>2.4.2</version>
             </dependency>
 
             <dependency>
@@ -323,7 +329,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.21.1</version>
+                            <version>10.21.2</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
