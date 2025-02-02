@@ -18,6 +18,8 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +31,8 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class SpectrumSessionListenerTest {
+
+    private MockedStatic<SLF4JBridgeHandler> slf4JBridgeHandlerMockedStatic;
 
     private String osName;
 
@@ -86,6 +90,8 @@ class SpectrumSessionListenerTest {
     @BeforeEach
     void beforeEach() {
         osName = System.getProperty("os.name");
+        slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
+
         Reflections.setField("yamlUtils", spectrumSessionListener, yamlUtils);
         Reflections.setField("fileUtils", spectrumSessionListener, fileUtils);
         Reflections.setField("freeMarkerWrapper", spectrumSessionListener, freeMarkerWrapper);
@@ -98,6 +104,7 @@ class SpectrumSessionListenerTest {
 
     @AfterEach
     void afterEach() {
+        slf4JBridgeHandlerMockedStatic.close();
         Vars.getInstance().clear();
         System.setProperty("os.name", osName);
     }
@@ -128,6 +135,9 @@ class SpectrumSessionListenerTest {
         when(summary.getSummaryGeneratingListener()).thenReturn(summaryGeneratingListener);
 
         spectrumSessionListener.launcherSessionOpened(launcherSession);
+
+        slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::removeHandlersForRootLogger);
+        slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::install);
 
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
         verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION);

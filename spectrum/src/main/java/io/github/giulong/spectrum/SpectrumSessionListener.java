@@ -6,6 +6,7 @@ import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import java.util.*;
 
@@ -32,6 +33,9 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
         final ProjectProperties projectProperties = yamlUtils.readInternal("properties.yaml", ProjectProperties.class);
         log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), projectProperties));
 
