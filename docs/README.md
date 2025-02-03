@@ -373,7 +373,6 @@ Let's see a configuration snippet to have a clear picture:
 # All needed drivers' configurations
 drivers:
   waits:
-    implicit: 2
     downloadTimeout: 5
   chrome:
     args:

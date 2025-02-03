@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals;
+package io.github.giulong.spectrum.internals.web_driver_listeners;
 
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -27,7 +27,7 @@ import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 
 @Slf4j
 @Builder
-public class SpectrumWebDriverListener implements WebDriverListener {
+public class EventsWebDriverListener implements WebDriverListener {
 
     private static final Pattern SECURED_PATTERN = Pattern.compile("@Secured@(?<key>.*)@Secured@");
 

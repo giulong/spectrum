@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals;
+package io.github.giulong.spectrum.internals.web_driver_listeners;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
@@ -35,7 +35,7 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 import static org.slf4j.event.Level.*;
 
-class SpectrumWebDriverListenerTest {
+class EventsWebDriverListenerTest {
 
     private static MockedStatic<WebDriverEvent> webDriverEventMockedStatic;
 
@@ -83,11 +83,11 @@ class SpectrumWebDriverListenerTest {
     private Configuration.Drivers.Events events;
 
     @InjectMocks
-    private SpectrumWebDriverListener spectrumWebDriverListener;
+    private EventsWebDriverListener eventsWebDriverListener;
 
     @BeforeEach
     void beforeEach() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
 
         webDriverEventMockedStatic = mockStatic(WebDriverEvent.class);
     }
@@ -100,7 +100,7 @@ class SpectrumWebDriverListenerTest {
     private void webDriverEventStubsAtLevel(final org.slf4j.event.Level level) {
         final String formattedMessage = "message <div>arg</div>";
 
-        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2));
+        Reflections.setField("consumers", eventsWebDriverListener, List.of(consumer1, consumer2));
 
         when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.frame(AUTO_BEFORE)).thenReturn(webDriverEventBuilder);
@@ -121,7 +121,7 @@ class SpectrumWebDriverListenerTest {
         when(webElement1.toString()).thenReturn(fullWebElement);
         when(matcher.find()).thenReturn(true).thenReturn(false);
         when(matcher.group(1)).thenReturn(expected);
-        assertEquals(expected, spectrumWebDriverListener.extractSelectorFrom(webElement1));
+        assertEquals(expected, eventsWebDriverListener.extractSelectorFrom(webElement1));
     }
 
     static Stream<Arguments> valuesProvider() {
@@ -143,7 +143,7 @@ class SpectrumWebDriverListenerTest {
         when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
         when(webElement1.toString()).thenReturn(fullWebElement);
         when(matcher.find()).thenReturn(false);
-        assertEquals("", spectrumWebDriverListener.extractSelectorFrom(webElement1));
+        assertEquals("", eventsWebDriverListener.extractSelectorFrom(webElement1));
     }
 
     @Test
@@ -182,7 +182,7 @@ class SpectrumWebDriverListenerTest {
 
         final Object[] args = new Object[]{webElement1, s, null, webElement2, webElement3};
 
-        assertEquals(expected, spectrumWebDriverListener.parse(args));
+        assertEquals(expected, eventsWebDriverListener.parse(args));
     }
 
     @Test
@@ -222,7 +222,7 @@ class SpectrumWebDriverListenerTest {
 
         final Object[] args = new Object[]{webElement1, s, null, webElement2, webElement3};
 
-        assertEquals(expected, spectrumWebDriverListener.parse(args));
+        assertEquals(expected, eventsWebDriverListener.parse(args));
     }
 
     @Test
@@ -230,12 +230,12 @@ class SpectrumWebDriverListenerTest {
     void listenTrace() {
         webDriverEventStubsAtLevel(TRACE);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.TRACE);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.TRACE);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(TRACE);
         when(event.getWait()).thenReturn(0L);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
@@ -244,10 +244,10 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("TRACE level off: listen should not log the provided event")
     void listenTraceOff() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.OFF);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.OFF);
         when(event.getLevel()).thenReturn(TRACE);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(event, never()).getMessage();
         verifyNoInteractions(consumers);
@@ -258,12 +258,12 @@ class SpectrumWebDriverListenerTest {
     void listenDebug() {
         webDriverEventStubsAtLevel(DEBUG);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.DEBUG);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.DEBUG);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(DEBUG);
         when(event.getWait()).thenReturn(wait);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
@@ -272,10 +272,10 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("DEBUG level off: listen should not log the provided event")
     void listenDebugOff() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.OFF);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.OFF);
         when(event.getLevel()).thenReturn(DEBUG);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(event, never()).getMessage();
         verifyNoInteractions(consumers);
@@ -286,12 +286,12 @@ class SpectrumWebDriverListenerTest {
     void listenInfo() {
         webDriverEventStubsAtLevel(INFO);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
@@ -300,10 +300,10 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("INFO level off: listen should not log the provided event")
     void listenInfoOff() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.OFF);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.OFF);
         when(event.getLevel()).thenReturn(INFO);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(event, never()).getMessage();
         verifyNoInteractions(consumers);
@@ -314,12 +314,12 @@ class SpectrumWebDriverListenerTest {
     void listenWarn() {
         webDriverEventStubsAtLevel(org.slf4j.event.Level.WARN);
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.WARN);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.WARN);
         when(event.getMessage()).thenReturn(message);
         when(event.getLevel()).thenReturn(WARN);
         when(event.getWait()).thenReturn(wait);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
@@ -328,10 +328,10 @@ class SpectrumWebDriverListenerTest {
     @Test
     @DisplayName("WARN level off: listen should not log the provided event")
     void listenWarnOff() {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.OFF);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.OFF);
         when(event.getLevel()).thenReturn(WARN);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(event, never()).getMessage();
         verifyNoInteractions(consumers);
@@ -341,10 +341,10 @@ class SpectrumWebDriverListenerTest {
     @ParameterizedTest(name = "with log level {0}")
     @ValueSource(strings = {"ERROR", "WARN", "INFO", "DEBUG", "TRACE"})
     void listenDefault(final String level) {
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.toLevel(level));
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.toLevel(level));
         when(event.getLevel()).thenReturn(null);
 
-        spectrumWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
+        eventsWebDriverListener.listenTo(AUTO_BEFORE, event, arg);
 
         verify(event, never()).getMessage();
         verifyNoInteractions(consumers);
@@ -358,9 +358,9 @@ class SpectrumWebDriverListenerTest {
         final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [" + keysToSend + "]";
 
-        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2));
+        Reflections.setField("consumers", eventsWebDriverListener, List.of(consumer1, consumer2));
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getBeforeSendKeys()).thenReturn(event);
         when(event.getMessage()).thenReturn(localMessage);
         when(event.getLevel()).thenReturn(INFO);
@@ -382,7 +382,7 @@ class SpectrumWebDriverListenerTest {
         when(consumer1.isEnabled()).thenReturn(true);
         when(consumer2.isEnabled()).thenReturn(true);
 
-        spectrumWebDriverListener.beforeSendKeys(webElement1, keysToSend);
+        eventsWebDriverListener.beforeSendKeys(webElement1, keysToSend);
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
@@ -398,9 +398,9 @@ class SpectrumWebDriverListenerTest {
         final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [***]";
 
-        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2));
+        Reflections.setField("consumers", eventsWebDriverListener, List.of(consumer1, consumer2));
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getBeforeSendKeys()).thenReturn(event);
         when(event.getMessage()).thenReturn(localMessage);
         when(event.getLevel()).thenReturn(INFO);
@@ -422,7 +422,7 @@ class SpectrumWebDriverListenerTest {
         when(consumer1.isEnabled()).thenReturn(true);
         when(consumer2.isEnabled()).thenReturn(true);
 
-        spectrumWebDriverListener.beforeSendKeys(webElement1, keysToSend);
+        eventsWebDriverListener.beforeSendKeys(webElement1, keysToSend);
 
         assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
 
@@ -438,9 +438,9 @@ class SpectrumWebDriverListenerTest {
         final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [" + keysToSend + "]";
 
-        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2, consumer3));
+        Reflections.setField("consumers", eventsWebDriverListener, List.of(consumer1, consumer2, consumer3));
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getAfterSendKeys()).thenReturn(event);
         when(event.getMessage()).thenReturn(localMessage);
         when(event.getLevel()).thenReturn(INFO);
@@ -463,7 +463,7 @@ class SpectrumWebDriverListenerTest {
         when(consumer2.isEnabled()).thenReturn(true);
         when(consumer3.isEnabled()).thenReturn(false);
 
-        spectrumWebDriverListener.afterSendKeys(webElement1, keysToSend);
+        eventsWebDriverListener.afterSendKeys(webElement1, keysToSend);
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
@@ -480,9 +480,9 @@ class SpectrumWebDriverListenerTest {
         final String localMessage = "message %s %s";
         final String formattedMessage = "message " + fullWebElement + " [***]";
 
-        Reflections.setField("consumers", spectrumWebDriverListener, List.of(consumer1, consumer2));
+        Reflections.setField("consumers", eventsWebDriverListener, List.of(consumer1, consumer2));
 
-        ((Logger) LoggerFactory.getLogger(SpectrumWebDriverListener.class)).setLevel(Level.INFO);
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
         when(events.getAfterSendKeys()).thenReturn(event);
         when(event.getMessage()).thenReturn(localMessage);
         when(event.getLevel()).thenReturn(INFO);
@@ -504,7 +504,7 @@ class SpectrumWebDriverListenerTest {
         when(consumer1.isEnabled()).thenReturn(true);
         when(consumer2.isEnabled()).thenReturn(true);
 
-        spectrumWebDriverListener.afterSendKeys(webElement1, keysToSend);
+        eventsWebDriverListener.afterSendKeys(webElement1, keysToSend);
 
         assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
 
@@ -519,7 +519,7 @@ class SpectrumWebDriverListenerTest {
         final String firstKeyToSend = "@Secured@" + key + "@Secured@";
         final CharSequence[] keysToSend = new CharSequence[]{firstKeyToSend, Keys.ADD, "ok"};
 
-        assertTrue(spectrumWebDriverListener.isSecured(keysToSend));
+        assertTrue(eventsWebDriverListener.isSecured(keysToSend));
         assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
     }
 
@@ -529,7 +529,7 @@ class SpectrumWebDriverListenerTest {
         final String key = "key";
         final CharSequence[] keysToSend = new CharSequence[]{key, Keys.ADD, "ok"};
 
-        assertFalse(spectrumWebDriverListener.isSecured(keysToSend));
+        assertFalse(eventsWebDriverListener.isSecured(keysToSend));
         assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
     }
 }

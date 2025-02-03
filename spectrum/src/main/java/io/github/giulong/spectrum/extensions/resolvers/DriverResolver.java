@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.internals.SpectrumWebDriverListener;
+import io.github.giulong.spectrum.internals.web_driver_listeners.AutoWaitWebDriverListener;
+import io.github.giulong.spectrum.internals.web_driver_listeners.EventsWebDriverListener;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
@@ -15,10 +16,13 @@ import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.decorators.Decorated;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.openqa.selenium.support.events.WebDriverListener;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -45,10 +49,13 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
         final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
         final WebDriver driver = configuration.getRuntime().getDriver().build();
-        final Configuration.Drivers.Events events = configuration.getDrivers().getEvents();
+        final Configuration.Drivers drivers = configuration.getDrivers();
+        final Configuration.Drivers.Events events = drivers.getEvents();
+        final Configuration.Drivers.Waits.AutoWait autoWait = drivers.getWaits().getAuto();
         final StatefulExtentTest statefulExtentTest = store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class);
         final TestData testData = store.get(TEST_DATA, TestData.class);
         final Configuration.Application.Highlight highlight = configuration.getApplication().getHighlight();
+        final Pattern locatorPattern = Pattern.compile(configuration.getExtent().getLocatorRegex());
         final LogConsumer logConsumer = LogConsumer
                 .builder()
                 .enabled(true)
@@ -81,15 +88,25 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .build();
 
         final List<WebDriverEventConsumer> consumers = List.of(logConsumer, htmlReportConsumer, screenshotConsumer, testStepBuilderConsumer, highlightElementConsumer);
+        final List<WebDriverListener> webDriverListeners = new ArrayList<>();
 
-        final WebDriverListener webDriverListener = SpectrumWebDriverListener
+        if (autoWait.isEnabled()) {
+            webDriverListeners.add(AutoWaitWebDriverListener
+                    .builder()
+                    .actions(new Actions(driver))
+                    .webDriverWait(new WebDriverWait(driver, autoWait.getTimeout()))
+                    .locatorPattern(locatorPattern)
+                    .build());
+        }
+
+        webDriverListeners.add(EventsWebDriverListener
                 .builder()
-                .locatorPattern(Pattern.compile(configuration.getExtent().getLocatorRegex()))
+                .locatorPattern(locatorPattern)
                 .events(events)
                 .consumers(consumers)
-                .build();
+                .build());
 
-        final WebDriver decoratedDriver = new EventFiringDecorator<>(webDriverListener).decorate(driver);
+        final WebDriver decoratedDriver = new EventFiringDecorator<>(webDriverListeners.toArray(new WebDriverListener[0])).decorate(driver);
         @SuppressWarnings("unchecked") final WebDriver originalDriver = ((Decorated<WebDriver>) decoratedDriver).getOriginal();
 
         store.put(TEST_STEP_BUILDER_CONSUMER, testStepBuilderConsumer);

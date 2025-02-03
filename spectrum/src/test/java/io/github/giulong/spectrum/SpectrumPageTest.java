@@ -2,9 +2,9 @@ package io.github.giulong.spectrum;
 
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.interfaces.Secured;
+import io.github.giulong.spectrum.internals.page_factory.SpectrumFieldDecorator;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
-import io.github.giulong.spectrum.internals.page_factory.SpectrumFieldDecorator;
 import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.js.JsWebElementListInvocationHandler;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
@@ -19,10 +19,11 @@ import org.mockito.*;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
+import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
+import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -56,6 +57,18 @@ class SpectrumPageTest {
 
     @Mock
     private static Configuration configuration;
+
+    @Mock
+    private Configuration.Drivers drivers;
+
+    @Mock
+    private Configuration.Drivers.Waits waits;
+
+    @Mock
+    private Configuration.Drivers.Waits.AutoWait auto;
+
+    @Mock
+    private Duration timeout;
 
     @Mock
     private Configuration.Application application;
@@ -136,12 +149,21 @@ class SpectrumPageTest {
     @DisplayName("init should set the endpoint, init the web elements, add the secured web elements, set the js web elements, and return the page instance")
     void init() {
         final WebElement proxy = mock();
+        final long seconds = 123L;
 
         when(jsWebElementProxyBuilder.buildFor(webElementArgumentCaptor.capture())).thenReturn(proxy);
         when(JsWebElementListInvocationHandler.builder()).thenReturn(jsWebElementListInvocationHandlerBuilder);
 
-        final MockedConstruction<DefaultElementLocatorFactory> factoryMockedConstruction = mockConstruction(DefaultElementLocatorFactory.class,
-                (mock, context) -> assertEquals(webDriver, context.arguments().getFirst()));
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getWaits()).thenReturn(waits);
+        when(waits.getAuto()).thenReturn(auto);
+        when(auto.getTimeout()).thenReturn(timeout);
+        when(timeout.toSeconds()).thenReturn(seconds);
+
+        final MockedConstruction<AjaxElementLocatorFactory> factoryMockedConstruction = mockConstruction(AjaxElementLocatorFactory.class, (mock, context) -> {
+            assertEquals(webDriver, context.arguments().getFirst());
+            assertEquals((int) seconds, context.arguments().get(1));
+        });
 
         final MockedConstruction<SpectrumFieldDecorator> decoratorMockedConstruction = mockConstruction(SpectrumFieldDecorator.class);
 

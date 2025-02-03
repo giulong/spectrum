@@ -2,18 +2,19 @@ package io.github.giulong.spectrum;
 
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.internals.page_factory.SpectrumFieldDecorator;
+import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.js.JsWebElementListInvocationHandler;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.pagefactory.DefaultElementLocatorFactory;
+import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
+import java.time.Duration;
 import java.util.List;
 
 @Slf4j
@@ -78,7 +79,8 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         Reflections.setField("endpoint", this, endpointValue);
 
-        PageFactory.initElements(new SpectrumFieldDecorator(new DefaultElementLocatorFactory(driver)), this);
+        final Duration autoWaitDuration = configuration.getDrivers().getWaits().getAuto().getTimeout();
+        PageFactory.initElements(new SpectrumFieldDecorator(new AjaxElementLocatorFactory(driver, (int) autoWaitDuration.toSeconds())), this);
 
         Reflections
                 .getAnnotatedFields(this, JsWebElement.class)

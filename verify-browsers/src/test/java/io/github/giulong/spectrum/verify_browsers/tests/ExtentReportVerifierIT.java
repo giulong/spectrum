@@ -35,37 +35,17 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(1, countTestsWithStatus("skip"), "Skipped tests");
         assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
-        actions.scrollToElement(extentReportPage.getSkippedTest()).perform();
         assertEquals(testLabels.get("skippedTest"), extentReportPage.getSkippedTest().getText());
-
-        actions.scrollToElement(extentReportPage.getUpload()).perform();
         assertEquals(testLabels.get("upload"), extentReportPage.getUpload().getText());
-
-        actions.scrollToElement(extentReportPage.getCustomEvents()).perform();
         assertEquals(testLabels.get("customEvents"), extentReportPage.getCustomEvents().getText());
-
-        actions.scrollToElement(extentReportPage.getFail()).perform();
         assertEquals(testLabels.get("fail"), extentReportPage.getFail().getText());
-
-        actions.scrollToElement(extentReportPage.getLoginFalse()).perform();
         assertEquals(testLabels.get("loginFalse"), extentReportPage.getLoginFalse().getText());
-
-        actions.scrollToElement(extentReportPage.getLoginTrue()).perform();
         assertEquals(testLabels.get("loginTrue"), extentReportPage.getLoginTrue().getText());
-
-        actions.scrollToElement(extentReportPage.getNoDisplayName()).perform();
         assertEquals(testLabels.get("noDisplayName"), extentReportPage.getNoDisplayName().getText());
-
-        actions.scrollToElement(extentReportPage.getDownload()).perform();
         assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
-
-        actions.scrollToElement(extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker()).perform();
         assertEquals(testLabels.get("faker"), extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker().getText());
-        actions.scrollToElement(extentReportPage.getFakerItWith0Increments()).perform();
         assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith0Increments().getText());
-        actions.scrollToElement(extentReportPage.getFakerItWith2Increments()).perform();
         assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith2Increments().getText());
-        actions.scrollToElement(extentReportPage.getFakerItWith5Increments()).perform();
         assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith5Increments().getText());
 
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
