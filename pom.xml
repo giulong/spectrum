@@ -206,6 +206,11 @@
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jul-to-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.freemarker</groupId>
@@ -221,7 +226,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.45.1</version>
+                <version>1.45.2</version>
             </dependency>
 
             <dependency>
