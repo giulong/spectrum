@@ -37,6 +37,10 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
                 }
             } else {
                 log.trace("Interpolated value for key '{}: {}' -> '{}'", currentName, value, interpolatedValue);
+
+                if (PATTERN.matcher(interpolatedValue).find()) {
+                    interpolatedValue = interpolate(interpolatedValue, currentName);
+                }
             }
         }
 
