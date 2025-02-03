@@ -5,8 +5,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
-import org.openqa.selenium.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -56,7 +61,7 @@ class AutoWaitWebDriverListenerTest {
     private WebDriverWait webDriverWait;
 
     @InjectMocks
-    private AutoWaitWebDriverListener autoWaitWebDriverListener;
+    private AutoWaitWebDriverListener autoWaitWebDriverListener = new AutoWaitWebDriverListener(AutoWaitWebDriverListener.builder());
 
     @BeforeEach
     void beforeEach() {

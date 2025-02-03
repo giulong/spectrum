@@ -12,8 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -26,12 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 import static org.slf4j.event.Level.*;
 
@@ -83,7 +79,7 @@ class EventsWebDriverListenerTest {
     private Configuration.Drivers.Events events;
 
     @InjectMocks
-    private EventsWebDriverListener eventsWebDriverListener;
+    private EventsWebDriverListener eventsWebDriverListener = new EventsWebDriverListener(EventsWebDriverListener.builder());
 
     @BeforeEach
     void beforeEach() {
@@ -111,39 +107,6 @@ class EventsWebDriverListenerTest {
 
         when(consumer1.isEnabled()).thenReturn(true);
         when(consumer2.isEnabled()).thenReturn(true);
-    }
-
-    @DisplayName("extractSelectorFrom should extract just the relevant info from the webElement")
-    @ParameterizedTest(name = "with WebElement {0} we expect {1}")
-    @MethodSource("valuesProvider")
-    void extractSelectorFrom(final String fullWebElement, final String expected) {
-        when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
-        when(webElement1.toString()).thenReturn(fullWebElement);
-        when(matcher.find()).thenReturn(true).thenReturn(false);
-        when(matcher.group(1)).thenReturn(expected);
-        assertEquals(expected, eventsWebDriverListener.extractSelectorFrom(webElement1));
-    }
-
-    static Stream<Arguments> valuesProvider() {
-        return Stream.of(
-                arguments("[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> id: message]",
-                        "id: message"),
-                arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]",
-                        "css selector: #gettotal -> tag name: button"),
-                arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]",
-                        "css selector: #get1-.total -> tag name: button")
-        );
-    }
-
-    @Test
-    @DisplayName("extractSelectorFrom should extract just the relevant info from the webElement")
-    void extractSelectorFromNoMatch() {
-        final String fullWebElement = "fullWebElement";
-
-        when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
-        when(webElement1.toString()).thenReturn(fullWebElement);
-        when(matcher.find()).thenReturn(false);
-        assertEquals("", eventsWebDriverListener.extractSelectorFrom(webElement1));
     }
 
     @Test

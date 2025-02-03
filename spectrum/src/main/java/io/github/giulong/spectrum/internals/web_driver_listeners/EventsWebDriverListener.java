@@ -5,13 +5,12 @@ import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
-import lombok.Builder;
 import lombok.Generated;
 import lombok.SneakyThrows;
+import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Sequence;
-import org.openqa.selenium.support.events.WebDriverListener;
 import org.slf4j.event.Level;
 
 import java.lang.reflect.InvocationTargetException;
@@ -26,26 +25,13 @@ import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 
 @Slf4j
-@Builder
-public class EventsWebDriverListener implements WebDriverListener {
+@SuperBuilder
+public class EventsWebDriverListener extends SpectrumWebDriverListener {
 
     private static final Pattern SECURED_PATTERN = Pattern.compile("@Secured@(?<key>.*)@Secured@");
 
-    private Pattern locatorPattern;
     private Events events;
     private List<WebDriverEventConsumer> consumers;
-
-    String extractSelectorFrom(final WebElement webElement) {
-        final String fullWebElement = webElement.toString();
-        final Matcher matcher = locatorPattern.matcher(fullWebElement);
-
-        final List<String> locators = new ArrayList<>();
-        while (matcher.find()) {
-            locators.add(matcher.group(1));
-        }
-
-        return String.join(" -> ", locators);
-    }
 
     List<String> parse(final Object[] args) {
         return Arrays
