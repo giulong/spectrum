@@ -84,12 +84,12 @@ public class AutoWaitWebDriverListener extends SpectrumWebDriverListener {
 
     void autoWaitFor(final WebElement webElement, final ExpectedCondition<?>... conditions) {
         if (webElement.getLocation().equals(noLocation) && webElement.getSize().equals(noSize)) {
-            log.trace("WebElement {} is hidden. Avoid auto-waiting", extractSelectorFrom(webElement));
-            return;
+            log.trace("WebElement {} is hidden. Avoid scrolling to it", extractSelectorFrom(webElement));
+        } else {
+            actions.scrollToElement(webElement).perform();
         }
 
         log.trace("Auto-waiting before interacting with webElement {}", Arrays.toString(conditions));
-        actions.scrollToElement(webElement).perform();
         webDriverWait.until(and(conditions));
     }
 }

@@ -239,7 +239,7 @@ class AutoWaitWebDriverListenerTest {
     }
 
     @Test
-    @DisplayName("autoWaitFor should do nothing if the provided web element is hidden")
+    @DisplayName("autoWaitFor should avoid scrolling to the provided web element if it's hidden")
     void autoWaitForHidden() {
         final String fullWebElement = "fullWebElement";
 
@@ -258,10 +258,10 @@ class AutoWaitWebDriverListenerTest {
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
-        autoWaitWebDriverListener.autoWaitFor(webElement, webDriverExpectedCondition);
+        autoWaitWebDriverListener.autoWaitFor(webElement, webElementExpectedCondition);
 
+        verify(webDriverWait).until(andExpectedCondition);
         verifyNoInteractions(actions);
-        verifyNoInteractions(webDriverWait);
     }
 
     @Test
