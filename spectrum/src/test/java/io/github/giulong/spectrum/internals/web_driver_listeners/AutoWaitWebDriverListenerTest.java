@@ -1,18 +1,19 @@
 package io.github.giulong.spectrum.internals.web_driver_listeners;
 
-import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -29,12 +30,6 @@ class AutoWaitWebDriverListenerTest {
 
     @Mock
     private Actions actions;
-
-    @Mock
-    private Point location;
-
-    @Mock
-    private Dimension size;
 
     @Mock
     private ExpectedCondition<Boolean> booleanExpectedCondition;
@@ -74,7 +69,13 @@ class AutoWaitWebDriverListenerTest {
     }
 
     private void stubs() {
-        when(webElement.getLocation()).thenReturn(location);
+        // extractSelectorFrom
+        final String fullWebElement = "fullWebElement";
+        when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
+        when(webElement.toString()).thenReturn(fullWebElement);
+        when(matcher.find()).thenReturn(true).thenReturn(false);
+        when(matcher.group(1)).thenReturn(fullWebElement);
+
         when(actions.scrollToElement(webElement)).thenReturn(actions);
     }
 
@@ -87,6 +88,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("autoWait should use the webDriverWait to wait until all the provided conditions are satisfied")
     void autoWaitFor() {
         stubs();
+
         when(and(booleanExpectedCondition, webDriverExpectedCondition)).thenReturn(andExpectedCondition);
 
         autoWaitWebDriverListener.autoWaitFor(webElement, booleanExpectedCondition, webDriverExpectedCondition);
@@ -98,6 +100,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeClick should wait for the element to be clickable")
     void beforeClick() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -110,6 +113,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeSubmit should wait for the element to be clickable")
     void beforeSubmit() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -122,6 +126,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeSendKeys should wait for the element to be clickable")
     void beforeSendKeys() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -134,6 +139,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeClear should wait for the element to be clickable")
     void beforeClear() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -146,6 +152,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeGetTagName should wait for the element to be clickable")
     void beforeGetTagName() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -158,6 +165,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeGetAttribute should wait for the element to be clickable")
     void beforeGetAttribute() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -170,6 +178,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeIsSelected should wait for the element to be clickable")
     void beforeIsSelected() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -182,6 +191,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeIsEnabled should wait for the element to be visible")
     void beforeIsEnabled() {
         stubs();
+
         when(visibilityOf(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -194,6 +204,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeGetText should wait for the element to be clickable")
     void beforeGetText() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -206,6 +217,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeGetLocation should wait for the element to be clickable")
     void beforeGetLocation() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -218,6 +230,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeGetSize should wait for the element to be clickable")
     void beforeGetSize() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -230,6 +243,7 @@ class AutoWaitWebDriverListenerTest {
     @DisplayName("beforeGetCssValue should wait for the element to be clickable")
     void beforeGetCssValue() {
         stubs();
+
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
 
@@ -238,22 +252,13 @@ class AutoWaitWebDriverListenerTest {
         verifications();
     }
 
-    @Test
-    @DisplayName("autoWaitFor should avoid scrolling to the provided web element if it's hidden")
-    void autoWaitForHidden() {
-        final String fullWebElement = "fullWebElement";
+    @DisplayName("autoWaitFor should avoid scrolling to the provided web element is not interactable")
+    @ParameterizedTest(name = "with exception {0}")
+    @ValueSource(classes = {ElementNotInteractableException.class, MoveTargetOutOfBoundsException.class})
+    void autoWaitForHidden(final Class<? extends RuntimeException> exception) {
+        stubs();
 
-        Reflections.setField("noSize", autoWaitWebDriverListener, size);
-        Reflections.setField("noLocation", autoWaitWebDriverListener, location);
-
-        // extractSelectorFrom
-        when(locatorPattern.matcher(fullWebElement)).thenReturn(matcher);
-        when(webElement.toString()).thenReturn(fullWebElement);
-        when(matcher.find()).thenReturn(true).thenReturn(false);
-        when(matcher.group(1)).thenReturn(fullWebElement);
-
-        when(webElement.getLocation()).thenReturn(location);
-        when(webElement.getSize()).thenReturn(size);
+        when(actions.scrollToElement(webElement)).thenThrow(exception);
 
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
@@ -261,23 +266,6 @@ class AutoWaitWebDriverListenerTest {
         autoWaitWebDriverListener.autoWaitFor(webElement, webElementExpectedCondition);
 
         verify(webDriverWait).until(andExpectedCondition);
-        verifyNoInteractions(actions);
-    }
-
-    @Test
-    @DisplayName("autoWaitFor should do nothing if the provided web element is hidden")
-    void autoWaitForNoLocation() {
-        Reflections.setField("noLocation", autoWaitWebDriverListener, location);
-        stubs();
-
-        when(webElement.getLocation()).thenReturn(location);
-        when(webElement.getSize()).thenReturn(size);
-
-        when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
-        when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
-
-        autoWaitWebDriverListener.autoWaitFor(webElement, webElementExpectedCondition);
-
-        verifications();
+        verify(actions, never()).perform();
     }
 }

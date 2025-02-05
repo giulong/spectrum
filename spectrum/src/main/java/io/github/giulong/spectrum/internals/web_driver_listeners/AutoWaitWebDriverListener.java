@@ -2,10 +2,10 @@ package io.github.giulong.spectrum.internals.web_driver_listeners;
 
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
+import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -17,8 +17,6 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 @SuperBuilder
 public class AutoWaitWebDriverListener extends SpectrumWebDriverListener {
 
-    private final Dimension noSize = new Dimension(0, 0);
-    private final Point noLocation = new Point(0, 0);
     private Actions actions;
     private WebDriverWait webDriverWait;
 
@@ -83,13 +81,16 @@ public class AutoWaitWebDriverListener extends SpectrumWebDriverListener {
     }
 
     void autoWaitFor(final WebElement webElement, final ExpectedCondition<?>... conditions) {
-        if (webElement.getLocation().equals(noLocation) && webElement.getSize().equals(noSize)) {
-            log.trace("WebElement {} is hidden. Avoid scrolling to it", extractSelectorFrom(webElement));
-        } else {
+        final String selector = extractSelectorFrom(webElement);
+
+        try {
+            log.trace("Scrolling to webElement located by {}", selector);
             actions.scrollToElement(webElement).perform();
+        } catch (ElementNotInteractableException | MoveTargetOutOfBoundsException ignored) {
+            log.trace("WebElement located by {} not interactable. Scrolling avoided.", selector);
         }
 
-        log.trace("Auto-waiting before interacting with webElement {}", Arrays.toString(conditions));
+        log.trace("Auto-waiting for conditions: {}", Arrays.toString(conditions));
         webDriverWait.until(and(conditions));
     }
 }
