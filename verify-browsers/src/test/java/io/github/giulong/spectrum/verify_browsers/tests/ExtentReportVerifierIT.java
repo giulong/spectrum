@@ -30,8 +30,8 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         driver.get(url);
 
-        assertEquals(27, extentReportPage.getTestViewTests().size(), "Total tests");
-        assertEquals(24, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(28, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(25, countTestsWithStatus("pass"), "Passed tests");
         assertEquals(1, countTestsWithStatus("skip"), "Skipped tests");
         assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
@@ -47,6 +47,7 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith0Increments().getText());
         assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith2Increments().getText());
         assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith5Increments().getText());
+        assertEquals(testLabels.get("dynamic"), extentReportPage.getDynamicItNavigationToProveAutoWaitHelpsALot().getText());
 
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 
@@ -81,6 +82,8 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals("1", extentReportPage.getVideoFakerItWith0Increments().getDomProperty("duration"));
         assertEquals("1", extentReportPage.getVideoFakerItWith2Increments().getDomProperty("duration"));
         assertEquals("1", extentReportPage.getVideoFakerItWith5Increments().getDomProperty("duration"));
+
+        assertEquals("18", extentReportPage.getVideoDynamicItNavigationToProveAutoWaitHelpsALot().getDomProperty("duration"));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());

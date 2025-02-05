@@ -61,6 +61,9 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(id = "fakerit-with-5-increments")
     private WebElement fakerItWith5Increments;
 
+    @FindBy(id = "dynamicit-navigation-to-prove-auto-wait-helps-a-lot")
+    private WebElement dynamicItNavigationToProveAutoWaitHelpsALot;
+
     @FindBy(className = "screenshot-container")
     private List<WebElement> screenshotContainers;
 
@@ -132,6 +135,9 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
 
     @FindBy(id = "video-fakerit-with-5-increments")
     private WebElement videoFakerItWith5Increments;
+
+    @FindBy(id = "video-dynamicit-navigation-to-prove-auto-wait-helps-a-lot")
+    private WebElement videoDynamicItNavigationToProveAutoWaitHelpsALot;
 
     @FindBy(className = "inline")
     private List<WebElement> inlineImages;

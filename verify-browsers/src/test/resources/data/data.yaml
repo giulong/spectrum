@@ -51,6 +51,7 @@ extentReport:
     download: Files Test
     faker: Faker
     fakerExpression: expressions should generate random numbers
+    dynamic: Dynamic elements
 
 summary:
   title: Execution Summary
