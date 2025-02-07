@@ -661,6 +661,10 @@ Both key name and default value might contain dots like in `${some.key:-default.
 > It's possible to interpolate multiple **string** values in the same key, for example:
 >
 > `${key:-default}-something_else-${anotherVar}`
+> 
+> Nested interpolation works as well, for example if you need a default which is stored in another variable:
+> 
+> `${key:-${nestedKey:-default}}-something_else-${anotherVar}`
 >
 > It doesn't make any sense to do the same with numeric interpolation, since the result would be a string. These are **not** valid:
 >
