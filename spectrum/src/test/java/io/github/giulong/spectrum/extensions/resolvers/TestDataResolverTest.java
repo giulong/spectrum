@@ -195,7 +195,7 @@ class TestDataResolverTest {
     void getDisplayNameOf() {
         final Class<?> clazz = DummyDisplayName.class;
 
-        assertEquals("dummy", testDataResolver.getDisplayNameOf(clazz));
+        assertEquals("dummy", TestDataResolver.getDisplayNameOf(clazz));
     }
 
     @Test
@@ -203,7 +203,7 @@ class TestDataResolverTest {
     void getDisplayNameOfNoAnnotation() {
         final Class<?> clazz = String.class;
 
-        assertEquals("String", testDataResolver.getDisplayNameOf(clazz));
+        assertEquals("String", TestDataResolver.getDisplayNameOf(clazz));
     }
 
     @Test
@@ -220,7 +220,7 @@ class TestDataResolverTest {
         when(context.getDisplayName()).thenReturn(displayName);
         when(parentContext.getDisplayName()).thenReturn(parentDisplayName);
 
-        assertEquals(expected, testDataResolver.joinTestDisplayNamesIn(context));
+        assertEquals(expected, TestDataResolver.joinTestDisplayNamesIn(context));
 
         verify(grandParentContext, never()).getDisplayName();
         verify(rootContext, never()).getDisplayName();

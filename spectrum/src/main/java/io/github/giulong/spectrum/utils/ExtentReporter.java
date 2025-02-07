@@ -32,8 +32,7 @@ import static com.aventstack.extentreports.Status.SKIP;
 import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.buildTestIdFrom;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.*;
 import static lombok.AccessLevel.PROTECTED;
 
 @Slf4j
@@ -134,10 +133,11 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     public void logTestEnd(final ExtensionContext context, final Status status) {
         final TestContext testContext = contextManager.get(context);
         final StatefulExtentTest statefulExtentTest = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, k -> {
-            final String className = context.getRequiredTestClass().getSimpleName();
+            final Class<?> clazz = context.getRequiredTestClass();
+            final String className = clazz.getSimpleName();
             final String methodName = context.getRequiredTestMethod().getName();
-            final String classDisplayName = context.getParent().orElseThrow().getDisplayName();
-            final String displayName = context.getDisplayName();
+            final String classDisplayName = fileUtils.sanitize(getDisplayNameOf(clazz));
+            final String displayName = fileUtils.sanitize(joinTestDisplayNamesIn(context));
             final String testId = buildTestIdFrom(className, displayName);
 
             testContext.put(TEST_DATA, TestData
