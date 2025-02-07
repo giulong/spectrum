@@ -451,17 +451,17 @@ class ExtentReporterTest {
     @Test
     @DisplayName("createExtentTestFrom should create the test from the provided testData and return it")
     void createExtentTestFrom() {
-        final String testId = "testId";
+        final String id = "id";
         final String classDisplayName = "classDisplayName";
         final String displayName = "displayName";
         final Set<String> tags = Set.of("t1", "t2");
 
         when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
-        when(testData.getTestId()).thenReturn(testId);
+        when(testData.getTestId()).thenReturn(id);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getDisplayName()).thenReturn(displayName);
         when(context.getTags()).thenReturn(tags);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, displayName))).thenReturn(extentTest);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, classDisplayName, id, displayName))).thenReturn(extentTest);
         when(extentTest.assignCategory(tags.toArray(new String[0]))).thenReturn(extentTest);
 
         assertEquals(extentTest, extentReporter.createExtentTestFrom(context));
@@ -585,7 +585,7 @@ class ExtentReporterTest {
         final String className = "String";
         final String classDisplayName = "classDisplayName";
         final String displayName = "displayName";
-        final String testId = "string-displayname";
+        final String id = "string-displayname";
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         doReturn(String.class).when(context).getRequiredTestClass();
@@ -595,12 +595,12 @@ class ExtentReporterTest {
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
         when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.displayName(displayName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
+        when(testDataBuilder.testId(id)).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
-        when(testData.getTestId()).thenReturn(testId);
+        when(testData.getTestId()).thenReturn(id);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getDisplayName()).thenReturn(displayName);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div>%s", testId, classDisplayName, displayName))).thenReturn(extentTest);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, classDisplayName, id, displayName))).thenReturn(extentTest);
 
         when(contextManager.get(context)).thenReturn(testContext);
         when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);

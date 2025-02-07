@@ -23,7 +23,7 @@ class LoginFormIT extends SpectrumTest<Data> {
 
     private LoginPage loginPage;
 
-    @DisplayName("Login Form leveraging the data.yaml")
+    @DisplayName("leveraging the data.yaml")
     @ParameterizedTest(name = "with user {0} we expect login to be successful: {1}")
     @MethodSource("valuesProvider")
     void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {

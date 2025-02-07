@@ -35,19 +35,35 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(1, countTestsWithStatus("skip"), "Skipped tests");
         assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
-        assertEquals(testLabels.get("skippedTest"), extentReportPage.getSkippedTest().getText());
-        assertEquals(testLabels.get("upload"), extentReportPage.getUpload().getText());
-        assertEquals(testLabels.get("customEvents"), extentReportPage.getCustomEvents().getText());
-        assertEquals(testLabels.get("fail"), extentReportPage.getFail().getText());
-        assertEquals(testLabels.get("loginFalse"), extentReportPage.getLoginFalse().getText());
-        assertEquals(testLabels.get("loginTrue"), extentReportPage.getLoginTrue().getText());
         assertEquals(testLabels.get("noDisplayName"), extentReportPage.getNoDisplayName().getText());
-        assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
-        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker().getText());
-        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith0Increments().getText());
-        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith2Increments().getText());
-        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith5Increments().getText());
+        assertEquals(testLabels.get("noDisplayNameTestName"), extentReportPage.getNoDisplayNameTestName().getText());
+        assertEquals(testLabels.get("customEvents"), extentReportPage.getCustomEvents().getText());
+        assertEquals(testLabels.get("customEventsTestName"), extentReportPage.getCustomEventsTestName().getText());
+        assertEquals(testLabels.get("skippedTest"), extentReportPage.getSkippedTest().getText());
+        assertEquals(testLabels.get("skippedTestTestName"), extentReportPage.getSkippedTestTestName().getText());
+        assertEquals(testLabels.get("fail"), extentReportPage.getFail().getText());
+        assertEquals(testLabels.get("failTestName"), extentReportPage.getFailTestName().getText());
         assertEquals(testLabels.get("dynamic"), extentReportPage.getDynamicItNavigationToProveAutoWaitHelpsALot().getText());
+        assertEquals(testLabels.get("dynamicTestName"), extentReportPage.getDynamicItNavigationToProveAutoWaitHelpsALotTestName().getText());
+
+        assertEquals(testLabels.get("upload"), extentReportPage.getUpload().getText());
+        assertEquals(testLabels.get("uploadTestName"), extentReportPage.getUploadTestName().getText());
+
+        assertEquals(testLabels.get("login"), extentReportPage.getLoginFalse().getText());
+        assertEquals(testLabels.get("loginFalseTestName"), extentReportPage.getLoginFalseTestName().getText());
+        assertEquals(testLabels.get("login"), extentReportPage.getLoginTrue().getText());
+        assertEquals(testLabels.get("loginTrueTestName"), extentReportPage.getLoginTrueTestName().getText());
+
+        assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
+        assertEquals(testLabels.get("downloadTestName"), extentReportPage.getDownloadTestName().getText());
+        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker().getText());
+        assertEquals(testLabels.get("fakerTestName"), extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFakerTestName().getText());
+        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItWith0Increments().getText());
+        assertEquals(testLabels.get("faker0TestName"), extentReportPage.getFakerItWith0IncrementsTestName().getText());
+        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItWith2Increments().getText());
+        assertEquals(testLabels.get("faker2TestName"), extentReportPage.getFakerItWith2IncrementsTestName().getText());
+        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItWith5Increments().getText());
+        assertEquals(testLabels.get("faker5TestName"), extentReportPage.getFakerItWith5IncrementsTestName().getText());
 
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 

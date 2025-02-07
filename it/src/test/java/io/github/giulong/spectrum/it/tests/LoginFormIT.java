@@ -35,7 +35,7 @@ class LoginFormIT extends BaseIT {
     }
 
     // Let's try with JUnit's parameterized tests
-    @DisplayName("Login Form leveraging the data.yaml")
+    @DisplayName("leveraging the data.yaml")
     @ParameterizedTest(name = "with user {0} we expect login to be successful {1}")
     @MethodSource("valuesProvider")
     void shouldRunSuccessfully(final String userName, final boolean expected, final String endpoint) {
