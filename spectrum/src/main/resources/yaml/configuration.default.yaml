@@ -84,6 +84,9 @@ drivers:
     pageLoadTimeout: 10   # Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet
     scriptTimeout: 10   # Seconds that Selenium waits before throwing a ScriptTimeoutException
     downloadTimeout: 15   # FluentWait injected in test classes/pages that you can use on file download
+    auto: # Auto-wait configuration
+      enabled: true # Whether to enable the auto-wait
+      timeout: 30 # Timeout in seconds
 
   # Chrome capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/chrome/
   chrome:

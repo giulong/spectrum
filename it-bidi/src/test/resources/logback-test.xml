@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <conversionRule conversionWord="colored" class="io.github.giulong.spectrum.internals.ColoredConverter" />
-    <property name="PATTERN" value="%d{HH:mm:ss.SSS} %.-1level %-30.30logger{0} | %msg%nopex%n"/>
-    <property name="COLOR_PATTERN" value="%d{HH:mm:ss.SSS} %colored(%.-1level %-30.30logger{0} | %msg%nopex%n)"/>
+    <property name="COLOR_PATTERN" value="%d{HH:mm:ss.SSS} %colored(%.-1level %-30.30logger{0} | %msg%n%ex))"/>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

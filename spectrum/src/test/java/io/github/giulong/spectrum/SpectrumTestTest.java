@@ -20,6 +20,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,6 +69,18 @@ class SpectrumTestTest {
 
     @Mock
     private Configuration configuration;
+
+    @Mock
+    private Configuration.Drivers drivers;
+
+    @Mock
+    private Configuration.Drivers.Waits waits;
+
+    @Mock
+    private Configuration.Drivers.Waits.AutoWait auto;
+
+    @Mock
+    private Duration timeout;
 
     @Mock
     private ExtentReports extentReports;
@@ -141,6 +154,13 @@ class SpectrumTestTest {
         when(dataConfiguration.getFolder()).thenReturn(folder);
         when(yamlUtils.readClient(folder + "/data.yaml", FakeData.class)).thenReturn(data);
 
+        final long seconds = 123L;
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getWaits()).thenReturn(waits);
+        when(waits.getAuto()).thenReturn(auto);
+        when(auto.getTimeout()).thenReturn(timeout);
+        when(timeout.toSeconds()).thenReturn(seconds);
+
         assertNull(childTestVoid.childTestPage);
         assertNull(childTestVoid.getParentTestPage());
 
@@ -173,6 +193,15 @@ class SpectrumTestTest {
     @Test
     @DisplayName("injectPages should init also init pages from super classes")
     void injectPages() {
+        Reflections.setField("configuration", spectrumTest, configuration);
+
+        final long seconds = 123L;
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getWaits()).thenReturn(waits);
+        when(waits.getAuto()).thenReturn(auto);
+        when(auto.getTimeout()).thenReturn(timeout);
+        when(timeout.toSeconds()).thenReturn(seconds);
+
         assertNull(childTest.childTestPage);
         assertNull(childTest.getParentTestPage());
 

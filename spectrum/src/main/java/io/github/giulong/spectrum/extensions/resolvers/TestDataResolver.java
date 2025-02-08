@@ -5,12 +5,15 @@ import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static java.util.UUID.randomUUID;
@@ -32,10 +35,11 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final Configuration configuration = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class);
         final Configuration.Extent extent = configuration.getExtent();
         final String reportFolder = extent.getReportFolder();
-        final String className = context.getRequiredTestClass().getSimpleName();
+        final Class<?> clazz = context.getRequiredTestClass();
+        final String className = clazz.getSimpleName();
         final String methodName = context.getRequiredTestMethod().getName();
-        final String classDisplayName = fileUtils.sanitize(context.getParent().orElseThrow().getDisplayName());
-        final String displayName = fileUtils.sanitize(context.getDisplayName());
+        final String classDisplayName = fileUtils.sanitize(getDisplayNameOf(clazz));
+        final String displayName = fileUtils.sanitize(joinTestDisplayNamesIn(context));
         final String testId = buildTestIdFrom(className, displayName);
         final String fileName = fileUtils.removeExtensionFrom(extent.getFileName());
         final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, classDisplayName, displayName);
@@ -58,6 +62,22 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
 
     public static String buildTestIdFrom(final String className, final String testName) {
         return String.format("%s-%s", transformInKebabCase(className), transformInKebabCase(testName));
+    }
+
+    public static String getDisplayNameOf(final Class<?> clazz) {
+        return clazz.isAnnotationPresent(DisplayName.class) ? clazz.getAnnotation(DisplayName.class).value() : clazz.getSimpleName();
+    }
+
+    public static String joinTestDisplayNamesIn(final ExtensionContext context) {
+        final List<String> displayNames = new ArrayList<>();
+        ExtensionContext currentContext = context;
+
+        while (currentContext.getParent().orElseThrow().getParent().isPresent()) {
+            displayNames.add(currentContext.getDisplayName());
+            currentContext = currentContext.getParent().orElseThrow();
+        }
+
+        return String.join(" ", displayNames.reversed());
     }
 
     Path getScreenshotFolderPathForCurrentTest(final String reportsFolder, final String extentFileName, final String className, final String methodName) {

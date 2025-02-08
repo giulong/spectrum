@@ -6,7 +6,6 @@ application:
 
 drivers:
   waits:
-    implicit: 2
     downloadTimeout: 5
   chrome:
     args:

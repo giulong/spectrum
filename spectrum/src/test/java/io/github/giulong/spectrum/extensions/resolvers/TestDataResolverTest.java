@@ -13,6 +13,7 @@ import org.mockito.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -50,6 +51,9 @@ class TestDataResolverTest {
 
     @Mock
     private ExtensionContext parentContext;
+
+    @Mock
+    private ExtensionContext grandParentContext;
 
     @Mock
     private ExtensionContext rootContext;
@@ -102,7 +106,7 @@ class TestDataResolverTest {
     void resolveParameter() throws NoSuchMethodException {
         final Class<String> clazz = String.class;
         final String className = clazz.getSimpleName();
-        final String classDisplayName = "classDisplayName";
+        final String classDisplayName = "String";
         final String sanitizedClassDisplayName = "sanitizedClassDisplayName";
         final String methodName = "resolveParameter";
         final String displayName = "displayName";
@@ -110,6 +114,11 @@ class TestDataResolverTest {
         final String testId = "string-sanitizeddisplayname";
         final String fileName = "fileName";
         final String fileNameWithoutExtension = "fileNameWithoutExtension";
+
+        // joinTestDisplayNamesIn
+        when(context.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getParent()).thenReturn(Optional.of(rootContext));
+        when(context.getDisplayName()).thenReturn(displayName);
 
         when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
         when(fileUtils.sanitize(classDisplayName)).thenReturn(sanitizedClassDisplayName);
@@ -139,9 +148,6 @@ class TestDataResolverTest {
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
-        when(context.getDisplayName()).thenReturn(displayName);
-        when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(testDataBuilder.classDisplayName(sanitizedClassDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.displayName(sanitizedDisplayName)).thenReturn(testDataBuilder);
@@ -185,8 +191,48 @@ class TestDataResolverTest {
     }
 
     @Test
+    @DisplayName("getDisplayNameOf should return the @DisplayName value")
+    void getDisplayNameOf() {
+        final Class<?> clazz = DummyDisplayName.class;
+
+        assertEquals("dummy", TestDataResolver.getDisplayNameOf(clazz));
+    }
+
+    @Test
+    @DisplayName("getDisplayNameOf should return the class simple name if it's not annotated with @DisplayName")
+    void getDisplayNameOfNoAnnotation() {
+        final Class<?> clazz = String.class;
+
+        assertEquals("String", TestDataResolver.getDisplayNameOf(clazz));
+    }
+
+    @Test
+    @DisplayName("joinTestDisplayNamesIn should join all the display names from the provided context, with all the intermediate containers, excluding the class one")
+    void joinTestDisplayNamesIn() {
+        final String displayName = "displayName";
+        final String parentDisplayName = "parentDisplayName";
+        final String expected = String.join(" ", List.of(parentDisplayName, displayName));
+
+        when(context.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getParent()).thenReturn(Optional.of(grandParentContext));
+        when(grandParentContext.getParent()).thenReturn(Optional.of(rootContext));
+
+        when(context.getDisplayName()).thenReturn(displayName);
+        when(parentContext.getDisplayName()).thenReturn(parentDisplayName);
+
+        assertEquals(expected, TestDataResolver.joinTestDisplayNamesIn(context));
+
+        verify(grandParentContext, never()).getDisplayName();
+        verify(rootContext, never()).getDisplayName();
+    }
+
+    @Test
     @DisplayName("transformInKebabCase should return the provided string with spaces replaced by dashes and in lowercase")
     void transformInKebabCase() {
         assertEquals("some-composite-string", TestDataResolver.transformInKebabCase("Some Composite STRING"));
+    }
+
+    @DisplayName("dummy")
+    private static final class DummyDisplayName {
     }
 }

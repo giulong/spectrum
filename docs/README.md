@@ -373,7 +373,6 @@ Let's see a configuration snippet to have a clear picture:
 # All needed drivers' configurations
 drivers:
   waits:
-    implicit: 2
     downloadTimeout: 5
   chrome:
     args:
@@ -1181,6 +1180,46 @@ drivers:
 
 ---
 
+# Auto-waiting
+
+Spectrum runs some expected conditions before interacting with web elements to **highly reduce flakiness**.
+For example, when you click on an element, it checks that to be clickable before actually trying to click it.
+Spectrum also **scrolls automatically** to the element, in order to bring it into the viewport. If this is not possible,
+for example when the element is in an inactive JQuery tab, this action is skipped.
+
+The **auto-wait** is enabled by default and runs expected conditions with a 30s timeout. You can override these in you `configuration*-yaml`.
+This is the `auto` node in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  waits:
+    auto: # Auto-wait configuration
+      enabled: true # Whether to enable the auto-wait
+      timeout: 30 # Timeout in seconds
+```
+
+This is the set of actions and conditions run before the corresponding action:
+
+| Action       | Scroll | Visible | Enabled |
+|--------------|:------:|:-------:|:-------:|
+| click        |   ✅    |    ✅    |    ✅    |
+| submit       |   ✅    |    ✅    |    ✅    |
+| sendKeys     |   ✅    |    ✅    |    ✅    |
+| clear        |   ✅    |    ✅    |    ✅    |
+| getTagName   |   ✅    |    ✅    |    ✅    |
+| getAttribute |   ✅    |    ✅    |    ✅    |
+| isSelected   |   ✅    |    ✅    |    ✅    |
+| isEnabled    |   ✅    |    ✅    |    ❌    |
+| getText      |   ✅    |    ✅    |    ✅    |
+| getLocation  |   ✅    |    ✅    |    ✅    |
+| getSize      |   ✅    |    ✅    |    ✅    |
+| getCssValue  |   ✅    |    ✅    |    ✅    |
+
+---
+
 # Javascript Executor
 
 Generally speaking, Javascript execution should be avoided: a Selenium test should mimic a real user interaction
@@ -1330,7 +1369,7 @@ application:
 ```
 
 The `js` points to the javascript to apply to the web elements. No need to provide it explicitly if you
-don't need to customise it. This is the internal 
+don't need to customise it. This is the internal
 [highlight.js]({{ site.repository_url }}/spectrum/src/main/resources/js/highlight.js){:target="_blank"},
 that applies a 3px red border for 500ms to the web elements, as in the screenshot below:
 
@@ -1354,12 +1393,14 @@ setTimeout(() => {
 Highlighting is bound to [WebDriver Events](#webdriver-events-listener), meaning only events occurring at a proper log level
 will lead to highlighting the corresponding web element(s). For instance, the `beforeSendKeys` event is logged at `INFO`
 by default, and this is why the input field in the screenshot above was highlighted:
+
 1. some text is being sent to an input field
 2. the web driver fires the `beforeSendKeys` event
 3. the `beforeSendKeys` event is configured at level `INFO`, and the default log level is `INFO`
 4. Spectrum consumes the event, highlighting the input
 
 If you'd like to customise the js applied when highlighting, you have 2 options where to place your own script:
+
 * at the `js/highlight.js` path, overriding the default, or
 * at a custom path, setting it explicitly in your configuration*.yaml
 

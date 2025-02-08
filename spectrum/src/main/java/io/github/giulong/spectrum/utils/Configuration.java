@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
 import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
+import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Generated;
 import lombok.Getter;
@@ -238,9 +238,24 @@ public class Configuration {
             @JsonSchemaTypes(int.class)
             private Duration scriptTimeout;
 
-            @JsonPropertyDescription("FluentWait injected in test classes/pages that you can use on file download")
+            @JsonPropertyDescription("WebDriverWait injected in test classes/pages that you can use on file download")
             @JsonSchemaTypes(int.class)
             private Duration downloadTimeout;
+
+            @JsonPropertyDescription("Auto-wait configuration")
+            private AutoWait auto;
+
+            @Getter
+            @Generated
+            public static class AutoWait {
+
+                @JsonPropertyDescription("Whether to enable the auto-wait. True by default")
+                private boolean enabled;
+
+                @JsonPropertyDescription("Timeout in seconds")
+                @JsonSchemaTypes(int.class)
+                public Duration timeout;
+            }
         }
 
         @Getter
