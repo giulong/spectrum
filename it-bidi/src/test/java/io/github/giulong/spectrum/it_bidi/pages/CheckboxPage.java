@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.it.pages;
+package io.github.giulong.spectrum.it_bidi.pages;
 
 import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
