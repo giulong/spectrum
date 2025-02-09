@@ -31,6 +31,7 @@
   <ol>
     <li><a href="#about">About</a></li>
     <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#usage">Usage</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#contacts">Contacts</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -39,7 +40,7 @@
 
 # About
 
-Spectrum is a **test automation framework** that leverages **JUnit 5** and **Selenium 4** to simplify e2e tests development providing these features automatically:
+Spectrum is a **e2e test automation framework** that leverages **JUnit 5** and **Selenium 4** to simplify tests development providing these features automatically:
 
 * **Driver** instantiation
 * **Html report** generation
@@ -56,26 +57,46 @@ Spectrum manages all the boilerplate code to get these features and many more, a
 
 # Getting Started
 
-All you need to do is take the three steps listed below, as shown in this video:
+> ⚠️ Spectrum requires [Java 21](https://jdk.java.net/archive/) or newer.
+
+The easiest way is to take the three steps listed below, as shown in this video:
 
 https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e66b3907d
 
-> ⚠️ JDK<br/>
-> Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/archive/) to be able to run your tests.
-
-1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype) via your IDE or by running this in a terminal
-   and providing values when prompted:
+1. Generate a new project leveraging the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype):
 
    ```text
-   mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST
+   mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype
    ```
 
-2. Run the `LoginFormIT` demo test injected by the archetype.
-3. Once the execution is done, you will find the `target/spectrum/reports/spectrum-report-<TIMESTAMP>/spectrum-report-<TIMESTAMP>.html` report with the execution video attached.
+2. Run the `LoginFormIT` demo test.
+3. Check the report generated in `target/spectrum/reports/spectrum-report-<TIMESTAMP>/spectrum-report-<TIMESTAMP>.html`.
 
-> ⚠️ Default Browser<br/>
-> Tests run on Chrome by default. If you don't have it, you can run the demo test with:<br/>
+> ⚠️ Tests run on Chrome by default. You can change this running with:<br/>
 > `-Dspectrum.driver=firefox`, `-Dspectrum.driver=edge` or `-Dspectrum.driver=safari`
+
+# Usage
+
+If you'd rather add Spectrum manually to an existing project, you just need to add its dependency.
+
+## Maven
+
+```xml
+<dependency>
+    <groupId>io.github.giulong</groupId>
+    <artifactId>spectrum</artifactId>
+    <version>1.21.1</version>
+    <scope>test</scope>
+</dependency>
+```
+
+## Gradle
+
+```gradle
+dependencies {
+  implementation group: 'io.github.giulong', name: 'spectrum', version: '1.21.1'
+}
+```
 
 Here's a quick overview of the project created by the archetype, along with the generated report:<br/><br/>
 <img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it.png" alt="login-form"/>

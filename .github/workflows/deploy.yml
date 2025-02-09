@@ -55,7 +55,11 @@ jobs:
 
       - name: Bump Spectrum version
         shell: bash
-        run: ./mvnw versions:set-property -Dmaven.plugin.validation=NONE -DgenerateBackupPoms=false -Dproperty=revision -DnewVersion=$NEW_VERSION -ntp
+        run: ./mvnw versions:set-property -Dmaven.plugin.validation=NONE -DgenerateBackupPoms=false -Dproperty=revision -DnewVersion=$NEW_VERSION -ntp replacer:replace@readme-versions
+
+      - name: Bump README and docs versions
+        shell: bash
+        run: ./mvnw replacer:replace@readme-versions replacer:replace@docs-versions
 
       - id: install-secret-key
         name: Install gpg secret key
