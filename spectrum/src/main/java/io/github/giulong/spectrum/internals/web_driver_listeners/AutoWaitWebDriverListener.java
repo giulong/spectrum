@@ -85,7 +85,7 @@ public class AutoWaitWebDriverListener extends SpectrumWebDriverListener {
 
         try {
             log.trace("Scrolling to webElement located by {}", selector);
-            actions.scrollToElement(webElement).perform();
+            actions.moveToElement(webElement).perform();
         } catch (ElementNotInteractableException | MoveTargetOutOfBoundsException ignored) {
             log.trace("WebElement located by {} not interactable. Scrolling avoided.", selector);
         }
