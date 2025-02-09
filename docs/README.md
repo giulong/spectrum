@@ -7,6 +7,7 @@ simplify the writing of e2e tests, providing these features:
 * automatic [log and html report](#automatically-generated-reports) generation
 * automatic [coverage report](#testbook---coverage) generation by reading a testbook
 * automatic [mail/slack notifications](#events-consumers) with reports as attachments
+* reduces flakiness with [auto-waiting](#auto-waiting)
 * fully configurable providing human-readable and [declarative yaml files](#configuration)
 * out-of-the-box defaults to let you run tests with no additional configuration
 
@@ -25,13 +26,13 @@ and **mobile and desktop applications** via [Appium](http://appium.io/docs/en/la
 | QG      | Quality Gate                                                                                                                |
 | POJO    | Plain Old java Object                                                                                                       |
 
-## Setup
+# Setup
 
 > ⚠️ **JDK**<br/>
 > Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/archive/){:target="_blank"} to be able to run your tests.
 > If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
-### Spectrum Archetype
+## Spectrum Archetype
 
 You should leverage the latest published version of the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype){:target="_blank"} to create a
 new project either via your IDE or by running this from command line:
@@ -50,10 +51,31 @@ The project created contains a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"} to your
 project:
 
-{% include copyCode.html %}
-{% include spectrumDependency.html %}
+## Maven
 
-### Test creation
+{% include copyCode.html %}
+
+```xml
+
+<dependency>
+    <groupId>io.github.giulong</groupId>
+    <artifactId>spectrum</artifactId>
+    <version>1.21.1</version>
+    <scope>test</scope>
+</dependency>
+```
+
+## Gradle
+
+{% include copyCode.html %}
+
+```gradle
+dependencies {
+  implementation group: 'io.github.giulong', name: 'spectrum', version: '1.21.1'
+}
+```
+
+## Test creation
 
 In general, all you need to do is create a **JUnit 5** test class extending the `SpectrumTest` class:
 
@@ -661,9 +683,9 @@ Both key name and default value might contain dots like in `${some.key:-default.
 > It's possible to interpolate multiple **string** values in the same key, for example:
 >
 > `${key:-default}-something_else-${anotherVar}`
-> 
+>
 > Nested interpolation works as well, for example if you need a default which is stored in another variable:
-> 
+>
 > `${key:-${nestedKey:-default}}-something_else-${anotherVar}`
 >
 > It doesn't make any sense to do the same with numeric interpolation, since the result would be a string. These are **not** valid:

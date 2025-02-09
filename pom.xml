@@ -422,6 +422,12 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>com.google.code.maven-replacer-plugin</groupId>
+                    <artifactId>replacer</artifactId>
+                    <version>1.5.3</version>
+                    <inherited>false</inherited>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>3.4.2</version>
@@ -509,6 +515,53 @@
                         <goals>
                             <goal>clean</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>readme-versions</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <file>README.md</file>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA[<version>.*</version>]]></token>
+                                    <value><![CDATA[<version>${revision}</version>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token>implementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
+                                    <value>implementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>docs-versions</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <file>docs/README.md</file>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA[<version>.*</version>]]></token>
+                                    <value><![CDATA[<version>${revision}</version>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token>implementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
+                                    <value>implementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
