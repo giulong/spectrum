@@ -76,7 +76,7 @@ class AutoWaitWebDriverListenerTest {
         when(matcher.find()).thenReturn(true).thenReturn(false);
         when(matcher.group(1)).thenReturn(fullWebElement);
 
-        when(actions.scrollToElement(webElement)).thenReturn(actions);
+        when(actions.moveToElement(webElement)).thenReturn(actions);
     }
 
     private void verifications() {
@@ -252,13 +252,13 @@ class AutoWaitWebDriverListenerTest {
         verifications();
     }
 
-    @DisplayName("autoWaitFor should avoid scrolling to the provided web element is not interactable")
+    @DisplayName("autoWaitFor should avoid moving to the provided web element is not interactable")
     @ParameterizedTest(name = "with exception {0}")
     @ValueSource(classes = {ElementNotInteractableException.class, MoveTargetOutOfBoundsException.class})
     void autoWaitForHidden(final Class<? extends RuntimeException> exception) {
         stubs();
 
-        when(actions.scrollToElement(webElement)).thenThrow(exception);
+        when(actions.moveToElement(webElement)).thenThrow(exception);
 
         when(elementToBeClickable(webElement)).thenReturn(webElementExpectedCondition);
         when(and(webElementExpectedCondition)).thenReturn(andExpectedCondition);
