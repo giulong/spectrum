@@ -7,6 +7,7 @@ simplify the writing of e2e tests, providing these features:
 * automatic [log and html report](#automatically-generated-reports) generation
 * automatic [coverage report](#testbook---coverage) generation by reading a testbook
 * automatic [mail/slack notifications](#events-consumers) with reports as attachments
+* reduces flakiness with [auto-waiting](#auto-waiting)
 * fully configurable providing human-readable and [declarative yaml files](#configuration)
 * out-of-the-box defaults to let you run tests with no additional configuration
 
@@ -25,13 +26,13 @@ and **mobile and desktop applications** via [Appium](http://appium.io/docs/en/la
 | QG      | Quality Gate                                                                                                                |
 | POJO    | Plain Old java Object                                                                                                       |
 
-## Setup
+# Setup
 
 > ⚠️ **JDK**<br/>
 > Since Spectrum is compiled with a jdk 21, you need a [jdk 21+](https://jdk.java.net/archive/){:target="_blank"} to be able to run your tests.
 > If you get an `Unsupported major.minor version` exception, the reason is that you're using an incompatible java version.
 
-### Spectrum Archetype
+## Spectrum Archetype
 
 You should leverage the latest published version of the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype){:target="_blank"} to create a
 new project either via your IDE or by running this from command line:
@@ -50,10 +51,31 @@ The project created contains a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"} to your
 project:
 
-{% include copyCode.html %}
-{% include spectrumDependency.html %}
+## Maven
 
-### Test creation
+{% include copyCode.html %}
+
+```xml
+
+<dependency>
+    <groupId>io.github.giulong</groupId>
+    <artifactId>spectrum</artifactId>
+    <version>1.21.1</version>
+    <scope>test</scope>
+</dependency>
+```
+
+## Gradle
+
+{% include copyCode.html %}
+
+```gradle
+dependencies {
+  implementation group: 'io.github.giulong', name: 'spectrum', version: '1.21.1'
+}
+```
+
+## Test creation
 
 In general, all you need to do is create a **JUnit 5** test class extending the `SpectrumTest` class:
 
@@ -373,7 +395,6 @@ Let's see a configuration snippet to have a clear picture:
 # All needed drivers' configurations
 drivers:
   waits:
-    implicit: 2
     downloadTimeout: 5
   chrome:
     args:
@@ -662,6 +683,10 @@ Both key name and default value might contain dots like in `${some.key:-default.
 > It's possible to interpolate multiple **string** values in the same key, for example:
 >
 > `${key:-default}-something_else-${anotherVar}`
+>
+> Nested interpolation works as well, for example if you need a default which is stored in another variable:
+>
+> `${key:-${nestedKey:-default}}-something_else-${anotherVar}`
 >
 > It doesn't make any sense to do the same with numeric interpolation, since the result would be a string. These are **not** valid:
 >
@@ -1177,6 +1202,46 @@ drivers:
 
 ---
 
+# Auto-waiting
+
+Spectrum runs some expected conditions before interacting with web elements to **highly reduce flakiness**.
+For example, when you click on an element, it checks that to be clickable before actually trying to click it.
+Spectrum also **scrolls automatically** to the element, in order to bring it into the viewport. If this is not possible,
+for example when the element is in an inactive JQuery tab, this action is skipped.
+
+The **auto-wait** is enabled by default and runs expected conditions with a 30s timeout. You can override these in you `configuration*-yaml`.
+This is the `auto` node in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  waits:
+    auto: # Auto-wait configuration
+      enabled: true # Whether to enable the auto-wait
+      timeout: 30 # Timeout in seconds
+```
+
+This is the set of actions and conditions run before the corresponding action:
+
+| Action       | Scroll | Visible | Enabled |
+|--------------|:------:|:-------:|:-------:|
+| click        |   ✅    |    ✅    |    ✅    |
+| submit       |   ✅    |    ✅    |    ✅    |
+| sendKeys     |   ✅    |    ✅    |    ✅    |
+| clear        |   ✅    |    ✅    |    ✅    |
+| getTagName   |   ✅    |    ✅    |    ✅    |
+| getAttribute |   ✅    |    ✅    |    ✅    |
+| isSelected   |   ✅    |    ✅    |    ✅    |
+| isEnabled    |   ✅    |    ✅    |    ❌    |
+| getText      |   ✅    |    ✅    |    ✅    |
+| getLocation  |   ✅    |    ✅    |    ✅    |
+| getSize      |   ✅    |    ✅    |    ✅    |
+| getCssValue  |   ✅    |    ✅    |    ✅    |
+
+---
+
 # Javascript Executor
 
 Generally speaking, Javascript execution should be avoided: a Selenium test should mimic a real user interaction
@@ -1326,7 +1391,7 @@ application:
 ```
 
 The `js` points to the javascript to apply to the web elements. No need to provide it explicitly if you
-don't need to customise it. This is the internal 
+don't need to customise it. This is the internal
 [highlight.js]({{ site.repository_url }}/spectrum/src/main/resources/js/highlight.js){:target="_blank"},
 that applies a 3px red border for 500ms to the web elements, as in the screenshot below:
 
@@ -1350,12 +1415,14 @@ setTimeout(() => {
 Highlighting is bound to [WebDriver Events](#webdriver-events-listener), meaning only events occurring at a proper log level
 will lead to highlighting the corresponding web element(s). For instance, the `beforeSendKeys` event is logged at `INFO`
 by default, and this is why the input field in the screenshot above was highlighted:
+
 1. some text is being sent to an input field
 2. the web driver fires the `beforeSendKeys` event
 3. the `beforeSendKeys` event is configured at level `INFO`, and the default log level is `INFO`
 4. Spectrum consumes the event, highlighting the input
 
 If you'd like to customise the js applied when highlighting, you have 2 options where to place your own script:
+
 * at the `js/highlight.js` path, overriding the default, or
 * at a custom path, setting it explicitly in your configuration*.yaml
 

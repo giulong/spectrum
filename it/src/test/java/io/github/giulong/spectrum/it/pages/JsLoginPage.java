@@ -47,7 +47,7 @@ public class JsLoginPage extends SpectrumPage<JsLoginPage, Void> {
     @Override
     public JsLoginPage waitForPageLoading() {
         log.info("Wait for page loading: waiting for errorMessage to disappear");
-        implicitWait.until((ExpectedCondition<Boolean>) driver -> isNotPresent(id("flash")));
+        pageLoadWait.until((ExpectedCondition<Boolean>) driver -> isNotPresent(id("flash")));
 
         return this;
     }

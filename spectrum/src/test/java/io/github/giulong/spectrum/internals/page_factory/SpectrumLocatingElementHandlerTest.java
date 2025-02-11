@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 class SpectrumLocatingElementHandlerTest {
 
     @Mock
-    private Object object;
+    private Object proxy;
 
     @Mock
     private Object result;
@@ -36,19 +36,19 @@ class SpectrumLocatingElementHandlerTest {
     private Method method;
 
     @Mock
-    private ElementLocator locator;
+    private ElementLocator elementLocator;
 
     @Captor
     private ArgumentCaptor<Object[]> argsArgumentCaptor;
 
     @InjectMocks
-    private SpectrumLocatingElementHandler spectrumLocatingElementHandler = new SpectrumLocatingElementHandler(locator, true);
+    private SpectrumLocatingElementHandler spectrumLocatingElementHandler = new SpectrumLocatingElementHandler(elementLocator, true);
 
     @DisplayName("constructor should set the secured field")
     @ParameterizedTest(name = "with secured {0}")
     @ValueSource(booleans = {true, false})
     void constructor(final boolean secured) {
-        final SpectrumLocatingElementHandler handler = new SpectrumLocatingElementHandler(locator, secured);
+        final SpectrumLocatingElementHandler handler = new SpectrumLocatingElementHandler(elementLocator, secured);
 
         Assertions.assertEquals(secured, Reflections.getFieldValue("secured", handler, Boolean.class));
     }
@@ -63,14 +63,14 @@ class SpectrumLocatingElementHandlerTest {
         final Object[] args = new Object[]{charSequences};
 
         Reflections.setField("secured", spectrumLocatingElementHandler, secured);
-        Reflections.setField("locator", spectrumLocatingElementHandler, locator);
+        Reflections.setField("locator", spectrumLocatingElementHandler, elementLocator);
 
         lenient().when(method.getName()).thenReturn("nope");
 
-        when(locator.findElement()).thenReturn(webElement);
+        when(elementLocator.findElement()).thenReturn(webElement);
         when(method.invoke(eq(webElement), (Object) argsArgumentCaptor.capture())).thenReturn(result);
 
-        assertEquals(result, spectrumLocatingElementHandler.invoke(object, method, args));
+        assertEquals(result, spectrumLocatingElementHandler.invoke(proxy, method, args));
         assertArrayEquals(args, argsArgumentCaptor.getValue());
         assertArrayEquals(expectedCharSequences, (CharSequence[]) args[0]);
     }
@@ -84,14 +84,34 @@ class SpectrumLocatingElementHandlerTest {
         final Object[] args = new Object[]{charSequences};
 
         Reflections.setField("secured", spectrumLocatingElementHandler, true);
-        Reflections.setField("locator", spectrumLocatingElementHandler, locator);
+        Reflections.setField("locator", spectrumLocatingElementHandler, elementLocator);
 
         when(method.getName()).thenReturn("sendKeys");
 
-        when(locator.findElement()).thenReturn(webElement);
+        when(elementLocator.findElement()).thenReturn(webElement);
         when(method.invoke(eq(webElement), (Object) argsArgumentCaptor.capture())).thenReturn(result);
 
-        assertEquals(result, spectrumLocatingElementHandler.invoke(object, method, args));
+        assertEquals(result, spectrumLocatingElementHandler.invoke(proxy, method, args));
+        assertArrayEquals(args, argsArgumentCaptor.getValue());
+        assertArrayEquals(expectedCharSequences, (CharSequence[]) args[0]);
+    }
+
+    @SuppressWarnings({"checkstyle:IllegalThrows"})
+    @Test
+    @DisplayName("invoke should immediately invoke the method if it's toString")
+    void invokeToString() throws Throwable {
+        final CharSequence[] charSequences = new CharSequence[]{"string", "another"};
+        final CharSequence[] expectedCharSequences = new CharSequence[]{"string", "another"};
+        final Object[] args = new Object[]{charSequences};
+
+        Reflections.setField("locator", spectrumLocatingElementHandler, elementLocator);
+        Reflections.setField("elementLocator", spectrumLocatingElementHandler, elementLocator);
+
+        when(method.getName()).thenReturn("toString");
+
+        when(method.invoke(eq(elementLocator), (Object) argsArgumentCaptor.capture())).thenReturn(result);
+
+        assertEquals(result, spectrumLocatingElementHandler.invoke(proxy, method, args));
         assertArrayEquals(args, argsArgumentCaptor.getValue());
         assertArrayEquals(expectedCharSequences, (CharSequence[]) args[0]);
     }

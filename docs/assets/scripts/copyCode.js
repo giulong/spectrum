@@ -4,7 +4,6 @@ const copyButtons = document.querySelectorAll('.copy-button');
 (async () => {
     const response = await fetch('https://api.github.com/repos/giulong/spectrum/contents/docs/json-schemas');
     const json = await response.json();
-    document.getElementById('latest-spectrum-version').innerText = json.pop().name;
 
     copyButtons.forEach((copyButton, index) => {
         try {

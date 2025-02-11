@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.openqa.selenium.Keys.ARROW_UP;
-import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Faker")
 @SuppressWarnings("unused")
@@ -35,7 +35,7 @@ public class FakerIT extends BaseIT {
                 .open()
                 .loginWith(name.firstName(), name.lastName());
 
-        pageLoadWait.until(urlContains("/login"));
+        pageLoadWait.until(visibilityOf(loginPage.getErrorMessage()));
 
         assertTrue(isPresent(By.id("flash")));
         assertFalse(Objects.requireNonNull(driver.getCurrentUrl()).endsWith("/secure"));

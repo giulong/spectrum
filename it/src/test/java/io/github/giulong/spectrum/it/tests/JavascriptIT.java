@@ -13,6 +13,7 @@ import org.openqa.selenium.WebElement;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 class JavascriptIT extends SpectrumTest<Void> {
 
@@ -67,6 +68,8 @@ class JavascriptIT extends SpectrumTest<Void> {
         final WebElement contentDiv = loginPage.getContentDiv();
         final WebElement form = loginPage.getForm();
 
+        pageLoadWait.until(visibilityOf(form));
+
         assertEquals(subHeader, js.findElement(contentDiv, LocatorType.CLASS_NAME, "subheader"));
         assertEquals(form, js.findElement(contentDiv, LocatorType.TAG_NAME, "form"));
         assertEquals(usernameField, js.findElement(LocatorType.NAME, "username"));
@@ -93,6 +96,8 @@ class JavascriptIT extends SpectrumTest<Void> {
         final WebElement form = loginPage.getForm();
         final WebElement contentDiv = loginPage.getContentDiv();
         final WebElement usernameField = loginPage.getUsername();
+
+        pageLoadWait.until(visibilityOf(form));
 
         // Every test use two test cases, one with context=document (not passed) and other one with context passed
         assertEquals(5, js.findElements(LocatorType.CLASS_NAME, "row").size());

@@ -3,7 +3,6 @@ runtime:
 
 drivers:
   waits:
-    implicit: 2
     downloadTimeout: 5
   logs:
     level: INFO

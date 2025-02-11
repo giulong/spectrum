@@ -30,43 +30,40 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         driver.get(url);
 
-        assertEquals(27, extentReportPage.getTestViewTests().size(), "Total tests");
-        assertEquals(24, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(28, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(25, countTestsWithStatus("pass"), "Passed tests");
         assertEquals(1, countTestsWithStatus("skip"), "Skipped tests");
         assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
-        actions.scrollToElement(extentReportPage.getSkippedTest()).perform();
-        assertEquals(testLabels.get("skippedTest"), extentReportPage.getSkippedTest().getText());
-
-        actions.scrollToElement(extentReportPage.getUpload()).perform();
-        assertEquals(testLabels.get("upload"), extentReportPage.getUpload().getText());
-
-        actions.scrollToElement(extentReportPage.getCustomEvents()).perform();
-        assertEquals(testLabels.get("customEvents"), extentReportPage.getCustomEvents().getText());
-
-        actions.scrollToElement(extentReportPage.getFail()).perform();
-        assertEquals(testLabels.get("fail"), extentReportPage.getFail().getText());
-
-        actions.scrollToElement(extentReportPage.getLoginFalse()).perform();
-        assertEquals(testLabels.get("loginFalse"), extentReportPage.getLoginFalse().getText());
-
-        actions.scrollToElement(extentReportPage.getLoginTrue()).perform();
-        assertEquals(testLabels.get("loginTrue"), extentReportPage.getLoginTrue().getText());
-
-        actions.scrollToElement(extentReportPage.getNoDisplayName()).perform();
         assertEquals(testLabels.get("noDisplayName"), extentReportPage.getNoDisplayName().getText());
+        assertEquals(testLabels.get("noDisplayNameTestName"), extentReportPage.getNoDisplayNameTestName().getText());
+        assertEquals(testLabels.get("customEvents"), extentReportPage.getCustomEvents().getText());
+        assertEquals(testLabels.get("customEventsTestName"), extentReportPage.getCustomEventsTestName().getText());
+        assertEquals(testLabels.get("skippedTest"), extentReportPage.getSkippedTest().getText());
+        assertEquals(testLabels.get("skippedTestTestName"), extentReportPage.getSkippedTestTestName().getText());
+        assertEquals(testLabels.get("fail"), extentReportPage.getFail().getText());
+        assertEquals(testLabels.get("failTestName"), extentReportPage.getFailTestName().getText());
+        assertEquals(testLabels.get("dynamic"), extentReportPage.getDynamicItNavigationToProveAutoWaitHelpsALot().getText());
+        assertEquals(testLabels.get("dynamicTestName"), extentReportPage.getDynamicItNavigationToProveAutoWaitHelpsALotTestName().getText());
 
-        actions.scrollToElement(extentReportPage.getDownload()).perform();
+        assertEquals(testLabels.get("upload"), extentReportPage.getUpload().getText());
+        assertEquals(testLabels.get("uploadTestName"), extentReportPage.getUploadTestName().getText());
+
+        assertEquals(testLabels.get("login"), extentReportPage.getLoginFalse().getText());
+        assertEquals(testLabels.get("loginFalseTestName"), extentReportPage.getLoginFalseTestName().getText());
+        assertEquals(testLabels.get("login"), extentReportPage.getLoginTrue().getText());
+        assertEquals(testLabels.get("loginTrueTestName"), extentReportPage.getLoginTrueTestName().getText());
+
         assertEquals(testLabels.get("download"), extentReportPage.getDownload().getText());
-
-        actions.scrollToElement(extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker()).perform();
+        assertEquals(testLabels.get("downloadTestName"), extentReportPage.getDownloadTestName().getText());
         assertEquals(testLabels.get("faker"), extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker().getText());
-        actions.scrollToElement(extentReportPage.getFakerItWith0Increments()).perform();
-        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith0Increments().getText());
-        actions.scrollToElement(extentReportPage.getFakerItWith2Increments()).perform();
-        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith2Increments().getText());
-        actions.scrollToElement(extentReportPage.getFakerItWith5Increments()).perform();
-        assertEquals(testLabels.get("fakerExpression"), extentReportPage.getFakerItWith5Increments().getText());
+        assertEquals(testLabels.get("fakerTestName"), extentReportPage.getFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFakerTestName().getText());
+        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItWith0Increments().getText());
+        assertEquals(testLabels.get("faker0TestName"), extentReportPage.getFakerItWith0IncrementsTestName().getText());
+        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItWith2Increments().getText());
+        assertEquals(testLabels.get("faker2TestName"), extentReportPage.getFakerItWith2IncrementsTestName().getText());
+        assertEquals(testLabels.get("faker"), extentReportPage.getFakerItWith5Increments().getText());
+        assertEquals(testLabels.get("faker5TestName"), extentReportPage.getFakerItWith5IncrementsTestName().getText());
 
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 
@@ -101,6 +98,8 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals("1", extentReportPage.getVideoFakerItWith0Increments().getDomProperty("duration"));
         assertEquals("1", extentReportPage.getVideoFakerItWith2Increments().getDomProperty("duration"));
         assertEquals("1", extentReportPage.getVideoFakerItWith5Increments().getDomProperty("duration"));
+
+        assertEquals("18", extentReportPage.getVideoDynamicItNavigationToProveAutoWaitHelpsALot().getDomProperty("duration"));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
         assertFalse(extentReportPage.getScreenshotContainers().isEmpty());

@@ -1,8 +1,8 @@
-package io.github.giulong.spectrum.it.tests;
+package io.github.giulong.spectrum.it_bidi.tests;
 
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it.pages.CheckboxPage;
-import io.github.giulong.spectrum.it.pages.LandingPage;
+import io.github.giulong.spectrum.it_bidi.pages.CheckboxPage;
+import io.github.giulong.spectrum.it_bidi.pages.LandingPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.bidi.module.Network;
