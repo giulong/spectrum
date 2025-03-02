@@ -102,7 +102,7 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals("18", extentReportPage.getVideoDynamicItNavigationToProveAutoWaitHelpsALot().getDomProperty("duration"));
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
-        assertFalse(extentReportPage.getScreenshotContainers().isEmpty());
+        assertFalse(extentReportPage.getScreenshotMessages().isEmpty());
 
         assertTrue(Objects.requireNonNull(extentReportPage.getVideoFilesItUpload().getDomAttribute("class")).contains("class-added-from-js"));
 

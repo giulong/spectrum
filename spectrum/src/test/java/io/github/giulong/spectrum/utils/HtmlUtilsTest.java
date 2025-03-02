@@ -53,6 +53,18 @@ class HtmlUtilsTest {
     }
 
     @Test
+    @DisplayName("buildFrameTagFor should return the tag with the provided frame number and content")
+    void buildFrameTagForOverloaded() {
+        assertEquals("<div class=\"\" data-frame=\"123\">content</div>", htmlUtils.buildFrameTagFor(123, "content"));
+    }
+
+    @Test
+    @DisplayName("buildFrameTagFor should return the tag with the provided frame number, content, and css classes provided")
+    void buildFrameTagFor() {
+        assertEquals("<div class=\"classes\" data-frame=\"123\">content</div>", htmlUtils.buildFrameTagFor(123, "content", "classes"));
+    }
+
+    @Test
     @DisplayName("inline should call both the inlineImagesOf and inlineVideosOf on the provided html and return the one with all of those replaced")
     void inline() throws IOException {
         final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";

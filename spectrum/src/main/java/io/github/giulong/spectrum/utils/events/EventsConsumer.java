@@ -22,6 +22,7 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = ExtentTestConsumer.class, name = "extentTest"),
         @JsonSubTypes.Type(value = DriverConsumer.class, name = "driver"),
         @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),
+        @JsonSubTypes.Type(value = VideoResetConsumer.class, name = "videoReset"),
         @JsonSubTypes.Type(value = VideoConsumer.class, name = "video"),
         @JsonSubTypes.Type(value = VideoDynamicConsumer.class, name = "videoDynamic"),
         @JsonSubTypes.Type(value = TestStepsConsumer.class, name = "testSteps"),

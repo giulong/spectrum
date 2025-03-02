@@ -103,11 +103,8 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(id = "dynamicit-navigation-to-prove-auto-wait-helps-a-lot-test-name")
     private WebElement dynamicItNavigationToProveAutoWaitHelpsALotTestName;
 
-    @FindBy(className = "screenshot-container")
-    private List<WebElement> screenshotContainers;
-
-    @FindBy(className = "screenshot-container-test-name")
-    private List<WebElement> screenshotContainersTestName;
+    @FindBy(className = "screenshot-message")
+    private List<WebElement> screenshotMessages;
 
     @FindBy(id = "video-javascriptit-testinputfieldactions()")
     private WebElement videoJavascriptItTestInputFieldActions;

@@ -24,7 +24,9 @@ class CheckboxIT extends SpectrumTest<Void> {
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
+        extentTest.info("Custom step that should not be highlighted on video playback");
         landingPage.getCheckboxLink().click();
+        extentTest.info("Custom step that should not be highlighted on video playback");
 
         final WebElement firstCheckbox = checkboxPage.getCheckboxes().getFirst();
         final WebElement secondCheckbox = checkboxPage.getCheckboxes().get(1);
@@ -32,6 +34,7 @@ class CheckboxIT extends SpectrumTest<Void> {
         assertFalse(firstCheckbox.isSelected());
         assertTrue(secondCheckbox.isSelected());
 
+        extentTest.info("Custom step that should not be highlighted on video playback");
         firstCheckbox.click();
         assertTrue(firstCheckbox.isSelected());
 

@@ -1,12 +1,15 @@
 package io.github.giulong.spectrum.utils.video;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Frame;
 import lombok.Generated;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Getter
 public class Video {
 
@@ -34,15 +37,25 @@ public class Video {
     @SuppressWarnings("unused")
     private ExtentTest extentTest;
 
+    @JsonIgnore
+    @SuppressWarnings("unused")
+    private int frameNumber;
+
     public boolean isDisabled() {
         return frames.isEmpty();
     }
 
-    public boolean shouldRecord(final String frameName) {
-        return frames
-                .stream()
-                .map(Frame::getValue)
-                .anyMatch(frameName::startsWith);
+    public boolean shouldRecord(final Frame frame) {
+        return frames.contains(frame);
+    }
+
+    public int getFrameNumberFor(final Frame frame) {
+        log.trace("Current frame number: {}", frameNumber);
+        return shouldRecord(frame) ? frameNumber++ : -1;
+    }
+
+    public void resetFrameNumber() {
+        frameNumber = 0;
     }
 
     @Getter
