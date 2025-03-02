@@ -64,6 +64,22 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         return String.format("%s-%s", transformInKebabCase(className), transformInKebabCase(testName));
     }
 
+    public static String getDisplayNameOf(final Class<?> clazz) {
+        return clazz.isAnnotationPresent(DisplayName.class) ? clazz.getAnnotation(DisplayName.class).value() : clazz.getSimpleName();
+    }
+
+    public static String joinTestDisplayNamesIn(final ExtensionContext context) {
+        final List<String> displayNames = new ArrayList<>();
+        ExtensionContext currentContext = context;
+
+        while (currentContext.getParent().orElseThrow().getParent().isPresent()) {
+            displayNames.add(currentContext.getDisplayName());
+            currentContext = currentContext.getParent().orElseThrow();
+        }
+
+        return String.join(" ", displayNames.reversed());
+    }
+
     Path getScreenshotFolderPathForCurrentTest(final String reportsFolder, final String extentFileName, final String className, final String methodName) {
         return fileUtils.deleteContentOf(Path.of(reportsFolder, extentFileName, "screenshots", className, methodName).toAbsolutePath());
     }
@@ -77,22 +93,6 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         return fileUtils
                 .deleteContentOf(Path.of(reportsFolder, extentFileName, "videos", className, methodName).toAbsolutePath())
                 .resolve(String.format("%s.mp4", randomUUID()));
-    }
-
-    String getDisplayNameOf(final Class<?> clazz) {
-        return clazz.isAnnotationPresent(DisplayName.class) ? clazz.getAnnotation(DisplayName.class).value() : clazz.getSimpleName();
-    }
-
-    String joinTestDisplayNamesIn(final ExtensionContext context) {
-        final List<String> displayNames = new ArrayList<>();
-        ExtensionContext currentContext = context;
-
-        while (currentContext.getParent().orElseThrow().getParent().isPresent()) {
-            displayNames.add(currentContext.getDisplayName());
-            currentContext = currentContext.getParent().orElseThrow();
-        }
-
-        return String.join(" ", displayNames.reversed());
     }
 
     static String transformInKebabCase(final String string) {

@@ -50,6 +50,7 @@ Spectrum is a **e2e test automation framework** that leverages **JUnit 5** and *
 
 Spectrum manages all the boilerplate code to get these features and many more, allowing you to focus on test logic.
 
+* **Auto-waits** before interacting with elements, to **highly reduce flakiness**
 * It is fully configurable via a **declarative yaml file**
 * It provides **out-of-the-box defaults** to let you run tests with no additional configuration
 * supports **browsers automation** via Selenium

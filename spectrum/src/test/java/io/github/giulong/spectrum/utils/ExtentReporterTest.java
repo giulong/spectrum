@@ -47,6 +47,10 @@ class ExtentReporterTest {
     private static final String REPORT_FOLDER = "reportFolder";
     private static final String NAME_ONE = "name1";
     private static final String NAME_TWO = "name2";
+    private static final String CLASS_DISPLAY_NAME = "String";
+    private static final String DISPLAY_NAME = "displayName";
+    private static final String SANITIZED_CLASS_DISPLAY_NAME = "sanitizedClassDisplayName";
+    private static final String SANITIZED_DISPLAY_NAME = "sanitizedDisplayName";
 
     private MockedStatic<TestData> testDataMockedStatic;
     private MockedStatic<FreeMarkerWrapper> freeMarkerWrapperMockedStatic;
@@ -133,6 +137,9 @@ class ExtentReporterTest {
 
     @Mock
     private ExtensionContext parentContext;
+
+    @Mock
+    private ExtensionContext rootContext;
 
     @Mock
     private Desktop desktop;
@@ -539,7 +546,6 @@ class ExtentReporterTest {
     @Test
     @DisplayName("logTestEnd should add a screenshot to the report and delegate to finalizeTest")
     void logTestEndFailed() throws NoSuchMethodException {
-        final String classDisplayName = "classDisplayName";
         final String methodName = "logTestEndStubs";
 
         logTestEndStubs();
@@ -547,7 +553,6 @@ class ExtentReporterTest {
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(context.getExecutionException()).thenReturn(Optional.of(exception));
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
@@ -561,14 +566,12 @@ class ExtentReporterTest {
     @Test
     @DisplayName("logTestEnd should add a log in the extent report by default")
     void logTestEndDefault() throws NoSuchMethodException {
-        final String classDisplayName = "classDisplayName";
         final String methodName = "logTestEndStubs";
 
         logTestEndStubs();
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         extentReporter.logTestEnd(context, PASS);
@@ -591,24 +594,27 @@ class ExtentReporterTest {
     @SneakyThrows
     private void logTestEndStubs() {
         final String className = "String";
-        final String classDisplayName = "classDisplayName";
-        final String displayName = "displayName";
-        final String id = "string-displayname";
+        final String id = "string-sanitizeddisplayname";
+
+        // joinTestDisplayNamesIn
+        when(context.getParent()).thenReturn(Optional.of(parentContext));
+        when(parentContext.getParent()).thenReturn(Optional.of(rootContext));
+        when(fileUtils.sanitize(CLASS_DISPLAY_NAME)).thenReturn(SANITIZED_CLASS_DISPLAY_NAME);
+        when(fileUtils.sanitize(DISPLAY_NAME)).thenReturn(SANITIZED_DISPLAY_NAME);
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         doReturn(String.class).when(context).getRequiredTestClass();
-        when(context.getDisplayName()).thenReturn(displayName);
+        when(context.getDisplayName()).thenReturn(DISPLAY_NAME);
         when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getDisplayName()).thenReturn(classDisplayName);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
-        when(testDataBuilder.classDisplayName(classDisplayName)).thenReturn(testDataBuilder);
-        when(testDataBuilder.displayName(displayName)).thenReturn(testDataBuilder);
+        when(testDataBuilder.classDisplayName(SANITIZED_CLASS_DISPLAY_NAME)).thenReturn(testDataBuilder);
+        when(testDataBuilder.displayName(SANITIZED_DISPLAY_NAME)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(id)).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
         when(testData.getTestId()).thenReturn(id);
-        when(testData.getClassDisplayName()).thenReturn(classDisplayName);
-        when(testData.getDisplayName()).thenReturn(displayName);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, classDisplayName, id, displayName))).thenReturn(extentTest);
+        when(testData.getClassDisplayName()).thenReturn(CLASS_DISPLAY_NAME);
+        when(testData.getDisplayName()).thenReturn(DISPLAY_NAME);
+        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, CLASS_DISPLAY_NAME, id, DISPLAY_NAME))).thenReturn(extentTest);
 
         when(contextManager.get(context)).thenReturn(testContext);
         when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
