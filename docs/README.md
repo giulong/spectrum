@@ -1647,8 +1647,21 @@ You can see an example report here:
 ![Extent Report](assets/images/extent-screenshot.png)
 
 > 💡 **Tip**<br/>
-> You can provide your own *look and feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
-> Spectrum will automatically load and apply it to the Extent Report.
+> You can provide your own *look and feel* by putting:
+> * additional css rules in the `src/test/resources/css/report.css` file
+> * additional css rules in the `src/test/resources/js/report.js` file
+>
+> Spectrum will automatically load and apply them to the Extent Report. You can also customise the folder and name of the files above
+> by changing the `extent.css` and `extent.js` keys in your `configuration*.yaml`. This is indeed the default in the internal
+> [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  css: css/report.css # Path to the custom css to apply. Relative to the resources folder
+  js: js/report.js # Path to the custom js to apply. Relative to the resources folder
+```
 
 Upon a test failure, Spectrum adds a screenshot to the report automatically.
 

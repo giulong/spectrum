@@ -73,7 +73,7 @@ https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e
 2. Run the `LoginFormIT` demo test.
 3. Check the report generated in `target/spectrum/reports/spectrum-report-<TIMESTAMP>/spectrum-report-<TIMESTAMP>.html`.
 
-> ⚠️ Tests run on Chrome by default. You can change this running with:<br/>
+> ⚠️ Tests run on Chrome by default. You can change this with:<br/>
 > `-Dspectrum.driver=firefox`, `-Dspectrum.driver=edge` or `-Dspectrum.driver=safari`
 
 # Usage
