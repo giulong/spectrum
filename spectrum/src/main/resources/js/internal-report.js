@@ -64,7 +64,7 @@ function syncVideoWithStep(event) {
         });
 
     const currentFrameTr = currentFrameDiv.closest('tr');
-    const block = currentFrameTr.getBoundingClientRect().top < videoTr.getBoundingClientRect().height ? 'center' : 'nearest';
+    const block = currentFrameTr.getBoundingClientRect().top < videoTr.getBoundingClientRect().bottom ? 'center' : 'nearest';
 
     currentFrameTr.scrollIntoView({ block: block });
     currentFrameTr.classList.remove('darkened');
