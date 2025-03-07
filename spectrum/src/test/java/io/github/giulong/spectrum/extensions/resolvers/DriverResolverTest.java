@@ -238,6 +238,7 @@ class DriverResolverTest {
         when(HtmlReportConsumer.builder()).thenReturn(htmlReportConsumerBuilder);
         when(htmlReportConsumerBuilder.enabled(true)).thenReturn(htmlReportConsumerBuilder);
         when(htmlReportConsumerBuilder.statefulExtentTest(statefulExtentTest)).thenReturn(htmlReportConsumerBuilder);
+        when(htmlReportConsumerBuilder.testData(testData)).thenReturn(htmlReportConsumerBuilder);
         when(htmlReportConsumerBuilder.video(video)).thenReturn(htmlReportConsumerBuilder);
         when(htmlReportConsumerBuilder.build()).thenReturn(htmlReportConsumer);
 

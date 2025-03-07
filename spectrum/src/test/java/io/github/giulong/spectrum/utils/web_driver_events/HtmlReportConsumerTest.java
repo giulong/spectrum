@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
 import com.aventstack.extentreports.ExtentTest;
+import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
@@ -25,6 +26,9 @@ class HtmlReportConsumerTest {
     private final String message = "message";
     private final String details = "details";
     private final int frameNumber = 123;
+
+    @Mock
+    private TestData testData;
 
     @Mock
     private HtmlUtils htmlUtils;
@@ -55,7 +59,7 @@ class HtmlReportConsumerTest {
         when(webDriverEvent.getLevel()).thenReturn(level);
         when(webDriverEvent.getFrame()).thenReturn(AUTO_BEFORE);
 
-        when(video.getFrameNumberFor(AUTO_BEFORE)).thenReturn(frameNumber);
+        when(video.getAndIncrementFrameNumberFor(testData, AUTO_BEFORE)).thenReturn(frameNumber);
     }
 
     @DisplayName("accept should log the video tag at info level")

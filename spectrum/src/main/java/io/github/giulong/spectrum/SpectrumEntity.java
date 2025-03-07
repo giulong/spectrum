@@ -173,7 +173,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         if (msg == null) {
             statefulExtentTest.getCurrentNode().log(status, (String) null, screenshot);
         } else {
-            final int frameNumber = configuration.getVideo().getFrameNumberFor(MANUAL);
+            final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
             final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message");
 
             statefulExtentTest.getCurrentNode().log(status, tag, screenshot);

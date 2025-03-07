@@ -1,13 +1,14 @@
 package io.github.giulong.spectrum.utils.video;
 
 import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -16,8 +17,12 @@ import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
 
 class VideoTest {
+
+    @Mock
+    private TestData testData;
 
     @InjectMocks
     private Video video;
@@ -54,34 +59,27 @@ class VideoTest {
         );
     }
 
-    @DisplayName("getFrameNumberFor should return the current frame number and increment it if the provided frame should be recorded, -1 otherwise")
+    @DisplayName("getAndIncrementFrameNumberFor should return the current frame number and increment it if the provided frame should be recorded, -1 otherwise")
     @ParameterizedTest(name = "with frames {0} we expect {1} and next frame number to be {2}")
-    @MethodSource("getFrameNumberForValuesProvider")
-    void getFrameNumberFor(final List<Frame> frames, final int expected, final int nextFrameNumber) {
+    @MethodSource("getAndIncrementFrameNumberForValuesProvider")
+    void getAndIncrementFrameNumberFor(final List<Frame> frames, final int expected, final int shouldRecordInvocations, final int nextFrameNumber) {
+        final int currentFrameNumber = 123;
+
         Reflections.setField("frames", video, frames);
-        Reflections.setField("frameNumber", video, 123);
 
-        assertEquals(expected, video.getFrameNumberFor(AUTO_BEFORE));
+        when(testData.getFrameNumber()).thenReturn(currentFrameNumber);
 
-        assertEquals(nextFrameNumber, Reflections.getFieldValue("frameNumber", video));
+        assertEquals(expected, video.getAndIncrementFrameNumberFor(testData, AUTO_BEFORE));
+
+        verify(testData, times(shouldRecordInvocations)).setFrameNumber(nextFrameNumber);
     }
 
-    static Stream<Arguments> getFrameNumberForValuesProvider() {
+    static Stream<Arguments> getAndIncrementFrameNumberForValuesProvider() {
         return Stream.of(
-                arguments(List.of(AUTO_BEFORE), 123, 124),
-                arguments(List.of(MANUAL, AUTO_BEFORE), 123, 124),
-                arguments(List.of(MANUAL), -1, 123),
-                arguments(List.of(), -1, 123)
+                arguments(List.of(AUTO_BEFORE), 123, 1, 124),
+                arguments(List.of(MANUAL, AUTO_BEFORE), 123, 1, 124),
+                arguments(List.of(MANUAL), -1, 0, 123),
+                arguments(List.of(), -1, 0, 123)
         );
-    }
-
-    @Test
-    @DisplayName("resetFrameNumber should set the frame number to 0")
-    void resetFrameNumber() {
-        Reflections.setField("frameNumber", video, 123);
-
-        video.resetFrameNumber();
-
-        assertEquals(0, Reflections.getFieldValue("frameNumber", video));
     }
 }

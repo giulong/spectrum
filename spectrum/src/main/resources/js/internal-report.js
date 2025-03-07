@@ -1,11 +1,16 @@
 var videoPausedTimeoutId;
 
-function frameClicked(tr) {
-    const dataFrameDiv = tr.querySelector('div[data-frame]');
-    const frameNumber = parseInt(dataFrameDiv.dataset.frame);
-    const video = tr.closest('table').querySelector('video');
+function frameClicked() {
+    Array
+        .from(document.querySelectorAll('div[data-frame]'))
+        .map(div => div.closest('tr'))
+        .forEach(tr => tr.onclick = () => {
+            const dataFrameDiv = tr.querySelector('div[data-frame]');
+            const frameNumber = parseInt(dataFrameDiv.dataset.frame);
+            const video = tr.closest('table').querySelector('video');
 
-    video.currentTime = frameNumber;
+            video.currentTime = frameNumber;
+        });
 }
 
 window.addEventListener('load', (event) => {
@@ -19,12 +24,16 @@ window.addEventListener('load', (event) => {
             tr.style.backgroundColor = window.getComputedStyle(testContent).getPropertyValue('background-color');
         });
 
-    setTimeout(() => {
-        Array
-            .from(document.querySelectorAll('div[data-frame]'))
-            .map(div => div.closest('tr'))
-            .forEach(tr => tr.onclick = () => frameClicked(tr));
-    }, 500);
+    const classListObserver = new MutationObserver((mutations) => mutations
+        .filter(mutation => mutation.attributeName === 'class')
+        .filter(mutation => mutation.target.classList.contains('active'))
+        .forEach(mutation => frameClicked()));
+
+    document
+        .querySelectorAll('li.test-item')
+        .forEach(li => classListObserver.observe(li, { attributes: true }));
+
+    frameClicked();
 });
 
 function syncVideoWithStep(event) {
@@ -39,7 +48,12 @@ function syncVideoWithStep(event) {
 
     const videoTable = video.closest('table');
     const videoTr = video.closest('tr');
-    const currentFrameTr = videoTable.querySelector(`div[data-frame="${frameNumber}"]`).closest('tr');
+
+    const currentFrameDiv = videoTable.querySelector(`div[data-frame="${frameNumber}"]`);
+
+    if (!currentFrameDiv) {
+        return;
+    }
 
     Array
         .from(videoTable.querySelectorAll('tr'))
@@ -49,9 +63,12 @@ function syncVideoWithStep(event) {
             tr.classList.remove('highlighted', 'no-more-darkened');
         });
 
+    const currentFrameTr = currentFrameDiv.closest('tr');
+    const block = currentFrameTr.getBoundingClientRect().top < videoTr.getBoundingClientRect().height ? 'center' : 'nearest';
+
+    currentFrameTr.scrollIntoView({ block: block });
     currentFrameTr.classList.remove('darkened');
     currentFrameTr.classList.add('highlighted');
-    currentFrameTr.scrollIntoView({ block: 'center' });
 }
 
 function videoPaused(event) {

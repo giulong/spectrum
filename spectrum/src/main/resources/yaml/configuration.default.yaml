@@ -474,10 +474,6 @@ faker:
 
 # Internal events consumers. Cannot be removed, modified, nor added from client side configuration*.yaml, as lists' elements are appended when merging yaml files. You can add yours
 eventsConsumers:
-  - videoReset: # We need to reset the video frame count before each test
-      events:
-        - reason: before
-          tags: [ test, dynamicTest ]
   - extentTest: # We need to add an entry to the Extent Report once each test is done
       events:
         - reason: after

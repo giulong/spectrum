@@ -190,7 +190,7 @@ class SpectrumEntityTest {
         addScreenshotToReportStubs();
 
         when(configuration.getVideo()).thenReturn(video);
-        when(video.getFrameNumberFor(MANUAL)).thenReturn(frameNumber);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
         when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(msg));
@@ -204,7 +204,7 @@ class SpectrumEntityTest {
         addScreenshotToReportStubs();
 
         when(configuration.getVideo()).thenReturn(video);
-        when(video.getFrameNumberFor(MANUAL)).thenReturn(frameNumber);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
         when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(msg));
@@ -218,7 +218,7 @@ class SpectrumEntityTest {
         addScreenshotToReportStubs();
 
         when(configuration.getVideo()).thenReturn(video);
-        when(video.getFrameNumberFor(MANUAL)).thenReturn(frameNumber);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
         when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotFail(msg));
@@ -237,7 +237,7 @@ class SpectrumEntityTest {
         when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
-        when(video.getFrameNumberFor(MANUAL)).thenReturn(frameNumber);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
         when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
 
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});

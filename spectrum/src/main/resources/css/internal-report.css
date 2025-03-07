@@ -2,7 +2,7 @@
     margin-bottom: 5px;
 }
 
-.video-wrapper {
+.video-wrapper, .video-wrapper * {
     position: sticky;
     top: 0;
     z-index: 100;
@@ -12,22 +12,19 @@
 tr:has(div[data-frame]):hover:not(.darkened) {
     cursor: pointer;
     background: lightslategray;
-    transition: all .1s;
+    box-shadow: -2px 0 0 0 red;
 }
 
 .darkened {
     filter: brightness(25%) blur(2px);
-    transition: all .1s;
 }
 
 .no-more-darkened {
     filter: brightness(100%) blur(0);
-    transition: all .1s;
 }
 
 .highlighted {
-    border-left: 2px solid red;
-    transition: all .1s;
+    box-shadow: -2px 0 0 0 red;
 }
 
 div:has(> div > img[data-featherlight]) {
