@@ -37,8 +37,8 @@ video:
   skipDuplicateFrames: true # If true, consecutive duplicate frames are not included in the generated video
   extentTest: # Properties of the video tag inside the extent report
     attach: true # by default, the video (if recorded) is attached to the extent report
-    width: 320 # width of the video in the extent report
-    height: 240 # height of the video in the extent report
+    width: auto # width of the video in the extent report. Check https://developer.mozilla.org/en-US/docs/Web/CSS/width
+    height: 240 # height of the video in the extent report. Check https://developer.mozilla.org/en-US/docs/Web/CSS/height
 
 # Execution summary
 summary:

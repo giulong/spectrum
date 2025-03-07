@@ -122,9 +122,9 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final String testId, final Path path) {
-        final int width = videoExtentTest.getWidth();
-        final int height = videoExtentTest.getHeight();
-        final String videoTag = "<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\" " +
+        final String width = videoExtentTest.getWidth();
+        final String height = videoExtentTest.getHeight();
+        final String videoTag = "<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
                 "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\"" +
                 "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>";
 

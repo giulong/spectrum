@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils.video;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.types.TestData;
 import lombok.Generated;
 import lombok.Getter;
@@ -65,12 +66,14 @@ public class Video {
         @SuppressWarnings("unused")
         private boolean attach;
 
-        @JsonPropertyDescription("width of the video in the extent report")
+        @JsonPropertyDescription("width of the video in the extent report. Check https://developer.mozilla.org/en-US/docs/Web/CSS/width")
+        @JsonSchemaTypes({String.class, int.class})
         @SuppressWarnings("unused")
-        private int width;
+        private String width;
 
-        @JsonPropertyDescription("height of the video in the extent report")
+        @JsonPropertyDescription("height of the video in the extent report. Check https://developer.mozilla.org/en-US/docs/Web/CSS/height")
+        @JsonSchemaTypes({String.class, int.class})
         @SuppressWarnings("unused")
-        private int height;
+        private String height;
     }
 }

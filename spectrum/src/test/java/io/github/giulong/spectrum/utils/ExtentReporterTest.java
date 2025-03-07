@@ -482,8 +482,8 @@ class ExtentReporterTest {
     @DisplayName("attachVideo should add the video in the provided extent test")
     void attachVideo() {
         final String testId = "testId";
-        final int width = 123;
-        final int height = 456;
+        final String width = "width";
+        final String height = "height";
 
         when(videoExtentTest.getWidth()).thenReturn(width);
         when(videoExtentTest.getHeight()).thenReturn(height);
@@ -491,7 +491,7 @@ class ExtentReporterTest {
         extentReporter.attachVideo(extentTest, videoExtentTest, testId, path);
 
         verify(extentTest).info(String.format(
-                "<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\" " +
+                "<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
                         "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\"" +
                         "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>"
                 , testId, width, height, path));
