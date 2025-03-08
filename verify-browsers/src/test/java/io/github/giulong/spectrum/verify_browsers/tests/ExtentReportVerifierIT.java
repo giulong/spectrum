@@ -6,6 +6,7 @@ import io.github.giulong.spectrum.verify_browsers.pages.ExtentReportPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -17,12 +18,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 
-@SuppressWarnings("unused")
 class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
     private static final String VIDEO_PATTERN = "data:video/mp4;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";
     private static final String IMAGE_PATTERN = "data:image/png;base64,(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?";
+    private static final String BASE_PATH = String.format("file:///%s/it/target/spectrum/", Path.of(System.getProperty("user.dir")).getParent());
 
+    @SuppressWarnings("unused")
     private ExtentReportPage extentReportPage;
 
     private void commonChecksFor(final String url) {
@@ -114,22 +116,47 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         final List<String> sortedTest = new ArrayList<>(originalTests).stream().sorted().toList();
         assertEquals(originalTests, sortedTest);
+
+        // video data frames of Checkbox page testWithNoDisplayName()
+        assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", textsOfVisibleElementIn(extentReportPage.getDataFrames0()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? false", textsOfVisibleElementIn(extentReportPage.getDataFrames1()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", textsOfVisibleElementIn(extentReportPage.getDataFrames2()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", textsOfVisibleElementIn(extentReportPage.getDataFrames3()));
+        assertEquals("After checking the first checkbox", textsOfVisibleElementIn(extentReportPage.getDataFrames4()));
+
+        // first few video data frames of Dynamic elements navigation to prove auto-wait helps a lot
+        extentReportPage.getDynamicItNavigationToProveAutoWaitHelpsALot().click();
+        assertEquals("Element id: loading is displayed? true", textsOfVisibleElementIn(extentReportPage.getDataFrames0()));
+        assertEquals("Tag name of id: finish is div", textsOfVisibleElementIn(extentReportPage.getDataFrames1()));
+        assertEquals("Text of id: finish is 'Hello World!'", textsOfVisibleElementIn(extentReportPage.getDataFrames2()));
+        assertEquals("Element id: loading is displayed? false", textsOfVisibleElementIn(extentReportPage.getDataFrames3()));
+        assertEquals("Element id: loading is displayed? true", textsOfVisibleElementIn(extentReportPage.getDataFrames4()));
+        assertEquals("Tag name of id: finish is div", textsOfVisibleElementIn(extentReportPage.getDataFrames5()));
+        assertEquals("Text of id: finish is 'Hello World!'", textsOfVisibleElementIn(extentReportPage.getDataFrames6()));
+        assertEquals("Element id: loading is displayed? false", textsOfVisibleElementIn(extentReportPage.getDataFrames7()));
+
+        // video data frames of JavascriptIT testWithNoDisplayName()
+        extentReportPage.getJavascriptItTestWithNoDisplayName().click();
+        assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", textsOfVisibleElementIn(extentReportPage.getDataFrames0()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is displayed? true", textsOfVisibleElementIn(extentReportPage.getDataFrames1()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is displayed? true", textsOfVisibleElementIn(extentReportPage.getDataFrames2()));
+        assertEquals("After checking the first checkbox", textsOfVisibleElementIn(extentReportPage.getDataFrames3()));
     }
 
     @Test
     @DisplayName("should check the report")
     void report() {
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report-chrome/report-chrome.html", Path.of(System.getProperty("user.dir")).getParent()));
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report-firefox/report-firefox.html", Path.of(System.getProperty("user.dir")).getParent()));
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/reports/report-edge/report-edge.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(BASE_PATH + "reports/report-chrome/report-chrome.html");
+        commonChecksFor(BASE_PATH + "reports/report-firefox/report-firefox.html");
+        commonChecksFor(BASE_PATH + "reports/report-edge/report-edge.html");
     }
 
     @Test
     @DisplayName("should check the inline report")
     void inlineReport() {
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report-chrome.html", Path.of(System.getProperty("user.dir")).getParent()));
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report-firefox.html", Path.of(System.getProperty("user.dir")).getParent()));
-        commonChecksFor(String.format("file:///%s/it/target/spectrum/inline-reports/report-edge.html", Path.of(System.getProperty("user.dir")).getParent()));
+        commonChecksFor(BASE_PATH + "inline-reports/report-chrome.html");
+        commonChecksFor(BASE_PATH + "inline-reports/report-firefox.html");
+        commonChecksFor(BASE_PATH + "inline-reports/report-edge.html");
 
         assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("src")), matchesPattern(VIDEO_PATTERN));
         extentReportPage
@@ -141,10 +168,20 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
     }
 
     private long countTestsWithStatus(final String status) {
-        return extentReportPage.getTestViewTests()
+        return extentReportPage
+                .getTestViewTests()
                 .stream()
                 .map(webElement -> webElement.getDomAttribute("status"))
                 .filter(status::equals)
                 .count();
+    }
+
+    private String textsOfVisibleElementIn(final List<WebElement> webElements) {
+        return webElements
+                .stream()
+                .filter(WebElement::isDisplayed)
+                .map(WebElement::getText)
+                .findFirst()
+                .orElseThrow();
     }
 }
