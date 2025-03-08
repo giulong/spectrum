@@ -18,6 +18,6 @@ public class ExtentTestConsumer extends EventsConsumer {
         final Status status = event.getResult().getStatus();
 
         extentReporter.logTestEnd(event.getContext(), status);
-        log.info(String.format("END execution of '%s -> %s': %s", event.getPrimaryId(), event.getSecondaryId(), status.name()));
+        log.info("END execution of '{} -> {}': {}", event.getPrimaryId(), event.getSecondaryId(), status.name());
     }
 }

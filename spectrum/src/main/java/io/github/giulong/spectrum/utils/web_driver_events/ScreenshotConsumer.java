@@ -26,11 +26,12 @@ public class ScreenshotConsumer extends WebDriverEventConsumer {
     @Override
     public void accept(final WebDriverEvent webDriverEvent) {
         final Frame frame = webDriverEvent.getFrame();
-        final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", frame.getValue(), randomUUID()));
 
-        if (video.shouldRecord(screenshotPath.getFileName().toString())) {
+        if (video.shouldRecord(frame)) {
+            final String frameValue = frame.getValue();
+            final Path screenshotPath = testData.getScreenshotFolderPath().resolve(String.format("%s-%s.png", frameValue, randomUUID()));
             final Path path = Files.write(screenshotPath, driver.getScreenshotAs(BYTES));
-            log.trace("Recording frame {} at {}", frame, path);
+            log.trace("Recording frame {} for event '{}' at {}", frameValue, webDriverEvent.getMessage(), path);
 
             return;
         }

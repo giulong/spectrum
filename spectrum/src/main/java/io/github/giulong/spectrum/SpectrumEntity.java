@@ -4,13 +4,10 @@ import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
+import io.github.giulong.spectrum.utils.*;
 import net.datafaker.Faker;
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
-import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
@@ -40,6 +37,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     public static final String HASH_ALGORITHM = "SHA-256";
 
     private final FileUtils fileUtils = FileUtils.getInstance();
+    private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
 
     @Shared
     protected static Configuration configuration;
@@ -167,10 +165,19 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     public Media addScreenshotToReport(final String msg, final Status status) {
         final String fileName = String.format("%s-%s-%s.png", MANUAL.getValue(), statefulExtentTest.getDisplayName(), randomUUID());
         final Path screenshotPath = testData.getScreenshotFolderPath().resolve(fileName);
+
         Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));
 
         final Media screenshot = createScreenCaptureFromPath(screenshotPath.toString()).build();
-        statefulExtentTest.getCurrentNode().log(status, msg == null ? null : "<div class=\"screenshot-container\">" + msg + "</div>", screenshot);
+
+        if (msg == null) {
+            statefulExtentTest.getCurrentNode().log(status, (String) null, screenshot);
+        } else {
+            final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
+            final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message");
+
+            statefulExtentTest.getCurrentNode().log(status, tag, screenshot);
+        }
 
         return screenshot;
     }

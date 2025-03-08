@@ -37,8 +37,8 @@ video:
   skipDuplicateFrames: true # If true, consecutive duplicate frames are not included in the generated video
   extentTest: # Properties of the video tag inside the extent report
     attach: true # by default, the video (if recorded) is attached to the extent report
-    width: 320 # width of the video in the extent report
-    height: 240 # height of the video in the extent report
+    width: auto # width of the video in the extent report. Check https://developer.mozilla.org/en-US/docs/Web/CSS/width
+    height: 240 # height of the video in the extent report. Check https://developer.mozilla.org/en-US/docs/Web/CSS/height
 
 # Execution summary
 summary:
@@ -59,7 +59,7 @@ extent:
   inlineReportFolder: target/spectrum/inline-reports # Where to generate the inline report
   openAtEnd: false # Set to true if you want the report to be automatically opened when the suite execution is finished
   css: css/report.css # Path to the custom css to apply. Relative to the resources folder
-  js: js/report.js
+  js: js/report.js # Path to the custom js to apply. Relative to the resources folder
   sort: # How to sort tests in the produced report
     noOp: { } # By default, no sort is applied
 

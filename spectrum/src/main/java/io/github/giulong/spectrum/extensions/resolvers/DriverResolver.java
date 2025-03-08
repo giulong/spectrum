@@ -7,6 +7,7 @@ import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.web_driver_events.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -56,6 +57,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final TestData testData = store.get(TEST_DATA, TestData.class);
         final Configuration.Application.Highlight highlight = configuration.getApplication().getHighlight();
         final Pattern locatorPattern = Pattern.compile(configuration.getExtent().getLocatorRegex());
+        final Video video = configuration.getVideo();
         final LogConsumer logConsumer = LogConsumer
                 .builder()
                 .enabled(true)
@@ -65,6 +67,8 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .builder()
                 .enabled(true)
                 .statefulExtentTest(statefulExtentTest)
+                .testData(testData)
+                .video(video)
                 .build();
 
         final ScreenshotConsumer screenshotConsumer = ScreenshotConsumer
@@ -72,7 +76,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .enabled(true)
                 .driver((TakesScreenshot) driver)
                 .testData(testData)
-                .video(configuration.getVideo())
+                .video(video)
                 .build();
 
         final TestStepBuilderConsumer testStepBuilderConsumer = TestStepBuilderConsumer
