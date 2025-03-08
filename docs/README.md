@@ -1513,14 +1513,20 @@ drivers:
 
 # Automatic Execution Video Generation
 
-It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
+Spectrum can generate the video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
 so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 for all the available parameters along with their details.
 
-The video is attached to the extent report as the very first element:
+Once enabled, the video is attached to the extent report as the very first element:
 
 ![Video Extent Report](assets/images/video-extent-report.jpg)
+
+The video is sticky, meaning when you scroll down on the test steps it remains visible at the top of the page.
+Moreover, the video is synced with the steps: when you play it, the step currently displayed in the video is highlighted.
+You can also click on the steps and the video is sought to the corresponding point, as you can see in the video below:
+
+<video controls="" width="100%" src="assets/miscellanea/frame-synced-with-video.mov" type="video/mp4"></video>
 
 To be precise, the video is generated from screenshots taken during the execution.
 You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
