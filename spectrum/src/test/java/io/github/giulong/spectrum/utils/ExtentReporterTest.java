@@ -239,7 +239,9 @@ class ExtentReporterTest {
         final String theme = "DARK";
         final String timeStampFormat = "timeStampFormat";
         final String css = "css";
+        final String internalCss = "internalCss";
         final String js = "js";
+        final String internalJs = "internalJs";
         final String extentCss = "extentCss";
         final String extentJs = "extentJs";
         final String absolutePathToString = "absolute\\Path\\To\\String";
@@ -257,17 +259,19 @@ class ExtentReporterTest {
         when(extent.getTheme()).thenReturn(theme);
         when(extent.getTimeStampFormat()).thenReturn(timeStampFormat);
         when(extent.getCss()).thenReturn(extentCss);
+        when(fileUtils.read("css/internal-report.css")).thenReturn(internalCss);
         when(fileUtils.read(extentCss)).thenReturn(css);
         when(extent.getJs()).thenReturn(extentJs);
         when(fileUtils.read(extentJs)).thenReturn(js);
+        when(fileUtils.read("js/internal-report.js")).thenReturn(internalJs);
 
         extentSparkReporterConfigMockedStatic.when(ExtentSparkReporterConfig::builder).thenReturn(extentSparkReporterConfigBuilder);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).documentTitle(documentTitle);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).reportName(reportName);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).theme(DARK);
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).timeStampFormat(timeStampFormat);
-        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).css(css);
-        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).js(js);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).css(internalCss + css);
+        doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).js(internalJs + js);
         doReturn(extentSparkReporterConfig).when(extentSparkReporterConfigBuilder).build();
 
         MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
@@ -478,15 +482,19 @@ class ExtentReporterTest {
     @DisplayName("attachVideo should add the video in the provided extent test")
     void attachVideo() {
         final String testId = "testId";
-        final int width = 123;
-        final int height = 456;
+        final String width = "width";
+        final String height = "height";
 
         when(videoExtentTest.getWidth()).thenReturn(width);
         when(videoExtentTest.getHeight()).thenReturn(height);
 
         extentReporter.attachVideo(extentTest, videoExtentTest, testId, path);
 
-        verify(extentTest).info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", testId, width, height, path));
+        verify(extentTest).info(String.format(
+                "<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
+                        "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\"" +
+                        "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>"
+                , testId, width, height, path));
     }
 
     @Test

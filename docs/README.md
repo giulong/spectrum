@@ -1513,14 +1513,20 @@ drivers:
 
 # Automatic Execution Video Generation
 
-It's possible to have Spectrum generate a video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
+Spectrum can generate the video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
 so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 for all the available parameters along with their details.
 
-The video is attached to the extent report as the very first element:
+Once enabled, the video is attached to the extent report as the very first element:
 
 ![Video Extent Report](assets/images/video-extent-report.jpg)
+
+The video is sticky, meaning when you scroll down on the test steps it remains visible at the top of the page.
+Moreover, the video is synced with the steps: when you play it, the step currently displayed in the video is highlighted.
+You can also click on the steps and the video is sought to the corresponding point, as you can see in the video below:
+
+<video controls="" width="100%" src="assets/miscellanea/frame-synced-with-video.mov" type="video/mp4"></video>
 
 To be precise, the video is generated from screenshots taken during the execution.
 You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
@@ -1647,8 +1653,21 @@ You can see an example report here:
 ![Extent Report](assets/images/extent-screenshot.png)
 
 > 💡 **Tip**<br/>
-> You can provide your own *look and feel* by putting additional css rules in the `src/test/resources/css/report.css` file.
-> Spectrum will automatically load and apply it to the Extent Report.
+> You can provide your own *look and feel* by putting:
+> * additional css rules in the `src/test/resources/css/report.css` file
+> * additional css rules in the `src/test/resources/js/report.js` file
+>
+> Spectrum will automatically load and apply them to the Extent Report. You can also customise the folder and name of the files above
+> by changing the `extent.css` and `extent.js` keys in your `configuration*.yaml`. This is indeed the default in the internal
+> [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+extent:
+  css: css/report.css # Path to the custom css to apply. Relative to the resources folder
+  js: js/report.js # Path to the custom js to apply. Relative to the resources folder
+```
 
 Upon a test failure, Spectrum adds a screenshot to the report automatically.
 

@@ -40,21 +40,23 @@
 
 # About
 
-Spectrum is a **e2e test automation framework** that leverages **JUnit 5** and **Selenium 4** to simplify tests development providing these features automatically:
+Spectrum is an **e2e test automation framework** that leverages **JUnit 5** and **Selenium 4** to provide these features automatically:
 
-* **Driver** instantiation
-* **Html report** generation
-* **Execution video** generation
+* **Driver** management
+* **Auto-waiting** before interacting with elements, to **highly reduce flakiness**
+* **Html report** generation with the **execution video**
 * **Coverage report** generation by reading a **testbook**
 * **Mail/Slack notifications** with reports as attachments
-
-Spectrum manages all the boilerplate code to get these features and many more, allowing you to focus on test logic.
-
-* **Auto-waits** before interacting with elements, to **highly reduce flakiness**
 * It is fully configurable via a **declarative yaml file**
 * It provides **out-of-the-box defaults** to let you run tests with no additional configuration
-* supports **browsers automation** via Selenium
-* supports **mobile and desktop applications automation** via Appium
+* It supports **browsers automation** via Selenium
+* It supports **mobile and desktop applications automation** via Appium
+* It generates **several additional reports** that are **fully customisable**
+
+Spectrum manages all the boilerplate code, allowing you to focus on test logic:
+you just need to write a JUnit test using the native Selenium API as you would do in a vanilla Selenium test,
+and Spectrum will enrich your suite transparently.
+Be sure to check the [full documentation](https://giulong.github.io/spectrum/) to see all the available features.
 
 # Getting Started
 
@@ -73,12 +75,14 @@ https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e
 2. Run the `LoginFormIT` demo test.
 3. Check the report generated in `target/spectrum/reports/spectrum-report-<TIMESTAMP>/spectrum-report-<TIMESTAMP>.html`.
 
-> ⚠️ Tests run on Chrome by default. You can change this running with:<br/>
+> ⚠️ Tests run on Chrome by default. As shown in the video above, you can change this with:<br/>
 > `-Dspectrum.driver=firefox`, `-Dspectrum.driver=edge` or `-Dspectrum.driver=safari`
+
+If you like Spectrum, please consider giving it a GitHub Star ⭐
 
 # Usage
 
-If you'd rather add Spectrum manually to an existing project, you just need to add its dependency.
+If you'd rather add Spectrum manually to your project, you just need to add its dependency:
 
 ## Maven
 
@@ -99,25 +103,20 @@ dependencies {
 }
 ```
 
-Here's a quick overview of the project created by the archetype, along with the generated report:<br/><br/>
+Here's an overview of the project created by the archetype, along with the generated report and video:<br/><br/>
 <img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it.png" alt="login-form"/>
 &nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it-extent-report.png" alt="report"/>
 
-And here's the generated video:
-
 https://github.com/giulong/spectrum/assets/27963644/df6b801e-91ca-415b-b510-a45b7392de20
 
-Additionally, you can configure Spectrum to automatically produce summary and coverage reports like these:<br/><br/>
+You can also configure Spectrum to produce additional reports, such as summary and coverage:<br/><br/>
 <img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>
 &nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
 
-For all the available reports, how to customise them, and many more, please refer to the [full documentation](https://giulong.github.io/spectrum/).
-
 # Contributing
 
-Contributions to Spectrum are welcome! If you're interested, please check out the [CONTRIBUTING.md](CONTRIBUTING.md).
-
-If you're using Spectrum, please consider giving it a GitHub Star ⭐
+Contributions to Spectrum are welcome! If you're interested, please check out the [CONTRIBUTING.md](CONTRIBUTING.md)
+and the [open issues](https://github.com/giulong/spectrum/issues).
 
 # Contacts
 

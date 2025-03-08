@@ -60,6 +60,8 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         final Configuration.Extent extent = configuration.getExtent();
         final String reportPath = getReportPathFrom(extent).toString().replace("\\", "/");
         final String reportName = extent.getReportName();
+        final String css = fileUtils.read("css/internal-report.css") + fileUtils.read(extent.getCss());
+        final String js = fileUtils.read("js/internal-report.js") + fileUtils.read(extent.getJs());
 
         extentReports = new ExtentReports();
         extentReports.attachReporter(new ExtentSparkReporter(reportPath)
@@ -69,8 +71,8 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
                         .reportName(reportName)
                         .theme(Theme.valueOf(extent.getTheme()))
                         .timeStampFormat(extent.getTimeStampFormat())
-                        .css(fileUtils.read(extent.getCss()))
-                        .js(fileUtils.read(extent.getJs()))
+                        .css(css)
+                        .js(js)
                         .build()));
 
         log.info("After the execution, you'll find the '{}' report at file:///{}", reportName, reportPath);
@@ -120,10 +122,13 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     }
 
     public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final String testId, final Path path) {
-        final int width = videoExtentTest.getWidth();
-        final int height = videoExtentTest.getHeight();
+        final String width = videoExtentTest.getWidth();
+        final String height = videoExtentTest.getHeight();
+        final String videoTag = "<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
+                "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\"" +
+                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>";
 
-        extentTest.info(String.format("<video id=\"video-%s\" controls width=\"%d\" height=\"%d\" src=\"%s\" type=\"video/mp4\"/>", testId, width, height, path));
+        extentTest.info(String.format(videoTag, testId, width, height, path));
     }
 
     public void logTestStartOf(final ExtentTest extentTest) {

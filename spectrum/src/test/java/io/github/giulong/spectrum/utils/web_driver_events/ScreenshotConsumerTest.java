@@ -39,9 +39,6 @@ class ScreenshotConsumerTest {
     private Path resolvedPath;
 
     @Mock
-    private Path file;
-
-    @Mock
     private TakesScreenshot driver;
 
     @Mock
@@ -71,8 +68,7 @@ class ScreenshotConsumerTest {
     void accept() {
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
         when(screenshotFolderPath.resolve(stringArgumentCaptor.capture())).thenReturn(resolvedPath);
-        when(resolvedPath.getFileName()).thenReturn(file);
-        when(video.shouldRecord(eq("file"))).thenReturn(true);
+        when(video.shouldRecord(eq(AUTO_AFTER))).thenReturn(true);
         when(driver.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
         when(webDriverEvent.getFrame()).thenReturn(AUTO_AFTER);
 
@@ -86,10 +82,7 @@ class ScreenshotConsumerTest {
     @Test
     @DisplayName("accept should not record the screenshot")
     void acceptShouldNotRecord() {
-        when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
-        when(screenshotFolderPath.resolve(stringArgumentCaptor.capture())).thenReturn(resolvedPath);
-        when(resolvedPath.getFileName()).thenReturn(file);
-        when(video.shouldRecord(eq("file"))).thenReturn(false);
+        when(video.shouldRecord(eq(AUTO_AFTER))).thenReturn(false);
         when(webDriverEvent.getFrame()).thenReturn(AUTO_AFTER);
 
         screenshotConsumer.accept(webDriverEvent);

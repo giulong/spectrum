@@ -9,12 +9,16 @@ import java.nio.file.Path;
 @Getter
 @Builder
 public class TestData {
+
     private String className;
     private String methodName;
     private String classDisplayName;
     private String testId;
     private Path screenshotFolderPath;
     private Path videoPath;
+
+    @Setter
+    private int frameNumber;
 
     @Setter
     private Path dynamicVideoPath;

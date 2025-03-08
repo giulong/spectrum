@@ -2,11 +2,15 @@ package io.github.giulong.spectrum.utils.video;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.types.TestData;
 import lombok.Generated;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+@Slf4j
 @Getter
 public class Video {
 
@@ -38,11 +42,20 @@ public class Video {
         return frames.isEmpty();
     }
 
-    public boolean shouldRecord(final String frameName) {
-        return frames
-                .stream()
-                .map(Frame::getValue)
-                .anyMatch(frameName::startsWith);
+    public boolean shouldRecord(final Frame frame) {
+        return frames.contains(frame);
+    }
+
+    public int getAndIncrementFrameNumberFor(final TestData testData, final Frame frame) {
+        final int frameNumber = testData.getFrameNumber();
+        log.trace("Current frame number: {}", frameNumber);
+
+        if (shouldRecord(frame)) {
+            testData.setFrameNumber(frameNumber + 1);
+            return frameNumber;
+        }
+
+        return -1;
     }
 
     @Getter
@@ -53,12 +66,14 @@ public class Video {
         @SuppressWarnings("unused")
         private boolean attach;
 
-        @JsonPropertyDescription("width of the video in the extent report")
+        @JsonPropertyDescription("width of the video in the extent report. Check https://developer.mozilla.org/en-US/docs/Web/CSS/width")
+        @JsonSchemaTypes({String.class, int.class})
         @SuppressWarnings("unused")
-        private int width;
+        private String width;
 
-        @JsonPropertyDescription("height of the video in the extent report")
+        @JsonPropertyDescription("height of the video in the extent report. Check https://developer.mozilla.org/en-US/docs/Web/CSS/height")
+        @JsonSchemaTypes({String.class, int.class})
         @SuppressWarnings("unused")
-        private int height;
+        private String height;
     }
 }
