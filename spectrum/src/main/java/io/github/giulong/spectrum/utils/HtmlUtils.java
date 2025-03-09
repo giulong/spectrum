@@ -29,8 +29,16 @@ public class HtmlUtils {
         return inlineVideosOf(inlineImagesOf(html));
     }
 
+    public String buildFrameTagFor(final int number, final String content) {
+        return buildFrameTagFor(number, content, "");
+    }
+
+    public String buildFrameTagFor(final int number, final String content, final String classes) {
+        return String.format("<div class=\"%s\" data-frame=\"%s\">%s</div>", classes, number, content);
+    }
+
     @SneakyThrows
-    String inlineImagesOf(final String html) {
+    public String inlineImagesOf(final String html) {
         final Matcher matcher = IMAGE_TAG.matcher(html);
         String inlineHtml = html;
 
@@ -50,7 +58,7 @@ public class HtmlUtils {
     }
 
     @SneakyThrows
-    String inlineVideosOf(final String html) {
+    public String inlineVideosOf(final String html) {
         final Matcher matcher = VIDEO_SRC.matcher(html);
         String inlineHtml = html;
 

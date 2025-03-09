@@ -6,10 +6,13 @@ import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.video.Video;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -54,6 +57,10 @@ class SpectrumEntityTest {
     private static final String UUID_REGEX = MANUAL.getValue() + "-" + DISPLAY_NAME + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
     private static final List<Path> REPORTS_FOLDERS = new ArrayList<>();
 
+    private final String msg = "msg";
+    private final String tag = "tag";
+    private final int frameNumber = 123;
+
     @Mock
     private WebDriverWait downloadWait;
 
@@ -82,6 +89,12 @@ class SpectrumEntityTest {
     private By by;
 
     @Mock
+    private Video video;
+
+    @Mock
+    private HtmlUtils htmlUtils;
+
+    @Mock
     private TestData testData;
 
     @Captor
@@ -89,6 +102,12 @@ class SpectrumEntityTest {
 
     @InjectMocks
     private DummySpectrumEntity<?> spectrumEntity;
+
+    @BeforeEach
+    void beforeEach() {
+        Reflections.setField("configuration", spectrumEntity, configuration);
+        Reflections.setField("htmlUtils", spectrumEntity, htmlUtils);
+    }
 
     @AfterAll
     public static void afterAll() {
@@ -168,50 +187,61 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("infoWithScreenshot should delegate to addScreenshotToReport")
     void infoWithScreenshot() {
-        final String msg = "msg";
         addScreenshotToReportStubs();
+
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(msg));
 
-        verify(extentTest).log(eq(INFO), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
+        verify(extentTest).log(eq(INFO), eq(tag), any());
     }
 
     @Test
     @DisplayName("warningWithScreenshot should delegate to addScreenshotToReport")
     void warningWithScreenshot() {
-        final String msg = "msg";
         addScreenshotToReportStubs();
+
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(msg));
 
-        verify(extentTest).log(eq(WARNING), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
+        verify(extentTest).log(eq(WARNING), eq(tag), any());
     }
 
     @Test
     @DisplayName("failWithScreenshot should delegate to addScreenshotToReport")
     void failWithScreenshot() {
-        final String msg = "msg";
         addScreenshotToReportStubs();
+
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotFail(msg));
 
-        verify(extentTest).log(eq(FAIL), eq("<div class=\"screenshot-container\">" + msg + "</div>"), any());
+        verify(extentTest).log(eq(FAIL), eq(tag), any());
     }
 
     @Test
     @DisplayName("addScreenshotToReport should fall back to taking a screenshot of the visible page if an exception is thrown")
     void addScreenshotToReport() throws IOException {
+        final Status status = INFO;
         final Path reportsFolder = Files.createTempDirectory("reportsFolder");
         REPORTS_FOLDERS.add(reportsFolder);
 
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
         when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
 
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
-        final String msg = "msg";
-        final Status status = INFO;
         final Media screenShot = spectrumEntity.addScreenshotToReport(msg, status);
 
         assertNotNull(screenShot);
@@ -222,7 +252,7 @@ class SpectrumEntityTest {
         assertTrue(Files.exists(screenshotPath));
         assertEquals(reportsFolder, screenshotPath.getParent());
         assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
-        verify(extentTest).log(status, "<div class=\"screenshot-container\">" + msg + "</div>", screenShot);
+        verify(extentTest).log(status, tag, screenShot);
     }
 
     @DisplayName("deleteDownloadsFolder should delete and recreate the downloads folder")

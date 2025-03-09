@@ -1,0 +1,39 @@
+.screenshot-message {
+    margin-bottom: 5px;
+}
+
+.video-wrapper, .video-wrapper * {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    filter: brightness(115%);
+}
+
+tr:has(div[data-frame]):hover:not(.darkened) {
+    cursor: pointer;
+    background: lightslategray;
+    box-shadow: -2px 0 0 0 red;
+}
+
+.darkened {
+    filter: brightness(25%) blur(2px);
+}
+
+.no-more-darkened {
+    filter: brightness(100%) blur(0);
+}
+
+.highlighted {
+    box-shadow: -2px 0 0 0 red;
+}
+
+div:has(> div > img[data-featherlight]) {
+    margin-bottom: 5px !important;
+}
+
+img[data-featherlight] {
+    width: 30%;
+    height: 100%;
+    left: 100%;
+    padding: 0;
+}

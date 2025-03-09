@@ -103,11 +103,11 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(id = "dynamicit-navigation-to-prove-auto-wait-helps-a-lot-test-name")
     private WebElement dynamicItNavigationToProveAutoWaitHelpsALotTestName;
 
-    @FindBy(className = "screenshot-container")
-    private List<WebElement> screenshotContainers;
+    @FindBy(id = "javascriptit-testwithnodisplayname()")
+    private WebElement javascriptItTestWithNoDisplayName;
 
-    @FindBy(className = "screenshot-container-test-name")
-    private List<WebElement> screenshotContainersTestName;
+    @FindBy(className = "screenshot-message")
+    private List<WebElement> screenshotMessages;
 
     @FindBy(id = "video-javascriptit-testinputfieldactions()")
     private WebElement videoJavascriptItTestInputFieldActions;
@@ -255,4 +255,28 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
 
     @FindBy(className = "inline")
     private List<WebElement> inlineImages;
+
+    @FindBy(css = "[data-frame='0']")
+    private List<WebElement> dataFrames0;
+
+    @FindBy(css = "[data-frame='1']")
+    private List<WebElement> dataFrames1;
+
+    @FindBy(css = "[data-frame='2']")
+    private List<WebElement> dataFrames2;
+
+    @FindBy(css = "[data-frame='3']")
+    private List<WebElement> dataFrames3;
+
+    @FindBy(css = "[data-frame='4']")
+    private List<WebElement> dataFrames4;
+
+    @FindBy(css = "[data-frame='5']")
+    private List<WebElement> dataFrames5;
+
+    @FindBy(css = "[data-frame='6']")
+    private List<WebElement> dataFrames6;
+
+    @FindBy(css = "[data-frame='7']")
+    private List<WebElement> dataFrames7;
 }

@@ -89,12 +89,14 @@ class DriverResolverTest {
     @Mock
     private Configuration.Drivers.Events events;
 
+    @SuppressWarnings("rawtypes")
     @Mock
     private EventsWebDriverListener.EventsWebDriverListenerBuilder eventsWebDriverListenerBuilder;
 
     @Mock
     private EventsWebDriverListener eventsWebDriverListener;
 
+    @SuppressWarnings("rawtypes")
     @Mock
     private AutoWaitWebDriverListener.AutoWaitWebDriverListenerBuilder autoWaitWebDriverListenerBuilder;
 
@@ -236,6 +238,8 @@ class DriverResolverTest {
         when(HtmlReportConsumer.builder()).thenReturn(htmlReportConsumerBuilder);
         when(htmlReportConsumerBuilder.enabled(true)).thenReturn(htmlReportConsumerBuilder);
         when(htmlReportConsumerBuilder.statefulExtentTest(statefulExtentTest)).thenReturn(htmlReportConsumerBuilder);
+        when(htmlReportConsumerBuilder.testData(testData)).thenReturn(htmlReportConsumerBuilder);
+        when(htmlReportConsumerBuilder.video(video)).thenReturn(htmlReportConsumerBuilder);
         when(htmlReportConsumerBuilder.build()).thenReturn(htmlReportConsumer);
 
         when(ScreenshotConsumer.builder()).thenReturn(screenshotConsumerBuilder);
