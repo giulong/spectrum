@@ -4,9 +4,10 @@
 [![CodeQL](https://github.com/giulong/spectrum/actions/workflows/codeql.yml/badge.svg)](https://github.com/giulong/spectrum/actions/workflows/codeql.yml)
 [![coverage](https://giulong.github.io/spectrum/badges/jacoco.svg)](https://giulong.github.io/spectrum/jacoco/)
 [![javadoc](https://javadoc.io/badge2/io.github.giulong/spectrum/javadoc.svg)](https://javadoc.io/doc/io.github.giulong/spectrum)
-[![badge-jdk](https://img.shields.io/badge/jdk-21-blue.svg)](https://jdk.java.net/21/)
+[![badge-jdk](https://img.shields.io/badge/jdk-21-blue.svg)](https://jdk.java.net/archive/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
+[![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/giulong/spectrum/develop)](https://github.com/giulong/spectrum/commits/develop/)
 
 <br />
 <img src="src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">

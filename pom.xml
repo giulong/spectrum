@@ -48,10 +48,10 @@
 
         <junit.version>5.12.0</junit.version>
         <jackson.version>2.18.3</jackson.version>
-        <simplejavamail.version>8.12.4</simplejavamail.version>
+        <simplejavamail.version>8.12.5</simplejavamail.version>
         <jsonschemagenerator.version>4.37.0</jsonschemagenerator.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <selenium.version>4.28.1</selenium.version>
+        <selenium.version>4.29.0</selenium.version>
     </properties>
 
     <profiles>
@@ -334,7 +334,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.21.3</version>
+                            <version>10.21.4</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
