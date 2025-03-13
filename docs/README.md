@@ -60,7 +60,7 @@ project:
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
-    <version>1.23.0</version>
+    <version>1.23.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -71,7 +71,7 @@ project:
 
 ```gradle
 dependencies {
-  implementation group: 'io.github.giulong', name: 'spectrum', version: '1.23.0'
+  implementation group: 'io.github.giulong', name: 'spectrum', version: '1.23.1'
 }
 ```
 
