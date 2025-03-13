@@ -23,6 +23,8 @@ drivers:
       - --proxy-server=${proxyHost}:${proxyPort} # proxyPort interpolated as string, numeric interpolation won't make sense here
       - --proxy-bypass-list=${proxyBypass}
   firefox:
+    capabilities:
+      moz:debuggerAddress: true # to use CDP, starting from Selenium 4.29.0 this was dropped in favor of BiDi
     args:
       - -headless
     preferences:
