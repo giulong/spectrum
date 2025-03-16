@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.enums.Result.DISABLED;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.Assertions.*;
@@ -238,7 +238,7 @@ class VideoConsumerTest {
 
         when(event.getContext()).thenReturn(context);
         when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
-        when(contextManager.get(context, DRIVER, WebDriver.class)).thenReturn(driver);
+        when(contextManager.get(context, ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
 
         awtSequenceEncoderMockedStatic.when(() -> AWTSequenceEncoder.createSequenceEncoder(videoFile, 1)).thenReturn(encoder);
         imageIOMockedStatic.when(() -> ImageIO.read(screenshot1)).thenReturn(bufferedImage);

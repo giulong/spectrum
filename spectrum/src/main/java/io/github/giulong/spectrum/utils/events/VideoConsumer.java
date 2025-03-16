@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.enums.Result.DISABLED;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.util.Comparator.comparingLong;
@@ -76,7 +76,7 @@ public class VideoConsumer extends EventsConsumer {
                 final URL noVideoPng = Objects.requireNonNull(classLoader.getResource("no-video.png"));
                 encoder.encodeImage(ImageIO.read(noVideoPng));
             } else {
-                final Dimension dimension = chooseDimensionFor(contextManager.get(context, DRIVER, WebDriver.class), video);
+                final Dimension dimension = chooseDimensionFor(contextManager.get(context, ORIGINAL_DRIVER, WebDriver.class), video);
 
                 for (File frame : frames) {
                     encoder.encodeImage(resize(ImageIO.read(frame), dimension));
