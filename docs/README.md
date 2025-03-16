@@ -1476,8 +1476,42 @@ Check the `drivers.events` node in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 to see the defaults.
 
+## Event Level
+
+The available values for the `level` property are: `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`. Let's check the default value of the click events:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  events:
+    beforeClick:
+      level: INFO
+      message: Clicking on <code>%1$s</code>
+    afterClick:
+      message: Clicked on <code>%1$s</code>
+```
+
+The configuration snippet above means that the `beforeClick` event is logged at `INFO` by default, while `afterClick` isn't logged at all.
+If you want to completely turn off the `beforeClick` event, you need to explicitly set it to null, which in yaml is done by not specifying any value:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  events:
+    beforeClick:
+      level:
+      message: Clicking on <code>%1$s</code>
+```
+
+## Event message
+
 The `message` property specifies what to add to logs and reports upon receiving the related event,
-and is affected by the `level` property (check the sections below).
+and is affected by the `level` property. Check the [Automatically Generated Reports](#automatically-generated-reports) section below.
+
+## Event wait
+
 On the other hand, `wait` is a standalone property, meaning it will be considered even if the related event won't be logged,
 and specifies how many milliseconds to wait before actually processing the related event.
 
