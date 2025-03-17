@@ -1476,8 +1476,42 @@ Check the `drivers.events` node in the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 to see the defaults.
 
+## Event Level
+
+The available values for the `level` property are: `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`. Let's check the default value of the click events:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  events:
+    beforeClick:
+      level: INFO
+      message: Clicking on <code>%1$s</code>
+    afterClick:
+      message: Clicked on <code>%1$s</code>
+```
+
+The configuration snippet above means that the `beforeClick` event is logged at `INFO` by default, while `afterClick` isn't logged at all.
+If you want to completely turn off the `beforeClick` event, you need to explicitly set it to null, which in yaml is done by not specifying any value:
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  events:
+    beforeClick:
+      level:
+      message: Clicking on <code>%1$s</code>
+```
+
+## Event message
+
 The `message` property specifies what to add to logs and reports upon receiving the related event,
-and is affected by the `level` property (check the sections below).
+and is affected by the `level` property. Check the [Automatically Generated Reports](#automatically-generated-reports) section below.
+
+## Event wait
+
 On the other hand, `wait` is a standalone property, meaning it will be considered even if the related event won't be logged,
 and specifies how many milliseconds to wait before actually processing the related event.
 
@@ -1508,98 +1542,6 @@ drivers:
     beforeClick:
       wait: 1000
 ```
-
----
-
-# Automatic Execution Video Generation
-
-Spectrum can generate the video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
-so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
-[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
-for all the available parameters along with their details.
-
-Once enabled, the video is attached to the extent report as the very first element:
-
-![Video Extent Report](assets/images/video-extent-report.jpg)
-
-The video is sticky, meaning when you scroll down on the test steps it remains visible at the top of the page.
-Moreover, the video is synced with the steps: when you play it, the step currently displayed in the video is highlighted.
-You can also click on the steps and the video is sought to the corresponding point, as you can see in the video below:
-
-<video controls="" width="100%" src="assets/miscellanea/frame-synced-with-video.mov" type="video/mp4"></video>
-
-To be precise, the video is generated from screenshots taken during the execution.
-You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
-
-| Frame      | Description                                                                                                                        |
-|------------|------------------------------------------------------------------------------------------------------------------------------------|
-| autoBefore | Screenshots taken **before** an event happening in the WebDriver                                                                   |
-| autoAfter  | Screenshots taken **after** an event happening in the WebDriver                                                                    |
-| manual     | Screenshots programmatically taken by you by invoking one of the [SpectrumEntity Service Methods](#spectrumentity-service-methods) |
-
-> ⚠️ **Auto screenshots**<br/>
-> Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
-> and the `drivers.events` settings. For example, if running with the default `INFO` log level and the configuration below,
-> no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
-
-{% include copyCode.html %}
-
-```yaml
-drivers:
-  events:
-    beforeClick:
-      level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
-      message: Clicking on %1$s
-```
-
-> 💡 **Tip**<br/>
-> Setting both `autoBefore` and `autoAfter` is likely to be useless. In this flow, screenshots at bullets 3 and 4 will be equal:
-> 1. screenshot: before click
-> 2. click event
-> 3. **&rarr; screenshot: after click**
-> 4. **&rarr; screenshot: before set text**
-> 5. set text in input field
-> 6. screenshot: after set text
->
-> There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
-> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard **consecutive** duplicate frames by default.
-> You can disable frame skipping by setting the `video.skipDuplicateFrames` to `false`.
-
-The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>`
-folder and attached to the Extent Report as well, where:
-
-* `extent.reportFolder` &rarr; `target/spectrum/reports` by default
-* `extent.fileName` &rarr; `spectrum-report-${timestamp}.html` by default
-* `CLASS NAME` &rarr; the test class' simple name
-* `TEST NAME` &rarr; the test method's name
-
-> 💡 **Video Configuration Example**<br/>
-> Here's a quick example snippet. Remember you just need to provide fields with a value different from the corresponding one in the
-> internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
-
-{% include copyCode.html %}
-
-```yaml
-video:
-  frames:
-    - autoAfter
-    - manual
-  skipDuplicateFrames: false
-  extentTest:
-    width: 640  # we want a bigger video tag in the report
-    height: 480
-```
-
-> ⚠️ **Video Frame Rate**<br/>
-> Since the execution video is made up of screenshots, for performance reason it has a fixed rate of 1 frame per second.
-> This allows to avoid encoding the same frame multiple times, while producing a very light video.<br/>
-> The consequence is that the video recorded does **NOT** replicate the actual timing of the test execution.
-
-> ⚠️ **Empty Video**<br/>
-> When video recording is enabled but no frame was added to it, which might happen when no screenshot was taken
-> according to the events configured and the current log level, a default "No Video" frame is added to it:
->
-> ![no-video.png](assets/images/no-video.png)
 
 ---
 
@@ -1844,6 +1786,98 @@ locatorRegex: \s->[\w\s]+:\s([()^\w\s\-.#]+)
 and you'd see this:
 
 ![extent locator custom](assets/images/extent-locator-custom.jpg)
+
+---
+
+# Automatic Execution Video Generation
+
+Spectrum can generate the video of the execution of each single test, leveraging [JCodec](http://www.jcodec.org/){:target="_blank"}. By default, this is disabled,
+so you need to explicitly activate this feature in your `configuration.yaml`. Check the `video` node in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
+for all the available parameters along with their details.
+
+Once enabled, the video is attached to the extent report as the very first element:
+
+![Video Extent Report](assets/images/video-extent-report.jpg)
+
+The video is sticky, meaning when you scroll down on the test steps it remains visible at the top of the page.
+Moreover, the video is synced with the steps: when you play it, the step currently displayed in the video is highlighted.
+You can also click on the steps and the video is sought to the corresponding point, as you can see in the video below:
+
+<video controls="" width="100%" src="assets/miscellanea/frame-synced-with-video.mov" type="video/mp4"></video>
+
+To be precise, the video is generated from screenshots taken during the execution.
+You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
+
+| Frame      | Description                                                                                                                        |
+|------------|------------------------------------------------------------------------------------------------------------------------------------|
+| autoBefore | Screenshots taken **before** an event happening in the WebDriver                                                                   |
+| autoAfter  | Screenshots taken **after** an event happening in the WebDriver                                                                    |
+| manual     | Screenshots programmatically taken by you by invoking one of the [SpectrumEntity Service Methods](#spectrumentity-service-methods) |
+
+> ⚠️ **Auto screenshots**<br/>
+> Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
+> and the `drivers.events` settings. For example, if running with the default `INFO` log level and the configuration below,
+> no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
+
+{% include copyCode.html %}
+
+```yaml
+drivers:
+  events:
+    beforeClick:
+      level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
+      message: Clicking on %1$s
+```
+
+> 💡 **Tip**<br/>
+> Setting both `autoBefore` and `autoAfter` is likely to be useless. In this flow, screenshots at bullets 3 and 4 will be equal:
+> 1. screenshot: before click
+> 2. click event
+> 3. **&rarr; screenshot: after click**
+> 4. **&rarr; screenshot: before set text**
+> 5. set text in input field
+> 6. screenshot: after set text
+>
+> There might be cases where this is actually useful, though. For example, if those events are not consecutive.<br/>
+> If you're not sure, you can leave both `autoBefore` and `autoAfter`: Spectrum will automatically discard **consecutive** duplicate frames by default.
+> You can disable frame skipping by setting the `video.skipDuplicateFrames` to `false`.
+
+The video will be saved in the `<extent.reportFolder>/<extent.fileName>/videos/<CLASS NAME>/<TEST NAME>`
+folder and attached to the Extent Report as well, where:
+
+* `extent.reportFolder` &rarr; `target/spectrum/reports` by default
+* `extent.fileName` &rarr; `spectrum-report-${timestamp}.html` by default
+* `CLASS NAME` &rarr; the test class' simple name
+* `TEST NAME` &rarr; the test method's name
+
+> 💡 **Video Configuration Example**<br/>
+> Here's a quick example snippet. Remember you just need to provide fields with a value different from the corresponding one in the
+> internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+video:
+  frames:
+    - autoAfter
+    - manual
+  skipDuplicateFrames: false
+  extentTest:
+    width: 640  # we want a bigger video tag in the report
+    height: 480
+```
+
+> ⚠️ **Video Frame Rate**<br/>
+> Since the execution video is made up of screenshots, for performance reason it has a fixed rate of 1 frame per second.
+> This allows to avoid encoding the same frame multiple times, while producing a very light video.<br/>
+> The consequence is that the video recorded does **NOT** replicate the actual timing of the test execution.
+
+> ⚠️ **Empty Video**<br/>
+> When video recording is enabled but no frame was added to it, which might happen when no screenshot was taken
+> according to the events configured and the current log level, a default "No Video" frame is added to it:
+>
+> ![no-video.png](assets/images/no-video.png)
 
 ---
 
