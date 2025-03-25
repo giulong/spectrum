@@ -12,6 +12,10 @@
 
     <artifactId>it-grid</artifactId>
 
+    <properties>
+        <enforcer.skipRules>banDynamicVersions</enforcer.skipRules>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.github.giulong</groupId>
