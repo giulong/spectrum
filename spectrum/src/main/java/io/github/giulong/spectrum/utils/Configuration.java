@@ -15,7 +15,6 @@ import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
@@ -29,7 +28,6 @@ import static lombok.AccessLevel.PRIVATE;
 
 @SuppressWarnings("unused")
 @Getter
-@Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public class Configuration {
 

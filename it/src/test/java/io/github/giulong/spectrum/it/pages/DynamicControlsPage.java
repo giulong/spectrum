@@ -4,13 +4,11 @@ import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.it.data.Data;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.FindBys;
 
 @Getter
-@Slf4j
 @Endpoint("dynamic_controls")
 @SuppressWarnings("unused")
 public class DynamicControlsPage extends SpectrumPage<DynamicControlsPage, Data> {
