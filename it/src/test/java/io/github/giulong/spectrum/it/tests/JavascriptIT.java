@@ -146,6 +146,8 @@ class JavascriptIT extends SpectrumTest<Void> {
     void testInputFieldActions() {
         driver.get(configuration.getApplication().getBaseUrl());
 
+        pageLoadWait.until(visibilityOf(landingPage.getFormLoginLink()));
+
         js.click(landingPage.getFormLoginLink());
         loginPage.waitForPageLoading();
 
@@ -169,6 +171,7 @@ class JavascriptIT extends SpectrumTest<Void> {
         shadowDomPage.open();
 
         final WebElement span = shadowDomPage.getSpan();
+        pageLoadWait.until(visibilityOf(shadowDomPage.getSpan()));
 
         final SearchContext shadowRoot = js.getShadowRoot(shadowDomPage.getMyParagraph());
         assertNotNull(shadowRoot);

@@ -75,7 +75,7 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertEquals("1", extentReportPage.getVideoJavascriptItTestInputFieldActions().getDomProperty("duration"));
         assertEquals("2", extentReportPage.getVideoJavascriptItTestFindElementMethod().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoJavascriptItShadowDom().getDomProperty("duration"));
+        assertEquals("2", extentReportPage.getVideoJavascriptItShadowDom().getDomProperty("duration"));
         assertEquals("4", extentReportPage.getVideoJavascriptItTestWithNoDisplayName().getDomProperty("duration"));
         assertEquals("1", extentReportPage.getVideoJavascriptItTestWebElementGetMethods().getDomProperty("duration"));
         assertEquals("2", extentReportPage.getVideoJavascriptItTestFindElementsMethod().getDomProperty("duration"));
