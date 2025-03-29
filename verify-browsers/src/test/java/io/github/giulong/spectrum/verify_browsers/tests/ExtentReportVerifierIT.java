@@ -6,7 +6,6 @@ import io.github.giulong.spectrum.verify_browsers.pages.ExtentReportPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -118,29 +117,48 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(originalTests, sortedTest);
 
         // video data frames of Checkbox page testWithNoDisplayName()
-        assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", textsOfVisibleElementIn(extentReportPage.getDataFrames0()));
-        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? false", textsOfVisibleElementIn(extentReportPage.getDataFrames1()));
-        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", textsOfVisibleElementIn(extentReportPage.getDataFrames2()));
-        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", textsOfVisibleElementIn(extentReportPage.getDataFrames3()));
-        assertEquals("After checking the first checkbox", textsOfVisibleElementIn(extentReportPage.getDataFrames4()));
+        assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame0()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? false", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame1()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame2()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame3()));
+        assertEquals("After checking the first checkbox", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame4()));
 
-        // first few video data frames of Dynamic elements navigation to prove auto-wait helps a lot
+        // video data frames of Dynamic elements navigation to prove auto-wait helps a lot
         extentReportPage.getDynamicItNavigationToProveAutoWaitHelpsALot().click();
-        assertEquals("Element id: loading is displayed? true", textsOfVisibleElementIn(extentReportPage.getDataFrames0()));
-        assertEquals("Tag name of id: finish is div", textsOfVisibleElementIn(extentReportPage.getDataFrames1()));
-        assertEquals("Text of id: finish is 'Hello World!'", textsOfVisibleElementIn(extentReportPage.getDataFrames2()));
-        assertEquals("Element id: loading is displayed? false", textsOfVisibleElementIn(extentReportPage.getDataFrames3()));
-        assertEquals("Element id: loading is displayed? true", textsOfVisibleElementIn(extentReportPage.getDataFrames4()));
-        assertEquals("Tag name of id: finish is div", textsOfVisibleElementIn(extentReportPage.getDataFrames5()));
-        assertEquals("Text of id: finish is 'Hello World!'", textsOfVisibleElementIn(extentReportPage.getDataFrames6()));
-        assertEquals("Element id: loading is displayed? false", textsOfVisibleElementIn(extentReportPage.getDataFrames7()));
+        assertEquals("Element id: loading is displayed? true", extentReportPage.getTextOf(extentReportPage.getDynamicFrame0()));
+        assertEquals("Tag name of id: finish is div", extentReportPage.getTextOf(extentReportPage.getDynamicFrame1()));
+        assertEquals("Text of id: finish is 'Hello World!'", extentReportPage.getTextOf(extentReportPage.getDynamicFrame2()));
+        assertEquals("Element id: loading is displayed? false", extentReportPage.getTextOf(extentReportPage.getDynamicFrame3()));
+        assertEquals("Element id: loading is displayed? true", extentReportPage.getTextOf(extentReportPage.getDynamicFrame4()));
+        assertEquals("Tag name of id: finish is div", extentReportPage.getTextOf(extentReportPage.getDynamicFrame5()));
+        assertEquals("Text of id: finish is 'Hello World!'", extentReportPage.getTextOf(extentReportPage.getDynamicFrame6()));
+        assertEquals("Element id: loading is displayed? false", extentReportPage.getTextOf(extentReportPage.getDynamicFrame7()));
+        assertEquals("Element css selector: #checkbox -> tag name: input is displayed? true", extentReportPage.getTextOf(extentReportPage.getDynamicFrame8()));
+        assertEquals("Element id: loading is displayed? true", extentReportPage.getTextOf(extentReportPage.getDynamicFrame9()));
+        assertEquals("Text of id: message is 'It's gone!'", extentReportPage.getTextOf(extentReportPage.getDynamicFrame10()));
+        assertEquals("Element id: loading is displayed? false", extentReportPage.getTextOf(extentReportPage.getDynamicFrame11()));
+        assertEquals("Element id: loading is displayed? true", extentReportPage.getTextOf(extentReportPage.getDynamicFrame12()));
+        assertEquals("Text of id: message is 'It's back!'", extentReportPage.getTextOf(extentReportPage.getDynamicFrame13()));
+        assertEquals("Element id: loading is displayed? false", extentReportPage.getTextOf(extentReportPage.getDynamicFrame14()));
+        assertEquals("Element css selector: #input\\-example -> tag name: input is enabled? false", extentReportPage.getTextOf(extentReportPage.getDynamicFrame15()));
+        assertEquals("Text of id: message is 'It's enabled!'", extentReportPage.getTextOf(extentReportPage.getDynamicFrame16()));
+        assertEquals("Text of id: message is 'It's disabled!'", extentReportPage.getTextOf(extentReportPage.getDynamicFrame17()));
 
         // video data frames of JavascriptIT testWithNoDisplayName()
         extentReportPage.getJavascriptItTestWithNoDisplayName().click();
-        assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", textsOfVisibleElementIn(extentReportPage.getDataFrames0()));
-        assertEquals("Element css selector: #checkboxes -> tag name: input is displayed? true", textsOfVisibleElementIn(extentReportPage.getDataFrames1()));
-        assertEquals("Element css selector: #checkboxes -> tag name: input is displayed? true", textsOfVisibleElementIn(extentReportPage.getDataFrames2()));
-        assertEquals("After checking the first checkbox", textsOfVisibleElementIn(extentReportPage.getDataFrames3()));
+        assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", extentReportPage.getTextOf(extentReportPage.getJavascriptFrame0()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is displayed? true", extentReportPage.getTextOf(extentReportPage.getJavascriptFrame1()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is displayed? true", extentReportPage.getTextOf(extentReportPage.getJavascriptFrame2()));
+        assertEquals("After checking the first checkbox", extentReportPage.getTextOf(extentReportPage.getJavascriptFrame3()));
+
+        // video data frames of TestFactoryIT dynamicTestsWithContainers()
+        extentReportPage.getTestFactoryItDynamicTestsWithContainers().click();
+        extentReportPage.clickFirstCardHeader();
+        assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", extentReportPage.getTextInFirstContainerOf(extentReportPage.getDynamicContainersFrame0()));
+        assertEquals("Before checking the checkbox number 1", extentReportPage.getTextInFirstContainerOf(extentReportPage.getDynamicContainersFrame1()));
+        assertEquals("After checking the checkbox number 1", extentReportPage.getTextOf(extentReportPage.getDynamicContainersFrame2()));
+        assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", extentReportPage.getTextInSecondContainerOf(extentReportPage.getDynamicContainersFrame0()));
+        assertEquals("Before checking the checkbox number 2", extentReportPage.getTextInSecondContainerOf(extentReportPage.getDynamicContainersFrame1()));
     }
 
     @Test
@@ -174,14 +192,5 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
                 .map(webElement -> webElement.getDomAttribute("status"))
                 .filter(status::equals)
                 .count();
-    }
-
-    private String textsOfVisibleElementIn(final List<WebElement> webElements) {
-        return webElements
-                .stream()
-                .filter(WebElement::isDisplayed)
-                .map(WebElement::getText)
-                .findFirst()
-                .orElseThrow();
     }
 }

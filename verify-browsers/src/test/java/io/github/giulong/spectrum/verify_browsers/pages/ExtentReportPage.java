@@ -106,6 +106,9 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(id = "javascriptit-testwithnodisplayname()")
     private WebElement javascriptItTestWithNoDisplayName;
 
+    @FindBy(id = "testfactoryit-dynamictestswithcontainers()")
+    private WebElement testFactoryItDynamicTestsWithContainers;
+
     @FindBy(className = "screenshot-message")
     private List<WebElement> screenshotMessages;
 
@@ -256,27 +259,120 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(className = "inline")
     private List<WebElement> inlineImages;
 
-    @FindBy(css = "[data-frame='0']")
-    private List<WebElement> dataFrames0;
+    @FindBy(css = "div.card-header")
+    private List<WebElement> cardHeaders;
 
-    @FindBy(css = "[data-frame='1']")
-    private List<WebElement> dataFrames1;
+    @FindBy(css = "div[data-test-id='checkboxit-testwithnodisplayname()'][data-frame='0']")
+    private List<WebElement> noDisplayNameFrame0;
 
-    @FindBy(css = "[data-frame='2']")
-    private List<WebElement> dataFrames2;
+    @FindBy(css = "div[data-test-id='checkboxit-testwithnodisplayname()'][data-frame='1']")
+    private List<WebElement> noDisplayNameFrame1;
 
-    @FindBy(css = "[data-frame='3']")
-    private List<WebElement> dataFrames3;
+    @FindBy(css = "div[data-test-id='checkboxit-testwithnodisplayname()'][data-frame='2']")
+    private List<WebElement> noDisplayNameFrame2;
 
-    @FindBy(css = "[data-frame='4']")
-    private List<WebElement> dataFrames4;
+    @FindBy(css = "div[data-test-id='checkboxit-testwithnodisplayname()'][data-frame='3']")
+    private List<WebElement> noDisplayNameFrame3;
 
-    @FindBy(css = "[data-frame='5']")
-    private List<WebElement> dataFrames5;
+    @FindBy(css = "div[data-test-id='checkboxit-testwithnodisplayname()'][data-frame='4']")
+    private List<WebElement> noDisplayNameFrame4;
 
-    @FindBy(css = "[data-frame='6']")
-    private List<WebElement> dataFrames6;
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='0']")
+    private List<WebElement> dynamicFrame0;
 
-    @FindBy(css = "[data-frame='7']")
-    private List<WebElement> dataFrames7;
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='1']")
+    private List<WebElement> dynamicFrame1;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='2']")
+    private List<WebElement> dynamicFrame2;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='3']")
+    private List<WebElement> dynamicFrame3;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='4']")
+    private List<WebElement> dynamicFrame4;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='5']")
+    private List<WebElement> dynamicFrame5;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='6']")
+    private List<WebElement> dynamicFrame6;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='7']")
+    private List<WebElement> dynamicFrame7;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='8']")
+    private List<WebElement> dynamicFrame8;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='9']")
+    private List<WebElement> dynamicFrame9;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='10']")
+    private List<WebElement> dynamicFrame10;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='11']")
+    private List<WebElement> dynamicFrame11;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='12']")
+    private List<WebElement> dynamicFrame12;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='13']")
+    private List<WebElement> dynamicFrame13;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='14']")
+    private List<WebElement> dynamicFrame14;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='15']")
+    private List<WebElement> dynamicFrame15;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='16']")
+    private List<WebElement> dynamicFrame16;
+
+    @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='17']")
+    private List<WebElement> dynamicFrame17;
+
+    @FindBy(css = "div[data-test-id='javascriptit-testwithnodisplayname()'][data-frame='0']")
+    private List<WebElement> javascriptFrame0;
+
+    @FindBy(css = "div[data-test-id='javascriptit-testwithnodisplayname()'][data-frame='1']")
+    private List<WebElement> javascriptFrame1;
+
+    @FindBy(css = "div[data-test-id='javascriptit-testwithnodisplayname()'][data-frame='2']")
+    private List<WebElement> javascriptFrame2;
+
+    @FindBy(css = "div[data-test-id='javascriptit-testwithnodisplayname()'][data-frame='3']")
+    private List<WebElement> javascriptFrame3;
+
+    @FindBy(css = "div[data-test-id='testfactoryit-dynamictestswithcontainers()'][data-frame='0']")
+    private List<WebElement> dynamicContainersFrame0;
+
+    @FindBy(css = "div[data-test-id='testfactoryit-dynamictestswithcontainers()'][data-frame='1']")
+    private List<WebElement> dynamicContainersFrame1;
+
+    @FindBy(css = "div[data-test-id='testfactoryit-dynamictestswithcontainers()'][data-frame='2']")
+    private List<WebElement> dynamicContainersFrame2;
+
+    public String getTextOf(final List<WebElement> webElements) {
+        // Extent triplicates elements and show/hide them when navigating the sections of the report
+        return webElements.get(1).getText();
+    }
+
+    public String getTextInFirstContainerOf(final List<WebElement> webElements) {
+        // Extent triplicates elements and show/hide them when navigating the sections of the report
+        return webElements.get(2).getText();
+    }
+
+    public String getTextInSecondContainerOf(final List<WebElement> webElements) {
+        // Extent triplicates elements and show/hide them when navigating the sections of the report
+        return webElements.get(3).getText();
+    }
+
+    public void clickFirstCardHeader() {
+        cardHeaders
+                .stream()
+                .filter(WebElement::isDisplayed)
+                .findFirst()
+                .orElseThrow()
+                .click();
+    }
 }
