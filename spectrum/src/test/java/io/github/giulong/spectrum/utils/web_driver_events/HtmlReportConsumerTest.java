@@ -69,7 +69,7 @@ class HtmlReportConsumerTest {
         stubsFor(level);
 
         when(video.shouldRecord(AUTO_BEFORE)).thenReturn(true);
-        when(htmlUtils.buildFrameTagFor(frameNumber, message)).thenReturn(details);
+        when(htmlUtils.buildFrameTagFor(frameNumber, message, testData)).thenReturn(details);
 
         htmlReportConsumer.accept(webDriverEvent);
 
@@ -98,7 +98,7 @@ class HtmlReportConsumerTest {
         stubsFor(WARN);
 
         when(video.shouldRecord(AUTO_BEFORE)).thenReturn(true);
-        when(htmlUtils.buildFrameTagFor(frameNumber, message)).thenReturn(details);
+        when(htmlUtils.buildFrameTagFor(frameNumber, message, testData)).thenReturn(details);
 
         htmlReportConsumer.accept(webDriverEvent);
 

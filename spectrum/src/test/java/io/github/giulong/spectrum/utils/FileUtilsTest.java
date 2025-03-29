@@ -5,9 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +15,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.stream.Stream;
 
+import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static java.lang.System.lineSeparator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -25,6 +24,9 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class FileUtilsTest {
+
+    private static final String DISPLAY_NAME = "displayName";
+    private static final String UUID_REGEX = AUTO_AFTER.getValue() + "-" + DISPLAY_NAME + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
 
     @Mock
     private BasicFileAttributes basicFileAttributes;
@@ -40,6 +42,9 @@ class FileUtilsTest {
 
     @Mock
     private File file;
+
+    @Mock
+    private StatefulExtentTest statefulExtentTest;
 
     @InjectMocks
     private FileUtils fileUtils;
@@ -227,5 +232,13 @@ class FileUtilsTest {
         assertEquals(creationTime, fileUtils.getCreationTimeOf(file));
 
         filesMockedStatic.close();
+    }
+
+    @Test
+    @DisplayName("getScreenshotNameFrom should return the name for the provided frame and display name")
+    void getScreenshotNameFrom() {
+        when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
+
+        assertThat(fileUtils.getScreenshotNameFrom(AUTO_AFTER, statefulExtentTest), matchesPattern(UUID_REGEX));
     }
 }

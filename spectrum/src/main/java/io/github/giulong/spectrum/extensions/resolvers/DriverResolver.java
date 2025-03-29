@@ -75,6 +75,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .builder()
                 .enabled(true)
                 .driver((TakesScreenshot) driver)
+                .statefulExtentTest(statefulExtentTest)
                 .testData(testData)
                 .video(video)
                 .build();

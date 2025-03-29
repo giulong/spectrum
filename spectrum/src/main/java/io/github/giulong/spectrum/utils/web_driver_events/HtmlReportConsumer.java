@@ -31,7 +31,7 @@ public class HtmlReportConsumer extends WebDriverEventConsumer {
         final int frameNumber = video.getAndIncrementFrameNumberFor(testData, frame);
         final String message = webDriverEvent.getMessage();
         final Level level = webDriverEvent.getLevel();
-        final String details = video.shouldRecord(frame) ? htmlUtils.buildFrameTagFor(frameNumber, message) : message;
+        final String details = video.shouldRecord(frame) ? htmlUtils.buildFrameTagFor(frameNumber, message, testData) : message;
 
         log.trace("Logging {}:'{}' at {} level", frameNumber, message, level);
         currentNode.log(WARN.equals(webDriverEvent.getLevel()) ? WARNING : INFO, details);

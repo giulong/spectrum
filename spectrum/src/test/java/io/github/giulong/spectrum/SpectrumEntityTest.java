@@ -1,17 +1,15 @@
 package io.github.giulong.spectrum;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.HtmlUtils;
-import io.github.giulong.spectrum.utils.Reflections;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,10 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -35,17 +30,15 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.Status.*;
+import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static java.util.Comparator.reverseOrder;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
@@ -53,13 +46,17 @@ import static org.openqa.selenium.OutputType.BYTES;
 
 class SpectrumEntityTest {
 
-    private static final String DISPLAY_NAME = "displayName";
-    private static final String UUID_REGEX = MANUAL.getValue() + "-" + DISPLAY_NAME + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
-    private static final List<Path> REPORTS_FOLDERS = new ArrayList<>();
+    private MockedStatic<Path> pathMockedStatic;
+    private MockedStatic<Files> filesMockedStatic;
+    private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
+    private MockedStatic<MessageDigest> messageDigestMockedStatic;
 
     private final String msg = "msg";
     private final String tag = "tag";
+    private final String fileName = "screenshotName";
     private final int frameNumber = 123;
+    private final byte[] bytes = new byte[]{1, 2, 3};
+    private final byte[] digest = new byte[]{4, 5, 6};
 
     @Mock
     private WebDriverWait downloadWait;
@@ -95,6 +92,33 @@ class SpectrumEntityTest {
     private HtmlUtils htmlUtils;
 
     @Mock
+    private FileUtils fileUtils;
+
+    @Mock
+    private Path path;
+
+    @Mock
+    private Path reportsFolder;
+
+    @Mock
+    private Path downloadsFolderPath;
+
+    @Mock
+    private Path filesFolderPath;
+
+    @Mock
+    private File file;
+
+    @Mock
+    private MediaEntityBuilder mediaEntityBuilder;
+
+    @Mock
+    private Media screenshot;
+
+    @Mock
+    private MessageDigest messageDigest;
+
+    @Mock
     private TestData testData;
 
     @Captor
@@ -107,32 +131,37 @@ class SpectrumEntityTest {
     void beforeEach() {
         Reflections.setField("configuration", spectrumEntity, configuration);
         Reflections.setField("htmlUtils", spectrumEntity, htmlUtils);
+        Reflections.setField("fileUtils", spectrumEntity, fileUtils);
+
+        pathMockedStatic = mockStatic(Path.class);
+        filesMockedStatic = mockStatic(Files.class);
+        mediaEntityBuilderMockedStatic = mockStatic(MediaEntityBuilder.class);
+        messageDigestMockedStatic = mockStatic(MessageDigest.class);
     }
 
-    @AfterAll
-    public static void afterAll() {
-        REPORTS_FOLDERS.forEach(folder -> {
-            try (Stream<Path> files = Files.walk(folder)) {
-                //noinspection ResultOfMethodCallIgnored
-                files
-                        .sorted(reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+    @AfterEach
+    void afterEach() {
+        pathMockedStatic.close();
+        filesMockedStatic.close();
+        mediaEntityBuilderMockedStatic.close();
+        messageDigestMockedStatic.close();
     }
 
     @SneakyThrows
     private void addScreenshotToReportStubs() {
-        final Path path = Files.createTempDirectory("reportsFolder");
-        REPORTS_FOLDERS.add(path);
-
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
         when(testData.getScreenshotFolderPath()).thenReturn(path);
-        when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
-        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
+
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
+        when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
+        when(reportsFolder.resolve(fileName)).thenReturn(path);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
+        when(configuration.getVideo()).thenReturn(video);
+        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
+        when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
+        when(mediaEntityBuilder.build()).thenReturn(screenshot);
     }
 
     @Test
@@ -177,7 +206,16 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("screenshot should delegate to addScreenshotToReport")
     void screenshot() {
-        addScreenshotToReportStubs();
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
+        when(testData.getScreenshotFolderPath()).thenReturn(path);
+        when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
+
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
+        when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
+        when(reportsFolder.resolve(fileName)).thenReturn(path);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
+        when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
+        when(mediaEntityBuilder.build()).thenReturn(screenshot);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshot());
 
@@ -191,7 +229,7 @@ class SpectrumEntityTest {
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(msg));
 
@@ -205,7 +243,7 @@ class SpectrumEntityTest {
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(msg));
 
@@ -219,7 +257,7 @@ class SpectrumEntityTest {
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotFail(msg));
 
@@ -228,61 +266,48 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("addScreenshotToReport should fall back to taking a screenshot of the visible page if an exception is thrown")
-    void addScreenshotToReport() throws IOException {
+    void addScreenshotToReport() {
         final Status status = INFO;
-        final Path reportsFolder = Files.createTempDirectory("reportsFolder");
-        REPORTS_FOLDERS.add(reportsFolder);
 
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
-        when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
+        when(reportsFolder.resolve(fileName)).thenReturn(path);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
+        when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
+        when(mediaEntityBuilder.build()).thenReturn(screenshot);
 
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
-        final Media screenShot = spectrumEntity.addScreenshotToReport(msg, status);
+        final Media actual = spectrumEntity.addScreenshotToReport(msg, status);
 
-        assertNotNull(screenShot);
+        assertEquals(screenshot, actual);
 
-        final String screenShotName = screenShot.getPath();
-        final Path screenshotPath = Path.of(screenShotName);
-
-        assertTrue(Files.exists(screenshotPath));
-        assertEquals(reportsFolder, screenshotPath.getParent());
-        assertThat(screenshotPath.getFileName().toString(), matchesPattern(UUID_REGEX));
-        verify(extentTest).log(status, tag, screenShot);
+        verify(extentTest).log(status, tag, actual);
     }
 
+    @Test
     @DisplayName("deleteDownloadsFolder should delete and recreate the downloads folder")
-    @ParameterizedTest(name = "with value {0}")
-    @MethodSource("valuesProvider")
-    void deleteDownloadsFolder(final Path downloadsFolder) {
-        Reflections.setField("configuration", spectrumEntity, configuration);
+    void deleteDownloadsFolder() {
+        final String downloadsFolder = "downloadsFolder";
 
+        when(Path.of(downloadsFolder)).thenReturn(path);
         when(configuration.getRuntime()).thenReturn(runtime);
-        when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder.toString());
+        when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder);
 
         spectrumEntity.deleteDownloadsFolder();
 
-        assertNotNull(downloadsFolder.toFile());
-        assertEquals(0, Objects.requireNonNull(downloadsFolder.toFile().list()).length);
-        //noinspection ResultOfMethodCallIgnored
-        downloadsFolder.toFile().delete();
-    }
-
-    static Stream<Arguments> valuesProvider() throws IOException {
-        return Stream.of(
-                arguments(Path.of("abc not existing")),
-                arguments(Files.createTempDirectory("downloadsFolder")));
+        verify(fileUtils).deleteContentOf(path);
     }
 
     @Test
     @DisplayName("waitForDownloadOf should return true if the provided file is fully downloaded")
-    void waitForDownloadOf() throws IOException {
-        final Path path = Files.createTempFile("fakeFile", ".txt");
-        Files.writeString(path, "I'm an airplane!!!");
+    void waitForDownloadOf() {
+        when(Files.exists(path)).thenReturn(true);
+        when(path.toFile()).thenReturn(file);
+        when(file.length()).thenReturn(123L);
 
         assertEquals(spectrumEntity, spectrumEntity.waitForDownloadOf(path));
 
@@ -294,10 +319,12 @@ class SpectrumEntityTest {
 
     @Test
     @DisplayName("waitForDownloadOf should wait until the provided file is fully downloaded")
-    void waitForDownloadOfNotYetDone() throws IOException {
-        final Path path = Files.createTempFile("fakeFile", ".txt");
+    void waitForDownloadOfNotYetDone() {
+        when(Files.exists(path)).thenReturn(true);
+        when(path.toFile()).thenReturn(file);
+        when(file.length()).thenReturn(0L);
 
-        spectrumEntity.waitForDownloadOf(path);
+        assertEquals(spectrumEntity, spectrumEntity.waitForDownloadOf(path));
 
         verify(downloadWait).until(functionArgumentCaptor.capture());
         final Function<WebDriver, Boolean> function = functionArgumentCaptor.getValue();
@@ -308,7 +335,9 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("waitForDownloadOf should wait until the provided file exist")
     void waitForDownloadOfNotYetCreated() {
-        spectrumEntity.waitForDownloadOf(Path.of("not existing"));
+        when(Files.exists(path)).thenReturn(false);
+
+        assertEquals(spectrumEntity, spectrumEntity.waitForDownloadOf(path));
 
         verify(downloadWait).until(functionArgumentCaptor.capture());
         final Function<WebDriver, Boolean> function = functionArgumentCaptor.getValue();
@@ -317,68 +346,62 @@ class SpectrumEntityTest {
     }
 
     @Test
-    @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one")
-    void checkDownloadedFile() throws IOException {
-        final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
-        final Path filesFolder = Files.createTempDirectory("filesFolder");
-        final Path downloadedFile = Files.createFile(Path.of(downloadsFolder + "/fakeFile.txt"));
-        final Path fileToCheck = Files.createFile(Path.of(filesFolder + "/fakeFile.txt"));
-        final Path wrongDownloadedFile = Files.createFile(Path.of(downloadsFolder + "/wrongFakeFile.txt"));
-        final Path wrongFileToCheck = Files.createFile(Path.of(filesFolder + "/wrongFakeFile.txt"));
-        Files.writeString(downloadedFile, "I'm an airplane!!!");
-        Files.writeString(fileToCheck, "I'm an airplane!!!");
-        Files.writeString(wrongDownloadedFile, "I'm a teapot...");
-        Files.writeString(wrongFileToCheck, "I should have been an airplane...");
-
-        Reflections.setField("configuration", spectrumEntity, configuration);
-
-        downloadedFile.toFile().deleteOnExit();
-        fileToCheck.toFile().deleteOnExit();
-        wrongDownloadedFile.toFile().deleteOnExit();
-        wrongFileToCheck.toFile().deleteOnExit();
-        downloadsFolder.toFile().deleteOnExit();
-        filesFolder.toFile().deleteOnExit();
+    @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one, with different names")
+    void checkDownloadedFileDifferentName() throws NoSuchAlgorithmException, IOException {
+        final String downloadsFolder = "downloadsFolder";
+        final String filesFolder = "filesFolder";
+        final String fileToCheckName = "fileToCheckName";
 
         when(configuration.getRuntime()).thenReturn(runtime);
-        when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder.toString());
-        when(runtime.getFilesFolder()).thenReturn(filesFolder.toString());
+        when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder);
+        when(Path.of(downloadsFolder, fileToCheckName)).thenReturn(downloadsFolderPath);
+        when(downloadsFolderPath.toAbsolutePath()).thenReturn(downloadsFolderPath);
+        when(runtime.getFilesFolder()).thenReturn(filesFolder);
+        when(Path.of(filesFolder, fileToCheckName)).thenReturn(filesFolderPath);
+        when(filesFolderPath.toAbsolutePath()).thenReturn(filesFolderPath);
 
-        assertTrue(spectrumEntity.checkDownloadedFile(downloadedFile.getFileName().toString()));
-        assertFalse(spectrumEntity.checkDownloadedFile(wrongDownloadedFile.getFileName().toString()));
+        // sha256Of
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(Files.readAllBytes(downloadsFolderPath)).thenReturn(bytes);
+        when(Files.readAllBytes(filesFolderPath)).thenReturn(bytes);
+        when(messageDigest.digest(bytes)).thenReturn(digest);
+
+        assertTrue(spectrumEntity.checkDownloadedFile(fileToCheckName));
     }
 
     @Test
-    @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one, with different names")
-    void checkDownloadedFileDifferentName() throws IOException {
-        final Path downloadsFolder = Files.createTempDirectory("downloadsFolder");
-        final Path filesFolder = Files.createTempDirectory("filesFolder");
-        final Path downloadedFile = Files.createFile(Path.of(downloadsFolder + "/fakeFileDownloaded.txt"));
-        final Path fileToCheck = Files.createFile(Path.of(filesFolder + "/fakeFile.txt"));
-        Files.writeString(downloadedFile, "I'm an airplane!!!");
-        Files.writeString(fileToCheck, "I'm an airplane!!!");
-
-        Reflections.setField("configuration", spectrumEntity, configuration);
-
-        downloadedFile.toFile().deleteOnExit();
-        fileToCheck.toFile().deleteOnExit();
-        downloadsFolder.toFile().deleteOnExit();
-        filesFolder.toFile().deleteOnExit();
+    @DisplayName("checkDownloadedFile should check if the file with the provided name matches the downloaded one")
+    void checkDownloadedFile() throws NoSuchAlgorithmException, IOException {
+        final String downloadedFileName = "downloadedFileName";
+        final String downloadsFolder = "downloadsFolder";
+        final String filesFolder = "filesFolder";
+        final String fileToCheckName = "fileToCheckName";
 
         when(configuration.getRuntime()).thenReturn(runtime);
-        when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder.toString());
-        when(runtime.getFilesFolder()).thenReturn(filesFolder.toString());
+        when(runtime.getDownloadsFolder()).thenReturn(downloadsFolder);
+        when(Path.of(downloadsFolder, downloadedFileName)).thenReturn(downloadsFolderPath);
+        when(downloadsFolderPath.toAbsolutePath()).thenReturn(downloadsFolderPath);
+        when(runtime.getFilesFolder()).thenReturn(filesFolder);
+        when(Path.of(filesFolder, fileToCheckName)).thenReturn(filesFolderPath);
+        when(filesFolderPath.toAbsolutePath()).thenReturn(filesFolderPath);
 
-        assertTrue(spectrumEntity.checkDownloadedFile(downloadedFile.getFileName().toString(), fileToCheck.getFileName().toString()));
+        // sha256Of
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(Files.readAllBytes(downloadsFolderPath)).thenReturn(bytes);
+        when(Files.readAllBytes(filesFolderPath)).thenReturn(bytes);
+        when(messageDigest.digest(bytes)).thenReturn(digest);
+
+        assertTrue(spectrumEntity.checkDownloadedFile(downloadedFileName, fileToCheckName));
     }
 
     @Test
     @DisplayName("sha256Of should return the byte array of the sha digest of the provided file")
-    void sha256Of() throws IOException {
-        final Path path = Files.createTempFile("fakeFile", ".txt");
-        Files.writeString(path, "I'm an airplane!!!");
-        path.toFile().deleteOnExit();
-        assertArrayEquals(new byte[]{-84, -101, -4, -117, -46, -98, 10, -68, -51, 127, 64, -87, 51, 9, -1, 13, -39, 103,
-                -126, 71, -121, -84, -51, 110, 113, -124, 119, -71, -51, 73, -75, 100}, SpectrumEntity.sha256Of(path));
+    void sha256Of() throws NoSuchAlgorithmException, IOException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(Files.readAllBytes(path)).thenReturn(bytes);
+        when(messageDigest.digest(bytes)).thenReturn(digest);
+
+        assertArrayEquals(digest, SpectrumEntity.sha256Of(path));
     }
 
     @DisplayName("clearAndSendKeys should clear the provided webElement and send the provided keys to it")
@@ -397,14 +420,13 @@ class SpectrumEntityTest {
         final String filesFolder = "filesFolder";
         final String fileName = "fileName";
 
-        Reflections.setField("configuration", spectrumEntity, configuration);
-
         when(configuration.getRuntime()).thenReturn(runtime);
         when(runtime.getFilesFolder()).thenReturn(filesFolder);
+        when(Path.of(System.getProperty("user.dir"), filesFolder, fileName)).thenReturn(path);
 
         assertEquals(spectrumEntity, spectrumEntity.upload(webElement, fileName));
 
-        verify(webElement).sendKeys(Path.of(System.getProperty("user.dir"), filesFolder, fileName).toString());
+        verify(webElement).sendKeys(path.toString());
     }
 
     @DisplayName("isPresent should return true if the element located by the provided By is in the dom")
