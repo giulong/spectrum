@@ -4,7 +4,6 @@ drivers:
   chrome:
     args:
       - --headless=new
-      - --window-size=1920,2000
   events:
     afterGetAttribute:
       level: TRACE
