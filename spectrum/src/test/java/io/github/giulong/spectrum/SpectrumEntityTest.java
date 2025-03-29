@@ -159,7 +159,7 @@ class SpectrumEntityTest {
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(screenshot);
     }
@@ -229,7 +229,7 @@ class SpectrumEntityTest {
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(msg));
 
@@ -243,7 +243,7 @@ class SpectrumEntityTest {
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(msg));
 
@@ -257,7 +257,7 @@ class SpectrumEntityTest {
 
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotFail(msg));
 
@@ -275,7 +275,7 @@ class SpectrumEntityTest {
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
-        when(htmlUtils.buildFrameTagFor(frameNumber, msg, "screenshot-message")).thenReturn(tag);
+        when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(screenshot);
 
