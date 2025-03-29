@@ -57,6 +57,7 @@ class JavascriptIT extends SpectrumTest<Void> {
     void testFindElementMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
+        pageLoadWait.until(visibilityOf(landingPage.getFormLoginLink()));
         assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.LINK_TEXT, "Form Authentication"));
         assertEquals(landingPage.getFormLoginLink(), js.findElement(LocatorType.PARTIAL_LINK_TEXT, "Form Aut"));
 
@@ -83,6 +84,7 @@ class JavascriptIT extends SpectrumTest<Void> {
     void testFindElementsMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
+        pageLoadWait.until(visibilityOf(landingPage.getFormLoginLink()));
         final WebElement mainContentDiv = js.findElement(LocatorType.ID, "content");
 
         assertEquals(1, js.findElements(mainContentDiv, LocatorType.LINK_TEXT, "Dropdown").size());
@@ -115,6 +117,8 @@ class JavascriptIT extends SpectrumTest<Void> {
     @Test
     void testWebElementGetMethods() {
         driver.get(configuration.getApplication().getBaseUrl());
+
+        pageLoadWait.until(visibilityOf(landingPage.getFormLoginLink()));
 
         js.click(landingPage.getFormLoginLink());
         loginPage.waitForPageLoading();
