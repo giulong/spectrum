@@ -44,6 +44,7 @@ public class SpectrumInterceptor implements InvocationInterceptor {
         final Path dynamicVideoPath = Path.of(String.format("%s-%s.mp4", fileUtils.removeExtensionFrom(testData.getVideoPath().toString()), testName));
         final ExtentTest currentNode = statefulExtentTest.createNode(testName);
 
+        testData.setFrameNumber(0);
         testData.setDisplayName(testName);
         testData.setDynamicVideoPath(dynamicVideoPath);
         statefulExtentTest.setDisplayName(testName);

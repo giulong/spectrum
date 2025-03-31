@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("JsWebElement")
 class JsWebElementIT extends SpectrumTest<Void> {
@@ -33,6 +34,8 @@ class JsWebElementIT extends SpectrumTest<Void> {
     @Test
     void checkingJsWebElements() {
         driver.get(configuration.getApplication().getBaseUrl());
+
+        pageLoadWait.until(visibilityOf(jsLandingPage.getTitle()));
         assertEquals("Welcome to the-internet", jsLandingPage.getTitle().getDomProperty("innerText"));
 
         jsLandingPage.getCheckboxLink().click();
@@ -58,6 +61,7 @@ class JsWebElementIT extends SpectrumTest<Void> {
     void testFindElementsMethod() {
         driver.get(configuration.getApplication().getBaseUrl());
 
+        pageLoadWait.until(visibilityOf(jsLandingPage.getTitle()));
         final WebElement mainContentDiv = js.findElement(LocatorType.ID, "content");
 
         assertEquals(1, mainContentDiv.findElements(By.linkText("Dropdown")).size());
@@ -82,6 +86,7 @@ class JsWebElementIT extends SpectrumTest<Void> {
     void testInputFieldActions() {
         jsLoginPage.open();
 
+        pageLoadWait.until(visibilityOf(jsLoginPage.getUsername()));
         final WebElement usernameField = jsLoginPage.getUsername();
         final WebElement passwordField = jsLoginPage.getPassword();
         final WebElement form = jsLoginPage.getForm();
@@ -113,6 +118,7 @@ class JsWebElementIT extends SpectrumTest<Void> {
         jsShadowDomPage.open();
 
         final WebElement span = jsShadowDomPage.getSpan();
+        pageLoadWait.until(visibilityOf(jsShadowDomPage.getSpan()));
 
         final SearchContext shadowRoot = jsShadowDomPage.getMyParagraph().getShadowRoot();
         assertNotNull(shadowRoot);

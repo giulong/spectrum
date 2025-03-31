@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.types.TestData;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +30,12 @@ public class HtmlUtils {
         return inlineVideosOf(inlineImagesOf(html));
     }
 
-    public String buildFrameTagFor(final int number, final String content) {
-        return buildFrameTagFor(number, content, "");
+    public String buildFrameTagFor(final int number, final String content, final TestData testData) {
+        return buildFrameTagFor(number, content, testData, "");
     }
 
-    public String buildFrameTagFor(final int number, final String content, final String classes) {
-        return String.format("<div class=\"%s\" data-frame=\"%s\">%s</div>", classes, number, content);
+    public String buildFrameTagFor(final int number, final String content, final TestData testData, final String classes) {
+        return String.format("<div class=\"%s\" data-test-id=\"%s\" data-frame=\"%s\">%s</div>", classes, testData.getTestId(), number, content);
     }
 
     @SneakyThrows

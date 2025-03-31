@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 
 import static lombok.AccessLevel.PRIVATE;
 
-@Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public final class JsonUtils {
 

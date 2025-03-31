@@ -19,24 +19,24 @@
 ·
 <a href="https://javadoc.io/doc/io.github.giulong/spectrum/latest/index.html">Javadoc</a>
 ·
-<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=bug_report.md&title=%5BBUG%5D+%3CProvide+a+short+title%3E">Report Bug</a>
+<a href="https://github.com/giulong/spectrum/issues/new?template=bug_report.md">Report Bug</a>
 ·
-<a href="https://github.com/giulong/spectrum/issues/new?assignees=giulong&labels=&projects=&template=feature_request.md&title=%5BRFE%5D+%3CProvide+a+short+title%3E">Request Feature</a>
+<a href="https://github.com/giulong/spectrum/issues/new?template=feature-request.md">Request Feature</a>
 
 </div>
 </div>
 <br/>
 
 <details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#about">About</a></li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#contacts">Contacts</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
+   <summary>Table of Contents</summary>
+   <ol>
+      <li><a href="#about">About</a></li>
+      <li><a href="#getting-started">Getting Started</a></li>
+      <li><a href="#usage">Usage</a></li>
+      <li><a href="#contributing">Contributing</a></li>
+      <li><a href="#contacts">Contacts</a></li>
+      <li><a href="#acknowledgments">Acknowledgments</a></li>
+   </ol>
 </details>
 
 # About
@@ -74,7 +74,7 @@ https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e
    ```
 
 2. Run the `LoginFormIT` demo test.
-3. Check the report generated in `target/spectrum/reports/spectrum-report-<TIMESTAMP>/spectrum-report-<TIMESTAMP>.html`.
+3. Check the report generated under `target/spectrum/reports`.
 
 > ⚠️ Tests run on Chrome by default. As shown in the video above, you can change this with:<br/>
 > `-Dspectrum.driver=firefox`, `-Dspectrum.driver=edge` or `-Dspectrum.driver=safari`
@@ -116,7 +116,7 @@ You can also configure Spectrum to produce additional reports, such as summary a
 
 # Contributing
 
-Contributions to Spectrum are welcome! If you're interested, please check out the [CONTRIBUTING.md](CONTRIBUTING.md)
+Contributions to Spectrum are welcome! Please check out the [CONTRIBUTING.md](CONTRIBUTING.md)
 and the [open issues](https://github.com/giulong/spectrum/issues).
 
 # Contacts
@@ -129,15 +129,20 @@ and the [open issues](https://github.com/giulong/spectrum/issues).
 
 Spectrum leverages these projects you should definitely check out!
 
-* [JUnit 5](https://junit.org/junit5/docs/current/user-guide/)
-* [Selenium](https://www.selenium.dev/)
-* [Appium](http://appium.io/docs/en/latest/)
-* [Lombok](https://projectlombok.org/)
-* [Extent Reports](https://www.extentreports.com/)
-* [FreeMarker](https://freemarker.apache.org/)
-* [Simple Java Mail](https://www.simplejavamail.org/)
-* [JCodec](http://www.jcodec.org/)
-* [VicTools JsonSchema Generator](https://victools.github.io/jsonschema-generator/#introduction)
-* [Jekyll](https://jekyllrb.com/)
-* [Modernist Theme](https://github.com/pages-themes/modernist)
-* [Datafaker](https://github.com/datafaker-net/datafaker)
+<details>
+   <summary>Acknowledgments</summary>
+   <ul>
+      <li><a href="https://junit.org/junit5/docs/current/user-guide/">JUnit 5</a></li>
+      <li><a href="https://www.selenium.dev/">Selenium</a></li>
+      <li><a href="http://appium.io/docs/en/latest/">Appium</a></li>
+      <li><a href="https://projectlombok.org/">Lombok</a></li>
+      <li><a href="https://www.extentreports.com/">Extent Reports</a></li>
+      <li><a href="https://freemarker.apache.org/">FreeMarker</a></li>
+      <li><a href="https://www.simplejavamail.org/">Simple Java Mail</a></li>
+      <li><a href="http://www.jcodec.org/">JCodec</a></li>
+      <li><a href="https://victools.github.io/jsonschema-generator/#introduction">VicTools JsonSchema Generator</a></li>
+      <li><a href="https://jekyllrb.com/">Jekyll</a></li>
+      <li><a href="https://github.com/pages-themes/modernist">Modernist Theme</a></li>
+      <li><a href="https://github.com/datafaker-net/datafaker">Datafaker</a></li>
+   </ul>
+</details>

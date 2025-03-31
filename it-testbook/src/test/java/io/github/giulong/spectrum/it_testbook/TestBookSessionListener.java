@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.it_testbook;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 
@@ -18,7 +17,6 @@ import static java.util.Comparator.comparingLong;
 import static java.util.function.Predicate.not;
 import static org.junit.jupiter.api.Assertions.*;
 
-@Slf4j
 @SuppressWarnings("unused")
 public class TestBookSessionListener implements LauncherSessionListener {
 

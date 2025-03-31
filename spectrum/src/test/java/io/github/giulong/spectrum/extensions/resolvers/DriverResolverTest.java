@@ -245,6 +245,7 @@ class DriverResolverTest {
         when(ScreenshotConsumer.builder()).thenReturn(screenshotConsumerBuilder);
         when(screenshotConsumerBuilder.enabled(true)).thenReturn(screenshotConsumerBuilder);
         when(screenshotConsumerBuilder.driver((TakesScreenshot) webDriver)).thenReturn(screenshotConsumerBuilder);
+        when(screenshotConsumerBuilder.statefulExtentTest(statefulExtentTest)).thenReturn(screenshotConsumerBuilder);
         when(screenshotConsumerBuilder.testData(testData)).thenReturn(screenshotConsumerBuilder);
         when(screenshotConsumerBuilder.video(video)).thenReturn(screenshotConsumerBuilder);
         when(screenshotConsumerBuilder.build()).thenReturn(screenshotConsumer);

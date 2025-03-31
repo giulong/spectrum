@@ -122,6 +122,7 @@ class SpectrumInterceptorTest {
 
     @SuppressWarnings("checkstyle:IllegalThrows")
     private void commonVerifications() throws Throwable {
+        verify(testData).setFrameNumber(0);
         verify(testData).setDisplayName(displayName);
         verify(testData).setDynamicVideoPath(dynamicVideoPath);
         verify(statefulExtentTest).setDisplayName(displayName);

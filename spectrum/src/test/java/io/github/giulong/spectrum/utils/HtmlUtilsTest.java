@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.types.TestData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -24,11 +25,16 @@ class HtmlUtilsTest {
     private static MockedStatic<Path> pathMockedStatic;
     private static MockedStatic<Files> filesMockedStatic;
 
+    private final String testId = "testId";
+
     @Mock
     private Path path;
 
     @Mock
     private Path path2;
+
+    @Mock
+    private TestData testData;
 
     @InjectMocks
     private HtmlUtils htmlUtils;
@@ -55,13 +61,17 @@ class HtmlUtilsTest {
     @Test
     @DisplayName("buildFrameTagFor should return the tag with the provided frame number and content")
     void buildFrameTagForOverloaded() {
-        assertEquals("<div class=\"\" data-frame=\"123\">content</div>", htmlUtils.buildFrameTagFor(123, "content"));
+        when(testData.getTestId()).thenReturn(testId);
+
+        assertEquals("<div class=\"\" data-test-id=\"testId\" data-frame=\"123\">content</div>", htmlUtils.buildFrameTagFor(123, "content", testData));
     }
 
     @Test
     @DisplayName("buildFrameTagFor should return the tag with the provided frame number, content, and css classes provided")
     void buildFrameTagFor() {
-        assertEquals("<div class=\"classes\" data-frame=\"123\">content</div>", htmlUtils.buildFrameTagFor(123, "content", "classes"));
+        when(testData.getTestId()).thenReturn(testId);
+
+        assertEquals("<div class=\"classes\" data-test-id=\"testId\" data-frame=\"123\">content</div>", htmlUtils.buildFrameTagFor(123, "content", testData, "classes"));
     }
 
     @Test
