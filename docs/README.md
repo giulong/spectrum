@@ -1371,8 +1371,7 @@ private WebElement password;
 
 # Highlight WebElements
 
-For debugging purposes, it might be useful to highlight the web elements your test interacts with, such as
-input fields and buttons. You just need to configure this:
+For debugging purposes or in general to have a visual feedback, it might be useful to highlight the web elements your test interacts with. You just need to configure this:
 
 {% include copyCode.html %}
 
@@ -1384,13 +1383,15 @@ application:
 This is the `highlight` node in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
+{% include copyCode.html %}
+
 ```yaml
 application:
   highlight:
     js: js/highlight.js # Path to the js used to highlight. Relative to the resources folder
 ```
 
-The `js` points to the javascript to apply to the web elements. No need to provide it explicitly if you
+The `js` property points to the javascript to apply to the web elements. No need to provide it explicitly if you
 don't need to customise it. This is the internal
 [highlight.js]({{ site.repository_url }}/spectrum/src/main/resources/js/highlight.js){:target="_blank"},
 that applies a 3px red border for 500ms to the web elements, as in the screenshot below:
@@ -1411,6 +1412,23 @@ setTimeout(() => {
 ```
 
 ![highlight-web-element.png](assets/images/highlight-web-element.png)
+
+For instance, providing this custom `src/test/resources/highlight.js` that puts a red background without removing it, you can achieve the effect in the video below:
+
+{% include copyCode.html %}
+
+```js
+arguments[0].style.borderRadius = '5px';
+arguments[0].style.background = '#cc0000';
+```
+
+<video controls="" width="100%" src="assets/videos/highlight.mov" type="video/mp4"></video>
+
+> ⚠️ **Disclaimer**<br/>
+> Spectrum uses itself to test its behavior. The video above is produced by the
+> [ExtentReportVerifierIT.java]({{ site.repository_url }}/verify-browsers/src/test/java/io/github/giulong/spectrum/verify_browsers/tests/ExtentReportVerifierIT.java){:target="_blank"},
+> in which Spectrum tests that the generated report contains all the expected elements in the right places,
+> highlighted in red in the video for demonstration purposes.
 
 Highlighting is bound to [WebDriver Events](#webdriver-events-listener), meaning only events occurring at a proper log level
 will lead to highlighting the corresponding web element(s). For instance, the `beforeSendKeys` event is logged at `INFO`
@@ -1804,7 +1822,7 @@ The video is sticky, meaning when you scroll down on the test steps it remains v
 Moreover, the video is synced with the steps: when you play it, the step currently displayed in the video is highlighted.
 You can also click on the steps and the video is sought to the corresponding point, as you can see in the video below:
 
-<video controls="" width="100%" src="assets/miscellanea/frame-synced-with-video.mov" type="video/mp4"></video>
+<video controls="" width="100%" src="assets/videos/frame-synced-with-video.mov" type="video/mp4"></video>
 
 To be precise, the video is generated from screenshots taken during the execution.
 You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
