@@ -1804,7 +1804,7 @@ The video is sticky, meaning when you scroll down on the test steps it remains v
 Moreover, the video is synced with the steps: when you play it, the step currently displayed in the video is highlighted.
 You can also click on the steps and the video is sought to the corresponding point, as you can see in the video below:
 
-<video controls="" width="100%" src="assets/miscellanea/frame-synced-with-video.mov" type="video/mp4"></video>
+<video controls="" width="100%" src="assets/videos/frame-synced-with-video.mov" type="video/mp4"></video>
 
 To be precise, the video is generated from screenshots taken during the execution.
 You can specify which screenshots to be used as frames providing one or more of these values in the `video.frames` field:
