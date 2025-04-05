@@ -31,5 +31,6 @@ public class Chrome extends Chromium<ChromeOptions, ChromeDriverService, ChromeD
         chrome.getCapabilities().forEach(capabilities::setCapability);
         chrome.getExperimentalOptions().forEach(capabilities::setExperimentalOption);
         setLoggingPreferencesFrom(driversConfiguration.getLogs());
+        activateBiDi(capabilities, configuration, chrome);
     }
 }
