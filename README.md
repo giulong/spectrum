@@ -8,6 +8,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
 [![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/giulong/spectrum/develop)](https://github.com/giulong/spectrum/commits/develop/)
+[![GitHub Discussions](https://img.shields.io/github/discussions/giulong/spectrum)](https://github.com/giulong/spectrum/discussions)
 
 <br />
 <img src="src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">
@@ -127,10 +128,8 @@ and the [open issues](https://github.com/giulong/spectrum/issues).
 
 # Acknowledgments
 
-Spectrum leverages these projects you should definitely check out!
-
 <details>
-   <summary>Acknowledgments</summary>
+   <summary>Spectrum leverages these projects you should definitely check out!</summary>
    <ul>
       <li><a href="https://junit.org/junit5/docs/current/user-guide/">JUnit 5</a></li>
       <li><a href="https://www.selenium.dev/">Selenium</a></li>
