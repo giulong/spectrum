@@ -5,7 +5,6 @@ import io.github.giulong.spectrum.types.ScriptWait;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebDriver;
 
@@ -19,7 +18,7 @@ public class ScriptWaitResolver extends TypeBasedParameterResolver<ScriptWait> {
     public static final String SCRIPT_WAIT = "scriptWait";
 
     @Override
-    public ScriptWait resolveParameter(final ParameterContext parameterContext, final ExtensionContext context) throws ParameterResolutionException {
+    public ScriptWait resolveParameter(final ParameterContext parameterContext, final ExtensionContext context) {
         log.debug("Resolving {}", SCRIPT_WAIT);
 
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);

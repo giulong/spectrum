@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 import java.nio.file.Path;
@@ -28,7 +27,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
     private final ContextManager contextManager = ContextManager.getInstance();
 
     @Override
-    public TestData resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
+    public TestData resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
         log.debug("Resolving {}", TEST_DATA);
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);

@@ -5,7 +5,6 @@ import io.github.giulong.spectrum.types.DownloadWait;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebDriver;
 
@@ -19,7 +18,7 @@ public class DownloadWaitResolver extends TypeBasedParameterResolver<DownloadWai
     public static final String DOWNLOAD_WAIT = "downloadWait";
 
     @Override
-    public DownloadWait resolveParameter(final ParameterContext parameterContext, final ExtensionContext context) throws ParameterResolutionException {
+    public DownloadWait resolveParameter(final ParameterContext parameterContext, final ExtensionContext context) {
         log.debug("Resolving {}", DOWNLOAD_WAIT);
 
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
