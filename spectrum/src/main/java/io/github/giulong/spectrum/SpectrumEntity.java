@@ -17,6 +17,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -76,6 +77,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected Js js;
+
+    @Shared
+    protected LogInspector logInspector;
 
     @Shared
     protected Data data;

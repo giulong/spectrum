@@ -53,7 +53,7 @@ class SpectrumEntityTest {
 
     private final String msg = "msg";
     private final String tag = "tag";
-    private final String fileName = "screenshotName";
+    private final String screenshotName = "screenshotName";
     private final int frameNumber = 123;
     private final byte[] bytes = new byte[]{1, 2, 3};
     private final byte[] digest = new byte[]{4, 5, 6};
@@ -149,13 +149,13 @@ class SpectrumEntityTest {
 
     @SneakyThrows
     private void addScreenshotToReportStubs() {
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(path);
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
-        when(reportsFolder.resolve(fileName)).thenReturn(path);
+        when(reportsFolder.resolve(screenshotName)).thenReturn(path);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
@@ -174,7 +174,7 @@ class SpectrumEntityTest {
                 .toList();
 
         // we're checking real size and names here, no mocks
-        assertEquals(17, actual.size());
+        assertEquals(18, actual.size());
         assertTrue(sharedFieldsNames.containsAll(List.of(
                 "configuration",
                 "extentReports",
@@ -187,6 +187,7 @@ class SpectrumEntityTest {
                 "scriptWait",
                 "downloadWait",
                 "js",
+                "logInspector",
                 "faker",
                 "data",
                 "statefulExtentTest",
@@ -206,13 +207,13 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("screenshot should delegate to addScreenshotToReport")
     void screenshot() {
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(path);
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
-        when(reportsFolder.resolve(fileName)).thenReturn(path);
+        when(reportsFolder.resolve(screenshotName)).thenReturn(path);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(screenshot);
@@ -269,9 +270,9 @@ class SpectrumEntityTest {
     void addScreenshotToReport() {
         final Status status = INFO;
 
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(fileName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
-        when(reportsFolder.resolve(fileName)).thenReturn(path);
+        when(reportsFolder.resolve(screenshotName)).thenReturn(path);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
