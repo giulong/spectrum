@@ -18,6 +18,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
+import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -84,6 +85,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected BrowsingContext browsingContext;
+
+    @Shared
+    protected BrowsingContextInspector browsingContextInspector;
 
     @Shared
     protected Data data;

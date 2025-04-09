@@ -174,7 +174,7 @@ class SpectrumEntityTest {
                 .toList();
 
         // we're checking real size and names here, no mocks
-        assertEquals(19, actual.size());
+        assertEquals(20, actual.size());
         assertTrue(sharedFieldsNames.containsAll(List.of(
                 "configuration",
                 "extentReports",
@@ -189,6 +189,7 @@ class SpectrumEntityTest {
                 "js",
                 "logInspector",
                 "browsingContext",
+                "browsingContextInspector",
                 "faker",
                 "data",
                 "statefulExtentTest",

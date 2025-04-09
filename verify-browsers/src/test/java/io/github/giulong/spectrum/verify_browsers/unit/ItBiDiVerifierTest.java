@@ -11,7 +11,7 @@ public class ItBiDiVerifierTest {
 
     private static final FailsafeReportsVerifier FAILSAFE_REPORTS_VERIFIER = FailsafeReportsVerifier.getInstance();
 
-    private static final int COMPLETED = 5;
+    private static final int COMPLETED = 6;
     private static final int ERRORS = 0;
     private static final int FAILURES = 0;
     private static final int SKIPPED = 0;
