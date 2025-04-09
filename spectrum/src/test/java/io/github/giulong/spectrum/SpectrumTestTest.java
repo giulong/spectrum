@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.interactions.Actions;
 
@@ -99,6 +100,9 @@ class SpectrumTestTest {
     private LogInspector logInspector;
 
     @Mock
+    private BrowsingContext browsingContext;
+
+    @Mock
     private WebElement webElement;
 
     @Mock
@@ -169,7 +173,7 @@ class SpectrumTestTest {
         assertNull(childTestVoid.getParentTestPage());
 
         childTestVoid.beforeEach(testContext, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
-                actions, js, jsWebElementProxyBuilder, logInspector, null);
+                actions, js, jsWebElementProxyBuilder, logInspector, browsingContext, null);
 
         assertEquals(webDriver, spectrumTest.driver);
         assertEquals(implicitWait, spectrumTest.implicitWait);
@@ -182,6 +186,7 @@ class SpectrumTestTest {
         assertEquals(testData, spectrumTest.testData);
         assertEquals(js, spectrumTest.js);
         assertEquals(logInspector, spectrumTest.logInspector);
+        assertEquals(browsingContext, spectrumTest.browsingContext);
         assertEquals(jsWebElementProxyBuilder, spectrumTest.jsWebElementProxyBuilder);
         assertEquals(data, spectrumTest.data);
         assertEquals(testContext, spectrumTest.testContext);
