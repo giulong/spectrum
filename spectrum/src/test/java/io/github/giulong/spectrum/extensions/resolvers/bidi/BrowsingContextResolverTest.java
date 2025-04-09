@@ -21,7 +21,7 @@ class BrowsingContextResolverTest {
     private BrowsingContextResolver browsingContextResolver;
 
     @Test
-    @DisplayName("resolveParameterFor should return an instance of PageLoadWaits on the current stored WebDriver")
+    @DisplayName("resolveParameterFor should return an instance of BrowsingContext for the provided WebDriver")
     void resolveParameterFor() {
         final String windowHandle = "windowHandle";
         when(webDriver.getWindowHandle()).thenReturn(windowHandle);
