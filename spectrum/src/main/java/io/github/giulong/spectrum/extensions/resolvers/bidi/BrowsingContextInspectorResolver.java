@@ -7,7 +7,9 @@ import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 @Getter
 public class BrowsingContextInspectorResolver extends BiDiTypeBasedParameterResolver<BrowsingContextInspector> {
 
-    private final String key = "BROWSING_CONTEXT_INSPECTOR";
+    public static final String BROWSING_CONTEXT_INSPECTOR = "BROWSING_CONTEXT_INSPECTOR";
+
+    private final String key = BROWSING_CONTEXT_INSPECTOR;
 
     private final Class<BrowsingContextInspector> type = BrowsingContextInspector.class;
 

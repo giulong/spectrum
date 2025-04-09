@@ -7,7 +7,9 @@ import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 @Getter
 public class BrowsingContextResolver extends BiDiTypeBasedParameterResolver<BrowsingContext> {
 
-    private final String key = "BROWSING_CONTEXT";
+    public static final String BROWSING_CONTEXT = "BROWSING_CONTEXT";
+
+    private final String key = BROWSING_CONTEXT;
 
     private final Class<BrowsingContext> type = BrowsingContext.class;
 

@@ -7,7 +7,9 @@ import org.openqa.selenium.bidi.module.Network;
 @Getter
 public class NetworkResolver extends BiDiTypeBasedParameterResolver<Network> {
 
-    private final String key = "NETWORK";
+    public static final String NETWORK = "NETWORK";
+
+    private final String key = NETWORK;
 
     private final Class<Network> type = Network.class;
 

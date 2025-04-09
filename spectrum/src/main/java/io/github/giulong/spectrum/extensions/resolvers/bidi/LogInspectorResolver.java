@@ -7,7 +7,9 @@ import org.openqa.selenium.bidi.module.LogInspector;
 @Getter
 public class LogInspectorResolver extends BiDiTypeBasedParameterResolver<LogInspector> {
 
-    private final String key = "LOG_INSPECTOR";
+    public static final String LOG_INSPECTOR = "LOG_INSPECTOR";
+
+    private final String key = LOG_INSPECTOR;
 
     private final Class<LogInspector> type = LogInspector.class;
 
