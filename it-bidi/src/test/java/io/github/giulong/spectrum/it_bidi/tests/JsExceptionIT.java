@@ -21,8 +21,8 @@ public class JsExceptionIT extends SpectrumTest<Void> {
 
     private JavascriptErrorPage javascriptErrorPage;
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     public void onload() {
         final CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
         logInspector.onJavaScriptLog(future::complete);
@@ -37,8 +37,8 @@ public class JsExceptionIT extends SpectrumTest<Void> {
         assertEquals(2, logEntry.getStackTrace().getCallFrames().size());
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void testListenToJavascriptLog() {
         final CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
         logInspector.onJavaScriptLog(future::complete);
@@ -53,8 +53,8 @@ public class JsExceptionIT extends SpectrumTest<Void> {
         assertEquals(ERROR, logEntry.getLevel());
     }
 
-    @SneakyThrows
     @Test
+    @SneakyThrows
     void testListenToLogsWithMultipleConsumers() {
         final CompletableFuture<JavascriptLogEntry> completableFuture1 = new CompletableFuture<>();
         logInspector.onJavaScriptLog(completableFuture1::complete);

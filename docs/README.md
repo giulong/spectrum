@@ -340,21 +340,26 @@ so you can directly use them in your tests/pages.
 > [SpectrumPage](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumPage.html){:target="_blank"},
 > and their superclass [SpectrumEntity](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/SpectrumEntity.html){:target="_blank"}
 
-| Field            | Description                                                                                                                                                                                                                                           |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| configuration    | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                                                    |
-| extentReports    | instance of the Extent Report                                                                                                                                                                                                                         |
-| extentTest       | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                                    |
-| actions          | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                                       |
-| testData         | instance of [TestData]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/types/TestData.java){:target="_blank"} that contains info related to the current test                                                              |
-| driver           | instance of the [WebDriver](https://www.selenium.dev/documentation/webdriver/){:target="_blank"} running for the current test, configured via the `configuration*.yaml`                                                                               |
-| implicitWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.implicit` in the `configuration.yaml`                |
-| pageLoadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.pageLoadTimeout` in the `configuration.yaml`         |
-| scriptWait       | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.scriptTimeout` in the `configuration.yaml`           |
-| downloadWait     | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.downloadTimeout` in the `configuration.yaml`         |
-| eventsDispatcher | you can use it to fire [custom events](#custom-events)                                                                                                                                                                                                |
-| js               | instance of [Js](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/utils/Js.html){:target="_blank"}. Check the [Javascript Executor](#javascript-executor) paragraph to see the available Javascript helper methods |
-| data             | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                             |
+| Field                    | Static | BiDi only | Description                                                                                                                                                                                                                                           |
+|--------------------------|:------:|:---------:|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| configuration            |   ✅    |           | maps the result of the merge of all the `configuration*.yaml` files. You can use it to access to all of its values                                                                                                                                    |
+| extentReports            |   ✅    |           | instance of the Extent Report                                                                                                                                                                                                                         |
+| extentTest               |        |           | instance linked to the section of the Extent Report that will represent the current test. You can use it to add info/screenshots programmatically.                                                                                                    |
+| actions                  |        |           | instance of Selenium [Actions class](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/interactions/Actions.html){:target="_blank"}, useful to simulate complex user gestures                                                       |
+| testData                 |        |           | instance of [TestData]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/types/TestData.java){:target="_blank"} that contains info related to the current test                                                              |
+| driver                   |        |           | instance of the [WebDriver](https://www.selenium.dev/documentation/webdriver/){:target="_blank"} running for the current test, configured via the `configuration*.yaml`                                                                               |
+| implicitWait             |        |           | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.implicit` in the `configuration.yaml`                |
+| pageLoadWait             |        |           | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.pageLoadTimeout` in the `configuration.yaml`         |
+| scriptWait               |        |           | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.scriptTimeout` in the `configuration.yaml`           |
+| downloadWait             |        |           | instance of [WebDriverWait](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/WebDriverWait.html){:target="_blank"} with the duration taken from the `drivers.waits.downloadTimeout` in the `configuration.yaml`         |
+| eventsDispatcher         |   ✅    |           | you can use it to fire [custom events](#custom-events)                                                                                                                                                                                                |
+| js                       |        |           | instance of [Js](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/utils/Js.html){:target="_blank"}. Check the [Javascript Executor](#javascript-executor) paragraph to see the available Javascript helper methods |
+| data                     |        |           | maps the result of the merge of all the `data*.yaml` files. You can use it to access to all of its values                                                                                                                                             |
+| faker                    |   ✅    |           | instance of [Datafaker](#datafaker)                                                                                                                                                                                                                   |
+| logInspector             |        |     ✅     | instance of [log inspector](#log-inspector)                                                                                                                                                                                                           |
+| browsingContext          |        |     ✅     | instance of [browsing context](#browsing-context)                                                                                                                                                                                                     |
+| browsingContextInspector |        |     ✅     | instance of [browsing context inspector](#browsing-context-inspector)                                                                                                                                                                                 |
+| network                  |        |     ✅     | instance of [network](#network)                                                                                                                                                                                                                       |
 
 ### SpectrumEntity Service Methods
 
@@ -1242,6 +1247,130 @@ This is the set of actions and conditions run before the corresponding action:
 
 ---
 
+# WebDriver BiDi
+
+Spectrum supports [WebDriver BiDi](https://www.selenium.dev/documentation/webdriver/bidi/){:target="_blank"}.
+By default, as you can see in the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
+`BiDi` is disabled and `Chrome DevTools Protocol (CDP)` is enabled instead. To enable `BiDi`, you may choose one of these options in your `configuration.yaml`:
+
+1. With the `biDi` property for all drivers:
+   {% include copyCode.html %}
+    ```yaml
+    drivers:
+      biDi: true
+    ```
+
+2. With the `biDi` property for a single driver, if you need driver-specific configurations:
+   {% include copyCode.html %}
+    ```yaml
+    drivers:
+      chrome:
+        biDi: true
+      firefox:
+        biDi: false # explicitly set to false though not needed since it's the default
+    ```
+
+3. With the native Selenium capability for a single driver:
+   {% include copyCode.html %}
+    ```yaml
+    drivers:
+      chrome:
+        capabilities:
+          webSocketUrl: true
+    ```
+
+Besides enabling the `BiDi` protocol, you will also get the following objects automatically injected. You don't need to manually instantiate them, nor to wrap them in a
+`try-with-resources` block: if they're `autocloseable`, Spectrum will close them after the execution.
+You can find the examples provided in the [it-bidi]({{ site.repository_url }}/it-bidi){:target="_blank"} module.
+
+## Log Inspector
+
+Log inspector for console logs. [Selenium Docs](https://www.selenium.dev/documentation/webdriver/bidi/w3c/log/){:target="_blank"}. Example:
+
+{% include copyCode.html %}
+
+```java
+
+@Test
+@SneakyThrows
+void testListenToJavascriptLog() {
+    final CompletableFuture<JavascriptLogEntry> future = new CompletableFuture<>();
+    logInspector.onJavaScriptLog(future::complete);
+
+    driver.get("https://www.selenium.dev/selenium/web/bidi/logEntryAdded.html");
+    driver.findElement(By.id("jsException")).click();
+
+    final JavascriptLogEntry logEntry = future.get(5, SECONDS);
+
+    assertEquals("Error: Not working", logEntry.getText());
+    assertEquals("javascript", logEntry.getType());
+    assertEquals(ERROR, logEntry.getLevel());
+}
+```
+
+## Browsing Context
+
+browsing context of the default window. [Selenium Docs](https://www.selenium.dev/documentation/webdriver/bidi/w3c/browsing_context/){:target="_blank"}. Example:
+
+{% include copyCode.html %}
+
+```java
+
+@Test
+void testGetTreeWithAChild() {
+    browsingContext.navigate("https://www.selenium.dev/selenium/web/iframes.html", COMPLETE);
+
+    final List<BrowsingContextInfo> contextInfoList = browsingContext.getTree();
+
+    assertEquals(1, contextInfoList.size());
+
+    final BrowsingContextInfo info = contextInfoList.getFirst();
+    assertEquals(1, info.getChildren().size());
+    assertEquals(driver.getWindowHandle(), info.getId());
+    assertTrue(info.getChildren().getFirst().getUrl().contains("formPage.html"));
+}
+```
+
+## Browsing Context Inspector
+
+Browsing context inspector of the default window. [Selenium Docs](https://www.selenium.dev/documentation/webdriver/bidi/w3c/browsing_context/){:target="_blank"}. Example:
+
+{% include copyCode.html %}
+
+```java
+
+@Test
+@SneakyThrows
+void canListenToWindowBrowsingContextCreatedEvent() {
+    final CompletableFuture<NavigationInfo> future = new CompletableFuture<>();
+
+    browsingContextInspector.onDomContentLoaded(future::complete);
+    browsingContext.navigate("https://www.selenium.dev/selenium/web/bidi/logEntryAdded.html", COMPLETE);
+
+    final NavigationInfo navigationInfo = future.get(5, SECONDS);
+    assertTrue(navigationInfo.getUrl().contains("bidi/logEntryAdded"));
+}
+```
+
+## Network
+
+Instance to issue network commands and listen to network events. [Selenium Docs](https://www.selenium.dev/documentation/webdriver/bidi/w3c/network/){:target="_blank"}. Example:
+
+{% include copyCode.html %}
+
+```java
+
+@Test
+void canRemoveIntercept() {
+    String intercept = network.addIntercept(new AddInterceptParameters(BEFORE_REQUEST_SENT));
+    assertNotNull(intercept);
+    network.removeIntercept(intercept);
+}
+```
+
+---
+
 # Javascript Executor
 
 Generally speaking, Javascript execution should be avoided: a Selenium test should mimic a real user interaction
@@ -1426,7 +1555,8 @@ arguments[0].style.background = '#cc0000';
 
 > ⚠️ **Disclaimer**<br/>
 > Spectrum uses itself to test its behavior. The video above is produced by the
-> [ExtentReportVerifierIT.java]({{ site.repository_url }}/verify-browsers/src/test/java/io/github/giulong/spectrum/verify_browsers/tests/ExtentReportVerifierIT.java){:target="_blank"},
+> [ExtentReportVerifierIT.java]({{ site.repository_url }}/verify-browsers/src/test/java/io/github/giulong/spectrum/verify_browsers/tests/ExtentReportVerifierIT.java){:target="_
+> blank"},
 > in which Spectrum tests that the generated report contains all the expected elements in the right places,
 > highlighted in red in the video for demonstration purposes.
 
