@@ -3,6 +3,10 @@ package io.github.giulong.spectrum;
 import com.aventstack.extentreports.ExtentReports;
 import io.github.giulong.spectrum.extensions.interceptors.SpectrumInterceptor;
 import io.github.giulong.spectrum.extensions.resolvers.*;
+import io.github.giulong.spectrum.extensions.resolvers.bidi.BrowsingContextInspectorResolver;
+import io.github.giulong.spectrum.extensions.resolvers.bidi.BrowsingContextResolver;
+import io.github.giulong.spectrum.extensions.resolvers.bidi.LogInspectorResolver;
+import io.github.giulong.spectrum.extensions.resolvers.bidi.NetworkResolver;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.*;
@@ -17,6 +21,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
+import org.openqa.selenium.bidi.module.BrowsingContextInspector;
+import org.openqa.selenium.bidi.module.LogInspector;
+import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.interactions.Actions;
 
 import java.lang.reflect.Field;
@@ -71,6 +79,18 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     public static final JsResolver JS_RESOLVER = new JsResolver();
 
     @RegisterExtension
+    public static final LogInspectorResolver LOG_INSPECTOR_RESOLVER = new LogInspectorResolver();
+
+    @RegisterExtension
+    public static final BrowsingContextResolver BROWSING_CONTEXT_RESOLVER = new BrowsingContextResolver();
+
+    @RegisterExtension
+    public static final BrowsingContextInspectorResolver BROWSING_CONTEXT_INSPECTOR_RESOLVER = new BrowsingContextInspectorResolver();
+
+    @RegisterExtension
+    public static final NetworkResolver NETWORK_RESOLVER = new NetworkResolver();
+
+    @RegisterExtension
     public static final FakerResolver FAKER_RESOLVER = new FakerResolver();
 
     @RegisterExtension
@@ -96,7 +116,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
     @SuppressWarnings({"checkstyle:ParameterNumber"})
     void beforeEach(final TestContext testContext, final TestData testData, final StatefulExtentTest statefulExtentTest, final WebDriver driver,
                     final ImplicitWait implicitWait, final PageLoadWait pageLoadWait, final ScriptWait scriptWait, final DownloadWait downloadWait,
-                    final Actions actions, final Js js, final JsWebElementProxyBuilder jsWebElementProxyBuilder, final Data data) {
+                    final Actions actions, final Js js, final JsWebElementProxyBuilder jsWebElementProxyBuilder, final LogInspector logInspector,
+                    final BrowsingContext browsingContext, final BrowsingContextInspector browsingContextInspector, final Network network, final Data data) {
         this.driver = driver;
         this.implicitWait = implicitWait;
         this.pageLoadWait = pageLoadWait;
@@ -107,6 +128,10 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.actions = actions;
         this.testData = testData;
         this.js = js;
+        this.logInspector = logInspector;
+        this.browsingContext = browsingContext;
+        this.browsingContextInspector = browsingContextInspector;
+        this.network = network;
         this.jsWebElementProxyBuilder = jsWebElementProxyBuilder;
         this.data = data;
         this.testContext = testContext;

@@ -90,8 +90,8 @@ class EdgeTest {
     }
 
     @Test
-    @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
-    void buildCapabilitiesFrom() {
+    @DisplayName("buildCapabilities should build an instance of Chrome based on the provided configuration")
+    void buildCapabilities() {
         final List<String> arguments = List.of("args");
 
         when(configuration.getDrivers()).thenReturn(driversConfig);
@@ -104,9 +104,13 @@ class EdgeTest {
         when(edgeConfig.getCapabilities()).thenReturn(Map.of("capability", "value1"));
         when(edgeConfig.getExperimentalOptions()).thenReturn(Map.of("experimental", "value2"));
 
-        MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class, (mock, context) -> {
-            when(mock.addArguments(arguments)).thenReturn(mock);
-        });
+        // activateBiDi
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.isBiDi()).thenReturn(false);
+        lenient().when(edgeConfig.isBiDi()).thenReturn(true);
+
+        MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class,
+                (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
         edge.buildCapabilities();
@@ -120,6 +124,7 @@ class EdgeTest {
 
         verify(edgeOptions).setCapability("capability", (Object) "value1");
         verify(edgeOptions).setExperimentalOption("experimental", "value2");
+        verify(edgeOptions).setCapability("webSocketUrl", true);
 
         assertEquals(edgeOptions, Reflections.getFieldValue("capabilities", edge));
 

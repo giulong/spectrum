@@ -5,7 +5,6 @@ import io.github.giulong.spectrum.types.PageLoadWait;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebDriver;
 
@@ -18,7 +17,7 @@ public class PageLoadWaitResolver extends TypeBasedParameterResolver<PageLoadWai
     public static final String PAGE_LOAD_WAIT = "pageLoadWait";
 
     @Override
-    public PageLoadWait resolveParameter(final ParameterContext parameterContext, final ExtensionContext context) throws ParameterResolutionException {
+    public PageLoadWait resolveParameter(final ParameterContext parameterContext, final ExtensionContext context) {
         log.debug("Resolving {}", PAGE_LOAD_WAIT);
 
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);

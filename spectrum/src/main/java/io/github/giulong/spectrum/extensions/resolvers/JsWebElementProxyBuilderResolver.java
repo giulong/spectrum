@@ -7,7 +7,6 @@ import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebElement;
 
@@ -25,7 +24,7 @@ public class JsWebElementProxyBuilderResolver extends TypeBasedParameterResolver
     public static final String JS_WEB_ELEMENT_PROXY_BUILDER = "jsWebElementProxyBuilder";
 
     @Override
-    public JsWebElementProxyBuilder resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
+    public JsWebElementProxyBuilder resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
         final ExtensionContext.Store store = context.getStore(GLOBAL);
 

@@ -5,7 +5,6 @@ import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -17,7 +16,7 @@ public class FakerResolver extends TypeBasedParameterResolver<Faker> {
     public static final String FAKER = "faker";
 
     @Override
-    public Faker resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
+    public Faker resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
         return rootStore.getOrComputeIfAbsent(FAKER, e -> {
