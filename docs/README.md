@@ -3588,10 +3588,4 @@ You can find details about Spectrum releases [here](https://github.com/giulong/s
 
 ---
 
-# Contacts
-
-| Creator         | GitHub                                | Linkedin                                                       | Email                                                       |
-|-----------------|---------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|
-| Giulio Longfils | [giulong](https://github.com/giulong) | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
-
 If you're using Spectrum, please consider giving it a [GitHub Star](https://github.com/giulong/spectrum){:target="_blank"} ⭐

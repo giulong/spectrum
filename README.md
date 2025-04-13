@@ -35,7 +35,6 @@
       <li><a href="#getting-started">Getting Started</a></li>
       <li><a href="#usage">Usage</a></li>
       <li><a href="#contributing">Contributing</a></li>
-      <li><a href="#contacts">Contacts</a></li>
       <li><a href="#acknowledgments">Acknowledgments</a></li>
    </ol>
 </details>
@@ -89,6 +88,7 @@ If you'd rather add Spectrum manually to your project, you just need to add its 
 ## Maven
 
 ```xml
+
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
@@ -119,12 +119,6 @@ You can also configure Spectrum to produce additional reports, such as summary a
 
 Contributions to Spectrum are welcome! Please check out the [CONTRIBUTING.md](CONTRIBUTING.md)
 and the [open issues](https://github.com/giulong/spectrum/issues).
-
-# Contacts
-
-| Creator         | GitHub                                | Linkedin                                                       | Email                                                       |
-|-----------------|---------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|
-| Giulio Longfils | [giulong](https://github.com/giulong) | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
 
 # Acknowledgments
 
