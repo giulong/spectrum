@@ -1,6 +1,8 @@
 drivers:
   waits:
     downloadTimeout: 5
+    auto:
+      timeout: 1
   chrome:
     args:
       - --headless=new
