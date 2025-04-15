@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.drivers;
 
+import io.github.giulong.spectrum.interfaces.BiDiDriver;
 import io.github.giulong.spectrum.utils.Configuration;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.service.DriverService;
 
-public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDriverService.Builder> {
+public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDriverService.Builder> implements BiDiDriver<FirefoxOptions> {
 
     @Override
     public DriverService.Builder<GeckoDriverService, GeckoDriverService.Builder> getDriverServiceBuilder() {
@@ -29,12 +30,8 @@ public class Firefox extends Driver<FirefoxOptions, GeckoDriverService, GeckoDri
             capabilities.setBinary(binary);
         }
 
-        firefox
-                .getCapabilities()
-                .forEach(capabilities::setCapability);
-
-        firefox
-                .getPreferences()
-                .forEach(capabilities::addPreference);
+        firefox.getCapabilities().forEach(capabilities::setCapability);
+        firefox.getPreferences().forEach(capabilities::addPreference);
+        activateBiDi(capabilities, configuration, firefox);
     }
 }

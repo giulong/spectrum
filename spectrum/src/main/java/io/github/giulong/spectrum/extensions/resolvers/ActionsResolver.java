@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.extensions.resolvers;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
@@ -17,7 +16,7 @@ public class ActionsResolver extends TypeBasedParameterResolver<Actions> {
     public static final String ACTIONS = "actions";
 
     @Override
-    public Actions resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
+    public Actions resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
         log.debug("Resolving {}", ACTIONS);
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);

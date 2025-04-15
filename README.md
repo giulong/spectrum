@@ -8,6 +8,7 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
 [![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/giulong/spectrum/develop)](https://github.com/giulong/spectrum/commits/develop/)
+[![GitHub Discussions](https://img.shields.io/github/discussions/giulong/spectrum)](https://github.com/giulong/spectrum/discussions)
 
 <br />
 <img src="src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">
@@ -16,8 +17,6 @@
 <br/>
 <div>
 <a href="https://giulong.github.io/spectrum/">Full Docs</a>
-·
-<a href="https://javadoc.io/doc/io.github.giulong/spectrum/latest/index.html">Javadoc</a>
 ·
 <a href="https://github.com/giulong/spectrum/issues/new?template=bug_report.md">Report Bug</a>
 ·
@@ -34,7 +33,6 @@
       <li><a href="#getting-started">Getting Started</a></li>
       <li><a href="#usage">Usage</a></li>
       <li><a href="#contributing">Contributing</a></li>
-      <li><a href="#contacts">Contacts</a></li>
       <li><a href="#acknowledgments">Acknowledgments</a></li>
    </ol>
 </details>
@@ -52,6 +50,7 @@ Spectrum is an **e2e test automation framework** that leverages **JUnit 5** and 
 * It provides **out-of-the-box defaults** to let you run tests with no additional configuration
 * It supports **browsers automation** via Selenium
 * It supports **mobile and desktop applications automation** via Appium
+* It supports **WebDriver BiDi** protocol
 * It generates **several additional reports** that are **fully customisable**
 
 Spectrum manages all the boilerplate code, allowing you to focus on test logic:
@@ -88,6 +87,7 @@ If you'd rather add Spectrum manually to your project, you just need to add its 
 ## Maven
 
 ```xml
+
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
@@ -119,18 +119,10 @@ You can also configure Spectrum to produce additional reports, such as summary a
 Contributions to Spectrum are welcome! Please check out the [CONTRIBUTING.md](CONTRIBUTING.md)
 and the [open issues](https://github.com/giulong/spectrum/issues).
 
-# Contacts
-
-| Creator         | GitHub                                | Linkedin                                                       | Email                                                       |
-|-----------------|---------------------------------------|----------------------------------------------------------------|-------------------------------------------------------------|
-| Giulio Longfils | [giulong](https://github.com/giulong) | [Giulio Longfils](https://www.linkedin.com/in/giuliolongfils/) | [giuliolongfils@gmail.com](mailto:giuliolongfils@gmail.com) |
-
 # Acknowledgments
 
-Spectrum leverages these projects you should definitely check out!
-
 <details>
-   <summary>Acknowledgments</summary>
+   <summary>Spectrum leverages these projects you should definitely check out!</summary>
    <ul>
       <li><a href="https://junit.org/junit5/docs/current/user-guide/">JUnit 5</a></li>
       <li><a href="https://www.selenium.dev/">Selenium</a></li>

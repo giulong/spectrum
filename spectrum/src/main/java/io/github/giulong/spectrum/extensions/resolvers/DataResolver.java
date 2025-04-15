@@ -7,7 +7,6 @@ import io.github.giulong.spectrum.utils.YamlUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
 import java.lang.reflect.Type;
@@ -22,12 +21,12 @@ public class DataResolver<Data> implements ParameterResolver {
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
 
     @Override
-    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) throws ParameterResolutionException {
+    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
         return parameterContext.getParameter().getParameterizedType().getTypeName().equals(DataResolver.class.getTypeParameters()[0].getName());
     }
 
     @Override
-    public Data resolveParameter(final ParameterContext arg0, final ExtensionContext context) throws ParameterResolutionException {
+    public Data resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
         final Type type = Reflections.getGenericSuperclassOf(context.getRequiredTestClass(), SpectrumTest.class).getActualTypeArguments()[0];
 
         if (Void.class.equals(type)) {

@@ -78,6 +78,7 @@ environments:
 # Drivers configuration
 drivers:
   keepOpen: false # Whether to keep the driver open after the execution
+  biDi: false # Whether to enable the BiDi protocol instead of CDP
 
   waits:
     implicit: 0    # Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found
@@ -90,6 +91,7 @@ drivers:
 
   # Chrome capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/chrome/
   chrome:
+    biDi: false # Whether to enable the BiDi protocol instead of CDP
     args:
       - --disable-search-engine-choice-screen
     capabilities: { }
@@ -110,6 +112,7 @@ drivers:
 
   # Firefox's capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/firefox/
   firefox:
+    biDi: false # Whether to enable the BiDi protocol instead of CDP
     binary: null
     args: [ ]
     preferences:
@@ -127,6 +130,7 @@ drivers:
 
   # Edge capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/edge/
   edge:
+    biDi: false # Whether to enable the BiDi protocol instead of CDP
     args: [ ]
     capabilities: { }
     experimentalOptions:

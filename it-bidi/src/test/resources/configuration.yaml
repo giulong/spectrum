@@ -2,25 +2,20 @@ application:
   baseUrl: https://the-internet.herokuapp.com/
 
 drivers:
+  biDi: true
   waits:
     downloadTimeout: 5
   chrome:
     args:
       - --headless=new
-    capabilities:
-      webSocketUrl: true
   firefox:
     args:
       - -headless
-    capabilities:
-      webSocketUrl: true
   edge:
     args:
       - --headless=new
     experimentalOptions:
       binary: ${EDGE_BINARY:-}
-    capabilities:
-      webSocketUrl: true
 
 video:
   frames:

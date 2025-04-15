@@ -181,6 +181,9 @@ public class Configuration {
         @JsonPropertyDescription("Whether to keep the driver open after the execution")
         private boolean keepOpen;
 
+        @JsonPropertyDescription("Whether to enable the BiDi protocol instead of CDP")
+        private boolean biDi;
+
         @JsonPropertyDescription("Driver's fluent waits")
         private Waits waits;
 
@@ -256,9 +259,16 @@ public class Configuration {
             }
         }
 
+        public interface BiDiDriverConfiguration {
+            boolean isBiDi();
+        }
+
         @Getter
         @Generated
-        public static class Chrome {
+        public static class Chrome implements BiDiDriverConfiguration {
+
+            @JsonPropertyDescription("Whether to enable the BiDi protocol instead of CDP")
+            private boolean biDi;
 
             @JsonPropertyDescription("Chrome's args")
             private List<String> args;
@@ -287,7 +297,10 @@ public class Configuration {
 
         @Getter
         @Generated
-        public static class Firefox {
+        public static class Firefox implements BiDiDriverConfiguration {
+
+            @JsonPropertyDescription("Whether to enable the BiDi protocol instead of CDP")
+            private boolean biDi;
 
             @JsonPropertyDescription("Absolute path to the custom Firefox binary to use")
             private String binary;
@@ -318,7 +331,10 @@ public class Configuration {
 
         @Getter
         @Generated
-        public static class Edge {
+        public static class Edge implements BiDiDriverConfiguration {
+
+            @JsonPropertyDescription("Whether to enable the BiDi protocol instead of CDP")
+            private boolean biDi;
 
             @JsonPropertyDescription("Edge's args")
             private List<String> args;

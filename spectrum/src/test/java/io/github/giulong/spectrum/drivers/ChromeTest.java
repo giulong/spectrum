@@ -90,8 +90,8 @@ class ChromeTest {
     }
 
     @Test
-    @DisplayName("buildCapabilitiesFrom should build an instance of Chrome based on the provided configuration")
-    void buildCapabilitiesFrom() {
+    @DisplayName("buildCapabilities should build an instance of Chrome based on the provided configuration")
+    void buildCapabilities() {
         final List<String> arguments = List.of("args");
 
         when(configuration.getDrivers()).thenReturn(driversConfig);
@@ -104,9 +104,13 @@ class ChromeTest {
         when(chromeConfig.getCapabilities()).thenReturn(Map.of("capability", "value1"));
         when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of("experimental", "value2"));
 
-        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
-            when(mock.addArguments(arguments)).thenReturn(mock);
-        });
+        // activateBiDi
+        when(configuration.getDrivers()).thenReturn(driversConfig);
+        when(driversConfig.isBiDi()).thenReturn(false);
+        lenient().when(chromeConfig.isBiDi()).thenReturn(true);
+
+        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class,
+                (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
         MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
 
         chrome.buildCapabilities();
@@ -121,6 +125,7 @@ class ChromeTest {
 
         verify(chromeOptions).setCapability("capability", (Object) "value1");
         verify(chromeOptions).setExperimentalOption("experimental", "value2");
+        verify(chromeOptions).setCapability("webSocketUrl", true);
 
         assertEquals(chromeOptions, Reflections.getFieldValue("capabilities", chrome));
 

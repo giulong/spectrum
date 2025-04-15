@@ -1,7 +1,5 @@
 package io.github.giulong.spectrum.drivers;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.utils.Configuration;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +17,8 @@ public abstract class Driver<T extends MutableCapabilities, U extends DriverServ
 
     protected static final ThreadLocal<WebDriver> WEB_DRIVER_THREAD_LOCAL = new ThreadLocal<>();
 
-    @JsonIgnore
     protected final Configuration configuration = Configuration.getInstance();
 
-    @JsonPropertyDescription("WebDriver's specific capabilities")
     protected T capabilities;
 
     public abstract DriverService.Builder<U, V> getDriverServiceBuilder();
