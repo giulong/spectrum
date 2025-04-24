@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -118,5 +119,34 @@ class HtmlUtilsTest {
         final String actual = htmlUtils.inlineVideosOf(html);
 
         assertThat(actual, matchesPattern(".*<video.*src=\"data:video/mp4;base64,AQID\"/>.*<video.*src=\"data:video/mp4;base64,BAUG\"/>.*"));
+    }
+
+    @Test
+    @DisplayName("generateVideoTag should return a correctly formatted video HTML tag with given attributes")
+    void generateVideoTag() {
+        final String videoId = "abc123";
+        final String width = "640";
+        final String height = "360";
+        final String mockPathString = "/videos/test.mp4";
+        final Path mockPath = Mockito.mock(Path.class);
+        when(mockPath.toString()).thenReturn(mockPathString);
+
+        final String result = htmlUtils.generateVideoTag(videoId, width, height, mockPath);
+        final String expected = "<video id=\"video-abc123\" controls width=\"640\" height=\"360\" src=\"/videos/test.mp4\" type=\"video/mp4\" " +
+                "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\" " +
+                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>";
+        assertEquals(expected, result);
+    }
+
+    @Test
+    @DisplayName("generateTestInfoDivs should return two divs with correct IDs and content")
+    void testGenerateTestInfoDivs() {
+
+        final String id = "test1";
+        final String classDisplayName = "MyTestClass";
+        final String testDisplayName = "shouldDoSomething";
+        final String result = htmlUtils.generateTestInfoDivs(id, classDisplayName, testDisplayName);
+        final String expected = "<div id=\"test1\">MyTestClass</div><div id=\"test1-test-name\">shouldDoSomething</div>";
+        assertEquals(expected, result);
     }
 }

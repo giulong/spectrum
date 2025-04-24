@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.types.TestData;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -16,7 +17,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
-public class HtmlUtils {
+public class HtmlUtils implements SessionHook {
 
     private static final HtmlUtils INSTANCE = new HtmlUtils();
     private static final Pattern VIDEO_SRC = Pattern.compile("<video.*?src=\"(?<src>[^\"]*)\"");
@@ -74,5 +75,17 @@ public class HtmlUtils {
         }
 
         return inlineHtml;
+    }
+
+    public String generateVideoTag(final String videoId, final String width, final String height, final Path src) {
+        final String videoTagTemplate = "<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
+                "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\" " +
+                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>";
+        return String.format(videoTagTemplate, videoId, width, height, src);
+    }
+
+    public String generateTestInfoDivs(final String id, final String classDisplayName, final String testDisplayName) {
+        final String divTemplate = "<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>";
+        return String.format(divTemplate, id, classDisplayName, id, testDisplayName);
     }
 }
