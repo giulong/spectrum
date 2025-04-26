@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -22,6 +23,9 @@ public class HtmlUtils implements SessionHook {
     private static final HtmlUtils INSTANCE = new HtmlUtils();
     private static final Pattern VIDEO_SRC = Pattern.compile("<video.*?src=\"(?<src>[^\"]*)\"");
     private static final Pattern IMAGE_TAG = Pattern.compile("<div class=\"row mb-3\">\\s*<div class=\"col-md-3\">\\s*<img.*?src=\"(?<src>[^\"]*)\".*?</div>\\s*</div>", DOTALL);
+    private static final String VIDEO_TEMPLATE = "video.html";
+    private static final String DIV_TEMPLATE = "div-template.html";
+    private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
 
     public static HtmlUtils getInstance() {
         return INSTANCE;
@@ -78,14 +82,10 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String generateVideoTag(final String videoId, final String width, final String height, final Path src) {
-        final String videoTagTemplate = "<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
-                "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\" " +
-                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>";
-        return String.format(videoTagTemplate, videoId, width, height, src);
+        return freeMarkerWrapper.interpolateTemplate(VIDEO_TEMPLATE, Map.of("videoId",videoId, "width",width, "height",height , "src",src.toString()));
     }
 
     public String generateTestInfoDivs(final String id, final String classDisplayName, final String testDisplayName) {
-        final String divTemplate = "<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>";
-        return String.format(divTemplate, id, classDisplayName, id, testDisplayName);
+        return freeMarkerWrapper.interpolateTemplate(DIV_TEMPLATE, Map.of("id",id, "classDisplayName",classDisplayName, "testDisplayName",testDisplayName));
     }
 }
