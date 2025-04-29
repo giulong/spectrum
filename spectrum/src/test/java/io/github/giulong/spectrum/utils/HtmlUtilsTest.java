@@ -36,8 +36,7 @@ class HtmlUtilsTest {
 
     @Mock
     private TestData testData;
-    @Mock
-    private FreeMarkerWrapper freeMarkerWrapper;
+
     @InjectMocks
     private HtmlUtils htmlUtils;
 

@@ -82,10 +82,10 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String generateVideoTag(final String videoId, final String width, final String height, final Path src) {
-        return freeMarkerWrapper.interpolateTemplate(VIDEO_TEMPLATE, Map.of("videoId",videoId, "width",width, "height",height , "src",src.toString()));
+        return freeMarkerWrapper.interpolateTemplate(VIDEO_TEMPLATE, Map.of("videoId", videoId, "width", width, "height", height, "src", src.toString()));
     }
 
     public String generateTestInfoDivs(final String id, final String classDisplayName, final String testDisplayName) {
-        return freeMarkerWrapper.interpolateTemplate(DIV_TEMPLATE, Map.of("id",id, "classDisplayName",classDisplayName, "testDisplayName",testDisplayName));
+        return freeMarkerWrapper.interpolateTemplate(DIV_TEMPLATE, Map.of("id", id, "classDisplayName", classDisplayName, "testDisplayName", testDisplayName));
     }
 }

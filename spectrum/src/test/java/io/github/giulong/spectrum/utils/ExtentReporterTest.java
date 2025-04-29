@@ -492,7 +492,7 @@ class ExtentReporterTest {
         final String height = "height";
         final String expectedTag = String.format("<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
                 "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\"" +
-                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>",testId, width, height, path);
+                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>", testId, width, height, path);
         when(videoExtentTest.getWidth()).thenReturn(width);
         when(videoExtentTest.getHeight()).thenReturn(height);
         when(htmlUtils.generateVideoTag(testId, width, height, path)).thenReturn(expectedTag);
