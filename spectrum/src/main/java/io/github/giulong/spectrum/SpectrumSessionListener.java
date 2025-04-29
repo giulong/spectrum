@@ -63,7 +63,6 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         extentReporter.sessionClosed();
         extentReporterInline.sessionClosed();
         eventsDispatcher.sessionClosed();
-        htmlUtils.sessionClosed();
     }
 
     void parseConfiguration() {
