@@ -28,6 +28,19 @@ public class HtmlUtils implements SessionHook {
     private static final String FRAME_TEMPLATE = "div-frame-template.html";
     private static final String INLINE_IMAGE_TEMPLATE = "div-image-template.html";
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
+    private final FileUtils fileUtils = FileUtils.getInstance();
+    private String videoTemplate;
+    private String divTemplate;
+    private String frameTemplate;
+    private String inlineImageTemplate;
+
+    @Override
+    public void sessionOpened() {
+        this.videoTemplate = fileUtils.readTemplate(VIDEO_TEMPLATE);
+        this.divTemplate = fileUtils.readTemplate(DIV_TEMPLATE);
+        this.inlineImageTemplate = fileUtils.readTemplate(INLINE_IMAGE_TEMPLATE);
+        this.frameTemplate = fileUtils.readTemplate(FRAME_TEMPLATE);
+    }
 
     public static HtmlUtils getInstance() {
         return INSTANCE;
@@ -42,7 +55,7 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String buildFrameTagFor(final int number, final String content, final TestData testData, final String classes) {
-        return freeMarkerWrapper.interpolateTemplate(FRAME_TEMPLATE, Map.of("classes", classes,"id", testData.getTestId(), "number", number, "content", content));
+        return freeMarkerWrapper.interpolate(this.frameTemplate, Map.of("classes", classes,"id", testData.getTestId(), "number", number, "content", content));
     }
 
     @SneakyThrows
@@ -54,7 +67,7 @@ public class HtmlUtils implements SessionHook {
             final String src = matcher.group("src");
             final byte[] bytes = Files.readAllBytes(Path.of(src));
             final String encoded = Base64.getEncoder().encodeToString(bytes);
-            final String replacement = freeMarkerWrapper.interpolateTemplate(INLINE_IMAGE_TEMPLATE, Map.of("encoded", encoded, "backslash", "\\"));
+            final String replacement = freeMarkerWrapper.interpolate(this.inlineImageTemplate, Map.of("encoded", encoded, "backslash", "\\"));
 
             log.debug("Found img with src {}", src);
             inlineHtml = inlineHtml.replace(matcher.group(0), replacement);
@@ -82,10 +95,10 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String generateVideoTag(final String videoId, final String width, final String height, final Path src) {
-        return freeMarkerWrapper.interpolateTemplate(VIDEO_TEMPLATE, Map.of("videoId", videoId, "width", width, "height", height, "src", src.toString()));
+        return freeMarkerWrapper.interpolate(this.videoTemplate, Map.of("videoId", videoId, "width", width, "height", height, "src", src.toString()));
     }
 
     public String generateTestInfoDivs(final String id, final String classDisplayName, final String testDisplayName) {
-        return freeMarkerWrapper.interpolateTemplate(DIV_TEMPLATE, Map.of("id", id, "classDisplayName", classDisplayName, "testDisplayName", testDisplayName));
+        return freeMarkerWrapper.interpolate(this.divTemplate, Map.of("id", id, "classDisplayName", classDisplayName, "testDisplayName", testDisplayName));
     }
 }

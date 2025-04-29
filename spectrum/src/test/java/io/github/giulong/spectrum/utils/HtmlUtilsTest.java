@@ -15,6 +15,7 @@ import org.mockito.Mockito;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,6 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class HtmlUtilsTest {
@@ -45,6 +48,9 @@ class HtmlUtilsTest {
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
 
+    @Mock
+    private FileUtils fileUtils;
+
     @Captor
     private ArgumentCaptor<Map<String, Object>> freeMarkerVarsArgumentCaptor;
 
@@ -57,6 +63,7 @@ class HtmlUtilsTest {
         filesMockedStatic = mockStatic(Files.class);
 
         Reflections.setField("freeMarkerWrapper", htmlUtils, freeMarkerWrapper);
+        Reflections.setField("fileUtils", htmlUtils, fileUtils);
     }
 
     @AfterEach
@@ -73,16 +80,39 @@ class HtmlUtilsTest {
     }
 
     @Test
+    @DisplayName("sessionOpened should init the html utils")
+    void sessionOpened() {
+        final String videoTemplate = "videoHtml";
+        final String divTemplate = "divtemplateHtml";
+        final String divFrameTemplate = "divFrameTemplateHtml";
+        final String divImageTemplate = "divImageHtml";
+
+        when(fileUtils.readTemplate("video.html")).thenReturn(videoTemplate);
+        when(fileUtils.readTemplate("div-template.html")).thenReturn(divTemplate);
+        when(fileUtils.readTemplate("div-frame-template.html")).thenReturn(divFrameTemplate);
+        when(fileUtils.readTemplate("div-image-template.html")).thenReturn(divImageTemplate);
+
+        htmlUtils.sessionOpened();
+
+        verify(fileUtils, times(4)).readTemplate(Mockito.anyString());
+    }
+
+    @Test
     @DisplayName("buildFrameTagFor should return the tag with the provided frame number and content")
     void buildFrameTagForOverloaded() {
         when(testData.getTestId()).thenReturn(testId);
         final String interpolatedTemplate = "interpolatedTemplate";
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of("classes", "", "id", testId, "number", 123, "content", "content");
 
-        when(freeMarkerWrapper.interpolateTemplate(eq("div-frame-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
+        Reflections.setField("frameTemplate", htmlUtils, source);
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
+
         final String result = htmlUtils.buildFrameTagFor(123, "content", testData);
 
+        verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals(interpolatedTemplate, result);
-        assertEquals(Map.of("classes", "", "id", testId, "number", 123, "content", "content"), freeMarkerVarsArgumentCaptor.getValue());
+        assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
 
     }
 
@@ -91,12 +121,17 @@ class HtmlUtilsTest {
     void buildFrameTagFor() {
         when(testData.getTestId()).thenReturn(testId);
         final String interpolatedTemplate = "interpolatedTemplate";
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of("classes", "classes", "id", testId, "number", 123, "content", "content");
 
-        when(freeMarkerWrapper.interpolateTemplate(eq("div-frame-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
+        Reflections.setField("frameTemplate", htmlUtils, source);
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
+
         final String result = htmlUtils.buildFrameTagFor(123, "content", testData, "classes");
 
+        verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals(interpolatedTemplate, result);
-        assertEquals(Map.of("classes", "classes", "id", testId, "number", 123, "content", "content"), freeMarkerVarsArgumentCaptor.getValue());
+        assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
     @Test
@@ -107,14 +142,18 @@ class HtmlUtilsTest {
         when(Path.of("src2")).thenReturn(path2);
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
         when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
-        final String interpolatedTemplate = "<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>";
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of("encoded", "BAUG", "backslash", "\\");
 
-        when(freeMarkerWrapper.interpolateTemplate(eq("div-image-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
+        Reflections.setField("inlineImageTemplate", htmlUtils, source);
+        final String interpolatedTemplate = "<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>";
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
         final String actual = htmlUtils.inline(report);
 
+        verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals("abc<video src=\"data:video/mp4;base64,AQID\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>def", actual);
-        assertEquals(Map.of("encoded", "BAUG", "backslash", "\\"), freeMarkerVarsArgumentCaptor.getValue());
+        assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
     @Test
@@ -128,10 +167,23 @@ class HtmlUtilsTest {
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
         when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
         final String interpolatedTemplate = "interpolatedTemplate";
-        when(freeMarkerWrapper.interpolateTemplate(eq("div-image-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of("encoded", "AQID", "backslash", "\\");
+        final Map<String, Object> expectedParams1 = Map.of("encoded", "BAUG", "backslash", "\\");
+
+        Reflections.setField("inlineImageTemplate", htmlUtils, source);
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
+        when(freeMarkerWrapper.interpolate(source, expectedParams1)).thenReturn(interpolatedTemplate);
+
         final String actual = htmlUtils.inlineImagesOf(html);
 
-        assertEquals(Map.of("encoded", "BAUG", "backslash", "\\"), freeMarkerVarsArgumentCaptor.getValue());
+        verify(freeMarkerWrapper, times(2)).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
+        final List<Map<String, Object>> capturedVars = freeMarkerVarsArgumentCaptor.getAllValues();
+
+        final Map<String, Object> firstCallVars = capturedVars.get(0);
+        final Map<String, Object> secondCallVars = capturedVars.get(1);
+        assertEquals(expectedParams, firstCallVars);
+        assertEquals(expectedParams1, secondCallVars);
         assertThat(actual, containsString(interpolatedTemplate));
 
     }
@@ -160,14 +212,17 @@ class HtmlUtilsTest {
         final String mockPathString = "/videos/test.mp4";
         final Path mockPath = Mockito.mock(Path.class);
         final String interpolatedTemplate = "interpolatedTemplate";
-
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of("videoId", videoId, "width", width, "height", height, "src", mockPathString);
+        Reflections.setField("videoTemplate", htmlUtils, source);
         when(mockPath.toString()).thenReturn(mockPathString);
-        when(freeMarkerWrapper.interpolateTemplate(eq("video.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
 
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
         final String result = htmlUtils.generateVideoTag(videoId, width, height, mockPath);
 
+        verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals(interpolatedTemplate, result);
-        assertEquals(Map.of("videoId", videoId, "width", width, "height", height, "src", mockPathString), freeMarkerVarsArgumentCaptor.getValue());
+        assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
     @Test
@@ -177,12 +232,15 @@ class HtmlUtilsTest {
         final String classDisplayName = "MyTestClass";
         final String testDisplayName = "shouldDoSomething";
         final String interpolatedTemplate = "interpolatedTemplate";
-
-        when(freeMarkerWrapper.interpolateTemplate(eq("div-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of("id", id, "classDisplayName", classDisplayName, "testDisplayName", testDisplayName);
+        Reflections.setField("divTemplate", htmlUtils, source);
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
         final String result = htmlUtils.generateTestInfoDivs(id, classDisplayName, testDisplayName);
 
+        verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals(interpolatedTemplate, result);
-        assertEquals(Map.of("id", id, "classDisplayName", classDisplayName, "testDisplayName", testDisplayName), freeMarkerVarsArgumentCaptor.getValue());
+        assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 }
