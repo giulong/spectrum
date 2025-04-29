@@ -84,6 +84,9 @@ class SpectrumSessionListenerTest {
     @Mock
     private MetadataManager metadataManager;
 
+    @Mock
+    private HtmlUtils htmlUtils;
+
     @InjectMocks
     private SpectrumSessionListener spectrumSessionListener;
 
@@ -100,6 +103,7 @@ class SpectrumSessionListenerTest {
         Reflections.setField("configuration", spectrumSessionListener, configuration);
         Reflections.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
         Reflections.setField("metadataManager", spectrumSessionListener, metadataManager);
+        Reflections.setField("htmlUtils", spectrumSessionListener, htmlUtils);
     }
 
     @AfterEach
@@ -151,6 +155,7 @@ class SpectrumSessionListenerTest {
         verify(extentReporterInline).sessionOpened();
         verify(freeMarkerWrapper).sessionOpened();
         verify(eventsDispatcher).sessionOpened();
+        verify(htmlUtils).sessionOpened();
     }
 
     @Test
