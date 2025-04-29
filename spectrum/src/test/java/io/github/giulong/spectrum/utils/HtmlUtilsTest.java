@@ -5,19 +5,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import org.mockito.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
@@ -37,6 +36,12 @@ class HtmlUtilsTest {
     @Mock
     private TestData testData;
 
+    @Mock
+    private FreeMarkerWrapper freeMarkerWrapper;
+
+    @Captor
+    private ArgumentCaptor<Map<String, Object>> freeMarkerVarsArgumentCaptor;
+
     @InjectMocks
     private HtmlUtils htmlUtils;
 
@@ -44,6 +49,8 @@ class HtmlUtilsTest {
     void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
+
+        Reflections.setField("freeMarkerWrapper", htmlUtils, freeMarkerWrapper);
     }
 
     @AfterEach
@@ -129,24 +136,30 @@ class HtmlUtilsTest {
         final String height = "360";
         final String mockPathString = "/videos/test.mp4";
         final Path mockPath = Mockito.mock(Path.class);
+        final String interpolatedTemplate = "interpolatedTemplate";
+
         when(mockPath.toString()).thenReturn(mockPathString);
+        when(freeMarkerWrapper.interpolateTemplate(eq("video.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
 
         final String result = htmlUtils.generateVideoTag(videoId, width, height, mockPath);
-        final String expected = "<video id=\"video-abc123\" controls width=\"640\" height=\"360\" src=\"/videos/test.mp4\" type=\"video/mp4\" " +
-                "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\" " +
-                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>";
-        assertEquals(expected, result);
+
+        assertEquals(interpolatedTemplate, result);
+        assertEquals(Map.of("videoId", videoId, "width", width, "height", height, "src", mockPathString), freeMarkerVarsArgumentCaptor.getValue());
     }
 
     @Test
     @DisplayName("generateTestInfoDivs should return two divs with correct IDs and content")
     void testGenerateTestInfoDivs() {
-
         final String id = "test1";
         final String classDisplayName = "MyTestClass";
         final String testDisplayName = "shouldDoSomething";
+        final String interpolatedTemplate = "interpolatedTemplate";
+
+        when(freeMarkerWrapper.interpolateTemplate(eq("div-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
+
         final String result = htmlUtils.generateTestInfoDivs(id, classDisplayName, testDisplayName);
-        final String expected = "<div id=\"test1\">MyTestClass</div><div id=\"test1-test-name\">shouldDoSomething</div>";
-        assertEquals(expected, result);
+
+        assertEquals(interpolatedTemplate, result);
+        assertEquals(Map.of("id", id, "classDisplayName", classDisplayName, "testDisplayName", testDisplayName), freeMarkerVarsArgumentCaptor.getValue());
     }
 }

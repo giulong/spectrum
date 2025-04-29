@@ -470,7 +470,7 @@ class ExtentReporterTest {
         final String classDisplayName = "classDisplayName";
         final String displayName = "displayName";
         final Set<String> tags = Set.of("t1", "t2");
-        final String expectedTag = String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, CLASS_DISPLAY_NAME, id, DISPLAY_NAME);
+        final String expectedTag = "expectedTag";
 
         when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getTestId()).thenReturn(id);
@@ -490,16 +490,14 @@ class ExtentReporterTest {
         final String testId = "testId";
         final String width = "width";
         final String height = "height";
-        final String expectedTag = String.format("<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
-                "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\"" +
-                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>", testId, width, height, path);
+        final String expectedTag = "expectedTag";
         when(videoExtentTest.getWidth()).thenReturn(width);
         when(videoExtentTest.getHeight()).thenReturn(height);
         when(htmlUtils.generateVideoTag(testId, width, height, path)).thenReturn(expectedTag);
 
         extentReporter.attachVideo(extentTest, videoExtentTest, testId, path);
 
-        verify(extentTest).info(String.format(expectedTag, testId, width, height, path));
+        verify(extentTest).info(expectedTag);
     }
 
     @Test
