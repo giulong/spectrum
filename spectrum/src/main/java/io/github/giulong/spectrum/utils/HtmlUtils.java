@@ -25,6 +25,8 @@ public class HtmlUtils implements SessionHook {
     private static final Pattern IMAGE_TAG = Pattern.compile("<div class=\"row mb-3\">\\s*<div class=\"col-md-3\">\\s*<img.*?src=\"(?<src>[^\"]*)\".*?</div>\\s*</div>", DOTALL);
     private static final String VIDEO_TEMPLATE = "video.html";
     private static final String DIV_TEMPLATE = "div-template.html";
+    private static final String FRAME_TEMPLATE = "div-frame-template.html";
+    private static final String INLINE_IMAGE_TEMPLATE = "div-image-template.html";
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
 
     public static HtmlUtils getInstance() {
@@ -40,7 +42,7 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String buildFrameTagFor(final int number, final String content, final TestData testData, final String classes) {
-        return String.format("<div class=\"%s\" data-test-id=\"%s\" data-frame=\"%s\">%s</div>", classes, testData.getTestId(), number, content);
+        return freeMarkerWrapper.interpolateTemplate(FRAME_TEMPLATE, Map.of("classes", classes,"id", testData.getTestId(), "number", number, "content", content));
     }
 
     @SneakyThrows
@@ -51,10 +53,8 @@ public class HtmlUtils implements SessionHook {
         while (matcher.find()) {
             final String src = matcher.group("src");
             final byte[] bytes = Files.readAllBytes(Path.of(src));
-            final String encoded = new String(Base64.getEncoder().encode(bytes));
-            final String replacement = "<div class=\"row mb-3\"><div class=\"col-md-3\">" +
-                    "<a href=\"data:image/png;base64," + encoded + "\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64," + encoded + "\"/></a>" +
-                    "</div></div>";
+            final String encoded = Base64.getEncoder().encodeToString(bytes);
+            final String replacement = freeMarkerWrapper.interpolateTemplate(INLINE_IMAGE_TEMPLATE, Map.of("encoded", encoded, "backslash", "\\"));
 
             log.debug("Found img with src {}", src);
             inlineHtml = inlineHtml.replace(matcher.group(0), replacement);

@@ -5,7 +5,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,6 +18,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -70,16 +76,27 @@ class HtmlUtilsTest {
     @DisplayName("buildFrameTagFor should return the tag with the provided frame number and content")
     void buildFrameTagForOverloaded() {
         when(testData.getTestId()).thenReturn(testId);
+        final String interpolatedTemplate = "interpolatedTemplate";
 
-        assertEquals("<div class=\"\" data-test-id=\"testId\" data-frame=\"123\">content</div>", htmlUtils.buildFrameTagFor(123, "content", testData));
+        when(freeMarkerWrapper.interpolateTemplate(eq("div-frame-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
+        final String result = htmlUtils.buildFrameTagFor(123, "content", testData);
+
+        assertEquals(interpolatedTemplate, result);
+        assertEquals(Map.of("classes", "", "id", testId, "number", 123, "content", "content"), freeMarkerVarsArgumentCaptor.getValue());
+
     }
 
     @Test
     @DisplayName("buildFrameTagFor should return the tag with the provided frame number, content, and css classes provided")
     void buildFrameTagFor() {
         when(testData.getTestId()).thenReturn(testId);
+        final String interpolatedTemplate = "interpolatedTemplate";
 
-        assertEquals("<div class=\"classes\" data-test-id=\"testId\" data-frame=\"123\">content</div>", htmlUtils.buildFrameTagFor(123, "content", testData, "classes"));
+        when(freeMarkerWrapper.interpolateTemplate(eq("div-frame-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
+        final String result = htmlUtils.buildFrameTagFor(123, "content", testData, "classes");
+
+        assertEquals(interpolatedTemplate, result);
+        assertEquals(Map.of("classes", "classes", "id", testId, "number", 123, "content", "content"), freeMarkerVarsArgumentCaptor.getValue());
     }
 
     @Test
@@ -90,10 +107,14 @@ class HtmlUtilsTest {
         when(Path.of("src2")).thenReturn(path2);
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
         when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
+        final String interpolatedTemplate = "<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>";
+
+        when(freeMarkerWrapper.interpolateTemplate(eq("div-image-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
 
         final String actual = htmlUtils.inline(report);
 
         assertEquals("abc<video src=\"data:video/mp4;base64,AQID\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>def", actual);
+        assertEquals(Map.of("encoded", "BAUG", "backslash", "\\"), freeMarkerVarsArgumentCaptor.getValue());
     }
 
     @Test
@@ -106,11 +127,13 @@ class HtmlUtilsTest {
         when(Path.of("src2")).thenReturn(path2);
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
         when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
-
+        final String interpolatedTemplate = "interpolatedTemplate";
+        when(freeMarkerWrapper.interpolateTemplate(eq("div-image-template.html"), freeMarkerVarsArgumentCaptor.capture())).thenReturn(interpolatedTemplate);
         final String actual = htmlUtils.inlineImagesOf(html);
 
-        assertThat(actual, matchesPattern(".*<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,AQID\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,AQID\"/></a></div></div>.*" +
-                "<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>.*"));
+        assertEquals(Map.of("encoded", "BAUG", "backslash", "\\"), freeMarkerVarsArgumentCaptor.getValue());
+        assertThat(actual, containsString(interpolatedTemplate));
+
     }
 
     @Test
