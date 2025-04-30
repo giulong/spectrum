@@ -23,10 +23,8 @@ public class HtmlUtils implements SessionHook {
     private static final HtmlUtils INSTANCE = new HtmlUtils();
     private static final Pattern VIDEO_SRC = Pattern.compile("<video.*?src=\"(?<src>[^\"]*)\"");
     private static final Pattern IMAGE_TAG = Pattern.compile("<div class=\"row mb-3\">\\s*<div class=\"col-md-3\">\\s*<img.*?src=\"(?<src>[^\"]*)\".*?</div>\\s*</div>", DOTALL);
-    private static final String VIDEO_TEMPLATE = "video.html";
-    private static final String DIV_TEMPLATE = "div-template.html";
-    private static final String FRAME_TEMPLATE = "div-frame-template.html";
-    private static final String INLINE_IMAGE_TEMPLATE = "div-image-template.html";
+    private static final Base64.Encoder ENCODER = Base64.getEncoder();
+    private static final String SRC = "src";
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private String videoTemplate;
@@ -36,10 +34,10 @@ public class HtmlUtils implements SessionHook {
 
     @Override
     public void sessionOpened() {
-        this.videoTemplate = fileUtils.readTemplate(VIDEO_TEMPLATE);
-        this.divTemplate = fileUtils.readTemplate(DIV_TEMPLATE);
-        this.inlineImageTemplate = fileUtils.readTemplate(INLINE_IMAGE_TEMPLATE);
-        this.frameTemplate = fileUtils.readTemplate(FRAME_TEMPLATE);
+        this.videoTemplate = fileUtils.readTemplate("video.html");
+        this.divTemplate = fileUtils.readTemplate("div-template.html");
+        this.inlineImageTemplate = fileUtils.readTemplate("div-image-template.html");
+        this.frameTemplate = fileUtils.readTemplate("div-frame-template.html");
     }
 
     public static HtmlUtils getInstance() {
@@ -55,7 +53,7 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String buildFrameTagFor(final int number, final String content, final TestData testData, final String classes) {
-        return freeMarkerWrapper.interpolate(this.frameTemplate, Map.of("classes", classes,"id", testData.getTestId(), "number", number, "content", content));
+        return freeMarkerWrapper.interpolate(this.frameTemplate, Map.of("classes", classes, "id", testData.getTestId(), "number", number, "content", content));
     }
 
     @SneakyThrows
@@ -64,10 +62,10 @@ public class HtmlUtils implements SessionHook {
         String inlineHtml = html;
 
         while (matcher.find()) {
-            final String src = matcher.group("src");
+            final String src = matcher.group(SRC);
             final byte[] bytes = Files.readAllBytes(Path.of(src));
-            final String encoded = Base64.getEncoder().encodeToString(bytes);
-            final String replacement = freeMarkerWrapper.interpolate(this.inlineImageTemplate, Map.of("encoded", encoded, "backslash", "\\"));
+            final String encoded = ENCODER.encodeToString(bytes);
+            final String replacement = freeMarkerWrapper.interpolate(this.inlineImageTemplate, Map.of("encoded", encoded));
 
             log.debug("Found img with src {}", src);
             inlineHtml = inlineHtml.replace(matcher.group(0), replacement);
@@ -82,9 +80,9 @@ public class HtmlUtils implements SessionHook {
         String inlineHtml = html;
 
         while (matcher.find()) {
-            final String src = matcher.group("src");
+            final String src = matcher.group(SRC);
             final byte[] bytes = Files.readAllBytes(Path.of(src));
-            final String encoded = new String(Base64.getEncoder().encode(bytes));
+            final String encoded = ENCODER.encodeToString(bytes);
             final String replacement = String.format("data:video/mp4;base64,%s", encoded);
 
             log.debug("Found video with src {}", src);
@@ -95,7 +93,7 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String generateVideoTag(final String videoId, final String width, final String height, final Path src) {
-        return freeMarkerWrapper.interpolate(this.videoTemplate, Map.of("videoId", videoId, "width", width, "height", height, "src", src.toString()));
+        return freeMarkerWrapper.interpolate(this.videoTemplate, Map.of("videoId", videoId, "width", width, "height", height, SRC, src.toString()));
     }
 
     public String generateTestInfoDivs(final String id, final String classDisplayName, final String testDisplayName) {

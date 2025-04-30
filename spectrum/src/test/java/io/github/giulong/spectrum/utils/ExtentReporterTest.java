@@ -598,7 +598,7 @@ class ExtentReporterTest {
     private void logTestEndStubs() {
         final String className = "String";
         final String id = "string-sanitizeddisplayname";
-        final String expectedTag = String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, CLASS_DISPLAY_NAME, id, DISPLAY_NAME);
+        final String expectedTag = "expectedTag";
 
         // joinTestDisplayNamesIn
         when(context.getParent()).thenReturn(Optional.of(parentContext));
@@ -619,7 +619,7 @@ class ExtentReporterTest {
         when(testData.getClassDisplayName()).thenReturn(CLASS_DISPLAY_NAME);
         when(testData.getDisplayName()).thenReturn(DISPLAY_NAME);
         when(htmlUtils.generateTestInfoDivs(id, CLASS_DISPLAY_NAME, DISPLAY_NAME)).thenReturn(expectedTag);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, CLASS_DISPLAY_NAME, id, DISPLAY_NAME))).thenReturn(extentTest);
+        when(extentReports.createTest(expectedTag)).thenReturn(extentTest);
 
         when(contextManager.get(context)).thenReturn(testContext);
         when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);

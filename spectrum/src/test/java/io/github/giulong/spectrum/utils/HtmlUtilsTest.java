@@ -83,7 +83,7 @@ class HtmlUtilsTest {
     @DisplayName("sessionOpened should init the html utils")
     void sessionOpened() {
         final String videoTemplate = "videoHtml";
-        final String divTemplate = "divtemplateHtml";
+        final String divTemplate = "divTemplateHtml";
         final String divFrameTemplate = "divFrameTemplateHtml";
         final String divImageTemplate = "divImageHtml";
 
@@ -94,7 +94,10 @@ class HtmlUtilsTest {
 
         htmlUtils.sessionOpened();
 
-        verify(fileUtils, times(4)).readTemplate(Mockito.anyString());
+        assertEquals(videoTemplate, Reflections.getFieldValue("videoTemplate", htmlUtils, String.class));
+        assertEquals(divTemplate, Reflections.getFieldValue("divTemplate", htmlUtils, String.class));
+        assertEquals(divFrameTemplate, Reflections.getFieldValue("frameTemplate", htmlUtils, String.class));
+        assertEquals(divImageTemplate, Reflections.getFieldValue("inlineImageTemplate", htmlUtils, String.class));
     }
 
     @Test
@@ -143,16 +146,16 @@ class HtmlUtilsTest {
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
         when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
         final String source = "source";
-        final Map<String, Object> expectedParams = Map.of("encoded", "BAUG", "backslash", "\\");
+        final Map<String, Object> expectedParams = Map.of("encoded", "BAUG");
 
         Reflections.setField("inlineImageTemplate", htmlUtils, source);
-        final String interpolatedTemplate = "<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>";
+        final String interpolatedTemplate = "interpolatedTemplate";
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
         final String actual = htmlUtils.inline(report);
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
-        assertEquals("abc<video src=\"data:video/mp4;base64,AQID\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><a href=\"data:image/png;base64,BAUG\" data-featherlight=\"image\"><img class=\"inline\" src=\"data:image/png;base64,BAUG\"/></a></div></div>def", actual);
+        assertEquals("abc<video src=\"data:video/mp4;base64,AQID\"/>definterpolatedTemplatedef", actual);
         assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
@@ -168,8 +171,8 @@ class HtmlUtilsTest {
         when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
-        final Map<String, Object> expectedParams = Map.of("encoded", "AQID", "backslash", "\\");
-        final Map<String, Object> expectedParams1 = Map.of("encoded", "BAUG", "backslash", "\\");
+        final Map<String, Object> expectedParams = Map.of("encoded", "AQID");
+        final Map<String, Object> expectedParams1 = Map.of("encoded", "BAUG");
 
         Reflections.setField("inlineImageTemplate", htmlUtils, source);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
