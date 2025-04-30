@@ -44,6 +44,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     protected final FileUtils fileUtils = FileUtils.getInstance();
     protected final Configuration configuration = Configuration.getInstance();
+    protected final HtmlUtils htmlUtils = HtmlUtils.getInstance();
 
     private final ContextManager contextManager = ContextManager.getInstance();
 
@@ -114,21 +115,17 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     public ExtentTest createExtentTestFrom(final ExtensionContext context) {
         final TestData testData = contextManager.get(context, TEST_DATA, TestData.class);
-        final String id = testData.getTestId();
+        final String tag = htmlUtils.generateTestInfoDivs(testData.getTestId(), testData.getClassDisplayName(), testData.getDisplayName());
 
         return extentReports
-                .createTest(String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, testData.getClassDisplayName(), id, testData.getDisplayName()))
+                .createTest(tag)
                 .assignCategory(context.getTags().toArray(new String[0]));
     }
 
     public void attachVideo(final ExtentTest extentTest, final Video.ExtentTest videoExtentTest, final String testId, final Path path) {
         final String width = videoExtentTest.getWidth();
         final String height = videoExtentTest.getHeight();
-        final String videoTag = "<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
-                "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\"" +
-                "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>";
-
-        extentTest.info(String.format(videoTag, testId, width, height, path));
+        extentTest.info(htmlUtils.generateVideoTag(testId, width, height, path));
     }
 
     public void logTestStartOf(final ExtentTest extentTest) {

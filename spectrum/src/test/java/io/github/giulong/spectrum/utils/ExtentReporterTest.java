@@ -151,6 +151,9 @@ class ExtentReporterTest {
     private Report report;
 
     @Mock
+    private HtmlUtils htmlUtils;
+
+    @Mock
     private com.aventstack.extentreports.model.Test test1;
 
     @Mock
@@ -179,6 +182,7 @@ class ExtentReporterTest {
         Reflections.setField("fileUtils", extentReporter, fileUtils);
         Reflections.setField("configuration", extentReporter, configuration);
         Reflections.setField("contextManager", extentReporter, contextManager);
+        Reflections.setField("htmlUtils", extentReporter, htmlUtils);
 
         testDataMockedStatic = mockStatic(TestData.class);
         freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
@@ -466,13 +470,15 @@ class ExtentReporterTest {
         final String classDisplayName = "classDisplayName";
         final String displayName = "displayName";
         final Set<String> tags = Set.of("t1", "t2");
+        final String expectedTag = "expectedTag";
 
         when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getTestId()).thenReturn(id);
         when(testData.getClassDisplayName()).thenReturn(classDisplayName);
         when(testData.getDisplayName()).thenReturn(displayName);
+        when(htmlUtils.generateTestInfoDivs(id, classDisplayName, displayName)).thenReturn(expectedTag);
         when(context.getTags()).thenReturn(tags);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, classDisplayName, id, displayName))).thenReturn(extentTest);
+        when(extentReports.createTest(expectedTag)).thenReturn(extentTest);
         when(extentTest.assignCategory(tags.toArray(new String[0]))).thenReturn(extentTest);
 
         assertEquals(extentTest, extentReporter.createExtentTestFrom(context));
@@ -484,17 +490,14 @@ class ExtentReporterTest {
         final String testId = "testId";
         final String width = "width";
         final String height = "height";
-
+        final String expectedTag = "expectedTag";
         when(videoExtentTest.getWidth()).thenReturn(width);
         when(videoExtentTest.getHeight()).thenReturn(height);
+        when(htmlUtils.generateVideoTag(testId, width, height, path)).thenReturn(expectedTag);
 
         extentReporter.attachVideo(extentTest, videoExtentTest, testId, path);
 
-        verify(extentTest).info(String.format(
-                "<video id=\"video-%s\" controls width=\"%s\" height=\"%s\" src=\"%s\" type=\"video/mp4\" " +
-                        "ontimeupdate=\"syncVideoWithStep(event)\" onseeking=\"syncVideoWithStep(event)\"" +
-                        "onseeked=\"videoPaused(event)\" onpause=\"videoPaused(event)\"/>"
-                , testId, width, height, path));
+        verify(extentTest).info(expectedTag);
     }
 
     @Test
@@ -595,6 +598,7 @@ class ExtentReporterTest {
     private void logTestEndStubs() {
         final String className = "String";
         final String id = "string-sanitizeddisplayname";
+        final String expectedTag = "expectedTag";
 
         // joinTestDisplayNamesIn
         when(context.getParent()).thenReturn(Optional.of(parentContext));
@@ -614,7 +618,8 @@ class ExtentReporterTest {
         when(testData.getTestId()).thenReturn(id);
         when(testData.getClassDisplayName()).thenReturn(CLASS_DISPLAY_NAME);
         when(testData.getDisplayName()).thenReturn(DISPLAY_NAME);
-        when(extentReports.createTest(String.format("<div id=\"%s\">%s</div><div id=\"%s-test-name\">%s</div>", id, CLASS_DISPLAY_NAME, id, DISPLAY_NAME))).thenReturn(extentTest);
+        when(htmlUtils.generateTestInfoDivs(id, CLASS_DISPLAY_NAME, DISPLAY_NAME)).thenReturn(expectedTag);
+        when(extentReports.createTest(expectedTag)).thenReturn(extentTest);
 
         when(contextManager.get(context)).thenReturn(testContext);
         when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);

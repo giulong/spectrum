@@ -24,6 +24,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     private final Vars vars = Vars.getInstance();
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
+    private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
     private final ExtentReporterInline extentReporterInline = ExtentReporterInline.getInstance();
@@ -50,6 +51,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         extentReporterInline.sessionOpened();
         freeMarkerWrapper.sessionOpened();
         eventsDispatcher.sessionOpened();
+        htmlUtils.sessionOpened();
     }
 
     @Override
