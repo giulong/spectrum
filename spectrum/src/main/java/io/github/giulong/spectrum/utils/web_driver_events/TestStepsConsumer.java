@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.nio.file.Path;
 import java.util.Map;
 
+import static io.github.giulong.spectrum.enums.Result.DISABLED;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.TEST_STEP_BUILDER_CONSUMER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -33,6 +34,11 @@ public class TestStepsConsumer extends EventsConsumer {
 
     @JsonPropertyDescription("Where to produce the output, relative to the root of the project")
     private final String output = "target/spectrum/tests-steps";
+
+    @Override
+    protected boolean shouldAccept(final Event event) {
+        return !DISABLED.equals(event.getResult());
+    }
 
     @Override
     public void accept(final Event event) {

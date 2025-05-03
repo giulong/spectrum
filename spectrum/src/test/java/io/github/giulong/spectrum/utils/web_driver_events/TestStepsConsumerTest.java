@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.pojos.events.TestStep;
 import io.github.giulong.spectrum.types.TestData;
@@ -11,6 +12,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -18,10 +22,14 @@ import org.mockito.MockedStatic;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
+import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.TEST_STEP_BUILDER_CONSUMER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class TestStepsConsumerTest {
@@ -72,6 +80,25 @@ class TestStepsConsumerTest {
     @AfterEach
     void afterEach() {
         pathMockedStatic.close();
+    }
+
+    @DisplayName("shouldAccept should check if the test is disabled")
+    @ParameterizedTest(name = "with result {0} we expect {1}")
+    @MethodSource("valuesProvider")
+    void shouldAccept(final Result result, final boolean expected) {
+        when(event.getResult()).thenReturn(result);
+
+        assertEquals(expected, testStepsConsumer.shouldAccept(event));
+    }
+
+    static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments(NOT_RUN, true),
+                arguments(SUCCESSFUL, true),
+                arguments(FAILED, true),
+                arguments(ABORTED, true),
+                arguments(DISABLED, false)
+        );
     }
 
     @Test

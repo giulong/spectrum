@@ -25,12 +25,12 @@ public class DriverConsumer extends EventsConsumer {
     private final Configuration configuration = Configuration.getInstance();
 
     @Override
-    public void accept(final Event event) {
-        if (event.getResult().equals(DISABLED)) {
-            log.debug("Test is skipped. Returning");
-            return;
-        }
+    protected boolean shouldAccept(final Event event) {
+        return !DISABLED.equals(event.getResult());
+    }
 
+    @Override
+    public void accept(final Event event) {
         final Configuration.Runtime runtime = configuration.getRuntime();
 
         if (!configuration.getDrivers().isKeepOpen()) {
