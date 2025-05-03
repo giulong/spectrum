@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = VideoConsumer.class, name = "video"),
         @JsonSubTypes.Type(value = VideoDynamicConsumer.class, name = "videoDynamic"),
         @JsonSubTypes.Type(value = TestStepsConsumer.class, name = "testSteps"),
+        @JsonSubTypes.Type(value = LogConsumer.class, name = "log"),
 })
 @Getter
 @Slf4j
