@@ -2961,6 +2961,52 @@ Time                       | Time taken | Message
 > ⚠️ **Tags**<br/>
 > This consumer is specific to single tests, so it won't work on tags other than `test` and `dynamicTest`.
 
+### Log Consumer
+
+You can leverage this consumer to log a message. For instance, to hook it on a custom event, you can declare this:
+
+{% include copyCode.html %}
+
+```yaml
+eventsConsumers:
+  - log:
+      events:
+        - primaryId: primary.*  # custom event by primaryId regex
+          reason: custom-event
+```
+
+> ⚠️ **Template**<br/>
+> By default, the [log.txt template]({{ site.repository_url }}/spectrum/src/main/resources/templates/log.txt){:target="_blank"} is used.
+> If you want to provide a custom template there are two ways:
+> * provide a template with a custom name under `src/test/resources/templates`:
+
+{% include copyCode.html %}
+
+```yaml
+eventsConsumers:
+  - log:
+      template: my-template.txt
+      events:
+        - primaryId: primary.*
+          reason: custom-event
+```
+
+> * simply create the file `src/test/resources/templates/log.txt`. This will override the internal default, so there's no need to explicitly provide the path.
+>
+> The template is interpolated with [FreeMarker](https://freemarker.apache.org/){:target="_blank"}. The event is exposed in the `event` variable.
+
+By default, a message like this is logged:
+
+{% include copyCode.html %}
+
+```text
+Class Name: Checkbox Page
+Test Name : testWithNoDisplayName()
+Reason    : after
+Result    : SUCCESSFUL
+Tags      : test
+```
+
 ---
 
 # Execution Summary
