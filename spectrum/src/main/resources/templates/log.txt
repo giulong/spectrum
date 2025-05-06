@@ -1,0 +1,6 @@
+
+Class Name: <#if event.context??>${event.context.parent.get().displayName}<#else>---</#if>
+Test Name : <#if event.context??>${event.context.displayName}<#else>---</#if>
+Reason    : ${event.reason}
+Result    : <#if event.result??>${event.result}<#else>---</#if>
+Tags      : <#if event.tags??>${event.tags?join(", ")}<#else>---</#if>

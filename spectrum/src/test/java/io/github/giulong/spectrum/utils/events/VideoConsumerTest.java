@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.events;
 
+import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -33,8 +34,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
-import static io.github.giulong.spectrum.enums.Result.DISABLED;
-import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -150,16 +150,33 @@ class VideoConsumerTest {
         filesMockedStatic.close();
     }
 
+    @DisplayName("shouldAccept should check if the test and the video are disabled")
+    @ParameterizedTest(name = "with result {0} we expect {1}")
+    @MethodSource("shouldAcceptValuesProvider")
+    void shouldAccept(final Result result, final boolean videoDisabled, final boolean expected) {
+        when(event.getResult()).thenReturn(result);
+        lenient().when(configuration.getVideo()).thenReturn(video);
+        lenient().when(video.isDisabled()).thenReturn(videoDisabled);
+
+        assertEquals(expected, videoConsumer.shouldAccept(event));
+    }
+
+    static Stream<Arguments> shouldAcceptValuesProvider() {
+        return Stream.of(
+                arguments(DISABLED, true, false),
+                arguments(SUCCESSFUL, true, false),
+                arguments(DISABLED, false, false),
+                arguments(SUCCESSFUL, false, true)
+        );
+    }
+
     @Test
     @DisplayName("accept should notify the VideoEncoder that the test is done")
     void accept() throws IOException {
         final int width = 1;
         final int height = 3;
 
-        when(event.getResult()).thenReturn(SUCCESSFUL);
-
         when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(false);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
@@ -219,10 +236,7 @@ class VideoConsumerTest {
         final int width = 1;
         final int height = 3;
 
-        when(event.getResult()).thenReturn(SUCCESSFUL);
-
         when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(false);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
@@ -281,10 +295,7 @@ class VideoConsumerTest {
         final int width = 1;
         final int height = 3;
 
-        when(event.getResult()).thenReturn(SUCCESSFUL);
-
         when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(false);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
@@ -334,10 +345,7 @@ class VideoConsumerTest {
     @Test
     @DisplayName("accept should add the no-video.png if no frames were added")
     void acceptNoFramesAdded() throws IOException, URISyntaxException {
-        when(event.getResult()).thenReturn(SUCCESSFUL);
-
         when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(false);
         when(testData.getClassName()).thenReturn(CLASS_NAME);
         when(testData.getMethodName()).thenReturn(METHOD_NAME);
         when(testData.getScreenshotFolderPath()).thenReturn(screenshotFolderPath);
@@ -356,37 +364,6 @@ class VideoConsumerTest {
         assertEquals("no-video.png", Path.of(urlArgumentCaptor.getValue().toURI()).getFileName().toString());
         verify(encoder).encodeImage(bufferedImage);
         verify(encoder).finish();
-    }
-
-    @Test
-    @DisplayName("accept shouldn't do nothing when video recording is disabled")
-    void acceptDisabled() throws IOException {
-
-        when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(true);
-
-        when(event.getContext()).thenReturn(context);
-        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
-
-        videoConsumer.accept(event);
-
-        verify(encoder, never()).encodeImage(any());
-    }
-
-    @Test
-    @DisplayName("accept shouldn't do nothing when the test is skipped")
-    void acceptTestSkipped() throws IOException {
-        when(event.getResult()).thenReturn(DISABLED);
-
-        when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(false);
-
-        when(event.getContext()).thenReturn(context);
-        when(contextManager.get(context, TEST_DATA, TestData.class)).thenReturn(testData);
-
-        videoConsumer.accept(event);
-
-        verify(encoder, never()).encodeImage(any());
     }
 
     @Test

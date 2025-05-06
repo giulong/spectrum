@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.drivers.Driver;
+import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -9,18 +10,24 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.module.Network;
 
-import static io.github.giulong.spectrum.enums.Result.DISABLED;
-import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import java.util.stream.Stream;
+
+import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.extensions.resolvers.bidi.BrowsingContextInspectorResolver.BROWSING_CONTEXT_INSPECTOR;
 import static io.github.giulong.spectrum.extensions.resolvers.bidi.LogInspectorResolver.LOG_INSPECTOR;
 import static io.github.giulong.spectrum.extensions.resolvers.bidi.NetworkResolver.NETWORK;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class DriverConsumerTest {
@@ -66,21 +73,28 @@ class DriverConsumerTest {
         Reflections.setField("configuration", driverConsumer, configuration);
     }
 
-    @Test
-    @DisplayName("accept should do nothing when the test is skipped")
-    void acceptSkipped() {
-        when(event.getResult()).thenReturn(DISABLED);
+    @DisplayName("shouldAccept should check if the test is disabled")
+    @ParameterizedTest(name = "with result {0} we expect {1}")
+    @MethodSource("valuesProvider")
+    void shouldAccept(final Result result, final boolean expected) {
+        when(event.getResult()).thenReturn(result);
 
-        driverConsumer.accept(event);
+        assertEquals(expected, driverConsumer.shouldAccept(event));
+    }
 
-        verifyNoInteractions(driver);
-        verifyNoInteractions(environment);
+    static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments(NOT_RUN, true),
+                arguments(SUCCESSFUL, true),
+                arguments(FAILED, true),
+                arguments(ABORTED, true),
+                arguments(DISABLED, false)
+        );
     }
 
     @Test
     @DisplayName("accept should shutdown the driver and the environment and close BiDi objects when the driver supports bidi")
     void accept() {
-        when(event.getResult()).thenReturn(SUCCESSFUL);
         when(configuration.getRuntime()).thenReturn(runtime);
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.isKeepOpen()).thenReturn(false);
@@ -105,7 +119,6 @@ class DriverConsumerTest {
     @Test
     @DisplayName("accept should shutdown the driver and the environment but avoid closing BiDi objects when the driver doesn't support bidi")
     void acceptNotBiDi() {
-        when(event.getResult()).thenReturn(SUCCESSFUL);
         when(configuration.getRuntime()).thenReturn(runtime);
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.isKeepOpen()).thenReturn(false);
@@ -130,7 +143,6 @@ class DriverConsumerTest {
     @Test
     @DisplayName("accept should not shutdown the driver if drivers.keepOpen is true")
     void acceptKeepOpen() {
-        when(event.getResult()).thenReturn(SUCCESSFUL);
         when(configuration.getRuntime()).thenReturn(runtime);
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.isKeepOpen()).thenReturn(true);

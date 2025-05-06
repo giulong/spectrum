@@ -43,11 +43,21 @@ public class ItVerifierTest {
     public void logFile() throws FileNotFoundException {
         final String logFile = new Scanner(BASE_DIR.resolve(Path.of("it-testbook", "target", "spectrum", "logs", "spectrum.log")).toFile()).useDelimiter("\\Z").next();
 
-        // we indirectly check that the slack handler tried to consume the event with a regex in the primaryId
-        assertTrue(logFile.contains("SlackConsumer is consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=custom-event, result=null)"));
+        // we indirectly check that the log consumer accepted the event with a regex in the primaryId
+        assertTrue(logFile.contains("""
+                Class Name: ---
+                Test Name : ---
+                Reason    : custom-event
+                Result    : ---
+                Tags      : ---"""));
 
-        // we indirectly check that the slack handler tried to consume the event with a regex in the reason
-        assertTrue(logFile.contains("SlackConsumer is consuming Event(primaryId=primaryId, secondaryId=null, tags=null, reason=secondReason, result=null)"));
+        // we indirectly check that the log consumer accepted the event with a regex in the reason
+        assertTrue(logFile.contains("""
+                Class Name: ---
+                Test Name : ---
+                Reason    : secondReason
+                Result    : ---
+                Tags      : ---"""));
 
         // we check values sent to @Secured web elements are masked
         assertTrue(logFile.contains("Sending keys [***] to id: password"));

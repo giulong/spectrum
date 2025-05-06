@@ -25,6 +25,7 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = VideoConsumer.class, name = "video"),
         @JsonSubTypes.Type(value = VideoDynamicConsumer.class, name = "videoDynamic"),
         @JsonSubTypes.Type(value = TestStepsConsumer.class, name = "testSteps"),
+        @JsonSubTypes.Type(value = LogConsumer.class, name = "log"),
 })
 @Getter
 @Slf4j
@@ -38,12 +39,20 @@ public abstract class EventsConsumer implements Consumer<Event> {
     private boolean failOnError;
 
     public void match(final Event event) {
+        final String simpleName = getClass().getSimpleName();
+
         events
                 .stream()
-                .peek(h -> log.trace("{} matchers for {}", getClass().getSimpleName(), event))
+                .peek(h -> log.debug("{}: checking if should run for {}", simpleName, event))
+                .filter(h -> shouldAccept(event))
+                .peek(h -> log.trace("{}: finding matchers for {}", simpleName, event))
                 .filter(h -> findMatchFor(event, h))
-                .peek(h -> log.debug("{} is consuming {}", getClass().getSimpleName(), event))
+                .peek(h -> log.debug("{} is consuming {}", simpleName, event))
                 .forEach(h -> acceptSilently(event));
+    }
+
+    protected boolean shouldAccept(final Event event) {
+        return true;
     }
 
     boolean tagsIntersect(final Event e1, final Event e2) {

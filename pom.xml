@@ -47,11 +47,11 @@
         <maven.install.skip>true</maven.install.skip>
 
         <junit.version>5.12.2</junit.version>
-        <jackson.version>2.18.3</jackson.version>
-        <simplejavamail.version>8.12.5</simplejavamail.version>
+        <jackson.version>2.19.0</jackson.version>
+        <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <selenium.version>4.31.0</selenium.version>
+        <selenium.version>4.32.0</selenium.version>
     </properties>
 
     <profiles>
@@ -334,7 +334,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.23.0</version>
+                            <version>10.23.1</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>

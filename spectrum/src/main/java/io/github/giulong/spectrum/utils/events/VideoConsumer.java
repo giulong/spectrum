@@ -45,17 +45,17 @@ public class VideoConsumer extends EventsConsumer {
     private byte[] lastFrameDigest;
     private MessageDigest messageDigest;
 
+    @Override
+    protected boolean shouldAccept(final Event event) {
+        return !DISABLED.equals(event.getResult()) && !configuration.getVideo().isDisabled();
+    }
+
     @SneakyThrows
     @Override
     public void accept(final Event event) {
         final Video video = configuration.getVideo();
         final ExtensionContext context = event.getContext();
         final TestData testData = contextManager.get(context, TEST_DATA, TestData.class);
-
-        if (video.isDisabled() || event.getResult().equals(DISABLED)) {
-            log.debug("Video is disabled or test is skipped. Returning");
-            return;
-        }
 
         init();
 
