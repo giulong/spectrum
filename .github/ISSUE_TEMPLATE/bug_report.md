@@ -33,6 +33,3 @@ Replace this line with a clear and concise description of what you expected to h
 ```text
 Replace this line with the log at TRACE level
 ```
-
-## Additional context
-Replace this line with any other context about the problem here
