@@ -71,7 +71,7 @@ project:
 
 ```gradle
 dependencies {
-  implementation group: 'io.github.giulong', name: 'spectrum', version: '1.24.1'
+  testImplementation group: 'io.github.giulong', name: 'spectrum', version: '1.24.1'
 }
 ```
 

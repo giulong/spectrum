@@ -51,7 +51,7 @@
         <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <selenium.version>4.32.0</selenium.version>
+        <selenium.version>4.33.0</selenium.version>
     </properties>
 
     <profiles>
@@ -268,7 +268,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>5.17.0</version>
+                <version>5.18.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -334,7 +334,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.23.1</version>
+                            <version>10.24.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
@@ -537,8 +537,8 @@
                                     <value><![CDATA[<version>${revision}</version>]]></value>
                                 </replacement>
                                 <replacement>
-                                    <token>implementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
-                                    <value>implementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
+                                    <token>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
+                                    <value>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
                                 </replacement>
                             </replacements>
                         </configuration>
@@ -557,8 +557,8 @@
                                     <value><![CDATA[<version>${revision}</version>]]></value>
                                 </replacement>
                                 <replacement>
-                                    <token>implementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
-                                    <value>implementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
+                                    <token>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
+                                    <value>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
                                 </replacement>
                             </replacements>
                         </configuration>

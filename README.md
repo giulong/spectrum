@@ -100,7 +100,7 @@ If you'd rather add Spectrum manually to your project, you just need to add its 
 
 ```gradle
 dependencies {
-  implementation group: 'io.github.giulong', name: 'spectrum', version: '1.24.1'
+  testImplementation group: 'io.github.giulong', name: 'spectrum', version: '1.24.1'
 }
 ```
 
