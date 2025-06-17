@@ -7,7 +7,7 @@
 [![badge-jdk](https://img.shields.io/badge/jdk-21-blue.svg)](https://jdk.java.net/archive/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
-[![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/giulong/spectrum/develop)](https://github.com/giulong/spectrum/commits/develop/)
+[![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/y/giulong/spectrum/develop)](https://github.com/giulong/spectrum/commits/develop/)
 [![GitHub Discussions](https://img.shields.io/github/discussions/giulong/spectrum)](https://github.com/giulong/spectrum/discussions)
 
 <br />

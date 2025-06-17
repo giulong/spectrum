@@ -11,6 +11,7 @@ import org.mockito.MockedStatic;
 
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
@@ -63,8 +64,8 @@ class EventsWatcherTest {
     }
 
     @TestFactory
-    @SuppressWarnings("unused")
-    private void testFactoryMethod() {
+    Stream<DynamicNode> testFactoryMethod() {
+        return Stream.of();
     }
 
     @Test
