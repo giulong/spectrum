@@ -91,7 +91,7 @@ If you'd rather add Spectrum manually to your project, you just need to add its 
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
-    <version>1.24.2</version>
+    <version>1.24.3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -100,7 +100,7 @@ If you'd rather add Spectrum manually to your project, you just need to add its 
 
 ```gradle
 dependencies {
-  testImplementation group: 'io.github.giulong', name: 'spectrum', version: '1.24.2'
+  testImplementation group: 'io.github.giulong', name: 'spectrum', version: '1.24.3'
 }
 ```
 
