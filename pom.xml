@@ -47,6 +47,7 @@
         <maven.install.skip>true</maven.install.skip>
 
         <junit.version>5.13.0</junit.version>
+        <mockito.version>5.18.0</mockito.version>
         <jackson.version>2.19.0</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
@@ -268,7 +269,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>5.18.0</version>
+                <version>${mockito.version}</version>
                 <scope>test</scope>
             </dependency>
 
@@ -309,18 +310,6 @@
 
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.8.1</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>properties</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -398,7 +387,11 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>3.5.3</version>
                     <configuration>
-                        <argLine>@{argLine} -Dfile.encoding=UTF-8 -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                        <argLine>
+                            @{argLine}
+                            -Dfile.encoding=UTF-8
+                            -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+                        </argLine>
                         <reportsDirectory>${reportsDirectory}</reportsDirectory>
                         <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
@@ -441,10 +434,6 @@
         </pluginManagement>
 
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
