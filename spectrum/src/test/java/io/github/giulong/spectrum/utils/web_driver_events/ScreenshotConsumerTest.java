@@ -80,7 +80,7 @@ class ScreenshotConsumerTest {
         when(driver.getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
         when(webDriverEvent.getFrame()).thenReturn(frame);
 
-        when(fileUtils.getScreenshotNameFrom(frame, statefulExtentTest)).thenReturn(fileName);
+        when(fileUtils.getScreenshotNameFrom(frame, statefulExtentTest, testData)).thenReturn(fileName);
 
         screenshotConsumer.accept(webDriverEvent);
 

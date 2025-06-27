@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.types.TestData;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +27,6 @@ import static org.mockito.Mockito.*;
 class FileUtilsTest {
 
     private static final String DISPLAY_NAME = "displayName";
-    private static final String UUID_REGEX = AUTO_AFTER.getValue() + "-" + DISPLAY_NAME + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
 
     @Mock
     private BasicFileAttributes basicFileAttributes;
@@ -45,6 +45,9 @@ class FileUtilsTest {
 
     @Mock
     private StatefulExtentTest statefulExtentTest;
+
+    @Mock
+    private TestData testData;
 
     @InjectMocks
     private FileUtils fileUtils;
@@ -238,7 +241,8 @@ class FileUtilsTest {
     @DisplayName("getScreenshotNameFrom should return the name for the provided frame and display name")
     void getScreenshotNameFrom() {
         when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
+        when(testData.getAndIncrementScreenshotNumber()).thenReturn(123);
 
-        assertThat(fileUtils.getScreenshotNameFrom(AUTO_AFTER, statefulExtentTest), matchesPattern(UUID_REGEX));
+        assertEquals(fileUtils.getScreenshotNameFrom(AUTO_AFTER, statefulExtentTest, testData), "autoAfter-displayName-123.png");
     }
 }

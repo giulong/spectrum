@@ -178,7 +178,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      */
     @SneakyThrows
     public Media addScreenshotToReport(final String msg, final Status status) {
-        final String fileName = fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest);
+        final String fileName = fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest, testData);
         final Path screenshotPath = testData.getScreenshotFolderPath().resolve(fileName);
 
         Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));

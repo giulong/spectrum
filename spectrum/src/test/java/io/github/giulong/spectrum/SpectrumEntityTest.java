@@ -149,11 +149,11 @@ class SpectrumEntityTest {
 
     @SneakyThrows
     private void addScreenshotToReportStubs() {
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest, testData)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(path);
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest, testData)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
         when(reportsFolder.resolve(screenshotName)).thenReturn(path);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
@@ -210,11 +210,11 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("screenshot should delegate to addScreenshotToReport")
     void screenshot() {
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest, testData)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(path);
         when(((TakesScreenshot) webDriver).getScreenshotAs(BYTES)).thenReturn(new byte[]{1, 2, 3});
 
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest, testData)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
         when(reportsFolder.resolve(screenshotName)).thenReturn(path);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
@@ -273,7 +273,7 @@ class SpectrumEntityTest {
     void addScreenshotToReport() {
         final Status status = INFO;
 
-        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest)).thenReturn(screenshotName);
+        when(fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest, testData)).thenReturn(screenshotName);
         when(testData.getScreenshotFolderPath()).thenReturn(reportsFolder);
         when(reportsFolder.resolve(screenshotName)).thenReturn(path);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);

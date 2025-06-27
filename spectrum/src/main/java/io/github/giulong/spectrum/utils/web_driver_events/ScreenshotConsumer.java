@@ -32,7 +32,7 @@ public class ScreenshotConsumer extends WebDriverEventConsumer {
         final Frame frame = webDriverEvent.getFrame();
 
         if (video.shouldRecord(frame)) {
-            final String fileName = fileUtils.getScreenshotNameFrom(frame, statefulExtentTest);
+            final String fileName = fileUtils.getScreenshotNameFrom(frame, statefulExtentTest, testData);
             final Path screenshotPath = testData.getScreenshotFolderPath().resolve(fileName);
             final Path path = Files.write(screenshotPath, driver.getScreenshotAs(BYTES));
             log.trace("Recording frame {} for event '{}' at {}", frame, webDriverEvent.getMessage(), path);

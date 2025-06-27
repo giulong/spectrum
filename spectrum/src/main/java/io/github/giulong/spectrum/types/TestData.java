@@ -16,6 +16,7 @@ public class TestData {
     private String testId;
     private Path screenshotFolderPath;
     private Path videoPath;
+    private int screenshotNumber;
 
     @Setter
     private int frameNumber;
@@ -25,4 +26,8 @@ public class TestData {
 
     @Setter
     private String displayName;
+
+    public int getAndIncrementScreenshotNumber() {
+        return screenshotNumber++;
+    }
 }

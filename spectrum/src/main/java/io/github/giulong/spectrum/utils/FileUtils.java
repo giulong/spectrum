@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
 import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.types.TestData;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.reverseOrder;
-import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -130,7 +130,7 @@ public final class FileUtils {
         return Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime();
     }
 
-    public String getScreenshotNameFrom(final Frame frame, final StatefulExtentTest statefulExtentTest) {
-        return String.format("%s-%s-%s.png", frame.getValue(), statefulExtentTest.getDisplayName(), randomUUID());
+    public String getScreenshotNameFrom(final Frame frame, final StatefulExtentTest statefulExtentTest, final TestData testData) {
+        return String.format("%s-%s-%d.png", frame.getValue(), statefulExtentTest.getDisplayName(), testData.getAndIncrementScreenshotNumber());
     }
 }
