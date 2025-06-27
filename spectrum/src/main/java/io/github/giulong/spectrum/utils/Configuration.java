@@ -111,6 +111,9 @@ public class Configuration {
         @JsonPropertyDescription("Application's under test base url")
         private String baseUrl;
 
+        @JsonPropertyDescription("Path where to save screenshots. If not provided, screenshots are saved in the target folder.")
+        private String screenshotsFolder;
+
         @JsonPropertyDescription("Highlight the web elements the test interacts with. Useful to visually debug the execution")
         private Highlight highlight;
 

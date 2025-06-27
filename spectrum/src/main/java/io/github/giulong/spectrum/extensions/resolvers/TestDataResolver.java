@@ -32,6 +32,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final Configuration configuration = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class);
+        final String screenshotsFolder = configuration.getApplication().getScreenshotsFolder();
         final Configuration.Extent extent = configuration.getExtent();
         final String reportFolder = extent.getReportFolder();
         final Class<?> clazz = context.getRequiredTestClass();
@@ -41,7 +42,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final String displayName = fileUtils.sanitize(joinTestDisplayNamesIn(context));
         final String testId = buildTestIdFrom(className, displayName);
         final String fileName = fileUtils.removeExtensionFrom(extent.getFileName());
-        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, classDisplayName, displayName);
+        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(screenshotsFolder, reportFolder, fileName, classDisplayName, displayName);
         final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, classDisplayName, displayName);
         final TestData testData = TestData
                 .builder()
@@ -79,8 +80,10 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         return String.join(" ", displayNames.reversed());
     }
 
-    Path getScreenshotFolderPathForCurrentTest(final String reportsFolder, final String extentFileName, final String className, final String methodName) {
-        return fileUtils.deleteContentOf(Path.of(reportsFolder, extentFileName, "screenshots", className, methodName).toAbsolutePath());
+    Path getScreenshotFolderPathForCurrentTest(final String screenshotsFolder, final String reportsFolder, final String extentFileName,
+                                               final String className, final String methodName) {
+        final Path basePath = screenshotsFolder != null ? Path.of(screenshotsFolder) : Path.of(reportsFolder, extentFileName);
+        return fileUtils.deleteContentOf(basePath.toAbsolutePath().resolve("screenshots").resolve(className).resolve(methodName));
     }
 
     Path getVideoPathForCurrentTest(final boolean disabled, final String reportsFolder, final String extentFileName, final String className, final String methodName) {

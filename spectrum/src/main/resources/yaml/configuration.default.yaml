@@ -16,6 +16,7 @@ runtime:
 # Application under test
 application:
   baseUrl: http://localhost:8080  # Application's under test base url
+  screenshotsFolder: null # Path where to save screenshots. If not provided, screenshots are saved in the target folder.
   highlight: # Highlight the web elements the test interacts with. Useful to visually debug the execution
     js: js/highlight.js # Path to the js used to highlight. Relative to the resources folder
 

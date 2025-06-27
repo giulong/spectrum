@@ -31,6 +31,7 @@ class TestDataResolverTest {
     private static final String CLASS_NAME = "className";
     private static final String METHOD_NAME = "methodName";
     private static final String REPORTS_FOLDER = "reportsFolder";
+    private static final String SCREENSHOTS_FOLDER = "screenshotsFolder";
 
     private static MockedStatic<TestData> testDataMockedStatic;
 
@@ -72,6 +73,9 @@ class TestDataResolverTest {
 
     @Mock
     private TestData.TestDataBuilder testDataBuilder;
+
+    @Mock
+    private Configuration.Application application;
 
     @Mock
     private TestData testData;
@@ -138,6 +142,7 @@ class TestDataResolverTest {
         when(context.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(configuration.getApplication()).thenReturn(application);
         when(configuration.getExtent()).thenReturn(extent);
         when(extent.getReportFolder()).thenReturn(REPORTS_FOLDER);
         when(extent.getFileName()).thenReturn(fileName);
@@ -169,7 +174,16 @@ class TestDataResolverTest {
         final String extentFileName = "extentFileName";
 
         when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, extentFileName, "screenshots", CLASS_NAME, METHOD_NAME).toAbsolutePath())).thenReturn(path);
-        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(REPORTS_FOLDER, extentFileName, CLASS_NAME, METHOD_NAME));
+        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(null, REPORTS_FOLDER, extentFileName, CLASS_NAME, METHOD_NAME));
+    }
+
+    @Test
+    @DisplayName("getScreenshotFolderPathForCurrentTest should return the path for the current test and create the dirs if screenshotPath is provided")
+    void getScreenshotFolderPathForCurrentTestScreenshotPathProvided() {
+        final String extentFileName = "extentFileName";
+
+        when(fileUtils.deleteContentOf(Path.of(SCREENSHOTS_FOLDER, "screenshots", CLASS_NAME, METHOD_NAME).toAbsolutePath())).thenReturn(path);
+        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(SCREENSHOTS_FOLDER, REPORTS_FOLDER, extentFileName, CLASS_NAME, METHOD_NAME));
     }
 
     @Test
