@@ -72,7 +72,7 @@ public final class FileUtils {
 
     @SneakyThrows
     public Path delete(final Path path) {
-        if (!Files.exists(path)) {
+        if (Files.notExists(path)) {
             log.debug("Avoid deleting non-existing path '{}'", path);
             return path;
         }
@@ -132,5 +132,9 @@ public final class FileUtils {
 
     public String getScreenshotNameFrom(final Frame frame, final StatefulExtentTest statefulExtentTest, final TestData testData) {
         return String.format("%s-%s-%d.png", frame.getValue(), statefulExtentTest.getDisplayName(), testData.getAndIncrementScreenshotNumber());
+    }
+
+    public String getVisualRegressionScreenshotNameFrom(final Frame frame, final StatefulExtentTest statefulExtentTest, final TestData testData) {
+        return String.format("%s-%s-%d-failed.png", frame.getValue(), statefulExtentTest.getDisplayName(), testData.getScreenshotNumber());
     }
 }
