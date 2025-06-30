@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.types.TestData;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -130,11 +129,11 @@ public final class FileUtils {
         return Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime();
     }
 
-    public String getScreenshotNameFrom(final Frame frame, final StatefulExtentTest statefulExtentTest, final TestData testData) {
-        return String.format("%s-%s-%d.png", frame.getValue(), statefulExtentTest.getDisplayName(), testData.getAndIncrementScreenshotNumber());
+    public String getScreenshotNameFrom(final StatefulExtentTest statefulExtentTest, final TestData testData) {
+        return String.format("%s-%d.png", statefulExtentTest.getDisplayName(), testData.getAndIncrementScreenshotNumber());
     }
 
-    public String getVisualRegressionScreenshotNameFrom(final Frame frame, final StatefulExtentTest statefulExtentTest, final TestData testData) {
-        return String.format("%s-%s-%d-failed.png", frame.getValue(), statefulExtentTest.getDisplayName(), testData.getScreenshotNumber());
+    public String getVisualRegressionScreenshotNameFrom(final StatefulExtentTest statefulExtentTest, final TestData testData) {
+        return String.format("%s-%d-failed.png", statefulExtentTest.getDisplayName(), testData.getScreenshotNumber());
     }
 }

@@ -99,8 +99,8 @@ class VideoDynamicConsumerTest {
 
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("abc-displayName-def12345-1234-1234-1234-123412345678.png", true),
-                arguments("abc-notMatchingDisplayName-def12345-1234-1234-1234-123412345678.png", false),
+                arguments("displayName-123.png", true),
+                arguments("notMatchingDisplayName-123.png", false),
                 arguments("notMatchingAtAll", false)
         );
     }

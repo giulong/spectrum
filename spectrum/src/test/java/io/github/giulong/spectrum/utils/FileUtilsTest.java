@@ -16,7 +16,6 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.util.stream.Stream;
 
-import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static java.lang.System.lineSeparator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -243,6 +242,6 @@ class FileUtilsTest {
         when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
         when(testData.getAndIncrementScreenshotNumber()).thenReturn(123);
 
-        assertEquals(fileUtils.getScreenshotNameFrom(AUTO_AFTER, statefulExtentTest, testData), "autoAfter-displayName-123.png");
+        assertEquals(fileUtils.getScreenshotNameFrom(statefulExtentTest, testData), "displayName-123.png");
     }
 }
