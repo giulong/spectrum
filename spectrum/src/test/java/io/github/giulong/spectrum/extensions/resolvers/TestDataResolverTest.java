@@ -1,10 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.ContextManager;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +18,8 @@ import java.util.Optional;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -28,6 +27,7 @@ import static org.mockito.Mockito.*;
 
 class TestDataResolverTest {
 
+    private static final String UUID_REGEX = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.mp4";
     private static final String CLASS_NAME = "className";
     private static final String METHOD_NAME = "methodName";
     private static final String REPORTS_FOLDER = "reportsFolder";
@@ -195,7 +195,7 @@ class TestDataResolverTest {
         when(path.resolve(stringArgumentCaptor.capture())).thenReturn(path);
 
         assertEquals(path, testDataResolver.getVideoPathForCurrentTest(false, REPORTS_FOLDER, extentFileName, CLASS_NAME, METHOD_NAME));
-        assertEquals("video.mp4", stringArgumentCaptor.getValue());
+        assertThat(stringArgumentCaptor.getValue(), matchesPattern(UUID_REGEX));
     }
 
     @Test
