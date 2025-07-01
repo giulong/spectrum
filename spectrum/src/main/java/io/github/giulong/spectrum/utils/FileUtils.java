@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.reverseOrder;
+import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -130,7 +131,7 @@ public final class FileUtils {
     }
 
     public String getScreenshotNameFrom(final StatefulExtentTest statefulExtentTest, final TestData testData) {
-        return String.format("%s-%d.png", statefulExtentTest.getDisplayName(), testData.getAndIncrementScreenshotNumber());
+        return String.format("%s-%s.png", statefulExtentTest.getDisplayName(), randomUUID());
     }
 
     public String getVisualRegressionScreenshotNameFrom(final StatefulExtentTest statefulExtentTest, final TestData testData) {

@@ -26,6 +26,7 @@ import static org.mockito.Mockito.*;
 class FileUtilsTest {
 
     private static final String DISPLAY_NAME = "displayName";
+    private static final String UUID_REGEX = DISPLAY_NAME + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
 
     @Mock
     private BasicFileAttributes basicFileAttributes;
@@ -240,8 +241,7 @@ class FileUtilsTest {
     @DisplayName("getScreenshotNameFrom should return the name for the provided frame and display name")
     void getScreenshotNameFrom() {
         when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
-        when(testData.getAndIncrementScreenshotNumber()).thenReturn(123);
 
-        assertEquals(fileUtils.getScreenshotNameFrom(statefulExtentTest, testData), "displayName-123.png");
+        assertThat(fileUtils.getScreenshotNameFrom(statefulExtentTest, testData), matchesPattern(UUID_REGEX));
     }
 }
