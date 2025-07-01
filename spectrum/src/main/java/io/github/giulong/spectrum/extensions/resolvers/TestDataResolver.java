@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static java.util.UUID.randomUUID;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -94,7 +93,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
 
         return fileUtils
                 .deleteContentOf(Path.of(reportsFolder, extentFileName, "videos", className, methodName).toAbsolutePath())
-                .resolve(String.format("%s.mp4", randomUUID()));
+                .resolve("video.mp4");
     }
 
     static String transformInKebabCase(final String string) {
