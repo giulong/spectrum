@@ -55,8 +55,6 @@ extent:
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
   locatorRegex: \s->\s(.+?(?=(]]+|]\s+|]$)))  # Regex to extract the WebElement's selector, when the driver fires an event
   retention: { } # Retention rules, specifies the number of reports to retain. Older ones will be deleted. Defaults to MAX_INT
-  inline: false # Set to true to generate an inline report alongside the main one
-  inlineReportFolder: target/spectrum/inline-reports # Where to generate the inline report
   openAtEnd: false # Set to true if you want the report to be automatically opened when the suite execution is finished
   css: css/report.css # Path to the custom css to apply. Relative to the resources folder
   js: js/report.js # Path to the custom js to apply. Relative to the resources folder

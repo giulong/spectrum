@@ -296,8 +296,13 @@ class ExtentReporterTest {
 
     @Test
     @DisplayName("sessionClosed should flush the extent report and cleanup old ones")
-    void sessionClosed() {
+    void sessionClosed() throws IOException {
         final int total = 123;
+        final String reportFolder = "reportFolder";
+        final String fileName = "fileName";
+        final String fileNameWithoutExtension = "fileNameWithoutExtension";
+        final String readString = "readString";
+        final String inlineReport = "inlineReport";
 
         cleanupOldReportsStubs();
         sortTestStubs();
@@ -306,6 +311,12 @@ class ExtentReporterTest {
         when(extent.getRetention()).thenReturn(retention);
         when(retention.getTotal()).thenReturn(total);
         when(extent.getReportFolder()).thenReturn(REPORT_FOLDER);
+        when(extent.getFileName()).thenReturn(fileName);
+        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
+        when(Path.of(reportFolder, fileNameWithoutExtension, fileName)).thenReturn(path);
+        when(path.toAbsolutePath()).thenReturn(absolutePath);
+        when(Files.readString(absolutePath)).thenReturn(readString);
+        when(htmlUtils.inline(readString)).thenReturn(inlineReport);
 
         extentReporter.sessionClosed();
 
