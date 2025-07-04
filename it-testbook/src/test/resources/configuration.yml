@@ -29,7 +29,6 @@ extent:
   fileName: report-${spectrum.driver:-chrome}.html
   retention:
     total: 3
-  inline: true
 
 testBook:
   reporters:

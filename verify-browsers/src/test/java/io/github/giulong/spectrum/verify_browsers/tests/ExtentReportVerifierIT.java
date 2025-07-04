@@ -167,14 +167,6 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         commonChecksFor(BASE_PATH + "reports/report-chrome/report-chrome.html");
         commonChecksFor(BASE_PATH + "reports/report-firefox/report-firefox.html");
         commonChecksFor(BASE_PATH + "reports/report-edge/report-edge.html");
-    }
-
-    @Test
-    @DisplayName("should check the inline report")
-    void inlineReport() {
-        commonChecksFor(BASE_PATH + "inline-reports/report-chrome.html");
-        commonChecksFor(BASE_PATH + "inline-reports/report-firefox.html");
-        commonChecksFor(BASE_PATH + "inline-reports/report-edge.html");
 
         assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("src")), matchesPattern(VIDEO_PATTERN));
         extentReportPage

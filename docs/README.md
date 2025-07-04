@@ -1800,34 +1800,14 @@ extent:
 >
 > ![dynamic-tests-extent-report.png](assets/images/dynamic-tests-extent-report.png)
 
-### Inline report
-
-The generated html report embeds external resources such as images and videos. You can optionally choose to produce an
-inline report, that will be exactly the same, but with all the external images and videos replaced with their
+The generated html report embeds external resources such as images and videos. These are automatically inlined
+by replacing them with their
 [Base64](https://en.wikipedia.org/wiki/Base64){:target="_blank"} encoded data.
-
-This is particularly useful if you want to send the html report to someone else, without packing it with the associated
-folder containing all the external resources.
+This means you can already send the html report to someone else, without the need of packing it with
+all the external resources.
 
 > 💡 **Tip**<br/>
-> Check the [Mail Consumer](#mail-consumer) section to see how to send the inline report as an attachment to an email.
-
-To generate the inline report, you need to set the `extent.inline` key to `true`. By default, the inline report will be
-generated in the `target/spectrum/inline-reports` folder. You can optionally override that as well with the corresponding
-property, as you can see here:
-
-{% include copyCode.html %}
-
-```yaml
-extent:
-  fileName: report.html # this is the name of both the regular report and the inline one
-  inline: true
-  inlineReportFolder: target/spectrum/inline-reports # This is the default, no need to add it in your configuration
-```
-
-> ⚠️ **Reports names**<br/>
-> Mind that the inline report has the same name of the regular one, so it's important to have them generated in separate folders
-> not to override each other.
+> Check the [Mail Consumer](#mail-consumer) section to see how to send the report as an attachment to an email.
 
 ### Tests order
 
@@ -2778,7 +2758,7 @@ eventsConsumers:
           tags: [ suite ]
       attachments:
         - name: report
-          file: target/spectrum/inline-reports/report.html
+          file: target/spectrum/reports/report.html
         - name: testbook
           file: target/spectrum/testbook/testbook.html
 ```
@@ -2798,7 +2778,7 @@ eventsConsumers:
           tags: [ suite ]
       attachments:
         - name: report
-          file: target/spectrum/inline-reports/report.html
+          file: target/spectrum/reports/report.html
   - mail:
       events:
         - reason: after
