@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [ "main" ]
     types: [ closed ]
+  push:
+    branches: [ "release/v1.25.0" ]
 
 env:
   DOCS_FOLDER: docs
