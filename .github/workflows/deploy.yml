@@ -12,7 +12,7 @@ env:
 
 jobs:
   deploy:
-    if: github.event.pull_request.merged
+    #if: github.event.pull_request.merged
     name: Deploy
     runs-on: ubuntu-latest
     permissions:
