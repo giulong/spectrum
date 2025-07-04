@@ -4,15 +4,13 @@ on:
   pull_request:
     branches: [ "main" ]
     types: [ closed ]
-  push:
-    branches: [ "release/v1.25.0" ]
 
 env:
   DOCS_FOLDER: docs
 
 jobs:
   deploy:
-    #if: github.event.pull_request.merged
+    if: github.event.pull_request.merged
     name: Deploy
     runs-on: ubuntu-latest
     permissions:
@@ -50,7 +48,7 @@ jobs:
       - name: Get Spectrum new version
         id: get-version
         run: |
-          NEW_VERSION=1.25.0
+          NEW_VERSION=${GITHUB_HEAD_REF#release/v}
           echo "Spectrum version is $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
