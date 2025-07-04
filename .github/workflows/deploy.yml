@@ -50,7 +50,7 @@ jobs:
       - name: Get Spectrum new version
         id: get-version
         run: |
-          NEW_VERSION=${GITHUB_HEAD_REF#release/v}
+          NEW_VERSION=1.25.0
           echo "Spectrum version is $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
