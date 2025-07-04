@@ -40,9 +40,6 @@ class SpectrumSessionListenerTest {
     private ExtentReporter extentReporter;
 
     @Mock
-    private ExtentReporterInline extentReporterInline;
-
-    @Mock
     private FileUtils fileUtils;
 
     @Mock
@@ -99,7 +96,6 @@ class SpectrumSessionListenerTest {
         Reflections.setField("fileUtils", spectrumSessionListener, fileUtils);
         Reflections.setField("freeMarkerWrapper", spectrumSessionListener, freeMarkerWrapper);
         Reflections.setField("extentReporter", spectrumSessionListener, extentReporter);
-        Reflections.setField("extentReporterInline", spectrumSessionListener, extentReporterInline);
         Reflections.setField("configuration", spectrumSessionListener, configuration);
         Reflections.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
         Reflections.setField("metadataManager", spectrumSessionListener, metadataManager);
@@ -152,7 +148,6 @@ class SpectrumSessionListenerTest {
         verify(testBook).sessionOpened();
         verify(summary).sessionOpened();
         verify(extentReporter).sessionOpened();
-        verify(extentReporterInline).sessionOpened();
         verify(freeMarkerWrapper).sessionOpened();
         verify(eventsDispatcher).sessionOpened();
         verify(htmlUtils).sessionOpened();
@@ -166,7 +161,7 @@ class SpectrumSessionListenerTest {
         when(configuration.getTestBook()).thenReturn(testBook);
         when(configuration.getSummary()).thenReturn(summary);
 
-        final InOrder inOrder = inOrder(environment, testBook, summary, metadataManager, extentReporter, extentReporterInline, eventsDispatcher);
+        final InOrder inOrder = inOrder(environment, testBook, summary, metadataManager, extentReporter, eventsDispatcher);
 
         spectrumSessionListener.launcherSessionClosed(launcherSession);
 
@@ -175,7 +170,6 @@ class SpectrumSessionListenerTest {
         inOrder.verify(summary).sessionClosed();
         inOrder.verify(metadataManager).sessionClosed();
         inOrder.verify(extentReporter).sessionClosed();
-        inOrder.verify(extentReporterInline).sessionClosed();
         inOrder.verify(eventsDispatcher).sessionClosed();
     }
 
