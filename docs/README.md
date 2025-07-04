@@ -2499,8 +2499,8 @@ This is the result of the executed test. Of course, this will be available only 
 ## Context
 
 The JUnit's ExtensionContext is attached to each event. It's not considered when matching events, but it can be useful
-in custom templates to access objects stored in it. For example, the default [slack.json template]({{ site.repository_url
-}}/spectrum/src/main/resources/templates/slack.json){:target="_blank"}
+in custom templates to access objects stored in it. For example, the default
+[slack.json template]({{ site.repository_url }}/spectrum/src/main/resources/templates/slack.json){:target="_blank"}
 uses it to print class and test names:
 
 {% include copyCode.html %}
@@ -2561,9 +2561,10 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 > 💡 **Example**<br/>
-> Check the [DemoIT.events()]({{ site.baseurl }}{{ post.url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/DemoIT.java){:target="_blank"} test to see how to fire custom
+> Check the [DemoIT.events()]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/DemoIT.java){:target="_blank"} test to see how to fire custom
 > events,
-> and the related [configuration.yaml]({{ site.github.url }}/it/src/test/resources/configuration.yaml){:target="_blank"} to check how `eventsConsumers` are set, leveraging regex
+> and the related [configuration.yaml]({{ site.repository_url }}/it/src/test/resources/configuration.yaml){:target="_blank"} to check how `eventsConsumers` are set, leveraging
+> regex
 > matches
 > (more on this below).
 
@@ -2880,7 +2881,7 @@ eventsConsumers:
 > * simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
 
 > 💡 **Tip**<br/>
-> To test the slack handler works as expected, you can provide a simple `template.txt` with just an "Hello World from Spectrum" in it.
+> To test the slack handler works as expected, you can provide a simple `template.txt` with just a "Hello World from Spectrum" in it.
 
 ### Test Steps Consumer
 
