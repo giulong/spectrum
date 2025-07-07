@@ -43,4 +43,3 @@ drivers:
 extent:
   theme: DARK
   fileName: report-${spectrum.driver:-chrome}.html
-  inline: true

@@ -6,7 +6,7 @@
 [![javadoc](https://javadoc.io/badge2/io.github.giulong/spectrum/javadoc.svg)](https://javadoc.io/doc/io.github.giulong/spectrum)
 [![badge-jdk](https://img.shields.io/badge/jdk-21-blue.svg)](https://jdk.java.net/archive/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://search.maven.org/search?q=g:io.github.giulong%20a:spectrum)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.giulong/spectrum.svg)](https://central.sonatype.com/artifact/io.github.giulong/spectrum)
 [![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/y/giulong/spectrum/develop)](https://github.com/giulong/spectrum/commits/develop/)
 [![GitHub Discussions](https://img.shields.io/github/discussions/giulong/spectrum)](https://github.com/giulong/spectrum/discussions)
 
@@ -91,7 +91,7 @@ If you'd rather add Spectrum manually to your project, you just need to add its 
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
-    <version>1.24.4</version>
+    <version>1.25.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -100,7 +100,7 @@ If you'd rather add Spectrum manually to your project, you just need to add its 
 
 ```gradle
 dependencies {
-  testImplementation group: 'io.github.giulong', name: 'spectrum', version: '1.24.4'
+  testImplementation group: 'io.github.giulong', name: 'spectrum', version: '1.25.0'
 }
 ```
 

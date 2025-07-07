@@ -60,14 +60,6 @@ class BiDiExtentReportVerifierIT extends SpectrumTest<Data> {
         commonChecksFor("reports/report-edge/report-edge.html");
     }
 
-    @Test
-    @DisplayName("should check the inline report")
-    void inlineReport() {
-        commonChecksFor("inline-reports/report-chrome.html");
-        commonChecksFor("inline-reports/report-firefox.html");
-        commonChecksFor("inline-reports/report-edge.html");
-    }
-
     private long countTestsWithStatus(final String status) {
         return extentReportPage
                 .getTestViewTests()
