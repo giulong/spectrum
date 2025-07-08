@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 @Slf4j
 public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
 
-    private static final Pattern PATTERN = Pattern.compile("(?<placeholder>\\$\\{(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~\\s-.:/\\\\]*))?})");
+    private static final Pattern PATTERN = Pattern.compile("(?<placeholder>\\$\\{(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~\\s-.:/\\\\=]*))?})");
 
     private final Vars vars = Vars.getInstance();
 
