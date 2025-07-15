@@ -3,15 +3,15 @@ package io.github.giulong.spectrum.pojos.events;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.github.giulong.spectrum.enums.Result;
 import lombok.*;
+import lombok.extern.jackson.Jacksonized;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.util.Set;
 
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
+@Builder
 @ToString
+@Jacksonized
 public class Event {
 
     private String primaryId;
