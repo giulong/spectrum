@@ -1,41 +1,38 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.pojos.Screenshot;
+import io.github.giulong.spectrum.utils.HtmlUtils;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
-import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.TakesScreenshot;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Map;
 
-import static org.openqa.selenium.OutputType.BYTES;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.pojos.Screenshot.SCREENSHOT;
 
 @Slf4j
 @SuperBuilder
 public class ScreenshotConsumer extends WebDriverEventConsumer {
 
-    private final FileUtils fileUtils = FileUtils.getInstance();
+    private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
+    private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
 
-    private TakesScreenshot driver;
-    private StatefulExtentTest statefulExtentTest;
-    private TestData testData;
     private Video video;
+    private ExtensionContext context;
 
-    @SneakyThrows
     @Override
     public void accept(final WebDriverEvent webDriverEvent) {
         final Frame frame = webDriverEvent.getFrame();
 
         if (video.shouldRecord(frame)) {
-            final String fileName = fileUtils.getScreenshotNameFrom(frame, statefulExtentTest);
-            final Path screenshotPath = testData.getScreenshotFolderPath().resolve(fileName);
-            final Path path = Files.write(screenshotPath, driver.getScreenshotAs(BYTES));
-            log.trace("Recording frame {} for event '{}' at {}", frame, webDriverEvent.getMessage(), path);
+            final Screenshot screenshot = htmlUtils.buildScreenshotFrom(context);
+
+            eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
+            log.trace("Recording frame {} for event '{}'", frame, webDriverEvent.getMessage());
 
             return;
         }

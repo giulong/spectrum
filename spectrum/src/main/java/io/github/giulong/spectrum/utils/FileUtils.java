@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.enums.Frame;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -130,7 +129,7 @@ public final class FileUtils {
         return Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime();
     }
 
-    public String getScreenshotNameFrom(final Frame frame, final StatefulExtentTest statefulExtentTest) {
-        return String.format("%s-%s-%s.png", frame.getValue(), statefulExtentTest.getDisplayName(), randomUUID());
+    public String buildScreenshotNameFrom(final StatefulExtentTest statefulExtentTest) {
+        return String.format("%s-%s.png", statefulExtentTest.getDisplayName(), randomUUID());
     }
 }
