@@ -17,7 +17,6 @@ public class TestData {
     private String methodName;
     private String classDisplayName;
     private String testId;
-    private Path screenshotFolderPath;
     private Path videoPath;
 
     @Builder.Default

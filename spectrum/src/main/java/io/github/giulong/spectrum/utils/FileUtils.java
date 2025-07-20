@@ -61,6 +61,10 @@ public final class FileUtils {
         return value.replaceAll(TIMESTAMP_TO_REPLACE, LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern)));
     }
 
+    public String getExtensionWithDotOf(final String fileName) {
+        return fileName.substring(Math.max(0, fileName.lastIndexOf(".")));
+    }
+
     public String getExtensionOf(final String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }

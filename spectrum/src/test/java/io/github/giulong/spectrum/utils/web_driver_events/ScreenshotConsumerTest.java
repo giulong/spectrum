@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils.web_driver_events;
 
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.pojos.Screenshot;
+import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -27,6 +28,9 @@ class ScreenshotConsumerTest {
     private HtmlUtils htmlUtils;
 
     @Mock
+    private ContextManager contextManager;
+
+    @Mock
     private EventsDispatcher eventsDispatcher;
 
     @Mock
@@ -39,6 +43,9 @@ class ScreenshotConsumerTest {
     private Screenshot screenshot;
 
     @Mock
+    private Map<String, Screenshot> screenshots;
+
+    @Mock
     private Video video;
 
     @InjectMocks
@@ -46,6 +53,7 @@ class ScreenshotConsumerTest {
 
     @BeforeEach
     void beforeEach() {
+        Reflections.setField("contextManager", screenshotConsumer, contextManager);
         Reflections.setField("htmlUtils", screenshotConsumer, htmlUtils);
         Reflections.setField("eventsDispatcher", screenshotConsumer, eventsDispatcher);
     }
@@ -54,13 +62,18 @@ class ScreenshotConsumerTest {
     @DisplayName("accept should record the screenshot")
     void accept() {
         final Frame frame = AUTO_AFTER;
+        final String screenshotName = "screenshotName";
 
         when(video.shouldRecord(eq(frame))).thenReturn(true);
         when(webDriverEvent.getFrame()).thenReturn(frame);
         when(htmlUtils.buildScreenshotFrom(context)).thenReturn(screenshot);
 
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+        when(screenshot.getName()).thenReturn(screenshotName);
+
         screenshotConsumer.accept(webDriverEvent);
 
+        verify(screenshots).put(screenshotName, screenshot);
         verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
         verifyNoMoreInteractions(eventsDispatcher);
     }

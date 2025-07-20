@@ -42,6 +42,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     public static final String HASH_ALGORITHM = "SHA-256";
 
+    private final ContextManager contextManager = ContextManager.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
 
@@ -177,28 +178,34 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      *
      * @param msg    the message to log
      * @param status the log's status
-     * @return the generated screenshot
      */
     @SneakyThrows
-    public Media addScreenshotToReport(final String msg, final Status status) {
+    public void addScreenshotToReport(final String msg, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
         final Screenshot screenshot = htmlUtils.buildScreenshotFrom(context);
 
         eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
 
-        Files.write(screenshot.getPath(), screenshot.getData());
-        final Media media = createScreenCaptureFromPath(screenshot.getPath().toString()).build();
+        final String name = screenshot.getName();
+        final String nameWithoutExtension = fileUtils.removeExtensionFrom(name);
+        final String extension = fileUtils.getExtensionWithDotOf(name);
+        final Path path = Files.createTempFile(nameWithoutExtension, extension);
+
+        path.toFile().deleteOnExit();
+        contextManager.getScreenshots().put(path.getFileName().toString(), screenshot);
+        Files.write(path, screenshot.getData());
+
+        final Media media = createScreenCaptureFromPath(path.toString()).build();
 
         if (msg == null) {
             statefulExtentTest.getCurrentNode().log(status, (String) null, media);
-        } else {
-            final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
-            final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message");
-
-            statefulExtentTest.getCurrentNode().log(status, tag, media);
+            return;
         }
 
-        return media;
+        final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
+        final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message");
+
+        statefulExtentTest.getCurrentNode().log(status, tag, media);
     }
 
     /**

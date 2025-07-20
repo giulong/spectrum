@@ -19,7 +19,6 @@ import java.util.Map;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -38,6 +37,9 @@ class HtmlUtilsTest {
     private final String testId = "testId";
 
     @Mock
+    private ContextManager contextManager;
+
+    @Mock
     private Screenshot.ScreenshotBuilder screenshotBuilder;
 
     @Mock
@@ -54,6 +56,12 @@ class HtmlUtilsTest {
 
     @Mock
     private Screenshot screenshot;
+
+    @Mock
+    private Screenshot screenshot2;
+
+    @Mock
+    private Map<String, Screenshot> screenshots;
 
     @Mock
     private Path path;
@@ -85,6 +93,7 @@ class HtmlUtilsTest {
         filesMockedStatic = mockStatic(Files.class);
         screenshotMockedStatic = mockStatic(Screenshot.class);
 
+        Reflections.setField("contextManager", htmlUtils, contextManager);
         Reflections.setField("freeMarkerWrapper", htmlUtils, freeMarkerWrapper);
         Reflections.setField("fileUtils", htmlUtils, fileUtils);
     }
@@ -170,15 +179,11 @@ class HtmlUtilsTest {
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
         when(fileUtils.buildScreenshotNameFrom(statefulExtentTest)).thenReturn(screenshotName);
-        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
-        when(testData.getScreenshotFolderPath()).thenReturn(path);
-        when(path.resolve(screenshotName)).thenReturn(path2);
         when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
         when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(data);
 
         when(Screenshot.builder()).thenReturn(screenshotBuilder);
         when(screenshotBuilder.name(screenshotName)).thenReturn(screenshotBuilder);
-        when(screenshotBuilder.path(path2)).thenReturn(screenshotBuilder);
         when(screenshotBuilder.data(byteArrayArgumentCaptor.capture())).thenReturn(screenshotBuilder);
         when(screenshotBuilder.build()).thenReturn(screenshot);
 
@@ -190,16 +195,21 @@ class HtmlUtilsTest {
     @DisplayName("inline should call both the inlineImagesOf and inlineVideosOf on the provided html and return the one with all of those replaced")
     void inline() throws IOException {
         final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";
+
         when(Path.of("src1")).thenReturn(path);
         when(Path.of("src2")).thenReturn(path2);
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
-        when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "BAUG");
 
         Reflections.setField("inlineImageTemplate", htmlUtils, source);
         final String interpolatedTemplate = "interpolatedTemplate";
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
+
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+        when(path2.getFileName()).thenReturn(path2);
+        when(screenshots.get(path2.toString())).thenReturn(screenshot2);
+        when(screenshot2.getData()).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inline(report);
 
@@ -210,14 +220,12 @@ class HtmlUtilsTest {
 
     @Test
     @DisplayName("inlineImagesOf should return the provided html with all the images replaced with their own base64")
-    void inlineImagesOf() throws IOException {
+    void inlineImagesOf() {
         final String html = "abc<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src1\"/></div></div>def" +
                 "<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>ghi";
 
         when(Path.of("src1")).thenReturn(path);
         when(Path.of("src2")).thenReturn(path2);
-        when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
-        when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "AQID");
@@ -226,6 +234,13 @@ class HtmlUtilsTest {
         Reflections.setField("inlineImageTemplate", htmlUtils, source);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
         when(freeMarkerWrapper.interpolate(source, expectedParams1)).thenReturn(interpolatedTemplate);
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+        when(path.getFileName()).thenReturn(path);
+        when(path2.getFileName()).thenReturn(path2);
+        when(screenshots.get(path.toString())).thenReturn(screenshot);
+        when(screenshot.getData()).thenReturn(new byte[]{1, 2, 3});
+        when(screenshots.get(path2.toString())).thenReturn(screenshot2);
+        when(screenshot2.getData()).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inlineImagesOf(html);
 

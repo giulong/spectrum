@@ -103,6 +103,21 @@ class FileUtilsTest {
         );
     }
 
+    @DisplayName("getExtensionWithDotOf should return the extension with dot of the provided fileName")
+    @ParameterizedTest(name = "with fileName {0} we expect {1}")
+    @MethodSource("getExtensionWithDotOfValuesProvider")
+    void getExtensionWithDotOf(final String fileName, final String expected) {
+        assertEquals(expected, fileUtils.getExtensionWithDotOf(fileName));
+    }
+
+    static Stream<Arguments> getExtensionWithDotOfValuesProvider() {
+        return Stream.of(
+                arguments("fileName.abc", ".abc"),
+                arguments("fileName", "fileName"),
+                arguments("fileName.", ".")
+        );
+    }
+
     @DisplayName("getExtensionOf should return the extension of the provided fileName")
     @ParameterizedTest(name = "with fileName {0} we expect {1}")
     @MethodSource("getExtensionOfValuesProvider")

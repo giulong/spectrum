@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static java.util.regex.Pattern.DOTALL;
 import static lombok.AccessLevel.PRIVATE;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -34,8 +33,11 @@ public class HtmlUtils implements SessionHook {
     private static final Pattern IMAGE_TAG = Pattern.compile("<div class=\"row mb-3\">\\s*<div class=\"col-md-3\">\\s*<img.*?src=\"(?<src>[^\"]*)\".*?</div>\\s*</div>", DOTALL);
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
     private static final String SRC = "src";
+
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
+    private final ContextManager contextManager = ContextManager.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
+
     private String videoTemplate;
     private String divTemplate;
     private String frameTemplate;
@@ -69,13 +71,11 @@ public class HtmlUtils implements SessionHook {
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final StatefulExtentTest statefulExtentTest = store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class);
         final String fileName = fileUtils.buildScreenshotNameFrom(statefulExtentTest);
-        final TestData testData = store.get(TEST_DATA, TestData.class);
         final TakesScreenshot driver = (TakesScreenshot) store.get(DRIVER, WebDriver.class);
 
         return Screenshot
                 .builder()
                 .name(fileName)
-                .path(testData.getScreenshotFolderPath().resolve(fileName))
                 .data(driver.getScreenshotAs(BYTES))
                 .build();
     }
@@ -83,11 +83,12 @@ public class HtmlUtils implements SessionHook {
     @SneakyThrows
     public String inlineImagesOf(final String html) {
         final Matcher matcher = IMAGE_TAG.matcher(html);
+        final Map<String, Screenshot> screenshots = contextManager.getScreenshots();
         String inlineHtml = html;
 
         while (matcher.find()) {
             final String src = matcher.group(SRC);
-            final byte[] bytes = Files.readAllBytes(Path.of(src));
+            final byte[] bytes = screenshots.get(Path.of(src).getFileName().toString()).getData();
             final String encoded = ENCODER.encodeToString(bytes);
             final String replacement = freeMarkerWrapper.interpolate(this.inlineImageTemplate, Map.of("encoded", encoded));
 

@@ -41,7 +41,6 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final String displayName = fileUtils.sanitize(joinTestDisplayNamesIn(context));
         final String testId = buildTestIdFrom(className, displayName);
         final String fileName = fileUtils.removeExtensionFrom(extent.getFileName());
-        final Path screenshotFolderPath = getScreenshotFolderPathForCurrentTest(reportFolder, fileName, classDisplayName, displayName);
         final Path videoPath = getVideoPathForCurrentTest(configuration.getVideo().isDisabled(), reportFolder, fileName, classDisplayName, displayName);
         final TestData testData = TestData
                 .builder()
@@ -50,7 +49,6 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
                 .classDisplayName(classDisplayName)
                 .displayName(displayName)
                 .testId(testId)
-                .screenshotFolderPath(screenshotFolderPath)
                 .videoPath(videoPath)
                 .build();
 
@@ -77,10 +75,6 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         }
 
         return String.join(" ", displayNames.reversed());
-    }
-
-    Path getScreenshotFolderPathForCurrentTest(final String reportsFolder, final String extentFileName, final String className, final String methodName) {
-        return fileUtils.deleteContentOf(Path.of(reportsFolder, extentFileName, "screenshots", className, methodName).toAbsolutePath());
     }
 
     Path getVideoPathForCurrentTest(final boolean disabled, final String reportsFolder, final String extentFileName, final String className, final String methodName) {

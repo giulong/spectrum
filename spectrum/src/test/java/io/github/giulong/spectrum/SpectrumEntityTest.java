@@ -56,11 +56,17 @@ class SpectrumEntityTest {
     private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
     private MockedStatic<MessageDigest> messageDigestMockedStatic;
 
+    private final String screenshotName = "screenshotName";
+    private final String nameWithoutExtension = "nameWithoutExtension";
+    private final String extension = "extension";
     private final String msg = "msg";
     private final String tag = "tag";
     private final int frameNumber = 123;
     private final byte[] bytes = new byte[]{1, 2, 3};
     private final byte[] digest = new byte[]{4, 5, 6};
+
+    @Mock
+    private ContextManager contextManager;
 
     @Mock
     private WebDriverWait downloadWait;
@@ -129,6 +135,9 @@ class SpectrumEntityTest {
     private Screenshot screenshot;
 
     @Mock
+    private Map<String, Screenshot> screenshots;
+
+    @Mock
     private MessageDigest messageDigest;
 
     @Mock
@@ -142,6 +151,7 @@ class SpectrumEntityTest {
 
     @BeforeEach
     void beforeEach() {
+        Reflections.setField("contextManager", spectrumEntity, contextManager);
         Reflections.setField("configuration", spectrumEntity, configuration);
         Reflections.setField("htmlUtils", spectrumEntity, htmlUtils);
         Reflections.setField("fileUtils", spectrumEntity, fileUtils);
@@ -165,7 +175,6 @@ class SpectrumEntityTest {
     private void addScreenshotToReportStubs() {
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
         when(htmlUtils.buildScreenshotFrom(context)).thenReturn(screenshot);
-        when(screenshot.getPath()).thenReturn(path);
 
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
@@ -173,6 +182,16 @@ class SpectrumEntityTest {
         when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(media);
+
+        when(screenshot.getName()).thenReturn(screenshotName);
+        when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
+        when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
+
+        filesMockedStatic.when(() -> Files.createTempFile(nameWithoutExtension, extension)).thenReturn(path);
+        when(path.toFile()).thenReturn(file);
+        when(path.getFileName()).thenReturn(path);
+
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
     }
 
     @Test
@@ -223,11 +242,20 @@ class SpectrumEntityTest {
     void screenshot() {
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
         when(htmlUtils.buildScreenshotFrom(context)).thenReturn(screenshot);
-        when(screenshot.getPath()).thenReturn(path);
 
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(media);
+
+        when(screenshot.getName()).thenReturn(screenshotName);
+        when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
+        when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
+
+        filesMockedStatic.when(() -> Files.createTempFile(nameWithoutExtension, extension)).thenReturn(path);
+        when(path.toFile()).thenReturn(file);
+        when(path.getFileName()).thenReturn(path);
+
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
 
         assertEquals(spectrumEntity, spectrumEntity.screenshot());
 
@@ -283,20 +311,30 @@ class SpectrumEntityTest {
 
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
         when(htmlUtils.buildScreenshotFrom(context)).thenReturn(screenshot);
-        when(screenshot.getPath()).thenReturn(path);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
         when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
+
+        when(screenshot.getName()).thenReturn(screenshotName);
+        when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
+        when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
+
+        filesMockedStatic.when(() -> Files.createTempFile(nameWithoutExtension, extension)).thenReturn(path);
+        when(path.toFile()).thenReturn(file);
+        when(path.getFileName()).thenReturn(path);
+
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(media);
 
-        final Media actual = spectrumEntity.addScreenshotToReport(msg, status);
+        spectrumEntity.addScreenshotToReport(msg, status);
 
-        assertEquals(media, actual);
-
+        verify(file).deleteOnExit();
+        verify(screenshots).put(path.toString(), screenshot);
         verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
-        verify(extentTest).log(status, tag, actual);
+        verify(extentTest).log(status, tag, media);
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

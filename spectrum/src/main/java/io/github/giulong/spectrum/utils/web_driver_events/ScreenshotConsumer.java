@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.utils.web_driver_events;
 
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.pojos.Screenshot;
+import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -18,6 +19,7 @@ import static io.github.giulong.spectrum.pojos.Screenshot.SCREENSHOT;
 @SuperBuilder
 public class ScreenshotConsumer extends WebDriverEventConsumer {
 
+    private final ContextManager contextManager = ContextManager.getInstance();
     private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
     private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
 
@@ -31,6 +33,7 @@ public class ScreenshotConsumer extends WebDriverEventConsumer {
         if (video.shouldRecord(frame)) {
             final Screenshot screenshot = htmlUtils.buildScreenshotFrom(context);
 
+            contextManager.getScreenshots().put(screenshot.getName(), screenshot);
             eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
             log.trace("Recording frame {} for event '{}'", frame, webDriverEvent.getMessage());
 

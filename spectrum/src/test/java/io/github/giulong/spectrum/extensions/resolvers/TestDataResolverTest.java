@@ -124,11 +124,6 @@ class TestDataResolverTest {
         when(fileUtils.sanitize(classDisplayName)).thenReturn(sanitizedClassDisplayName);
         when(fileUtils.sanitize(displayName)).thenReturn(sanitizedDisplayName);
 
-        // getScreenshotFolderPathForCurrentTest
-        when(fileUtils.deleteContentOf(
-                Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath()))
-                .thenReturn(path);
-
         // getVideoPathForCurrentTest
         when(fileUtils.deleteContentOf(
                 Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath()))
@@ -152,7 +147,6 @@ class TestDataResolverTest {
         when(testDataBuilder.classDisplayName(sanitizedClassDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.displayName(sanitizedDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
-        when(testDataBuilder.screenshotFolderPath(path)).thenReturn(testDataBuilder);
         when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
 
@@ -161,15 +155,6 @@ class TestDataResolverTest {
         assertEquals(testData, actual);
         verify(store).put(TEST_DATA, actual);
         verify(contextManager).put(context, TEST_DATA, actual);
-    }
-
-    @Test
-    @DisplayName("getScreenshotFolderPathForCurrentTest should return the path for the current test and create the dirs")
-    void getScreenshotFolderPathForCurrentTest() {
-        final String extentFileName = "extentFileName";
-
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, extentFileName, "screenshots", CLASS_NAME, METHOD_NAME).toAbsolutePath())).thenReturn(path);
-        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(REPORTS_FOLDER, extentFileName, CLASS_NAME, METHOD_NAME));
     }
 
     @Test
