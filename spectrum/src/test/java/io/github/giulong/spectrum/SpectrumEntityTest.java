@@ -184,11 +184,11 @@ class SpectrumEntityTest {
         when(mediaEntityBuilder.build()).thenReturn(media);
 
         when(screenshot.getName()).thenReturn(screenshotName);
+        when(screenshot.getData()).thenReturn(bytes);
         when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
         when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
 
-        filesMockedStatic.when(() -> Files.createTempFile(nameWithoutExtension, extension)).thenReturn(path);
-        when(path.toFile()).thenReturn(file);
+        when(fileUtils.writeTempFile(nameWithoutExtension, extension, bytes)).thenReturn(path);
         when(path.getFileName()).thenReturn(path);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
@@ -248,11 +248,11 @@ class SpectrumEntityTest {
         when(mediaEntityBuilder.build()).thenReturn(media);
 
         when(screenshot.getName()).thenReturn(screenshotName);
+        when(screenshot.getData()).thenReturn(bytes);
         when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
         when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
 
-        filesMockedStatic.when(() -> Files.createTempFile(nameWithoutExtension, extension)).thenReturn(path);
-        when(path.toFile()).thenReturn(file);
+        when(fileUtils.writeTempFile(nameWithoutExtension, extension, bytes)).thenReturn(path);
         when(path.getFileName()).thenReturn(path);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
@@ -317,11 +317,11 @@ class SpectrumEntityTest {
         when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
 
         when(screenshot.getName()).thenReturn(screenshotName);
+        when(screenshot.getData()).thenReturn(bytes);
         when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
         when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
+        when(fileUtils.writeTempFile(nameWithoutExtension, extension, bytes)).thenReturn(path);
 
-        filesMockedStatic.when(() -> Files.createTempFile(nameWithoutExtension, extension)).thenReturn(path);
-        when(path.toFile()).thenReturn(file);
         when(path.getFileName()).thenReturn(path);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
@@ -331,7 +331,6 @@ class SpectrumEntityTest {
 
         spectrumEntity.addScreenshotToReport(msg, status);
 
-        verify(file).deleteOnExit();
         verify(screenshots).put(path.toString(), screenshot);
         verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
         verify(extentTest).log(status, tag, media);

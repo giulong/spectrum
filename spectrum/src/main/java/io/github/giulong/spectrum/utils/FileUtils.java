@@ -75,7 +75,7 @@ public final class FileUtils {
 
     @SneakyThrows
     public Path delete(final Path path) {
-        if (!Files.exists(path)) {
+        if (Files.notExists(path)) {
             log.debug("Avoid deleting non-existing path '{}'", path);
             return path;
         }
@@ -135,5 +135,13 @@ public final class FileUtils {
 
     public String buildScreenshotNameFrom(final StatefulExtentTest statefulExtentTest) {
         return String.format("%s-%s.png", statefulExtentTest.getDisplayName(), randomUUID());
+    }
+
+    @SneakyThrows
+    public Path writeTempFile(final String prefix, final String suffix, final byte[] data) {
+        final Path path = Files.createTempFile(prefix, suffix);
+        path.toFile().deleteOnExit();
+
+        return Files.write(path, data);
     }
 }

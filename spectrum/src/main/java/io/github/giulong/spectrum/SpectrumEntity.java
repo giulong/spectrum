@@ -179,7 +179,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @param msg    the message to log
      * @param status the log's status
      */
-    @SneakyThrows
     public void addScreenshotToReport(final String msg, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
         final Screenshot screenshot = htmlUtils.buildScreenshotFrom(context);
@@ -189,13 +188,10 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final String name = screenshot.getName();
         final String nameWithoutExtension = fileUtils.removeExtensionFrom(name);
         final String extension = fileUtils.getExtensionWithDotOf(name);
-        final Path path = Files.createTempFile(nameWithoutExtension, extension);
-
-        path.toFile().deleteOnExit();
-        contextManager.getScreenshots().put(path.getFileName().toString(), screenshot);
-        Files.write(path, screenshot.getData());
-
+        final Path path = fileUtils.writeTempFile(nameWithoutExtension, extension, screenshot.getData());
         final Media media = createScreenCaptureFromPath(path.toString()).build();
+
+        contextManager.getScreenshots().put(path.getFileName().toString(), screenshot);
 
         if (msg == null) {
             statefulExtentTest.getCurrentNode().log(status, (String) null, media);
