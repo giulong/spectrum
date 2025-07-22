@@ -2,15 +2,13 @@ package io.github.giulong.spectrum;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.extern.jackson.Jacksonized;
 
 @Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Jacksonized
 @SuppressWarnings("unused")
 public class TestYaml {
 
@@ -25,8 +23,7 @@ public class TestYaml {
 
     @Getter
     @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
+    @Jacksonized
     @JsonView(Internal.class)
     public static class InternalKey {
         private String field;
