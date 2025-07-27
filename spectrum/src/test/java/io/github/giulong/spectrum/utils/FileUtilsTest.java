@@ -278,6 +278,20 @@ class FileUtilsTest {
     }
 
     @Test
+    @DisplayName("createTempFile should create a temp file with the provided prefix, suffix, and delete it on exit")
+    void createTempFile() throws IOException {
+        final String prefix = "prefix";
+        final String suffix = "suffix";
+
+        when(Files.createTempFile(prefix, suffix)).thenReturn(path);
+        when(path.toFile()).thenReturn(file);
+
+        assertEquals(path, fileUtils.createTempFile(prefix, suffix));
+
+        verify(file).deleteOnExit();
+    }
+
+    @Test
     @DisplayName("writeTempFile should create a temp file with the provided prefix, suffix, and content and delete it on exit")
     void writeTempFile() throws IOException {
         final String prefix = "prefix";
@@ -286,8 +300,9 @@ class FileUtilsTest {
 
         when(Files.createTempFile(prefix, suffix)).thenReturn(path);
         when(path.toFile()).thenReturn(file);
+        when(Files.write(path, data)).thenReturn(path);
 
-        fileUtils.writeTempFile(prefix, suffix, data);
+        assertEquals(path, fileUtils.writeTempFile(prefix, suffix, data));
 
         verify(file).deleteOnExit();
     }

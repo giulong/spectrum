@@ -138,10 +138,16 @@ public final class FileUtils {
     }
 
     @SneakyThrows
-    public Path writeTempFile(final String prefix, final String suffix, final byte[] data) {
+    public Path createTempFile(final String prefix, final String suffix) {
         final Path path = Files.createTempFile(prefix, suffix);
         path.toFile().deleteOnExit();
 
-        return Files.write(path, data);
+        log.debug("Created file {}", path);
+        return path;
+    }
+
+    @SneakyThrows
+    public Path writeTempFile(final String prefix, final String suffix, final byte[] data) {
+        return Files.write(createTempFile(prefix, suffix), data);
     }
 }
