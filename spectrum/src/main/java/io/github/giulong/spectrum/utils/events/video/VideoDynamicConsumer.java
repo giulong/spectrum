@@ -2,7 +2,6 @@ package io.github.giulong.spectrum.utils.events.video;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import io.github.giulong.spectrum.pojos.Screenshot;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.types.TestData;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -39,7 +38,7 @@ public class VideoDynamicConsumer extends VideoConsumer {
     }
 
     @Override
-    protected boolean isNewFrame(final Screenshot screenshot, final TestData testData) {
+    protected boolean isNewFrame(final byte[] screenshot, final TestData testData) {
         final String displayName = testData.getDisplayName();
 
         if (!displayName.equals(testData.getLastFrameDisplayName())) {

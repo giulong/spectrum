@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.reverseOrder;
-import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -59,10 +58,6 @@ public final class FileUtils {
         final Matcher matcher = TIMESTAMP_PATTERN.matcher(value);
         final String pattern = matcher.matches() ? matcher.group("pattern") : DEFAULT_TIMESTAMP_PATTERN;
         return value.replaceAll(TIMESTAMP_TO_REPLACE, LocalDateTime.now().format(DateTimeFormatter.ofPattern(pattern)));
-    }
-
-    public String getExtensionWithDotOf(final String fileName) {
-        return fileName.substring(Math.max(0, fileName.lastIndexOf(".")));
     }
 
     public String getExtensionOf(final String fileName) {
@@ -131,10 +126,6 @@ public final class FileUtils {
     @SneakyThrows
     public FileTime getCreationTimeOf(final File file) {
         return Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime();
-    }
-
-    public String buildScreenshotNameFrom(final StatefulExtentTest statefulExtentTest) {
-        return String.format("%s-%s.png", statefulExtentTest.getDisplayName(), randomUUID());
     }
 
     @SneakyThrows

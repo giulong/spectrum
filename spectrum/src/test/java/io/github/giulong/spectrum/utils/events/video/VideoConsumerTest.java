@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events.video;
 
-import io.github.giulong.spectrum.pojos.Screenshot;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -33,7 +32,7 @@ import java.util.stream.Stream;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.pojos.Screenshot.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -86,9 +85,6 @@ class VideoConsumerTest {
 
     @Mock
     private TestData testData;
-
-    @Mock
-    private Screenshot screenshot;
 
     @Mock
     private Path videoPath;
@@ -149,7 +145,7 @@ class VideoConsumerTest {
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
         final byte[] newFrameDigest = new byte[]{7, 8, 9};
         when(testData.getLastFrameDigest()).thenReturn(lastFrameDigest);
-        when(screenshot.getData()).thenReturn(screenshotBytes);
+        when(payload.get(SCREENSHOT)).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(newFrameDigest);
 
         // chooseDimensionFor
@@ -194,7 +190,7 @@ class VideoConsumerTest {
         final byte[] lastFrameDigest = new byte[]{1, 2, 3};
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
         when(testData.getLastFrameDigest()).thenReturn(lastFrameDigest);
-        when(screenshot.getData()).thenReturn(screenshotBytes);
+        when(payload.get(SCREENSHOT)).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(lastFrameDigest);
 
         videoConsumer.accept(event);
@@ -218,7 +214,7 @@ class VideoConsumerTest {
         when(video.isSkipDuplicateFrames()).thenReturn(false);
 
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
-        when(screenshot.getData()).thenReturn(screenshotBytes);
+        when(payload.get(SCREENSHOT)).thenReturn(screenshotBytes);
 
         // chooseDimensionFor
         when(video.getWidth()).thenReturn(width);
@@ -324,10 +320,10 @@ class VideoConsumerTest {
 
         when(testData.getLastFrameDigest()).thenReturn(lastFrameDigest);
 
-        when(screenshot.getData()).thenReturn(screenshotBytes);
+        //when(screenshot.getData()).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(newFrameDigest);
 
-        assertTrue(videoConsumer.isNewFrame(screenshot, testData));
+        assertTrue(videoConsumer.isNewFrame(screenshotBytes, testData));
 
         assertArrayEquals(screenshotBytes, byteArrayArgumentCaptor.getValue());
         verify(testData).setLastFrameDigest(newFrameDigest);
@@ -341,10 +337,9 @@ class VideoConsumerTest {
 
         when(testData.getLastFrameDigest()).thenReturn(lastFrameDigest);
 
-        when(screenshot.getData()).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(lastFrameDigest);
 
-        assertFalse(videoConsumer.isNewFrame(screenshot, testData));
+        assertFalse(videoConsumer.isNewFrame(screenshotBytes, testData));
 
         assertArrayEquals(screenshotBytes, byteArrayArgumentCaptor.getValue());
         verify(testData, never()).setLastFrameDigest(any());
@@ -384,6 +379,6 @@ class VideoConsumerTest {
         when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
-        when(payload.get(SCREENSHOT)).thenReturn(screenshot);
+        //when(payload.get(SCREENSHOT)).thenReturn(screenshot);
     }
 }

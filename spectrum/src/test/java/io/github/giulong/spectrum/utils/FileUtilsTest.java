@@ -28,9 +28,6 @@ import static org.mockito.Mockito.*;
 
 class FileUtilsTest {
 
-    private static final String DISPLAY_NAME = "displayName";
-    private static final String UUID_REGEX = DISPLAY_NAME + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
-
     private static MockedStatic<Files> filesMockedStatic;
 
     @Mock
@@ -47,9 +44,6 @@ class FileUtilsTest {
 
     @Mock
     private File file;
-
-    @Mock
-    private StatefulExtentTest statefulExtentTest;
 
     @InjectMocks
     private FileUtils fileUtils;
@@ -114,21 +108,6 @@ class FileUtilsTest {
                 arguments("fileName-${timestamp}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
                 arguments("fileName-${timestamp:dd-MM-yyyy_HH-mm-ss}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
                 arguments("fileName-${timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
-        );
-    }
-
-    @DisplayName("getExtensionWithDotOf should return the extension with dot of the provided fileName")
-    @ParameterizedTest(name = "with fileName {0} we expect {1}")
-    @MethodSource("getExtensionWithDotOfValuesProvider")
-    void getExtensionWithDotOf(final String fileName, final String expected) {
-        assertEquals(expected, fileUtils.getExtensionWithDotOf(fileName));
-    }
-
-    static Stream<Arguments> getExtensionWithDotOfValuesProvider() {
-        return Stream.of(
-                arguments("fileName.abc", ".abc"),
-                arguments("fileName", "fileName"),
-                arguments("fileName.", ".")
         );
     }
 
@@ -267,14 +246,6 @@ class FileUtilsTest {
         when(basicFileAttributes.creationTime()).thenReturn(creationTime);
 
         assertEquals(creationTime, fileUtils.getCreationTimeOf(file));
-    }
-
-    @Test
-    @DisplayName("buildScreenshotNameFrom should return the name for the provided frame and display name")
-    void buildScreenshotNameFrom() {
-        when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
-
-        assertThat(fileUtils.buildScreenshotNameFrom(statefulExtentTest), matchesPattern(UUID_REGEX));
     }
 
     @Test

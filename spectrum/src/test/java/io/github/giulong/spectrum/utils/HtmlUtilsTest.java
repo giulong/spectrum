@@ -1,15 +1,11 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.pojos.Screenshot;
 import io.github.giulong.spectrum.types.TestData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.*;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,22 +13,18 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-import static org.openqa.selenium.OutputType.BYTES;
 
 class HtmlUtilsTest {
 
     private MockedStatic<Path> pathMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
-    private MockedStatic<Screenshot> screenshotMockedStatic;
 
     private final String testId = "testId";
 
@@ -40,28 +32,7 @@ class HtmlUtilsTest {
     private ContextManager contextManager;
 
     @Mock
-    private Screenshot.ScreenshotBuilder screenshotBuilder;
-
-    @Mock
-    private ExtensionContext context;
-
-    @Mock
-    private ExtensionContext.Store store;
-
-    @Mock
-    private StatefulExtentTest statefulExtentTest;
-
-    @Mock(extraInterfaces = TakesScreenshot.class)
-    private WebDriver driver;
-
-    @Mock
-    private Screenshot screenshot;
-
-    @Mock
-    private Screenshot screenshot2;
-
-    @Mock
-    private Map<String, Screenshot> screenshots;
+    private Map<Path, byte[]> screenshots;
 
     @Mock
     private Path path;
@@ -79,9 +50,6 @@ class HtmlUtilsTest {
     private FileUtils fileUtils;
 
     @Captor
-    private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
-
-    @Captor
     private ArgumentCaptor<Map<String, Object>> freeMarkerVarsArgumentCaptor;
 
     @InjectMocks
@@ -91,7 +59,6 @@ class HtmlUtilsTest {
     void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
-        screenshotMockedStatic = mockStatic(Screenshot.class);
 
         Reflections.setField("contextManager", htmlUtils, contextManager);
         Reflections.setField("freeMarkerWrapper", htmlUtils, freeMarkerWrapper);
@@ -102,7 +69,6 @@ class HtmlUtilsTest {
     void afterEach() {
         pathMockedStatic.close();
         filesMockedStatic.close();
-        screenshotMockedStatic.close();
     }
 
     @Test
@@ -171,27 +137,6 @@ class HtmlUtilsTest {
     }
 
     @Test
-    @DisplayName("buildScreenshotFrom should return the screenshot instance")
-    void buildScreenshotFrom() {
-        final String screenshotName = "screenshotName";
-        final byte[] data = new byte[]{1, 2, 3};
-
-        when(context.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
-        when(fileUtils.buildScreenshotNameFrom(statefulExtentTest)).thenReturn(screenshotName);
-        when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
-        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(data);
-
-        when(Screenshot.builder()).thenReturn(screenshotBuilder);
-        when(screenshotBuilder.name(screenshotName)).thenReturn(screenshotBuilder);
-        when(screenshotBuilder.data(byteArrayArgumentCaptor.capture())).thenReturn(screenshotBuilder);
-        when(screenshotBuilder.build()).thenReturn(screenshot);
-
-        assertEquals(screenshot, htmlUtils.buildScreenshotFrom(context));
-        assertArrayEquals(data, byteArrayArgumentCaptor.getValue());
-    }
-
-    @Test
     @DisplayName("inline should call both the inlineImagesOf and inlineVideosOf on the provided html and return the one with all of those replaced")
     void inline() throws IOException {
         final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";
@@ -207,9 +152,7 @@ class HtmlUtilsTest {
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
-        when(path2.getFileName()).thenReturn(path2);
-        when(screenshots.get(path2.toString())).thenReturn(screenshot2);
-        when(screenshot2.getData()).thenReturn(new byte[]{4, 5, 6});
+        when(screenshots.get(path2)).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inline(report);
 
@@ -235,12 +178,8 @@ class HtmlUtilsTest {
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
         when(freeMarkerWrapper.interpolate(source, expectedParams1)).thenReturn(interpolatedTemplate);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
-        when(path.getFileName()).thenReturn(path);
-        when(path2.getFileName()).thenReturn(path2);
-        when(screenshots.get(path.toString())).thenReturn(screenshot);
-        when(screenshot.getData()).thenReturn(new byte[]{1, 2, 3});
-        when(screenshots.get(path2.toString())).thenReturn(screenshot2);
-        when(screenshot2.getData()).thenReturn(new byte[]{4, 5, 6});
+        when(screenshots.get(path)).thenReturn(new byte[]{1, 2, 3});
+        when(screenshots.get(path2)).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inlineImagesOf(html);
 

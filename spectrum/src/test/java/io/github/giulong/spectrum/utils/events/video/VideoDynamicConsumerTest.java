@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events.video;
 
-import io.github.giulong.spectrum.pojos.Screenshot;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -47,9 +46,6 @@ class VideoDynamicConsumerTest {
 
     @Mock
     private Path dynamicVideoPath;
-
-    @Mock
-    private Screenshot screenshot;
 
     @Mock
     private MessageDigest messageDigest;
@@ -158,10 +154,11 @@ class VideoDynamicConsumerTest {
     @DisplayName("isNewFrame should return true if the display name of the provided testData is new")
     void isNewFrame() {
         final String displayName = "displayName";
+        final byte[] screenshotBytes = new byte[]{1, 2, 3};
 
         when(testData.getDisplayName()).thenReturn(displayName);
 
-        assertTrue(videoDynamicConsumer.isNewFrame(screenshot, testData));
+        assertTrue(videoDynamicConsumer.isNewFrame(screenshotBytes, testData));
     }
 
     @Test
@@ -177,10 +174,9 @@ class VideoDynamicConsumerTest {
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
         final byte[] newFrameDigest = new byte[]{7, 8, 9};
         when(testData.getLastFrameDigest()).thenReturn(lastFrameDigest);
-        when(screenshot.getData()).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(newFrameDigest);
 
-        assertTrue(videoDynamicConsumer.isNewFrame(screenshot, testData));
+        assertTrue(videoDynamicConsumer.isNewFrame(screenshotBytes, testData));
 
         verify(testData, never()).setLastFrameDisplayName(anyString());
 

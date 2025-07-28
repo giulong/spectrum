@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.pojos.Screenshot;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -13,14 +12,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 import java.util.Map;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
-import static io.github.giulong.spectrum.pojos.Screenshot.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.openqa.selenium.OutputType.BYTES;
 
 class ScreenshotConsumerTest {
 
@@ -29,6 +33,12 @@ class ScreenshotConsumerTest {
 
     @Mock
     private ContextManager contextManager;
+
+    @Mock
+    private ExtensionContext.Store store;
+
+    @Mock(extraInterfaces = TakesScreenshot.class)
+    private WebDriver driver;
 
     @Mock
     private EventsDispatcher eventsDispatcher;
@@ -40,12 +50,6 @@ class ScreenshotConsumerTest {
     private ExtensionContext context;
 
     @Mock
-    private Screenshot screenshot;
-
-    @Mock
-    private Map<String, Screenshot> screenshots;
-
-    @Mock
     private Video video;
 
     @InjectMocks
@@ -53,7 +57,6 @@ class ScreenshotConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("contextManager", screenshotConsumer, contextManager);
         Reflections.setField("htmlUtils", screenshotConsumer, htmlUtils);
         Reflections.setField("eventsDispatcher", screenshotConsumer, eventsDispatcher);
     }
@@ -62,19 +65,18 @@ class ScreenshotConsumerTest {
     @DisplayName("accept should record the screenshot")
     void accept() {
         final Frame frame = AUTO_AFTER;
-        final String screenshotName = "screenshotName";
+        final byte[] bytes = new byte[]{1, 2, 3};
 
         when(video.shouldRecord(eq(frame))).thenReturn(true);
         when(webDriverEvent.getFrame()).thenReturn(frame);
-        when(htmlUtils.buildScreenshotFrom(context)).thenReturn(screenshot);
 
-        when(contextManager.getScreenshots()).thenReturn(screenshots);
-        when(screenshot.getName()).thenReturn(screenshotName);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
+        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(bytes);
 
         screenshotConsumer.accept(webDriverEvent);
 
-        verify(screenshots).put(screenshotName, screenshot);
-        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
+        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes));
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

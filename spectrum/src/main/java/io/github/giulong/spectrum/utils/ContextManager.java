@@ -1,10 +1,10 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.pojos.Screenshot;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -22,7 +22,7 @@ public final class ContextManager {
     private final Map<String, TestContext> testContexts = new ConcurrentHashMap<>();
 
     @Getter
-    private final Map<String, Screenshot> screenshots = new ConcurrentHashMap<>();
+    private final Map<Path, byte[]> screenshots = new ConcurrentHashMap<>();
 
     public TestContext initFor(final ExtensionContext context) {
         return initFor(context, new TestContext());

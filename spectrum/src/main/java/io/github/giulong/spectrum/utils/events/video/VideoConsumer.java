@@ -2,7 +2,6 @@ package io.github.giulong.spectrum.utils.events.video;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import io.github.giulong.spectrum.pojos.Screenshot;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -26,7 +25,7 @@ import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.pojos.Screenshot.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -48,7 +47,7 @@ public class VideoConsumer extends VideoBaseConsumer {
         final Map<String, Object> payload = event.getPayload();
         final ExtensionContext.Store store = ((ExtensionContext) payload.get(EXTENSION_CONTEXT)).getStore(GLOBAL);
         final TestData testData = store.get(TEST_DATA, TestData.class);
-        final Screenshot screenshot = (Screenshot) payload.get(SCREENSHOT);
+        final byte[] screenshot = (byte[]) payload.get(SCREENSHOT);
 
         if (video.isSkipDuplicateFrames() && !isNewFrame(screenshot, testData)) {
             return;
@@ -59,19 +58,19 @@ public class VideoConsumer extends VideoBaseConsumer {
         final Dimension dimension = chooseDimensionFor(store.get(ORIGINAL_DRIVER, WebDriver.class), video);
 
         log.debug("Adding screenshot to video {}", videoPath.getFileName());
-        encoder.encodeImage(resize(ImageIO.read(new ByteArrayInputStream(screenshot.getData())), dimension));
+        encoder.encodeImage(resize(ImageIO.read(new ByteArrayInputStream(screenshot)), dimension));
     }
 
     @SneakyThrows
-    protected boolean isNewFrame(final Screenshot screenshot, final TestData testData) {
-        final byte[] digest = messageDigest.digest(screenshot.getData());
+    protected boolean isNewFrame(final byte[] screenshot, final TestData testData) {
+        final byte[] digest = messageDigest.digest(screenshot);
 
         if (!Arrays.equals(testData.getLastFrameDigest(), digest)) {
             testData.setLastFrameDigest(digest);
             return true;
         }
 
-        log.trace("Discarding duplicate frame {}", screenshot.getName());
+        log.trace("Discarding duplicate frame");
         return false;
     }
 

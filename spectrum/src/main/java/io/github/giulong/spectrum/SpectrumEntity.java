@@ -5,7 +5,6 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.pojos.Screenshot;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -16,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
@@ -34,8 +34,11 @@ import java.util.Map;
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
-import static io.github.giulong.spectrum.pojos.Screenshot.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
 public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
@@ -181,17 +184,14 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      */
     public void addScreenshotToReport(final String msg, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
-        final Screenshot screenshot = htmlUtils.buildScreenshotFrom(context);
+        final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
         eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
 
-        final String name = screenshot.getName();
-        final String nameWithoutExtension = fileUtils.removeExtensionFrom(name);
-        final String extension = fileUtils.getExtensionWithDotOf(name);
-        final Path path = fileUtils.writeTempFile(nameWithoutExtension, extension, screenshot.getData());
+        final Path path = fileUtils.writeTempFile("screenshot", ".png", screenshot);
         final Media media = createScreenCaptureFromPath(path.toString()).build();
 
-        contextManager.getScreenshots().put(path.getFileName().toString(), screenshot);
+        contextManager.getScreenshots().put(path, screenshot);
 
         if (msg == null) {
             statefulExtentTest.getCurrentNode().log(status, (String) null, media);

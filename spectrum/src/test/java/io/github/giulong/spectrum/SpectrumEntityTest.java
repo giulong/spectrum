@@ -5,7 +5,6 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.pojos.Screenshot;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -21,10 +20,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -43,11 +39,14 @@ import java.util.stream.Stream;
 import static com.aventstack.extentreports.Status.*;
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
-import static io.github.giulong.spectrum.pojos.Screenshot.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
+import static org.openqa.selenium.OutputType.BYTES;
 
 class SpectrumEntityTest {
 
@@ -56,9 +55,8 @@ class SpectrumEntityTest {
     private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
     private MockedStatic<MessageDigest> messageDigestMockedStatic;
 
-    private final String screenshotName = "screenshotName";
-    private final String nameWithoutExtension = "nameWithoutExtension";
-    private final String extension = "extension";
+    private final String screenshot = "screenshot";
+    private final String extension = ".png";
     private final String msg = "msg";
     private final String tag = "tag";
     private final int frameNumber = 123;
@@ -82,9 +80,6 @@ class SpectrumEntityTest {
 
     @Mock
     private StatefulExtentTest statefulExtentTest;
-
-    @Mock(extraInterfaces = TakesScreenshot.class)
-    private WebDriver webDriver;
 
     @Mock
     private WebElement webElement;
@@ -129,19 +124,25 @@ class SpectrumEntityTest {
     private ExtensionContext context;
 
     @Mock
+    private ExtensionContext.Store store;
+
+    @Mock(extraInterfaces = TakesScreenshot.class)
+    private WebDriver driver;
+
+    @Mock
     private Media media;
 
     @Mock
-    private Screenshot screenshot;
-
-    @Mock
-    private Map<String, Screenshot> screenshots;
+    private Map<Path, byte[]> screenshots;
 
     @Mock
     private MessageDigest messageDigest;
 
     @Mock
     private TestData testData;
+
+    @Captor
+    private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<Function<WebDriver, Boolean>> functionArgumentCaptor;
@@ -174,7 +175,10 @@ class SpectrumEntityTest {
     @SneakyThrows
     private void addScreenshotToReportStubs() {
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
-        when(htmlUtils.buildScreenshotFrom(context)).thenReturn(screenshot);
+
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
+        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(bytes);
 
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
@@ -183,13 +187,7 @@ class SpectrumEntityTest {
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(media);
 
-        when(screenshot.getName()).thenReturn(screenshotName);
-        when(screenshot.getData()).thenReturn(bytes);
-        when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
-        when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
-
-        when(fileUtils.writeTempFile(nameWithoutExtension, extension, bytes)).thenReturn(path);
-        when(path.getFileName()).thenReturn(path);
+        when(fileUtils.writeTempFile(eq(screenshot), eq(extension), byteArrayArgumentCaptor.capture())).thenReturn(path);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
     }
@@ -241,19 +239,16 @@ class SpectrumEntityTest {
     @DisplayName("screenshot should delegate to addScreenshotToReport")
     void screenshot() {
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
-        when(htmlUtils.buildScreenshotFrom(context)).thenReturn(screenshot);
 
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(media);
 
-        when(screenshot.getName()).thenReturn(screenshotName);
-        when(screenshot.getData()).thenReturn(bytes);
-        when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
-        when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
+        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(bytes);
 
-        when(fileUtils.writeTempFile(nameWithoutExtension, extension, bytes)).thenReturn(path);
-        when(path.getFileName()).thenReturn(path);
+        when(fileUtils.writeTempFile(screenshot, extension, bytes)).thenReturn(path);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 
@@ -310,19 +305,16 @@ class SpectrumEntityTest {
         final Status status = INFO;
 
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
-        when(htmlUtils.buildScreenshotFrom(context)).thenReturn(screenshot);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
         when(configuration.getVideo()).thenReturn(video);
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
         when(htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message")).thenReturn(tag);
 
-        when(screenshot.getName()).thenReturn(screenshotName);
-        when(screenshot.getData()).thenReturn(bytes);
-        when(fileUtils.removeExtensionFrom(screenshotName)).thenReturn(nameWithoutExtension);
-        when(fileUtils.getExtensionWithDotOf(screenshotName)).thenReturn(extension);
-        when(fileUtils.writeTempFile(nameWithoutExtension, extension, bytes)).thenReturn(path);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
+        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(bytes);
 
-        when(path.getFileName()).thenReturn(path);
+        when(fileUtils.writeTempFile(eq(screenshot), eq(extension), byteArrayArgumentCaptor.capture())).thenReturn(path);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 
@@ -331,8 +323,9 @@ class SpectrumEntityTest {
 
         spectrumEntity.addScreenshotToReport(msg, status);
 
-        verify(screenshots).put(path.toString(), screenshot);
-        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
+        assertArrayEquals(bytes, byteArrayArgumentCaptor.getValue());
+        verify(screenshots).put(path, bytes);
+        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes));
         verify(extentTest).log(status, tag, media);
         verifyNoMoreInteractions(eventsDispatcher);
     }
@@ -363,7 +356,7 @@ class SpectrumEntityTest {
         verify(downloadWait).until(functionArgumentCaptor.capture());
         final Function<WebDriver, Boolean> function = functionArgumentCaptor.getValue();
 
-        assertTrue(function.apply(webDriver));
+        assertTrue(function.apply(driver));
     }
 
     @Test
@@ -378,7 +371,7 @@ class SpectrumEntityTest {
         verify(downloadWait).until(functionArgumentCaptor.capture());
         final Function<WebDriver, Boolean> function = functionArgumentCaptor.getValue();
 
-        assertFalse(function.apply(webDriver));
+        assertFalse(function.apply(driver));
     }
 
     @Test
@@ -391,7 +384,7 @@ class SpectrumEntityTest {
         verify(downloadWait).until(functionArgumentCaptor.capture());
         final Function<WebDriver, Boolean> function = functionArgumentCaptor.getValue();
 
-        assertFalse(function.apply(webDriver));
+        assertFalse(function.apply(driver));
     }
 
     @Test
@@ -482,7 +475,7 @@ class SpectrumEntityTest {
     @ParameterizedTest(name = "with list {0} we expect {1}")
     @MethodSource("isPresentProvider")
     void isPresent(final List<WebElement> webElements, final boolean expected) {
-        when(webDriver.findElements(by)).thenReturn(webElements);
+        when(driver.findElements(by)).thenReturn(webElements);
 
         assertEquals(expected, spectrumEntity.isPresent(by));
     }
@@ -498,7 +491,7 @@ class SpectrumEntityTest {
     @ParameterizedTest(name = "with list {0} we expect {1}")
     @MethodSource("isNotPresentProvider")
     void isNotPresent(final List<WebElement> webElements, final boolean expected) {
-        when(webDriver.findElements(by)).thenReturn(webElements);
+        when(driver.findElements(by)).thenReturn(webElements);
 
         assertEquals(expected, spectrumEntity.isNotPresent(by));
     }
