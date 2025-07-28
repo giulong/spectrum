@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.decorators.Decorated;
@@ -73,10 +72,8 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final ScreenshotConsumer screenshotConsumer = ScreenshotConsumer
                 .builder()
                 .enabled(true)
-                .driver((TakesScreenshot) driver)
-                .statefulExtentTest(statefulExtentTest)
-                .testData(testData)
                 .video(video)
+                .context(context)
                 .build();
 
         final TestStepBuilderConsumer testStepBuilderConsumer = TestStepBuilderConsumer

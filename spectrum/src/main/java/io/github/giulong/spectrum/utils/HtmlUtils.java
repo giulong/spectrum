@@ -25,8 +25,11 @@ public class HtmlUtils implements SessionHook {
     private static final Pattern IMAGE_TAG = Pattern.compile("<div class=\"row mb-3\">\\s*<div class=\"col-md-3\">\\s*<img.*?src=\"(?<src>[^\"]*)\".*?</div>\\s*</div>", DOTALL);
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
     private static final String SRC = "src";
+
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
+    private final ContextManager contextManager = ContextManager.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
+
     private String videoTemplate;
     private String divTemplate;
     private String frameTemplate;
@@ -59,11 +62,12 @@ public class HtmlUtils implements SessionHook {
     @SneakyThrows
     public String inlineImagesOf(final String html) {
         final Matcher matcher = IMAGE_TAG.matcher(html);
+        final Map<Path, byte[]> screenshots = contextManager.getScreenshots();
         String inlineHtml = html;
 
         while (matcher.find()) {
             final String src = matcher.group(SRC);
-            final byte[] bytes = Files.readAllBytes(Path.of(src));
+            final byte[] bytes = screenshots.get(Path.of(src));
             final String encoded = ENCODER.encodeToString(bytes);
             final String replacement = freeMarkerWrapper.interpolate(this.inlineImageTemplate, Map.of("encoded", encoded));
 

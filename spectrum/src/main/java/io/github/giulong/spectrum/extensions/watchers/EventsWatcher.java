@@ -11,7 +11,7 @@ import java.util.Set;
 import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 
-public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
+public class EventsWatcher implements TestWatcher, BeforeTestExecutionCallback, BeforeAllCallback, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
 
     private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
 
@@ -26,8 +26,17 @@ public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEach
     }
 
     @Override
+    public void beforeTestExecution(final ExtensionContext context) {
+        notifyTest(context, BEFORE_EXECUTION, null, Set.of(TEST));
+
+        if (isTestFactory(context)) {
+            notifyTest(context, BEFORE_EXECUTION, null, Set.of(TEST_FACTORY));
+        }
+    }
+
+    @Override
     public void afterEach(final ExtensionContext context) {
-        if (context.getRequiredTestMethod().isAnnotationPresent(TestFactory.class)) {
+        if (isTestFactory(context)) {
             notifyTest(context, AFTER, SUCCESSFUL, Set.of(TEST_FACTORY));
         }
     }
@@ -55,6 +64,10 @@ public class EventsWatcher implements TestWatcher, BeforeAllCallback, BeforeEach
     @Override
     public void testFailed(final ExtensionContext context, final Throwable exception) {
         notifyTest(context, AFTER, FAILED, Set.of(TEST));
+    }
+
+    boolean isTestFactory(final ExtensionContext context) {
+        return context.getRequiredTestMethod().isAnnotationPresent(TestFactory.class);
     }
 
     void notifyClass(final ExtensionContext context, final String reason, final Result result, final Set<String> tags) {

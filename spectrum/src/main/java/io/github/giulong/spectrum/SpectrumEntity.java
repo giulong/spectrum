@@ -13,6 +13,7 @@ import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -28,10 +29,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.Arrays;
+import java.util.Map;
 
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
@@ -39,6 +45,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     public static final String HASH_ALGORITHM = "SHA-256";
 
+    private final ContextManager contextManager = ContextManager.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
 
@@ -174,27 +181,27 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      *
      * @param msg    the message to log
      * @param status the log's status
-     * @return the generated screenshot
      */
-    @SneakyThrows
-    public Media addScreenshotToReport(final String msg, final Status status) {
-        final String fileName = fileUtils.getScreenshotNameFrom(MANUAL, statefulExtentTest);
-        final Path screenshotPath = testData.getScreenshotFolderPath().resolve(fileName);
+    public void addScreenshotToReport(final String msg, final Status status) {
+        final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
+        final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
-        Files.write(screenshotPath, ((TakesScreenshot) driver).getScreenshotAs(BYTES));
+        eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
 
-        final Media screenshot = createScreenCaptureFromPath(screenshotPath.toString()).build();
+        final Path path = fileUtils.writeTempFile("screenshot", ".png", screenshot);
+        final Media media = createScreenCaptureFromPath(path.toString()).build();
+
+        contextManager.getScreenshots().put(path, screenshot);
 
         if (msg == null) {
-            statefulExtentTest.getCurrentNode().log(status, (String) null, screenshot);
-        } else {
-            final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
-            final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message");
-
-            statefulExtentTest.getCurrentNode().log(status, tag, screenshot);
+            statefulExtentTest.getCurrentNode().log(status, (String) null, media);
+            return;
         }
 
-        return screenshot;
+        final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
+        final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message");
+
+        statefulExtentTest.getCurrentNode().log(status, tag, media);
     }
 
     /**

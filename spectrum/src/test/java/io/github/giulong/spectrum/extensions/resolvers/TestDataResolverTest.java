@@ -1,8 +1,9 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.video.Video;
+import io.github.giulong.spectrum.utils.ContextManager;
+import io.github.giulong.spectrum.utils.FileUtils;
+import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,21 +17,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 
 class TestDataResolverTest {
-
-    private static final String UUID_REGEX = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.mp4";
-    private static final String CLASS_NAME = "className";
-    private static final String METHOD_NAME = "methodName";
-    private static final String REPORTS_FOLDER = "reportsFolder";
 
     private static MockedStatic<TestData> testDataMockedStatic;
 
@@ -62,28 +54,10 @@ class TestDataResolverTest {
     private ExtensionContext.Store store;
 
     @Mock
-    private ExtensionContext.Store rootStore;
-
-    @Mock
-    private Configuration configuration;
-
-    @Mock
-    private Configuration.Extent extent;
-
-    @Mock
     private TestData.TestDataBuilder testDataBuilder;
 
     @Mock
     private TestData testData;
-
-    @Mock
-    private Video video;
-
-    @Captor
-    private ArgumentCaptor<Path> pathArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<String> stringArgumentCaptor;
 
     @InjectMocks
     private TestDataResolver testDataResolver;
@@ -112,39 +86,19 @@ class TestDataResolverTest {
         final String displayName = "displayName";
         final String sanitizedDisplayName = "sanitizedDisplayName";
         final String testId = "string-sanitizeddisplayname";
-        final String fileName = "fileName";
-        final String fileNameWithoutExtension = "fileNameWithoutExtension";
 
         // joinTestDisplayNamesIn
         when(context.getParent()).thenReturn(Optional.of(parentContext));
         when(parentContext.getParent()).thenReturn(Optional.of(rootContext));
         when(context.getDisplayName()).thenReturn(displayName);
 
-        when(fileUtils.removeExtensionFrom(fileName)).thenReturn(fileNameWithoutExtension);
         when(fileUtils.sanitize(classDisplayName)).thenReturn(sanitizedClassDisplayName);
         when(fileUtils.sanitize(displayName)).thenReturn(sanitizedDisplayName);
-
-        // getScreenshotFolderPathForCurrentTest
-        when(fileUtils.deleteContentOf(
-                Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "screenshots", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath()))
-                .thenReturn(path);
-
-        // getVideoPathForCurrentTest
-        when(fileUtils.deleteContentOf(
-                Path.of(REPORTS_FOLDER, fileNameWithoutExtension, "videos", sanitizedClassDisplayName, sanitizedDisplayName).toAbsolutePath()))
-                .thenReturn(path);
+        when(fileUtils.createTempFile("video", ".mp4")).thenReturn(path);
 
         when(context.getStore(GLOBAL)).thenReturn(store);
-        when(context.getRoot()).thenReturn(rootContext);
-        when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
-        when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
-        when(configuration.getExtent()).thenReturn(extent);
-        when(extent.getReportFolder()).thenReturn(REPORTS_FOLDER);
-        when(extent.getFileName()).thenReturn(fileName);
         doReturn(String.class).when(context).getRequiredTestClass();
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
-        when(configuration.getVideo()).thenReturn(video);
-        when(video.isDisabled()).thenReturn(false);
 
         when(TestData.builder()).thenReturn(testDataBuilder);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
@@ -152,8 +106,7 @@ class TestDataResolverTest {
         when(testDataBuilder.classDisplayName(sanitizedClassDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.displayName(sanitizedDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
-        when(testDataBuilder.screenshotFolderPath(path)).thenReturn(testDataBuilder);
-        when(testDataBuilder.videoPath(pathArgumentCaptor.capture())).thenReturn(testDataBuilder);
+        when(testDataBuilder.videoPath(path)).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
 
         final TestData actual = testDataResolver.resolveParameter(parameterContext, context);
@@ -161,33 +114,6 @@ class TestDataResolverTest {
         assertEquals(testData, actual);
         verify(store).put(TEST_DATA, actual);
         verify(contextManager).put(context, TEST_DATA, actual);
-    }
-
-    @Test
-    @DisplayName("getScreenshotFolderPathForCurrentTest should return the path for the current test and create the dirs")
-    void getScreenshotFolderPathForCurrentTest() {
-        final String extentFileName = "extentFileName";
-
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, extentFileName, "screenshots", CLASS_NAME, METHOD_NAME).toAbsolutePath())).thenReturn(path);
-        assertEquals(path, testDataResolver.getScreenshotFolderPathForCurrentTest(REPORTS_FOLDER, extentFileName, CLASS_NAME, METHOD_NAME));
-    }
-
-    @Test
-    @DisplayName("getVideoPathForCurrentTest should return the path for the current test and create the directories")
-    void getVideoPathForCurrentTest() {
-        final String extentFileName = "extentFileName";
-
-        when(fileUtils.deleteContentOf(Path.of(REPORTS_FOLDER, extentFileName, "videos", CLASS_NAME, METHOD_NAME).toAbsolutePath())).thenReturn(path);
-        when(path.resolve(stringArgumentCaptor.capture())).thenReturn(path);
-
-        assertEquals(path, testDataResolver.getVideoPathForCurrentTest(false, REPORTS_FOLDER, extentFileName, CLASS_NAME, METHOD_NAME));
-        assertThat(stringArgumentCaptor.getValue(), matchesPattern(UUID_REGEX));
-    }
-
-    @Test
-    @DisplayName("getVideoPathForCurrentTest should return null if video is disabled")
-    void getVideoPathForCurrentTestDisabled() {
-        assertNull(testDataResolver.getVideoPathForCurrentTest(true, REPORTS_FOLDER, "extentFileName", CLASS_NAME, METHOD_NAME));
     }
 
     @Test
