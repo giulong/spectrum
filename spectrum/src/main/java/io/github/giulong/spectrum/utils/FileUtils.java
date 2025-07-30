@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.reverseOrder;
-import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -130,8 +129,18 @@ public final class FileUtils {
         return Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime();
     }
 
-    public String getScreenshotNameFrom(final StatefulExtentTest statefulExtentTest, final TestData testData) {
-        return String.format("%s-%s.png", statefulExtentTest.getDisplayName(), randomUUID());
+    @SneakyThrows
+    public Path createTempFile(final String prefix, final String suffix) {
+        final Path path = Files.createTempFile(prefix, suffix);
+        path.toFile().deleteOnExit();
+
+        log.debug("Created file {}", path);
+        return path;
+    }
+
+    @SneakyThrows
+    public Path writeTempFile(final String prefix, final String suffix, final byte[] data) {
+        return Files.write(createTempFile(prefix, suffix), data);
     }
 
     public String getVisualRegressionScreenshotNameFrom(final StatefulExtentTest statefulExtentTest, final TestData testData) {

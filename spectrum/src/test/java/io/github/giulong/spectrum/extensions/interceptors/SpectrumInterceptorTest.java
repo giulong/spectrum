@@ -122,6 +122,7 @@ class SpectrumInterceptorTest {
 
     @SuppressWarnings("checkstyle:IllegalThrows")
     private void commonVerifications() throws Throwable {
+        verify(testData).setDynamic(true);
         verify(testData).setFrameNumber(0);
         verify(testData).setDisplayName(displayName);
         verify(testData).setDynamicVideoPath(dynamicVideoPath);
@@ -130,6 +131,7 @@ class SpectrumInterceptorTest {
         verify(statefulExtentTest).closeNode();
 
         verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(DYNAMIC_TEST), context);
+        verify(eventsDispatcher).fire(className, displayName, BEFORE_EXECUTION, null, Set.of(DYNAMIC_TEST), context);
         verify(invocation).proceed();
         verify(contextManager).initWithParentFor(context);
     }
@@ -148,6 +150,7 @@ class SpectrumInterceptorTest {
 
         commonVerifications();
         verify(eventsDispatcher).fire(className, displayName, AFTER, SUCCESSFUL, Set.of(DYNAMIC_TEST), context);
+        verifyNoMoreInteractions(eventsDispatcher);
         verifyNoInteractions(extentReporter);
     }
 
@@ -176,6 +179,7 @@ class SpectrumInterceptorTest {
         commonVerifications();
         verify(eventsDispatcher).fire(className, displayName, AFTER, SUCCESSFUL, Set.of(DYNAMIC_TEST), context);
         verify(extentReporter).attachVideo(extentTest, videoExtentTest, String.format("%s-%s", testId, displayName), dynamicVideoPath);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -190,6 +194,7 @@ class SpectrumInterceptorTest {
 
         commonVerifications();
         verify(eventsDispatcher).fire(className, displayName, AFTER, FAILED, Set.of(DYNAMIC_TEST), context);
+        verifyNoMoreInteractions(eventsDispatcher);
         verifyNoInteractions(extentReporter);
     }
 }

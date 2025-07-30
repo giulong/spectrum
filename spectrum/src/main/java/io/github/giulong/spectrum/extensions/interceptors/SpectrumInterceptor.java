@@ -43,7 +43,9 @@ public class SpectrumInterceptor implements InvocationInterceptor {
         final String testName = context.getDisplayName();
         final Path dynamicVideoPath = Path.of(String.format("%s-%s.mp4", fileUtils.removeExtensionFrom(testData.getVideoPath().toString()), testName));
         final ExtentTest currentNode = statefulExtentTest.createNode(testName);
+        final Set<String> tags = Set.of(DYNAMIC_TEST);
 
+        testData.setDynamic(true);
         testData.setFrameNumber(0);
         testData.setDisplayName(testName);
         testData.setDynamicVideoPath(dynamicVideoPath);
@@ -56,12 +58,13 @@ public class SpectrumInterceptor implements InvocationInterceptor {
         }
 
         try {
-            eventsDispatcher.fire(className, testName, BEFORE, null, Set.of(DYNAMIC_TEST), context);
+            eventsDispatcher.fire(className, testName, BEFORE_EXECUTION, null, tags, context);
+            eventsDispatcher.fire(className, testName, BEFORE, null, tags, context);
             invocation.proceed();
-            eventsDispatcher.fire(className, testName, AFTER, SUCCESSFUL, Set.of(DYNAMIC_TEST), context);
+            eventsDispatcher.fire(className, testName, AFTER, SUCCESSFUL, tags, context);
         } catch (Throwable t) {
             currentNode.fail(t);
-            eventsDispatcher.fire(className, testName, AFTER, FAILED, Set.of(DYNAMIC_TEST), context);
+            eventsDispatcher.fire(className, testName, AFTER, FAILED, tags, context);
 
             throw t;
         } finally {

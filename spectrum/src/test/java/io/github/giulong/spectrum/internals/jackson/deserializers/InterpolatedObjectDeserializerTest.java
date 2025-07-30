@@ -261,7 +261,7 @@ class InterpolatedObjectDeserializerTest {
                 arguments("$<notSet:->", 0),
                 arguments("$<not.set>", 0),
                 arguments("$<notSet>", 0),
-                arguments("$<notSet:-stringDefault>", 0),
+                arguments("$<notSet:-~123stringDefault=va:lue.\\/>", 0),
                 arguments("$<varInEnv:-123>", Integer.parseInt(VAR_IN_ENV)),
                 arguments("$<varInEnv>", Integer.parseInt(VAR_IN_ENV))
         );

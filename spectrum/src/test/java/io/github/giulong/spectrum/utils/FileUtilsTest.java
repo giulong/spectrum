@@ -1,12 +1,15 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.types.TestData;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.*;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,14 +22,14 @@ import java.util.stream.Stream;
 import static java.lang.System.lineSeparator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class FileUtilsTest {
 
-    private static final String DISPLAY_NAME = "displayName";
-    private static final String UUID_REGEX = DISPLAY_NAME + "-([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})\\.png";
+    private static MockedStatic<Files> filesMockedStatic;
 
     @Mock
     private BasicFileAttributes basicFileAttributes;
@@ -43,14 +46,18 @@ class FileUtilsTest {
     @Mock
     private File file;
 
-    @Mock
-    private StatefulExtentTest statefulExtentTest;
-
-    @Mock
-    private TestData testData;
-
     @InjectMocks
     private FileUtils fileUtils;
+
+    @BeforeEach
+    void beforeEach() {
+        filesMockedStatic = mockStatic(Files.class);
+    }
+
+    @AfterEach
+    void afterEach() {
+        filesMockedStatic.close();
+    }
 
     @Test
     @DisplayName("getInstance should return the singleton")
@@ -135,51 +142,64 @@ class FileUtilsTest {
         );
     }
 
-    @DisplayName("delete should delete the provided folder and return the reference to it")
-    @ParameterizedTest(name = "with value {0} which is existing? {1}")
-    @MethodSource("deleteValuesProvider")
-    void delete(final Path directory, final boolean existing) {
-        directory.toFile().deleteOnExit();
-        assertEquals(existing, Files.exists(directory));
+    @Test
+    @DisplayName("delete should do nothing if the provided folder doesn't exist and return the reference to it")
+    void deleteNotExisting() {
+        when(Files.notExists(path)).thenReturn(true);
 
-        assertEquals(directory, fileUtils.delete(directory));
+        assertEquals(path, fileUtils.delete(path));
 
-        assertFalse(Files.exists(directory));
+        //noinspection resource
+        filesMockedStatic.verify(() -> Files.walk(path), never());
     }
 
-    static Stream<Arguments> deleteValuesProvider() throws IOException {
-        return Stream.of(
-                arguments(Path.of("abc not existing"), false),
-                arguments(Files.createTempDirectory("downloadsFolder"), true));
+    @Test
+    @DisplayName("delete should delete the provided folder and return the reference to it")
+    void delete() throws IOException {
+        final Path filePath = mock();
+
+        when(Files.notExists(path)).thenReturn(false);
+        when(Files.walk(path)).thenReturn(Stream.of(filePath));
+        when(filePath.toFile()).thenReturn(file);
+
+        assertEquals(path, fileUtils.delete(path));
+
+        verify(file).delete();
     }
 
     @Test
     @DisplayName("overloaded delete that takes a file should delegate to the one taking its path")
     void deleteFile() throws IOException {
-        final File directory = Files.createTempDirectory("downloadsFolder").toFile();
-        directory.deleteOnExit();
+        final Path filePath = mock();
 
-        assertEquals(directory.toPath(), fileUtils.delete(directory));
+        when(file.toPath()).thenReturn(path);
+        when(Files.notExists(path)).thenReturn(false);
+        when(Files.walk(path)).thenReturn(Stream.of(filePath));
+        when(filePath.toFile()).thenReturn(file);
 
-        assertFalse(directory.exists());
+        assertEquals(path, fileUtils.delete(file));
+
+        verify(file).delete();
     }
 
+    @Test
     @DisplayName("delete should delete the provided directory, recreate it, and return the reference to it")
-    @ParameterizedTest(name = "with value {0} which is existing? {1}")
-    @MethodSource("deleteValuesProvider")
-    void deleteContentOf(final Path directory, final boolean existing) {
-        directory.toFile().deleteOnExit();
-        assertEquals(existing, Files.exists(directory));
+    void deleteContentOf() throws IOException {
+        final Path filePath = mock();
 
-        assertEquals(directory, fileUtils.deleteContentOf(directory));
+        when(Files.createDirectories(path)).thenReturn(path);
 
-        assertTrue(Files.exists(directory));
+        when(Files.notExists(path)).thenReturn(false);
+        when(Files.walk(path)).thenReturn(Stream.of(filePath));
+        when(filePath.toFile()).thenReturn(file);
+
+        assertEquals(path, fileUtils.deleteContentOf(path));
+        verify(file).delete();
     }
 
     @Test
     @DisplayName("write should write the provided content to a file in the provided path, creating the parent folders if needed")
     void write() {
-        final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
         final String content = "content";
 
         when(path.getParent()).thenReturn(parentPath);
@@ -189,14 +209,11 @@ class FileUtilsTest {
 
         verify(file).mkdirs();
         filesMockedStatic.verify(() -> Files.write(path, content.getBytes()));
-
-        filesMockedStatic.close();
     }
 
     @Test
     @DisplayName("write should write the provided content to a file in the provided string path, creating the parent folders if needed")
     void writeString() {
-        final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
         final MockedStatic<Path> pathMockedStatic = mockStatic(Path.class);
         final String stringPath = "stringPath";
         final String content = "content";
@@ -210,7 +227,6 @@ class FileUtilsTest {
         verify(file).mkdirs();
         filesMockedStatic.verify(() -> Files.write(path, content.getBytes()));
 
-        filesMockedStatic.close();
         pathMockedStatic.close();
     }
 
@@ -226,22 +242,40 @@ class FileUtilsTest {
     @Test
     @DisplayName("getCreationTimeOf should return the creation time of the provided file")
     void getCreationTimeOf() throws IOException {
-        final MockedStatic<Files> filesMockedStatic = mockStatic(Files.class);
-
         when(file.toPath()).thenReturn(path);
         when(Files.readAttributes(path, BasicFileAttributes.class)).thenReturn(basicFileAttributes);
         when(basicFileAttributes.creationTime()).thenReturn(creationTime);
 
         assertEquals(creationTime, fileUtils.getCreationTimeOf(file));
-
-        filesMockedStatic.close();
     }
 
     @Test
-    @DisplayName("getScreenshotNameFrom should return the name for the provided frame and display name")
-    void getScreenshotNameFrom() {
-        when(statefulExtentTest.getDisplayName()).thenReturn(DISPLAY_NAME);
+    @DisplayName("createTempFile should create a temp file with the provided prefix, suffix, and delete it on exit")
+    void createTempFile() throws IOException {
+        final String prefix = "prefix";
+        final String suffix = "suffix";
 
-        assertThat(fileUtils.getScreenshotNameFrom(statefulExtentTest, testData), matchesPattern(UUID_REGEX));
+        when(Files.createTempFile(prefix, suffix)).thenReturn(path);
+        when(path.toFile()).thenReturn(file);
+
+        assertEquals(path, fileUtils.createTempFile(prefix, suffix));
+
+        verify(file).deleteOnExit();
+    }
+
+    @Test
+    @DisplayName("writeTempFile should create a temp file with the provided prefix, suffix, and content and delete it on exit")
+    void writeTempFile() throws IOException {
+        final String prefix = "prefix";
+        final String suffix = "suffix";
+        final byte[] data = new byte[]{1, 2, 3};
+
+        when(Files.createTempFile(prefix, suffix)).thenReturn(path);
+        when(path.toFile()).thenReturn(file);
+        when(Files.write(path, data)).thenReturn(path);
+
+        assertEquals(path, fileUtils.writeTempFile(prefix, suffix, data));
+
+        verify(file).deleteOnExit();
     }
 }

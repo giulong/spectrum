@@ -76,7 +76,7 @@ Where:
 * `clean` is needed to avoid the `verify-*` modules check outdated reports of previous builds.
 * `install` will copy the built framework (jar) in your local maven repo, so that you can use it locally in other projects/modules.
 * the `-DskipSign` flag allows to skip signing the artifact with a gpg key. That's needed in GitHub actions to publish
-  on [Ossrh](https://s01.oss.sonatype.org/content/repositories/releases/io/github/giulong/spectrum/).
+  on [Maven Central](https://central.sonatype.com/artifact/io.github.giulong/spectrum).
 * the `-DbrowsersTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
   running with these active profiles: `-P chrome,firefox,edge`.
 * the `-DmacosTests` property is a shorthand to activate all the profiles needed to run tests on macOS. It's equivalent to

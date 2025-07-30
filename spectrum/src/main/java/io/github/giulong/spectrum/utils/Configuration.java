@@ -158,12 +158,6 @@ public class Configuration {
         @JsonPropertyDescription("Retention rules configuration")
         private Retention retention;
 
-        @JsonPropertyDescription("Set to true to generate an inline report alongside the main one")
-        private boolean inline;
-
-        @JsonPropertyDescription("Where to generate the inline report")
-        private String inlineReportFolder;
-
         @JsonPropertyDescription("Set to true if you want the report to be automatically opened when the suite execution is finished")
         private boolean openAtEnd;
 

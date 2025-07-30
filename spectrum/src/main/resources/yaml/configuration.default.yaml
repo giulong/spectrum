@@ -56,8 +56,6 @@ extent:
   timeStampFormat: EEEE dd/MM/yyyy, hh:mm a (zzz)   # Timestamp of each test's start-time and end-time
   locatorRegex: \s->\s(.+?(?=(]]+|]\s+|]$)))  # Regex to extract the WebElement's selector, when the driver fires an event
   retention: { } # Retention rules, specifies the number of reports to retain. Older ones will be deleted. Defaults to MAX_INT
-  inline: false # Set to true to generate an inline report alongside the main one
-  inlineReportFolder: target/spectrum/inline-reports # Where to generate the inline report
   openAtEnd: false # Set to true if you want the report to be automatically opened when the suite execution is finished
   css: css/report.css # Path to the custom css to apply. Relative to the resources folder
   js: js/report.js # Path to the custom js to apply. Relative to the resources folder
@@ -479,23 +477,39 @@ faker:
 
 # Internal events consumers. Cannot be removed, modified, nor added from client side configuration*.yaml, as lists' elements are appended when merging yaml files. You can add yours
 eventsConsumers:
-  - extentTest: # We need to add an entry to the Extent Report once each test is done
+  - videoInit: # initialize the video for each test
+      events:
+        - reason: beforeExecution
+          tags: [ test ]
+  - videoDynamicInit: # initialize the video for each dynamic test
+      events:
+        - reason: beforeExecution
+          tags: [ dynamicTest ]
+  - video: # add the screenshot to the video
+      events:
+        - primaryId: screenshot
+          reason: screenshot
+  - videoDynamic: # add the screenshot to the dynamic video
+      events:
+        - primaryId: screenshot
+          reason: screenshot
+  - extentTest: # add an entry to the Extent Report once each test is done
       events:
         - reason: after
           tags: [ test ]
-  - testbook: # We need to update the TestBook (if configured) once each test is done
+  - videoFinalizer: # finalize the video once each test is done
       events:
         - reason: after
-          tags: [ test ]
-  - video: # We need to finalize the video once each test is done
-      events:
-        - reason: after
-          tags: [ test, dynamicTest ]
-  - videoDynamic: # We need to finalize the video once each dynamic test is done
+          tags: [ test, testFactory ]
+  - videoDynamicFinalizer: # finalize the video once each dynamic test is done
       events:
         - reason: after
           tags: [ dynamicTest ]
-  - driver: # We need to close the driver once each test is done
+  - testbook: # update the TestBook once each test is done
+      events:
+        - reason: after
+          tags: [ test ]
+  - driver: # close the driver once each test is done
       events:
         - reason: after
           tags: [ test, testFactory ]

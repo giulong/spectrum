@@ -5,12 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import org.mockito.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -24,17 +19,20 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class HtmlUtilsTest {
 
-    private static MockedStatic<Path> pathMockedStatic;
-    private static MockedStatic<Files> filesMockedStatic;
+    private MockedStatic<Path> pathMockedStatic;
+    private MockedStatic<Files> filesMockedStatic;
 
     private final String testId = "testId";
+
+    @Mock
+    private ContextManager contextManager;
+
+    @Mock
+    private Map<Path, byte[]> screenshots;
 
     @Mock
     private Path path;
@@ -62,6 +60,7 @@ class HtmlUtilsTest {
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
 
+        Reflections.setField("contextManager", htmlUtils, contextManager);
         Reflections.setField("freeMarkerWrapper", htmlUtils, freeMarkerWrapper);
         Reflections.setField("fileUtils", htmlUtils, fileUtils);
     }
@@ -141,16 +140,19 @@ class HtmlUtilsTest {
     @DisplayName("inline should call both the inlineImagesOf and inlineVideosOf on the provided html and return the one with all of those replaced")
     void inline() throws IOException {
         final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";
+
         when(Path.of("src1")).thenReturn(path);
         when(Path.of("src2")).thenReturn(path2);
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
-        when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "BAUG");
 
         Reflections.setField("inlineImageTemplate", htmlUtils, source);
         final String interpolatedTemplate = "interpolatedTemplate";
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
+
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+        when(screenshots.get(path2)).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inline(report);
 
@@ -161,14 +163,12 @@ class HtmlUtilsTest {
 
     @Test
     @DisplayName("inlineImagesOf should return the provided html with all the images replaced with their own base64")
-    void inlineImagesOf() throws IOException {
+    void inlineImagesOf() {
         final String html = "abc<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src1\"/></div></div>def" +
                 "<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>ghi";
 
         when(Path.of("src1")).thenReturn(path);
         when(Path.of("src2")).thenReturn(path2);
-        when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
-        when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "AQID");
@@ -177,6 +177,9 @@ class HtmlUtilsTest {
         Reflections.setField("inlineImageTemplate", htmlUtils, source);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
         when(freeMarkerWrapper.interpolate(source, expectedParams1)).thenReturn(interpolatedTemplate);
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+        when(screenshots.get(path)).thenReturn(new byte[]{1, 2, 3});
+        when(screenshots.get(path2)).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inlineImagesOf(html);
 

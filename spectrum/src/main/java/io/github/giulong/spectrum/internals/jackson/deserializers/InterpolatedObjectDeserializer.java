@@ -25,7 +25,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
 
     private static final InterpolatedObjectDeserializer INSTANCE = new InterpolatedObjectDeserializer();
-    private static final Pattern INT_PATTERN = Pattern.compile("(?<placeholder>\\$<(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~.:/\\\\]*))?>)");
+    private static final Pattern INT_PATTERN = Pattern.compile("(?<placeholder>\\$<(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~\\s-.:/\\\\=]*))?>)");
     private static final Pattern NUMBER = Pattern.compile("-?\\d+(.\\d+|,\\d+)?");
 
     private final Vars vars = Vars.getInstance();

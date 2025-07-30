@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
@@ -24,6 +25,8 @@ import static org.mockito.Mockito.*;
 
 class EventsDispatcherTest {
 
+    private final String primaryId = "primaryId";
+
     private MockedStatic<Event> eventMockedStatic;
 
     @Mock
@@ -31,6 +34,9 @@ class EventsDispatcherTest {
 
     @Mock
     private Summary summary;
+
+    @Mock
+    private Map<String, Object> payload;
 
     @Mock
     private ExtensionContext extensionContext;
@@ -80,6 +86,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.sessionOpened();
@@ -101,6 +108,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(result)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.sessionClosed();
@@ -121,6 +129,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(reason, tags);
@@ -145,6 +154,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(result)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(reason, tags, result);
@@ -154,10 +164,9 @@ class EventsDispatcherTest {
     }
 
     @Test
-    @DisplayName("fire should build an event with the provided primaryId and reason and call match on every consumer")
-    void firePrimaryIdAndReason() {
+    @DisplayName("fire should build an event with the provided primaryId, reason, and payload and call match on every consumer")
+    void firePrimaryIdReasonPayload() {
         final String reason = AFTER;
-        final String primaryId = "primaryId";
 
         when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
 
@@ -168,6 +177,30 @@ class EventsDispatcherTest {
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(null)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.payload(payload)).thenReturn(eventBuilder);
+        when(eventBuilder.build()).thenReturn(event);
+
+        eventsDispatcher.fire(primaryId, reason, payload);
+
+        verify(consumer1).match(event);
+        verify(consumer2).match(event);
+    }
+
+    @Test
+    @DisplayName("fire should build an event with the provided primaryId and reason and call match on every consumer")
+    void firePrimaryIdAndReason() {
+        final String reason = AFTER;
+
+        when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
+
+        when(Event.builder()).thenReturn(eventBuilder);
+        when(eventBuilder.primaryId(primaryId)).thenReturn(eventBuilder);
+        when(eventBuilder.secondaryId(null)).thenReturn(eventBuilder);
+        when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
+        when(eventBuilder.result(null)).thenReturn(eventBuilder);
+        when(eventBuilder.tags(null)).thenReturn(eventBuilder);
+        when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(primaryId, reason);
@@ -180,7 +213,6 @@ class EventsDispatcherTest {
     @DisplayName("fire should build an event with the provided primaryId, secondaryId and reason and call match on every consumer")
     void firePrimaryIdAndSecondaryIdAndReason() {
         final String reason = AFTER;
-        final String primaryId = "primaryId";
         final String secondaryId = "secondaryId";
 
         when(configuration.getEventsConsumers()).thenReturn(List.of(consumer1, consumer2));
@@ -192,6 +224,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(null)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(primaryId, secondaryId, reason);
@@ -218,6 +251,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(result)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(extensionContext)).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(className, testName, reason, result, tags, extensionContext);

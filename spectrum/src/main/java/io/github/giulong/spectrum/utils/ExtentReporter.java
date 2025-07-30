@@ -23,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.awt.*;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,11 +34,11 @@ import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.*;
-import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
-@NoArgsConstructor(access = PROTECTED)
 @Getter
+@NoArgsConstructor(access = PRIVATE)
 public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     private static final ExtentReporter INSTANCE = new ExtentReporter();
@@ -88,9 +89,14 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
         extentReports.flush();
 
         final Configuration.Extent extent = configuration.getExtent();
+        final Path path = getReportPathFrom(extent);
+        final String inlineReport = htmlUtils.inline(Files.readString(path));
+
+        fileUtils.write(path, inlineReport);
+
         if (extent.isOpenAtEnd()) {
             log.debug("Opening extent report in default browser");
-            Desktop.getDesktop().open(getReportPathFrom(extent).toFile());
+            Desktop.getDesktop().open(path.toFile());
         }
 
         cleanupOldReportsIn(extent.getReportFolder());
