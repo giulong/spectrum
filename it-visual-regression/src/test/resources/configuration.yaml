@@ -1,0 +1,24 @@
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+visualRegression: { }
+
+video:
+  frames:
+    - autoBefore
+    - manual
+
+drivers:
+  chrome:
+    args:
+      - --headless=new
+  firefox:
+    args:
+      - -headless
+  edge:
+    args:
+      - --headless=new
+
+extent:
+  theme: DARK
+  fileName: report-${spectrum.driver:-chrome}.html
