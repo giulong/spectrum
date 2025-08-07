@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.web_driver_listeners.AutoWaitWebDriverListener;
 import io.github.giulong.spectrum.internals.web_driver_listeners.EventsWebDriverListener;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.web_driver_events.*;

@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.utils.events.video;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 

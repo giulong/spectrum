@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.types.TestData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

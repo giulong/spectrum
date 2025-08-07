@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
 import io.github.giulong.spectrum.interfaces.SessionHook;
-import io.github.giulong.spectrum.types.TestData;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;

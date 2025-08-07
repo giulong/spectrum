@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.video;
 
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.types;
+package io.github.giulong.spectrum.utils;
 
 import lombok.Builder;
 import lombok.Getter;

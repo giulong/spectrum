@@ -12,7 +12,6 @@ import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

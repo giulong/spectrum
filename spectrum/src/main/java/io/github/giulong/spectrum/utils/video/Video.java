@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.utils.video;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

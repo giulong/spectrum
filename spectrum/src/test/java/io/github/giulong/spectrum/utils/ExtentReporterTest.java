@@ -9,7 +9,6 @@ import com.aventstack.extentreports.model.Report;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.SneakyThrows;
