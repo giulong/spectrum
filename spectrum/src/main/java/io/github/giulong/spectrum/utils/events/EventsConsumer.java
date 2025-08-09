@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.events.html_report.ExtentTestEndConsumer;
 import io.github.giulong.spectrum.utils.events.video.*;
 import io.github.giulong.spectrum.utils.web_driver_events.TestStepsConsumer;
 import lombok.Getter;
@@ -20,7 +21,7 @@ import static java.util.stream.Collectors.toSet;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SlackConsumer.class, name = "slack"),
         @JsonSubTypes.Type(value = TestBookConsumer.class, name = "testbook"),
-        @JsonSubTypes.Type(value = ExtentTestConsumer.class, name = "extentTest"),
+        @JsonSubTypes.Type(value = ExtentTestEndConsumer.class, name = "extentTestEnd"),
         @JsonSubTypes.Type(value = DriverConsumer.class, name = "driver"),
         @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),
         @JsonSubTypes.Type(value = VideoInitConsumer.class, name = "videoInit"),

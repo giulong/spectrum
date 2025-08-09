@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.utils.events;
+package io.github.giulong.spectrum.utils.events.html_report;
 
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.ExtentReporter;
@@ -15,7 +15,7 @@ import org.mockito.MockedStatic;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static org.mockito.Mockito.*;
 
-class ExtentTestConsumerTest {
+class ExtentTestEndConsumerTest {
 
     private static MockedStatic<ExtentReporter> extentReporterMockedStatic;
 
@@ -29,11 +29,11 @@ class ExtentTestConsumerTest {
     private Event event;
 
     @InjectMocks
-    private ExtentTestConsumer extentTestConsumer;
+    private ExtentTestEndConsumer extentTestEndConsumer;
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("extentReporter", extentTestConsumer, extentReporter);
+        Reflections.setField("extentReporter", extentTestEndConsumer, extentReporter);
         extentReporterMockedStatic = mockStatic(ExtentReporter.class);
     }
 
@@ -48,7 +48,7 @@ class ExtentTestConsumerTest {
         when(event.getResult()).thenReturn(SUCCESSFUL);
         when(event.getContext()).thenReturn(context);
 
-        extentTestConsumer.accept(event);
+        extentTestEndConsumer.accept(event);
 
         verify(extentReporter).logTestEnd(context, SUCCESSFUL.getStatus());
     }

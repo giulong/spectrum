@@ -2470,19 +2470,19 @@ Spectrum will fire an event with:
 
 ## Tags
 
-Tags are a set of strings used to group events together. For example, all test methods will have the "test" tag.
+Tags are a set of strings used to group events together. For example, all test methods will have the `test` tag.
 This way, instead of attaching a consumer to a specific event (with primary and secondary id, for example) you can listen
 to all events tagged in a particular way, such as all the tests.
 
 > 💡 **Example**<br/>
 > Check the `eventsConsumers` in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
-> Internal consumers need to take actions after each test is done, meaning they listen to events tagged with "test":
+> Internal consumers need to take actions after each test is done, meaning they listen to events tagged with `test`:
 
 {% include copyCode.html %}
 
 ```yaml
 eventsConsumers:
-  - extentTest: # We need to add an entry to the Extent Report once each test is done
+  - extentTestEnd: # We need to add an entry to the Html Report once each test is done
     events:
       - reason: after
         tags: [ test ]

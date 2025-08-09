@@ -493,7 +493,7 @@ eventsConsumers:
       events:
         - primaryId: screenshot
           reason: screenshot
-  - extentTest: # add an entry to the Extent Report once each test is done
+  - extentTestEnd: # add an entry to the Extent Report once each test is done
       events:
         - reason: after
           tags: [ test ]
