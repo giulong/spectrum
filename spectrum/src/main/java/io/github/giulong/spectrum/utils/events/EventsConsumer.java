@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
@@ -46,15 +47,15 @@ public abstract class EventsConsumer implements Consumer<Event> {
 
     public void match(final Event event) {
         final String simpleName = getClass().getSimpleName();
+        final Predicate<Event> accepts = e -> shouldAccept(event);
+        final Predicate<Event> matches = e -> findMatchFor(event, e);
 
         events
                 .stream()
-                .peek(h -> log.debug("{}: checking if should run for {}", simpleName, event))
-                .filter(h -> shouldAccept(event))
-                .peek(h -> log.trace("{}: finding matchers for {}", simpleName, event))
-                .filter(h -> findMatchFor(event, h))
-                .peek(h -> log.debug("{} is consuming {}", simpleName, event))
-                .forEach(h -> acceptSilently(event));
+                .peek(e -> log.debug("{}: checking if should run for {}", simpleName, event))
+                .filter(accepts.and(matches))
+                .peek(e -> log.debug("{} is consuming {}", simpleName, event))
+                .forEach(e -> acceptSilently(event));
     }
 
     protected boolean shouldAccept(final Event event) {
