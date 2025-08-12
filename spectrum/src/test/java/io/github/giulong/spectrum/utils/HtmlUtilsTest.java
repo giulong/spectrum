@@ -31,7 +31,7 @@ class HtmlUtilsTest {
     private ContextManager contextManager;
 
     @Mock
-    private Map<Path, byte[]> screenshots;
+    private Map<String, byte[]> screenshots;
 
     @Mock
     private Path path;
@@ -141,7 +141,6 @@ class HtmlUtilsTest {
         final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";
 
         when(Path.of("src1")).thenReturn(path);
-        when(Path.of("src2")).thenReturn(path2);
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "BAUG");
@@ -151,7 +150,7 @@ class HtmlUtilsTest {
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
-        when(screenshots.get(path2)).thenReturn(new byte[]{4, 5, 6});
+        when(screenshots.get("src2")).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inline(report);
 
@@ -166,8 +165,6 @@ class HtmlUtilsTest {
         final String html = "abc<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src1\"/></div></div>def" +
                 "<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>ghi";
 
-        when(Path.of("src1")).thenReturn(path);
-        when(Path.of("src2")).thenReturn(path2);
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "AQID");
@@ -177,8 +174,8 @@ class HtmlUtilsTest {
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
         when(freeMarkerWrapper.interpolate(source, expectedParams1)).thenReturn(interpolatedTemplate);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
-        when(screenshots.get(path)).thenReturn(new byte[]{1, 2, 3});
-        when(screenshots.get(path2)).thenReturn(new byte[]{4, 5, 6});
+        when(screenshots.get("src1")).thenReturn(new byte[]{1, 2, 3});
+        when(screenshots.get("src2")).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inlineImagesOf(html);
 

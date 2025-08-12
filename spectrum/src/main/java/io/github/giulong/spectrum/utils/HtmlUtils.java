@@ -61,12 +61,12 @@ public class HtmlUtils implements SessionHook {
     @SneakyThrows
     public String inlineImagesOf(final String html) {
         final Matcher matcher = IMAGE_TAG.matcher(html);
-        final Map<Path, byte[]> screenshots = contextManager.getScreenshots();
+        final Map<String, byte[]> screenshots = contextManager.getScreenshots();
         String inlineHtml = html;
 
         while (matcher.find()) {
             final String src = matcher.group(SRC);
-            final byte[] bytes = screenshots.get(Path.of(src));
+            final byte[] bytes = screenshots.get(src);
             final String encoded = ENCODER.encodeToString(bytes);
             final String replacement = freeMarkerWrapper.interpolate(this.inlineImageTemplate, Map.of("encoded", encoded));
 

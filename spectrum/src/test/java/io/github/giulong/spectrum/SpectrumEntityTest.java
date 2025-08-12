@@ -133,7 +133,7 @@ class SpectrumEntityTest {
     private Media media;
 
     @Mock
-    private Map<Path, byte[]> screenshots;
+    private Map<String, byte[]> screenshots;
 
     @Mock
     private MessageDigest messageDigest;
@@ -324,7 +324,7 @@ class SpectrumEntityTest {
         spectrumEntity.addScreenshotToReport(msg, status);
 
         assertArrayEquals(bytes, byteArrayArgumentCaptor.getValue());
-        verify(screenshots).put(path, bytes);
+        verify(screenshots).put(path.toString(), bytes);
         verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes));
         verify(extentTest).log(status, tag, media);
         verifyNoMoreInteractions(eventsDispatcher);

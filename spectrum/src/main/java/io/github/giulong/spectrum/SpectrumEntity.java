@@ -191,7 +191,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final Path path = fileUtils.writeTempFile("screenshot", ".png", screenshot);
         final Media media = createScreenCaptureFromPath(path.toString()).build();
 
-        contextManager.getScreenshots().put(path, screenshot);
+        contextManager.getScreenshots().put(path.toString(), screenshot);
 
         if (msg == null) {
             statefulExtentTest.getCurrentNode().log(status, (String) null, media);
