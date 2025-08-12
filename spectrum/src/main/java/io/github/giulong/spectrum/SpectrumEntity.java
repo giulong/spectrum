@@ -41,6 +41,7 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
+@SuppressWarnings("unchecked")
 public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     public static final String HASH_ALGORITHM = "SHA-256";
@@ -118,7 +119,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @param webElement the WebElement on which to hover
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T hover(final WebElement webElement) {
         actions.moveToElement(webElement).perform();
 
@@ -130,11 +130,8 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      *
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T screenshot() {
-        addScreenshotToReport(null, INFO);
-
-        return (T) this;
+        return addScreenshotToReport(null, INFO);
     }
 
     /**
@@ -143,11 +140,8 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @param msg the message to log
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T screenshotInfo(final String msg) {
-        addScreenshotToReport(msg, INFO);
-
-        return (T) this;
+        return addScreenshotToReport(msg, INFO);
     }
 
     /**
@@ -156,11 +150,8 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @param msg the message to log
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T screenshotWarning(final String msg) {
-        addScreenshotToReport(msg, WARNING);
-
-        return (T) this;
+        return addScreenshotToReport(msg, WARNING);
     }
 
     /**
@@ -169,11 +160,8 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @param msg the message to log
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T screenshotFail(final String msg) {
-        addScreenshotToReport(msg, FAIL);
-
-        return (T) this;
+        return addScreenshotToReport(msg, FAIL);
     }
 
     /**
@@ -181,8 +169,9 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      *
      * @param msg    the message to log
      * @param status the log's status
+     * @return the calling SpectrumEntity instance
      */
-    public void addScreenshotToReport(final String msg, final Status status) {
+    public T addScreenshotToReport(final String msg, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
         final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
@@ -195,20 +184,25 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
         if (msg == null) {
             statefulExtentTest.getCurrentNode().log(status, (String) null, media);
-            return;
+            return (T) this;
         }
 
         final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
         final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message");
 
         statefulExtentTest.getCurrentNode().log(status, tag, media);
+
+        return (T) this;
     }
 
     /**
      * Deletes the download folder (its path is provided in the {@code configuration*.yaml})
+     *
+     * @return the calling SpectrumEntity instance
      */
-    public void deleteDownloadsFolder() {
+    public T deleteDownloadsFolder() {
         fileUtils.deleteContentOf(Path.of(configuration.getRuntime().getDownloadsFolder()));
+        return (T) this;
     }
 
     /**
@@ -217,7 +211,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @param path the path to the downloaded file to wait for
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T waitForDownloadOf(final Path path) {
         downloadWait.until(webDriver -> {
             log.trace("Checking for download completion of file '{}'", path);
