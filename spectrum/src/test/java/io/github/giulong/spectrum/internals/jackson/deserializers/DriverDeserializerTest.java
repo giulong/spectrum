@@ -54,8 +54,8 @@ class DriverDeserializerTest {
         when(jsonParser.getValueAsString()).thenReturn(notValidDriver);
         when(jsonParser.currentName()).thenReturn("key");
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> driverDeserializer.deserialize(jsonParser, deserializationContext));
-        assertEquals("Value '" + notValidDriver + "' is not a valid driver!", exception.getMessage());
+        assertThrowsExactly(IllegalArgumentException.class, () -> driverDeserializer.deserialize(jsonParser, deserializationContext),
+                "Value '" + notValidDriver + "' is not a valid driver!");
     }
 
     static Stream<Arguments> valuesProvider() {

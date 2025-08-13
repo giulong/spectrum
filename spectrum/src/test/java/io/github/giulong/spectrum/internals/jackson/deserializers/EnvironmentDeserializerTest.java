@@ -57,8 +57,8 @@ class EnvironmentDeserializerTest {
         when(jsonParser.getValueAsString()).thenReturn(notValidEnvironment);
         when(jsonParser.currentName()).thenReturn("key");
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> environmentDeserializer.deserialize(jsonParser, deserializationContext));
-        assertEquals("Value '" + notValidEnvironment + "' is not a valid environment!", exception.getMessage());
+        assertThrowsExactly(IllegalArgumentException.class, () -> environmentDeserializer.deserialize(jsonParser, deserializationContext),
+                "Value '" + notValidEnvironment + "' is not a valid environment!");
     }
 
     static Stream<Arguments> valuesProvider() {

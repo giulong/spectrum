@@ -206,9 +206,7 @@ class EventsConsumerTest {
         when(event.getContext()).thenThrow(new RuntimeException(exceptionMessage));
 
         eventsConsumer.events = List.of(event);
-        final Exception exception = assertThrows(RuntimeException.class, () -> eventsConsumer.acceptSilently(event));
-
-        assertEquals(exceptionMessage, exception.getMessage());
+        assertThrowsExactly(RuntimeException.class, () -> eventsConsumer.acceptSilently(event), exceptionMessage);
     }
 
     private static class DummyEventsConsumer extends EventsConsumer {

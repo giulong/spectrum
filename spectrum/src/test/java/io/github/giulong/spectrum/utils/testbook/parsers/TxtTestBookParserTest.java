@@ -45,8 +45,8 @@ class TxtTestBookParserTest {
         when(fileUtils.read(path)).thenReturn(line);
         Reflections.setField("path", testBookParser, path);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> testBookParser.parse());
-        assertEquals(String.format("Line '%s' in TestBook doesn't match pattern %s", line, testBookParser.getRegex()), exception.getMessage());
+        assertThrowsExactly(IllegalArgumentException.class, () -> testBookParser.parse(),
+                String.format("Line '%s' in TestBook doesn't match pattern %s", line, testBookParser.getRegex()));
     }
 
     @DisplayName("parse should work")
