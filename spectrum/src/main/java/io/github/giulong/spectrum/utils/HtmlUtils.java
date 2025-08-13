@@ -32,14 +32,14 @@ public class HtmlUtils implements SessionHook {
     private String videoTemplate;
     private String divTemplate;
     private String frameTemplate;
-    private String inlineImageTemplate;
+    private String imageTemplate;
 
     @Override
     public void sessionOpened() {
         this.videoTemplate = fileUtils.readTemplate("video.html");
         this.divTemplate = fileUtils.readTemplate("div-template.html");
-        this.inlineImageTemplate = fileUtils.readTemplate("div-image-template.html");
-        this.frameTemplate = fileUtils.readTemplate("div-frame-template.html");
+        this.imageTemplate = fileUtils.readTemplate("image-template.html");
+        this.frameTemplate = fileUtils.readTemplate("frame-template.html");
     }
 
     public static HtmlUtils getInstance() {
@@ -68,7 +68,7 @@ public class HtmlUtils implements SessionHook {
             final String src = matcher.group(SRC);
             final byte[] bytes = screenshots.get(src);
             final String encoded = ENCODER.encodeToString(bytes);
-            final String replacement = freeMarkerWrapper.interpolate(this.inlineImageTemplate, Map.of("encoded", encoded));
+            final String replacement = freeMarkerWrapper.interpolate(this.imageTemplate, Map.of("encoded", encoded));
 
             log.debug("Found img with src {}", src);
             inlineHtml = inlineHtml.replace(matcher.group(0), replacement);

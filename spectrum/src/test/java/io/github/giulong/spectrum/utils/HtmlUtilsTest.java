@@ -87,15 +87,15 @@ class HtmlUtilsTest {
 
         when(fileUtils.readTemplate("video.html")).thenReturn(videoTemplate);
         when(fileUtils.readTemplate("div-template.html")).thenReturn(divTemplate);
-        when(fileUtils.readTemplate("div-frame-template.html")).thenReturn(divFrameTemplate);
-        when(fileUtils.readTemplate("div-image-template.html")).thenReturn(divImageTemplate);
+        when(fileUtils.readTemplate("frame-template.html")).thenReturn(divFrameTemplate);
+        when(fileUtils.readTemplate("image-template.html")).thenReturn(divImageTemplate);
 
         htmlUtils.sessionOpened();
 
         assertEquals(videoTemplate, Reflections.getFieldValue("videoTemplate", htmlUtils, String.class));
         assertEquals(divTemplate, Reflections.getFieldValue("divTemplate", htmlUtils, String.class));
         assertEquals(divFrameTemplate, Reflections.getFieldValue("frameTemplate", htmlUtils, String.class));
-        assertEquals(divImageTemplate, Reflections.getFieldValue("inlineImageTemplate", htmlUtils, String.class));
+        assertEquals(divImageTemplate, Reflections.getFieldValue("imageTemplate", htmlUtils, String.class));
     }
 
     @Test
@@ -145,7 +145,7 @@ class HtmlUtilsTest {
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "BAUG");
 
-        Reflections.setField("inlineImageTemplate", htmlUtils, source);
+        Reflections.setField("imageTemplate", htmlUtils, source);
         final String interpolatedTemplate = "interpolatedTemplate";
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
@@ -170,7 +170,7 @@ class HtmlUtilsTest {
         final Map<String, Object> expectedParams = Map.of("encoded", "AQID");
         final Map<String, Object> expectedParams1 = Map.of("encoded", "BAUG");
 
-        Reflections.setField("inlineImageTemplate", htmlUtils, source);
+        Reflections.setField("imageTemplate", htmlUtils, source);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
         when(freeMarkerWrapper.interpolate(source, expectedParams1)).thenReturn(interpolatedTemplate);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
