@@ -18,7 +18,7 @@ client would. So, we build the framework in a dedicated module, and then we incl
 | [verify-browsers](verify-browsers) | Verifies results of the `it`, `it-testbook`, `it-grid`, and `it-bidi` modules |
 | [verify-macos](verify-macos)       | Verifies results of the `it-macos` module                                     |
 | [verify-appium](verify-appium)     | Verifies results of the `it-appium` module                                    |
-| [cleanup](cleanup)                 | Cleans each module after the execution                                        |
+| [cleanup](cleanup)                 | Cleans after the execution                                                    |
 
 In some modules, some tests are meant to fail or skipped for demonstration purposes, for example to check how they are displayed in the html report.
 These modules' build will not fail anyway: they will be checked later on by the `verify-*` modules.
@@ -32,25 +32,11 @@ registered via the Service Loader mechanism. This means we provide its fqdn in t
 file, which is copied into the `META-INF/services` folder during the `prepare-package` phase.
 It's not placed already there since that would load the framework during its own unit tests, breaking them.
 
-Outside the Maven build of the entire project, so to trigger single tests from the IDE, these conditions need to be satisfied:
-
-* to be able to run the framework's **unit tests**, we need to delete
-  the [org.junit.platform.launcher.LauncherSessionListener](spectrum/src/main/resources/org.junit.platform.launcher.LauncherSessionListener)
-  from [spectrum/target/classes/META-INF/services](spectrum/target/classes/META-INF/services)
-* to be able to run **unit** and **e2e tests** in other modules, we need to have it in their respective `target/classes/META-INF/services` folder
+Outside the Maven build of the entire project, to be able to run the framework's **unit tests**, we need to delete
+the [org.junit.platform.launcher.LauncherSessionListener](spectrum/src/main/resources/org.junit.platform.launcher.LauncherSessionListener)
+from [spectrum/target/classes/META-INF/services](spectrum/target/classes/META-INF/services)
 
 To avoid manual operations, at the end of the full build, the `cleanup` module will execute the corresponding action for each module listed below.
-
-| Module          | Unit tests | E2E tests | Action                           |
-|-----------------|------------|-----------|----------------------------------|
-| spectrum        | ✅          | ❌         | remove `SpectrumSessionListener` |
-| it              | ❌          | ✅         | add `SpectrumSessionListener`    |
-| it-grid         | ❌          | ✅         | add `SpectrumSessionListener`    |
-| it-bidi         | ❌          | ✅         | add `SpectrumSessionListener`    |
-| it-testbook     | ❌          | ✅         | add `SpectrumSessionListener`    |
-| it-appium       | ❌          | ✅         | add `SpectrumSessionListener`    |
-| verify-browsers | ✅          | ✅         | add `SpectrumSessionListener`    |
-| verify-appium   | ✅          | ✅         | add `SpectrumSessionListener`    |
 
 # How to build the project
 
