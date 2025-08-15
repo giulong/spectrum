@@ -51,7 +51,7 @@ public class Video {
         log.trace("Current frame number: {}", frameNumber);
 
         if (shouldRecord(frame)) {
-            testData.setFrameNumber(frameNumber + 1);
+            testData.incrementFrameNumber();
             return frameNumber;
         }
 

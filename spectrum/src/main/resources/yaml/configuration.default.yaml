@@ -20,6 +20,10 @@ application:
   highlight: # Highlight the web elements the test interacts with. Useful to visually debug the execution
     js: js/highlight.js # Path to the js used to highlight. Relative to the resources folder
 
+# Visual Regression Testing configuration
+visualRegression:
+  folder: src/test/resources/visual-regression # Where to save the screenshot references
+
 # TestBook (coverage)
 testBook:
   qualityGate:
@@ -485,6 +489,14 @@ eventsConsumers:
       events:
         - reason: beforeExecution
           tags: [ dynamicTest ]
+  - visualRegressionReferenceCreator: # create the screenshot reference for visual regression
+      events:
+        - primaryId: (manual)-screenshot
+          reason: screenshot
+  - visualRegressionCheck: # check the previously generated screenshot reference for visual regression
+      events:
+        - primaryId: (manual)-screenshot
+          reason: screenshot
   - video: # add the screenshot to the video
       events:
         - primaryId: screenshot

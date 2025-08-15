@@ -20,6 +20,7 @@ import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.logging.Level;
@@ -41,6 +42,9 @@ public class Configuration {
 
     @JsonPropertyDescription("Application under test")
     private Application application;
+
+    @JsonPropertyDescription("Visual Regression Testing configuration")
+    private VisualRegression visualRegression;
 
     @JsonPropertyDescription("Execution video recording")
     private Video video;
@@ -128,6 +132,18 @@ public class Configuration {
             @JsonPropertyDescription("Path to the js used to highlight. Relative to the resources folder")
             private String js;
         }
+    }
+
+    @Getter
+    @Generated
+    public static class VisualRegression {
+
+        @JsonIgnore
+        @JacksonInject("enabledFromClient")
+        private boolean enabled;
+
+        @JsonPropertyDescription("Where to save the screenshot references")
+        private Path folder;
     }
 
     @Getter

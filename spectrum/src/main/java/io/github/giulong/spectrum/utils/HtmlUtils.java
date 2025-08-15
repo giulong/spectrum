@@ -24,6 +24,7 @@ public class HtmlUtils implements SessionHook {
     private static final Pattern IMAGE_TAG = Pattern.compile("<div class=\"row mb-3\">\\s*<div class=\"col-md-3\">\\s*<img.*?src=\"(?<src>[^\"]*)\".*?</div>\\s*</div>", DOTALL);
     private static final Base64.Encoder ENCODER = Base64.getEncoder();
     private static final String SRC = "src";
+    private static final String ID = "id";
 
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
     private final ContextManager contextManager = ContextManager.getInstance();
@@ -33,6 +34,7 @@ public class HtmlUtils implements SessionHook {
     private String divTemplate;
     private String frameTemplate;
     private String imageTemplate;
+    private String visualRegressionTemplate;
 
     @Override
     public void sessionOpened() {
@@ -40,6 +42,7 @@ public class HtmlUtils implements SessionHook {
         this.divTemplate = fileUtils.readTemplate("div-template.html");
         this.imageTemplate = fileUtils.readTemplate("image-template.html");
         this.frameTemplate = fileUtils.readTemplate("frame-template.html");
+        this.visualRegressionTemplate = fileUtils.readTemplate("visual-regression-template.html");
     }
 
     public static HtmlUtils getInstance() {
@@ -55,7 +58,12 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String buildFrameTagFor(final int number, final String content, final TestData testData, final String classes) {
-        return freeMarkerWrapper.interpolate(this.frameTemplate, Map.of("classes", classes, "id", testData.getTestId(), "number", number, "content", content));
+        return freeMarkerWrapper.interpolate(this.frameTemplate, Map.of("classes", classes, ID, testData.getTestId(), "number", number, "content", content));
+    }
+
+    public String buildVisualRegressionTagFor(final int number, final TestData testData, final Path referencePath, final Path regressionPath) {
+        return freeMarkerWrapper.interpolate(this.visualRegressionTemplate,
+                Map.of(ID, testData.getTestId(), "number", number, "reference", referencePath, "regression", regressionPath));
     }
 
     @SneakyThrows
@@ -66,11 +74,12 @@ public class HtmlUtils implements SessionHook {
 
         while (matcher.find()) {
             final String src = matcher.group(SRC);
+            log.debug("Found img with src {}", src);
+
             final byte[] bytes = screenshots.get(src);
             final String encoded = ENCODER.encodeToString(bytes);
             final String replacement = freeMarkerWrapper.interpolate(this.imageTemplate, Map.of("encoded", encoded));
 
-            log.debug("Found img with src {}", src);
             inlineHtml = inlineHtml.replace(matcher.group(0), replacement);
         }
 
@@ -100,6 +109,6 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String generateTestInfoDivs(final String id, final String classDisplayName, final String testDisplayName) {
-        return freeMarkerWrapper.interpolate(this.divTemplate, Map.of("id", id, "classDisplayName", classDisplayName, "testDisplayName", testDisplayName));
+        return freeMarkerWrapper.interpolate(this.divTemplate, Map.of(ID, id, "classDisplayName", classDisplayName, "testDisplayName", testDisplayName));
     }
 }

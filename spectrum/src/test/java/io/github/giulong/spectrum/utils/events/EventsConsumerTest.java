@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.utils.events;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Reflections;
+import lombok.Getter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,6 +11,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -23,8 +25,23 @@ import static org.mockito.Mockito.*;
 
 class EventsConsumerTest {
 
+    private static final String PRIMARY_ID = "primaryId";
+    private static final String EXCEPTION_MESSAGE = "THE STACKTRACE BELOW IS EXPECTED!!!";
+
     @InjectMocks
     private DummyEventsConsumer eventsConsumer;
+
+    @InjectMocks
+    private DummyThrowingEventsConsumer throwingEventsConsumer;
+
+    @Test
+    @DisplayName("the default shouldAccept should just return true")
+    void shouldAccept() {
+        final Event event = mock();
+
+        assertTrue(eventsConsumer.shouldAccept(event));
+        verifyNoInteractions(event);
+    }
 
     @DisplayName("tagsIntersect")
     @ParameterizedTest(name = "with value1 {0} and value2 {1} we expect {2}")
@@ -174,13 +191,28 @@ class EventsConsumerTest {
         when(firedEvent.getPrimaryId()).thenReturn(className);
         when(matchingEvent.getPrimaryId()).thenReturn(className);
 
-        eventsConsumer.events = List.of(matchingEvent, neverMatchingEvent);
+        Reflections.setField("events", eventsConsumer, List.of(matchingEvent, neverMatchingEvent));
         eventsConsumer.match(firedEvent);
 
-        // we use the getContext method in the consumes of the DummyEventsConsumer below just to verify the interaction
-        verify(firedEvent).getContext();
-        verify(matchingEvent, never()).getContext();    // we never consume the user-defined event (as "event"). We consume the fired event
-        verify(neverMatchingEvent, never()).getContext();
+        assertEquals(Set.of(firedEvent), eventsConsumer.getAcceptedEvents());
+    }
+
+    @Test
+    @DisplayName("match should call findMatchFor and shouldAccept in order")
+    void matchOrder() {
+        final Event event = mock(Event.class);
+
+        Reflections.setField("events", throwingEventsConsumer, List.of(event));
+
+        when(event.getReason()).thenReturn(BEFORE);
+        when(event.getPrimaryId()).thenReturn(PRIMARY_ID);
+
+        throwingEventsConsumer.match(event);
+
+        // since the event should is not accepted, to prove the call order,
+        // we check that findMatchFor called the stubs above but the event has not been added to the accepted events set
+        assertEquals(Set.of(event), throwingEventsConsumer.getShouldAcceptEvents());
+        assertEquals(Set.of(), throwingEventsConsumer.getAcceptedEvents());
     }
 
     @Test
@@ -189,38 +221,67 @@ class EventsConsumerTest {
         final String exceptionMessage = "THE STACKTRACE BELOW IS EXPECTED!!!";
         final Event event = mock(Event.class);
 
-        when(event.getContext()).thenThrow(new RuntimeException(exceptionMessage));
-
-        eventsConsumer.events = List.of(event);
-        assertDoesNotThrow(() -> eventsConsumer.acceptSilently(event), exceptionMessage);
+        Reflections.setField("events", throwingEventsConsumer, List.of(event));
+        assertDoesNotThrow(() -> throwingEventsConsumer.acceptSilently(event), exceptionMessage);
     }
 
     @Test
     @DisplayName("acceptSilently should rethrow the exception if failOnError is true")
     void acceptSilentlyThrow() {
-        final String exceptionMessage = "THE STACKTRACE BELOW IS EXPECTED!!!";
         final Event event = mock(Event.class);
 
-        Reflections.setField("failOnError", eventsConsumer, true);
+        Reflections.setField("failOnError", throwingEventsConsumer, true);
+        Reflections.setField("events", throwingEventsConsumer, List.of(event));
 
-        when(event.getContext()).thenThrow(new RuntimeException(exceptionMessage));
-
-        eventsConsumer.events = List.of(event);
-        assertThrowsExactly(RuntimeException.class, () -> eventsConsumer.acceptSilently(event), exceptionMessage);
+        assertThrowsExactly(RuntimeException.class, () -> throwingEventsConsumer.acceptSilently(event), EXCEPTION_MESSAGE);
     }
 
+    @Getter
     private static class DummyEventsConsumer extends EventsConsumer {
 
+        private final Set<Event> shouldAcceptEvents = new HashSet<>();
+        private final Set<Event> acceptedEvents = new HashSet<>();
+
         DummyEventsConsumer() {
-            events = List.of(
-                    Event.builder().reason(BEFORE).primaryId("class").build()
-            );
+            Reflections.setField("events", this, List.of(
+                    Event.builder().reason(BEFORE).primaryId(PRIMARY_ID).build()
+            ));
+        }
+
+        @Override
+        protected boolean shouldAccept(final Event event) {
+            shouldAcceptEvents.add(event);
+            return super.shouldAccept(event);
         }
 
         @Override
         public void accept(final Event event) {
-            //noinspection ResultOfMethodCallIgnored
-            event.getContext();
+            acceptedEvents.add(event);
+        }
+    }
+
+    @Getter
+    private static class DummyThrowingEventsConsumer extends EventsConsumer {
+
+        private final Set<Event> shouldAcceptEvents = new HashSet<>();
+        private final Set<Event> acceptedEvents = new HashSet<>();
+
+        DummyThrowingEventsConsumer() {
+            Reflections.setField("events", this, List.of(
+                    Event.builder().reason(BEFORE).primaryId(PRIMARY_ID).build()
+            ));
+        }
+
+        @Override
+        protected boolean shouldAccept(final Event event) {
+            shouldAcceptEvents.add(event);
+            return false;
+        }
+
+        @Override
+        public void accept(final Event event) {
+            acceptedEvents.add(event);
+            throw new RuntimeException(EXCEPTION_MESSAGE);
         }
     }
 }

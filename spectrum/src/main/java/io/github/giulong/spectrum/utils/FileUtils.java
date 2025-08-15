@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -26,6 +27,7 @@ import static lombok.AccessLevel.PRIVATE;
 public final class FileUtils {
 
     private static final FileUtils INSTANCE = new FileUtils();
+    public static final String HASH_ALGORITHM = "SHA-256";
     private static final String DEFAULT_TIMESTAMP_PATTERN = "dd-MM-yyyy_HH-mm-ss";
     private static final String TIMESTAMP_TO_REPLACE = "\\$\\{timestamp:?(?<pattern>.*)}";
     private static final Pattern TIMESTAMP_PATTERN = Pattern.compile(".*\\$\\{timestamp:(?<pattern>.*)}.*");
@@ -97,15 +99,19 @@ public final class FileUtils {
     }
 
     @SneakyThrows
-    public void write(final Path path, final String content) {
+    public void write(final Path path, final byte[] content) {
         final boolean foldersCreated = path.getParent().toFile().mkdirs();
         log.trace("Folders created? {}. Writing {} to file {}", foldersCreated, content, path);
 
-        Files.write(path, content.getBytes());
+        Files.write(path, content);
+    }
+
+    public void write(final Path path, final String content) {
+        write(path, content.getBytes());
     }
 
     public void write(final String path, final String content) {
-        write(Path.of(path), content);
+        write(Path.of(path), content.getBytes());
     }
 
     public String sanitize(final String name) {
@@ -137,12 +143,25 @@ public final class FileUtils {
         return path;
     }
 
-    @SneakyThrows
-    public Path writeTempFile(final String prefix, final String suffix, final byte[] data) {
-        return Files.write(createTempFile(prefix, suffix), data);
+    public String getScreenshotNameFrom(final TestData testData) {
+        return String.format("screenshot-%d.png", testData.getScreenshotNumber());
     }
 
-    public String getVisualRegressionScreenshotNameFrom(final StatefulExtentTest statefulExtentTest, final TestData testData) {
-        return String.format("%s-%d-failed.png", statefulExtentTest.getDisplayName(), testData.getScreenshotNumber());
+    public String getFailedScreenshotNameFrom(final TestData testData) {
+        return String.format("screenshot-%d-failed.png", testData.getScreenshotNumber());
+    }
+
+    @SneakyThrows
+    public byte[] checksumOf(final byte[] bytes) {
+        final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(bytes);
+
+        log.trace("{} is '{}'", HASH_ALGORITHM, Arrays.toString(digest));
+        return digest;
+    }
+
+    @SneakyThrows
+    public byte[] checksumOf(final Path file) {
+        log.trace("Checking {} of '{}'", HASH_ALGORITHM, file);
+        return checksumOf(Files.readAllBytes(file));
     }
 }

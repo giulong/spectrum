@@ -3,14 +3,11 @@ package io.github.giulong.spectrum;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.datafaker.Faker;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -27,13 +24,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Map;
 
-import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static com.aventstack.extentreports.Status.*;
-import static io.github.giulong.spectrum.enums.Frame.MANUAL;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
@@ -44,11 +38,7 @@ import static org.openqa.selenium.OutputType.BYTES;
 @SuppressWarnings("unchecked")
 public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
-    public static final String HASH_ALGORITHM = "SHA-256";
-
-    private final ContextManager contextManager = ContextManager.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
-    private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
 
     @Shared
     protected static Configuration configuration;
@@ -131,66 +121,55 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @return the calling SpectrumEntity instance
      */
     public T screenshot() {
-        return addScreenshotToReport(null, INFO);
+        return addScreenshotToReport("", INFO);
     }
 
     /**
      * Adds a screenshot with the provided message and INFO status to the current test in the Extent Report
      *
-     * @param msg the message to log
+     * @param message the message to log
      * @return the calling SpectrumEntity instance
      */
-    public T screenshotInfo(final String msg) {
-        return addScreenshotToReport(msg, INFO);
+    public T screenshotInfo(final String message) {
+        return addScreenshotToReport(message, INFO);
     }
 
     /**
      * Adds a screenshot status with the provided message and WARN to the current test in the Extent Report
      *
-     * @param msg the message to log
+     * @param message the message to log
      * @return the calling SpectrumEntity instance
      */
-    public T screenshotWarning(final String msg) {
-        return addScreenshotToReport(msg, WARNING);
+    public T screenshotWarning(final String message) {
+        return addScreenshotToReport(message, WARNING);
     }
 
     /**
      * Adds a screenshot with the provided message and FAIL status to the current test in the Extent Report
      *
-     * @param msg the message to log
+     * @param message the message to log
      * @return the calling SpectrumEntity instance
      */
-    public T screenshotFail(final String msg) {
-        return addScreenshotToReport(msg, FAIL);
+    public T screenshotFail(final String message) {
+        return addScreenshotToReport(message, FAIL);
     }
 
     /**
      * Adds a screenshot with the provided message and the provided status to the current test in the Extent Report
      *
-     * @param msg    the message to log
+     * @param message    the message to log
      * @param status the log's status
      * @return the calling SpectrumEntity instance
      */
-    public T addScreenshotToReport(final String msg, final Status status) {
+    public T addScreenshotToReport(final String message, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
         final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
-        eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
-
-        final Path path = fileUtils.writeTempFile("screenshot", ".png", screenshot);
-        final Media media = createScreenCaptureFromPath(path.toString()).build();
-
-        contextManager.getScreenshots().put(path.toString(), screenshot);
-
-        if (msg == null) {
-            statefulExtentTest.getCurrentNode().log(status, (String) null, media);
-            return (T) this;
-        }
-
-        final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
-        final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message");
-
-        statefulExtentTest.getCurrentNode().log(status, tag, media);
+        eventsDispatcher.fire("manual-screenshot", SCREENSHOT, Map.of(
+                EXTENSION_CONTEXT, context,
+                SCREENSHOT, screenshot,
+                "message", message,
+                "status", status));
 
         return (T) this;
     }
@@ -239,7 +218,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
                 {}
                 {}
                 """, downloadedFile, fileToCheck);
-        return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
+        return Arrays.equals(fileUtils.checksumOf(downloadedFile), fileUtils.checksumOf(fileToCheck));
     }
 
     /**
@@ -329,13 +308,5 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return Arrays
                 .stream(classes)
                 .allMatch(c -> hasClass(webElement, c));
-    }
-
-    @SneakyThrows
-    static byte[] sha256Of(final Path file) {
-        final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(Files.readAllBytes(file));
-
-        log.trace("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));
-        return digest;
     }
 }

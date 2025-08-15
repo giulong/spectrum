@@ -17,19 +17,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
+import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
 import static java.lang.System.lineSeparator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class FileUtilsTest {
 
+    private final byte[] bytes = new byte[]{1, 2, 3};
+    private final byte[] digest = new byte[]{4, 5, 6};
+
     private static MockedStatic<Files> filesMockedStatic;
+    private MockedStatic<MessageDigest> messageDigestMockedStatic;
 
     @Mock
     private BasicFileAttributes basicFileAttributes;
@@ -38,10 +44,16 @@ class FileUtilsTest {
     private FileTime creationTime;
 
     @Mock
+    private MessageDigest messageDigest;
+
+    @Mock
     private Path path;
 
     @Mock
     private Path parentPath;
+
+    @Mock
+    private TestData testData;
 
     @Mock
     private File file;
@@ -52,11 +64,13 @@ class FileUtilsTest {
     @BeforeEach
     void beforeEach() {
         filesMockedStatic = mockStatic(Files.class);
+        messageDigestMockedStatic = mockStatic(MessageDigest.class);
     }
 
     @AfterEach
     void afterEach() {
         filesMockedStatic.close();
+        messageDigestMockedStatic.close();
     }
 
     @Test
@@ -264,18 +278,37 @@ class FileUtilsTest {
     }
 
     @Test
-    @DisplayName("writeTempFile should create a temp file with the provided prefix, suffix, and content and delete it on exit")
-    void writeTempFile() throws IOException {
-        final String prefix = "prefix";
-        final String suffix = "suffix";
-        final byte[] data = new byte[]{1, 2, 3};
+    @DisplayName("getScreenshotNameFrom should return the name for the provided frame and display name, with the 'failed' suffix")
+    void getScreenshotNameFrom() {
+        when(testData.getScreenshotNumber()).thenReturn(123);
 
-        when(Files.createTempFile(prefix, suffix)).thenReturn(path);
-        when(path.toFile()).thenReturn(file);
-        when(Files.write(path, data)).thenReturn(path);
+        assertEquals("screenshot-123.png", fileUtils.getScreenshotNameFrom(testData));
+    }
 
-        assertEquals(path, fileUtils.writeTempFile(prefix, suffix, data));
+    @Test
+    @DisplayName("getFailedScreenshotNameFrom should return the name for the provided frame and display name, with the 'failed' suffix")
+    void getFailedScreenshotNameFrom() {
+        when(testData.getScreenshotNumber()).thenReturn(123);
 
-        verify(file).deleteOnExit();
+        assertEquals("screenshot-123-failed.png", fileUtils.getFailedScreenshotNameFrom(testData));
+    }
+
+    @Test
+    @DisplayName("checksumOf should return the byte array of the sha digest of the provided file")
+    void checksumOf() throws NoSuchAlgorithmException, IOException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(Files.readAllBytes(path)).thenReturn(bytes);
+        when(messageDigest.digest(bytes)).thenReturn(digest);
+
+        assertArrayEquals(digest, fileUtils.checksumOf(path));
+    }
+
+    @Test
+    @DisplayName("checksumOf should return the byte array of the sha digest of the provided file")
+    void checksumOfBytes() throws NoSuchAlgorithmException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(messageDigest.digest(bytes)).thenReturn(digest);
+
+        assertArrayEquals(digest, fileUtils.checksumOf(bytes));
     }
 }

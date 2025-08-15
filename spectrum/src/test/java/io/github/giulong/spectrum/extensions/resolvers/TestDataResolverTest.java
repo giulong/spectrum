@@ -1,9 +1,6 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.utils.TestData;
-import io.github.giulong.spectrum.utils.ContextManager;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,6 +16,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -27,9 +25,13 @@ import static org.mockito.Mockito.*;
 class TestDataResolverTest {
 
     private static MockedStatic<TestData> testDataMockedStatic;
+    private static MockedStatic<TestData.VisualRegression> visualRegressionMockedStatic;
 
     @Mock
     private Path path;
+
+    @Mock
+    private Path visualRegressionFolder;
 
     @Mock
     private FileUtils fileUtils;
@@ -56,10 +58,25 @@ class TestDataResolverTest {
     private ExtensionContext.Store store;
 
     @Mock
+    private ExtensionContext.Store rootStore;
+
+    @Mock
     private TestData.TestDataBuilder testDataBuilder;
 
     @Mock
     private TestData testData;
+
+    @Mock
+    private Configuration configuration;
+
+    @Mock
+    private Configuration.VisualRegression visualRegressionConfiguration;
+
+    @Mock
+    private TestData.VisualRegression.VisualRegressionBuilder visualRegressionBuilder;
+
+    @Mock
+    private TestData.VisualRegression visualRegression;
 
     @InjectMocks
     private TestDataResolver testDataResolver;
@@ -70,11 +87,13 @@ class TestDataResolverTest {
         Reflections.setField("contextManager", testDataResolver, contextManager);
 
         testDataMockedStatic = mockStatic(TestData.class);
+        visualRegressionMockedStatic = mockStatic(TestData.VisualRegression.class);
     }
 
     @AfterEach
     void afterEach() {
         testDataMockedStatic.close();
+        visualRegressionMockedStatic.close();
     }
 
     @Test
@@ -91,7 +110,7 @@ class TestDataResolverTest {
 
         // joinTestDisplayNamesIn
         when(context.getParent()).thenReturn(Optional.of(parentContext));
-        when(parentContext.getParent()).thenReturn(Optional.of(rootContext));
+        when(parentContext.getParent()).thenReturn(Optional.of(grandParentContext));
         when(context.getDisplayName()).thenReturn(displayName);
 
         when(fileUtils.sanitize(classDisplayName)).thenReturn(sanitizedClassDisplayName);
@@ -102,6 +121,21 @@ class TestDataResolverTest {
         doReturn(String.class).when(context).getRequiredTestClass();
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
 
+        when(context.getRoot()).thenReturn(rootContext);
+        when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
+        when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
+        when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
+        when(visualRegressionConfiguration.getFolder()).thenReturn(visualRegressionFolder);
+
+        // getVisualRegressionScreenshotPathFrom
+        when(visualRegressionFolder.resolve(sanitizedClassDisplayName)).thenReturn(visualRegressionFolder);
+        when(visualRegressionFolder.resolve(sanitizedDisplayName)).thenReturn(visualRegressionFolder);
+        when(visualRegressionFolder.toAbsolutePath()).thenReturn(visualRegressionFolder);
+
+        when(TestData.VisualRegression.builder()).thenReturn(visualRegressionBuilder);
+        when(visualRegressionBuilder.path(visualRegressionFolder)).thenReturn(visualRegressionBuilder);
+        when(visualRegressionBuilder.build()).thenReturn(visualRegression);
+
         when(TestData.builder()).thenReturn(testDataBuilder);
         when(testDataBuilder.className(className)).thenReturn(testDataBuilder);
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
@@ -109,6 +143,7 @@ class TestDataResolverTest {
         when(testDataBuilder.displayName(sanitizedDisplayName)).thenReturn(testDataBuilder);
         when(testDataBuilder.testId(testId)).thenReturn(testDataBuilder);
         when(testDataBuilder.videoPath(path)).thenReturn(testDataBuilder);
+        when(testDataBuilder.visualRegression(visualRegression)).thenReturn(testDataBuilder);
         when(testDataBuilder.build()).thenReturn(testData);
 
         final TestData actual = testDataResolver.resolveParameter(parameterContext, context);
@@ -158,6 +193,19 @@ class TestDataResolverTest {
     @DisplayName("transformInKebabCase should return the provided string with spaces replaced by dashes and in lowercase")
     void transformInKebabCase() {
         assertEquals("some-composite-string", TestDataResolver.transformInKebabCase("Some Composite STRING"));
+    }
+
+    @Test
+    @DisplayName("getVisualRegressionScreenshotPathFrom should return the absolute path for visual regression screenshots for the current test")
+    void getVisualRegressionScreenshotPathFrom() {
+        final String className = "className";
+        final String methodName = "methodName";
+
+        when(visualRegressionFolder.resolve(className)).thenReturn(visualRegressionFolder);
+        when(visualRegressionFolder.resolve(methodName)).thenReturn(visualRegressionFolder);
+        when(visualRegressionFolder.toAbsolutePath()).thenReturn(visualRegressionFolder);
+
+        assertEquals(visualRegressionFolder, testDataResolver.getVisualRegressionPathFrom(visualRegressionFolder, className, methodName));
     }
 
     @DisplayName("dummy")

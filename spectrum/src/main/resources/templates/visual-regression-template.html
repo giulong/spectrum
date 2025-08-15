@@ -1,0 +1,22 @@
+<div class="visual-regression" data-test-id="${id}" data-frame="${number}">
+    <div class="row mb-3">
+        <div class="col-md-3 text-center">
+            <span class="badge white-text green">REFERENCE</span>
+        </div>
+        <div class="col-md-3 text-center">
+            <span class="badge white-text red">REGRESSION</span>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-md-3 text-center">
+            <a href="${reference}" data-featherlight="image">
+                <img src="${reference}" alt="reference screenshot" class="reference-img"/>
+            </a>
+        </div>
+        <div class="col-md-3 text-center">
+            <a href="${regression}" data-featherlight="image">
+                <img src="${regression}" alt="regression screenshot" class="regression-img"/>
+            </a>
+        </div>
+    </div>
+</div>

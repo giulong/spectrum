@@ -2,15 +2,19 @@ package io.github.giulong.spectrum;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
-import net.datafaker.Faker;
+import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
-import io.github.giulong.spectrum.types.*;
+import io.github.giulong.spectrum.types.DownloadWait;
+import io.github.giulong.spectrum.types.ImplicitWait;
+import io.github.giulong.spectrum.types.PageLoadWait;
+import io.github.giulong.spectrum.types.ScriptWait;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 import lombok.Getter;
+import net.datafaker.Faker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,6 +30,7 @@ import org.openqa.selenium.interactions.Actions;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -91,6 +96,12 @@ class SpectrumTestTest {
 
     @Mock
     private TestData testData;
+
+    @Mock
+    private Supplier<TestFailedException> testFailedExceptionSupplier;
+
+    @Mock
+    private TestFailedException testFailedException;
 
     @Mock
     private Js js;
@@ -208,6 +219,17 @@ class SpectrumTestTest {
         assertNull(childTestVoid.getParentToSkip());
         assertNotNull(childTestVoid.getParentTestPage());
         assertInstanceOf(FakeSpectrumPage.class, childTestVoid.getParentTestPage());
+    }
+
+    @Test
+    @DisplayName("baseSpectrumAfterEach should do nothing if testData is NOT marked as failed")
+    void testBaseSpectrumAfterEach() {
+        when(testData.getTestFailedException()).thenReturn(testFailedExceptionSupplier);
+        when(testFailedExceptionSupplier.get()).thenReturn(testFailedException);
+
+        spectrumTest.baseSpectrumAfterEach();
+
+        verifyNoMoreInteractions(testData);
     }
 
     @Test

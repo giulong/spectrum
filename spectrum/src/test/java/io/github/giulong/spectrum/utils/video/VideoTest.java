@@ -62,7 +62,7 @@ class VideoTest {
     @DisplayName("getAndIncrementFrameNumberFor should return the current frame number and increment it if the provided frame should be recorded, -1 otherwise")
     @ParameterizedTest(name = "with frames {0} we expect {1} and next frame number to be {2}")
     @MethodSource("getAndIncrementFrameNumberForValuesProvider")
-    void getAndIncrementFrameNumberFor(final List<Frame> frames, final int expected, final int shouldRecordInvocations, final int nextFrameNumber) {
+    void getAndIncrementFrameNumberFor(final List<Frame> frames, final int expected, final int shouldRecordInvocations) {
         final int currentFrameNumber = 123;
 
         Reflections.setField("frames", video, frames);
@@ -71,15 +71,15 @@ class VideoTest {
 
         assertEquals(expected, video.getAndIncrementFrameNumberFor(testData, AUTO_BEFORE));
 
-        verify(testData, times(shouldRecordInvocations)).setFrameNumber(nextFrameNumber);
+        verify(testData, times(shouldRecordInvocations)).incrementFrameNumber();
     }
 
     static Stream<Arguments> getAndIncrementFrameNumberForValuesProvider() {
         return Stream.of(
-                arguments(List.of(AUTO_BEFORE), 123, 1, 124),
-                arguments(List.of(MANUAL, AUTO_BEFORE), 123, 1, 124),
-                arguments(List.of(MANUAL), -1, 0, 123),
-                arguments(List.of(), -1, 0, 123)
+                arguments(List.of(AUTO_BEFORE), 123, 1),
+                arguments(List.of(MANUAL, AUTO_BEFORE), 123, 1),
+                arguments(List.of(MANUAL), -1, 0),
+                arguments(List.of(), -1, 0)
         );
     }
 }

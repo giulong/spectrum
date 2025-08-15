@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.utils.TestData;
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
@@ -34,6 +36,8 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final String displayName = fileUtils.sanitize(joinTestDisplayNamesIn(context));
         final String testId = buildTestIdFrom(className, displayName);
         final Path videoPath = fileUtils.createTempFile("video", ".mp4");
+        final Configuration.VisualRegression visualRegression = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getVisualRegression();
+        final Path visualRegressionPath = getVisualRegressionPathFrom(visualRegression.getFolder(), classDisplayName, displayName);
         final TestData testData = TestData
                 .builder()
                 .className(className)
@@ -42,6 +46,10 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
                 .displayName(displayName)
                 .testId(testId)
                 .videoPath(videoPath)
+                .visualRegression(TestData.VisualRegression
+                        .builder()
+                        .path(visualRegressionPath)
+                        .build())
                 .build();
 
         context.getStore(GLOBAL).put(TEST_DATA, testData);
@@ -67,6 +75,10 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         }
 
         return String.join(" ", displayNames.reversed());
+    }
+
+    Path getVisualRegressionPathFrom(final Path basePath, final String className, final String methodName) {
+        return basePath.resolve(className).resolve(methodName).toAbsolutePath();
     }
 
     static String transformInKebabCase(final String string) {

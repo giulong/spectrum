@@ -37,3 +37,16 @@ img[data-featherlight] {
     left: 100%;
     padding: 0;
 }
+
+.visual-regression img {
+    width: 49%;
+    border-radius: 2px;
+}
+
+.visual-regression .reference-img {
+    border: 2px solid #4caf50;
+}
+
+.visual-regression .regression-img {
+    border: 2px solid #ff5722;
+}

@@ -23,7 +23,7 @@ public class VideoInitConsumer extends VideoBaseConsumer {
         final TestData testData = event.getContext().getStore(GLOBAL).get(TEST_DATA, TestData.class);
         final Path videoPath = getVideoPathFrom(testData);
 
-        log.info("Generating video for test {}", videoPath.getFileName());
+        log.info("Generating video");
 
         testData.getEncoders().put(videoPath, createSequenceEncoder(videoPath.toFile(), 1));
     }
