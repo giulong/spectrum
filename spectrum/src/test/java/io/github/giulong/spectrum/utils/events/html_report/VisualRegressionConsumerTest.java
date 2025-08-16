@@ -12,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -71,6 +73,9 @@ class VisualRegressionConsumerTest {
 
     @Mock
     private Configuration.VisualRegression visualRegressionConfiguration;
+
+    @Mock
+    private Configuration.VisualRegression.Snapshots snapshots;
 
     @Mock
     private Map<String, byte[]> screenshots;
@@ -154,6 +159,17 @@ class VisualRegressionConsumerTest {
         assertEquals(currentNode, Reflections.getFieldValue("currentNode", consumer));
         assertEquals(screenshot, Reflections.getFieldValue("screenshot", consumer));
         assertEquals(frameNumber, Reflections.getFieldValue("frameNumber", consumer));
+    }
+
+    @DisplayName("shouldOverrideSnapshots should check if snapshots override is configured")
+    @ParameterizedTest(name = "with override {0} we expect {0}")
+    @ValueSource(booleans = {true, false})
+    void shouldOverrideSnapshots(final boolean expected) {
+        when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
+        when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
+        when(snapshots.isOverride()).thenReturn(expected);
+
+        assertEquals(expected, consumer.shouldOverrideSnapshots());
     }
 
     @Test

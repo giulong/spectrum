@@ -17,7 +17,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
 
     @Override
     protected boolean shouldAccept(final Event event) {
-        return super.shouldAccept(event) && Files.exists(referencePath);
+        return super.shouldAccept(event) && Files.exists(referencePath) && !shouldOverrideSnapshots();
     }
 
     @Override

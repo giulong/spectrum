@@ -55,6 +55,10 @@ public abstract class VisualRegressionConsumer extends EventsConsumer {
         return false;
     }
 
+    boolean shouldOverrideSnapshots() {
+        return configuration.getVisualRegression().getSnapshots().isOverride();
+    }
+
     void generateAndAddScreenshotFrom(final Event event) {
         final Map<String, Object> payload = event.getPayload();
         final String message = (String) payload.get("message");

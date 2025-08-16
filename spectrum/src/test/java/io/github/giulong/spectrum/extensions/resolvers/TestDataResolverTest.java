@@ -34,6 +34,9 @@ class TestDataResolverTest {
     private Path visualRegressionFolder;
 
     @Mock
+    private Configuration.VisualRegression.Snapshots snapshots;
+
+    @Mock
     private FileUtils fileUtils;
 
     @Mock
@@ -125,7 +128,8 @@ class TestDataResolverTest {
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
-        when(visualRegressionConfiguration.getFolder()).thenReturn(visualRegressionFolder);
+        when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
+        when(snapshots.getFolder()).thenReturn(visualRegressionFolder);
 
         // getVisualRegressionScreenshotPathFrom
         when(visualRegressionFolder.resolve(sanitizedClassDisplayName)).thenReturn(visualRegressionFolder);

@@ -37,7 +37,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         final String testId = buildTestIdFrom(className, displayName);
         final Path videoPath = fileUtils.createTempFile("video", ".mp4");
         final Configuration.VisualRegression visualRegression = context.getRoot().getStore(GLOBAL).get(CONFIGURATION, Configuration.class).getVisualRegression();
-        final Path visualRegressionPath = getVisualRegressionPathFrom(visualRegression.getFolder(), classDisplayName, displayName);
+        final Path visualRegressionPath = getVisualRegressionPathFrom(visualRegression.getSnapshots().getFolder(), classDisplayName, displayName);
         final TestData testData = TestData
                 .builder()
                 .className(className)

@@ -75,6 +75,9 @@ class VisualRegressionReferenceCreatorConsumerTest {
     private Configuration.VisualRegression visualRegressionConfiguration;
 
     @Mock
+    private Configuration.VisualRegression.Snapshots snapshots;
+
+    @Mock
     private Map<String, byte[]> screenshots;
 
     @Mock
@@ -130,11 +133,14 @@ class VisualRegressionReferenceCreatorConsumerTest {
     }
 
     @Test
-    @DisplayName("shouldAccept should call the parent and return false if the references have already been generated")
+    @DisplayName("shouldAccept should call the parent and return false if the references have already been generated and snapshots override is false")
     void shouldAcceptFalse() {
         superShouldAcceptStubs();
 
         when(Files.notExists(referencePath)).thenReturn(false);
+
+        when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
+        when(snapshots.isOverride()).thenReturn(false);
 
         assertFalse(consumer.shouldAccept(event));
 
@@ -148,6 +154,22 @@ class VisualRegressionReferenceCreatorConsumerTest {
         superShouldAcceptStubs();
 
         when(Files.notExists(referencePath)).thenReturn(true);
+
+        assertTrue(consumer.shouldAccept(event));
+
+        // super
+        assertEquals(referencePath, Reflections.getFieldValue("referencePath", consumer));
+    }
+
+    @Test
+    @DisplayName("shouldAccept should call the parent and return true if the references have already been generated but snapshots override is true")
+    void shouldAcceptTrueOverride() {
+        superShouldAcceptStubs();
+
+        when(Files.notExists(referencePath)).thenReturn(false);
+
+        when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
+        when(snapshots.isOverride()).thenReturn(true);
 
         assertTrue(consumer.shouldAccept(event));
 

@@ -22,7 +22,9 @@ application:
 
 # Visual Regression Testing configuration
 visualRegression:
-  folder: src/test/resources/visual-regression # Where to save the screenshot references
+  snapshots:
+    folder: src/test/resources/visual-regression # Where to save the screenshot references
+    override: ${spectrum.visualRegression.snapshots.override:-false} # Whether to override the snapshots references already generated
 
 # TestBook (coverage)
 testBook:

@@ -2,7 +2,8 @@ application:
   baseUrl: https://the-internet.herokuapp.com/
 
 visualRegression:
-  folder: target/visual-regression
+  snapshots:
+    folder: target/visual-regression
 
 video:
   frames:

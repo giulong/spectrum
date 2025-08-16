@@ -142,8 +142,19 @@ public class Configuration {
         @JacksonInject("enabledFromClient")
         private boolean enabled;
 
-        @JsonPropertyDescription("Where to save the screenshot references")
-        private Path folder;
+        @JsonPropertyDescription("Snapshots screenshots references configuration")
+        private Snapshots snapshots;
+
+        @Getter
+        @Generated
+        public static class Snapshots {
+
+            @JsonPropertyDescription("Where to save the screenshot references")
+            private Path folder;
+
+            @JsonPropertyDescription("Whether to override the snapshots references already generated")
+            private boolean override;
+        }
     }
 
     @Getter

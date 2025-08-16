@@ -13,7 +13,7 @@ public class VisualRegressionReferenceCreatorConsumer extends VisualRegressionCo
 
     @Override
     protected boolean shouldAccept(final Event event) {
-        return super.shouldAccept(event) && Files.notExists(referencePath);
+        return super.shouldAccept(event) && (Files.notExists(referencePath) || shouldOverrideSnapshots());
     }
 
     @Override
