@@ -22,7 +22,7 @@ public class StringUtilsTest {
     @Test
     @DisplayName("escapeString method should return the input string with escaped characters")
     void testEscape() {
-        assertThrowsExactly(NullPointerException.class, () -> stringUtils.escape(null), "The string to escape cannot be null");
+        assertThrows(NullPointerException.class, () -> stringUtils.escape(null), "The string to escape cannot be null");
         assertEquals("\\\\", stringUtils.escape("\\"), "Escapes backslashes");
         assertEquals("\\'", stringUtils.escape("'"), "Escapes single quotes");
         assertEquals("\\\"", stringUtils.escape("\""), "Escapes double quotes");

@@ -233,7 +233,9 @@ class EventsConsumerTest {
         Reflections.setField("failOnError", throwingEventsConsumer, true);
         Reflections.setField("events", throwingEventsConsumer, List.of(event));
 
-        assertThrowsExactly(RuntimeException.class, () -> throwingEventsConsumer.acceptSilently(event), EXCEPTION_MESSAGE);
+        final Exception exception = assertThrows(RuntimeException.class, () -> throwingEventsConsumer.acceptSilently(event));
+
+        assertEquals(EXCEPTION_MESSAGE, exception.getMessage());
     }
 
     @Getter
