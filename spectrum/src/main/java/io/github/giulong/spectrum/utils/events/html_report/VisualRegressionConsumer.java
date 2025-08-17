@@ -29,6 +29,7 @@ public abstract class VisualRegressionConsumer extends EventsConsumer {
     private final Configuration configuration = Configuration.getInstance();
     private final ContextManager contextManager = ContextManager.getInstance();
 
+    protected Configuration.VisualRegression visualRegression;
     protected Path referencePath;
     protected Path regressionPath;
     protected TestData testData;
@@ -38,7 +39,9 @@ public abstract class VisualRegressionConsumer extends EventsConsumer {
 
     @Override
     protected boolean shouldAccept(final Event event) {
-        if (configuration.getVisualRegression().isEnabled()) {
+        this.visualRegression = configuration.getVisualRegression();
+
+        if (visualRegression.isEnabled()) {
             final Map<String, Object> payload = event.getPayload();
             final ExtensionContext.Store store = ((ExtensionContext) payload.get(EXTENSION_CONTEXT)).getStore(GLOBAL);
 

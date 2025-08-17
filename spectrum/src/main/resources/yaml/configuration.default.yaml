@@ -22,6 +22,7 @@ application:
 
 # Visual Regression Testing configuration
 visualRegression:
+  failFast: false # Whether to fail immediately when the first visual regression is found, rather than running the entire test
   snapshots:
     folder: src/test/resources/visual-regression # Where to save the screenshot references
     override: ${spectrum.visualRegression.snapshots.override:-false} # Whether to override the snapshots references already generated
@@ -496,6 +497,7 @@ eventsConsumers:
         - primaryId: (manual)-screenshot
           reason: screenshot
   - visualRegressionCheck: # check the previously generated screenshot reference for visual regression
+      failOnError: true # to enable fail fast effectively break the test immediately
       events:
         - primaryId: (manual)-screenshot
           reason: screenshot

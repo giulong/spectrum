@@ -142,6 +142,9 @@ public class Configuration {
         @JacksonInject("enabledFromClient")
         private boolean enabled;
 
+        @JsonPropertyDescription("Whether to fail immediately when the first visual regression is found, rather than running the entire test")
+        private boolean failFast;
+
         @JsonPropertyDescription("Snapshots screenshots references configuration")
         private Snapshots snapshots;
 

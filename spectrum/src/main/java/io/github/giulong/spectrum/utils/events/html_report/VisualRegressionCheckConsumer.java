@@ -36,6 +36,12 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
         final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, referencePath, failedScreenshotPath);
 
         addScreenshot(failedScreenshotPath, FAIL, visualRegressionTag, null);
+
+        if (visualRegression.isFailFast()) {
+            log.error("Failing fast due to first visual regression found!");
+            throw testData.getTestFailedException().get();
+        }
+
         testData.incrementScreenshotNumber();
     }
 }

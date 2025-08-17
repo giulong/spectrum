@@ -4,6 +4,8 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
+import io.github.giulong.spectrum.exceptions.TestFailedException;
+import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -19,6 +21,7 @@ import org.mockito.MockedStatic;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import static com.aventstack.extentreports.Status.FAIL;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
@@ -93,6 +96,12 @@ class VisualRegressionCheckConsumerTest {
 
     @Mock
     private TestData testData;
+
+    @Mock
+    private Supplier<TestFailedException> testFailedExceptionSupplier;
+
+    @Mock
+    private VisualRegressionException visualRegressionException;
 
     @Mock
     private StatefulExtentTest statefulExtentTest;
@@ -230,6 +239,43 @@ class VisualRegressionCheckConsumerTest {
 
         verify(testData).registerFailedVisualRegression();
         verify(testData).incrementScreenshotNumber();
+
+        // addScreenshot
+        verify(currentNode).log(FAIL, visualRegressionTag, null);
+        verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
+        verify(fileUtils).write(failedScreenshotPath, screenshot);
+    }
+
+    @Test
+    @DisplayName("accept should register the regression when the screenshot taken does not match with its reference")
+    void acceptVisualRegressionFailFast() {
+        final String exceptionMessage = "exceptionMessage";
+        final Path failedScreenshotPath = mock();
+        final String failedScreenshotName = "failedScreenshotName";
+        final String visualRegressionTag = "visualRegressionTag";
+
+        when(fileUtils.checksumOf(referencePath)).thenReturn(matchingChecksum);
+        when(fileUtils.checksumOf(screenshot)).thenReturn(anotherChecksum);
+
+        when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
+        when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, referencePath, failedScreenshotPath)).thenReturn(visualRegressionTag);
+
+        // addScreenshot
+        Reflections.setField("screenshot", consumer, screenshot);
+        Reflections.setField("frameNumber", consumer, frameNumber);
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+
+        when(visualRegressionConfiguration.isFailFast()).thenReturn(true);
+        when(testData.getTestFailedException()).thenReturn(testFailedExceptionSupplier);
+        when(testFailedExceptionSupplier.get()).thenReturn(visualRegressionException);
+        when(visualRegressionException.getMessage()).thenReturn(exceptionMessage);
+
+        final VisualRegressionException exception = assertThrows(VisualRegressionException.class, () -> consumer.accept(event));
+        assertEquals(exceptionMessage, exception.getMessage());
+
+        verify(testData).registerFailedVisualRegression();
+        verify(testData, never()).incrementScreenshotNumber();
 
         // addScreenshot
         verify(currentNode).log(FAIL, visualRegressionTag, null);

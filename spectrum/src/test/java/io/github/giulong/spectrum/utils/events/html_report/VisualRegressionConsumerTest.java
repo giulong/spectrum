@@ -153,6 +153,7 @@ class VisualRegressionConsumerTest {
 
         Reflections.setField("referencePath", consumer, null);
         assertTrue(consumer.shouldAccept(event));
+        assertEquals(visualRegressionConfiguration, Reflections.getFieldValue("visualRegression", consumer));
         assertEquals(referencePath, Reflections.getFieldValue("referencePath", consumer));
         assertEquals(regressionPath, Reflections.getFieldValue("regressionPath", consumer));
         assertEquals(testData, Reflections.getFieldValue("testData", consumer));
