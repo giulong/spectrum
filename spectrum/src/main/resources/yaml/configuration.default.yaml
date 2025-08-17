@@ -501,11 +501,11 @@ eventsConsumers:
           reason: screenshot
   - video: # add the screenshot to the video
       events:
-        - primaryId: screenshot
+        - primaryId: (manual|auto)-screenshot
           reason: screenshot
   - videoDynamic: # add the screenshot to the dynamic video
       events:
-        - primaryId: screenshot
+        - primaryId: (manual|auto)-screenshot
           reason: screenshot
   - extentTestEnd: # add an entry to the Extent Report once each test is done
       events:

@@ -30,6 +30,7 @@ import java.util.Map;
 import static com.aventstack.extentreports.Status.*;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.MANUAL_SCREENSHOT;
 import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.openqa.selenium.OutputType.BYTES;
@@ -165,7 +166,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
         final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
-        eventsDispatcher.fire("manual-screenshot", SCREENSHOT, Map.of(
+        eventsDispatcher.fire(MANUAL_SCREENSHOT, SCREENSHOT, Map.of(
                 EXTENSION_CONTEXT, context,
                 SCREENSHOT, screenshot,
                 "message", message,

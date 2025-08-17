@@ -39,6 +39,7 @@ import java.util.stream.Stream;
 import static com.aventstack.extentreports.Status.INFO;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.MANUAL_SCREENSHOT;
 import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -224,7 +225,7 @@ class SpectrumEntityTest {
 
         spectrumEntity.addScreenshotToReport(msg, status);
 
-        verify(eventsDispatcher).fire("manual-screenshot", SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes, "message", msg, "status", status));
+        verify(eventsDispatcher).fire(MANUAL_SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes, "message", msg, "status", status));
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

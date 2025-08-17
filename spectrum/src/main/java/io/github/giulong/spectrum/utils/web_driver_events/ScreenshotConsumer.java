@@ -21,6 +21,8 @@ import static org.openqa.selenium.OutputType.BYTES;
 public class ScreenshotConsumer extends WebDriverEventConsumer {
 
     public static final String SCREENSHOT = "screenshot";
+    public static final String MANUAL_SCREENSHOT = "manual-screenshot";
+    public static final String AUTO_SCREENSHOT = "auto-screenshot";
 
     private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
 
@@ -34,7 +36,7 @@ public class ScreenshotConsumer extends WebDriverEventConsumer {
         if (video.shouldRecord(frame)) {
             final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
-            eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
+            eventsDispatcher.fire(AUTO_SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
             log.trace("Recording frame {} for event '{}'", frame, webDriverEvent.getMessage());
 
             return;
