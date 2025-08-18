@@ -146,12 +146,12 @@ class HtmlUtilsTest {
         when(testData.getTestId()).thenReturn(testId);
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
-        final Map<String, Object> expectedParams = Map.of("id", testId, "number", 123, "reference", path, "regression", path2);
+        final Map<String, Object> expectedParams = Map.of("id", testId, "number", 123, "reference", "AQID", "regression", "BAUG");
 
         Reflections.setField("visualRegressionTemplate", htmlUtils, source);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
-        final String result = htmlUtils.buildVisualRegressionTagFor(123, testData, path, path2);
+        final String result = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6});
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals(interpolatedTemplate, result);

@@ -61,12 +61,14 @@ public class HtmlUtils implements SessionHook {
         return freeMarkerWrapper.interpolate(this.frameTemplate, Map.of("classes", classes, ID, testData.getTestId(), "number", number, "content", content));
     }
 
-    public String buildVisualRegressionTagFor(final int number, final TestData testData, final Path referencePath, final Path regressionPath) {
-        return freeMarkerWrapper.interpolate(this.visualRegressionTemplate,
-                Map.of(ID, testData.getTestId(), "number", number, "reference", referencePath, "regression", regressionPath));
+    public String buildVisualRegressionTagFor(final int number, final TestData testData, final byte[] referenceBytes, final byte[] regressionBytes) {
+        return freeMarkerWrapper.interpolate(this.visualRegressionTemplate, Map.of(
+                ID, testData.getTestId(),
+                "number", number,
+                "reference", ENCODER.encodeToString(referenceBytes),
+                "regression", ENCODER.encodeToString(regressionBytes)));
     }
 
-    @SneakyThrows
     public String inlineImagesOf(final String html) {
         final Matcher matcher = IMAGE_TAG.matcher(html);
         final Map<String, byte[]> screenshots = contextManager.getScreenshots();

@@ -18,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
@@ -218,7 +219,7 @@ class VisualRegressionCheckConsumerTest {
 
     @Test
     @DisplayName("accept should register the regression when the screenshot taken does not match with its reference")
-    void acceptVisualRegression() {
+    void acceptVisualRegression() throws IOException {
         final Path failedScreenshotPath = mock();
         final String failedScreenshotName = "failedScreenshotName";
         final String visualRegressionTag = "visualRegressionTag";
@@ -228,7 +229,8 @@ class VisualRegressionCheckConsumerTest {
 
         when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
-        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, referencePath, failedScreenshotPath)).thenReturn(visualRegressionTag);
+        when(Files.readAllBytes(referencePath)).thenReturn(matchingChecksum);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, matchingChecksum, screenshot)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);
@@ -248,7 +250,7 @@ class VisualRegressionCheckConsumerTest {
 
     @Test
     @DisplayName("accept should register the regression when the screenshot taken does not match with its reference")
-    void acceptVisualRegressionFailFast() {
+    void acceptVisualRegressionFailFast() throws IOException {
         final String exceptionMessage = "exceptionMessage";
         final Path failedScreenshotPath = mock();
         final String failedScreenshotName = "failedScreenshotName";
@@ -259,7 +261,8 @@ class VisualRegressionCheckConsumerTest {
 
         when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
-        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, referencePath, failedScreenshotPath)).thenReturn(visualRegressionTag);
+        when(Files.readAllBytes(referencePath)).thenReturn(matchingChecksum);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, matchingChecksum, screenshot)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);

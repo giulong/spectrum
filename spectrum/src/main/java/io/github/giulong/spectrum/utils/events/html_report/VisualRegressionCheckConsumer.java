@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.utils.events.html_report;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
@@ -21,6 +22,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
     }
 
     @Override
+    @SneakyThrows
     public void accept(final Event event) {
         if (Arrays.equals(fileUtils.checksumOf(referencePath), fileUtils.checksumOf(screenshot))) {
             log.info("Screenshot matches with its reference {}", referencePath);
@@ -33,7 +35,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
 
         testData.registerFailedVisualRegression();
         final Path failedScreenshotPath = regressionPath.resolve(fileUtils.getFailedScreenshotNameFrom(testData));
-        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, referencePath, failedScreenshotPath);
+        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, Files.readAllBytes(referencePath), screenshot);
 
         addScreenshot(failedScreenshotPath, FAIL, visualRegressionTag, null);
 
