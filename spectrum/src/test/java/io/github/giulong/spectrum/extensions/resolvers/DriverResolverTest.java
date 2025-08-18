@@ -43,7 +43,7 @@ class DriverResolverTest {
     private static MockedStatic<Pattern> patternMockedStatic;
     private static MockedStatic<LogConsumer> logConsumerMockedStatic;
     private static MockedStatic<HtmlReportConsumer> htmlReportConsumerMockedStatic;
-    private static MockedStatic<ScreenshotConsumer> screenshotConsumerMockedStatic;
+    private static MockedStatic<VideoAutoScreenshotProducer> videoAutoScreenshotConsumerMockedStatic;
     private static MockedStatic<TestStepBuilderConsumer> testStepBuilderConsumerMockedStatic;
     private static MockedStatic<HighlightElementConsumer> highlightElementConsumerMockedStatic;
 
@@ -128,10 +128,10 @@ class DriverResolverTest {
 
     @SuppressWarnings("rawtypes")
     @Mock
-    private ScreenshotConsumer.ScreenshotConsumerBuilder screenshotConsumerBuilder;
+    private VideoAutoScreenshotProducer.VideoAutoScreenshotProducerBuilder videoAutoScreenshotProducerBuilder;
 
     @Mock
-    private ScreenshotConsumer screenshotConsumer;
+    private VideoAutoScreenshotProducer videoAutoScreenshotProducer;
 
     @SuppressWarnings("rawtypes")
     @Mock
@@ -184,7 +184,7 @@ class DriverResolverTest {
         patternMockedStatic = mockStatic(Pattern.class);
         logConsumerMockedStatic = mockStatic(LogConsumer.class);
         htmlReportConsumerMockedStatic = mockStatic(HtmlReportConsumer.class);
-        screenshotConsumerMockedStatic = mockStatic(ScreenshotConsumer.class);
+        videoAutoScreenshotConsumerMockedStatic = mockStatic(VideoAutoScreenshotProducer.class);
         testStepBuilderConsumerMockedStatic = mockStatic(TestStepBuilderConsumer.class);
         highlightElementConsumerMockedStatic = mockStatic(HighlightElementConsumer.class);
     }
@@ -196,7 +196,7 @@ class DriverResolverTest {
         patternMockedStatic.close();
         logConsumerMockedStatic.close();
         htmlReportConsumerMockedStatic.close();
-        screenshotConsumerMockedStatic.close();
+        videoAutoScreenshotConsumerMockedStatic.close();
         testStepBuilderConsumerMockedStatic.close();
         highlightElementConsumerMockedStatic.close();
     }
@@ -242,11 +242,12 @@ class DriverResolverTest {
         when(htmlReportConsumerBuilder.video(video)).thenReturn(htmlReportConsumerBuilder);
         when(htmlReportConsumerBuilder.build()).thenReturn(htmlReportConsumer);
 
-        when(ScreenshotConsumer.builder()).thenReturn(screenshotConsumerBuilder);
-        when(screenshotConsumerBuilder.enabled(true)).thenReturn(screenshotConsumerBuilder);
-        when(screenshotConsumerBuilder.video(video)).thenReturn(screenshotConsumerBuilder);
-        when(screenshotConsumerBuilder.context(context)).thenReturn(screenshotConsumerBuilder);
-        when(screenshotConsumerBuilder.build()).thenReturn(screenshotConsumer);
+        when(VideoAutoScreenshotProducer.builder()).thenReturn(videoAutoScreenshotProducerBuilder);
+        when(videoAutoScreenshotProducerBuilder.enabled(true)).thenReturn(videoAutoScreenshotProducerBuilder);
+        when(videoAutoScreenshotProducerBuilder.video(video)).thenReturn(videoAutoScreenshotProducerBuilder);
+        when(videoAutoScreenshotProducerBuilder.driver((TakesScreenshot) webDriver)).thenReturn(videoAutoScreenshotProducerBuilder);
+        when(videoAutoScreenshotProducerBuilder.context(context)).thenReturn(videoAutoScreenshotProducerBuilder);
+        when(videoAutoScreenshotProducerBuilder.build()).thenReturn(videoAutoScreenshotProducer);
 
         when(TestStepBuilderConsumer.builder()).thenReturn(testStepBuilderConsumerBuilder);
         when(testStepBuilderConsumerBuilder.enabled(true)).thenReturn(testStepBuilderConsumerBuilder);
@@ -278,7 +279,7 @@ class DriverResolverTest {
         verify(contextManager).put(context, ORIGINAL_DRIVER, webDriver);
 
         assertEquals(decoratedWebDriver, actual);
-        assertEquals(List.of(logConsumer, htmlReportConsumer, screenshotConsumer, testStepBuilderConsumer, highlightElementConsumer), consumersArgumentCaptor.getValue());
+        assertEquals(List.of(logConsumer, htmlReportConsumer, videoAutoScreenshotProducer, testStepBuilderConsumer, highlightElementConsumer), consumersArgumentCaptor.getValue());
     }
 
     @Test

@@ -30,8 +30,8 @@ import java.util.Map;
 import static com.aventstack.extentreports.Status.*;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.MANUAL_SCREENSHOT;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.MANUAL_SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.openqa.selenium.OutputType.BYTES;
 
