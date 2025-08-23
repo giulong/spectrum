@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -38,7 +38,8 @@ class EventsWatcherTest {
     @Mock
     private ExtensionContext parentContext;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
     @InjectMocks
@@ -46,7 +47,6 @@ class EventsWatcherTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("eventsDispatcher", eventsWatcher, eventsDispatcher);
         eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
     }
 

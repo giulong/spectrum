@@ -1,9 +1,9 @@
 package io.github.giulong.spectrum.utils.events;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.Summary;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,8 @@ class EventsDispatcherTest {
 
     private MockedStatic<Event> eventMockedStatic;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -59,7 +60,6 @@ class EventsDispatcherTest {
     @BeforeEach
     void beforeEach() {
         eventMockedStatic = mockStatic(Event.class);
-        Reflections.setField("configuration", eventsDispatcher, configuration);
     }
 
     @AfterEach

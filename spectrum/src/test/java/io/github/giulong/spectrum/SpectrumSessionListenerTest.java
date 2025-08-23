@@ -36,16 +36,20 @@ class SpectrumSessionListenerTest {
 
     private String osName;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -54,13 +58,15 @@ class SpectrumSessionListenerTest {
     @Mock
     private Launcher launcher;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
     @Mock
     private ProjectProperties projectProperties;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
@@ -78,10 +84,12 @@ class SpectrumSessionListenerTest {
     @Mock
     private SummaryGeneratingListener summaryGeneratingListener;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private MetadataManager metadataManager;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 
     @InjectMocks
@@ -91,15 +99,6 @@ class SpectrumSessionListenerTest {
     void beforeEach() {
         osName = System.getProperty("os.name");
         slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
-
-        Reflections.setField("yamlUtils", spectrumSessionListener, yamlUtils);
-        Reflections.setField("fileUtils", spectrumSessionListener, fileUtils);
-        Reflections.setField("freeMarkerWrapper", spectrumSessionListener, freeMarkerWrapper);
-        Reflections.setField("extentReporter", spectrumSessionListener, extentReporter);
-        Reflections.setField("configuration", spectrumSessionListener, configuration);
-        Reflections.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
-        Reflections.setField("metadataManager", spectrumSessionListener, metadataManager);
-        Reflections.setField("htmlUtils", spectrumSessionListener, htmlUtils);
     }
 
     @AfterEach

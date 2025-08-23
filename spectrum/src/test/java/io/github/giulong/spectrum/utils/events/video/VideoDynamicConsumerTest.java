@@ -1,9 +1,10 @@
 package io.github.giulong.spectrum.utils.events.video;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +30,8 @@ import static org.mockito.Mockito.*;
 
 class VideoDynamicConsumerTest {
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -65,7 +67,6 @@ class VideoDynamicConsumerTest {
     @BeforeEach
     void beforeEach() {
         Reflections.setField("messageDigest", videoDynamicConsumer, messageDigest);
-        Reflections.setField("configuration", videoDynamicConsumer, configuration);
     }
 
     @Test

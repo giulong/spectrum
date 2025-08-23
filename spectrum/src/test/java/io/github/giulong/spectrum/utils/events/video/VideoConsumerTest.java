@@ -1,9 +1,10 @@
 package io.github.giulong.spectrum.utils.events.video;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.jcodec.api.awt.AWTSequenceEncoder;
 import org.junit.jupiter.api.AfterEach;
@@ -95,7 +96,8 @@ class VideoConsumerTest {
     @Mock
     private Event event;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -109,7 +111,6 @@ class VideoConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", videoConsumer, configuration);
         Reflections.setField("messageDigest", videoConsumer, messageDigest);
 
         awtSequenceEncoderMockedStatic = mockStatic(AWTSequenceEncoder.class);

@@ -1,9 +1,8 @@
 package io.github.giulong.spectrum.utils.js;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.StringUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,7 +19,8 @@ import static org.mockito.Mockito.*;
 
 class JsTest {
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private StringUtils stringUtils;
 
     @Mock
@@ -37,11 +37,6 @@ class JsTest {
 
     @InjectMocks
     private Js js;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("stringUtils", js, stringUtils);
-    }
 
     @Test
     @DisplayName("click should click with javascript on the provided webElement and return the Js instance")

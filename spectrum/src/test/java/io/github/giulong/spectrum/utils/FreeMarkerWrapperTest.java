@@ -3,7 +3,7 @@ package io.github.giulong.spectrum.utils;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.Version;
-import org.junit.jupiter.api.BeforeEach;
+import io.github.giulong.spectrum.MockSingleton;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -26,10 +26,12 @@ class FreeMarkerWrapperTest {
     @Mock
     private freemarker.template.Configuration configuration;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration spectrumConfiguration;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -37,12 +39,6 @@ class FreeMarkerWrapperTest {
 
     @InjectMocks
     private FreeMarkerWrapper freeMarkerWrapper;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("spectrumConfiguration", freeMarkerWrapper, spectrumConfiguration);
-        Reflections.setField("fileUtils", freeMarkerWrapper, fileUtils);
-    }
 
     @Test
     @DisplayName("getInstance should return the singleton")

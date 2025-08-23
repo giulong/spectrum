@@ -1,6 +1,10 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.ContextManager;
+import io.github.giulong.spectrum.utils.FileUtils;
+import io.github.giulong.spectrum.utils.TestData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +15,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -36,10 +39,12 @@ class TestDataResolverTest {
     @Mock
     private Configuration.VisualRegression.Snapshots snapshots;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
@@ -85,10 +90,7 @@ class TestDataResolverTest {
     private TestDataResolver testDataResolver;
 
     @BeforeEach
-    void beforeEach() throws IOException {
-        Reflections.setField("fileUtils", testDataResolver, fileUtils);
-        Reflections.setField("contextManager", testDataResolver, contextManager);
-
+    void beforeEach() {
         testDataMockedStatic = mockStatic(TestData.class);
         visualRegressionMockedStatic = mockStatic(TestData.VisualRegression.class);
     }

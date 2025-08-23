@@ -1,12 +1,12 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.pojos.events.TestStep;
-import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.TestData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,10 +45,12 @@ class TestStepsConsumerTest {
     @Mock
     private TestData testData;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
@@ -71,9 +73,6 @@ class TestStepsConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("fileUtils", testStepsConsumer, fileUtils);
-        Reflections.setField("freeMarkerWrapper", testStepsConsumer, freeMarkerWrapper);
-
         pathMockedStatic = mockStatic(Path.class);
     }
 

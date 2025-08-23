@@ -76,7 +76,8 @@ class SpectrumTestTest {
     @Mock
     private EventsDispatcher eventsDispatcher;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -127,7 +128,8 @@ class SpectrumTestTest {
     @Mock
     private List<WebElement> webElementList;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
     @InjectMocks
@@ -147,11 +149,6 @@ class SpectrumTestTest {
         spectrumTest.data = data;
         spectrumTest.testPage.jsWebElement = webElement;
         spectrumTest.testPage.jsWebElementList = webElementList;
-
-        Reflections.setField("yamlUtils", spectrumTest, yamlUtils);
-        Reflections.setField("yamlUtils", childTest, yamlUtils);
-        Reflections.setField("yamlUtils", childTestVoid, yamlUtils);
-        Reflections.setField("yamlUtils", fakeParentSpectrumTestVoid, yamlUtils);
     }
 
     @Test
@@ -173,8 +170,6 @@ class SpectrumTestTest {
     @Test
     @DisplayName("beforeEach should inject all the provided args resolved via JUnit, and call injectDataIn and injectPagesInto")
     void testBeforeEach() {
-        Reflections.setField("configuration", spectrumTest, configuration);
-
         // injectDataIn
         final String folder = "folder";
         when(configuration.getData()).thenReturn(dataConfiguration);
@@ -235,8 +230,6 @@ class SpectrumTestTest {
     @Test
     @DisplayName("injectPages should init also init pages from super classes")
     void injectPages() {
-        Reflections.setField("configuration", spectrumTest, configuration);
-
         final long seconds = 123L;
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getWaits()).thenReturn(waits);
@@ -279,13 +272,11 @@ class SpectrumTestTest {
     }
 
     @Test
-    @DisplayName("injectDataInPages should inject the data field in pages when we have SpectrumTest<Void>")
+    @DisplayName("injectDataIn should inject the data field in pages when we have SpectrumTest<Void>")
     void injectDataIn() {
         final FakeSpectrumPage fakeSpectrumPage = mock(FakeSpectrumPage.class);
         final FakeSpectrumPageVoid fakeSpectrumPageVoid = mock(FakeSpectrumPageVoid.class);
         final String folder = "folder";
-
-        Reflections.setField("configuration", spectrumTest, configuration);
 
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(folder);

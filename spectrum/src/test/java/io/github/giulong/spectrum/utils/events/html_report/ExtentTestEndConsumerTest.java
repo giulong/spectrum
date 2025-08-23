@@ -1,25 +1,22 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.Reflections;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class ExtentTestEndConsumerTest {
 
-    private static MockedStatic<ExtentReporter> extentReporterMockedStatic;
-
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
     @Mock
@@ -30,17 +27,6 @@ class ExtentTestEndConsumerTest {
 
     @InjectMocks
     private ExtentTestEndConsumer extentTestEndConsumer;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("extentReporter", extentTestEndConsumer, extentReporter);
-        extentReporterMockedStatic = mockStatic(ExtentReporter.class);
-    }
-
-    @AfterEach
-    void afterEach() {
-        extentReporterMockedStatic.close();
-    }
 
     @Test
     @DisplayName("accept should add a log in the extent report by default")

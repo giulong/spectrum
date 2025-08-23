@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.android.options.UiAutomator2Options;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,8 @@ class UiAutomator2Test {
     @Mock
     private UiAutomator2Options uiAutomator2Options;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -39,7 +41,6 @@ class UiAutomator2Test {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", uiAutomator2, configuration);
         Reflections.setField("capabilities", uiAutomator2, uiAutomator2Options);
     }
 
@@ -51,9 +52,8 @@ class UiAutomator2Test {
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
@@ -77,9 +77,8 @@ class UiAutomator2Test {
     void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getUiAutomator2()).thenReturn(uiAutomator2Configuration);

@@ -1,9 +1,9 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.web_driver_listeners.AutoWaitWebDriverListener;
 import io.github.giulong.spectrum.internals.web_driver_listeners.EventsWebDriverListener;
-import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.web_driver_events.*;
@@ -47,10 +47,12 @@ class DriverResolverTest {
     private static MockedStatic<TestStepBuilderConsumer> testStepBuilderConsumerMockedStatic;
     private static MockedStatic<HighlightElementConsumer> highlightElementConsumerMockedStatic;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -176,9 +178,6 @@ class DriverResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("contextManager", driverResolver, contextManager);
-        Reflections.setField("fileUtils", driverResolver, fileUtils);
-
         eventsListenerMockedStatic = mockStatic(EventsWebDriverListener.class);
         autoWaitWebDriverListenerMockedStatic = mockStatic(AutoWaitWebDriverListener.class);
         patternMockedStatic = mockStatic(Pattern.class);

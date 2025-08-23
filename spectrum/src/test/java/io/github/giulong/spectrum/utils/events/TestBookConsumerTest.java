@@ -1,13 +1,12 @@
 package io.github.giulong.spectrum.utils.events;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -24,10 +23,12 @@ class TestBookConsumerTest {
     @Mock
     private ExtensionContext context;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -41,12 +42,6 @@ class TestBookConsumerTest {
 
     @InjectMocks
     private TestBookConsumer testBookConsumer;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", testBookConsumer, configuration);
-        Reflections.setField("contextManager", testBookConsumer, contextManager);
-    }
 
     @Test
     @DisplayName("accept should tell the testbook to update")

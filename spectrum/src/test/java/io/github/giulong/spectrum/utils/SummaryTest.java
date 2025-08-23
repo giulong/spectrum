@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
@@ -34,10 +35,12 @@ class SummaryTest {
 
     private static MockedStatic<MVEL> mvelMockedStatic;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock(extraInterfaces = CanReportSummary.class)
@@ -66,8 +69,6 @@ class SummaryTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("freeMarkerWrapper", summary, freeMarkerWrapper);
-        Reflections.setField("fileUtils", summary, fileUtils);
         Reflections.setField("summaryGeneratingListener", summary, summaryGeneratingListener);
 
         mvelMockedStatic = mockStatic(MVEL.class);

@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,8 @@ class XCUITestTest {
     @Mock
     private XCUITestOptions xcuiTestOptions;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -44,7 +46,6 @@ class XCUITestTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", xcuiTest, configuration);
         Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
     }
 
@@ -56,9 +57,8 @@ class XCUITestTest {
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
@@ -82,9 +82,8 @@ class XCUITestTest {
     void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);

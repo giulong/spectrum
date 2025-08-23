@@ -61,7 +61,8 @@ class SpectrumEntityTest {
     @Mock
     private WebDriverWait downloadWait;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -76,7 +77,8 @@ class SpectrumEntityTest {
     @Mock
     private By by;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -91,7 +93,8 @@ class SpectrumEntityTest {
     @Mock
     private File file;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
     @Mock
@@ -114,10 +117,6 @@ class SpectrumEntityTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", spectrumEntity, configuration);
-        Reflections.setField("fileUtils", spectrumEntity, fileUtils);
-        Reflections.setField("eventsDispatcher", spectrumEntity, eventsDispatcher);
-
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
         mediaEntityBuilderMockedStatic = mockStatic(MediaEntityBuilder.class);

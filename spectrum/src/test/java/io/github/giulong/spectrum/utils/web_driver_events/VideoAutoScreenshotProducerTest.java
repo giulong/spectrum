@@ -1,10 +1,9 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -27,7 +26,8 @@ class VideoAutoScreenshotProducerTest {
     @Mock
     private TakesScreenshot driver;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
     @Mock
@@ -41,11 +41,6 @@ class VideoAutoScreenshotProducerTest {
 
     @InjectMocks
     private VideoAutoScreenshotProducer videoAutoScreenshotProducer = new VideoAutoScreenshotProducer(VideoAutoScreenshotProducer.builder());
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("eventsDispatcher", videoAutoScreenshotProducer, eventsDispatcher);
-    }
 
     @Test
     @DisplayName("accept should record the screenshot")

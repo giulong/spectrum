@@ -4,6 +4,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -28,7 +29,6 @@ import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreen
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.mockStatic;
 
 class VisualRegressionReferenceCreatorConsumerTest {
 
@@ -41,16 +41,20 @@ class VisualRegressionReferenceCreatorConsumerTest {
     @Mock
     private MediaEntityBuilder mediaEntityBuilder;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
@@ -106,11 +110,6 @@ class VisualRegressionReferenceCreatorConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", consumer, configuration);
-        Reflections.setField("fileUtils", consumer, fileUtils);
-        Reflections.setField("htmlUtils", consumer, htmlUtils);
-        Reflections.setField("contextManager", consumer, contextManager);
-
         mediaEntityBuilderMockedStatic = mockStatic(MediaEntityBuilder.class);
         filesMockedStatic = mockStatic(Files.class);
     }

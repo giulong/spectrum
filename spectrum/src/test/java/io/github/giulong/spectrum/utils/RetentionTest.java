@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.MockSingleton;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,10 +84,12 @@ class RetentionTest {
     @Mock
     private Instant instant5;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private MetadataManager metadataManager;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -130,9 +133,6 @@ class RetentionTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("metadataManager", retention, metadataManager);
-        Reflections.setField("fileUtils", retention, fileUtils);
-
         filesMockedStatic = mockStatic(Files.class);
         localDateTimeMockedStatic = mockStatic(LocalDateTime.class);
     }

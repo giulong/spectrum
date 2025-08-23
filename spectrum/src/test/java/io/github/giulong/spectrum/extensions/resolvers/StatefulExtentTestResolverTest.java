@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentTest;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,10 +35,12 @@ class StatefulExtentTestResolverTest {
     @Mock
     private StatefulExtentTest.StatefulExtentTestBuilder statefulExtentTestBuilder;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
     @Mock
@@ -73,9 +75,6 @@ class StatefulExtentTestResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("extentReporter", statefulExtentTestResolver, extentReporter);
-        Reflections.setField("contextManager", statefulExtentTestResolver, contextManager);
-
         extentReporterMockedStatic = mockStatic(ExtentReporter.class);
         statefulExtentTestMockedStatic = mockStatic(StatefulExtentTest.class);
     }

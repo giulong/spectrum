@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import io.github.giulong.spectrum.MockSingleton;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,7 +28,8 @@ class HtmlUtilsTest {
 
     private final String testId = "testId";
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
@@ -42,10 +44,12 @@ class HtmlUtilsTest {
     @Mock
     private TestData testData;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Captor
@@ -58,10 +62,6 @@ class HtmlUtilsTest {
     void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
-
-        Reflections.setField("contextManager", htmlUtils, contextManager);
-        Reflections.setField("freeMarkerWrapper", htmlUtils, freeMarkerWrapper);
-        Reflections.setField("fileUtils", htmlUtils, fileUtils);
     }
 
     @AfterEach

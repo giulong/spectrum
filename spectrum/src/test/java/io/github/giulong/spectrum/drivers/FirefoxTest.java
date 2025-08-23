@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.drivers;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,7 +22,8 @@ import static org.mockito.Mockito.*;
 
 class FirefoxTest {
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -39,11 +40,6 @@ class FirefoxTest {
 
     @InjectMocks
     private Firefox firefox;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", firefox, configuration);
-    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of GeckoDriverService.Builder()")
