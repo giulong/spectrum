@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.events.html_report.ExtentTestEndConsumer;
+import io.github.giulong.spectrum.utils.events.html_report.VisualRegressionCheckConsumer;
+import io.github.giulong.spectrum.utils.events.html_report.VisualRegressionReferenceCreatorConsumer;
 import io.github.giulong.spectrum.utils.events.video.*;
 import io.github.giulong.spectrum.utils.web_driver_events.TestStepsConsumer;
 import lombok.Getter;
@@ -11,16 +14,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
 import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
-import static java.util.stream.Collectors.toSet;
 
 @JsonTypeInfo(use = NAME, include = WRAPPER_OBJECT)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SlackConsumer.class, name = "slack"),
         @JsonSubTypes.Type(value = TestBookConsumer.class, name = "testbook"),
-        @JsonSubTypes.Type(value = ExtentTestConsumer.class, name = "extentTest"),
+        @JsonSubTypes.Type(value = ExtentTestEndConsumer.class, name = "extentTestEnd"),
         @JsonSubTypes.Type(value = DriverConsumer.class, name = "driver"),
         @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),
         @JsonSubTypes.Type(value = VideoInitConsumer.class, name = "videoInit"),
@@ -31,13 +34,16 @@ import static java.util.stream.Collectors.toSet;
         @JsonSubTypes.Type(value = VideoDynamicFinalizer.class, name = "videoDynamicFinalizer"),
         @JsonSubTypes.Type(value = TestStepsConsumer.class, name = "testSteps"),
         @JsonSubTypes.Type(value = LogConsumer.class, name = "log"),
+        @JsonSubTypes.Type(value = VisualRegressionReferenceCreatorConsumer.class, name = "visualRegressionReferenceCreator"),
+        @JsonSubTypes.Type(value = VisualRegressionCheckConsumer.class, name = "visualRegressionCheck"),
 })
 @Getter
 @Slf4j
 public abstract class EventsConsumer implements Consumer<Event> {
 
+    @SuppressWarnings("unused")
     @JsonPropertyDescription("List of events that will be consumed")
-    protected List<Event> events;
+    private List<Event> events;
 
     @SuppressWarnings("unused")
     @JsonPropertyDescription("Set to true to fail the test on consumer's exceptions")
@@ -45,15 +51,15 @@ public abstract class EventsConsumer implements Consumer<Event> {
 
     public void match(final Event event) {
         final String simpleName = getClass().getSimpleName();
+        final Predicate<Event> matches = e -> findMatchFor(event, e);
+        final Predicate<Event> isAccepted = e -> shouldAccept(event);
 
         events
                 .stream()
-                .peek(h -> log.debug("{}: checking if should run for {}", simpleName, event))
-                .filter(h -> shouldAccept(event))
-                .peek(h -> log.trace("{}: finding matchers for {}", simpleName, event))
-                .filter(h -> findMatchFor(event, h))
-                .peek(h -> log.debug("{} is consuming {}", simpleName, event))
-                .forEach(h -> acceptSilently(event));
+                .peek(e -> log.debug("{}: checking if should run for {}", simpleName, event))
+                .filter(matches.and(isAccepted))
+                .peek(e -> log.debug("{} is consuming {}", simpleName, event))
+                .forEach(e -> acceptSilently(event));
     }
 
     protected boolean shouldAccept(final Event event) {
@@ -62,12 +68,10 @@ public abstract class EventsConsumer implements Consumer<Event> {
 
     boolean tagsIntersect(final Event e1, final Event e2) {
         final boolean matches = e1.getTags() != null && e2.getTags() != null &&
-                !e1
+                e1
                         .getTags()
                         .stream()
-                        .filter(e2.getTags()::contains)
-                        .collect(toSet())
-                        .isEmpty();
+                        .anyMatch(e2.getTags()::contains);
 
         log.trace("tagsIntersect: {}", matches);
         return matches;

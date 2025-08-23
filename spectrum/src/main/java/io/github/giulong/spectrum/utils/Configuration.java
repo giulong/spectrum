@@ -20,6 +20,7 @@ import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.logging.Level;
@@ -41,6 +42,9 @@ public class Configuration {
 
     @JsonPropertyDescription("Application under test")
     private Application application;
+
+    @JsonPropertyDescription("Visual Regression Testing configuration")
+    private VisualRegression visualRegression;
 
     @JsonPropertyDescription("Execution video recording")
     private Video video;
@@ -111,6 +115,9 @@ public class Configuration {
         @JsonPropertyDescription("Application's under test base url")
         private String baseUrl;
 
+        @JsonPropertyDescription("Path where to save screenshots. If not provided, screenshots are saved in the target folder.")
+        private String screenshotsFolder;
+
         @JsonPropertyDescription("Highlight the web elements the test interacts with. Useful to visually debug the execution")
         private Highlight highlight;
 
@@ -124,6 +131,32 @@ public class Configuration {
 
             @JsonPropertyDescription("Path to the js used to highlight. Relative to the resources folder")
             private String js;
+        }
+    }
+
+    @Getter
+    @Generated
+    public static class VisualRegression {
+
+        @JsonIgnore
+        @JacksonInject("enabledFromClient")
+        private boolean enabled;
+
+        @JsonPropertyDescription("Whether to fail immediately when the first visual regression is found, rather than running the entire test")
+        private boolean failFast;
+
+        @JsonPropertyDescription("Snapshots screenshots references configuration")
+        private Snapshots snapshots;
+
+        @Getter
+        @Generated
+        public static class Snapshots {
+
+            @JsonPropertyDescription("Where to save the screenshot references")
+            private Path folder;
+
+            @JsonPropertyDescription("Whether to override the snapshots references already generated")
+            private boolean override;
         }
     }
 

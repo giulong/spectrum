@@ -1,46 +1,33 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.utils.ContextManager;
-import io.github.giulong.spectrum.utils.HtmlUtils;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 
 import java.util.Map;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.AUTO_SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
 
-class ScreenshotConsumerTest {
+class VideoAutoScreenshotProducerTest {
 
     @Mock
-    private HtmlUtils htmlUtils;
+    private TakesScreenshot driver;
 
-    @Mock
-    private ContextManager contextManager;
-
-    @Mock
-    private ExtensionContext.Store store;
-
-    @Mock(extraInterfaces = TakesScreenshot.class)
-    private WebDriver driver;
-
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
     @Mock
@@ -53,13 +40,7 @@ class ScreenshotConsumerTest {
     private Video video;
 
     @InjectMocks
-    private ScreenshotConsumer screenshotConsumer = new ScreenshotConsumer(ScreenshotConsumer.builder());
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("htmlUtils", screenshotConsumer, htmlUtils);
-        Reflections.setField("eventsDispatcher", screenshotConsumer, eventsDispatcher);
-    }
+    private VideoAutoScreenshotProducer videoAutoScreenshotProducer = new VideoAutoScreenshotProducer(VideoAutoScreenshotProducer.builder());
 
     @Test
     @DisplayName("accept should record the screenshot")
@@ -70,13 +51,11 @@ class ScreenshotConsumerTest {
         when(video.shouldRecord(eq(frame))).thenReturn(true);
         when(webDriverEvent.getFrame()).thenReturn(frame);
 
-        when(context.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
-        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(bytes);
+        when(driver.getScreenshotAs(BYTES)).thenReturn(bytes);
 
-        screenshotConsumer.accept(webDriverEvent);
+        videoAutoScreenshotProducer.accept(webDriverEvent);
 
-        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes));
+        verify(eventsDispatcher).fire(AUTO_SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes));
         verifyNoMoreInteractions(eventsDispatcher);
     }
 
@@ -88,7 +67,7 @@ class ScreenshotConsumerTest {
         when(video.shouldRecord(eq(frame))).thenReturn(false);
         when(webDriverEvent.getFrame()).thenReturn(frame);
 
-        screenshotConsumer.accept(webDriverEvent);
+        videoAutoScreenshotProducer.accept(webDriverEvent);
 
         verifyNoInteractions(eventsDispatcher);
     }

@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.drivers;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,7 +26,8 @@ class SafariTest {
     @Mock
     private Configuration.Drivers.Safari safariConfig;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -34,11 +35,6 @@ class SafariTest {
 
     @InjectMocks
     private Safari safari;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", safari, configuration);
-    }
 
     @DisplayName("getDriverServiceBuilder should return a new instance of SafariDriverService.Builder()")
     @ParameterizedTest(name = "with logging {0}")
@@ -49,9 +45,8 @@ class SafariTest {
         when(safariConfig.getService()).thenReturn(service);
         when(service.isLogging()).thenReturn(logging);
 
-        MockedConstruction<SafariDriverService.Builder> safariDriverServiceMockedConstruction = mockConstruction(SafariDriverService.Builder.class, (mock, context) -> {
-            when(mock.withLogging(logging)).thenReturn(mock);
-        });
+        MockedConstruction<SafariDriverService.Builder> safariDriverServiceMockedConstruction = mockConstruction(SafariDriverService.Builder.class,
+                (mock, context) -> when(mock.withLogging(logging)).thenReturn(mock));
 
         final DriverService.Builder<SafariDriverService, SafariDriverService.Builder> driverServiceBuilder = safari.getDriverServiceBuilder();
         assertEquals(safariDriverServiceMockedConstruction.constructed().getFirst(), driverServiceBuilder);
