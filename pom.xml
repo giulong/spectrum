@@ -52,7 +52,7 @@
         <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <selenium.version>4.34.0</selenium.version>
+        <selenium.version>4.35.0</selenium.version>
     </properties>
 
     <profiles>
@@ -183,7 +183,7 @@
             <dependency>
                 <groupId>io.appium</groupId>
                 <artifactId>java-client</artifactId>
-                <version>9.5.0</version>
+                <version>10.0.0</version>
             </dependency>
 
             <dependency>
