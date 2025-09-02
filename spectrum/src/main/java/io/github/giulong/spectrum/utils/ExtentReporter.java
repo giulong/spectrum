@@ -34,11 +34,11 @@ import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.*;
-import static lombok.AccessLevel.PROTECTED;
+import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
-@NoArgsConstructor(access = PROTECTED)
 @Getter
+@NoArgsConstructor(access = PRIVATE)
 public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     private static final ExtentReporter INSTANCE = new ExtentReporter();

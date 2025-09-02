@@ -5,6 +5,9 @@ import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -15,6 +18,8 @@ import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.enums.Result.*;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class EventsWatcherTest {
@@ -74,6 +79,7 @@ class EventsWatcherTest {
         notifyClassStubs();
         eventsWatcher.beforeAll(extensionContext);
         verify(eventsDispatcher).fire(className, null, BEFORE, null, Set.of(CLASS), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -82,6 +88,32 @@ class EventsWatcherTest {
         notifyTestStubs();
         eventsWatcher.beforeEach(extensionContext);
         verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(TEST), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
+    }
+
+    @Test
+    @DisplayName("beforeTestExecution should dispatch only an event for regular tests")
+    void testBeforeTestExecution() throws NoSuchMethodException {
+        notifyTestStubs();
+
+        when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod("testAfterEach"));
+
+        eventsWatcher.beforeTestExecution(extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, BEFORE_EXECUTION, null, Set.of(TEST), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
+    }
+
+    @Test
+    @DisplayName("beforeTestExecution should dispatch two events for TestFactories")
+    void testBeforeTestExecutionTestFactory() throws NoSuchMethodException {
+        notifyTestStubs();
+
+        when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod("testFactoryMethod"));
+
+        eventsWatcher.beforeTestExecution(extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, BEFORE_EXECUTION, null, Set.of(TEST), extensionContext);
+        verify(eventsDispatcher).fire(className, displayName, BEFORE_EXECUTION, null, Set.of(TEST_FACTORY), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -93,6 +125,7 @@ class EventsWatcherTest {
 
         eventsWatcher.afterEach(extensionContext);
         verify(eventsDispatcher).fire(className, displayName, AFTER, SUCCESSFUL, Set.of(TEST_FACTORY), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -110,6 +143,7 @@ class EventsWatcherTest {
         notifyClassStubs();
         eventsWatcher.afterAll(extensionContext);
         verify(eventsDispatcher).fire(className, null, AFTER, null, Set.of(CLASS), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -118,6 +152,7 @@ class EventsWatcherTest {
         notifyTestStubs();
         eventsWatcher.testDisabled(extensionContext, Optional.of("reason"));
         verify(eventsDispatcher).fire(className, displayName, AFTER, DISABLED, Set.of(TEST), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -126,6 +161,7 @@ class EventsWatcherTest {
         notifyTestStubs();
         eventsWatcher.testSuccessful(extensionContext);
         verify(eventsDispatcher).fire(className, displayName, AFTER, SUCCESSFUL, Set.of(TEST), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -134,6 +170,7 @@ class EventsWatcherTest {
         notifyTestStubs();
         eventsWatcher.testAborted(extensionContext, new RuntimeException());
         verify(eventsDispatcher).fire(className, displayName, AFTER, ABORTED, Set.of(TEST), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -142,6 +179,23 @@ class EventsWatcherTest {
         notifyTestStubs();
         eventsWatcher.testFailed(extensionContext, new RuntimeException());
         verify(eventsDispatcher).fire(className, displayName, AFTER, FAILED, Set.of(TEST), extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
+    }
+
+    @DisplayName("isTestFactory should check if the method is annotated with @TestFactory")
+    @ParameterizedTest(name = "with method {0} we expect {1}")
+    @MethodSource("valuesProvider")
+    void isTestFactory(final String methodName, final boolean expected) throws NoSuchMethodException {
+        when(extensionContext.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
+
+        assertEquals(expected, eventsWatcher.isTestFactory(extensionContext));
+    }
+
+    static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments("testFactoryMethod", true),
+                arguments("testAfterEach", false)
+        );
     }
 
     @Test
@@ -154,6 +208,7 @@ class EventsWatcherTest {
         notifyClassStubs();
         eventsWatcher.notifyClass(extensionContext, reason, result, tags);
         verify(eventsDispatcher).fire(className, null, reason, result, tags, extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -166,5 +221,6 @@ class EventsWatcherTest {
         notifyTestStubs();
         eventsWatcher.notifyTest(extensionContext, reason, result, tags);
         verify(eventsDispatcher).fire(className, displayName, reason, result, tags, extensionContext);
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 }

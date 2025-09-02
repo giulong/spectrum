@@ -47,12 +47,12 @@
         <maven.install.skip>true</maven.install.skip>
 
         <junit.version>5.13.4</junit.version>
-        <mockito.version>5.18.0</mockito.version>
+        <mockito.version>5.19.0</mockito.version>
         <jackson.version>2.19.2</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <selenium.version>4.34.0</selenium.version>
+        <selenium.version>4.35.0</selenium.version>
     </properties>
 
     <profiles>
@@ -183,7 +183,7 @@
             <dependency>
                 <groupId>io.appium</groupId>
                 <artifactId>java-client</artifactId>
-                <version>9.5.0</version>
+                <version>10.0.0</version>
             </dependency>
 
             <dependency>
@@ -227,7 +227,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.45.3</version>
+                <version>1.45.4</version>
             </dependency>
 
             <dependency>
@@ -323,7 +323,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>10.26.1</version>
+                            <version>11.0.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
@@ -485,7 +485,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.7.1</version>
+                <version>1.7.2</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>ossrh</flattenMode>

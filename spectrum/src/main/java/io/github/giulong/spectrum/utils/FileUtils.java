@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.enums.Frame;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.reverseOrder;
-import static java.util.UUID.randomUUID;
 import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
@@ -72,7 +70,7 @@ public final class FileUtils {
 
     @SneakyThrows
     public Path delete(final Path path) {
-        if (!Files.exists(path)) {
+        if (Files.notExists(path)) {
             log.debug("Avoid deleting non-existing path '{}'", path);
             return path;
         }
@@ -130,7 +128,17 @@ public final class FileUtils {
         return Files.readAttributes(file.toPath(), BasicFileAttributes.class).creationTime();
     }
 
-    public String getScreenshotNameFrom(final Frame frame, final StatefulExtentTest statefulExtentTest) {
-        return String.format("%s-%s-%s.png", frame.getValue(), statefulExtentTest.getDisplayName(), randomUUID());
+    @SneakyThrows
+    public Path createTempFile(final String prefix, final String suffix) {
+        final Path path = Files.createTempFile(prefix, suffix);
+        path.toFile().deleteOnExit();
+
+        log.debug("Created file {}", path);
+        return path;
+    }
+
+    @SneakyThrows
+    public Path writeTempFile(final String prefix, final String suffix, final byte[] data) {
+        return Files.write(createTempFile(prefix, suffix), data);
     }
 }

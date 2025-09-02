@@ -2,12 +2,14 @@ package io.github.giulong.spectrum.utils.events;
 
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.SessionHook;
-import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -19,6 +21,7 @@ public class EventsDispatcher implements SessionHook {
     private static final EventsDispatcher INSTANCE = new EventsDispatcher();
 
     public static final String BEFORE = "before";
+    public static final String BEFORE_EXECUTION = "beforeExecution";
     public static final String AFTER = "after";
     public static final String TEST = "test";
     public static final String TEST_FACTORY = "testFactory";
@@ -52,6 +55,10 @@ public class EventsDispatcher implements SessionHook {
         fire(null, null, reason, result, tags, null);
     }
 
+    public void fire(final String primaryId, final String reason, final Map<String, Object> payload) {
+        fire(primaryId, null, reason, null, null, null, payload);
+    }
+
     public void fire(final String primaryId, final String reason) {
         fire(primaryId, null, reason, null, null, null);
     }
@@ -60,7 +67,13 @@ public class EventsDispatcher implements SessionHook {
         fire(primaryId, secondaryId, reason, null, null, null);
     }
 
-    public void fire(final String primaryId, final String secondaryId, final String reason, final Result result, final Set<String> tags, final ExtensionContext context) {
+    public void fire(final String primaryId, final String secondaryId, final String reason, final Result result, final Set<String> tags,
+                     final ExtensionContext context) {
+        fire(primaryId, secondaryId, reason, result, tags, context, null);
+    }
+
+    public void fire(final String primaryId, final String secondaryId, final String reason, final Result result, final Set<String> tags,
+                     final ExtensionContext context, final Map<String, Object> payload) {
         final Event event = Event.builder()
                 .primaryId(primaryId)
                 .secondaryId(secondaryId)
@@ -68,6 +81,7 @@ public class EventsDispatcher implements SessionHook {
                 .result(result)
                 .tags(tags)
                 .context(context)
+                .payload(Optional.ofNullable(payload).orElseGet(Map::of))
                 .build();
 
         log.debug("Dispatching event {}", event);
