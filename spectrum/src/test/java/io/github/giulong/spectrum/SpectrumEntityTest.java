@@ -38,9 +38,11 @@ import java.util.stream.Stream;
 
 import static com.aventstack.extentreports.Status.INFO;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
@@ -100,6 +102,9 @@ class SpectrumEntityTest {
     @Mock
     private ExtensionContext context;
 
+    @Mock
+    private ExtensionContext.Store store;
+
     @Mock(extraInterfaces = TakesScreenshot.class)
     private WebDriver driver;
 
@@ -128,6 +133,9 @@ class SpectrumEntityTest {
     @SneakyThrows
     private void addScreenshotToReportStubs() {
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
+
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
 
         when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(bytes);
     }
