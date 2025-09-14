@@ -282,7 +282,7 @@ public class Configuration {
 
                 @JsonPropertyDescription("Timeout in seconds")
                 @JsonSchemaTypes(int.class)
-                public Duration timeout;
+                private Duration timeout;
             }
         }
 
