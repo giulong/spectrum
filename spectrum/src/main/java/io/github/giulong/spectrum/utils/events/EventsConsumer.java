@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.events.html_report.ExtentTestEndConsumer;
-import io.github.giulong.spectrum.utils.events.html_report.VisualRegressionCheckConsumer;
-import io.github.giulong.spectrum.utils.events.html_report.VisualRegressionReferenceCreatorConsumer;
+import io.github.giulong.spectrum.utils.events.html_report.*;
 import io.github.giulong.spectrum.utils.events.video.*;
 import io.github.giulong.spectrum.utils.web_driver_events.TestStepsConsumer;
 import lombok.Getter;
@@ -23,6 +21,8 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SlackConsumer.class, name = "slack"),
         @JsonSubTypes.Type(value = TestBookConsumer.class, name = "testbook"),
+        @JsonSubTypes.Type(value = GenericScreenshotConsumer.class, name = "genericScreenshot"),
+        @JsonSubTypes.Type(value = ExtentScreenshotConsumer.class, name = "extentScreenshot"),
         @JsonSubTypes.Type(value = ExtentTestEndConsumer.class, name = "extentTestEnd"),
         @JsonSubTypes.Type(value = DriverConsumer.class, name = "driver"),
         @JsonSubTypes.Type(value = MailConsumer.class, name = "mail"),

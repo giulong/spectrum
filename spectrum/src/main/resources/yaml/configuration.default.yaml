@@ -492,22 +492,30 @@ eventsConsumers:
       events:
         - reason: beforeExecution
           tags: [ dynamicTest ]
+  - genericScreenshot: # common operations on screenshots
+      events:
+        - primaryId: .*
+          reason: screenshot
+  - extentScreenshot: # add the screenshot to the Extent Report
+      events:
+        - primaryId: (manual)
+          reason: screenshot
   - visualRegressionReferenceCreator: # create the screenshot reference for visual regression
       events:
-        - primaryId: (manual)-screenshot
+        - primaryId: (manual|visualRegressionManual)
           reason: screenshot
   - visualRegressionCheck: # check the previously generated screenshot reference for visual regression
       failOnError: true # to enable fail fast effectively break the test immediately
       events:
-        - primaryId: (manual)-screenshot
+        - primaryId: (manual|visualRegressionManual)
           reason: screenshot
   - video: # add the screenshot to the video
       events:
-        - primaryId: (manual|auto)-screenshot
+        - primaryId: (manual|auto)
           reason: screenshot
   - videoDynamic: # add the screenshot to the dynamic video
       events:
-        - primaryId: (manual|auto)-screenshot
+        - primaryId: (manual|auto)
           reason: screenshot
   - extentTestEnd: # add an entry to the Extent Report once each test is done
       events:

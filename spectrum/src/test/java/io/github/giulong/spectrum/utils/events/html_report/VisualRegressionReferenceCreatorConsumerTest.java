@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static io.github.giulong.spectrum.enums.Frame.MANUAL;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -33,7 +32,6 @@ import static org.mockito.Mockito.*;
 class VisualRegressionReferenceCreatorConsumerTest {
 
     private final byte[] screenshot = new byte[]{1, 2, 3};
-    private final int frameNumber = 123;
 
     private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
@@ -123,12 +121,13 @@ class VisualRegressionReferenceCreatorConsumerTest {
     @Test
     @DisplayName("shouldAccept should return false if the super method does so")
     void shouldAcceptFalseSuper() {
-        when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
+        superShouldAcceptStubs();
+
         when(visualRegressionConfiguration.isEnabled()).thenReturn(false);
 
         assertFalse(consumer.shouldAccept(event));
 
-        verifyNoInteractions(event);
+        verifyNoMoreInteractions(event);
     }
 
     @Test
@@ -136,6 +135,7 @@ class VisualRegressionReferenceCreatorConsumerTest {
     void shouldAcceptFalse() {
         superShouldAcceptStubs();
 
+        when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
         when(Files.notExists(referencePath)).thenReturn(false);
 
         when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
@@ -152,6 +152,7 @@ class VisualRegressionReferenceCreatorConsumerTest {
     void shouldAcceptTrue() {
         superShouldAcceptStubs();
 
+        when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
         when(Files.notExists(referencePath)).thenReturn(true);
 
         assertTrue(consumer.shouldAccept(event));
@@ -165,6 +166,7 @@ class VisualRegressionReferenceCreatorConsumerTest {
     void shouldAcceptTrueOverride() {
         superShouldAcceptStubs();
 
+        when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
         when(Files.notExists(referencePath)).thenReturn(false);
 
         when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
@@ -182,6 +184,8 @@ class VisualRegressionReferenceCreatorConsumerTest {
         // generateAndAddScreenshotFrom
         final String tag = "tag";
         final String message = "message";
+        final int frameNumber = 123;
+
         Reflections.setField("screenshot", consumer, screenshot);
         Reflections.setField("frameNumber", consumer, frameNumber);
         when(event.getPayload()).thenReturn(payload);
@@ -198,25 +202,22 @@ class VisualRegressionReferenceCreatorConsumerTest {
         verify(currentNode).log(status, tag, media);
         verify(screenshots).put(referencePath.toString(), screenshot);
         verify(fileUtils).write(referencePath, screenshot);
-        verify(testData).incrementScreenshotNumber();
     }
 
     private void superShouldAcceptStubs() {
         final String screenshotName = "screenshotName";
         when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
-        when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
         when(event.getPayload()).thenReturn(payload);
         when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
-        when(testData.getVisualRegression()).thenReturn(visualRegression);
-        when(visualRegression.getPath()).thenReturn(regressionPath);
-        when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
-        when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
+        lenient().when(testData.getVisualRegression()).thenReturn(visualRegression);
+        lenient().when(visualRegression.getPath()).thenReturn(regressionPath);
+        lenient().when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
+        lenient().when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
         when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
         when(statefulExtentTest.getCurrentNode()).thenReturn(currentNode);
-        when(configuration.getVideo()).thenReturn(video);
-        when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
+        lenient().when(configuration.getVideo()).thenReturn(video);
         when(payload.get(SCREENSHOT)).thenReturn(screenshot);
     }
 }

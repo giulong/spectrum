@@ -25,9 +25,9 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
     @SneakyThrows
     public void accept(final Event event) {
         if (Arrays.equals(fileUtils.checksumOf(referencePath), fileUtils.checksumOf(screenshot))) {
-            log.info("Screenshot matches with its reference {}", referencePath);
+            log.debug("Screenshot matches with its reference {}", referencePath);
 
-            generateAndAddScreenshotFrom(event);
+            generateAndAddScreenshotFrom(event, referencePath);
             return;
         }
 
@@ -43,7 +43,5 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
             log.error("Failing fast due to first visual regression found!");
             throw testData.getTestFailedException().get();
         }
-
-        testData.incrementScreenshotNumber();
     }
 }

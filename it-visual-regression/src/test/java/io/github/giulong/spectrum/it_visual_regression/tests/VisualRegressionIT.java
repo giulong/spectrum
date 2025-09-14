@@ -10,7 +10,7 @@ import org.openqa.selenium.WebElement;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Navigation")
-class NavigationIT extends SpectrumTest<Void> {
+class VisualRegressionIT extends SpectrumTest<Void> {
 
     // You just need to declare your pages here: Spectrum will take care of instantiating them
     // and will inject all the needed fields like the driver
