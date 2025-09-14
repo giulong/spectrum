@@ -500,12 +500,12 @@ eventsConsumers:
       events:
         - primaryId: (manual)
           reason: screenshot
-  - visualRegressionReferenceCreator: # create the screenshot reference for visual regression
+  - visualRegressionCheck: # check the previously generated screenshot reference for visual regression
+      failOnError: true # to enable fail fast effectively break the test immediately
       events:
         - primaryId: (manual|visualRegressionManual)
           reason: screenshot
-  - visualRegressionCheck: # check the previously generated screenshot reference for visual regression
-      failOnError: true # to enable fail fast effectively break the test immediately
+  - visualRegressionReferenceCreator: # create the screenshot reference for visual regression
       events:
         - primaryId: (manual|visualRegressionManual)
           reason: screenshot
