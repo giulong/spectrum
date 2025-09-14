@@ -37,8 +37,7 @@ import static org.mockito.Mockito.*;
 class VisualRegressionCheckConsumerTest {
 
     private final byte[] screenshot = new byte[]{1, 2, 3};
-    private final byte[] matchingChecksum = new byte[]{4, 5, 6};
-    private final byte[] anotherChecksum = new byte[]{7, 8, 9};
+    private final byte[] checksum = new byte[]{4, 5, 6};
     private final int frameNumber = 123;
 
     private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
@@ -196,8 +195,7 @@ class VisualRegressionCheckConsumerTest {
     @Test
     @DisplayName("accept should delegate to generateAndAddScreenshotFrom when the screenshot taken matches with its reference")
     void accept() {
-        when(fileUtils.checksumOf(referencePath)).thenReturn(matchingChecksum);
-        when(fileUtils.checksumOf(screenshot)).thenReturn(matchingChecksum);
+        when(fileUtils.compare(referencePath, screenshot)).thenReturn(true);
 
         // generateAndAddScreenshotFrom
         final String tag = "tag";
@@ -227,13 +225,12 @@ class VisualRegressionCheckConsumerTest {
         final String failedScreenshotName = "failedScreenshotName";
         final String visualRegressionTag = "visualRegressionTag";
 
-        when(fileUtils.checksumOf(referencePath)).thenReturn(matchingChecksum);
-        when(fileUtils.checksumOf(screenshot)).thenReturn(anotherChecksum);
+        when(fileUtils.compare(referencePath, screenshot)).thenReturn(false);
 
         when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
-        when(Files.readAllBytes(referencePath)).thenReturn(matchingChecksum);
-        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, matchingChecksum, screenshot)).thenReturn(visualRegressionTag);
+        when(Files.readAllBytes(referencePath)).thenReturn(checksum);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);
@@ -258,13 +255,12 @@ class VisualRegressionCheckConsumerTest {
         final String failedScreenshotName = "failedScreenshotName";
         final String visualRegressionTag = "visualRegressionTag";
 
-        when(fileUtils.checksumOf(referencePath)).thenReturn(matchingChecksum);
-        when(fileUtils.checksumOf(screenshot)).thenReturn(anotherChecksum);
+        when(fileUtils.compare(referencePath, screenshot)).thenReturn(false);
 
         when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
-        when(Files.readAllBytes(referencePath)).thenReturn(matchingChecksum);
-        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, matchingChecksum, screenshot)).thenReturn(visualRegressionTag);
+        when(Files.readAllBytes(referencePath)).thenReturn(checksum);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);

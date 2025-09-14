@@ -156,8 +156,8 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     /**
      * Adds a screenshot with the provided message and the provided status to the current test in the Extent Report
      *
-     * @param message    the message to log
-     * @param status the log's status
+     * @param message the message to log
+     * @param status  the log's status
      * @return the calling SpectrumEntity instance
      */
     public T addScreenshotToReport(final String message, final Status status) {
@@ -212,12 +212,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
         waitForDownloadOf(downloadedFile);
 
-        log.info("""
-                Checking if these files are the same:
-                {}
-                {}
-                """, downloadedFile, fileToCheck);
-        return Arrays.equals(fileUtils.checksumOf(downloadedFile), fileUtils.checksumOf(fileToCheck));
+        return fileUtils.compare(downloadedFile, fileToCheck);
     }
 
     /**

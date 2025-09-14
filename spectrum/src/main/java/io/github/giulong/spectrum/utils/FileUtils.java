@@ -159,9 +159,23 @@ public final class FileUtils {
         return digest;
     }
 
+    public boolean compare(final byte[] bytes1, final byte[] bytes2) {
+        return Arrays.equals(checksumOf(bytes1), checksumOf(bytes2));
+    }
+
     @SneakyThrows
-    public byte[] checksumOf(final Path file) {
-        log.trace("Checking {} of '{}'", HASH_ALGORITHM, file);
-        return checksumOf(Files.readAllBytes(file));
+    public boolean compare(final Path path1, final Path path2) {
+        log.info("""
+                Checking if these files are the same:
+                {}
+                {}
+                """, path1, path2);
+
+        return compare(Files.readAllBytes(path1), Files.readAllBytes(path2));
+    }
+
+    @SneakyThrows
+    public boolean compare(final Path path, final byte[] bytes) {
+        return compare(Files.readAllBytes(path), bytes);
     }
 }

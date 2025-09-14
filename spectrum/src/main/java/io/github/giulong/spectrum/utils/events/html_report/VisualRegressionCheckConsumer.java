@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import static com.aventstack.extentreports.Status.FAIL;
 
@@ -24,7 +23,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
     @Override
     @SneakyThrows
     public void accept(final Event event) {
-        if (Arrays.equals(fileUtils.checksumOf(referencePath), fileUtils.checksumOf(screenshot))) {
+        if (fileUtils.compare(referencePath, screenshot)) {
             log.debug("Screenshot matches with its reference {}", referencePath);
 
             generateAndAddScreenshotFrom(event, referencePath);

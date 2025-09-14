@@ -295,20 +295,55 @@ class FileUtilsTest {
 
     @Test
     @DisplayName("checksumOf should return the byte array of the sha digest of the provided file")
-    void checksumOf() throws NoSuchAlgorithmException, IOException {
-        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
-        when(Files.readAllBytes(path)).thenReturn(bytes);
-        when(messageDigest.digest(bytes)).thenReturn(digest);
-
-        assertArrayEquals(digest, fileUtils.checksumOf(path));
-    }
-
-    @Test
-    @DisplayName("checksumOf should return the byte array of the sha digest of the provided file")
     void checksumOfBytes() throws NoSuchAlgorithmException {
         when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
         when(messageDigest.digest(bytes)).thenReturn(digest);
 
         assertArrayEquals(digest, fileUtils.checksumOf(bytes));
+    }
+
+    @ParameterizedTest(name = "with digest arrays {0} and {1} we expect {2}")
+    @DisplayName("compare should check if the two provided byte arrays are the same")
+    @MethodSource("compareValuesProvider")
+    void compare(final byte[] digest1, final byte[] digest2, final boolean expected) throws NoSuchAlgorithmException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(messageDigest.digest(bytes))
+                .thenReturn(digest1)
+                .thenReturn(digest2);
+
+        assertEquals(expected, fileUtils.compare(bytes, bytes));
+    }
+
+    static Stream<Arguments> compareValuesProvider() {
+        return Stream.of(
+                arguments(new byte[]{1}, new byte[]{1}, true),
+                arguments(new byte[]{1}, new byte[]{2}, false)
+        );
+    }
+
+    @ParameterizedTest(name = "with digest arrays {0} and {1} we expect {2}")
+    @DisplayName("compare should check if the files at the two provided paths are the same")
+    @MethodSource("compareValuesProvider")
+    void comparePaths(final byte[] digest1, final byte[] digest2, final boolean expected) throws NoSuchAlgorithmException, IOException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(Files.readAllBytes(path)).thenReturn(bytes);
+        when(messageDigest.digest(bytes))
+                .thenReturn(digest1)
+                .thenReturn(digest2);
+
+        assertEquals(expected, fileUtils.compare(path, path));
+    }
+
+    @ParameterizedTest(name = "with digest arrays {0} and {1} we expect {2}")
+    @DisplayName("compare should check if the file at the provided path and the provided byte array are the same")
+    @MethodSource("compareValuesProvider")
+    void compareMixed(final byte[] digest1, final byte[] digest2, final boolean expected) throws NoSuchAlgorithmException, IOException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(Files.readAllBytes(path)).thenReturn(bytes);
+        when(messageDigest.digest(bytes))
+                .thenReturn(digest1)
+                .thenReturn(digest2);
+
+        assertEquals(expected, fileUtils.compare(path, bytes));
     }
 }

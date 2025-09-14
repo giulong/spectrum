@@ -54,7 +54,6 @@ class SpectrumEntityTest {
 
     private final String msg = "msg";
     private final byte[] bytes = new byte[]{1, 2, 3};
-    private final byte[] digest = new byte[]{4, 5, 6};
 
     @Mock
     private WebDriverWait downloadWait;
@@ -293,8 +292,7 @@ class SpectrumEntityTest {
         when(Path.of(filesFolder, fileToCheckName)).thenReturn(filesFolderPath);
         when(filesFolderPath.toAbsolutePath()).thenReturn(filesFolderPath);
 
-        when(fileUtils.checksumOf(downloadsFolderPath)).thenReturn(digest);
-        when(fileUtils.checksumOf(filesFolderPath)).thenReturn(digest);
+        when(fileUtils.compare(downloadsFolderPath, filesFolderPath)).thenReturn(true);
 
         assertTrue(spectrumEntity.checkDownloadedFile(fileToCheckName));
     }
@@ -315,8 +313,7 @@ class SpectrumEntityTest {
         when(Path.of(filesFolder, fileToCheckName)).thenReturn(filesFolderPath);
         when(filesFolderPath.toAbsolutePath()).thenReturn(filesFolderPath);
 
-        when(fileUtils.checksumOf(downloadsFolderPath)).thenReturn(digest);
-        when(fileUtils.checksumOf(filesFolderPath)).thenReturn(digest);
+        when(fileUtils.compare(downloadsFolderPath, filesFolderPath)).thenReturn(true);
 
         assertTrue(spectrumEntity.checkDownloadedFile(downloadedFileName, fileToCheckName));
     }
