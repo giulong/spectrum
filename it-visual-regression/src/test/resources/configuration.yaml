@@ -1,0 +1,26 @@
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+visualRegression:
+  snapshots:
+    folder: target/visual-regression
+
+video:
+  frames:
+    - autoBefore
+    - manual
+
+drivers:
+  chrome:
+    args:
+      - --headless=new
+  firefox:
+    args:
+      - -headless
+  edge:
+    args:
+      - --headless=new
+
+extent:
+  theme: DARK
+  fileName: report-${spectrum.driver:-chrome}.html

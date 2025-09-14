@@ -2,7 +2,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import io.github.giulong.spectrum.internals.web_driver_listeners.AutoWaitWebDriverListener;
 import io.github.giulong.spectrum.internals.web_driver_listeners.EventsWebDriverListener;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.decorators.Decorated;
@@ -69,10 +70,11 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .video(video)
                 .build();
 
-        final ScreenshotConsumer screenshotConsumer = ScreenshotConsumer
+        final VideoAutoScreenshotProducer videoAutoScreenshotProducer = VideoAutoScreenshotProducer
                 .builder()
                 .enabled(true)
                 .video(video)
+                .driver((TakesScreenshot) driver)
                 .context(context)
                 .build();
 
@@ -88,7 +90,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .js(fileUtils.read(highlight.getJs()))
                 .build();
 
-        final List<WebDriverEventConsumer> consumers = List.of(logConsumer, htmlReportConsumer, screenshotConsumer, testStepBuilderConsumer, highlightElementConsumer);
+        final List<WebDriverEventConsumer> consumers = List.of(logConsumer, htmlReportConsumer, videoAutoScreenshotProducer, testStepBuilderConsumer, highlightElementConsumer);
         final List<WebDriverListener> webDriverListeners = new ArrayList<>();
 
         if (autoWait.isEnabled()) {

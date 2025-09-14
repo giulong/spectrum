@@ -16,8 +16,16 @@ runtime:
 # Application under test
 application:
   baseUrl: http://localhost:8080  # Application's under test base url
+  screenshotsFolder: null # Path where to save screenshots. If not provided, screenshots are saved in the target folder.
   highlight: # Highlight the web elements the test interacts with. Useful to visually debug the execution
     js: js/highlight.js # Path to the js used to highlight. Relative to the resources folder
+
+# Visual Regression Testing configuration
+visualRegression:
+  failFast: false # Whether to fail immediately when the first visual regression is found, rather than running the entire test
+  snapshots:
+    folder: src/test/resources/visual-regression # Where to save the screenshot references
+    override: ${spectrum.visualRegression.snapshots.override:-false} # Whether to override the snapshots references already generated
 
 # TestBook (coverage)
 testBook:
@@ -516,15 +524,32 @@ eventsConsumers:
       events:
         - reason: beforeExecution
           tags: [ dynamicTest ]
+  - genericScreenshot: # common operations on screenshots
+      events:
+        - primaryId: .*
+          reason: screenshot
+  - extentScreenshot: # add the screenshot to the Extent Report
+      events:
+        - primaryId: (manual)
+          reason: screenshot
+  - visualRegressionCheck: # check the previously generated screenshot reference for visual regression
+      failOnError: true # to enable fail fast effectively break the test immediately
+      events:
+        - primaryId: (manual|visualRegressionManual)
+          reason: screenshot
+  - visualRegressionReferenceCreator: # create the screenshot reference for visual regression
+      events:
+        - primaryId: (manual|visualRegressionManual)
+          reason: screenshot
   - video: # add the screenshot to the video
       events:
-        - primaryId: screenshot
+        - primaryId: (manual|auto)
           reason: screenshot
   - videoDynamic: # add the screenshot to the dynamic video
       events:
-        - primaryId: screenshot
+        - primaryId: (manual|auto)
           reason: screenshot
-  - extentTest: # add an entry to the Extent Report once each test is done
+  - extentTestEnd: # add an entry to the Extent Report once each test is done
       events:
         - reason: after
           tags: [ test ]

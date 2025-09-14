@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.mac.Mac2Driver;
 import io.appium.java_client.mac.options.Mac2Options;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,8 @@ class Mac2Test {
     @Mock
     private Mac2Options mac2Options;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -43,16 +45,14 @@ class Mac2Test {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", mac2, configuration);
         Reflections.setField("capabilities", mac2, mac2Options);
     }
 
     @Test
     @DisplayName("buildCapabilities should build a new instance of mac2Options and set the capabilities from the yaml on it")
     void buildCapabilitiesAbsoluteAppPath() {
-        MockedConstruction<Mac2Options> desiredCapabilitiesMockedConstruction = mockConstruction(Mac2Options.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<Mac2Options> desiredCapabilitiesMockedConstruction = mockConstruction(Mac2Options.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getMac2()).thenReturn(mac2Configuration);

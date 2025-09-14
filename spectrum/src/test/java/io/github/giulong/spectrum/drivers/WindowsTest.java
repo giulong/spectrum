@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.options.WindowsOptions;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -39,7 +40,8 @@ class WindowsTest {
     @Mock
     private Duration duration;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -59,7 +61,6 @@ class WindowsTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", windows, configuration);
         Reflections.setField("capabilities", windows, windowsOptions);
     }
 
@@ -79,9 +80,8 @@ class WindowsTest {
     @Test
     @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it")
     void buildCapabilitiesAbsoluteAppPath() {
-        MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getWindows()).thenReturn(windowsConfiguration);

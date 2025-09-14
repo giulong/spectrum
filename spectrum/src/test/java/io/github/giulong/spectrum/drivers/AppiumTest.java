@@ -1,9 +1,8 @@
 package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,7 +20,8 @@ import static org.mockito.Mockito.*;
 
 class AppiumTest {
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -41,11 +41,6 @@ class AppiumTest {
 
     @InjectMocks
     private UiAutomator2 appium;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", appium, configuration);
-    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return an instance of AppiumDriverServiceBuilder")
