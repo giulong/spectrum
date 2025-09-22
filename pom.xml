@@ -47,7 +47,7 @@
         <maven.install.skip>true</maven.install.skip>
 
         <junit.version>5.13.4</junit.version>
-        <mockito.version>5.19.0</mockito.version>
+        <mockito.version>5.20.0</mockito.version>
         <jackson.version>2.20.0</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
