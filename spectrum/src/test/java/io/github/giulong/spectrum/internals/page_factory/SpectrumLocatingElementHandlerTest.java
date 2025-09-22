@@ -50,7 +50,7 @@ class SpectrumLocatingElementHandlerTest {
     void constructor(final boolean secured) {
         final SpectrumLocatingElementHandler handler = new SpectrumLocatingElementHandler(elementLocator, secured);
 
-        Assertions.assertEquals(secured, Reflections.getFieldValue("secured", handler, Boolean.class));
+        Assertions.assertEquals(secured, Reflections.getFieldValue("secured", handler));
     }
 
     @SuppressWarnings({"checkstyle:IllegalThrows"})

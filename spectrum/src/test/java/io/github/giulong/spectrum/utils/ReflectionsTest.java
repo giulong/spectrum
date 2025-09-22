@@ -5,17 +5,14 @@ import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 class ReflectionsTest {
@@ -76,7 +73,7 @@ class ReflectionsTest {
     }
 
     @Test
-    @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object")
+    @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object, casted to the generic class")
     void getFieldValue() {
         final String fieldName = "fieldString";
         final String value = "value";
@@ -85,14 +82,19 @@ class ReflectionsTest {
         assertEquals(value, Reflections.getFieldValue(fieldName, dummy));
     }
 
-    @Test
-    @DisplayName("getFieldValue should return the value of the field with the provided name on the provided object, casted to the provided class")
-    void getFieldValueCast() {
-        final String fieldName = "fieldString";
-        final String value = "value";
-        final Dummy dummy = new Dummy(value);
+    @DisplayName("getFieldValue should throw an IllegalArgumentException if reified args are passed")
+    @ParameterizedTest(name = "with reified {0}")
+    @NullSource
+    @MethodSource("getFieldValueExceptionValuesProvider")
+    void getFieldValueException(final Dummy[] reified) {
+        final Exception exception = assertThrows(IllegalArgumentException.class, () -> Reflections.getFieldValue("fieldString", new Dummy("value"), reified));
+        assertEquals("Do not pass arguments as last parameter", exception.getMessage());
+    }
 
-        assertEquals(value, Reflections.getFieldValue(fieldName, dummy, String.class));
+    static Stream<Arguments> getFieldValueExceptionValuesProvider() {
+        return Stream.of(
+                arguments((Object) new Dummy[]{new Dummy("value")})
+        );
     }
 
     @Test

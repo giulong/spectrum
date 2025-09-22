@@ -56,9 +56,8 @@ class XCUITestTest {
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
@@ -68,7 +67,7 @@ class XCUITestTest {
 
         xcuiTest.buildCapabilities();
 
-        final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest, XCUITestOptions.class);
+        final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -82,9 +81,8 @@ class XCUITestTest {
     void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
@@ -94,7 +92,7 @@ class XCUITestTest {
 
         xcuiTest.buildCapabilities();
 
-        final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest, XCUITestOptions.class);
+        final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

@@ -50,9 +50,8 @@ class Mac2Test {
     @Test
     @DisplayName("buildCapabilities should build a new instance of mac2Options and set the capabilities from the yaml on it")
     void buildCapabilitiesAbsoluteAppPath() {
-        MockedConstruction<Mac2Options> desiredCapabilitiesMockedConstruction = mockConstruction(Mac2Options.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<Mac2Options> desiredCapabilitiesMockedConstruction = mockConstruction(Mac2Options.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getMac2()).thenReturn(mac2Configuration);
@@ -60,7 +59,7 @@ class Mac2Test {
 
         mac2.buildCapabilities();
 
-        final Mac2Options actual = Reflections.getFieldValue("capabilities", mac2, Mac2Options.class);
+        final Mac2Options actual = Reflections.getFieldValue("capabilities", mac2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

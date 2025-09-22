@@ -79,9 +79,8 @@ class WindowsTest {
     @Test
     @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it")
     void buildCapabilitiesAbsoluteAppPath() {
-        MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getWindows()).thenReturn(windowsConfiguration);
@@ -89,7 +88,7 @@ class WindowsTest {
 
         windows.buildCapabilities();
 
-        final WindowsOptions actual = Reflections.getFieldValue("capabilities", windows, WindowsOptions.class);
+        final WindowsOptions actual = Reflections.getFieldValue("capabilities", windows);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();
