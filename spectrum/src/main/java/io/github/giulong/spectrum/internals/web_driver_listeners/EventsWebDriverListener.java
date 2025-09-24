@@ -712,14 +712,14 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
 
     @Override
     @Generated
-    public void beforeSetScriptTimeout(final WebDriver.Timeouts timeouts, final Duration duration) {
-        listenTo(AUTO_BEFORE, events.getBeforeSetScriptTimeout(), timeouts, duration);
+    public void beforeScriptTimeout(final WebDriver.Timeouts timeouts, final Duration duration) {
+        listenTo(AUTO_BEFORE, events.getBeforeScriptTimeout(), timeouts, duration);
     }
 
     @Override
     @Generated
-    public void afterSetScriptTimeout(final WebDriver.Timeouts timeouts, final Duration duration) {
-        listenTo(AUTO_AFTER, events.getAfterSetScriptTimeout(), timeouts, duration);
+    public void afterScriptTimeout(final WebDriver.Timeouts timeouts, final Duration duration) {
+        listenTo(AUTO_AFTER, events.getAfterScriptTimeout(), timeouts, duration);
     }
 
     @Override
@@ -816,6 +816,126 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
     @Generated
     public void afterFullscreen(final WebDriver.Window window) {
         listenTo(AUTO_AFTER, events.getAfterFullscreen(), window);
+    }
+
+    @Override
+    @Generated
+    public void beforeAnyTargetLocatorCall(final WebDriver.TargetLocator targetLocator, final Method method, final Object[] args) {
+        listenTo(AUTO_BEFORE, events.getBeforeAnyTargetLocatorCall(), targetLocator, method, Arrays.toString(args));
+    }
+
+    @Override
+    @Generated
+    public void afterAnyTargetLocatorCall(final WebDriver.TargetLocator targetLocator, final Method method, final Object[] args, final Object result) {
+        listenTo(AUTO_AFTER, events.getAfterAnyTargetLocatorCall(), targetLocator, method, Arrays.toString(args), result);
+    }
+
+    @Override
+    @Generated
+    public void beforeFrame(final WebDriver.TargetLocator targetLocator, final int index) {
+        listenTo(AUTO_BEFORE, events.getBeforeFrame(), targetLocator, index);
+    }
+
+    @Override
+    @Generated
+    public void afterFrame(final WebDriver.TargetLocator targetLocator, final int index, final WebDriver driver) {
+        listenTo(AUTO_AFTER, events.getAfterFrame(), targetLocator, index, driver);
+    }
+
+    @Override
+    @Generated
+    public void beforeFrame(final WebDriver.TargetLocator targetLocator, final String nameOrId) {
+        listenTo(AUTO_BEFORE, events.getBeforeFrame(), targetLocator, nameOrId);
+    }
+
+    @Override
+    @Generated
+    public void afterFrame(final WebDriver.TargetLocator targetLocator, final String nameOrId, final WebDriver driver) {
+        listenTo(AUTO_AFTER, events.getAfterFrame(), targetLocator, nameOrId, driver);
+    }
+
+    @Override
+    @Generated
+    public void beforeFrame(final WebDriver.TargetLocator targetLocator, final WebElement frameElement) {
+        listenTo(AUTO_BEFORE, events.getBeforeFrame(), targetLocator, frameElement);
+    }
+
+    @Override
+    @Generated
+    public void afterFrame(final WebDriver.TargetLocator targetLocator, final WebElement frameElement, final WebDriver driver) {
+        listenTo(AUTO_AFTER, events.getAfterFrame(), targetLocator, frameElement, driver);
+    }
+
+    @Override
+    @Generated
+    public void beforeParentFrame(final WebDriver.TargetLocator targetLocator) {
+        listenTo(AUTO_BEFORE, events.getBeforeParentFrame(), targetLocator);
+    }
+
+    @Override
+    @Generated
+    public void afterParentFrame(final WebDriver.TargetLocator targetLocator, final WebDriver driver) {
+        listenTo(AUTO_AFTER, events.getAfterParentFrame(), targetLocator, driver);
+    }
+
+    @Override
+    @Generated
+    public void beforeWindow(final WebDriver.TargetLocator targetLocator, final String nameOrHandle) {
+        listenTo(AUTO_BEFORE, events.getBeforeWindow(), targetLocator, nameOrHandle);
+    }
+
+    @Override
+    @Generated
+    public void afterWindow(final WebDriver.TargetLocator targetLocator, final String nameOrHandle, final WebDriver driver) {
+        listenTo(AUTO_AFTER, events.getAfterWindow(), targetLocator, nameOrHandle, driver);
+    }
+
+    @Override
+    @Generated
+    public void beforeNewWindow(final WebDriver.TargetLocator targetLocator, final WindowType typeHint) {
+        listenTo(AUTO_BEFORE, events.getBeforeNewWindow(), targetLocator, typeHint);
+    }
+
+    @Override
+    @Generated
+    public void afterNewWindow(final WebDriver.TargetLocator targetLocator, final WindowType typeHint, final WebDriver driver) {
+        listenTo(AUTO_AFTER, events.getAfterNewWindow(), targetLocator, typeHint, driver);
+    }
+
+    @Override
+    @Generated
+    public void beforeDefaultContent(final WebDriver.TargetLocator targetLocator) {
+        listenTo(AUTO_BEFORE, events.getBeforeDefaultContent(), targetLocator);
+    }
+
+    @Override
+    @Generated
+    public void afterDefaultContent(final WebDriver.TargetLocator targetLocator, final WebDriver driver) {
+        listenTo(AUTO_AFTER, events.getAfterDefaultContent(), targetLocator, driver);
+    }
+
+    @Override
+    @Generated
+    public void beforeActiveElement(final WebDriver.TargetLocator targetLocator) {
+        listenTo(AUTO_BEFORE, events.getBeforeActiveElement(), targetLocator);
+    }
+
+    @Override
+    @Generated
+    public void afterActiveElement(final WebDriver.TargetLocator targetLocator, final WebDriver driver) {
+        listenTo(AUTO_AFTER, events.getAfterActiveElement(), targetLocator, driver);
+    }
+
+    @Override
+    @Generated
+    public void beforeAlert(final WebDriver.TargetLocator targetLocator) {
+        listenTo(AUTO_BEFORE, events.getBeforeAlert(), targetLocator);
+    }
+
+    @Override
+    @Generated
+    public void afterAlert(final WebDriver.TargetLocator targetLocator, final Alert alert) {
+        listenTo(AUTO_AFTER, events.getAfterAlert(), targetLocator, alert);
     }
 
     boolean isSecured(final CharSequence... keysToSend) {

@@ -94,11 +94,11 @@ class HtmlUtilsTest {
 
         htmlUtils.sessionOpened();
 
-        assertEquals(videoTemplate, Reflections.getFieldValue("videoTemplate", htmlUtils, String.class));
-        assertEquals(divTemplate, Reflections.getFieldValue("divTemplate", htmlUtils, String.class));
-        assertEquals(frameTemplate, Reflections.getFieldValue("frameTemplate", htmlUtils, String.class));
-        assertEquals(imageTemplate, Reflections.getFieldValue("imageTemplate", htmlUtils, String.class));
-        assertEquals(visualRegressionTemplate, Reflections.getFieldValue("visualRegressionTemplate", htmlUtils, String.class));
+        assertEquals(videoTemplate, Reflections.getFieldValue("videoTemplate", htmlUtils));
+        assertEquals(divTemplate, Reflections.getFieldValue("divTemplate", htmlUtils));
+        assertEquals(frameTemplate, Reflections.getFieldValue("frameTemplate", htmlUtils));
+        assertEquals(imageTemplate, Reflections.getFieldValue("imageTemplate", htmlUtils));
+        assertEquals(visualRegressionTemplate, Reflections.getFieldValue("visualRegressionTemplate", htmlUtils));
 
         verifyNoMoreInteractions(fileUtils);
     }

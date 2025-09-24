@@ -17,7 +17,6 @@ import org.mockito.Mock;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Objects;
 import java.util.Set;
 
@@ -79,7 +78,7 @@ class YamlUtilsTest {
                 "LogSummaryReporter",
                 "TxtSummaryReporter",
                 "HtmlSummaryReporter"
-        ), Reflections.getFieldValue("yamlMapper", yamlUtils, YAMLMapper.class).getRegisteredModuleIds());
+        ), ((YAMLMapper) Reflections.getFieldValue("yamlMapper", yamlUtils)).getRegisteredModuleIds());
 
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
@@ -88,9 +87,9 @@ class YamlUtilsTest {
                 "boolean",
                 "Level",
                 "Duration"
-        ), Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils, YAMLMapper.class).getRegisteredModuleIds());
+        ), ((YAMLMapper) Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils)).getRegisteredModuleIds());
 
-        assertFalse(Reflections.getFieldValue("writer", yamlUtils, ObjectWriter.class).isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
+        assertFalse(((ObjectWriter) Reflections.getFieldValue("writer", yamlUtils)).isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
     }
 
     @Test
@@ -163,7 +162,7 @@ class YamlUtilsTest {
         Reflections.setField("dynamicConfYamlMapper", yamlUtils, yamlMapper);
 
         when(yamlMapper.reader()).thenReturn(reader);
-        when(reader.readValue(any(URL.class), eq(clazz))).thenReturn(testYaml);
+        when(reader.readValue(any(InputStream.class), eq(clazz))).thenReturn(testYaml);
         when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
         when(reader.readValue(jsonNode)).thenReturn(testYaml);
 
@@ -180,7 +179,7 @@ class YamlUtilsTest {
         when(fileProvider.find(file)).thenReturn(file);
         when(fileProvider.augment(yamlMapper)).thenReturn(reader);
         when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
-        when(reader.readValue(any(URL.class))).thenReturn(testYaml);
+        when(reader.readValue(any(InputStream.class))).thenReturn(testYaml);
 
         yamlUtils.updateWithClientFile(testYaml, file);
     }
@@ -209,7 +208,7 @@ class YamlUtilsTest {
         when(fileProvider.find(file)).thenReturn(file);
         when(fileProvider.augment(yamlMapper)).thenReturn(reader);
         when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
-        when(reader.readValue(any(URL.class))).thenReturn(testYaml);
+        when(reader.readValue(any(InputStream.class))).thenReturn(testYaml);
 
         yamlUtils.updateWithInternalFile(testYaml, file);
     }

@@ -425,9 +425,9 @@ drivers:
       message: Waiting for <code>%2$s</code>
     afterImplicitlyWait:
       message: Waited for <code>%2$s</code>
-    beforeSetScriptTimeout:
+    beforeScriptTimeout:
       message: Setting script timeout to <code>%2$s</code>
-    afterSetScriptTimeout:
+    afterScriptTimeout:
       message: Script timeout set to <code>%2$s</code>
     beforePageLoadTimeout:
       message: About to reach page load timeout of <code>%2$s</code>
@@ -467,6 +467,38 @@ drivers:
       message: Setting fullscreen
     afterFullscreen:
       message: Window set to fullscreen
+    beforeAnyTargetLocatorCall:
+      message: Before target locator <code>%1$s</code> call
+    afterAnyTargetLocatorCall:
+      message: Result of target locator <code>%1$s</code> call is <code>%2$s</code>
+    beforeFrame:
+      message: Before frame <code>%1$s</code> <code>%2$s</code>
+    afterFrame:
+      message: After frame <code>%1$s</code> <code>%2$s</code>
+    beforeParentFrame:
+      message: Before parent frame <code>%1$s</code>
+    afterParentFrame:
+      message: After parent frame <code>%1$s</code>
+    beforeWindow:
+      message: Before window <code>%1$s</code> <code>%2$s</code>
+    afterWindow:
+      message: After window <code>%1$s</code> <code>%2$s</code>
+    beforeNewWindow:
+      message: Before new window <code>%1$s</code> <code>%2$s</code>
+    afterNewWindow:
+      message: After new window <code>%1$s</code> <code>%2$s</code>
+    beforeDefaultContent:
+      message: Before default content <code>%1$s</code>
+    afterDefaultContent:
+      message: After default content <code>%1$s</code>
+    beforeActiveElement:
+      message: Before active element <code>%1$s</code>
+    afterActiveElement:
+      message: After active element <code>%1$s</code>
+    beforeAlert:
+      message: Before alert <code>%1$s</code>
+    afterAlert:
+      message: After alert <code>%1$s</code> <code>%2$s</code>
 
 # Data models
 data:

@@ -60,7 +60,7 @@ class Mac2Test {
 
         mac2.buildCapabilities();
 
-        final Mac2Options actual = Reflections.getFieldValue("capabilities", mac2, Mac2Options.class);
+        final Mac2Options actual = Reflections.getFieldValue("capabilities", mac2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

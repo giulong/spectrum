@@ -63,7 +63,7 @@ class UiAutomator2Test {
 
         uiAutomator2.buildCapabilities();
 
-        final UiAutomator2Options actual = Reflections.getFieldValue("capabilities", uiAutomator2, UiAutomator2Options.class);
+        final UiAutomator2Options actual = Reflections.getFieldValue("capabilities", uiAutomator2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -88,7 +88,7 @@ class UiAutomator2Test {
 
         uiAutomator2.buildCapabilities();
 
-        final UiAutomator2Options actual = Reflections.getFieldValue("capabilities", uiAutomator2, UiAutomator2Options.class);
+        final UiAutomator2Options actual = Reflections.getFieldValue("capabilities", uiAutomator2);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

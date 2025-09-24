@@ -59,14 +59,14 @@ public final class Reflections {
         return field;
     }
 
-    @SneakyThrows
-    public static Object getFieldValue(final String fieldName, final Object object) {
-        log.trace("Getting value of field {}.{}", object.getClass().getSimpleName(), fieldName);
-        return getField(fieldName, object).get(object);
-    }
+    @SafeVarargs
+    public static <T> T getFieldValue(final String fieldName, final Object object, final T... reified) {
+        if (reified == null || reified.length > 0) {
+            throw new IllegalArgumentException("Do not pass arguments as last parameter");
+        }
 
-    public static <T> T getFieldValue(final String fieldName, final Object object, final Class<T> clazz) {
-        return clazz.cast(getFieldValue(fieldName, object));
+        final Object value = getValueOf(getField(fieldName, object), object);
+        return getClassOf(reified).cast(value);
     }
 
     public static void setField(final String fieldName, final Object object, final Object value) {
@@ -110,6 +110,11 @@ public final class Reflections {
                 .map(f -> getValueOf(f, object))
                 .map(clazz::cast)
                 .toList();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Class<T> getClassOf(final T[] array) {
+        return (Class<T>) array.getClass().getComponentType();
     }
 
     @SneakyThrows

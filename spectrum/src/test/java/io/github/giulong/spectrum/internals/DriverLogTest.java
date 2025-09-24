@@ -55,7 +55,7 @@ class DriverLogTest {
         final char c = '\n';
 
         driverLog.write(c);
-        final StringBuffer stringBuffer = Reflections.getFieldValue("stringBuffer", driverLog, StringBuffer.class);
+        final StringBuffer stringBuffer = Reflections.getFieldValue("stringBuffer", driverLog);
 
         verify(stringBuffer).setLength(0);
     }
@@ -67,7 +67,7 @@ class DriverLogTest {
         assertEquals(stringBuffers.getFirst(), Reflections.getFieldValue("stringBuffer", driverLog));
 
         driverLog.flush();
-        final StringBuffer stringBuffer = Reflections.getFieldValue("stringBuffer", driverLog, StringBuffer.class);
+        final StringBuffer stringBuffer = Reflections.getFieldValue("stringBuffer", driverLog);
 
         verify(stringBuffer).setLength(0);
     }

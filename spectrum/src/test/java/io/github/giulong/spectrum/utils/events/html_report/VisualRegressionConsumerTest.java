@@ -142,7 +142,7 @@ class VisualRegressionConsumerTest {
         assertEquals(testData, Reflections.getFieldValue("testData", consumer));
         assertEquals(currentNode, Reflections.getFieldValue("currentNode", consumer));
         assertEquals(screenshot, Reflections.getFieldValue("screenshot", consumer));
-        assertEquals(frameNumber, Reflections.getFieldValue("frameNumber", consumer));
+        assertEquals(frameNumber, (int) Reflections.getFieldValue("frameNumber", consumer));
     }
 
     @DisplayName("shouldOverrideSnapshots should check if snapshots override is configured")

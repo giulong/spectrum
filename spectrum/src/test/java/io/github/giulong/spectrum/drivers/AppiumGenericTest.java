@@ -52,9 +52,8 @@ class AppiumGenericTest {
     @Test
     @DisplayName("buildCapabilities should build a new instance of capabilities and set the capabilities from the yaml on it")
     void buildCapabilitiesAbsoluteAppPath() {
-        MockedConstruction<MutableCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(MutableCapabilities.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<MutableCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(MutableCapabilities.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getAppiumGeneric()).thenReturn(appiumGenericConfiguration);
@@ -62,7 +61,7 @@ class AppiumGenericTest {
 
         appiumGeneric.buildCapabilities();
 
-        final Capabilities actual = Reflections.getFieldValue("capabilities", appiumGeneric, Capabilities.class);
+        final Capabilities actual = Reflections.getFieldValue("capabilities", appiumGeneric);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

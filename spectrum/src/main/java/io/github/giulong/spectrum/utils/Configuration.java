@@ -558,8 +558,8 @@ public class Configuration {
             private Event afterAnyTimeoutsCall;
             private Event beforeImplicitlyWait;
             private Event afterImplicitlyWait;
-            private Event beforeSetScriptTimeout;
-            private Event afterSetScriptTimeout;
+            private Event beforeScriptTimeout;
+            private Event afterScriptTimeout;
             private Event beforePageLoadTimeout;
             private Event afterPageLoadTimeout;
             private Event beforeAnyWindowCall;
@@ -576,6 +576,22 @@ public class Configuration {
             private Event afterMaximize;
             private Event beforeFullscreen;
             private Event afterFullscreen;
+            private Event beforeAnyTargetLocatorCall;
+            private Event afterAnyTargetLocatorCall;
+            private Event beforeFrame;
+            private Event afterFrame;
+            private Event beforeParentFrame;
+            private Event afterParentFrame;
+            private Event beforeWindow;
+            private Event afterWindow;
+            private Event beforeNewWindow;
+            private Event afterNewWindow;
+            private Event beforeDefaultContent;
+            private Event afterDefaultContent;
+            private Event beforeActiveElement;
+            private Event afterActiveElement;
+            private Event beforeAlert;
+            private Event afterAlert;
         }
 
         @Getter
