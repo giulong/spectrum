@@ -13,8 +13,6 @@ drivers:
   edge:
     args:
       - --headless=new
-    experimentalOptions:
-      binary: ${EDGE_BINARY:-}
 
 video:
   frames:
