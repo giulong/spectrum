@@ -135,7 +135,7 @@ public final class YamlUtils {
 
     @SneakyThrows
     <T> T read(final ObjectReader reader, final String file, final Class<T> clazz) {
-        return reader.readValue(classLoader.getResource(file), clazz);
+        return reader.readValue(classLoader.getResourceAsStream(file), clazz);
     }
 
     <T> T read(final FileProvider fileProvider, final String file, final Class<T> clazz) {
@@ -175,6 +175,6 @@ public final class YamlUtils {
         fileProvider
                 .augment(yamlMapper)
                 .withValueToUpdate(t)
-                .readValue(classLoader.getResource(fileFound));
+                .readValue(classLoader.getResourceAsStream(fileFound));
     }
 }
