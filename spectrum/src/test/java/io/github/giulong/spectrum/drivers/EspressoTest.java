@@ -50,9 +50,8 @@ class EspressoTest {
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(EspressoOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(EspressoOptions.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getEspresso()).thenReturn(espressoConfiguration);
@@ -62,7 +61,7 @@ class EspressoTest {
 
         espresso.buildCapabilities();
 
-        final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso, EspressoOptions.class);
+        final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
@@ -75,9 +74,8 @@ class EspressoTest {
     void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(EspressoOptions.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(EspressoOptions.class,
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getEspresso()).thenReturn(espressoConfiguration);
@@ -87,7 +85,7 @@ class EspressoTest {
 
         espresso.buildCapabilities();
 
-        final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso, EspressoOptions.class);
+        final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso);
         assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
 
         desiredCapabilitiesMockedConstruction.close();

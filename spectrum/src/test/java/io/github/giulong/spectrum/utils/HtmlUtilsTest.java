@@ -93,10 +93,10 @@ class HtmlUtilsTest {
 
         htmlUtils.sessionOpened();
 
-        assertEquals(videoTemplate, Reflections.getFieldValue("videoTemplate", htmlUtils, String.class));
-        assertEquals(divTemplate, Reflections.getFieldValue("divTemplate", htmlUtils, String.class));
-        assertEquals(divFrameTemplate, Reflections.getFieldValue("frameTemplate", htmlUtils, String.class));
-        assertEquals(divImageTemplate, Reflections.getFieldValue("inlineImageTemplate", htmlUtils, String.class));
+        assertEquals(videoTemplate, Reflections.getFieldValue("videoTemplate", htmlUtils));
+        assertEquals(divTemplate, Reflections.getFieldValue("divTemplate", htmlUtils));
+        assertEquals(divFrameTemplate, Reflections.getFieldValue("frameTemplate", htmlUtils));
+        assertEquals(divImageTemplate, Reflections.getFieldValue("inlineImageTemplate", htmlUtils));
     }
 
     @Test

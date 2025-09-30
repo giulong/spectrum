@@ -61,14 +61,10 @@ jobs:
             profiles: browsers
             directives: -DbrowsersTests
             moduleName: it
-            env:
-              EDGE_BINARY: /usr/bin/microsoft-edge
           - os: macos-latest
             profiles: macos
             directives: -DmacosTests
             moduleName: it-macos
-            env:
-              EDGE_BINARY: /usr/bin/microsoft-edge
           - os: windows-latest
             profiles: browsers
             directives: -DbrowsersTests
