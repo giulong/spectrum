@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.reporters;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +28,8 @@ class FileReporterTest {
     private MockedStatic<Files> filesMockedStatic;
     private MockedStatic<Desktop> desktopMockedStatic;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -60,7 +62,8 @@ class FileReporterTest {
     @Mock
     private File directory2;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private MetadataManager metadataManager;
 
     @Mock
@@ -79,8 +82,7 @@ class FileReporterTest {
     void beforeEach() {
         Reflections.setField("output", fileReporter, OUTPUT);
         Reflections.setField("retention", fileReporter, retention);
-        Reflections.setField("fileUtils", fileReporter, fileUtils);
-        Reflections.setField("metadataManager", fileReporter, metadataManager);
+
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
         desktopMockedStatic = mockStatic(Desktop.class);

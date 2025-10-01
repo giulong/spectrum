@@ -69,6 +69,7 @@
                 <module>it-testbook</module>
                 <module>it-macos</module>
                 <module>it-appium</module>
+                <module>it-visual-regression</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>verify-macos</module>
@@ -92,6 +93,7 @@
                 <module>it-grid</module>
                 <module>it-bidi</module>
                 <module>it-testbook</module>
+                <module>it-visual-regression</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>cleanup</module>

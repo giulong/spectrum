@@ -33,7 +33,7 @@ class BiDiExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(testLabels.get("noDisplayName"), extentReportPage.getNoDisplayName().getText());
         assertEquals(testLabels.get("noDisplayNameTestName"), extentReportPage.getNoDisplayNameTestName().getText());
 
-        assertEquals("5", extentReportPage.getVideoCheckboxItTestWithNoDisplayName().getDomProperty("duration"));
+        assertEquals("5", extentReportPage.getVideoCheckboxItTestWithNoDisplayName().getDomProperty("duration"), "video duration should match");
 
         final List<String> originalTests = extentReportPage
                 .getTestViewTestsDetails()

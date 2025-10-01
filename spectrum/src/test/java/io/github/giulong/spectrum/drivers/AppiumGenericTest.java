@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.AppiumDriver;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,8 @@ class AppiumGenericTest {
     @Mock
     private MutableCapabilities mutableCapabilities;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -44,7 +46,6 @@ class AppiumGenericTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", appiumGeneric, configuration);
         Reflections.setField("capabilities", appiumGeneric, mutableCapabilities);
     }
 

@@ -35,9 +35,9 @@ class DurationDeserializerTest {
     @Test
     @DisplayName("deserialize should return the duration in seconds from the provided string")
     void deserialize() throws IOException {
-        int value = 123;
-        when(jsonParser.getValueAsInt()).thenReturn(value);
+        double value = 123d;
+        when(jsonParser.getValueAsDouble()).thenReturn(value);
 
-        assertEquals(Duration.ofSeconds(value), durationDeserializer.deserialize(jsonParser, deserializationContext));
+        assertEquals(Duration.ofMillis((long) (value * 1000)), durationDeserializer.deserialize(jsonParser, deserializationContext));
     }
 }
