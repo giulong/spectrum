@@ -176,11 +176,11 @@ class EventsDispatcherTest {
         when(eventBuilder.reason(reason)).thenReturn(eventBuilder);
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(null)).thenReturn(eventBuilder);
-        when(eventBuilder.context(null)).thenReturn(eventBuilder);
+        when(eventBuilder.context(extensionContext)).thenReturn(eventBuilder);
         when(eventBuilder.payload(payload)).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
-        eventsDispatcher.fire(primaryId, reason, payload);
+        eventsDispatcher.fire(primaryId, reason, extensionContext, payload);
 
         verify(consumer1).match(event);
         verify(consumer2).match(event);

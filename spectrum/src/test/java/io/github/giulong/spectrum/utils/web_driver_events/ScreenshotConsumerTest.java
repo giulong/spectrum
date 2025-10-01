@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -19,7 +18,6 @@ import java.util.Map;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,9 +28,6 @@ class ScreenshotConsumerTest {
 
     @Mock
     private HtmlUtils htmlUtils;
-
-    @Mock
-    private ContextManager contextManager;
 
     @Mock
     private ExtensionContext.Store store;
@@ -76,7 +71,7 @@ class ScreenshotConsumerTest {
 
         screenshotConsumer.accept(webDriverEvent);
 
-        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes));
+        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, context, Map.of(SCREENSHOT, bytes));
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

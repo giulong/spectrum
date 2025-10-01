@@ -8,7 +8,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 
 import java.nio.file.Path;
 
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -22,7 +21,7 @@ public class VideoDynamicConsumer extends VideoConsumer {
             return false;
         }
 
-        final ExtensionContext context = (ExtensionContext) event.getPayload().get(EXTENSION_CONTEXT);
+        final ExtensionContext context = event.getContext();
         if (context == null) {
             return false;
         }
