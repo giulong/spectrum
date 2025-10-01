@@ -148,15 +148,34 @@ public class Configuration {
         @JsonPropertyDescription("Snapshots screenshots references configuration")
         private Snapshots snapshots;
 
+        @JsonPropertyDescription("Checks configuration")
+        private Checks checks;
+
         @Getter
         @Generated
         public static class Snapshots {
 
+            @JsonSchemaTypes(String.class)
             @JsonPropertyDescription("Where to save the screenshot references")
             private Path folder;
 
             @JsonPropertyDescription("Whether to override the snapshots references already generated")
             private boolean override;
+        }
+
+        @Getter
+        @Generated
+        public static class Checks {
+
+            @JsonPropertyDescription("Number of checks to perform before considering a snapshot valid")
+            private int count;
+
+            @JsonPropertyDescription("Interval between checks in seconds")
+            @JsonSchemaTypes(double.class)
+            private Duration interval;
+
+            @JsonPropertyDescription("Max retries before throwing an exception")
+            private int maxRetries;
         }
     }
 
@@ -255,19 +274,19 @@ public class Configuration {
         public static class Waits {
 
             @JsonPropertyDescription("Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found")
-            @JsonSchemaTypes(int.class)
+            @JsonSchemaTypes(double.class)
             private Duration implicit;
 
             @JsonPropertyDescription("Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet")
-            @JsonSchemaTypes(int.class)
+            @JsonSchemaTypes(double.class)
             private Duration pageLoadTimeout;
 
             @JsonPropertyDescription("Seconds that Selenium waits before throwing a ScriptTimeoutException")
-            @JsonSchemaTypes(int.class)
+            @JsonSchemaTypes(double.class)
             private Duration scriptTimeout;
 
             @JsonPropertyDescription("WebDriverWait injected in test classes/pages that you can use on file download")
-            @JsonSchemaTypes(int.class)
+            @JsonSchemaTypes(double.class)
             private Duration downloadTimeout;
 
             @JsonPropertyDescription("Auto-wait configuration")
@@ -281,7 +300,7 @@ public class Configuration {
                 private boolean enabled;
 
                 @JsonPropertyDescription("Timeout in seconds")
-                @JsonSchemaTypes(int.class)
+                @JsonSchemaTypes(double.class)
                 private Duration timeout;
             }
         }
@@ -664,7 +683,7 @@ public class Configuration {
                 private int port;
 
                 @JsonPropertyDescription("Sets timeout in seconds")
-                @JsonSchemaTypes(int.class)
+                @JsonSchemaTypes(double.class)
                 private Duration timeout;
             }
         }

@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.utils.events.html_report;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -13,14 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.*;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Map;
 
+import static com.aventstack.extentreports.Status.FAIL;
 import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION_MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -28,10 +32,15 @@ import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreen
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
+import static org.openqa.selenium.OutputType.BYTES;
 
 class VisualRegressionConsumerTest {
 
     private final byte[] screenshot = new byte[]{1, 2, 3};
+    private final byte[] screenshot2 = new byte[]{4};
+    private final byte[] screenshot3 = new byte[]{5};
+
+    private final int count = 2;
 
     private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
 
@@ -89,6 +98,21 @@ class VisualRegressionConsumerTest {
 
     @Mock
     private TestData.VisualRegression visualRegression;
+
+    @Mock
+    private Configuration.VisualRegression.Checks checks;
+
+    @Mock
+    private Duration interval;
+
+    @Mock(extraInterfaces = TakesScreenshot.class)
+    private WebDriver driver;
+
+    @Mock
+    private Map<String, byte[]> screenshots;
+
+    @Captor
+    private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
 
     @InjectMocks
     private DummyVisualRegressionConsumer consumer;
@@ -163,6 +187,97 @@ class VisualRegressionConsumerTest {
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
         when(statefulExtentTest.getCurrentNode()).thenReturn(currentNode);
+    }
+
+    @Test
+    @DisplayName("runChecks should perform additional successful checks")
+    void runChecks() {
+        runChecksStubs(1);
+
+        when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture())).thenReturn(true);
+
+        consumer.runChecks();
+
+        assertArrayEquals(screenshot2, byteArrayArgumentCaptor.getAllValues().getFirst());
+        assertArrayEquals(screenshot3, byteArrayArgumentCaptor.getAllValues().get(1));
+    }
+
+    @Test
+    @DisplayName("runChecks should perform additional checks and retry")
+    void runChecksRetry() {
+        final String visualRegressionTag = "visualRegressionTag";
+        final int frameNumber = 123;
+
+        runChecksStubs(2);
+
+        Reflections.setField("htmlUtils", consumer, htmlUtils);
+        Reflections.setField("frameNumber", consumer, frameNumber);
+
+        when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture()))
+                .thenReturn(false)
+                .thenReturn(true);
+
+        consumer.runChecks();
+
+        assertArrayEquals(screenshot2, byteArrayArgumentCaptor.getValue());
+        assertEquals(screenshot3, Reflections.getFieldValue("screenshot", consumer));
+
+        verifyNoInteractions(htmlUtils);
+
+        // addScreenshot
+        verify(currentNode, never()).log(FAIL, visualRegressionTag, null);
+        verify(contextManager, never()).getScreenshots();
+        verify(fileUtils, never()).write(any(), (byte[]) any());
+    }
+
+    @Test
+    @DisplayName("runChecks should perform additional checks and throw a VisualRegressionCheckException when failed")
+    void runChecksFailed() {
+        final String visualRegressionTag = "visualRegressionTag";
+        final int frameNumber = 123;
+
+        runChecksStubs(1);
+
+        Reflections.setField("htmlUtils", consumer, htmlUtils);
+        Reflections.setField("frameNumber", consumer, frameNumber);
+
+        try (MockedConstruction<VisualRegressionException> mockedConstruction = mockConstruction(VisualRegressionException.class, (mock, extensionContext) ->
+                assertEquals(String.format("All visual regression checks failed. Tried %d checks for %s times", count, 1), extensionContext.arguments().getFirst()))) {
+            when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture()))
+                    .thenReturn(true)
+                    .thenReturn(false);
+
+            when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, screenshot, screenshot3)).thenReturn(visualRegressionTag);
+
+            // addScreenshot
+            when(contextManager.getScreenshots()).thenReturn(screenshots);
+
+            final Exception exception = assertThrows(VisualRegressionException.class, () -> consumer.runChecks());
+
+            assertEquals(mockedConstruction.constructed().getFirst(), exception);
+
+            assertArrayEquals(screenshot2, byteArrayArgumentCaptor.getAllValues().getFirst());
+            assertArrayEquals(screenshot3, byteArrayArgumentCaptor.getAllValues().get(1));
+
+            // addScreenshot
+            verify(currentNode).log(FAIL, visualRegressionTag, null);
+            verify(screenshots).put(referencePath.toString(), screenshot);
+            verify(fileUtils).write(referencePath, screenshot);
+        }
+    }
+
+    private void runChecksStubs(final int maxRetries) {
+        Reflections.setField("screenshot", consumer, screenshot);
+
+        when(visualRegressionConfiguration.getChecks()).thenReturn(checks);
+        when(checks.getInterval()).thenReturn(interval);
+        when(checks.getMaxRetries()).thenReturn(maxRetries);
+        when(checks.getCount()).thenReturn(count);
+        when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
+
+        when(((TakesScreenshot) driver).getScreenshotAs(BYTES))
+                .thenReturn(screenshot2)
+                .thenReturn(screenshot3);
     }
 
     private static final class DummyVisualRegressionConsumer extends VisualRegressionConsumer {

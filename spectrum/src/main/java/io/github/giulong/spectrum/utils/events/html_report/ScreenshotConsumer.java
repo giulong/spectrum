@@ -27,6 +27,7 @@ public abstract class ScreenshotConsumer extends EventsConsumer {
     protected final Configuration configuration = Configuration.getInstance();
     protected final ContextManager contextManager = ContextManager.getInstance();
 
+    protected ExtensionContext.Store store;
     protected TestData testData;
     protected ExtentTest currentNode;
     protected byte[] screenshot;
@@ -35,8 +36,8 @@ public abstract class ScreenshotConsumer extends EventsConsumer {
     @Override
     protected boolean shouldAccept(final Event event) {
         final Map<String, Object> payload = event.getPayload();
-        final ExtensionContext.Store store = ((ExtensionContext) payload.get(EXTENSION_CONTEXT)).getStore(GLOBAL);
 
+        this.store = ((ExtensionContext) payload.get(EXTENSION_CONTEXT)).getStore(GLOBAL);
         this.testData = store.get(TEST_DATA, TestData.class);
         this.currentNode = store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class).getCurrentNode();
         this.screenshot = (byte[]) payload.get(SCREENSHOT);

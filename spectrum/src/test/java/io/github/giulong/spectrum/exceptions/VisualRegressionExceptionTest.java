@@ -42,7 +42,7 @@ class VisualRegressionExceptionTest {
     private ExtentTest extentTest;
 
     @InjectMocks
-    private VisualRegressionException visualRegressionException = new VisualRegressionException(3);
+    private VisualRegressionException visualRegressionException = new VisualRegressionException(String.format("There were %d visual regressions", 3));
 
     @BeforeEach
     void beforeEach() {

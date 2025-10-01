@@ -23,6 +23,8 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
     @Override
     @SneakyThrows
     public void accept(final Event event) {
+        runChecks();
+
         if (fileUtils.compare(referencePath, screenshot)) {
             log.debug("Screenshot matches with its reference {}", referencePath);
 

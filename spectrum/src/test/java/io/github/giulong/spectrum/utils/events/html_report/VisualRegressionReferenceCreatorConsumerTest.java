@@ -13,14 +13,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.*;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Map;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -28,10 +30,12 @@ import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreen
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
+import static org.openqa.selenium.OutputType.BYTES;
 
 class VisualRegressionReferenceCreatorConsumerTest {
 
     private final byte[] screenshot = new byte[]{1, 2, 3};
+    private final byte[] screenshot2 = new byte[]{4};
 
     private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
@@ -102,6 +106,18 @@ class VisualRegressionReferenceCreatorConsumerTest {
 
     @Mock
     private TestData.VisualRegression visualRegression;
+
+    @Mock
+    private Configuration.VisualRegression.Checks checks;
+
+    @Mock
+    private Duration interval;
+
+    @Mock(extraInterfaces = TakesScreenshot.class)
+    private WebDriver driver;
+
+    @Captor
+    private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
 
     @InjectMocks
     private VisualRegressionReferenceCreatorConsumer consumer;
@@ -185,6 +201,8 @@ class VisualRegressionReferenceCreatorConsumerTest {
         final String tag = "tag";
         final String message = "message";
         final int frameNumber = 123;
+        final int maxRetries = 1;
+        final int count = 2;
 
         Reflections.setField("screenshot", consumer, screenshot);
         Reflections.setField("frameNumber", consumer, frameNumber);
@@ -196,12 +214,25 @@ class VisualRegressionReferenceCreatorConsumerTest {
         when(mediaEntityBuilder.build()).thenReturn(media);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 
+        // runChecks
+        Reflections.setField("screenshot", consumer, screenshot);
+        when(visualRegressionConfiguration.getChecks()).thenReturn(checks);
+        when(checks.getInterval()).thenReturn(interval);
+        when(checks.getMaxRetries()).thenReturn(maxRetries);
+        when(checks.getCount()).thenReturn(count);
+        when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
+        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(screenshot2);
+        when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture())).thenReturn(true);
+
         consumer.accept(event);
 
         // generateAndAddScreenshotFrom
         verify(currentNode).log(status, tag, media);
         verify(screenshots).put(referencePath.toString(), screenshot);
         verify(fileUtils).write(referencePath, screenshot);
+
+        // runChecks
+        assertArrayEquals(screenshot2, byteArrayArgumentCaptor.getAllValues().getFirst());
     }
 
     private void superShouldAcceptStubs() {

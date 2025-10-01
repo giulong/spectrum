@@ -19,6 +19,8 @@ public class VisualRegressionReferenceCreatorConsumer extends VisualRegressionCo
     @Override
     public void accept(final Event event) {
         log.debug("Generating visual regression reference {}", referencePath);
+
+        runChecks();
         generateAndAddScreenshotFrom(event, referencePath);
     }
 }

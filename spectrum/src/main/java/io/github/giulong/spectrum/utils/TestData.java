@@ -64,7 +64,7 @@ public class TestData {
     public void registerFailedVisualRegression() {
         if (visualRegression.count++ == 0) {
             testFailedException = () -> {
-                throw new VisualRegressionException(visualRegression.count);
+                throw new VisualRegressionException(String.format("There were %d visual regressions", visualRegression.count));
             };
         }
     }

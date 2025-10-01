@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 public class VisualRegressionException extends TestFailedException {
 
-    public VisualRegressionException(final int count) {
-        super(String.format("There were %d visual regressions", count));
+    public VisualRegressionException(final String message) {
+        super(message);
     }
 
     @Override

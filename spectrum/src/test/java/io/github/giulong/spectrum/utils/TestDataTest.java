@@ -46,7 +46,7 @@ class TestDataTest {
     @DisplayName("registerFailedVisualRegression should set the testFailedException only on the first visual regression")
     void registerFailedVisualRegression() {
         try (MockedConstruction<VisualRegressionException> ignored = mockConstruction(VisualRegressionException.class,
-                (mock, context) -> assertEquals(2, context.arguments().getFirst()))) {
+                (mock, context) -> assertEquals(String.format("There were %d visual regressions", 2), context.arguments().getFirst()))) {
             assertDoesNotThrow(() -> testData.getTestFailedException().get());
 
             testData.registerFailedVisualRegression();  // first regression

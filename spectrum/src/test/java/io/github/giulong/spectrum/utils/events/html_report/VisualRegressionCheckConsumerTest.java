@@ -15,17 +15,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.*;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.Map;
 import java.util.function.Supplier;
 
 import static com.aventstack.extentreports.Status.FAIL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -33,11 +35,13 @@ import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreen
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
+import static org.openqa.selenium.OutputType.BYTES;
 
 class VisualRegressionCheckConsumerTest {
 
     private final byte[] screenshot = new byte[]{1, 2, 3};
     private final byte[] checksum = new byte[]{4, 5, 6};
+    private final byte[] screenshot2 = new byte[]{4};
     private final int frameNumber = 123;
 
     private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
@@ -115,6 +119,18 @@ class VisualRegressionCheckConsumerTest {
 
     @Mock
     private TestData.VisualRegression visualRegression;
+
+    @Mock
+    private Configuration.VisualRegression.Checks checks;
+
+    @Mock
+    private Duration interval;
+
+    @Mock(extraInterfaces = TakesScreenshot.class)
+    private WebDriver driver;
+
+    @Captor
+    private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
 
     @InjectMocks
     private VisualRegressionCheckConsumer consumer;
@@ -195,6 +211,8 @@ class VisualRegressionCheckConsumerTest {
     @Test
     @DisplayName("accept should delegate to generateAndAddScreenshotFrom when the screenshot taken matches with its reference")
     void accept() {
+        runChecksStubs();
+
         when(fileUtils.compare(referencePath, screenshot)).thenReturn(true);
 
         // generateAndAddScreenshotFrom
@@ -216,6 +234,8 @@ class VisualRegressionCheckConsumerTest {
         verify(currentNode).log(status, tag, media);
         verify(screenshots).put(referencePath.toString(), screenshot);
         verify(fileUtils).write(referencePath, screenshot);
+
+        runChecksAssertions();
     }
 
     @Test
@@ -224,6 +244,8 @@ class VisualRegressionCheckConsumerTest {
         final Path failedScreenshotPath = mock();
         final String failedScreenshotName = "failedScreenshotName";
         final String visualRegressionTag = "visualRegressionTag";
+
+        runChecksStubs();
 
         when(fileUtils.compare(referencePath, screenshot)).thenReturn(false);
 
@@ -245,6 +267,8 @@ class VisualRegressionCheckConsumerTest {
         verify(currentNode).log(FAIL, visualRegressionTag, null);
         verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
         verify(fileUtils).write(failedScreenshotPath, screenshot);
+
+        runChecksAssertions();
     }
 
     @Test
@@ -254,6 +278,8 @@ class VisualRegressionCheckConsumerTest {
         final Path failedScreenshotPath = mock();
         final String failedScreenshotName = "failedScreenshotName";
         final String visualRegressionTag = "visualRegressionTag";
+
+        runChecksStubs();
 
         when(fileUtils.compare(referencePath, screenshot)).thenReturn(false);
 
@@ -282,6 +308,8 @@ class VisualRegressionCheckConsumerTest {
         verify(currentNode).log(FAIL, visualRegressionTag, null);
         verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
         verify(fileUtils).write(failedScreenshotPath, screenshot);
+
+        runChecksAssertions();
     }
 
     private void superShouldAcceptStubs() {
@@ -299,5 +327,23 @@ class VisualRegressionCheckConsumerTest {
         when(statefulExtentTest.getCurrentNode()).thenReturn(currentNode);
         lenient().when(configuration.getVideo()).thenReturn(video);
         when(payload.get(SCREENSHOT)).thenReturn(screenshot);
+    }
+
+    private void runChecksStubs() {
+        final int maxRetries = 1;
+        final int count = 2;
+
+        Reflections.setField("screenshot", consumer, screenshot);
+        when(visualRegressionConfiguration.getChecks()).thenReturn(checks);
+        when(checks.getInterval()).thenReturn(interval);
+        when(checks.getMaxRetries()).thenReturn(maxRetries);
+        when(checks.getCount()).thenReturn(count);
+        when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
+        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(screenshot2);
+        when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture())).thenReturn(true);
+    }
+
+    private void runChecksAssertions() {
+        assertArrayEquals(screenshot2, byteArrayArgumentCaptor.getAllValues().getFirst());
     }
 }
