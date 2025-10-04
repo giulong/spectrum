@@ -1745,7 +1745,7 @@ You can see an example report here:
 > 💡 **Tip**<br/>
 > You can provide your own *look and feel* by putting:
 > * additional css rules in the `src/test/resources/css/report.css` file
-> * additional css rules in the `src/test/resources/js/report.js` file
+> * additional js functions in the `src/test/resources/js/report.js` file
 >
 > Spectrum will automatically load and apply them to the Extent Report. You can also customise the folder and name of the files above
 > by changing the `extent.css` and `extent.js` keys in your `configuration*.yaml`. This is indeed the default in the internal
