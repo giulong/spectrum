@@ -39,7 +39,7 @@
 
 # About
 
-Spectrum is an **e2e test automation framework** that leverages **JUnit 5** and **Selenium 4** to provide these features automatically:
+Spectrum is an **e2e test automation framework** that leverages **JUnit 6** and **Selenium 4** to provide these features automatically:
 
 * **Driver** management
 * **Auto-waiting** before interacting with elements, to **highly reduce flakiness**
@@ -124,7 +124,7 @@ and the [open issues](https://github.com/giulong/spectrum/issues).
 <details>
    <summary>Spectrum leverages these projects you should definitely check out!</summary>
    <ul>
-      <li><a href="https://junit.org/junit5/docs/current/user-guide/">JUnit 5</a></li>
+      <li><a href="https://docs.junit.org/current/user-guide/">JUnit 6</a></li>
       <li><a href="https://www.selenium.dev/">Selenium</a></li>
       <li><a href="http://appium.io/docs/en/latest/">Appium</a></li>
       <li><a href="https://projectlombok.org/">Lombok</a></li>

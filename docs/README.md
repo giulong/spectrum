@@ -1,6 +1,6 @@
 # Introduction
 
-Spectrum is a [JUnit 5](https://junit.org/junit5/docs/current/user-guide/){:target="_blank"} and [Selenium 4](https://www.selenium.dev/){:target="_blank"} framework that aims to
+Spectrum is a [JUnit 6](https://docs.junit.org/current/user-guide/){:target="_blank"} and [Selenium 4](https://www.selenium.dev/){:target="_blank"} framework that aims to
 simplify the writing of e2e tests, providing these features:
 
 * automatic [execution video](#automatic-execution-video-generation) generation
@@ -77,7 +77,7 @@ dependencies {
 
 ## Test creation
 
-In general, all you need to do is create a **JUnit 5** test class extending the `SpectrumTest` class:
+In general, all you need to do is create a **JUnit 6** test class extending the `SpectrumTest` class:
 
 {% include copyCode.html %}
 
@@ -1789,7 +1789,7 @@ extent:
 ```
 
 > ⚠️ **Dynamic Tests**<br/>
-> [Dynamic Tests](https://junit.org/junit5/docs/current/user-guide/#writing-tests-dynamic-tests){:target="_blank"}
+> [Dynamic Tests](https://docs.junit.org/current/user-guide/#writing-tests-dynamic-tests){:target="_blank"}
 > are shown in the html report as a single one in the left column. In the test's details on the right,
 > you'll see one collapsible nested block for each dynamic test. Additionally, if you enabled video generation,
 > you'll find the full video attached on top of the right column, as well as the video related to the specific dynamic test
@@ -2409,14 +2409,14 @@ use to define the events they
 want to be
 notified about. Most of them can be used in consumers with the type of match specified below:
 
-| Field Name                                | Type                                                                                                                                                        | Match |
-|-------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|
-| [primaryId](#primaryid-and-secondaryid)   | String                                                                                                                                                      | regex |
-| [secondaryId](#primaryid-and-secondaryid) | String                                                                                                                                                      | regex |
-| [tags](#tags)                             | Set\<String>                                                                                                                                                | exact |
-| [reason](#reason)                         | String                                                                                                                                                      | regex |
-| [result](#result)                         | [Result]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java){:target="_blank"}                                   | exact |
-| [context](#context)                       | [ExtensionContext](https://junit.org/junit5/docs/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ExtensionContext.html){:target="_blank"} | -     |
+| Field Name                                | Type                                                                                                                                                 | Match |
+|-------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|-------|
+| [primaryId](#primaryid-and-secondaryid)   | String                                                                                                                                               | regex |
+| [secondaryId](#primaryid-and-secondaryid) | String                                                                                                                                               | regex |
+| [tags](#tags)                             | Set\<String>                                                                                                                                         | exact |
+| [reason](#reason)                         | String                                                                                                                                               | regex |
+| [result](#result)                         | [Result]({{ site.repository_url }}/spectrum/src/main/java/io/github/giulong/spectrum/enums/Result.java){:target="_blank"}                            | exact |
+| [context](#context)                       | [ExtensionContext](https://docs.junit.org/current/api/org.junit.jupiter.api/org/junit/jupiter/api/extension/ExtensionContext.html){:target="_blank"} | -     |
 
 Let's see them in detail:
 
@@ -3644,7 +3644,7 @@ testBook:
 # Parallel Execution
 
 Spectrum tests can be run in parallel by leveraging
-[JUnit Parallel Execution](https://junit.org/junit5/docs/snapshot/user-guide/#writing-tests-parallel-execution){:target="_blank"}
+[JUnit Parallel Execution](https://docs.junit.org/snapshot/user-guide/#writing-tests-parallel-execution){:target="_blank"}
 
 ---
 

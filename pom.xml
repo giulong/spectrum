@@ -46,7 +46,7 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <junit.version>5.13.4</junit.version>
+        <junit.version>6.0.0</junit.version>
         <mockito.version>5.20.0</mockito.version>
         <jackson.version>2.20.0</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
@@ -145,7 +145,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
-                <version>1.13.4</version>
+                <version>${junit.version}</version>
             </dependency>
 
             <dependency>
