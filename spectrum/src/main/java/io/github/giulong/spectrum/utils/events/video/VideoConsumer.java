@@ -19,11 +19,9 @@ import java.io.ByteArrayInputStream;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.Arrays;
-import java.util.Map;
 
 import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -44,10 +42,9 @@ public class VideoConsumer extends VideoBaseConsumer {
     @SneakyThrows
     public void accept(final Event event) {
         final Video video = configuration.getVideo();
-        final Map<String, Object> payload = event.getPayload();
-        final ExtensionContext.Store store = ((ExtensionContext) payload.get(EXTENSION_CONTEXT)).getStore(GLOBAL);
+        final ExtensionContext.Store store = event.getContext().getStore(GLOBAL);
         final TestData testData = store.get(TEST_DATA, TestData.class);
-        final byte[] screenshot = (byte[]) payload.get(SCREENSHOT);
+        final byte[] screenshot = (byte[]) event.getPayload().get(SCREENSHOT);
 
         if (video.isSkipDuplicateFrames() && !isNewFrame(screenshot, testData)) {
             return;

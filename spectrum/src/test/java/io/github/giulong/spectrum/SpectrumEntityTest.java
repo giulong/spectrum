@@ -325,7 +325,7 @@ class SpectrumEntityTest {
 
         assertArrayEquals(bytes, byteArrayArgumentCaptor.getValue());
         verify(screenshots).put(path, bytes);
-        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes));
+        verify(eventsDispatcher).fire(SCREENSHOT, SCREENSHOT, context, Map.of(SCREENSHOT, bytes));
         verify(extentTest).log(status, tag, media);
         verifyNoMoreInteractions(eventsDispatcher);
     }

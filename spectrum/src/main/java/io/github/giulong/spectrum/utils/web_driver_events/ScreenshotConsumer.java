@@ -13,7 +13,6 @@ import org.openqa.selenium.WebDriver;
 import java.util.Map;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.openqa.selenium.OutputType.BYTES;
 
@@ -36,7 +35,7 @@ public class ScreenshotConsumer extends WebDriverEventConsumer {
         if (video.shouldRecord(frame)) {
             final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
-            eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
+            eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, context, Map.of(SCREENSHOT, screenshot));
             log.trace("Recording frame {} for event '{}'", frame, webDriverEvent.getMessage());
 
             return;

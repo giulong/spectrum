@@ -186,7 +186,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
         final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
-        eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
+        eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, context, Map.of(SCREENSHOT, screenshot));
 
         final Path path = fileUtils.writeTempFile("screenshot", ".png", screenshot);
         final Media media = createScreenCaptureFromPath(path.toString()).build();

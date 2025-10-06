@@ -55,8 +55,8 @@ public class EventsDispatcher implements SessionHook {
         fire(null, null, reason, result, tags, null);
     }
 
-    public void fire(final String primaryId, final String reason, final Map<String, Object> payload) {
-        fire(primaryId, null, reason, null, null, null, payload);
+    public void fire(final String primaryId, final String reason, final ExtensionContext context, final Map<String, Object> payload) {
+        fire(primaryId, null, reason, null, null, context, payload);
     }
 
     public void fire(final String primaryId, final String reason) {
