@@ -26,7 +26,7 @@ These modules' build will not fail anyway: they will be checked later on by the 
 # Entrypoint
 
 Spectrum leverages [SpectrumSessionListener](spectrum/src/main/java/io/github/giulong/spectrum/SpectrumSessionListener.java) as its entrypoint,
-which is a [LauncherSessionListener](https://junit.org/junit5/docs/current/user-guide/#launcher-api-launcher-session-listeners-custom)
+which is a [LauncherSessionListener](https://docs.junit.org/current/user-guide/#launcher-api-launcher-session-listeners-custom)
 registered via the Service Loader mechanism. This means we provide its fqdn in the
 [org.junit.platform.launcher.LauncherSessionListener](spectrum/src/main/resources/org.junit.platform.launcher.LauncherSessionListener)
 file, which is copied into the `META-INF/services` folder during the `prepare-package` phase.
