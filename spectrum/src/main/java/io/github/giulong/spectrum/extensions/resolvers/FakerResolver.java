@@ -19,7 +19,7 @@ public class FakerResolver extends TypeBasedParameterResolver<Faker> {
     public Faker resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
-        return rootStore.getOrComputeIfAbsent(FAKER, e -> {
+        return rootStore.computeIfAbsent(FAKER, e -> {
             log.debug("Resolving {}", FAKER);
             final Configuration.Faker faker = rootStore.get(CONFIGURATION, Configuration.class).getFaker();
 

@@ -15,7 +15,7 @@ public class EventsDispatcherResolver extends TypeBasedParameterResolver<EventsD
 
     @Override
     public EventsDispatcher resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
-        return context.getRoot().getStore(GLOBAL).getOrComputeIfAbsent(EVENTS_DISPATCHER, e -> {
+        return context.getRoot().getStore(GLOBAL).computeIfAbsent(EVENTS_DISPATCHER, e -> {
             log.debug("Resolving {}", EVENTS_DISPATCHER);
 
             return EventsDispatcher.getInstance();

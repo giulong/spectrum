@@ -67,7 +67,7 @@ class FakerResolverTest {
 
         fakerResolver.resolveParameter(parameterContext, extensionContext);
 
-        verify(rootStore).getOrComputeIfAbsent(eq(FAKER), functionArgumentCaptor.capture(), eq(Faker.class));
+        verify(rootStore).computeIfAbsent(eq(FAKER), functionArgumentCaptor.capture(), eq(Faker.class));
         final Function<String, Faker> function = functionArgumentCaptor.getValue();
         final Faker actual = function.apply("value");
 

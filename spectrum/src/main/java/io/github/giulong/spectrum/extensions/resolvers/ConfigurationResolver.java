@@ -15,7 +15,7 @@ public class ConfigurationResolver extends TypeBasedParameterResolver<Configurat
 
     @Override
     public Configuration resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
-        return context.getRoot().getStore(GLOBAL).getOrComputeIfAbsent(CONFIGURATION, e -> {
+        return context.getRoot().getStore(GLOBAL).computeIfAbsent(CONFIGURATION, e -> {
             log.debug("Resolving {}", CONFIGURATION);
 
             return Configuration.getInstance();

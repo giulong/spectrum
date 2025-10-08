@@ -112,7 +112,7 @@ class DataResolverTest {
 
         dataResolver.resolveParameter(parameterContext, extensionContext);
 
-        verify(rootStore).getOrComputeIfAbsent(eq(DATA), runnableArgumentCaptor.capture(), any());
+        verify(rootStore).computeIfAbsent(eq(DATA), runnableArgumentCaptor.capture(), any());
         Function<String, TestYaml> function = runnableArgumentCaptor.getValue();
         TestYaml actual = function.apply("value");
 

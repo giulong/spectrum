@@ -37,7 +37,7 @@ public class DataResolver<Data> implements ParameterResolver {
         @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
-        return rootStore.getOrComputeIfAbsent(DATA, e -> {
+        return rootStore.computeIfAbsent(DATA, e -> {
             log.debug("Resolving {}", DATA);
 
             final Configuration.Data dataConfiguration = rootStore.get(CONFIGURATION, Configuration.class).getData();
