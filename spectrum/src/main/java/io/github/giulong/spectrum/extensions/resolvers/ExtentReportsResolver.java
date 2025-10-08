@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 import com.aventstack.extentreports.ExtentReports;
 import io.github.giulong.spectrum.utils.ExtentReporter;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
@@ -17,8 +18,8 @@ public class ExtentReportsResolver extends TypeBasedParameterResolver<ExtentRepo
     private final ExtentReporter extentReporter = ExtentReporter.getInstance();
 
     @Override
-    public ExtentReports resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
-        return context.getRoot().getStore(GLOBAL).getOrComputeIfAbsent(EXTENT_REPORTS, e -> {
+    public ExtentReports resolveParameter(@NonNull final ParameterContext parameterContext, final ExtensionContext context) {
+        return context.getRoot().getStore(GLOBAL).computeIfAbsent(EXTENT_REPORTS, e -> {
             log.debug("Resolving {}", EXTENT_REPORTS);
 
             return extentReporter.getExtentReports();

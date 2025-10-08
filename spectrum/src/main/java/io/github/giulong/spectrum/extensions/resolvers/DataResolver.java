@@ -5,6 +5,7 @@ import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.YamlUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
@@ -21,12 +22,12 @@ public class DataResolver<Data> implements ParameterResolver {
     private final YamlUtils yamlUtils = YamlUtils.getInstance();
 
     @Override
-    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext extensionContext) {
+    public boolean supportsParameter(final ParameterContext parameterContext, @NonNull final ExtensionContext extensionContext) {
         return parameterContext.getParameter().getParameterizedType().getTypeName().equals(DataResolver.class.getTypeParameters()[0].getName());
     }
 
     @Override
-    public Data resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
+    public Data resolveParameter(@NonNull final ParameterContext parameterContext, final ExtensionContext context) {
         final Type type = Reflections.getGenericSuperclassOf(context.getRequiredTestClass(), SpectrumTest.class).getActualTypeArguments()[0];
 
         if (Void.class.equals(type)) {
@@ -37,7 +38,7 @@ public class DataResolver<Data> implements ParameterResolver {
         @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
-        return rootStore.getOrComputeIfAbsent(DATA, e -> {
+        return rootStore.computeIfAbsent(DATA, e -> {
             log.debug("Resolving {}", DATA);
 
             final Configuration.Data dataConfiguration = rootStore.get(CONFIGURATION, Configuration.class).getData();

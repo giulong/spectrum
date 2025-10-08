@@ -60,7 +60,7 @@ class ConfigurationResolverTest {
 
         when(extensionContext.getRoot()).thenReturn(rootContext);
         when(rootContext.getStore(GLOBAL)).thenReturn(rootStore);
-        when(rootStore.getOrComputeIfAbsent(eq(CONFIGURATION), functionArgumentCaptor.capture(), eq(Configuration.class))).thenReturn(configuration);
+        when(rootStore.computeIfAbsent(eq(CONFIGURATION), functionArgumentCaptor.capture(), eq(Configuration.class))).thenReturn(configuration);
 
         final Configuration actual = configurationResolver.resolveParameter(parameterContext, extensionContext);
 

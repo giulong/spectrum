@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers.bidi;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
@@ -20,12 +21,12 @@ public abstract class BiDiTypeBasedParameterResolver<T> implements ParameterReso
     abstract T resolveParameterFor(WebDriver driver);
 
     @Override
-    public boolean supportsParameter(final ParameterContext parameterContext, final ExtensionContext context) {
+    public boolean supportsParameter(final ParameterContext parameterContext, @NonNull final ExtensionContext context) {
         return parameterContext.getParameter().getType().equals(getType());
     }
 
     @Override
-    public final T resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
+    public final T resolveParameter(@NonNull final ParameterContext parameterContext, final ExtensionContext context) {
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final WebDriver driver = store.get(DRIVER, WebDriver.class);
         final String key = getKey();
