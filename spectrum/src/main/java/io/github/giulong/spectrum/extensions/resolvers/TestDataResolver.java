@@ -4,6 +4,7 @@ import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -24,7 +25,7 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
     private final ContextManager contextManager = ContextManager.getInstance();
 
     @Override
-    public TestData resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
+    public TestData resolveParameter(@NonNull final ParameterContext parameterContext, final ExtensionContext context) {
         log.debug("Resolving {}", TEST_DATA);
 
         final Class<?> clazz = context.getRequiredTestClass();

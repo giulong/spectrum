@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
@@ -16,7 +17,7 @@ public class ActionsResolver extends TypeBasedParameterResolver<Actions> {
     public static final String ACTIONS = "actions";
 
     @Override
-    public Actions resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
+    public Actions resolveParameter(@NonNull final ParameterContext parameterContext, final ExtensionContext context) {
         log.debug("Resolving {}", ACTIONS);
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);
