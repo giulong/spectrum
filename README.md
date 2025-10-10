@@ -41,17 +41,12 @@
 
 Spectrum is an **e2e test automation framework** that leverages **JUnit 6** and **Selenium 4** to provide these features automatically:
 
-* **Driver** management
-* **Auto-waiting** before interacting with elements, to **highly reduce flakiness**
-* **Html report** generation with the **execution video**
-* **Coverage report** generation by reading a **testbook**
+* **Driver** management with **auto-waiting**, to **highly reduce flakiness**
+* Generation of a **html report** with the **execution video**, **coverage** and **several additional reports**. All **fully customisable**
 * **Mail/Slack notifications** with reports as attachments
-* It is fully configurable via a **declarative yaml file**
-* It provides **out-of-the-box defaults** to let you run tests with no additional configuration
-* It supports **browsers automation** via Selenium
-* It supports **mobile and desktop applications automation** via Appium
+* It is fully configurable via a **declarative yaml file**, providing **out-of-the-box defaults** to let you run tests with no additional configuration
+* It supports **browsers automation** via Selenium and **mobile and desktop automation** via Appium
 * It supports **WebDriver BiDi** protocol
-* It generates **several additional reports** that are **fully customisable**
 
 Spectrum manages all the boilerplate code, allowing you to focus on test logic:
 you just need to write a JUnit test using the native Selenium API as you would do in a vanilla Selenium test,
@@ -78,32 +73,6 @@ https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e
 > ⚠️ Tests run on Chrome by default. As shown in the video above, you can change this with:<br/>
 > `-Dspectrum.driver=firefox`, `-Dspectrum.driver=edge` or `-Dspectrum.driver=safari`
 
-If you like Spectrum, please consider giving it a GitHub Star ⭐
-
-# Usage
-
-If you'd rather add Spectrum manually to your project, you just need to add its dependency:
-
-## Maven
-
-```xml
-
-<dependency>
-    <groupId>io.github.giulong</groupId>
-    <artifactId>spectrum</artifactId>
-    <version>1.26.1</version>
-    <scope>test</scope>
-</dependency>
-```
-
-## Gradle
-
-```gradle
-dependencies {
-  testImplementation group: 'io.github.giulong', name: 'spectrum', version: '1.26.1'
-}
-```
-
 Here's an overview of the project created by the archetype, along with the generated report and video:<br/><br/>
 <img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it.png" alt="login-form"/>
 &nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it-extent-report.png" alt="report"/>
@@ -113,6 +82,54 @@ https://github.com/giulong/spectrum/assets/27963644/df6b801e-91ca-415b-b510-a45b
 You can also configure Spectrum to produce additional reports, such as summary and coverage:<br/><br/>
 <img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>
 &nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
+
+If you like Spectrum, please consider giving it a GitHub Star ⭐
+
+# Usage
+
+To start without the archetype, it's as simple as following these steps:
+
+1. Add the Spectrum dependency to your project, you can find the snippet for all build tools [here](https://central.sonatype.com/artifact/io.github.giulong/spectrum).
+
+   ```xml
+   <dependency>
+       <groupId>io.github.giulong</groupId>
+       <artifactId>spectrum</artifactId>
+       <version>1.26.1</version>
+       <scope>test</scope>
+   </dependency>
+   ```
+
+2. Create the `HelloWorldIT` test class extending `SpectrumTest`:
+
+   ```java
+   import io.github.giulong.spectrum.SpectrumTest;
+   import org.junit.jupiter.api.Test;
+   
+   public class HelloWorldIT extends SpectrumTest<Void> {
+   
+       @Test
+       public void dummyTest() {
+           driver.get(configuration.getApplication().getBaseUrl());
+       }
+   }
+   ```
+
+3. create a basic `src/test/resources/configuration.yaml`:
+
+   ```yaml
+   application:
+     baseUrl: https://the-internet.herokuapp.com/ # Change this with your app's landing page
+   
+   video: # video of the execution attached to the html report (will be empty since the test is doing nothing)
+     frames:
+       - autoBefore
+   
+   extent:
+     openAtEnd: true # the html report will open automatically in your browser after the execution
+   ```
+   
+4. Run the test!
 
 # Contributing
 
