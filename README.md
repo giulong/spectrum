@@ -89,7 +89,7 @@ If you like Spectrum, please consider giving it a GitHub Star ⭐
 
 To start without the archetype, it's as simple as following these steps:
 
-1. Add the Spectrum dependency to your project, you can find the snippet for all build tools [here](https://central.sonatype.com/artifact/io.github.giulong/spectrum).
+1. Add the Spectrum dependency to your project, you can find the snippet for every build tool [here](https://central.sonatype.com/artifact/io.github.giulong/spectrum).
 
    ```xml
    <dependency>

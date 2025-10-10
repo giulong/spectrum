@@ -1580,6 +1580,9 @@ If you'd like to customise the js applied when highlighting, you have 2 options 
 
 JSON Schema really comes in handy when editing `configuration*.yaml`, since it allows you to have autocompletion
 and a non-blocking validation (just warnings).
+
+<video controls="" width="100%" src="assets/videos/json-schema.mov" type="video/mp4"></video>
+
 This is the list of the available schemas, be sure to pick the right one according to the version of Spectrum you are using.
 
 > 💡 **Tip**<br/>
