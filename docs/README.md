@@ -34,8 +34,8 @@ and **mobile and desktop applications** via [Appium](http://appium.io/docs/en/la
 
 ## Spectrum Archetype
 
-You should leverage the latest published version of the [Spectrum Archetype](https://mvnrepository.com/artifact/io.github.giulong/spectrum-archetype){:target="_blank"} to create a
-new project either via your IDE or by running this from command line:
+You should leverage the latest published version of the [Spectrum Archetype](https://central.sonatype.com/artifact/io.github.giulong/spectrum-archetype){:target="_blank"}
+to create a new project either via your IDE or by running this from command line:
 
 {% include copyCode.html %}
 
@@ -48,10 +48,11 @@ mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactI
 > official [archetype:generate docs](https://maven.apache.org/archetype/maven-archetype-plugin/generate-mojo.html){:target="_blank"}.
 
 The project created contains a demo test you can immediately run.
-If you don't want to leverage the archetype, you can manually add the [Spectrum dependency](https://mvnrepository.com/artifact/io.github.giulong/spectrum){:target="_blank"} to your
-project:
 
-## Maven
+## Manual Configuration
+
+If you don't want to leverage the archetype, you can manually add the Spectrum dependency to your project.
+[Here](https://central.sonatype.com/artifact/io.github.giulong/spectrum){:target="_blank"} you can find the snippet for every build tool.
 
 {% include copyCode.html %}
 
@@ -65,19 +66,7 @@ project:
 </dependency>
 ```
 
-## Gradle
-
-{% include copyCode.html %}
-
-```gradle
-dependencies {
-  testImplementation group: 'io.github.giulong', name: 'spectrum', version: '1.26.1'
-}
-```
-
-## Test creation
-
-In general, all you need to do is create a **JUnit 6** test class extending the `SpectrumTest` class:
+Then, you need to create a **JUnit 6** test class extending `SpectrumTest`:
 
 {% include copyCode.html %}
 
@@ -94,7 +83,23 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 }
 ```
 
-After running it, you will find a html report in the `target/spectrum/reports` folder.
+As third and last step, you need create a basic `src/test/resources/configuration.yaml`:
+
+{% include copyCode.html %}
+
+```yaml
+application:
+  baseUrl: https://the-internet.herokuapp.com/ # Change this with your app's landing page
+
+video: # video of the execution attached to the html report (will be empty since the test is doing nothing)
+  frames:
+    - autoBefore
+
+extent:
+  openAtEnd: true # the html report will open automatically in your browser after the execution
+```
+
+Now you can run the test, and the generated report will automatically open in your browser.
 
 > ⚠️ **Running with Maven**<br/>
 > If you run tests with Maven, the name of your test classes should end with `IT` as in the example above (`HelloWorldIT`),

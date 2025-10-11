@@ -526,10 +526,6 @@
                                     <token><![CDATA[<version>.*</version>]]></token>
                                     <value><![CDATA[<version>${revision}</version>]]></value>
                                 </replacement>
-                                <replacement>
-                                    <token>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
-                                    <value>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
-                                </replacement>
                             </replacements>
                         </configuration>
                     </execution>
@@ -545,10 +541,6 @@
                                 <replacement>
                                     <token><![CDATA[<version>.*</version>]]></token>
                                     <value><![CDATA[<version>${revision}</version>]]></value>
-                                </replacement>
-                                <replacement>
-                                    <token>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
-                                    <value>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
                                 </replacement>
                             </replacements>
                         </configuration>
