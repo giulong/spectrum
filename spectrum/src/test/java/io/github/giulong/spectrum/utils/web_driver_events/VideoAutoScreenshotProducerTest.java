@@ -15,7 +15,6 @@ import java.util.Map;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -55,7 +54,7 @@ class VideoAutoScreenshotProducerTest {
 
         videoAutoScreenshotProducer.accept(webDriverEvent);
 
-        verify(eventsDispatcher).fire(AUTO.getValue(), SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes));
+        verify(eventsDispatcher).fire(AUTO.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes));
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

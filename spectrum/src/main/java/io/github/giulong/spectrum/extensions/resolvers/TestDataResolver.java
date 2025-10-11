@@ -78,8 +78,8 @@ public class TestDataResolver extends TypeBasedParameterResolver<TestData> {
         return String.join(" ", displayNames.reversed());
     }
 
-    Path getVisualRegressionPathFrom(final Path basePath, final String className, final String methodName) {
-        return basePath.resolve(className).resolve(methodName).toAbsolutePath();
+    Path getVisualRegressionPathFrom(final String basePath, final String className, final String methodName) {
+        return Path.of(basePath).resolve(className).resolve(methodName).toAbsolutePath();
     }
 
     static String transformInKebabCase(final String string) {

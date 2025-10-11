@@ -224,7 +224,7 @@ class SpectrumEntityTest {
 
         spectrumEntity.addScreenshotToReport(msg, status);
 
-        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, bytes, "message", msg, "status", status));
+        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "message", msg, "status", status));
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

@@ -27,14 +27,17 @@ import static org.mockito.Mockito.*;
 
 class TestDataResolverTest {
 
-    private static MockedStatic<TestData> testDataMockedStatic;
-    private static MockedStatic<TestData.VisualRegression> visualRegressionMockedStatic;
+    private MockedStatic<TestData> testDataMockedStatic;
+    private MockedStatic<TestData.VisualRegression> visualRegressionMockedStatic;
+    private MockedStatic<Path> pathMockedStatic;
+
+    private final String visualRegressionFolder = "visualRegressionFolder";
 
     @Mock
     private Path path;
 
     @Mock
-    private Path visualRegressionFolder;
+    private Path visualRegressionFolderPath;
 
     @Mock
     private Configuration.VisualRegression.Snapshots snapshots;
@@ -93,12 +96,14 @@ class TestDataResolverTest {
     void beforeEach() {
         testDataMockedStatic = mockStatic(TestData.class);
         visualRegressionMockedStatic = mockStatic(TestData.VisualRegression.class);
+        pathMockedStatic = mockStatic(Path.class);
     }
 
     @AfterEach
     void afterEach() {
         testDataMockedStatic.close();
         visualRegressionMockedStatic.close();
+        pathMockedStatic.close();
     }
 
     @Test
@@ -132,14 +137,15 @@ class TestDataResolverTest {
         when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
         when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
         when(snapshots.getFolder()).thenReturn(visualRegressionFolder);
+        when(Path.of(visualRegressionFolder)).thenReturn(visualRegressionFolderPath);
 
-        // getVisualRegressionScreenshotPathFrom
-        when(visualRegressionFolder.resolve(sanitizedClassDisplayName)).thenReturn(visualRegressionFolder);
-        when(visualRegressionFolder.resolve(sanitizedDisplayName)).thenReturn(visualRegressionFolder);
-        when(visualRegressionFolder.toAbsolutePath()).thenReturn(visualRegressionFolder);
+        // getVisualRegressionPathFrom
+        when(visualRegressionFolderPath.resolve(sanitizedClassDisplayName)).thenReturn(visualRegressionFolderPath);
+        when(visualRegressionFolderPath.resolve(sanitizedDisplayName)).thenReturn(visualRegressionFolderPath);
+        when(visualRegressionFolderPath.toAbsolutePath()).thenReturn(visualRegressionFolderPath);
 
         when(TestData.VisualRegression.builder()).thenReturn(visualRegressionBuilder);
-        when(visualRegressionBuilder.path(visualRegressionFolder)).thenReturn(visualRegressionBuilder);
+        when(visualRegressionBuilder.path(visualRegressionFolderPath)).thenReturn(visualRegressionBuilder);
         when(visualRegressionBuilder.build()).thenReturn(visualRegression);
 
         when(TestData.builder()).thenReturn(testDataBuilder);
@@ -207,11 +213,12 @@ class TestDataResolverTest {
         final String className = "className";
         final String methodName = "methodName";
 
-        when(visualRegressionFolder.resolve(className)).thenReturn(visualRegressionFolder);
-        when(visualRegressionFolder.resolve(methodName)).thenReturn(visualRegressionFolder);
-        when(visualRegressionFolder.toAbsolutePath()).thenReturn(visualRegressionFolder);
+        when(Path.of(visualRegressionFolder)).thenReturn(visualRegressionFolderPath);
+        when(visualRegressionFolderPath.resolve(className)).thenReturn(visualRegressionFolderPath);
+        when(visualRegressionFolderPath.resolve(methodName)).thenReturn(visualRegressionFolderPath);
+        when(visualRegressionFolderPath.toAbsolutePath()).thenReturn(visualRegressionFolderPath);
 
-        assertEquals(visualRegressionFolder, testDataResolver.getVisualRegressionPathFrom(visualRegressionFolder, className, methodName));
+        assertEquals(visualRegressionFolderPath, testDataResolver.getVisualRegressionPathFrom(visualRegressionFolder, className, methodName));
     }
 
     @DisplayName("dummy")

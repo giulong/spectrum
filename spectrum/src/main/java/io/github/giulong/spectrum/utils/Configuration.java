@@ -20,7 +20,6 @@ import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.*;
 import java.util.logging.Level;
@@ -155,9 +154,8 @@ public class Configuration {
         @Generated
         public static class Snapshots {
 
-            @JsonSchemaTypes(String.class)
             @JsonPropertyDescription("Where to save the screenshot references")
-            private Path folder;
+            private String folder;
 
             @JsonPropertyDescription("Whether to override the snapshots references already generated")
             private boolean override;

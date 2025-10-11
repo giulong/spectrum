@@ -166,11 +166,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
         final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(ORIGINAL_DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
 
-        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, Map.of(
-                EXTENSION_CONTEXT, context,
-                SCREENSHOT, screenshot,
-                "message", message,
-                "status", status));
+        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot, "message", message, "status", status));
 
         return (T) this;
     }

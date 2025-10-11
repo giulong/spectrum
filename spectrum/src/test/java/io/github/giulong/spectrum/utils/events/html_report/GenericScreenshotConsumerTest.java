@@ -8,9 +8,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import java.util.Map;
-
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.verify;
@@ -25,9 +22,6 @@ class GenericScreenshotConsumerTest {
     private TestData testData;
 
     @Mock
-    private Map<String, Object> payload;
-
-    @Mock
     private ExtensionContext context;
 
     @Mock
@@ -39,8 +33,7 @@ class GenericScreenshotConsumerTest {
     @Test
     @DisplayName("accept should do the common operations for the provided screenshot")
     void accept() {
-        when(event.getPayload()).thenReturn(payload);
-        when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
+        when(event.getContext()).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
 

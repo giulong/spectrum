@@ -20,7 +20,6 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -106,7 +105,7 @@ class ScreenshotConsumerTest {
     @DisplayName("shouldAccept should set a bunch of state variables")
     void shouldAccept() {
         when(event.getPayload()).thenReturn(payload);
-        when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
+        when(event.getContext()).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);

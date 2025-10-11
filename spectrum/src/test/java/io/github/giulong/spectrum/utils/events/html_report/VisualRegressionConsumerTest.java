@@ -26,7 +26,6 @@ import static com.aventstack.extentreports.Status.FAIL;
 import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION_MANUAL;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.Assertions.*;
@@ -182,7 +181,7 @@ class VisualRegressionConsumerTest {
 
     private void superShouldAcceptStubs() {
         when(event.getPayload()).thenReturn(payload);
-        when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
+        when(event.getContext()).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);

@@ -8,9 +8,6 @@ import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.util.Map;
-
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -21,8 +18,7 @@ public class GenericScreenshotConsumer extends EventsConsumer {
     @Override
     public void accept(final Event event) {
         log.debug("Common screenshot operations");
-        final Map<String, Object> payload = event.getPayload();
-        final ExtensionContext.Store store = ((ExtensionContext) payload.get(EXTENSION_CONTEXT)).getStore(GLOBAL);
+        final ExtensionContext.Store store = event.getContext().getStore(GLOBAL);
 
         store.get(TEST_DATA, TestData.class).incrementScreenshotNumber();
     }

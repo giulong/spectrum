@@ -11,7 +11,6 @@ import org.openqa.selenium.TakesScreenshot;
 import java.util.Map;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
@@ -33,7 +32,7 @@ public class VideoAutoScreenshotProducer extends WebDriverEventConsumer {
         if (video.shouldRecord(frame)) {
             final byte[] screenshot = driver.getScreenshotAs(BYTES);
 
-            eventsDispatcher.fire(AUTO.getValue(), SCREENSHOT, Map.of(EXTENSION_CONTEXT, context, SCREENSHOT, screenshot));
+            eventsDispatcher.fire(AUTO.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot));
             log.trace("Recording frame {} for event '{}'", frame, webDriverEvent.getMessage());
 
             return;

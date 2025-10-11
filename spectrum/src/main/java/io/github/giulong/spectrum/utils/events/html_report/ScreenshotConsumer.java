@@ -14,7 +14,6 @@ import java.util.Map;
 
 import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -37,7 +36,7 @@ public abstract class ScreenshotConsumer extends EventsConsumer {
     protected boolean shouldAccept(final Event event) {
         final Map<String, Object> payload = event.getPayload();
 
-        this.store = ((ExtensionContext) payload.get(EXTENSION_CONTEXT)).getStore(GLOBAL);
+        this.store = event.getContext().getStore(GLOBAL);
         this.testData = store.get(TEST_DATA, TestData.class);
         this.currentNode = store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class).getCurrentNode();
         this.screenshot = (byte[]) payload.get(SCREENSHOT);
