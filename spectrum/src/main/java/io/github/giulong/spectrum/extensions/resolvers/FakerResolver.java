@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 import io.github.giulong.spectrum.utils.Configuration;
 import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
@@ -16,10 +17,10 @@ public class FakerResolver extends TypeBasedParameterResolver<Faker> {
     public static final String FAKER = "faker";
 
     @Override
-    public Faker resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
+    public Faker resolveParameter(@NonNull final ParameterContext parameterContext, final ExtensionContext context) {
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
-        return rootStore.getOrComputeIfAbsent(FAKER, e -> {
+        return rootStore.computeIfAbsent(FAKER, e -> {
             log.debug("Resolving {}", FAKER);
             final Configuration.Faker faker = rootStore.get(CONFIGURATION, Configuration.class).getFaker();
 

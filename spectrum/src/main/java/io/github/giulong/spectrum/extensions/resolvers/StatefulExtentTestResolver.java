@@ -8,6 +8,7 @@ import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ExtentReporter;
 import io.github.giulong.spectrum.utils.video.Video;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
@@ -25,7 +26,7 @@ public class StatefulExtentTestResolver extends TypeBasedParameterResolver<State
     private final ContextManager contextManager = ContextManager.getInstance();
 
     @Override
-    public StatefulExtentTest resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
+    public StatefulExtentTest resolveParameter(@NonNull final ParameterContext parameterContext, final ExtensionContext context) {
         log.debug("Resolving {}", STATEFUL_EXTENT_TEST);
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);

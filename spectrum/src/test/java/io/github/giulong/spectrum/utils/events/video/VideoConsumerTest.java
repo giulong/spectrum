@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
@@ -377,9 +376,8 @@ class VideoConsumerTest {
     private void acceptStubs() {
         when(configuration.getVideo()).thenReturn(video);
         when(event.getPayload()).thenReturn(payload);
-        when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
+        when(event.getContext()).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
-        //when(payload.get(SCREENSHOT)).thenReturn(screenshot);
     }
 }

@@ -9,7 +9,7 @@
     <version>${revision}</version>
     <packaging>pom</packaging>
     <name>Spectrum Aggregate</name>
-    <description>E2E Test Automation Framework</description>
+    <description>Modern Selenium Framework</description>
     <url>https://github.com/giulong/spectrum</url>
 
     <developers>
@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.25.6</revision>
+        <revision>1.26.1</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
@@ -46,13 +46,13 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <junit.version>5.13.4</junit.version>
+        <junit.version>6.0.0</junit.version>
         <mockito.version>5.20.0</mockito.version>
         <jackson.version>2.20.0</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <selenium.version>4.35.0</selenium.version>
+        <selenium.version>4.36.0</selenium.version>
     </properties>
 
     <profiles>
@@ -147,7 +147,7 @@
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
-                <version>1.13.4</version>
+                <version>${junit.version}</version>
             </dependency>
 
             <dependency>
@@ -197,7 +197,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.18</version>
+                <version>1.5.19</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.janino</groupId>
@@ -413,6 +413,7 @@
                             <junit.jupiter.execution.parallel.enabled>true</junit.jupiter.execution.parallel.enabled>
                             <junit.jupiter.execution.parallel.mode.default>same_thread</junit.jupiter.execution.parallel.mode.default>
                             <junit.jupiter.execution.parallel.mode.classes.default>concurrent</junit.jupiter.execution.parallel.mode.classes.default>
+                            <junit.jupiter.execution.timeout.testable.method.default>5 m</junit.jupiter.execution.timeout.testable.method.default>
                         </systemPropertyVariables>
                     </configuration>
                 </plugin>
@@ -439,7 +440,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.1</version>
+                <version>3.6.2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -527,10 +528,6 @@
                                     <token><![CDATA[<version>.*</version>]]></token>
                                     <value><![CDATA[<version>${revision}</version>]]></value>
                                 </replacement>
-                                <replacement>
-                                    <token>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
-                                    <value>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
-                                </replacement>
                             </replacements>
                         </configuration>
                     </execution>
@@ -546,10 +543,6 @@
                                 <replacement>
                                     <token><![CDATA[<version>.*</version>]]></token>
                                     <value><![CDATA[<version>${revision}</version>]]></value>
-                                </replacement>
-                                <replacement>
-                                    <token>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '.*'</token>
-                                    <value>testImplementation group: 'io.github.giulong', name: 'spectrum', version: '${revision}'</value>
                                 </replacement>
                             </replacements>
                         </configuration>

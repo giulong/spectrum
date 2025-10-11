@@ -17,11 +17,9 @@ import org.mockito.Mock;
 
 import java.nio.file.Path;
 import java.security.MessageDigest;
-import java.util.Map;
 
 import static io.github.giulong.spectrum.enums.Result.DISABLED;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
@@ -55,9 +53,6 @@ class VideoDynamicConsumerTest {
     @Mock
     private Event event;
 
-    @Mock
-    private Map<String, Object> payload;
-
     @Captor
     private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
 
@@ -77,8 +72,7 @@ class VideoDynamicConsumerTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
-        when(event.getPayload()).thenReturn(payload);
-        when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
+        when(event.getContext()).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
 
@@ -104,8 +98,7 @@ class VideoDynamicConsumerTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
-        when(event.getPayload()).thenReturn(payload);
-        when(payload.get(EXTENSION_CONTEXT)).thenReturn(null);
+        when(event.getContext()).thenReturn(null);
 
         assertFalse(videoDynamicConsumer.shouldAccept(event));
     }
@@ -118,8 +111,7 @@ class VideoDynamicConsumerTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
-        when(event.getPayload()).thenReturn(payload);
-        when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
+        when(event.getContext()).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(null);
 
@@ -134,8 +126,7 @@ class VideoDynamicConsumerTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.isDisabled()).thenReturn(false);
 
-        when(event.getPayload()).thenReturn(payload);
-        when(payload.get(EXTENSION_CONTEXT)).thenReturn(context);
+        when(event.getContext()).thenReturn(context);
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.isDynamic()).thenReturn(false);

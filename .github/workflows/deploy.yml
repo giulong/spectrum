@@ -136,8 +136,3 @@ jobs:
       - name: Deploy GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-      - name: Ping latest Javadocs page
-        uses: jtalk/url-health-check-action@v4
-        with:
-          url: https://javadoc.io/doc/io.github.giulong/spectrum/${{ env.NEW_VERSION }}/index.html

@@ -10,6 +10,7 @@ import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.web_driver_events.*;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
@@ -42,7 +43,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
     private final FileUtils fileUtils = FileUtils.getInstance();
 
     @Override
-    public WebDriver resolveParameter(final ParameterContext arg0, final ExtensionContext context) {
+    public WebDriver resolveParameter(@NonNull final ParameterContext parameterContext, final ExtensionContext context) {
         log.debug("Resolving {}", DRIVER);
 
         final ExtensionContext.Store store = context.getStore(GLOBAL);

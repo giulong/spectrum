@@ -62,7 +62,7 @@ class EventsDispatcherResolverTest {
         final EventsDispatcherResolver eventsDispatcherResolver = new EventsDispatcherResolver();
         eventsDispatcherResolver.resolveParameter(parameterContext, extensionContext);
 
-        verify(rootStore).getOrComputeIfAbsent(eq(EVENTS_DISPATCHER), functionArgumentCaptor.capture(), eq(EventsDispatcher.class));
+        verify(rootStore).computeIfAbsent(eq(EVENTS_DISPATCHER), functionArgumentCaptor.capture(), eq(EventsDispatcher.class));
         Function<String, EventsDispatcher> function = functionArgumentCaptor.getValue();
         final EventsDispatcher actual = function.apply("value");
 

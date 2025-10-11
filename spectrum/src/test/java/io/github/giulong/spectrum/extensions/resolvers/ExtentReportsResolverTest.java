@@ -56,7 +56,7 @@ class ExtentReportsResolverTest {
 
         extentReportsResolver.resolveParameter(parameterContext, extensionContext);
 
-        verify(rootStore).getOrComputeIfAbsent(eq(EXTENT_REPORTS), functionArgumentCaptor.capture(), eq(ExtentReports.class));
+        verify(rootStore).computeIfAbsent(eq(EXTENT_REPORTS), functionArgumentCaptor.capture(), eq(ExtentReports.class));
         Function<String, ExtentReports> function = functionArgumentCaptor.getValue();
         final ExtentReports actual = function.apply("value");
 
