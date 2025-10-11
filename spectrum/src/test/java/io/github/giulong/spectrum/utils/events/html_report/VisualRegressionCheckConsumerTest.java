@@ -1,9 +1,6 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.MediaEntityBuilder;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.model.Media;
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
@@ -43,11 +40,7 @@ class VisualRegressionCheckConsumerTest {
     private final byte[] screenshot2 = new byte[]{4};
     private final int frameNumber = 123;
 
-    private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
-
-    @Mock
-    private MediaEntityBuilder mediaEntityBuilder;
 
     @MockSingleton
     @SuppressWarnings("unused")
@@ -73,12 +66,6 @@ class VisualRegressionCheckConsumerTest {
 
     @Mock
     private ExtentTest currentNode;
-
-    @Mock
-    private Status status;
-
-    @Mock
-    private Media media;
 
     @Mock
     private Event event;
@@ -136,13 +123,11 @@ class VisualRegressionCheckConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        mediaEntityBuilderMockedStatic = mockStatic(MediaEntityBuilder.class);
         filesMockedStatic = mockStatic(Files.class);
     }
 
     @AfterEach
     void afterEach() {
-        mediaEntityBuilderMockedStatic.close();
         filesMockedStatic.close();
     }
 
@@ -214,23 +199,13 @@ class VisualRegressionCheckConsumerTest {
 
         when(fileUtils.compare(referencePath, screenshot)).thenReturn(true);
 
-        // generateAndAddScreenshotFrom
-        final String tag = "tag";
-        final String message = "message";
+        // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);
-        Reflections.setField("frameNumber", consumer, frameNumber);
-        when(event.getPayload()).thenReturn(payload);
-        when(payload.get("message")).thenReturn(message);
-        when(payload.get("status")).thenReturn(status);
-        when(htmlUtils.buildFrameTagFor(frameNumber, message, testData, "screenshot-message")).thenReturn(tag);
-        when(MediaEntityBuilder.createScreenCaptureFromPath(referencePath.toString())).thenReturn(mediaEntityBuilder);
-        when(mediaEntityBuilder.build()).thenReturn(media);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 
         consumer.accept(event);
 
-        // generateAndAddScreenshotFrom
-        verify(currentNode).log(status, tag, media);
+        // addScreenshot
         verify(screenshots).put(referencePath.toString(), screenshot);
         verify(fileUtils).write(referencePath, screenshot);
 

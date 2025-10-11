@@ -12,7 +12,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
@@ -44,18 +43,13 @@ public abstract class ScreenshotConsumer extends EventsConsumer {
         return true;
     }
 
-    protected void generateAndAddScreenshotFrom(final Event event, final Path path) {
-        final Map<String, Object> payload = event.getPayload();
-        final String message = (String) payload.get("message");
-        final Status status = (Status) payload.get("status");
-        final String tag = htmlUtils.buildFrameTagFor(frameNumber, message, testData, "screenshot-message");
-
-        addScreenshot(path, status, tag, createScreenCaptureFromPath(path.toString()).build());
-    }
-
-    protected void addScreenshot(final Path path, final Status status, final String tag, final Media media) {
-        currentNode.log(status, tag, media);
+    protected void addScreenshot(final Path path) {
         contextManager.getScreenshots().put(path.toString(), screenshot);
         fileUtils.write(path, screenshot);
+    }
+
+    protected void addScreenshotToReport(final Path path, final Status status, final String tag, final Media media) {
+        currentNode.log(status, tag, media);
+        addScreenshot(path);
     }
 }

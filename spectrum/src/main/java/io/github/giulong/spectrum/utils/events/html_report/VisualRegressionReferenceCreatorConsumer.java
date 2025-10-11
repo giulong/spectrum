@@ -21,6 +21,6 @@ public class VisualRegressionReferenceCreatorConsumer extends VisualRegressionCo
         log.debug("Generating visual regression reference {}", referencePath);
 
         runChecks();
-        generateAndAddScreenshotFrom(event, referencePath);
+        addScreenshot(referencePath);
     }
 }

@@ -27,6 +27,6 @@ public class ExtentScreenshotConsumer extends ScreenshotConsumer {
         final Status status = (Status) payload.get("status");
         final String tag = htmlUtils.buildFrameTagFor(frameNumber, message, testData, "screenshot-message");
 
-        addScreenshot(path, status, tag, createScreenCaptureFromPath(path.toString()).build());
+        addScreenshotToReport(path, status, tag, createScreenCaptureFromPath(path.toString()).build());
     }
 }

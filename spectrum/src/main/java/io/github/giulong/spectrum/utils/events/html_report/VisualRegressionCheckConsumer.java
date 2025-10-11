@@ -28,7 +28,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
         if (fileUtils.compare(referencePath, screenshot)) {
             log.debug("Screenshot matches with its reference {}", referencePath);
 
-            generateAndAddScreenshotFrom(event, referencePath);
+            addScreenshot(referencePath);
             return;
         }
 
@@ -38,7 +38,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
         final Path failedScreenshotPath = regressionPath.resolve(fileUtils.getFailedScreenshotNameFrom(testData));
         final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, Files.readAllBytes(referencePath), screenshot);
 
-        addScreenshot(failedScreenshotPath, FAIL, visualRegressionTag, null);
+        addScreenshotToReport(failedScreenshotPath, FAIL, visualRegressionTag, null);
 
         if (visualRegression.isFailFast()) {
             log.error("Failing fast due to first visual regression found!");
