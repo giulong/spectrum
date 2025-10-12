@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.android.options.EspressoOptions;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,7 +23,8 @@ class EspressoTest {
     @Mock
     private EspressoOptions espressoOptions;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -39,7 +41,6 @@ class EspressoTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", espresso, configuration);
         Reflections.setField("capabilities", espresso, espressoOptions);
     }
 

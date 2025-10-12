@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.drivers;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,7 +40,8 @@ class ChromeTest {
     @Mock
     private Level performanceLevel;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -51,11 +52,6 @@ class ChromeTest {
 
     @InjectMocks
     private Chrome chrome;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", chrome, configuration);
-    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of ChromeDriverService.Builder()")

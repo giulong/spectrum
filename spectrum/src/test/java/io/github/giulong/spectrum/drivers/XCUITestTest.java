@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.drivers;
 
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +25,8 @@ class XCUITestTest {
     @Mock
     private XCUITestOptions xcuiTestOptions;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -44,7 +46,6 @@ class XCUITestTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", xcuiTest, configuration);
         Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
     }
 

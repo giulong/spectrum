@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.MockSingleton;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -28,11 +28,12 @@ class HtmlUtilsTest {
 
     private final String testId = "testId";
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
-    private Map<Path, byte[]> screenshots;
+    private Map<String, byte[]> screenshots;
 
     @Mock
     private Path path;
@@ -43,10 +44,12 @@ class HtmlUtilsTest {
     @Mock
     private TestData testData;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Captor
@@ -59,10 +62,6 @@ class HtmlUtilsTest {
     void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);
-
-        Reflections.setField("contextManager", htmlUtils, contextManager);
-        Reflections.setField("freeMarkerWrapper", htmlUtils, freeMarkerWrapper);
-        Reflections.setField("fileUtils", htmlUtils, fileUtils);
     }
 
     @AfterEach
@@ -81,22 +80,27 @@ class HtmlUtilsTest {
     @Test
     @DisplayName("sessionOpened should init the html utils")
     void sessionOpened() {
-        final String videoTemplate = "videoHtml";
-        final String divTemplate = "divTemplateHtml";
-        final String divFrameTemplate = "divFrameTemplateHtml";
-        final String divImageTemplate = "divImageHtml";
+        final String videoTemplate = "videoTemplate";
+        final String divTemplate = "divTemplate";
+        final String frameTemplate = "frameTemplate";
+        final String imageTemplate = "imageTemplate";
+        final String visualRegressionTemplate = "visualRegressionTemplate";
 
         when(fileUtils.readTemplate("video.html")).thenReturn(videoTemplate);
         when(fileUtils.readTemplate("div-template.html")).thenReturn(divTemplate);
-        when(fileUtils.readTemplate("div-frame-template.html")).thenReturn(divFrameTemplate);
-        when(fileUtils.readTemplate("div-image-template.html")).thenReturn(divImageTemplate);
+        when(fileUtils.readTemplate("frame-template.html")).thenReturn(frameTemplate);
+        when(fileUtils.readTemplate("image-template.html")).thenReturn(imageTemplate);
+        when(fileUtils.readTemplate("visual-regression-template.html")).thenReturn(visualRegressionTemplate);
 
         htmlUtils.sessionOpened();
 
         assertEquals(videoTemplate, Reflections.getFieldValue("videoTemplate", htmlUtils));
         assertEquals(divTemplate, Reflections.getFieldValue("divTemplate", htmlUtils));
-        assertEquals(divFrameTemplate, Reflections.getFieldValue("frameTemplate", htmlUtils));
-        assertEquals(divImageTemplate, Reflections.getFieldValue("inlineImageTemplate", htmlUtils));
+        assertEquals(frameTemplate, Reflections.getFieldValue("frameTemplate", htmlUtils));
+        assertEquals(imageTemplate, Reflections.getFieldValue("imageTemplate", htmlUtils));
+        assertEquals(visualRegressionTemplate, Reflections.getFieldValue("visualRegressionTemplate", htmlUtils));
+
+        verifyNoMoreInteractions(fileUtils);
     }
 
     @Test
@@ -115,21 +119,39 @@ class HtmlUtilsTest {
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals(interpolatedTemplate, result);
         assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
-
     }
 
     @Test
     @DisplayName("buildFrameTagFor should return the tag with the provided frame number, content, and css classes provided")
     void buildFrameTagFor() {
-        when(testData.getTestId()).thenReturn(testId);
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("classes", "classes", "id", testId, "number", 123, "content", "content");
 
         Reflections.setField("frameTemplate", htmlUtils, source);
+
+        when(testData.getTestId()).thenReturn(testId);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
         final String result = htmlUtils.buildFrameTagFor(123, "content", testData, "classes");
+
+        verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
+        assertEquals(interpolatedTemplate, result);
+        assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
+    }
+
+    @Test
+    @DisplayName("buildVisualRegressionTagFor should return the tag with the provided frame number and test id")
+    void buildVisualRegressionTagFor() {
+        when(testData.getTestId()).thenReturn(testId);
+        final String interpolatedTemplate = "interpolatedTemplate";
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of("id", testId, "number", 123, "reference", "AQID", "regression", "BAUG");
+
+        Reflections.setField("visualRegressionTemplate", htmlUtils, source);
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
+
+        final String result = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6});
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals(interpolatedTemplate, result);
@@ -142,17 +164,16 @@ class HtmlUtilsTest {
         final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";
 
         when(Path.of("src1")).thenReturn(path);
-        when(Path.of("src2")).thenReturn(path2);
         when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "BAUG");
 
-        Reflections.setField("inlineImageTemplate", htmlUtils, source);
+        Reflections.setField("imageTemplate", htmlUtils, source);
         final String interpolatedTemplate = "interpolatedTemplate";
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
-        when(screenshots.get(path2)).thenReturn(new byte[]{4, 5, 6});
+        when(screenshots.get("src2")).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inline(report);
 
@@ -167,19 +188,17 @@ class HtmlUtilsTest {
         final String html = "abc<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src1\"/></div></div>def" +
                 "<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>ghi";
 
-        when(Path.of("src1")).thenReturn(path);
-        when(Path.of("src2")).thenReturn(path2);
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "AQID");
         final Map<String, Object> expectedParams1 = Map.of("encoded", "BAUG");
 
-        Reflections.setField("inlineImageTemplate", htmlUtils, source);
+        Reflections.setField("imageTemplate", htmlUtils, source);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
         when(freeMarkerWrapper.interpolate(source, expectedParams1)).thenReturn(interpolatedTemplate);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
-        when(screenshots.get(path)).thenReturn(new byte[]{1, 2, 3});
-        when(screenshots.get(path2)).thenReturn(new byte[]{4, 5, 6});
+        when(screenshots.get("src1")).thenReturn(new byte[]{1, 2, 3});
+        when(screenshots.get("src2")).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inlineImagesOf(html);
 

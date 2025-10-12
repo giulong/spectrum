@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.testbook;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
@@ -46,7 +47,8 @@ class TestBookUnitTest {
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -142,7 +144,6 @@ class TestBookUnitTest {
         final String output = "output";
         final String extension = "extension";
 
-        Reflections.setField("fileUtils", testBook, fileUtils);
         Reflections.setField("reporters", testBook, List.of(reporter1, reporter2));
         when(fileUtils.getExtensionOf(output)).thenReturn(extension);
         when(reporter1.getOutput()).thenReturn(output);

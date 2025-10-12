@@ -68,42 +68,42 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 
-        assertEquals("3", extentReportPage.getVideoJsWebElementItCheckingJsWebElements().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoJsWebElementItTestFindElementsMethod().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoJsWebElementItShadowDom().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoJsWebElementItTestInputFieldActions().getDomProperty("duration"));
+        assertEquals("3", extentReportPage.getVideoJsWebElementItCheckingJsWebElements().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoJsWebElementItTestFindElementsMethod().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoJsWebElementItShadowDom().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoJsWebElementItTestInputFieldActions().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("1", extentReportPage.getVideoJavascriptItTestInputFieldActions().getDomProperty("duration"));
-        assertEquals("2", extentReportPage.getVideoJavascriptItTestFindElementMethod().getDomProperty("duration"));
-        assertEquals("2", extentReportPage.getVideoJavascriptItShadowDom().getDomProperty("duration"));
-        assertEquals("4", extentReportPage.getVideoJavascriptItTestWithNoDisplayName().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoJavascriptItTestWebElementGetMethods().getDomProperty("duration"));
-        assertEquals("2", extentReportPage.getVideoJavascriptItTestFindElementsMethod().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoJavascriptItTestInputFieldActions().getDomProperty("duration"), "video duration should match");
+        assertEquals("2", extentReportPage.getVideoJavascriptItTestFindElementMethod().getDomProperty("duration"), "video duration should match");
+        assertEquals("2", extentReportPage.getVideoJavascriptItShadowDom().getDomProperty("duration"), "video duration should match");
+        assertEquals("4", extentReportPage.getVideoJavascriptItTestWithNoDisplayName().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoJavascriptItTestWebElementGetMethods().getDomProperty("duration"), "video duration should match");
+        assertEquals("2", extentReportPage.getVideoJavascriptItTestFindElementsMethod().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("5", extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers().getDomProperty("duration"));
+        assertEquals("5", extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("15", extentReportPage.getVideoNavigationItTestToShowNavigationAndProducedVideo().getDomProperty("duration"));
+        assertEquals("15", extentReportPage.getVideoNavigationItTestToShowNavigationAndProducedVideo().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("5", extentReportPage.getVideoCheckboxItTestWithNoDisplayName().getDomProperty("duration"));
+        assertEquals("5", extentReportPage.getVideoCheckboxItTestWithNoDisplayName().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("1", extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoDemoItThisOneShouldFailForDemonstrationPurposes().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoDemoItThisOneShouldFailForDemonstrationPurposes().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("3", extentReportPage.getVideoLoginFormItWithUserGiulioWeExpectLoginToBeSuccessfulFalse().getDomProperty("duration"));
-        assertEquals("3", extentReportPage.getVideoLoginFormItWithUserTomWeExpectLoginToBeSuccessfulTrue().getDomProperty("duration"));
+        assertEquals("3", extentReportPage.getVideoLoginFormItWithUserGiulioWeExpectLoginToBeSuccessfulFalse().getDomProperty("duration"), "video duration should match");
+        assertEquals("3", extentReportPage.getVideoLoginFormItWithUserTomWeExpectLoginToBeSuccessfulTrue().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("2", extentReportPage.getVideoFilesItUpload().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoFilesItDownload().getDomProperty("duration"));
+        assertEquals("2", extentReportPage.getVideoFilesItUpload().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoFilesItDownload().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("1", extentReportPage.getVideoFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoFakerItWith0Increments().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoFakerItWith2Increments().getDomProperty("duration"));
-        assertEquals("1", extentReportPage.getVideoFakerItWith5Increments().getDomProperty("duration"));
+        assertEquals("1", extentReportPage.getVideoFakerItTheLoginShouldFailLeveragingRandomNameGeneratedByFaker().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoFakerItWith0Increments().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoFakerItWith2Increments().getDomProperty("duration"), "video duration should match");
+        assertEquals("1", extentReportPage.getVideoFakerItWith5Increments().getDomProperty("duration"), "video duration should match");
 
-        assertEquals("18", extentReportPage.getVideoDynamicItNavigationToProveAutoWaitHelpsALot().getDomProperty("duration"));
+        assertEquals("18", extentReportPage.getVideoDynamicItNavigationToProveAutoWaitHelpsALot().getDomProperty("duration"), "video duration should match");
 
         // check screenshot was added programmatically with the screenshotInfo(String) method
-        assertFalse(extentReportPage.getScreenshotMessages().isEmpty());
+        assertFalse(extentReportPage.getScreenshotMessages().isEmpty(), "Screenshot messages should be displayed");
 
         assertTrue(Objects.requireNonNull(extentReportPage.getVideoFilesItUpload().getDomAttribute("class")).contains("class-added-from-js"));
 

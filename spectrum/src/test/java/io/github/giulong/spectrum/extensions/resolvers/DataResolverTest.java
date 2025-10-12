@@ -1,11 +1,10 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.TestYaml;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.YamlUtils;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -59,7 +58,8 @@ class DataResolverTest {
     @Mock
     private Type type;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
     @Mock
@@ -70,11 +70,6 @@ class DataResolverTest {
 
     @InjectMocks
     private DataResolver<TestYaml> dataResolver;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("yamlUtils", dataResolver, yamlUtils);
-    }
 
     @DisplayName("supportsParameter should check if the generic type name is exactly Data")
     @ParameterizedTest(name = "with value {0} we expect {1}")
