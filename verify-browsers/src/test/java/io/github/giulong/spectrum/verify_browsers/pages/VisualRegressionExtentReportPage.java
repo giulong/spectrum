@@ -22,8 +22,8 @@ public class VisualRegressionExtentReportPage extends SpectrumPage<VisualRegress
     @FindBy(className = "screenshot-message")
     private List<WebElement> screenshotMessages;
 
-    @FindBy(className = "visual-regression")
-    private List<WebElement> visualRegressions;
+    @FindBy(id = "video-visualregressionit-alwaysthesame")
+    private List<WebElement> videoFilesItUploads;
 
     @FindBy(css = "textarea[class=code-block]")
     private List<WebElement> visualRegressionException;

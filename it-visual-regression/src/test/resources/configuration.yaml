@@ -6,6 +6,7 @@ visualRegression:
     folder: target/visual-regression
   checks:
     count: 2
+  failFast: true
 
 video:
   frames:

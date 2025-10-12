@@ -29,10 +29,13 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(0, countTestsWithStatus("skip"), "Skipped tests");
         assertEquals(1, countTestsWithStatus("fail"), "Failed tests");
 
-        assertEquals(20, extentReportPage.getScreenshotMessages().size(), "Screenshot messages should be displayed");
+        assertEquals(18, extentReportPage.getScreenshotMessages().size(), "Screenshot messages should be displayed");
+
+        assertEquals("15", extentReportPage.getVideoFilesItUploads().getFirst().getDomProperty("duration"), "video duration should match");
+        assertEquals("15", extentReportPage.getVideoFilesItUploads().get(1).getDomProperty("duration"), "video duration should match");
+        assertEquals("6", extentReportPage.getVideoFilesItUploads().get(2).getDomProperty("duration"), "video duration should match");
 
         extentReportPage.getTestViewTests().get(2).click();
-        assertEquals(1, visibleElementsOf(extentReportPage.getVisualRegressions()).size(), "There should only be one visual regression");
         assertThat(extentReportPage.getTextOf(extentReportPage.getVisualRegressionException()), containsString("There were 1 visual regressions"));
     }
 
