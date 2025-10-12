@@ -3,40 +3,83 @@ package io.github.giulong.spectrum.it_visual_regression.tests;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it_visual_regression.pages.CheckboxPage;
 import io.github.giulong.spectrum.it_visual_regression.pages.LandingPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import io.github.giulong.spectrum.utils.FileUtils;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.openqa.selenium.WebElement;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Navigation")
+@TestMethodOrder(OrderAnnotation.class)
 class VisualRegressionIT extends SpectrumTest<Void> {
 
-    // You just need to declare your pages here: Spectrum will take care of instantiating them
-    // and will inject all the needed fields like the driver
-    private LandingPage landingPage;
+    private static final Path SNAPSHOTS_FOLDER = Path.of(configuration.getVisualRegression().getSnapshots().getFolder());
+    private static final FileUtils FILE_UTILS = FileUtils.getInstance();
 
+    private LandingPage landingPage;
     private CheckboxPage checkboxPage;
 
+    @BeforeAll
+    static void beforeAll() {
+        FILE_UTILS.deleteContentOf(SNAPSHOTS_FOLDER);
+    }
+
     @Test
-    @DisplayName("Test to show navigation and produced video")
-    void testWithNoDisplayName() {
-        // Open the base url of the application under test
+    @Order(1)
+    @DisplayName("alwaysTheSame")
+    void testReferenceCreation() {
+        this.runActualTest();
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("alwaysTheSame")
+    void testSuccessfulChecks() {
+        this.runActualTest();
+    }
+
+    @Test
+    @Order(3)
+    @DisplayName("alwaysTheSame")
+    void testFailedChecks() throws IOException {
+        try (InputStream inputStream = VisualRegressionIT.class.getResourceAsStream("/no-video.png");
+             Stream<Path> stream = Files.walk(SNAPSHOTS_FOLDER)) {
+            final List<File> files = stream
+                    .map(Path::toFile)
+                    .filter(File::isFile)
+                    .toList();
+
+            final Path secondScreenshot = files.get(1).toPath();
+
+            FILE_UTILS.delete(secondScreenshot);
+            FILE_UTILS.write(secondScreenshot, Objects.requireNonNull(inputStream).readAllBytes());
+        }
+
+        this.runActualTest();
+    }
+
+    private void runActualTest() {
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
         landingPage.getAbTestLink().click();
-        screenshot();
         driver.navigate().back();
         screenshot();
 
         landingPage.getAddRemoveElementsLink().click();
-        screenshot();
         driver.navigate().back();
         screenshot();
 
         landingPage.getBrokenImagesLink().click();
-        screenshot();
         driver.navigate().back();
         screenshot();
 
@@ -48,16 +91,11 @@ class VisualRegressionIT extends SpectrumTest<Void> {
         assertFalse(firstCheckbox.isSelected());
         assertTrue(secondCheckbox.isSelected());
 
-        screenshot();
         firstCheckbox.click();
-        screenshot();
         firstCheckbox.click();
-        screenshot();
         firstCheckbox.click();
-        screenshot();
         assertTrue(firstCheckbox.isSelected());
 
-        // Take a screenshot with a custom message
         screenshotInfo("After checking the first checkbox");
     }
 }

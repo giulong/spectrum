@@ -16,12 +16,6 @@ drivers:
   chrome:
     args:
       - --headless=new
-  firefox:
-    args:
-      - -headless
-  edge:
-    args:
-      - --headless=new
 
 extent:
   theme: DARK
