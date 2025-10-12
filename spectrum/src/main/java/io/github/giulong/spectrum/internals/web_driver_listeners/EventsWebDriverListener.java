@@ -472,6 +472,18 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
 
     @Override
     @Generated
+    public <X> void beforeGetScreenshotAs(final WebDriver driver, final OutputType<X> target) {
+        listenTo(AUTO_BEFORE, events.getBeforeGetScreenshotAs(), driver, target);
+    }
+
+    @Override
+    @Generated
+    public <X> void afterGetScreenshotAs(final WebDriver driver, final OutputType<X> target, final X result) {
+        listenTo(AUTO_AFTER, events.getAfterGetScreenshotAs(), driver, target, result);
+    }
+
+    @Override
+    @Generated
     public void beforeAnyNavigationCall(final WebDriver.Navigation navigation, final Method method, final Object[] args) {
         listenTo(AUTO_BEFORE, events.getBeforeAnyNavigationCall(), navigation, method, Arrays.toString(args));
     }

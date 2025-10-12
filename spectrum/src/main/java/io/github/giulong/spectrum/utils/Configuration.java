@@ -541,6 +541,8 @@ public class Configuration {
             private Event afterGetSize;
             private Event beforeGetCssValue;
             private Event afterGetCssValue;
+            private Event beforeGetScreenshotAs;
+            private Event afterGetScreenshotAs;
             private Event beforeAnyNavigationCall;
             private Event afterAnyNavigationCall;
             private Event beforeTo;
