@@ -1,18 +1,20 @@
 package io.github.giulong.spectrum.extensions.resolvers.bidi;
 
+import io.github.giulong.spectrum.utils.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.HasBiDi;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 public abstract class BiDiTypeBasedParameterResolver<T> implements ParameterResolver {
+
+    private final Configuration configuration = Configuration.getInstance();
 
     abstract String getKey();
 
@@ -31,7 +33,7 @@ public abstract class BiDiTypeBasedParameterResolver<T> implements ParameterReso
         final WebDriver driver = store.get(DRIVER, WebDriver.class);
         final String key = getKey();
 
-        if (!isBiDiEnabledFor(driver)) {
+        if (!configuration.getDrivers().isBiDi()) {
             log.debug("BiDi disabled. Avoid resolving {}", key);
             return null;
         }
@@ -41,9 +43,5 @@ public abstract class BiDiTypeBasedParameterResolver<T> implements ParameterReso
 
         store.put(key, t);
         return t;
-    }
-
-    boolean isBiDiEnabledFor(final WebDriver driver) {
-        return driver instanceof HasBiDi && ((HasBiDi) driver).maybeGetBiDi().isPresent();
     }
 }
