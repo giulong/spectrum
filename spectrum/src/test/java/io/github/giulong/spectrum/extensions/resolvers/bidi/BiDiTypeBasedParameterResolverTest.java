@@ -1,6 +1,9 @@
 package io.github.giulong.spectrum.extensions.resolvers.bidi;
 
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Reflections;
 import lombok.Getter;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -11,20 +14,25 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.bidi.BiDi;
 import org.openqa.selenium.bidi.HasBiDi;
 
 import java.lang.reflect.Parameter;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 
 class BiDiTypeBasedParameterResolverTest {
+
+    @Mock
+    private Configuration configuration;
+
+    @Mock
+    private Configuration.Drivers drivers;
 
     @Mock
     private ParameterContext parameterContext;
@@ -34,9 +42,6 @@ class BiDiTypeBasedParameterResolverTest {
 
     @Mock
     private ExtensionContext.Store store;
-
-    @Mock
-    private BiDi biDi;
 
     @Mock
     private WebDriver driver;
@@ -49,6 +54,11 @@ class BiDiTypeBasedParameterResolverTest {
 
     @InjectMocks
     private DummyBiDiTypeBasedParameterResolver biDiTypeBasedParameterResolver;
+
+    @BeforeEach
+    void beforeEach() {
+        Reflections.setField("configuration", biDiTypeBasedParameterResolver, configuration);
+    }
 
     @DisplayName("supportsParameter should check if the provided parameter type matches the concrete instance type")
     @ParameterizedTest(name = "with concrete type {0} we expect {1}")
@@ -74,6 +84,8 @@ class BiDiTypeBasedParameterResolverTest {
     void resolveParameter() {
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(DRIVER, WebDriver.class)).thenReturn(driver);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.isBiDi()).thenReturn(false);
 
         assertNull(biDiTypeBasedParameterResolver.resolveParameter(parameterContext, context));
 
@@ -88,7 +100,8 @@ class BiDiTypeBasedParameterResolverTest {
     void resolveParameterBiDi() {
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(DRIVER, WebDriver.class)).thenReturn(bidiDriver);
-        when(((HasBiDi) bidiDriver).maybeGetBiDi()).thenReturn(Optional.of(biDi));
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.isBiDi()).thenReturn(true);
 
         assertEquals("parameter", biDiTypeBasedParameterResolver.resolveParameter(parameterContext, context));
 
@@ -97,28 +110,6 @@ class BiDiTypeBasedParameterResolverTest {
         verifyNoInteractions(parameterContext);
         verifyNoMoreInteractions(context);
         verifyNoMoreInteractions(driver);
-    }
-
-    @Test
-    @DisplayName("isBiDiEnabledFor should return false if the provided driver doesn't support BiDi")
-    void isBiDiEnabledForFalse() {
-        assertFalse(biDiTypeBasedParameterResolver.isBiDiEnabledFor(driver));
-    }
-
-    @Test
-    @DisplayName("isBiDiEnabledFor should return false if the provided driver supports BiDi but the optional is empty")
-    void isBiDiEnabledForEmpty() {
-        when(((HasBiDi) bidiDriver).maybeGetBiDi()).thenReturn(Optional.empty());
-
-        assertFalse(biDiTypeBasedParameterResolver.isBiDiEnabledFor(bidiDriver));
-    }
-
-    @Test
-    @DisplayName("isBiDiEnabledFor should return true if the provided driver supports BiDi")
-    void isBiDiEnabledFor() {
-        when(((HasBiDi) bidiDriver).maybeGetBiDi()).thenReturn(Optional.of(biDi));
-
-        assertTrue(biDiTypeBasedParameterResolver.isBiDiEnabledFor(bidiDriver));
     }
 
     @Getter
