@@ -1,15 +1,16 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import com.aventstack.extentreports.ExtentReports;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.ExtentReporter;
-import io.github.giulong.spectrum.utils.Reflections;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
-import org.mockito.*;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 import java.util.function.Function;
 
@@ -20,9 +21,8 @@ import static org.mockito.Mockito.*;
 
 class ExtentReportsResolverTest {
 
-    private static MockedStatic<ExtentReporter> extentReporterMockedStatic;
-
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
     @Mock
@@ -45,17 +45,6 @@ class ExtentReportsResolverTest {
 
     @InjectMocks
     private ExtentReportsResolver extentReportsResolver;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("extentReporter", extentReportsResolver, extentReporter);
-        extentReporterMockedStatic = mockStatic(ExtentReporter.class);
-    }
-
-    @AfterEach
-    void afterEach() {
-        extentReporterMockedStatic.close();
-    }
 
     @Test
     @DisplayName("resolveParameter should return the ExtentReports from SpectrumSessionListener")

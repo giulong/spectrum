@@ -1,12 +1,11 @@
 package io.github.giulong.spectrum.utils.events;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.environments.LocalEnvironment;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -47,7 +46,8 @@ class DriverConsumerTest {
     @Mock
     private Network network;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -67,11 +67,6 @@ class DriverConsumerTest {
 
     @InjectMocks
     private DriverConsumer driverConsumer;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", driverConsumer, configuration);
-    }
 
     @DisplayName("shouldAccept should check if the test is disabled")
     @ParameterizedTest(name = "with result {0} we expect {1}")
