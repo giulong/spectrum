@@ -12,7 +12,7 @@
 
     <artifactId>spectrum</artifactId>
     <name>Spectrum</name>
-    <description>E2E Test Automation Framework</description>
+    <description>Modern Selenium Framework</description>
     <url>https://github.com/giulong/spectrum</url>
 
     <developers>
@@ -215,7 +215,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.13</version>
+                <version>0.8.14</version>
                 <configuration>
                     <excludes>
                         <exclude>io/github/giulong/spectrum/pojos/**/*</exclude>
