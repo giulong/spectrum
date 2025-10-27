@@ -1,15 +1,8 @@
 package io.github.giulong.spectrum.internals.jackson.json_schema;
 
-import com.fasterxml.classmate.ResolvedType;
-import com.github.victools.jsonschema.generator.FieldScope;
-import com.github.victools.jsonschema.generator.Module;
-import com.github.victools.jsonschema.generator.SchemaGenerator;
-import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
-import com.github.victools.jsonschema.module.jackson.JacksonModule;
-import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
-import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.utils.Configuration;
-import lombok.SneakyThrows;
+import static com.github.victools.jsonschema.generator.Option.*;
+import static com.github.victools.jsonschema.module.jackson.JacksonOption.FLATTENED_ENUMS_FROM_JSONVALUE;
+import static com.github.victools.jsonschema.module.jackson.JacksonOption.SKIP_SUBTYPE_LOOKUP;
 
 import java.net.URI;
 import java.nio.file.Files;
@@ -17,9 +10,18 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.github.victools.jsonschema.generator.Option.*;
-import static com.github.victools.jsonschema.module.jackson.JacksonOption.FLATTENED_ENUMS_FROM_JSONVALUE;
-import static com.github.victools.jsonschema.module.jackson.JacksonOption.SKIP_SUBTYPE_LOOKUP;
+import com.fasterxml.classmate.ResolvedType;
+import com.github.victools.jsonschema.generator.FieldScope;
+import com.github.victools.jsonschema.generator.Module;
+import com.github.victools.jsonschema.generator.SchemaGenerator;
+import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
+import com.github.victools.jsonschema.module.jackson.JacksonModule;
+import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
+
+import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.utils.Configuration;
+
+import lombok.SneakyThrows;
 
 public class JsonSchemaInternalGeneratorModule implements Module {
 

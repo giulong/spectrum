@@ -1,17 +1,6 @@
 package io.github.giulong.spectrum.internals.jackson.json_schema;
 
-import com.fasterxml.classmate.ResolvedType;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonView;
-import com.github.victools.jsonschema.generator.FieldScope;
-import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
-import com.github.victools.jsonschema.generator.TypeContext;
-import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
-import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import static java.util.function.Predicate.not;
 
 import java.io.FileReader;
 import java.lang.reflect.AnnotatedElement;
@@ -22,7 +11,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.function.Predicate.not;
+import com.fasterxml.classmate.ResolvedType;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.github.victools.jsonschema.generator.FieldScope;
+import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
+import com.github.victools.jsonschema.generator.TypeContext;
+import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
+
+import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 
 @Slf4j
 public class JsonSchemaGeneratorModule extends JsonSchemaInternalGeneratorModule {

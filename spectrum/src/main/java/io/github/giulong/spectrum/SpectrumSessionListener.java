@@ -1,16 +1,18 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.types.ProjectProperties;
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.platform.launcher.LauncherSession;
-import org.junit.platform.launcher.LauncherSessionListener;
-import org.slf4j.bridge.SLF4JBridgeHandler;
+import static java.util.function.Predicate.not;
 
 import java.util.*;
 
-import static java.util.function.Predicate.not;
+import io.github.giulong.spectrum.types.ProjectProperties;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.platform.launcher.LauncherSession;
+import org.junit.platform.launcher.LauncherSessionListener;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {

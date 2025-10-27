@@ -1,16 +1,17 @@
 package io.github.giulong.spectrum.it_macos.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.condition.OS.MAC;
+
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it_macos.pages.CheckboxPage;
 import io.github.giulong.spectrum.it_macos.pages.LandingPage;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIf;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.openqa.selenium.WebElement;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.condition.OS.MAC;
 
 @SuppressWarnings("unused")
 @DisplayName("Checkbox Page")

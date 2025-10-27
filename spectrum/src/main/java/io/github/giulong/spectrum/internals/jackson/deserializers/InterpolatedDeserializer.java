@@ -1,11 +1,13 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers;
 
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import io.github.giulong.spectrum.utils.Vars;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.databind.JsonDeserializer;
+
+import io.github.giulong.spectrum.utils.Vars;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {

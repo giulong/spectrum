@@ -1,12 +1,13 @@
 package io.github.giulong.spectrum.utils.js;
 
-import lombok.Builder;
-import org.openqa.selenium.WebElement;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import lombok.Builder;
+
+import org.openqa.selenium.WebElement;
 
 @Builder
 public class JsWebElementProxyBuilder {

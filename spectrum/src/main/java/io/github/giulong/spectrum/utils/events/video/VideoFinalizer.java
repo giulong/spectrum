@@ -1,20 +1,24 @@
 package io.github.giulong.spectrum.utils.events.video;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.jcodec.api.awt.AWTSequenceEncoder;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
-import javax.imageio.ImageIO;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Objects;
 
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import javax.imageio.ImageIO;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.types.TestData;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import org.jcodec.api.awt.AWTSequenceEncoder;
 
 @Slf4j
 @JsonView(Internal.class)

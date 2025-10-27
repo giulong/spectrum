@@ -1,13 +1,14 @@
 package io.github.giulong.spectrum.it.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.DownloadPage;
 import io.github.giulong.spectrum.it.pages.UploadPage;
+
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.TimeoutException;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Files Test")
 @SuppressWarnings("unused")

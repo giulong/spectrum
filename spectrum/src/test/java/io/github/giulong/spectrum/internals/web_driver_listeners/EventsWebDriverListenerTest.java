@@ -1,12 +1,25 @@
 package io.github.giulong.spectrum.internals.web_driver_listeners;
 
+import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
+import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.slf4j.event.Level.*;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Event;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,17 +32,6 @@ import org.mockito.MockedStatic;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
-import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.slf4j.event.Level.*;
 
 class EventsWebDriverListenerTest {
 

@@ -1,13 +1,14 @@
 package io.github.giulong.spectrum.drivers;
 
+import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
+import static org.openqa.selenium.logging.LogType.*;
+
 import io.github.giulong.spectrum.interfaces.BiDiDriver;
 import io.github.giulong.spectrum.utils.Configuration;
+
 import org.openqa.selenium.chromium.ChromiumOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.service.DriverService;
-
-import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
-import static org.openqa.selenium.logging.LogType.*;
 
 public abstract class Chromium<T extends ChromiumOptions<T>, U extends DriverService, V extends DriverService.Builder<U, V>> extends Driver<T, U, V> implements BiDiDriver<T> {
     void setLoggingPreferencesFrom(final Configuration.Drivers.Logs logs) {

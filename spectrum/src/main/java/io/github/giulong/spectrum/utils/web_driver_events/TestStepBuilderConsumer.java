@@ -1,16 +1,17 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
-import io.github.giulong.spectrum.pojos.events.TestStep;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.experimental.SuperBuilder;
+import static java.time.temporal.ChronoUnit.MILLIS;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.time.temporal.ChronoUnit.MILLIS;
+import io.github.giulong.spectrum.pojos.events.TestStep;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 public class TestStepBuilderConsumer extends WebDriverEventConsumer {

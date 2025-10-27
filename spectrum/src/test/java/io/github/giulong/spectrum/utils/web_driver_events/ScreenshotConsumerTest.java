@@ -1,10 +1,21 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+import static org.openqa.selenium.OutputType.BYTES;
+
+import java.util.Map;
+
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,16 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
-
-import java.util.Map;
-
-import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
-import static org.openqa.selenium.OutputType.BYTES;
 
 class ScreenshotConsumerTest {
 

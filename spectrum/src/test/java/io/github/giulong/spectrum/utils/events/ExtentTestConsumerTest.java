@@ -1,8 +1,12 @@
 package io.github.giulong.spectrum.utils.events;
 
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static org.mockito.Mockito.*;
+
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.ExtentReporter;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,9 +15,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static org.mockito.Mockito.*;
 
 class ExtentTestConsumerTest {
 

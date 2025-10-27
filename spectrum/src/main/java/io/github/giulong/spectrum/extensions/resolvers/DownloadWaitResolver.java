@@ -1,16 +1,18 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.utils.Configuration;
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
 import io.github.giulong.spectrum.types.DownloadWait;
+import io.github.giulong.spectrum.utils.Configuration;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 import org.openqa.selenium.WebDriver;
-
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 public class DownloadWaitResolver extends TypeBasedParameterResolver<DownloadWait> {

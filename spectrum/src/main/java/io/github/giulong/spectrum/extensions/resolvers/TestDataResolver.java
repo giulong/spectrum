@@ -1,20 +1,22 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.types.TestData;
-import io.github.giulong.spectrum.utils.ContextManager;
-import io.github.giulong.spectrum.utils.FileUtils;
-import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.NonNull;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.ContextManager;
+import io.github.giulong.spectrum.utils.FileUtils;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
 
 @Slf4j
 public class TestDataResolver extends TypeBasedParameterResolver<TestData> {

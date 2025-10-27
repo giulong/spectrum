@@ -1,10 +1,11 @@
 package io.github.giulong.spectrum.internals.page_factory;
 
+import java.lang.reflect.Method;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler;
-
-import java.lang.reflect.Method;
 
 @Slf4j
 public class SpectrumLocatingElementHandler extends LocatingElementHandler {

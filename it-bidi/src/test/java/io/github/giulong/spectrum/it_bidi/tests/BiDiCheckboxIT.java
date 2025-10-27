@@ -1,17 +1,18 @@
 package io.github.giulong.spectrum.it_bidi.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.bidi.browsingcontext.ReadinessState.COMPLETE;
+
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it_bidi.pages.CheckboxPage;
 import io.github.giulong.spectrum.it_bidi.pages.LandingPage;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.browsingcontext.NavigationResult;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.openqa.selenium.bidi.browsingcontext.ReadinessState.COMPLETE;
 
 @SuppressWarnings("unused")
 @DisplayName("Checkbox Page")

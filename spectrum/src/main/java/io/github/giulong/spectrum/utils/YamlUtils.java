@@ -1,10 +1,18 @@
 package io.github.giulong.spectrum.utils;
 
+import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
+import static lombok.AccessLevel.PRIVATE;
+
+import java.time.Duration;
+import java.util.Random;
+
 import ch.qos.logback.classic.Level;
+
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
 import io.github.giulong.spectrum.utils.environments.Environment;
@@ -17,15 +25,10 @@ import io.github.giulong.spectrum.utils.reporters.FileReporter.TxtSummaryReporte
 import io.github.giulong.spectrum.utils.reporters.FileReporter.TxtTestBookReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter.LogSummaryReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter.LogTestBookReporter;
+
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.Duration;
-import java.util.Random;
-
-import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
-import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)

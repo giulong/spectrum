@@ -1,13 +1,15 @@
 package io.github.giulong.spectrum.utils.js;
 
-import io.github.giulong.spectrum.interfaces.WebElementFinder;
-import io.github.giulong.spectrum.utils.StringUtils;
-import lombok.Builder;
-import org.openqa.selenium.*;
+import static java.util.stream.Collectors.joining;
 
 import java.util.*;
 
-import static java.util.stream.Collectors.joining;
+import io.github.giulong.spectrum.interfaces.WebElementFinder;
+import io.github.giulong.spectrum.utils.StringUtils;
+
+import lombok.Builder;
+
+import org.openqa.selenium.*;
 
 @Builder
 @SuppressWarnings("checkstyle:MultipleStringLiterals")

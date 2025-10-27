@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.utils;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static lombok.AccessLevel.PRIVATE;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class ContextManager {

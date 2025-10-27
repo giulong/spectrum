@@ -1,23 +1,25 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.js.Js;
-import io.github.giulong.spectrum.utils.js.JsWebElementInvocationHandler;
-import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
-import lombok.extern.slf4j.Slf4j;
-import org.jspecify.annotations.NonNull;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
-import org.openqa.selenium.WebElement;
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.extensions.resolvers.JsResolver.JS;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.JsResolver.JS;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.js.Js;
+import io.github.giulong.spectrum.utils.js.JsWebElementInvocationHandler;
+import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.jspecify.annotations.NonNull;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
+import org.openqa.selenium.WebElement;
 
 @Slf4j
 public class JsWebElementProxyBuilderResolver extends TypeBasedParameterResolver<JsWebElementProxyBuilder> {

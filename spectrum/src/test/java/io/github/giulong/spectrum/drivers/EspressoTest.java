@@ -1,21 +1,22 @@
 package io.github.giulong.spectrum.drivers;
 
+import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+import java.nio.file.Path;
+import java.util.Map;
+
 import io.appium.java_client.android.options.EspressoOptions;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
-
-import java.nio.file.Path;
-import java.util.Map;
-
-import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 class EspressoTest {
 

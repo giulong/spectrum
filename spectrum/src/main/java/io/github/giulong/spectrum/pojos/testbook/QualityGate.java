@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.pojos.testbook;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
 import lombok.Getter;
 
 @SuppressWarnings("unused")

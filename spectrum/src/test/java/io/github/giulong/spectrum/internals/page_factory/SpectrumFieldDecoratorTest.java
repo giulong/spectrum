@@ -1,6 +1,13 @@
 package io.github.giulong.spectrum.internals.page_factory;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.lang.reflect.*;
+import java.util.List;
+
 import io.github.giulong.spectrum.interfaces.Secured;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -11,12 +18,6 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.pagefactory.ElementLocator;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.internal.LocatingElementListHandler;
-
-import java.lang.reflect.*;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class SpectrumFieldDecoratorTest {
 

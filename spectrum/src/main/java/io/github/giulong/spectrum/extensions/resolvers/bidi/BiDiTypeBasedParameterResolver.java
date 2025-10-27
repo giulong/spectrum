@@ -1,15 +1,17 @@
 package io.github.giulong.spectrum.extensions.resolvers.bidi;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
 import io.github.giulong.spectrum.utils.Configuration;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
 import org.openqa.selenium.WebDriver;
-
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 public abstract class BiDiTypeBasedParameterResolver<T> implements ParameterResolver {

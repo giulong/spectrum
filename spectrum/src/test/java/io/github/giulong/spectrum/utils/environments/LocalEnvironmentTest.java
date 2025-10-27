@@ -1,10 +1,16 @@
 package io.github.giulong.spectrum.utils.environments;
 
+import static io.github.giulong.spectrum.utils.environments.LocalEnvironment.DRIVER_SERVICE_THREAD_LOCAL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.slf4j.event.Level.DEBUG;
+
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.DriverLog;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Logs;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,11 +22,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.RemoteWebDriverBuilder;
 import org.openqa.selenium.remote.service.DriverService;
-
-import static io.github.giulong.spectrum.utils.environments.LocalEnvironment.DRIVER_SERVICE_THREAD_LOCAL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.slf4j.event.Level.DEBUG;
 
 class LocalEnvironmentTest {
 

@@ -1,9 +1,9 @@
 package io.github.giulong.spectrum.interfaces;
 
+import java.util.List;
+
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-
-import java.util.List;
 
 public interface WebElementFinder {
 

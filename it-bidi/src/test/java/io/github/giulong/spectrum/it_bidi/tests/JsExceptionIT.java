@@ -1,19 +1,21 @@
 package io.github.giulong.spectrum.it_bidi.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it_bidi.pages.JavascriptErrorPage;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.bidi.log.JavascriptLogEntry;
-
-import java.util.concurrent.CompletableFuture;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.bidi.log.LogLevel.ERROR;
+
+import java.util.concurrent.CompletableFuture;
+
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.it_bidi.pages.JavascriptErrorPage;
+
+import lombok.SneakyThrows;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 
 @SuppressWarnings("unused")
 @DisplayName("Js Exception")

@@ -1,17 +1,5 @@
 package io.github.giulong.spectrum.utils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import java.io.File;
-import java.nio.file.attribute.FileTime;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-
 import static java.lang.Integer.MAX_VALUE;
 import static java.lang.Math.clamp;
 import static java.lang.Math.max;
@@ -20,6 +8,20 @@ import static java.time.temporal.ChronoUnit.DAYS;
 import static java.util.Comparator.comparing;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.partitioningBy;
+
+import java.io.File;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
+import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter

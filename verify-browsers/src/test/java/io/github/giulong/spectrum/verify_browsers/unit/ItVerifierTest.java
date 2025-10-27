@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.verify_browsers.unit;
 
-import io.github.giulong.spectrum.verify_commons.FailsafeReportsVerifier;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.nio.file.Path;
 import java.util.Scanner;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import io.github.giulong.spectrum.verify_commons.FailsafeReportsVerifier;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 public class ItVerifierTest {
 

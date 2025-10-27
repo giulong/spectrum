@@ -1,16 +1,17 @@
 package io.github.giulong.spectrum.it.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it.pages.CheckboxPage;
-import io.github.giulong.spectrum.it.pages.LandingPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicNode;
-import org.junit.jupiter.api.TestFactory;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.it.pages.CheckboxPage;
+import io.github.giulong.spectrum.it.pages.LandingPage;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.TestFactory;
 
 @DisplayName("Test Factory")
 class TestFactoryIT extends SpectrumTest<Void> {

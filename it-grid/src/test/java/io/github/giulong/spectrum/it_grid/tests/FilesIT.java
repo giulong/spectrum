@@ -1,14 +1,9 @@
 package io.github.giulong.spectrum.it_grid.tests;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it_grid.pages.DownloadPage;
-import io.github.giulong.spectrum.it_grid.pages.UploadPage;
-import lombok.Getter;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.TimeoutException;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -19,10 +14,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.it_grid.pages.DownloadPage;
+import io.github.giulong.spectrum.it_grid.pages.UploadPage;
+
+import lombok.Getter;
+import lombok.SneakyThrows;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.TimeoutException;
 
 @DisplayName("Files Test")
 @SuppressWarnings("unused")

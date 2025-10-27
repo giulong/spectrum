@@ -1,5 +1,16 @@
 package io.github.giulong.spectrum;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
+import java.time.Duration;
+import java.util.List;
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.interfaces.Secured;
 import io.github.giulong.spectrum.internals.page_factory.SpectrumFieldDecorator;
@@ -8,6 +19,7 @@ import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.js.JsWebElementListInvocationHandler;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,17 +32,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
-import java.time.Duration;
-import java.util.List;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class SpectrumPageTest {
 

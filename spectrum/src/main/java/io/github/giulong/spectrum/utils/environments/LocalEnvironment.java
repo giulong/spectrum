@@ -1,10 +1,13 @@
 package io.github.giulong.spectrum.utils.environments;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.DriverLog;
 import io.github.giulong.spectrum.utils.Configuration;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.service.DriverService;

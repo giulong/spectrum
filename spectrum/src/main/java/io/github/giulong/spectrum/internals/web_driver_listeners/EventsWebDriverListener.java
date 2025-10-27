@@ -1,17 +1,7 @@
 package io.github.giulong.spectrum.internals.web_driver_listeners;
 
-import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
-import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
-import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
-import lombok.Generated;
-import lombok.SneakyThrows;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.*;
-import org.openqa.selenium.interactions.Sequence;
-import org.slf4j.event.Level;
+import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
+import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -21,8 +11,20 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
-import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
+import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
+import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
+import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
+
+import lombok.Generated;
+import lombok.SneakyThrows;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Sequence;
+import org.slf4j.event.Level;
 
 @Slf4j
 @SuperBuilder

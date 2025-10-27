@@ -1,17 +1,8 @@
 package io.github.giulong.spectrum.utils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.github.giulong.spectrum.enums.Result;
-import io.github.giulong.spectrum.interfaces.SessionHook;
-import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
-import io.github.giulong.spectrum.interfaces.reports.Reportable;
-import io.github.giulong.spectrum.utils.reporters.FileReporter;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
-import org.junit.platform.launcher.listeners.TestExecutionSummary;
-import org.mvel2.MVEL;
+import static io.github.giulong.spectrum.enums.Result.FAILED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -20,9 +11,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static io.github.giulong.spectrum.enums.Result.FAILED;
-import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
+import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
+import io.github.giulong.spectrum.interfaces.reports.Reportable;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
+import org.junit.platform.launcher.listeners.TestExecutionSummary;
+import org.mvel2.MVEL;
 
 @Getter
 @Slf4j

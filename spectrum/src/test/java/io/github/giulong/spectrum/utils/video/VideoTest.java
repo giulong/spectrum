@@ -1,23 +1,24 @@
 package io.github.giulong.spectrum.utils.video;
 
+import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
+import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.util.List;
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class VideoTest {
 

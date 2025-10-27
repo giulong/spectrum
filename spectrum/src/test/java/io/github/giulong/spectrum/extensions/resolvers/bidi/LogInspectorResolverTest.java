@@ -1,5 +1,8 @@
 package io.github.giulong.spectrum.extensions.resolvers.bidi;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mockConstruction;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -7,9 +10,6 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.module.LogInspector;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mockConstruction;
 
 class LogInspectorResolverTest {
 

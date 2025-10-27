@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.it_bidi.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.bidi.browsingcontext.BrowsingContextInfo;
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.bidi.browsingcontext.ReadinessState.COMPLETE;
+
+import java.util.List;
+
+import io.github.giulong.spectrum.SpectrumTest;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContextInfo;
 
 public class BrowsingContextIT extends SpectrumTest<Void> {
 

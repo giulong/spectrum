@@ -1,9 +1,9 @@
 package io.github.giulong.spectrum.drivers;
 
+import java.net.URL;
+
 import io.appium.java_client.mac.Mac2Driver;
 import io.appium.java_client.mac.options.Mac2Options;
-
-import java.net.URL;
 
 public class Mac2 extends Appium<Mac2Options, Mac2Driver> {
 

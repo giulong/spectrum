@@ -1,8 +1,20 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.extensions.resolvers.JsResolver.JS;
+import static io.github.giulong.spectrum.extensions.resolvers.JsWebElementProxyBuilderResolver.JS_WEB_ELEMENT_PROXY_BUILDER;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,17 +22,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.mockito.*;
-
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.regex.Pattern;
-
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.JsResolver.JS;
-import static io.github.giulong.spectrum.extensions.resolvers.JsWebElementProxyBuilderResolver.JS_WEB_ELEMENT_PROXY_BUILDER;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class JsWebElementProxyBuilderResolverTest {
 

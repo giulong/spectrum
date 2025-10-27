@@ -1,15 +1,18 @@
 package io.github.giulong.spectrum.utils.environments;
 
+import java.net.URL;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.utils.Configuration;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.LocalFileDetector;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.net.URL;
 
 @Slf4j
 @Getter

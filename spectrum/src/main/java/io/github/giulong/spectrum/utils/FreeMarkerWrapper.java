@@ -1,20 +1,22 @@
 package io.github.giulong.spectrum.utils;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.Version;
-import io.github.giulong.spectrum.interfaces.SessionHook;
-import io.github.giulong.spectrum.utils.Configuration.FreeMarker;
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import static lombok.AccessLevel.PRIVATE;
+import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.utils.Configuration.FreeMarker;
+
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.Version;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)

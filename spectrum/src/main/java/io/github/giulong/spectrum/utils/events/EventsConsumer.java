@@ -1,20 +1,22 @@
 package io.github.giulong.spectrum.utils.events;
 
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.events.video.*;
-import io.github.giulong.spectrum.utils.web_driver_events.TestStepsConsumer;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
+import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
+import static java.util.stream.Collectors.toSet;
 
 import java.util.List;
 import java.util.function.Consumer;
 
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.As.WRAPPER_OBJECT;
-import static com.fasterxml.jackson.annotation.JsonTypeInfo.Id.NAME;
-import static java.util.stream.Collectors.toSet;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.events.video.*;
+import io.github.giulong.spectrum.utils.web_driver_events.TestStepsConsumer;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @JsonTypeInfo(use = NAME, include = WRAPPER_OBJECT)
 @JsonSubTypes({

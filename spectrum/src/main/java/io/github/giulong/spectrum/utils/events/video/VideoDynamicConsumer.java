@@ -1,15 +1,17 @@
 package io.github.giulong.spectrum.utils.events.video;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 import java.nio.file.Path;
 
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.types.TestData;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 @JsonView(Internal.class)
 public class VideoDynamicConsumer extends VideoConsumer {
