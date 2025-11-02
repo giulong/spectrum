@@ -9,7 +9,11 @@
         <resetJUL>true</resetJUL>
     </contextListener>
 
-    <if condition='p("spectrum.log.colors").equals("false")'>
+    <condition class="ch.qos.logback.core.boolex.PropertyEqualityCondition">
+        <key>spectrum.log.colors</key>
+        <value>false</value>
+    </condition>
+    <if>
         <then>
             <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                 <encoder>
