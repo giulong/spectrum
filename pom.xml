@@ -321,6 +321,9 @@
                                 <order>java,javax,ch,com,io,net,lombok,org</order>
                             </importOrder>
                             <trimTrailingWhitespace/>
+                            <eclipse>
+                                <file>/Users/giulio/workspace/spectrum/spotless.xml</file>
+                            </eclipse>
                         </java>
                     </configuration>
                 </plugin>
