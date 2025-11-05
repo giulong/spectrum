@@ -46,13 +46,13 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <junit.version>6.0.0</junit.version>
+        <junit.version>6.0.1</junit.version>
         <mockito.version>5.20.0</mockito.version>
-        <jackson.version>2.20.0</jackson.version>
+        <jackson.version>2.20.1</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <selenium.version>4.37.0</selenium.version>
+        <selenium.version>4.38.0</selenium.version>
     </properties>
 
     <profiles>
@@ -198,11 +198,6 @@
                 <version>1.5.20</version>
             </dependency>
             <dependency>
-                <groupId>org.codehaus.janino</groupId>
-                <artifactId>janino</artifactId>
-                <version>3.1.12</version>
-            </dependency>
-            <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
@@ -227,7 +222,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.45.4</version>
+                <version>1.46.0</version>
             </dependency>
 
             <dependency>
@@ -250,7 +245,7 @@
             <dependency>
                 <groupId>net.datafaker</groupId>
                 <artifactId>datafaker</artifactId>
-                <version>2.5.2</version>
+                <version>2.5.3</version>
             </dependency>
 
             <dependency>
@@ -316,6 +311,20 @@
                     <version>3.5.0</version>
                 </plugin>
                 <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <java>
+                            <removeUnusedImports/>
+                            <importOrder>
+                                <order>java,javax,ch,com,io,net,lombok,org</order>
+                            </importOrder>
+                            <trimTrailingWhitespace/>
+                        </java>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.6.0</version>
@@ -323,7 +332,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>12.1.0</version>
+                            <version>12.1.1</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>

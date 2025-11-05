@@ -1,12 +1,14 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import java.util.List;
+
 import io.github.giulong.spectrum.enums.Frame;
+
 import lombok.Builder;
 import lombok.Getter;
+
 import org.openqa.selenium.WebElement;
 import org.slf4j.event.Level;
-
-import java.util.List;
 
 @Getter
 @Builder

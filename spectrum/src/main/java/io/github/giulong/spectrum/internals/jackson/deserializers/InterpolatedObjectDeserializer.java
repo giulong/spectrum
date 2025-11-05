@@ -1,15 +1,7 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import io.github.giulong.spectrum.utils.Vars;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.stream.Collectors.toMap;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,8 +9,18 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.stream.Collectors.toMap;
-import static lombok.AccessLevel.PRIVATE;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
+import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
+
+import io.github.giulong.spectrum.utils.Vars;
+
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)

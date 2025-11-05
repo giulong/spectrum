@@ -1,19 +1,20 @@
 package io.github.giulong.spectrum.it.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.enums.LocatorType;
 import io.github.giulong.spectrum.it.pages.CheckboxPage;
 import io.github.giulong.spectrum.it.pages.LandingPage;
 import io.github.giulong.spectrum.it.pages.LoginPage;
 import io.github.giulong.spectrum.it.pages.ShadowDomPage;
+
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.SearchContext;
 import org.openqa.selenium.WebElement;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 class JavascriptIT extends SpectrumTest<Void> {
 

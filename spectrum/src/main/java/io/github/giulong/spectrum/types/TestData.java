@@ -1,13 +1,14 @@
 package io.github.giulong.spectrum.types;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import org.jcodec.api.awt.AWTSequenceEncoder;
-
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+
+import org.jcodec.api.awt.AWTSequenceEncoder;
 
 @Getter
 @Builder

@@ -1,17 +1,19 @@
 package io.github.giulong.spectrum.it.pages;
 
+import static org.openqa.selenium.By.id;
+
 import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
-import io.github.giulong.spectrum.it.data.Data;
 import io.github.giulong.spectrum.interfaces.Secured;
+import io.github.giulong.spectrum.it.data.Data;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
-
-import static org.openqa.selenium.By.id;
 
 @Getter
 @Slf4j

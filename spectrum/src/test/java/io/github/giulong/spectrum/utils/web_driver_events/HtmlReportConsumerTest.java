@@ -1,11 +1,19 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import static com.aventstack.extentreports.Status.INFO;
+import static com.aventstack.extentreports.Status.WARNING;
+import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
+import static org.mockito.Mockito.*;
+import static org.slf4j.event.Level.WARN;
+
 import com.aventstack.extentreports.ExtentTest;
+
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,12 +22,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.slf4j.event.Level;
-
-import static com.aventstack.extentreports.Status.INFO;
-import static com.aventstack.extentreports.Status.WARNING;
-import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static org.mockito.Mockito.*;
-import static org.slf4j.event.Level.WARN;
 
 class HtmlReportConsumerTest {
 

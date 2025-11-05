@@ -1,22 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.github.giulong.spectrum.drivers.Driver;
-import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.utils.environments.Environment;
-import io.github.giulong.spectrum.utils.events.EventsConsumer;
-import io.github.giulong.spectrum.utils.testbook.TestBook;
-import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
-import io.github.giulong.spectrum.utils.video.Video;
-import lombok.Generated;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
-import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
 import java.net.URL;
@@ -24,7 +8,26 @@ import java.time.Duration;
 import java.util.*;
 import java.util.logging.Level;
 
-import static lombok.AccessLevel.PRIVATE;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
+import io.github.giulong.spectrum.drivers.Driver;
+import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.utils.environments.Environment;
+import io.github.giulong.spectrum.utils.events.EventsConsumer;
+import io.github.giulong.spectrum.utils.testbook.TestBook;
+import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import lombok.Generated;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 @SuppressWarnings("unused")
 @Getter

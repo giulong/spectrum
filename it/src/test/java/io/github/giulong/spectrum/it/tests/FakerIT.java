@@ -1,8 +1,18 @@
 package io.github.giulong.spectrum.it.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.openqa.selenium.Keys.ARROW_UP;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.it.pages.InputsPage;
 import io.github.giulong.spectrum.it.pages.LoginPage;
+
 import net.datafaker.providers.base.Name;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,14 +21,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-
-import java.util.Objects;
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.openqa.selenium.Keys.ARROW_UP;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("Faker")
 @SuppressWarnings("unused")

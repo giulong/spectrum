@@ -1,16 +1,18 @@
 package io.github.giulong.spectrum.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.By.*;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @Getter

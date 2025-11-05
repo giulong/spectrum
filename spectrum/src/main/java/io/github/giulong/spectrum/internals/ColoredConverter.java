@@ -1,10 +1,10 @@
 package io.github.giulong.spectrum.internals;
 
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.pattern.color.ForegroundCompositeConverterBase;
-
 import static ch.qos.logback.classic.Level.*;
 import static ch.qos.logback.core.pattern.color.ANSIConstants.*;
+
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import ch.qos.logback.core.pattern.color.ForegroundCompositeConverterBase;
 
 public class ColoredConverter extends ForegroundCompositeConverterBase<ILoggingEvent> {
 

@@ -1,5 +1,10 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -9,11 +14,6 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.interactions.Actions;
-
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class ActionsResolverTest {
 

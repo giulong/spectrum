@@ -1,11 +1,23 @@
 package io.github.giulong.spectrum.utils.events;
 
+import static io.github.giulong.spectrum.enums.Result.*;
+import static io.github.giulong.spectrum.extensions.resolvers.bidi.BrowsingContextInspectorResolver.BROWSING_CONTEXT_INSPECTOR;
+import static io.github.giulong.spectrum.extensions.resolvers.bidi.LogInspectorResolver.LOG_INSPECTOR;
+import static io.github.giulong.spectrum.extensions.resolvers.bidi.NetworkResolver.NETWORK;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.environments.LocalEnvironment;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,17 +30,6 @@ import org.mockito.Mock;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.module.Network;
-
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.enums.Result.*;
-import static io.github.giulong.spectrum.extensions.resolvers.bidi.BrowsingContextInspectorResolver.BROWSING_CONTEXT_INSPECTOR;
-import static io.github.giulong.spectrum.extensions.resolvers.bidi.LogInspectorResolver.LOG_INSPECTOR;
-import static io.github.giulong.spectrum.extensions.resolvers.bidi.NetworkResolver.NETWORK;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class DriverConsumerTest {
 

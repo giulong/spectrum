@@ -1,8 +1,18 @@
 package io.github.giulong.spectrum.drivers;
 
+import static io.github.giulong.spectrum.drivers.Driver.WEB_DRIVER_THREAD_LOCAL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.environments.Environment;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,15 +23,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ThreadGuard;
-
-import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
-import static io.github.giulong.spectrum.drivers.Driver.WEB_DRIVER_THREAD_LOCAL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 class DriverTest {
 

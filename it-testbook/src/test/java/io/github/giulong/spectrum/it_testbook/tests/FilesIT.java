@@ -1,15 +1,16 @@
 package io.github.giulong.spectrum.it_testbook.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it_testbook.pages.DownloadPage;
-import io.github.giulong.spectrum.it_testbook.pages.UploadPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.TimeoutException;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.it_testbook.pages.DownloadPage;
+import io.github.giulong.spectrum.it_testbook.pages.UploadPage;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.TimeoutException;
 
 @DisplayName("Files Test")
 @SuppressWarnings("unused")

@@ -1,12 +1,14 @@
 package io.github.giulong.spectrum.pojos.testbook;
 
-import io.github.giulong.spectrum.enums.Result;
-import com.google.common.util.concurrent.AtomicDouble;
-import lombok.Getter;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import com.google.common.util.concurrent.AtomicDouble;
+
+import io.github.giulong.spectrum.enums.Result;
+
+import lombok.Getter;
 
 @Getter
 public class TestBookStatistics {

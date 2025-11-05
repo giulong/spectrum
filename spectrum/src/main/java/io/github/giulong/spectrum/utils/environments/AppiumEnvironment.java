@@ -1,22 +1,25 @@
 package io.github.giulong.spectrum.utils.environments;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.ServerSocket;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.github.giulong.spectrum.drivers.Appium;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.AppiumLog;
 import io.github.giulong.spectrum.utils.Configuration;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
 
 @Slf4j
 @Getter

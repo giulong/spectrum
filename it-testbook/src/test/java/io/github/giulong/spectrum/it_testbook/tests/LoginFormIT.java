@@ -1,21 +1,22 @@
 package io.github.giulong.spectrum.it_testbook.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it_testbook.data.Data;
-import io.github.giulong.spectrum.it_testbook.pages.LoginPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.openqa.selenium.By.id;
 import static org.openqa.selenium.support.ui.ExpectedConditions.urlContains;
+
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.it_testbook.data.Data;
+import io.github.giulong.spectrum.it_testbook.pages.LoginPage;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 @DisplayName("Login Form")
 @SuppressWarnings("unused")

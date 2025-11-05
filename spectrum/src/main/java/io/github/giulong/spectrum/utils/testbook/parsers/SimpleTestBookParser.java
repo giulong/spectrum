@@ -1,15 +1,16 @@
 package io.github.giulong.spectrum.utils.testbook.parsers;
 
-import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
-import io.github.giulong.spectrum.utils.FileUtils;
-import lombok.extern.slf4j.Slf4j;
+import static java.lang.System.lineSeparator;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.lang.System.lineSeparator;
+import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.FileUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class SimpleTestBookParser extends TestBookParser {

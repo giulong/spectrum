@@ -1,8 +1,16 @@
 package io.github.giulong.spectrum.drivers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
+
+import java.net.URL;
+import java.util.Map;
+
 import io.appium.java_client.AppiumDriver;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,13 +19,6 @@ import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
-
-import java.net.URL;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mockConstruction;
-import static org.mockito.Mockito.when;
 
 class AppiumGenericTest {
 

@@ -1,15 +1,16 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
-import io.github.giulong.spectrum.enums.Result;
-import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import org.junit.jupiter.api.TestFactory;
-import org.junit.jupiter.api.extension.*;
+import static io.github.giulong.spectrum.enums.Result.*;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 
 import java.util.Optional;
 import java.util.Set;
 
-import static io.github.giulong.spectrum.enums.Result.*;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
+import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.extension.*;
 
 public class EventsWatcher implements TestWatcher, BeforeTestExecutionCallback, BeforeAllCallback, BeforeEachCallback, AfterEachCallback, AfterAllCallback {
 

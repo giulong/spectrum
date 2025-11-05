@@ -1,17 +1,18 @@
 package io.github.giulong.spectrum.internals.web_driver_listeners;
 
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+
+import java.util.Arrays;
+
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.ElementNotInteractableException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.interactions.MoveTargetOutOfBoundsException;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.util.Arrays;
-
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 @Slf4j
 @SuperBuilder

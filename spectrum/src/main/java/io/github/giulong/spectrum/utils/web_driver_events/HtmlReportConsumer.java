@@ -1,18 +1,21 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import static com.aventstack.extentreports.Status.INFO;
+import static com.aventstack.extentreports.Status.WARNING;
+import static org.slf4j.event.Level.WARN;
+
 import com.aventstack.extentreports.ExtentTest;
+
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.Level;
 
-import static com.aventstack.extentreports.Status.INFO;
-import static com.aventstack.extentreports.Status.WARNING;
-import static org.slf4j.event.Level.WARN;
+import org.slf4j.event.Level;
 
 @Slf4j
 @SuperBuilder

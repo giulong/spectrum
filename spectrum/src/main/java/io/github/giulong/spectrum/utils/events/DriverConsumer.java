@@ -1,22 +1,25 @@
 package io.github.giulong.spectrum.utils.events;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.Configuration;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.openqa.selenium.bidi.module.BrowsingContextInspector;
-import org.openqa.selenium.bidi.module.LogInspector;
-import org.openqa.selenium.bidi.module.Network;
-
-import java.util.Optional;
-
 import static io.github.giulong.spectrum.enums.Result.DISABLED;
 import static io.github.giulong.spectrum.extensions.resolvers.bidi.BrowsingContextInspectorResolver.BROWSING_CONTEXT_INSPECTOR;
 import static io.github.giulong.spectrum.extensions.resolvers.bidi.LogInspectorResolver.LOG_INSPECTOR;
 import static io.github.giulong.spectrum.extensions.resolvers.bidi.NetworkResolver.NETWORK;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
+import java.util.Optional;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.Configuration;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.openqa.selenium.bidi.module.BrowsingContextInspector;
+import org.openqa.selenium.bidi.module.LogInspector;
+import org.openqa.selenium.bidi.module.Network;
 
 @Slf4j
 @JsonView(Internal.class)

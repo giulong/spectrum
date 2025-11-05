@@ -1,20 +1,24 @@
 package io.github.giulong.spectrum.utils.events;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
 import io.github.giulong.spectrum.pojos.events.Attachment;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import jakarta.activation.FileDataSource;
+
 import lombok.Getter;
+
 import org.simplejavamail.api.email.AttachmentResource;
 import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import jakarta.activation.FileDataSource;
 
 @Getter
 public class MailConsumer extends EventsConsumer {

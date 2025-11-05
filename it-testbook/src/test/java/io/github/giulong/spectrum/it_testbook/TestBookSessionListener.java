@@ -1,10 +1,8 @@
 package io.github.giulong.spectrum.it_testbook;
 
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.reporters.FileReporter;
-import lombok.SneakyThrows;
-import org.junit.platform.launcher.LauncherSession;
-import org.junit.platform.launcher.LauncherSessionListener;
+import static java.util.Comparator.comparingLong;
+import static java.util.function.Predicate.not;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -13,9 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Comparator.comparingLong;
-import static java.util.function.Predicate.not;
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
+
+import lombok.SneakyThrows;
+
+import org.junit.platform.launcher.LauncherSession;
+import org.junit.platform.launcher.LauncherSessionListener;
 
 @SuppressWarnings("unused")
 public class TestBookSessionListener implements LauncherSessionListener {

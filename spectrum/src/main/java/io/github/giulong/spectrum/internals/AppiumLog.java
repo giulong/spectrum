@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.internals;
 
+import java.io.OutputStream;
+
 import lombok.Builder;
 import lombok.Builder.Default;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.Level;
 
-import java.io.OutputStream;
+import org.slf4j.event.Level;
 
 @Slf4j
 @Builder

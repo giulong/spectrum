@@ -1,7 +1,17 @@
 package io.github.giulong.spectrum.drivers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
+import static org.openqa.selenium.logging.LogType.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,15 +23,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.service.DriverService;
-
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
-import static org.openqa.selenium.logging.LogType.*;
 
 class ChromeTest {
 

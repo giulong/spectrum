@@ -1,21 +1,23 @@
 package io.github.giulong.spectrum;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Proxy;
+import java.time.Duration;
+import java.util.List;
+
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
 import io.github.giulong.spectrum.internals.page_factory.SpectrumFieldDecorator;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.js.JsWebElementListInvocationHandler;
+
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
-import java.time.Duration;
-import java.util.List;
 
 @Slf4j
 @Getter

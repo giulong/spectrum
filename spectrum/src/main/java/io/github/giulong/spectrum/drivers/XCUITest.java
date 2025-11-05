@@ -1,9 +1,9 @@
 package io.github.giulong.spectrum.drivers;
 
+import java.net.URL;
+
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
-
-import java.net.URL;
 
 public class XCUITest extends Appium<XCUITestOptions, IOSDriver> {
 

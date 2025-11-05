@@ -1,7 +1,12 @@
 package io.github.giulong.spectrum.utils.testbook.parsers;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,10 +16,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 class CsvTestBookParserTest {
 

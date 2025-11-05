@@ -1,13 +1,14 @@
 package io.github.giulong.spectrum.utils.js;
 
-import lombok.Builder;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.WebElement;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
+
+import lombok.Builder;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import org.openqa.selenium.WebElement;
 
 @Slf4j
 @Builder

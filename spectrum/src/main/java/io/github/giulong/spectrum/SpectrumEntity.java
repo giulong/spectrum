@@ -1,18 +1,37 @@
 package io.github.giulong.spectrum;
 
+import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
+import static com.aventstack.extentreports.Status.*;
+import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.openqa.selenium.OutputType.BYTES;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Map;
+
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.model.Media;
+
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
+
+import net.datafaker.Faker;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import net.datafaker.Faker;
+
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TakesScreenshot;
@@ -24,21 +43,6 @@ import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.Map;
-
-import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
-import static com.aventstack.extentreports.Status.*;
-import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.openqa.selenium.OutputType.BYTES;
 
 @Slf4j
 public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {

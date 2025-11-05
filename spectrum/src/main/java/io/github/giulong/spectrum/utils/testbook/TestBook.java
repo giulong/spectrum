@@ -1,8 +1,18 @@
 package io.github.giulong.spectrum.utils.testbook;
 
+import static io.github.giulong.spectrum.enums.Result.*;
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toMap;
+
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
@@ -16,17 +26,9 @@ import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.Vars;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.testbook.parsers.TestBookParser;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-
-import static io.github.giulong.spectrum.enums.Result.*;
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.toMap;
 
 @Getter
 @Slf4j

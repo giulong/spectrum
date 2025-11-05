@@ -1,10 +1,10 @@
 package io.github.giulong.spectrum.utils;
 
-import lombok.NoArgsConstructor;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.util.HashMap;
 
-import static lombok.AccessLevel.PRIVATE;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class Vars extends HashMap<String, String> {

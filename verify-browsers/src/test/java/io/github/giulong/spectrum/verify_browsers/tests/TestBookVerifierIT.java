@@ -1,20 +1,21 @@
 package io.github.giulong.spectrum.verify_browsers.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.verify_browsers.data.Data;
-import io.github.giulong.spectrum.verify_browsers.pages.TestBookPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.nio.file.Path;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
 import static java.util.Locale.US;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.file.Path;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.verify_browsers.data.Data;
+import io.github.giulong.spectrum.verify_browsers.pages.TestBookPage;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 @DisplayName("It TestBook Module Verifier")
 @SuppressWarnings("unused")

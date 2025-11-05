@@ -1,7 +1,16 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.utils.Configuration;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.ImplicitWaitResolver.IMPLICIT_WAIT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
+import java.time.Duration;
+
 import io.github.giulong.spectrum.types.ImplicitWait;
+import io.github.giulong.spectrum.utils.Configuration;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -10,14 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.openqa.selenium.WebDriver;
-
-import java.time.Duration;
-
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.ImplicitWaitResolver.IMPLICIT_WAIT;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class ImplicitWaitResolverTest {
 

@@ -1,15 +1,16 @@
 package io.github.giulong.spectrum.utils.events.video;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
+
+import java.nio.file.Path;
+
 import io.github.giulong.spectrum.types.TestData;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.nio.file.Path;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 class VideoDynamicFinalizerTest {
 

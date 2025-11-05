@@ -1,10 +1,32 @@
 package io.github.giulong.spectrum.utils.events.video;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import javax.imageio.ImageIO;
+
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import org.jcodec.api.awt.AWTSequenceEncoder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,26 +39,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class VideoConsumerTest {
 

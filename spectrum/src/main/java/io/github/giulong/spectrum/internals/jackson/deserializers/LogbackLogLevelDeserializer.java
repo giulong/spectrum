@@ -1,14 +1,16 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers;
 
-import ch.qos.logback.classic.Level;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import lombok.NoArgsConstructor;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.IOException;
 
-import static lombok.AccessLevel.PRIVATE;
+import ch.qos.logback.classic.Level;
+
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = PRIVATE)
 public class LogbackLogLevelDeserializer extends JsonDeserializer<Level> {

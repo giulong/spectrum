@@ -1,8 +1,15 @@
 package io.github.giulong.spectrum.utils.js;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.StringUtils;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,12 +18,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.*;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class JsTest {
 

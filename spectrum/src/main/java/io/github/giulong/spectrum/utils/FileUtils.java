@@ -1,8 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.Comparator.reverseOrder;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
 import java.io.InputStream;
@@ -18,8 +17,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static java.util.Comparator.reverseOrder;
-import static lombok.AccessLevel.PRIVATE;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)

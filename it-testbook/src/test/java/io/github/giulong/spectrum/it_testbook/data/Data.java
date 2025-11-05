@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.it_testbook.data;
 
-import lombok.Getter;
-
 import java.util.Map;
+
+import lombok.Getter;
 
 @Getter
 @SuppressWarnings("unused")

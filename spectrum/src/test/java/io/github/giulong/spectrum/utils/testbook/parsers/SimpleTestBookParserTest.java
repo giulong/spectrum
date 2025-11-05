@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.utils.testbook.parsers;
 
-import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
-import io.github.giulong.spectrum.utils.Reflections;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
+import io.github.giulong.spectrum.utils.Reflections;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 class SimpleTestBookParserTest {
 

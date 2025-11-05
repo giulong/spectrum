@@ -1,10 +1,22 @@
 package io.github.giulong.spectrum.utils.events.video;
 
+import static io.github.giulong.spectrum.enums.Result.DISABLED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+
+import java.nio.file.Path;
+import java.security.MessageDigest;
+
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,17 +25,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.nio.file.Path;
-import java.security.MessageDigest;
-
-import static io.github.giulong.spectrum.enums.Result.DISABLED;
-import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 class VideoDynamicConsumerTest {
 

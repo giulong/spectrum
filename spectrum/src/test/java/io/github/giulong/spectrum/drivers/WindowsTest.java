@@ -1,9 +1,17 @@
 package io.github.giulong.spectrum.drivers;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+import java.net.URL;
+import java.time.Duration;
+import java.util.Map;
+
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.options.WindowsOptions;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,13 +19,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.openqa.selenium.WebDriver;
-
-import java.net.URL;
-import java.time.Duration;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
 
 class WindowsTest {
 

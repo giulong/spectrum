@@ -1,17 +1,18 @@
 package io.github.giulong.spectrum.verify_browsers.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.verify_browsers.data.Data;
-import io.github.giulong.spectrum.verify_browsers.pages.BiDiExtentReportPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.verify_browsers.data.Data;
+import io.github.giulong.spectrum.verify_browsers.pages.BiDiExtentReportPage;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class BiDiExtentReportVerifierIT extends SpectrumTest<Data> {
 

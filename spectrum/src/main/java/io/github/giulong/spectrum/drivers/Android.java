@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.drivers;
 
+import java.net.URL;
+
 import io.appium.java_client.android.AndroidDriver;
 import io.github.giulong.spectrum.utils.Configuration;
+
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
-
-import java.net.URL;
 
 public abstract class Android<T extends MutableCapabilities> extends Appium<T, AndroidDriver> {
 

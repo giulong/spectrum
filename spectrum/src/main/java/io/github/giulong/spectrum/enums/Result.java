@@ -1,10 +1,11 @@
 package io.github.giulong.spectrum.enums;
 
+import static com.aventstack.extentreports.Status.*;
+
 import com.aventstack.extentreports.Status;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import static com.aventstack.extentreports.Status.*;
 
 @AllArgsConstructor
 @Getter

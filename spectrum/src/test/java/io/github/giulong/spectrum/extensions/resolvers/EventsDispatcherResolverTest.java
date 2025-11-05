@@ -1,6 +1,14 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.EventsDispatcherResolver.EVENTS_DISPATCHER;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
+import java.util.function.Function;
+
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,13 +19,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import java.util.function.Function;
-
-import static io.github.giulong.spectrum.extensions.resolvers.EventsDispatcherResolver.EVENTS_DISPATCHER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class EventsDispatcherResolverTest {
 

@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.drivers;
 
 import io.github.giulong.spectrum.interfaces.BiDiDriver;
 import io.github.giulong.spectrum.utils.Configuration;
+
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.service.DriverService;
