@@ -79,8 +79,8 @@ class YamlUtilsTest {
                 "HtmlTestBookReporter",
                 "LogSummaryReporter",
                 "TxtSummaryReporter",
-                "HtmlSummaryReporter"
-        ), ((YAMLMapper) Reflections.getFieldValue("yamlMapper", yamlUtils)).getRegisteredModuleIds());
+                "HtmlSummaryReporter"),
+                ((YAMLMapper) Reflections.getFieldValue("yamlMapper", yamlUtils)).getRegisteredModuleIds());
 
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
@@ -88,8 +88,8 @@ class YamlUtilsTest {
                 "String",
                 "boolean",
                 "Level",
-                "Duration"
-        ), ((YAMLMapper) Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils)).getRegisteredModuleIds());
+                "Duration"),
+                ((YAMLMapper) Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils)).getRegisteredModuleIds());
 
         assertFalse(((ObjectWriter) Reflections.getFieldValue("writer", yamlUtils)).isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
     }

@@ -160,8 +160,7 @@ class SpectrumInterceptorTest {
         return Stream.of(
                 arguments(true, true),
                 arguments(true, false),
-                arguments(false, false)
-        );
+                arguments(false, false));
     }
 
     @Test

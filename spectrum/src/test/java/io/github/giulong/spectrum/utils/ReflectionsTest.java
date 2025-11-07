@@ -40,8 +40,7 @@ class ReflectionsTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(Dummy.class, DummyParent.class, List.of("fieldString", "secured")),
-                arguments(Dummy.class, Object.class, List.of("fieldString", "secured", "parentField"))
-        );
+                arguments(Dummy.class, Object.class, List.of("fieldString", "secured", "parentField")));
     }
 
     @Test
@@ -95,8 +94,7 @@ class ReflectionsTest {
 
     static Stream<Arguments> getFieldValueExceptionValuesProvider() {
         return Stream.of(
-                arguments((Object) new Dummy[]{new Dummy("value")})
-        );
+                arguments((Object) new Dummy[]{new Dummy("value")}));
     }
 
     @Test

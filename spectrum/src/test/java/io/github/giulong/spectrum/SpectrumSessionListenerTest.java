@@ -255,8 +255,7 @@ class SpectrumSessionListenerTest {
                 arguments("overridden-profile,second", "default-profile", List.of("overridden-profile", "second")),
                 arguments(null, "default-profile", List.of("default-profile")),
                 arguments(null, "default-profile,another", List.of("default-profile", "another")),
-                arguments(null, " ,,default-profile,another", List.of("default-profile", "another"))
-        );
+                arguments(null, " ,,default-profile,another", List.of("default-profile", "another")));
     }
 
     @DisplayName("parseVars should put in the VARS map all the variables read from the configuration yaml files")
@@ -297,8 +296,7 @@ class SpectrumSessionListenerTest {
                 arguments(Map.of("one", "one"), null, null, Map.of("one", "one")),
                 arguments(Map.of("one", "one"), Map.of("two", "two"), null, Map.of("one", "one", "two", "two")),
                 arguments(Map.of("one", "one"), null, Map.of("three", "three"), Map.of("one", "one", "three", "three")),
-                arguments(Map.of("one", "one"), Map.of("two", "two"), Map.of("three", "three"), Map.of("one", "one", "two", "two", "three", "three"))
-        );
+                arguments(Map.of("one", "one"), Map.of("two", "two"), Map.of("three", "three"), Map.of("one", "one", "two", "two", "three", "three")));
     }
 
     @DisplayName("isUnix should check the OS")
@@ -315,7 +313,6 @@ class SpectrumSessionListenerTest {
                 arguments("nix", true),
                 arguments("blah", true),
                 arguments("Win", false),
-                arguments("WiN", false)
-        );
+                arguments("WiN", false));
     }
 }

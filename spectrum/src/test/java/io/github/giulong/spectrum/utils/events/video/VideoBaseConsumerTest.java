@@ -67,8 +67,7 @@ class VideoBaseConsumerTest {
                 arguments(DISABLED, true, false),
                 arguments(SUCCESSFUL, true, false),
                 arguments(DISABLED, false, false),
-                arguments(SUCCESSFUL, false, true)
-        );
+                arguments(SUCCESSFUL, false, true));
     }
 
     @Test

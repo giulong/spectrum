@@ -111,7 +111,8 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .build());
 
         final WebDriver decoratedDriver = new EventFiringDecorator<>(webDriverListeners.toArray(new WebDriverListener[0])).decorate(driver);
-        @SuppressWarnings("unchecked") final WebDriver originalDriver = ((Decorated<WebDriver>) decoratedDriver).getOriginal();
+        @SuppressWarnings("unchecked")
+        final WebDriver originalDriver = ((Decorated<WebDriver>) decoratedDriver).getOriginal();
 
         store.put(TEST_STEP_BUILDER_CONSUMER, testStepBuilderConsumer);
         store.put(DRIVER, decoratedDriver);

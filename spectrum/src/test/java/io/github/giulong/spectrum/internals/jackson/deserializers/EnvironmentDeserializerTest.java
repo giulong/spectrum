@@ -68,7 +68,6 @@ class EnvironmentDeserializerTest {
                 arguments("${justToTestInterpolation:-local}", mock(LocalEnvironment.class)),
                 arguments("local", mock(LocalEnvironment.class)),
                 arguments("grid", mock(GridEnvironment.class)),
-                arguments("appium", mock(AppiumEnvironment.class))
-        );
+                arguments("appium", mock(AppiumEnvironment.class)));
     }
 }

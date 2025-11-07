@@ -42,7 +42,6 @@ class StatusComparatorTest {
         return Stream.of(
                 arguments(PASS, FAIL, -1),
                 arguments(FAIL, PASS, 1),
-                arguments(PASS, PASS, 0)
-        );
+                arguments(PASS, PASS, 0));
     }
 }

@@ -77,8 +77,7 @@ class BiDiTypeBasedParameterResolverTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(String.class, true),
-                arguments(Object.class, false)
-        );
+                arguments(Object.class, false));
     }
 
     @Test

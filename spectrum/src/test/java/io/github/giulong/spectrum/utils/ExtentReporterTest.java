@@ -536,8 +536,7 @@ class ExtentReporterTest {
         return Stream.of(
                 arguments(FAIL, RED),
                 arguments(SKIP, AMBER),
-                arguments(INFO, GREEN)
-        );
+                arguments(INFO, GREEN));
     }
 
     @DisplayName("logTestEnd should create the test in the report and delegate to finalizeTest")

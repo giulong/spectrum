@@ -51,7 +51,6 @@ class BiDiDriverTest {
                 arguments(true, true, true),
                 arguments(true, false, true),
                 arguments(false, true, true),
-                arguments(false, false, false)
-        );
+                arguments(false, false, false));
     }
 }

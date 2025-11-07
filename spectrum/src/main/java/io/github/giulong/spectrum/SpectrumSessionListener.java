@@ -86,9 +86,9 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     List<String> parseProfiles() {
         return Arrays.stream(Optional
-                        .ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION, String.class))
-                        .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
-                        .split(","))
+                .ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION, String.class))
+                .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
+                .split(","))
                 .filter(not(String::isBlank))
                 .toList();
     }

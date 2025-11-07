@@ -72,7 +72,6 @@ class DriverDeserializerTest {
                 arguments("xcuiTest", mock(XCUITest.class)),
                 arguments("windows", mock(Windows.class)),
                 arguments("mac2", mock(Mac2.class)),
-                arguments("appiumGeneric", mock(AppiumGeneric.class))
-        );
+                arguments("appiumGeneric", mock(AppiumGeneric.class)));
     }
 }

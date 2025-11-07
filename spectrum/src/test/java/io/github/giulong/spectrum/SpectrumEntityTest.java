@@ -226,8 +226,7 @@ class SpectrumEntityTest {
                 "data",
                 "statefulExtentTest",
                 "testContext",
-                "jsWebElementProxyBuilder"
-        )));
+                "jsWebElementProxyBuilder")));
     }
 
     @Test
@@ -486,8 +485,7 @@ class SpectrumEntityTest {
     static Stream<Arguments> isPresentProvider() {
         return Stream.of(
                 arguments(List.of(), false),
-                arguments(List.of(mock(WebElement.class)), true)
-        );
+                arguments(List.of(mock(WebElement.class)), true));
     }
 
     @DisplayName("isNotPresent should return true if the element located by the provided By is not in the dom")
@@ -502,8 +500,7 @@ class SpectrumEntityTest {
     static Stream<Arguments> isNotPresentProvider() {
         return Stream.of(
                 arguments(List.of(), true),
-                arguments(List.of(mock(WebElement.class)), false)
-        );
+                arguments(List.of(mock(WebElement.class)), false));
     }
 
     @DisplayName("hasClass should check if the provided webElement has the provided css class")
@@ -520,8 +517,7 @@ class SpectrumEntityTest {
                 arguments(null, false),
                 arguments("", false),
                 arguments("cssClass", true),
-                arguments("one cssClass another", true)
-        );
+                arguments("one cssClass another", true));
     }
 
     @DisplayName("hasClasses should check if the provided webElement has all the provided css class")
@@ -538,8 +534,7 @@ class SpectrumEntityTest {
                 arguments(null, false),
                 arguments("", false),
                 arguments("cssClass", false),
-                arguments("one cssClass another", true)
-        );
+                arguments("one cssClass another", true));
     }
 
     private static final class DummySpectrumEntity<T> extends SpectrumEntity<DummySpectrumEntity<T>, T> {

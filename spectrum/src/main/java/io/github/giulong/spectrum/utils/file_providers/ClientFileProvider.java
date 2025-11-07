@@ -27,8 +27,7 @@ public final class ClientFileProvider implements FileProvider {
 
     @Override
     public InjectableValues getInjectableValues() {
-        return new InjectableValues
-                .Std()
+        return new InjectableValues.Std()
                 .addValue("enabledFromClient", true);
     }
 

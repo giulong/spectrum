@@ -73,7 +73,6 @@ class InterpolatedBooleanDeserializerTest {
                 arguments("${varInEnv:-true}", false),
                 arguments("${varInEnv}", false),
                 arguments("${not.set}", false),
-                arguments("${notSet}", false)
-        );
+                arguments("${notSet}", false));
     }
 }

@@ -176,7 +176,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private void createExtentFiles(final List<String> fileNames, final Path directory) {
         for (String fileName : fileNames) {
             assertTrue(Files.createFile(directory.resolve(fileUtils.removeExtensionFrom(fileName)).resolve(fileName)).toFile().exists());
-            Thread.sleep(1000);   // just to be sure files have different creation dates
+            Thread.sleep(1000); // just to be sure files have different creation dates
         }
     }
 
@@ -184,7 +184,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private void createFiles(final List<String> fileNames, final Path directory) {
         for (String fileName : fileNames) {
             assertTrue(Files.createFile(directory.resolve(fileName)).toFile().exists());
-            Thread.sleep(1000);   // just to be sure files have different creation dates
+            Thread.sleep(1000); // just to be sure files have different creation dates
         }
     }
 
@@ -192,7 +192,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private void createDirectories(final List<String> directoryNames, final Path parentDirectory) {
         for (String fileName : directoryNames) {
             assertTrue(Files.createDirectories(parentDirectory.resolve(fileName)).toFile().exists());
-            Thread.sleep(1000);   // just to be sure files have different creation dates
+            Thread.sleep(1000); // just to be sure files have different creation dates
         }
     }
 

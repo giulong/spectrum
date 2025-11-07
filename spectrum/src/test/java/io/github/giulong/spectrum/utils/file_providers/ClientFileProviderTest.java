@@ -37,8 +37,8 @@ class ClientFileProviderTest {
     @Test
     @DisplayName("getInjectableValues should return the client injectables")
     void getInjectableValues() {
-        final MockedConstruction<InjectableValues.Std> mockedConstruction = mockConstruction(InjectableValues.Std.class, (mock, context) ->
-                when(mock.addValue("enabledFromClient", true)).thenReturn(mock));
+        final MockedConstruction<InjectableValues.Std> mockedConstruction = mockConstruction(InjectableValues.Std.class,
+                (mock, context) -> when(mock.addValue("enabledFromClient", true)).thenReturn(mock));
 
         final InjectableValues actual = fileProvider.getInjectableValues();
 
@@ -83,8 +83,7 @@ class ClientFileProviderTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("file", Stream.of("file", "file.yaml", "file.yml")),
-                arguments("folder/file", Stream.of("folder/file", "folder/file.yaml", "folder/file.yml"))
-        );
+                arguments("folder/file", Stream.of("folder/file", "folder/file.yaml", "folder/file.yml")));
     }
 
     @Test

@@ -91,8 +91,7 @@ class DataResolverTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("Data", true),
-                arguments("not-good", false)
-        );
+                arguments("not-good", false));
     }
 
     @DisplayName("resolveParameter should load the data class from client side and deserialize the data.yaml on it")

@@ -195,8 +195,7 @@ class EventsWatcherTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("testFactoryMethod", true),
-                arguments("testAfterEach", false)
-        );
+                arguments("testAfterEach", false));
     }
 
     @Test

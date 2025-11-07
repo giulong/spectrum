@@ -179,10 +179,11 @@ class TestBookUnitTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("className", new HashMap<>()),
-                arguments("className", new HashMap<>() {{
-                    put("className", new HashSet<>());
-                }})
-        );
+                arguments("className", new HashMap<>() {
+                    {
+                        put("className", new HashSet<>());
+                    }
+                }));
     }
 
     @Test

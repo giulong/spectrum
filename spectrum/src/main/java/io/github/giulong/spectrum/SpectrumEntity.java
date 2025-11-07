@@ -120,6 +120,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * Hovers on the provided WebElement, leveraging the {@code actions} field
      *
      * @param webElement the WebElement on which to hover
+     *
      * @return the calling SpectrumEntity instance
      */
     @SuppressWarnings("unchecked")
@@ -142,9 +143,11 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Adds a screenshot with the provided message and INFO status to the current test in the Extent Report
+     * Adds a screenshot with the provided message and INFO status to the current
+     * test in the Extent Report
      *
      * @param msg the message to log
+     *
      * @return the calling SpectrumEntity instance
      */
     @SuppressWarnings("unchecked")
@@ -155,9 +158,11 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Adds a screenshot status with the provided message and WARN to the current test in the Extent Report
+     * Adds a screenshot status with the provided message and WARN to the current
+     * test in the Extent Report
      *
      * @param msg the message to log
+     *
      * @return the calling SpectrumEntity instance
      */
     @SuppressWarnings("unchecked")
@@ -168,9 +173,11 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Adds a screenshot with the provided message and FAIL status to the current test in the Extent Report
+     * Adds a screenshot with the provided message and FAIL status to the current
+     * test in the Extent Report
      *
      * @param msg the message to log
+     *
      * @return the calling SpectrumEntity instance
      */
     @SuppressWarnings("unchecked")
@@ -181,9 +188,10 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Adds a screenshot with the provided message and the provided status to the current test in the Extent Report
+     * Adds a screenshot with the provided message and the provided status to the
+     * current test in the Extent Report
      *
-     * @param msg    the message to log
+     * @param msg the message to log
      * @param status the log's status
      */
     public void addScreenshotToReport(final String msg, final Status status) {
@@ -209,16 +217,19 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Deletes the download folder (its path is provided in the {@code configuration*.yaml})
+     * Deletes the download folder (its path is provided in the
+     * {@code configuration*.yaml})
      */
     public void deleteDownloadsFolder() {
         fileUtils.deleteContentOf(Path.of(configuration.getRuntime().getDownloadsFolder()));
     }
 
     /**
-     * Leverages the configurable {@code downloadWait} to check fluently if the file at the provided path is fully downloaded
+     * Leverages the configurable {@code downloadWait} to check fluently if the file
+     * at the provided path is fully downloaded
      *
      * @param path the path to the downloaded file to wait for
+     *
      * @return the calling SpectrumEntity instance
      */
     @SuppressWarnings("unchecked")
@@ -232,10 +243,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Leverages the {@code waitForDownloadOf} method and then compares the checksums of the two files provided.
+     * Leverages the {@code waitForDownloadOf} method and then compares the
+     * checksums of the two files provided.
      *
      * @param downloadedFileName name of the downloaded file
-     * @param fileToCheckName    name of the static file to be used as comparison
+     * @param fileToCheckName name of the static file to be used as comparison
+     *
      * @return true if the files are equal
      */
     public boolean checkDownloadedFile(final String downloadedFileName, final String fileToCheckName) {
@@ -246,17 +259,20 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         waitForDownloadOf(downloadedFile);
 
         log.info("""
-                Checking if these files are the same:
-                {}
-                {}
-                """, downloadedFile, fileToCheck);
+                 Checking if these files are the same:
+                 {}
+                 {}
+                 """, downloadedFile, fileToCheck);
         return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
     }
 
     /**
-     * Leverages the {@code waitForDownloadOf} method and then compares the checksums of the file provided.
+     * Leverages the {@code waitForDownloadOf} method and then compares the
+     * checksums of the file provided.
      *
-     * @param file name of both the downloaded file and the static one to be used as comparison
+     * @param file name of both the downloaded file and the static one to be used as
+     * comparison
+     *
      * @return true if the files are equal
      */
     public boolean checkDownloadedFile(final String file) {
@@ -264,10 +280,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Helper method to call Selenium's {@code clear} and {@code sendKeys} on the provided WebElement, which is then returned
+     * Helper method to call Selenium's {@code clear} and {@code sendKeys} on the
+     * provided WebElement, which is then returned
      *
      * @param webElement target WebElement
      * @param keysToSend keys to send
+     *
      * @return the target WebElement passed as argument
      */
     public WebElement clearAndSendKeys(final WebElement webElement, final CharSequence keysToSend) {
@@ -278,11 +296,13 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Uploads to the provided WebElement (usually an input field with {@code type="file"}) the file with the provided name, taken from the
+     * Uploads to the provided WebElement (usually an input field with
+     * {@code type="file"}) the file with the provided name, taken from the
      * configurable {@code runtime.filesFolder}.
      *
      * @param webElement target WebElement
-     * @param fileName   name of the file to be uploaded
+     * @param fileName name of the file to be uploaded
+     *
      * @return the calling SpectrumEntity instance
      */
     @SuppressWarnings("unchecked")
@@ -295,9 +315,11 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Checks if the WebElement with the provided {@code by} is present in the current page
+     * Checks if the WebElement with the provided {@code by} is present in the
+     * current page
      *
      * @param by the WebElement's selector
+     *
      * @return true if the WebElement is found
      */
     public boolean isPresent(final By by) {
@@ -307,9 +329,11 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Checks if no WebElement with the provided {@code by} is present in the current page
+     * Checks if no WebElement with the provided {@code by} is present in the
+     * current page
      *
      * @param by the WebElement's selector
+     *
      * @return true if the WebElement is not found
      */
     public boolean isNotPresent(final By by) {
@@ -320,7 +344,8 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * Checks if the provided WebElement has the provided css class
      *
      * @param webElement the WebElement to check
-     * @param className  the css class to look for
+     * @param className the css class to look for
+     *
      * @return true if the WebElement has the provided css class
      */
     public boolean hasClass(final WebElement webElement, final String className) {
@@ -330,10 +355,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Checks if the provided WebElement has <strong>all</strong> the provided css classes
+     * Checks if the provided WebElement has <strong>all</strong> the provided css
+     * classes
      *
      * @param webElement the WebElement to check
-     * @param classes    the css classes to look for
+     * @param classes the css classes to look for
+     *
      * @return true if the WebElement has all the provided css classes
      */
     public boolean hasClasses(final WebElement webElement, final String... classes) {

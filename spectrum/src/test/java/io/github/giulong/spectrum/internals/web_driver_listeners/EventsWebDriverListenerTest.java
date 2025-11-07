@@ -127,8 +127,7 @@ class EventsWebDriverListenerTest {
                 s,
                 "null",
                 "css selector: #gettotal -> tag name: button",
-                "css selector: #get1-.total -> tag name: button"
-        );
+                "css selector: #get1-.total -> tag name: button");
 
         when(webElement1.toString()).thenReturn(webElement1ToString);
         when(webElement2.toString()).thenReturn(webElement2ToString);
@@ -167,8 +166,7 @@ class EventsWebDriverListenerTest {
                 s,
                 "null",
                 "css selector: #gettotal -> tag name: button",
-                "css selector: #get1-.total -> tag name: button"
-        );
+                "css selector: #get1-.total -> tag name: button");
 
         when(webElement1.toString()).thenReturn(webElement1ToString);
         when(webElement2.toString()).thenReturn(webElement2ToString);

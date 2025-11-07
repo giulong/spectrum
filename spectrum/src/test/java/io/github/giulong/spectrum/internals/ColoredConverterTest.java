@@ -40,7 +40,6 @@ class ColoredConverterTest {
                 arguments(WARN, YELLOW_FG),
                 arguments(INFO, BLUE_FG),
                 arguments(TRACE, MAGENTA_FG),
-                arguments(DEBUG, DEFAULT_FG)
-        );
+                arguments(DEBUG, DEFAULT_FG));
     }
 }

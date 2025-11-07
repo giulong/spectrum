@@ -55,7 +55,6 @@ class FixedSizeQueueTest {
         return Stream.of(
                 arguments(3, 2, 2),
                 arguments(1, 1, 1),
-                arguments(1, 2, 1)
-        );
+                arguments(1, 2, 1));
     }
 }

@@ -502,7 +502,6 @@ class RetentionTest {
         return Stream.of(
                 arguments(5L, true),
                 arguments(3L, true),
-                arguments(0L, false)
-        );
+                arguments(0L, false));
     }
 }

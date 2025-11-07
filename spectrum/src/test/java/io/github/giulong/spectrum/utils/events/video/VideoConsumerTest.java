@@ -274,7 +274,7 @@ class VideoConsumerTest {
         reset(video);
         when(video.getWidth()).thenReturn(width);
 
-        if (width >= 1) {   // short-circuit
+        if (width >= 1) { // short-circuit
             when(video.getHeight()).thenReturn(height);
         }
         when(driver.manage()).thenReturn(options);
@@ -294,8 +294,7 @@ class VideoConsumerTest {
         return Stream.of(
                 arguments(0, 0),
                 arguments(1, 0),
-                arguments(0, 1)
-        );
+                arguments(0, 1));
     }
 
     @DisplayName("makeItEven should increment the provided int if it's odd")
@@ -308,8 +307,7 @@ class VideoConsumerTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(0, 0),
-                arguments(1, 2)
-        );
+                arguments(1, 2));
     }
 
     @Test
