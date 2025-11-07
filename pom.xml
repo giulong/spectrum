@@ -311,23 +311,6 @@
                     <version>3.5.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>com.diffplug.spotless</groupId>
-                    <artifactId>spotless-maven-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <configuration>
-                        <java>
-                            <removeUnusedImports/>
-                            <importOrder>
-                                <order>java,javax,ch,com,io,net,lombok,org</order>
-                            </importOrder>
-                            <trimTrailingWhitespace/>
-                            <eclipse>
-                                <file>/Users/giulio/workspace/spectrum/spotless.xml</file>
-                            </eclipse>
-                        </java>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.6.0</version>
@@ -371,6 +354,31 @@
                                     <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
                                 </sourceDirectories>
                             </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>3.0.0</version>
+                    <configuration>
+                        <java>
+                            <removeUnusedImports/>
+                            <importOrder>
+                                <order>java,javax,ch,com,io,net,lombok,org</order>
+                            </importOrder>
+                            <trimTrailingWhitespace/>
+                            <eclipse>
+                                <file>${maven.multiModuleProjectDirectory}/spotless.xml</file>
+                            </eclipse>
+                        </java>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
                         </execution>
                     </executions>
                 </plugin>
@@ -486,6 +494,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
