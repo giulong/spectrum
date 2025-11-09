@@ -1,16 +1,15 @@
 package io.github.giulong.spectrum.verify_windows;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.condition.OS.MAC;
+import static org.junit.jupiter.api.condition.OS.WINDOWS;
 
 import io.github.giulong.spectrum.verify_commons.FailsafeReportsVerifier;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 
 @DisplayName("It Windows Module Verifier")
-@EnabledOnOs(MAC)
+@EnabledOnOs(WINDOWS)
 public class ItWindowsVerifierTest {
 
     private static final FailsafeReportsVerifier FAILSAFE_REPORTS_VERIFIER = FailsafeReportsVerifier.getInstance();
