@@ -10,7 +10,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>verify-macos</artifactId>
+    <artifactId>verify-windows</artifactId>
 
     <dependencies>
         <dependency>

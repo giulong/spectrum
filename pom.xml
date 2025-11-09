@@ -68,10 +68,12 @@
                 <module>it-bidi</module>
                 <module>it-testbook</module>
                 <module>it-macos</module>
+                <module>it-windows</module>
                 <module>it-appium</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>verify-macos</module>
+                <module>verify-windows</module>
                 <module>verify-appium</module>
                 <module>cleanup</module>
             </modules>
@@ -104,6 +106,16 @@
                 <module>it-macos</module>
                 <module>verify-commons</module>
                 <module>verify-macos</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>windows</id>
+            <modules>
+                <module>it-windows</module>
+                <module>verify-commons</module>
+                <module>verify-windows</module>
                 <module>cleanup</module>
             </modules>
         </profile>

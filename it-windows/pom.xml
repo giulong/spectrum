@@ -10,13 +10,14 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>verify-macos</artifactId>
+    <artifactId>it-windows</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>io.github.giulong</groupId>
-            <artifactId>verify-commons</artifactId>
+            <artifactId>spectrum</artifactId>
             <version>${revision}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -46,16 +47,47 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <argLine>-Dfile.encoding=UTF-8</argLine>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>windows</id>
+            <activation>
+                <property>
+                    <name>windowsTests</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>Chrome IT</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                                <configuration>
+                                    <reportNameSuffix>chrome</reportNameSuffix>
+                                    <systemPropertyVariables>
+                                        <spectrum.driver>chrome</spectrum.driver>
+                                    </systemPropertyVariables>
+                                    <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

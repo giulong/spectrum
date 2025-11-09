@@ -143,6 +143,42 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>Copy LauncherSessionListener to "it-windows" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../it-windows/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Copy LauncherSessionListener to "verify-windows" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../verify-windows/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumMetaInfServicesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>Copy LauncherSessionListener to "it-appium" module's classes</id>
                         <phase>clean</phase>
                         <goals>
