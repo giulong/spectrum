@@ -68,7 +68,7 @@ jobs:
             directives: -DmacosTests
             moduleName: it-macos
           - os: windows-latest
-            profiles: browsers
+            profiles: windows
             directives: -DwindowsTests
             moduleName: it
     runs-on: ${{ matrix.os }}
