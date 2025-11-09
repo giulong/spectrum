@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.condition.OS.WINDOWS;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it_windows.pages.CheckboxPage;
 import io.github.giulong.spectrum.it_windows.pages.LandingPage;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
