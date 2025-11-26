@@ -61,10 +61,6 @@ public final class Reflections {
 
     @SafeVarargs
     public static <T> T getFieldValue(final String fieldName, final Object object, final T... reified) {
-        if (reified == null || reified.length > 0) {
-            throw new IllegalArgumentException("Do not pass arguments as last parameter");
-        }
-
         final Object value = getValueOf(getField(fieldName, object), object);
         return getClassOf(reified).cast(value);
     }
@@ -112,9 +108,14 @@ public final class Reflections {
                 .toList();
     }
 
+    @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <T> Class<T> getClassOf(final T[] array) {
-        return (Class<T>) array.getClass().getComponentType();
+    public static <T> Class<T> getClassOf(final T... reified) {
+        if (reified == null || reified.length > 0) {
+            throw new IllegalArgumentException("Do not pass arguments as last parameter");
+        }
+
+        return (Class<T>) reified.getClass().getComponentType();
     }
 
     @SneakyThrows
