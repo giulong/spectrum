@@ -291,8 +291,7 @@ class JsTest {
         List<Object> dimensions = Arrays.asList(200, 100);
         when(webDriver.executeScript(
                 "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.width, rectangle.height];",
-                webElement
-        )).thenReturn(dimensions);
+                webElement)).thenReturn(dimensions);
 
         Dimension result = js.getSize(webElement);
 
@@ -307,8 +306,7 @@ class JsTest {
         List<Number> rectangleValues = Arrays.asList(50, 60, 200, 100);
         when(webDriver.executeScript(
                 "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.x, rectangle.y, rectangle.width, rectangle.height];",
-                webElement
-        )).thenReturn(rectangleValues);
+                webElement)).thenReturn(rectangleValues);
 
         Rectangle result = js.getRect(webElement);
 
@@ -325,8 +323,7 @@ class JsTest {
         List<Object> pointValues = Arrays.asList(50, 60);
         when(webDriver.executeScript(
                 "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.x, rectangle.y];",
-                webElement
-        )).thenReturn(pointValues);
+                webElement)).thenReturn(pointValues);
 
         Point result = js.getLocation(webElement);
 

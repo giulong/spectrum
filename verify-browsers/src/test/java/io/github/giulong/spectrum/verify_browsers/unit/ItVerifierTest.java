@@ -46,19 +46,19 @@ public class ItVerifierTest {
 
         // we indirectly check that the log consumer accepted the event with a regex in the primaryId
         assertTrue(logFile.contains("""
-                Class Name: ---
-                Test Name : ---
-                Reason    : custom-event
-                Result    : ---
-                Tags      : ---"""));
+                                    Class Name: ---
+                                    Test Name : ---
+                                    Reason    : custom-event
+                                    Result    : ---
+                                    Tags      : ---"""));
 
         // we indirectly check that the log consumer accepted the event with a regex in the reason
         assertTrue(logFile.contains("""
-                Class Name: ---
-                Test Name : ---
-                Reason    : secondReason
-                Result    : ---
-                Tags      : ---"""));
+                                    Class Name: ---
+                                    Test Name : ---
+                                    Reason    : secondReason
+                                    Result    : ---
+                                    Tags      : ---"""));
 
         // we check values sent to @Secured web elements are masked
         assertTrue(logFile.contains("Sending keys [***] to id: password"));

@@ -39,8 +39,7 @@ class VideoTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(List.of(AUTO_BEFORE), false),
-                arguments(List.of(), true)
-        );
+                arguments(List.of(), true));
     }
 
     @DisplayName("shouldRecord should check if the provided frame name should be recorded")
@@ -56,8 +55,7 @@ class VideoTest {
                 arguments(List.of(AUTO_BEFORE), true),
                 arguments(List.of(MANUAL, AUTO_BEFORE), true),
                 arguments(List.of(MANUAL), false),
-                arguments(List.of(), false)
-        );
+                arguments(List.of(), false));
     }
 
     @DisplayName("getAndIncrementFrameNumberFor should return the current frame number and increment it if the provided frame should be recorded, -1 otherwise")
@@ -80,7 +78,6 @@ class VideoTest {
                 arguments(List.of(AUTO_BEFORE), 123, 1, 124),
                 arguments(List.of(MANUAL, AUTO_BEFORE), 123, 1, 124),
                 arguments(List.of(MANUAL), -1, 0, 123),
-                arguments(List.of(), -1, 0, 123)
-        );
+                arguments(List.of(), -1, 0, 123));
     }
 }

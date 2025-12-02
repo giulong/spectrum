@@ -265,8 +265,7 @@ class InterpolatedObjectDeserializerTest {
                 arguments("$<notSet>", 0),
                 arguments("$<notSet:-~123stringDefault=va:lue.\\/>", 0),
                 arguments("$<varInEnv:-123>", Integer.parseInt(VAR_IN_ENV)),
-                arguments("$<varInEnv>", Integer.parseInt(VAR_IN_ENV))
-        );
+                arguments("$<varInEnv>", Integer.parseInt(VAR_IN_ENV)));
     }
 
     @Test
@@ -321,7 +320,6 @@ class InterpolatedObjectDeserializerTest {
                 arguments("-123", true),
                 arguments("-123,5", true),
                 arguments("-123.5", true),
-                arguments("-", false)
-        );
+                arguments("-", false));
     }
 }

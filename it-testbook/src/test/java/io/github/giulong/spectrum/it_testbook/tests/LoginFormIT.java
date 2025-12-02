@@ -51,7 +51,6 @@ class LoginFormIT extends SpectrumTest<Data> {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("tom", true, "/secure"),
-                arguments("giulio", false, "/login")
-        );
+                arguments("giulio", false, "/login"));
     }
 }

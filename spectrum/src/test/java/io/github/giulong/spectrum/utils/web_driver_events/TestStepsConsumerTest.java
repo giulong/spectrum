@@ -98,8 +98,7 @@ class TestStepsConsumerTest {
                 arguments(SUCCESSFUL, true),
                 arguments(FAILED, true),
                 arguments(ABORTED, true),
-                arguments(DISABLED, false)
-        );
+                arguments(DISABLED, false));
     }
 
     @Test

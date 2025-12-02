@@ -70,8 +70,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
                 .map(profile -> String.format("configuration-%s", profile))
                 .toList();
 
-        parseVars(CONFIGURATION);
-        profileConfigurations.forEach(this::parseVars);
+        parseVars(profileConfigurations);
         yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
 
         if (isUnix()) {
@@ -86,23 +85,27 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     List<String> parseProfiles() {
         return Arrays.stream(Optional
-                        .ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION, String.class))
-                        .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
-                        .split(","))
+                .<String>ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION))
+                .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML))
+                .split(","))
                 .filter(not(String::isBlank))
                 .toList();
     }
 
-    @SuppressWarnings("unchecked")
-    void parseVars(final String profileConfiguration) {
-        vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
+    void parseVars(final List<String> profileConfigurations) {
+        vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML));
 
         if (isUnix()) {
-            vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
+            vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML));
         }
 
-        vars.putAll(Optional.ofNullable(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
-        vars.putAll(Optional.ofNullable(yamlUtils.readClientNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional
+                .<Map<String, String>>ofNullable(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION))
+                .orElse(new HashMap<>()));
+
+        profileConfigurations.forEach(p -> vars.putAll(Optional
+                .<Map<String, String>>ofNullable(yamlUtils.readClientNode(VARS_NODE, p))
+                .orElse(new HashMap<>())));
     }
 
     boolean isUnix() {

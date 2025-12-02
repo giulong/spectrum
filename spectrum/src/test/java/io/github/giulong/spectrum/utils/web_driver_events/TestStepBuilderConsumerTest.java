@@ -101,7 +101,6 @@ class TestStepBuilderConsumerTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(789, "789"),
-                arguments(7, "700")
-        );
+                arguments(7, "700"));
     }
 }

@@ -19,8 +19,7 @@ public final class InternalFileProvider implements FileProvider {
 
     @Override
     public InjectableValues getInjectableValues() {
-        return new InjectableValues
-                .Std()
+        return new InjectableValues.Std()
                 .addValue("enabledFromClient", false);
     }
 

@@ -107,8 +107,7 @@ class FileUtilsTest {
                 arguments("fileName.html", "fileName.html"),
                 arguments("fileName-${timestamp}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
                 arguments("fileName-${timestamp:dd-MM-yyyy_HH-mm-ss}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
-                arguments("fileName-${timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
-        );
+                arguments("fileName-${timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html"));
     }
 
     @DisplayName("getExtensionOf should return the extension of the provided fileName")
@@ -122,8 +121,7 @@ class FileUtilsTest {
         return Stream.of(
                 arguments("fileName.abc", "abc"),
                 arguments("fileName", "fileName"),
-                arguments("fileName.", "")
-        );
+                arguments("fileName.", ""));
     }
 
     @DisplayName("removeExtensionFrom should return the provided fileName without the extension")
@@ -137,8 +135,7 @@ class FileUtilsTest {
         return Stream.of(
                 arguments("fileName.abc", "fileName"),
                 arguments("fileName", "fileName"),
-                arguments("fileName.", "fileName")
-        );
+                arguments("fileName.", "fileName"));
     }
 
     @Test

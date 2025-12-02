@@ -79,8 +79,8 @@ class YamlUtilsTest {
                 "HtmlTestBookReporter",
                 "LogSummaryReporter",
                 "TxtSummaryReporter",
-                "HtmlSummaryReporter"
-        ), ((YAMLMapper) Reflections.getFieldValue("yamlMapper", yamlUtils)).getRegisteredModuleIds());
+                "HtmlSummaryReporter"),
+                ((YAMLMapper) Reflections.getFieldValue("yamlMapper", yamlUtils)).getRegisteredModuleIds());
 
         assertEquals(Set.of(
                 "jackson-datatype-jsr310",
@@ -88,8 +88,8 @@ class YamlUtilsTest {
                 "String",
                 "boolean",
                 "Level",
-                "Duration"
-        ), ((YAMLMapper) Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils)).getRegisteredModuleIds());
+                "Duration"),
+                ((YAMLMapper) Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils)).getRegisteredModuleIds());
 
         assertFalse(((ObjectWriter) Reflections.getFieldValue("writer", yamlUtils)).isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
     }
@@ -123,14 +123,15 @@ class YamlUtilsTest {
     @Test
     @DisplayName("readNode should return null if the provided client file doesn't exist")
     void readNotExistingClientNode() {
-        assertNull(yamlUtils.readClientNode("/objectKey", "not-existing", TestYaml.ObjectKey.class));
+        assertNull(yamlUtils.readClientNode("/objectKey", "not-existing"));
     }
 
     @DisplayName("readNode should check if the provided file exists and return the node requested")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
     void readNode(final String file) {
-        assertEquals("objectValue", Objects.requireNonNull(yamlUtils.readInternalNode("/objectKey", file, TestYaml.ObjectKey.class)).getObjectField());
+        final TestYaml.ObjectKey value = Objects.requireNonNull(yamlUtils.readInternalNode("/objectKey", file));
+        assertEquals("objectValue", value.getObjectField());
     }
 
     @DisplayName("readNode for client-side files should just delegate to the readNode method")
@@ -154,7 +155,8 @@ class YamlUtilsTest {
     @Test
     @DisplayName("readInternalNode should just delegate to the readNode method")
     void readInternalNode() {
-        assertEquals("objectValue", yamlUtils.readInternalNode("/objectKey", "test.yaml", TestYaml.ObjectKey.class).getObjectField());
+        final TestYaml.ObjectKey value = yamlUtils.readInternalNode("/objectKey", "test.yaml");
+        assertEquals("objectValue", value.getObjectField());
     }
 
     @Test

@@ -82,7 +82,6 @@ public class FakerIT extends BaseIT {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(faker.numerify("##")),
-                arguments(faker.numerify("###"))
-        );
+                arguments(faker.numerify("###")));
     }
 }

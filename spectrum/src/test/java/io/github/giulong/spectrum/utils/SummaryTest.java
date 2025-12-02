@@ -184,7 +184,6 @@ class SummaryTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(true, SUCCESSFUL),
-                arguments(false, FAILED)
-        );
+                arguments(false, FAILED));
     }
 }

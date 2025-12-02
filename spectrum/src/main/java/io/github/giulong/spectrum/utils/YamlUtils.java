@@ -95,12 +95,14 @@ public final class YamlUtils {
         return read(internalFileProvider, file, clazz);
     }
 
-    public <T> T readClientNode(final String node, final String file, final Class<T> clazz) {
-        return readNode(clientFileProvider, node, file, clazz);
+    @SafeVarargs
+    public final <T> T readClientNode(final String node, final String file, final T... reified) {
+        return readNode(clientFileProvider, node, file, Reflections.getClassOf(reified));
     }
 
-    public <T> T readInternalNode(final String node, final String file, final Class<T> clazz) {
-        return readNode(internalFileProvider, node, file, clazz);
+    @SafeVarargs
+    public final <T> T readInternalNode(final String node, final String file, final T... reified) {
+        return readNode(internalFileProvider, node, file, Reflections.getClassOf(reified));
     }
 
     public <T> void updateWithClientFile(final T t, final String file) {

@@ -51,8 +51,7 @@ class SpectrumWebDriverListenerTest {
                 arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #gettotal]] -> tag name: button]",
                         "css selector: #gettotal -> tag name: button"),
                 arguments("[[[[ChromeDriver: chrome on WINDOWS (5db9fd1ca57389187f02aa09397ea93c)] -> css selector: #get1-.total]] -> tag name: button]",
-                        "css selector: #get1-.total -> tag name: button")
-        );
+                        "css selector: #get1-.total -> tag name: button"));
     }
 
     @Test

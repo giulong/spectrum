@@ -3,6 +3,10 @@ package io.github.giulong.spectrum.it.tests;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.DownloadPage;
 import io.github.giulong.spectrum.it.pages.UploadPage;
@@ -42,6 +46,11 @@ class FilesIT extends SpectrumTest<Void> {
         // We call the inherited helper method to check if the downloaded file is the one we expect
         // This is expected to fail since we're comparing it with a wrong file
         assertThrows(TimeoutException.class, () -> checkDownloadedFile(FILE_TO_DOWNLOAD));
+
+        // We still check the driver downloaded files in the right place
+        final Path downloadsFolder = Path.of(String.valueOf(configuration.getVars().get("downloadsFolder")));
+        assertTrue(Files.exists(downloadsFolder));
+        assertNotEquals(0, Objects.requireNonNull(downloadsFolder.toFile().listFiles()).length);
     }
 
     @Test

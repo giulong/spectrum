@@ -148,7 +148,6 @@ class StatefulExtentTestResolverTest {
         return Stream.of(
                 arguments(false, false),
                 arguments(true, false),
-                arguments(true, true)
-        );
+                arguments(true, true));
     }
 }

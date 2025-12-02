@@ -38,7 +38,6 @@ class NameComparatorTest {
         return Stream.of(
                 arguments("aaa", "bbb", -1),
                 arguments("bbb", "aaa", 1),
-                arguments("aaa", "aaa", 0)
-        );
+                arguments("aaa", "aaa", 0));
     }
 }

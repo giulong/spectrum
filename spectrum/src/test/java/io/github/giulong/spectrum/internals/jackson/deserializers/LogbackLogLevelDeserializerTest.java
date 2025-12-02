@@ -56,7 +56,6 @@ class LogbackLogLevelDeserializerTest {
                 arguments("DEBUG", DEBUG),
                 arguments("INFO", INFO),
                 arguments("WARN", WARN),
-                arguments("default", DEBUG)
-        );
+                arguments("default", DEBUG));
     }
 }

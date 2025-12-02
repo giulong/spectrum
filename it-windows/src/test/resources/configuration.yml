@@ -1,0 +1,10 @@
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+drivers:
+  waits:
+    downloadTimeout: 5
+
+extent:
+  theme: DARK
+  fileName: report-${spectrum.driver:-chrome}.html

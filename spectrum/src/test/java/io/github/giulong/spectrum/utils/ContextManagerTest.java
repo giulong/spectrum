@@ -74,9 +74,11 @@ class ContextManagerTest {
     void initWithParentFor() {
         final String uniqueId = "uniqueId";
         final String parentUniqueId = "parentUniqueId";
-        final Map<String, TestContext> testContexts = new HashMap<>() {{
-            put(parentUniqueId, testContext);
-        }};
+        final Map<String, TestContext> testContexts = new HashMap<>() {
+            {
+                put(parentUniqueId, testContext);
+            }
+        };
 
         Reflections.setField("testContexts", contextManager, testContexts);
         when(context.getUniqueId()).thenReturn(uniqueId);

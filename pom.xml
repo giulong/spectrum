@@ -68,10 +68,12 @@
                 <module>it-bidi</module>
                 <module>it-testbook</module>
                 <module>it-macos</module>
+                <module>it-windows</module>
                 <module>it-appium</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>verify-macos</module>
+                <module>verify-windows</module>
                 <module>verify-appium</module>
                 <module>cleanup</module>
             </modules>
@@ -104,6 +106,16 @@
                 <module>it-macos</module>
                 <module>verify-commons</module>
                 <module>verify-macos</module>
+                <module>cleanup</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>windows</id>
+            <modules>
+                <module>it-windows</module>
+                <module>verify-commons</module>
+                <module>verify-windows</module>
                 <module>cleanup</module>
             </modules>
         </profile>
@@ -195,7 +207,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.20</version>
+                <version>1.5.21</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -311,20 +323,6 @@
                     <version>3.5.0</version>
                 </plugin>
                 <plugin>
-                    <groupId>com.diffplug.spotless</groupId>
-                    <artifactId>spotless-maven-plugin</artifactId>
-                    <version>3.0.0</version>
-                    <configuration>
-                        <java>
-                            <removeUnusedImports/>
-                            <importOrder>
-                                <order>java,javax,ch,com,io,net,lombok,org</order>
-                            </importOrder>
-                            <trimTrailingWhitespace/>
-                        </java>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.6.0</version>
@@ -332,7 +330,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>12.1.1</version>
+                            <version>12.2.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
@@ -372,6 +370,31 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <configuration>
+                        <java>
+                            <removeUnusedImports/>
+                            <importOrder>
+                                <order>java,javax,ch,com,io,net,lombok,org</order>
+                            </importOrder>
+                            <trimTrailingWhitespace/>
+                            <eclipse>
+                                <file>${maven.multiModuleProjectDirectory}/spotless.xml</file>
+                            </eclipse>
+                        </java>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.14.1</version>
@@ -386,7 +409,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.3.1</version>
+                    <version>3.4.0</version>
                     <configuration>
                         <propertiesEncoding>UTF-8</propertiesEncoding>
                     </configuration>
@@ -433,7 +456,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.4.2</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>com.github.victools</groupId>
@@ -483,6 +506,10 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

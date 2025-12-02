@@ -162,7 +162,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     @SneakyThrows
     SpectrumPage<?, Data> injectPageInto(final Field field) {
-        @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) field.getType().getDeclaredConstructor().newInstance();
+        @SuppressWarnings("unchecked")
+        final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) field.getType().getDeclaredConstructor().newInstance();
         Reflections.setField(field, this, spectrumPage);
 
         return spectrumPage;
@@ -186,7 +187,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         final Type type = Reflections.getGenericSuperclassOf(dataSpectrumPages.getFirst().getClass(), SpectrumPage.class).getActualTypeArguments()[1];
         final String typeName = type.getTypeName();
 
-        @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
+        @SuppressWarnings("unchecked")
+        final Class<Data> dataClass = (Class<Data>) type;
         final Data data = yamlUtils.readClient(String.format("%s/data.yaml", configuration.getData().getFolder()), dataClass);
 
         dataSpectrumPages

@@ -142,8 +142,7 @@ class SpectrumPageTest {
         return Stream.of(
                 arguments("baseUrl", "/endpoint", "baseUrl/endpoint", true),
                 arguments("baseUrl", "endpoint", "baseUrl/endpoint", true),
-                arguments("baseUrl", "/endpoint", "nope", false)
-        );
+                arguments("baseUrl", "/endpoint", "nope", false));
     }
 
     @Test

@@ -43,8 +43,7 @@ class EventsConsumerTest {
                 arguments(Set.of(TEST), null, false),
                 arguments(null, Set.of(TEST), false),
                 arguments(Set.of(SUITE, TEST), Set.of(TEST), true),
-                arguments(Set.of(TEST), Set.of(SUITE, TEST), true)
-        );
+                arguments(Set.of(TEST), Set.of(SUITE, TEST), true));
     }
 
     @DisplayName("primaryAndSecondaryIdMatch")
@@ -70,8 +69,7 @@ class EventsConsumerTest {
                 arguments("class", "test", "class", "test", true),
                 arguments("classAAA", "test", "class.*", "test", true),
                 arguments("class", "testAAA", "class", "test.*", true),
-                arguments("classAAA", "testAAA", "class.*", "test.*", true)
-        );
+                arguments("classAAA", "testAAA", "class.*", "test.*", true));
     }
 
     @DisplayName("justPrimaryIdMatches")
@@ -90,8 +88,7 @@ class EventsConsumerTest {
                 arguments("class", null, false),
                 arguments("class", "nope", false),
                 arguments("class", "class", true),
-                arguments("classAAA", "class.*", true)
-        );
+                arguments("classAAA", "class.*", true));
     }
 
     @DisplayName("reasonMatches")
@@ -110,8 +107,7 @@ class EventsConsumerTest {
                 arguments(AFTER, null, false),
                 arguments(AFTER, BEFORE, false),
                 arguments(AFTER, AFTER, true),
-                arguments("afterAAA", "after.*", true)
-        );
+                arguments("afterAAA", "after.*", true));
     }
 
     @DisplayName("resultMatches")
@@ -128,8 +124,7 @@ class EventsConsumerTest {
         return Stream.of(
                 arguments(null, FAILED, false),
                 arguments(SUCCESSFUL, FAILED, false),
-                arguments(SUCCESSFUL, SUCCESSFUL, true)
-        );
+                arguments(SUCCESSFUL, SUCCESSFUL, true));
     }
 
     @DisplayName("findMatchFor")
@@ -157,8 +152,7 @@ class EventsConsumerTest {
                 arguments(Event.builder().result(FAILED).primaryId("class").build(), Event.builder().result(FAILED).primaryId("nope").build(), false),
                 arguments(Event.builder().result(FAILED).primaryId("class").build(), Event.builder().result(FAILED).primaryId("class").build(), true),
                 arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(SUITE)).build(), false),
-                arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(TEST)).build(), true)
-        );
+                arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(TEST)).build(), true));
     }
 
     @Test
@@ -180,7 +174,7 @@ class EventsConsumerTest {
 
         // we use the getContext method in the consumes of the DummyEventsConsumer below just to verify the interaction
         verify(firedEvent).getContext();
-        verify(matchingEvent, never()).getContext();    // we never consume the user-defined event (as "event"). We consume the fired event
+        verify(matchingEvent, never()).getContext(); // we never consume the user-defined event (as "event"). We consume the fired event
         verify(neverMatchingEvent, never()).getContext();
     }
 
@@ -216,8 +210,7 @@ class EventsConsumerTest {
 
         DummyEventsConsumer() {
             events = List.of(
-                    Event.builder().reason(BEFORE).primaryId("class").build()
-            );
+                    Event.builder().reason(BEFORE).primaryId("class").build());
         }
 
         @Override
