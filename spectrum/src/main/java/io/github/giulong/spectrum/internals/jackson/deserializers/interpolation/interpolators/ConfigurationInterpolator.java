@@ -1,22 +1,27 @@
-package io.github.giulong.spectrum.internals.jackson.deserializers;
+package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.core.JsonParser;
 
 import io.github.giulong.spectrum.utils.Vars;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
+public class ConfigurationInterpolator extends Interpolator {
 
     private static final Pattern PATTERN = Pattern.compile("(?<placeholder>\\$\\{(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~\\s-.:/\\\\=]*))?})");
 
     private final Vars vars = Vars.getInstance();
 
-    public String interpolate(final String value, final String currentName) {
+    @Override
+    @SneakyThrows
+    public Optional<String> findVariableFor(final String value, final JsonParser jsonParser) {
+        final String currentName = jsonParser.currentName();
         final Matcher matcher = PATTERN.matcher(value);
 
         String interpolatedValue = value;
@@ -41,11 +46,11 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
                 log.trace("Interpolated value for key '{}: {}' -> '{}'", currentName, value, interpolatedValue);
 
                 if (PATTERN.matcher(interpolatedValue).find()) {
-                    interpolatedValue = interpolate(interpolatedValue, currentName);
+                    interpolatedValue = findVariableFor(interpolatedValue, jsonParser).orElseThrow();
                 }
             }
         }
 
-        return interpolatedValue;
+        return Optional.of(interpolatedValue);
     }
 }

@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson.deserializers;
+package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation;
 
 import static java.util.stream.Collectors.toMap;
 import static lombok.AccessLevel.PRIVATE;
@@ -20,6 +20,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 import io.github.giulong.spectrum.utils.Vars;
 
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -48,31 +49,33 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
         return switch (jsonNodeType) {
             case NUMBER -> jsonNode.numberValue();
             case BOOLEAN -> jsonNode.booleanValue();
-            case STRING -> traverse(jsonNode.textValue(), currentName);
-            case OBJECT -> traverse(objectMapper.convertValue(jsonNode, Map.class), currentName);
-            case ARRAY -> traverse(objectMapper.convertValue(jsonNode, List.class), currentName);
-            default -> traverse(jsonNode, currentName);
+            case STRING -> traverse(jsonNode.textValue(), jsonParser);
+            case OBJECT -> traverse(objectMapper.convertValue(jsonNode, Map.class), jsonParser);
+            case ARRAY -> traverse(objectMapper.convertValue(jsonNode, List.class), jsonParser);
+            default -> traverse(jsonNode, jsonParser);
         };
     }
 
-    Object traverse(final Object value, final String currentName) {
+    Object traverse(final Object value, final JsonParser jsonParser) {
         return switch (value) {
             case String v -> {
                 final Matcher matcher = INT_PATTERN.matcher(v);
                 yield matcher.matches()
-                        ? interpolate(v, currentName, matcher)
-                        : InterpolatedStringDeserializer.getInstance().interpolate(v, currentName);
+                        ? interpolate(v, jsonParser, matcher)
+                        : InterpolatedStringDeserializer.getInstance().interpolate(v, jsonParser);
             }
             case Map<?, ?> m -> m
                     .entrySet()
                     .stream()
-                    .collect(toMap(Map.Entry::getKey, e -> traverse(e.getValue(), currentName)));
-            case List<?> l -> l.stream().map(e -> traverse(e, currentName)).toList();
+                    .collect(toMap(Map.Entry::getKey, e -> traverse(e.getValue(), jsonParser)));
+            case List<?> l -> l.stream().map(e -> traverse(e, jsonParser)).toList();
             default -> value;
         };
     }
 
-    int interpolate(final String value, final String currentName, final Matcher matcher) {
+    @SneakyThrows
+    int interpolate(final String value, final JsonParser jsonParser, final Matcher matcher) {
+        final String currentName = jsonParser.currentName();
         final String varName = matcher.group("varName");
         final String placeholder = matcher.group("placeholder");
         final String defaultValue = matcher.group("defaultValue");

@@ -33,9 +33,9 @@ class FileProviderTest {
     @Test
     @DisplayName("augment should return the reader augmented with views and injectable values from the provided mapper")
     void augment() {
+        when(mapper.setInjectableValues(std)).thenReturn(mapper);
         when(mapper.reader()).thenReturn(reader);
         when(reader.withView(Views.Client.class)).thenReturn(reader);
-        when(reader.with(std)).thenReturn(reader);
 
         assertEquals(reader, fileProvider.augment(mapper));
     }

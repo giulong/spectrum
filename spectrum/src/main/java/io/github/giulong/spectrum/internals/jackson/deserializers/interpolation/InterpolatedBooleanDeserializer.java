@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson.deserializers;
+package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -25,6 +25,6 @@ public class InterpolatedBooleanDeserializer extends InterpolatedDeserializer<Bo
         final String value = jsonParser.getValueAsString();
         log.trace("Deserializing Boolean from value {}", value);
 
-        return Boolean.parseBoolean(interpolate(value, jsonParser.currentName()));
+        return Boolean.parseBoolean(interpolate(value, jsonParser));
     }
 }

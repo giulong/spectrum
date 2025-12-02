@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson.deserializers;
+package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation;
 
 import static com.fasterxml.jackson.databind.node.JsonNodeType.*;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
@@ -98,7 +98,7 @@ class InterpolatedObjectDeserializerTest {
         when(jsonNode.getNodeType()).thenReturn(STRING);
         when(jsonNode.textValue()).thenReturn(value);
         when(InterpolatedStringDeserializer.getInstance()).thenReturn(interpolatedStringDeserializer);
-        when(interpolatedStringDeserializer.interpolate(value, currentName)).thenReturn(expected);
+        when(interpolatedStringDeserializer.interpolate(value, jsonParser)).thenReturn(expected);
 
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
@@ -149,7 +149,7 @@ class InterpolatedObjectDeserializerTest {
 
         when(objectMapper.convertValue(jsonNode, Map.class)).thenReturn(map);
         when(InterpolatedStringDeserializer.getInstance()).thenReturn(interpolatedStringDeserializer);
-        when(interpolatedStringDeserializer.interpolate(value, currentName)).thenReturn(interpolatedValue);
+        when(interpolatedStringDeserializer.interpolate(value, jsonParser)).thenReturn(interpolatedValue);
 
         assertEquals(interpolatedMap, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
@@ -178,7 +178,7 @@ class InterpolatedObjectDeserializerTest {
 
         when(objectMapper.convertValue(jsonNode, Map.class)).thenReturn(map);
         when(InterpolatedStringDeserializer.getInstance()).thenReturn(interpolatedStringDeserializer);
-        when(interpolatedStringDeserializer.interpolate(value, currentName)).thenReturn(interpolatedValue);
+        when(interpolatedStringDeserializer.interpolate(value, jsonParser)).thenReturn(interpolatedValue);
 
         assertEquals(interpolatedMap, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
@@ -199,7 +199,7 @@ class InterpolatedObjectDeserializerTest {
 
         when(objectMapper.convertValue(jsonNode, List.class)).thenReturn(list);
         when(InterpolatedStringDeserializer.getInstance()).thenReturn(interpolatedStringDeserializer);
-        when(interpolatedStringDeserializer.interpolate(value, currentName)).thenReturn(interpolatedValue);
+        when(interpolatedStringDeserializer.interpolate(value, jsonParser)).thenReturn(interpolatedValue);
 
         assertEquals(interpolatedList, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
@@ -226,7 +226,7 @@ class InterpolatedObjectDeserializerTest {
 
         when(objectMapper.convertValue(jsonNode, List.class)).thenReturn(list);
         when(InterpolatedStringDeserializer.getInstance()).thenReturn(interpolatedStringDeserializer);
-        when(interpolatedStringDeserializer.interpolate(value, currentName)).thenReturn(interpolatedValue);
+        when(interpolatedStringDeserializer.interpolate(value, jsonParser)).thenReturn(interpolatedValue);
 
         assertEquals(interpolatedList, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }

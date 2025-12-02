@@ -5,6 +5,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 import java.time.Duration;
 import java.util.Random;
+import java.util.function.BiConsumer;
 
 import ch.qos.logback.classic.Level;
 
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
+import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.*;
 import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.file_providers.ClientFileProvider;
 import io.github.giulong.spectrum.utils.file_providers.FileProvider;
@@ -113,6 +115,14 @@ public final class YamlUtils {
         updateWithFile(t, file, internalFileProvider);
     }
 
+    public <T> void updateWithInternalNode(final T t, final String node, final String file) {
+        updateNode(t, node, file, internalFileProvider);
+    }
+
+    public <T> void updateWithClientNode(final T t, final String node, final String file) {
+        updateNode(t, node, file, clientFileProvider);
+    }
+
     @SneakyThrows
     public String write(final Object object) {
         return writer.writeValueAsString(object);
@@ -139,6 +149,16 @@ public final class YamlUtils {
     }
 
     @SneakyThrows
+    <T> T read(final ObjectReader reader, final String file, final String node) {
+        return reader.readValue(yamlMapper.readTree(classLoader.getResourceAsStream(file)).at(node));
+    }
+
+    @SneakyThrows
+    <T> T read(final ObjectReader reader, final String file) {
+        return reader.readValue(classLoader.getResourceAsStream(file));
+    }
+
+    @SneakyThrows
     <T> T read(final ObjectReader reader, final String file, final Class<T> clazz) {
         return reader.readValue(classLoader.getResourceAsStream(file), clazz);
     }
@@ -154,32 +174,37 @@ public final class YamlUtils {
     }
 
     @SneakyThrows
-    <T> T readNode(final FileProvider fileProvider, final String node, final String file, final Class<T> clazz) {
+    <T> T readNode(final FileProvider fileProvider, final String name, final String file, final Class<T> clazz) {
         final String fileFound = fileProvider.find(file);
         if (fileFound == null) {
             return null;
         }
 
-        log.debug("Reading node '{}' of file '{}' onto an instance of {}", node, fileFound, clazz.getSimpleName());
-        final JsonNode root = fileProvider
+        log.debug("Reading node '{}' of file '{}' onto an instance of {}", name, fileFound, clazz.getSimpleName());
+        final JsonNode node = fileProvider
                 .augment(yamlMapper)
-                .readTree(classLoader.getResourceAsStream(fileFound));
+                .readTree(classLoader.getResourceAsStream(fileFound))
+                .at(name);
 
-        return yamlMapper.convertValue(root.at(node), clazz);
+        return yamlMapper.convertValue(node, clazz);
     }
 
-    @SneakyThrows
+    <T> void updateNode(final T t, final String name, final String file, final FileProvider fileProvider) {
+        updateAndAccept(t, file, fileProvider, (fileFound, reader) -> read(reader, fileFound, name));
+    }
+
     <T> void updateWithFile(final T t, final String file, final FileProvider fileProvider) {
+        updateAndAccept(t, file, fileProvider, (fileFound, reader) -> read(reader, fileFound));
+    }
+
+    <T> void updateAndAccept(final T t, final String file, final FileProvider fileProvider, final BiConsumer<String, ObjectReader> callback) {
         final String fileFound = fileProvider.find(file);
         if (fileFound == null) {
-            log.warn("File not found. Skipping update of the instance of {}", t.getClass().getSimpleName());
+            log.debug("File not found. Skipping update of the instance of {}", t.getClass().getSimpleName());
             return;
         }
 
         log.debug("Updating the instance of {} with file '{}'", t.getClass().getSimpleName(), fileFound);
-        fileProvider
-                .augment(yamlMapper)
-                .withValueToUpdate(t)
-                .readValue(classLoader.getResourceAsStream(fileFound));
+        callback.accept(fileFound, fileProvider.augment(yamlMapper).withValueToUpdate(t));
     }
 }

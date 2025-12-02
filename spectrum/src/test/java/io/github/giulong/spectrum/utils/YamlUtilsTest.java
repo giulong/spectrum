@@ -24,6 +24,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -49,6 +51,9 @@ class YamlUtilsTest {
 
     @Mock
     private FileProvider fileProvider;
+
+    @Captor
+    private ArgumentCaptor<InputStream> inputStreamArgumentCaptor;
 
     @InjectMocks
     private YamlUtils yamlUtils;
@@ -173,6 +178,25 @@ class YamlUtilsTest {
         assertEquals(testYaml, yamlUtils.readDynamicDeserializable("test.yaml", clazz, jsonNode));
     }
 
+    @Test
+    @DisplayName("updateNode should update the provided object with the content of the node at the provided file")
+    void updateNode() throws IOException {
+        final String file = "test.yaml";
+        final String node = "node";
+
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+        Reflections.setField("clientFileProvider", yamlUtils, fileProvider);
+
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(yamlMapper.readTree(inputStreamArgumentCaptor.capture())).thenReturn(jsonNode);
+        when(jsonNode.at(node)).thenReturn(jsonNode);
+        when(reader.readValue(jsonNode)).thenReturn(testYaml);
+
+        yamlUtils.updateNode(testYaml, node, file, fileProvider);
+    }
+
     @DisplayName("updateWithFile should update the provided instance with the file provided, reading only public fields")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
@@ -183,7 +207,7 @@ class YamlUtilsTest {
         when(fileProvider.find(file)).thenReturn(file);
         when(fileProvider.augment(yamlMapper)).thenReturn(reader);
         when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
-        when(reader.readValue(any(InputStream.class))).thenReturn(testYaml);
+        when(reader.readValue(inputStreamArgumentCaptor.capture())).thenReturn(testYaml);
 
         yamlUtils.updateWithClientFile(testYaml, file);
     }
@@ -215,6 +239,44 @@ class YamlUtilsTest {
         when(reader.readValue(any(InputStream.class))).thenReturn(testYaml);
 
         yamlUtils.updateWithInternalFile(testYaml, file);
+    }
+
+    @Test
+    @DisplayName("updateWithInternalNode should update the provided instance with the node of the internal file provided")
+    void updateWithInternalNode() throws IOException {
+        final String file = "test.yaml";
+        final String node = "node";
+
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+        Reflections.setField("internalFileProvider", yamlUtils, fileProvider);
+
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(yamlMapper.readTree(inputStreamArgumentCaptor.capture())).thenReturn(jsonNode);
+        when(jsonNode.at(node)).thenReturn(jsonNode);
+        when(reader.readValue(jsonNode)).thenReturn(testYaml);
+
+        yamlUtils.updateWithInternalNode(testYaml, node, file);
+    }
+
+    @Test
+    @DisplayName("updateWithClientNode should update the provided instance with the node of the client file provided")
+    void updateWithClientNode() throws IOException {
+        final String file = "test.yaml";
+        final String node = "node";
+
+        Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
+        Reflections.setField("clientFileProvider", yamlUtils, fileProvider);
+
+        when(fileProvider.find(file)).thenReturn(file);
+        when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
+        when(yamlMapper.readTree(inputStreamArgumentCaptor.capture())).thenReturn(jsonNode);
+        when(jsonNode.at(node)).thenReturn(jsonNode);
+        when(reader.readValue(jsonNode)).thenReturn(testYaml);
+
+        yamlUtils.updateWithClientNode(testYaml, node, file);
     }
 
     @Test

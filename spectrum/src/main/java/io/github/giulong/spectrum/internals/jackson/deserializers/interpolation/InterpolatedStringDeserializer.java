@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson.deserializers;
+package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -29,7 +29,7 @@ public class InterpolatedStringDeserializer extends InterpolatedDeserializer<Str
         final String value = jsonParser.getValueAsString();
         log.trace("Deserializing String from value {}", value);
 
-        final String interpolatedValue = interpolate(value, jsonParser.currentName());
+        final String interpolatedValue = interpolate(value, jsonParser);
         return fileUtils.interpolateTimestampFrom(interpolatedValue);
     }
 }

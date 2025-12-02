@@ -1,39 +1,39 @@
-package io.github.giulong.spectrum.internals.jackson.deserializers;
+package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
 
 import io.github.giulong.spectrum.utils.Vars;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-class InterpolatedStringDeserializerTest {
+class ConfigurationInterpolatorTest {
 
     private static final String VAR_IN_ENV = "varInEnv";
+
+    private final String currentName = "currentName";
 
     @Mock
     private JsonParser jsonParser;
 
-    @Mock
-    private DeserializationContext deserializationContext;
-
     @InjectMocks
-    private InterpolatedStringDeserializer interpolatedStringDeserializer;
+    private ConfigurationInterpolator interpolator;
 
     @BeforeAll
     public static void beforeAll() {
@@ -45,21 +45,13 @@ class InterpolatedStringDeserializerTest {
         Vars.getInstance().clear();
     }
 
-    @Test
-    @DisplayName("getInstance should return the singleton")
-    void getInstance() {
-        //noinspection EqualsWithItself
-        assertSame(InterpolatedStringDeserializer.getInstance(), InterpolatedStringDeserializer.getInstance());
-    }
-
-    @DisplayName("deserialize should delegate to the parent method passing the string value")
+    @DisplayName("findVariableFor should find the right value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
     void deserialize(final String value, final String expected) throws IOException {
-        when(jsonParser.getValueAsString()).thenReturn(value);
-        when(jsonParser.currentName()).thenReturn("not important");
+        when(jsonParser.currentName()).thenReturn(currentName);
 
-        assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext));
+        assertEquals(Optional.of(expected), interpolator.findVariableFor(value, jsonParser));
     }
 
     static Stream<Arguments> valuesProvider() {
@@ -85,40 +77,27 @@ class InterpolatedStringDeserializerTest {
     }
 
     @Test
-    @DisplayName("deserialize should interpolate the timestamp")
-    void deserializeTimestamp() throws IOException {
-        final String value = "value-${timestamp}";
-
-        when(jsonParser.getValueAsString()).thenReturn(value);
-        when(jsonParser.currentName()).thenReturn("not important");
-
-        assertThat(interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext), matchesPattern("value-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}"));
-    }
-
-    @Test
-    @DisplayName("deserialize should consider system properties")
+    @DisplayName("findVariableFor should consider system properties")
     void deserializeFromSystemProperty() throws Exception {
         final String expected = "expected";
-        System.setProperty("systemProperty", expected);
 
-        when(jsonParser.getValueAsString()).thenReturn("${systemProperty:-local}");
-        when(jsonParser.currentName()).thenReturn("not important");
+        System.setProperty("systemProperty", expected);
+        when(jsonParser.currentName()).thenReturn(currentName);
 
         // We set the "systemProperty" env var with a random value just to check the precedence: system property wins
         withEnvironmentVariable("systemProperty", "SOME VALUE")
-                .execute(() -> assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext)));
+                .execute(() -> assertEquals(Optional.of(expected), interpolator.findVariableFor("${systemProperty:-local}", jsonParser)));
 
         System.clearProperty("systemProperty");
     }
 
     @Test
-    @DisplayName("deserialize should consider env variables")
+    @DisplayName("findVariableFor should consider env variables")
     void deserializeFromEnvVariables() throws Exception {
         final String expected = "expected";
 
-        when(jsonParser.getValueAsString()).thenReturn("${envVar:-local}");
-        when(jsonParser.currentName()).thenReturn("not important");
+        when(jsonParser.currentName()).thenReturn(currentName);
 
-        withEnvironmentVariable("envVar", expected).execute(() -> assertEquals(expected, interpolatedStringDeserializer.deserialize(jsonParser, deserializationContext)));
+        withEnvironmentVariable("envVar", expected).execute(() -> assertEquals(Optional.of(expected), interpolator.findVariableFor("${envVar:-local}", jsonParser)));
     }
 }

@@ -9,9 +9,9 @@ import io.github.giulong.spectrum.internals.jackson.views.Views;
 public interface FileProvider {
     default ObjectReader augment(final ObjectMapper mapper) {
         return mapper
+                .setInjectableValues(getInjectableValues())
                 .reader()
-                .withView(getViews())
-                .with(getInjectableValues());
+                .withView(getViews());
     }
 
     Class<? extends Views> getViews();

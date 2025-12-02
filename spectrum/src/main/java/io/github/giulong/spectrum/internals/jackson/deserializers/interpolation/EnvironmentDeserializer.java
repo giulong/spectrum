@@ -1,4 +1,4 @@
-package io.github.giulong.spectrum.internals.jackson.deserializers;
+package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -28,7 +28,7 @@ public class EnvironmentDeserializer extends InterpolatedDeserializer<Environmen
     @Override
     public Environment deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
         final String value = jsonParser.getValueAsString();
-        final String interpolatedValue = interpolate(value, jsonParser.currentName());
+        final String interpolatedValue = interpolate(value, jsonParser);
         log.trace("Deserializing environment from value {} -> {}", value, interpolatedValue);
 
         return switch (interpolatedValue) {

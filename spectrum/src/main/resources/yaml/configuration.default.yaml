@@ -1,3 +1,15 @@
+# Generic configuration
+config:
+  interpolators: # Configuration keys interpolators
+    environment: # Environment variables interpolator
+      prefix: spectrum # Variable prefix
+      delimiter: . # Variable tokens' delimiter
+    properties: # Properties interpolator
+      prefix: spectrum # Variable prefix
+      delimiter: . # Variable tokens' delimiter
+    configuration: # In-place configuration file interpolator
+      enabled: true
+
 # Common vars to interpolate other String values in the configuration
 vars:
   downloadsFolder: ${user.dir}\target\downloads # Path, as you can see below, where to save downloaded files
