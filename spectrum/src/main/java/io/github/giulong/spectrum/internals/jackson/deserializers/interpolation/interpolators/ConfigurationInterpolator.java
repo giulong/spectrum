@@ -46,11 +46,11 @@ public class ConfigurationInterpolator extends Interpolator {
                 log.trace("Interpolated value for key '{}: {}' -> '{}'", currentName, value, interpolatedValue);
 
                 if (PATTERN.matcher(interpolatedValue).find()) {
-                    interpolatedValue = findVariableFor(interpolatedValue, jsonParser).orElseThrow();
+                    interpolatedValue = findVariableFor(interpolatedValue, jsonParser).orElse(value);
                 }
             }
         }
 
-        return Optional.of(interpolatedValue);
+        return interpolatedValue.equals(value) ? Optional.empty() : Optional.of(interpolatedValue);
     }
 }

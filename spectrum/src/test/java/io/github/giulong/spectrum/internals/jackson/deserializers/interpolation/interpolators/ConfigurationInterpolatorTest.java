@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
@@ -45,7 +46,7 @@ class ConfigurationInterpolatorTest {
         Vars.getInstance().clear();
     }
 
-    @DisplayName("findVariableFor should find the right value")
+    @DisplayName("findVariableFor should find the right value and return an optional containing it")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
     void deserialize(final String value, final String expected) throws IOException {
@@ -56,7 +57,6 @@ class ConfigurationInterpolatorTest {
 
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments("value", "value"),
                 arguments("${not.set:-_-}", "_-"),
                 arguments("${not.set:-- -}", "- -"),
                 arguments("${not.set:--\t-}", "-\t-"),
@@ -71,9 +71,16 @@ class ConfigurationInterpolatorTest {
                 arguments("${notSet:-}", ""),
                 arguments("${varInEnv:-local}", VAR_IN_ENV),
                 arguments("${varInEnv}", VAR_IN_ENV),
-                arguments("${varInEnv:-~/local}", VAR_IN_ENV),
-                arguments("${not.set}", "${not.set}"),
-                arguments("${notSet}", "${notSet}"));
+                arguments("${varInEnv:-~/local}", VAR_IN_ENV));
+    }
+
+    @DisplayName("findVariableFor should return an empty optional if no value to interpolate is found")
+    @ParameterizedTest(name = "with value {0}")
+    @ValueSource(strings = {"value", "${not.set}", "${notSet}"})
+    void deserializeNotMatching(final String value) throws IOException {
+        when(jsonParser.currentName()).thenReturn(currentName);
+
+        assertEquals(Optional.empty(), interpolator.findVariableFor(value, jsonParser));
     }
 
     @Test
