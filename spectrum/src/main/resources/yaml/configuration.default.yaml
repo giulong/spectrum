@@ -1,4 +1,4 @@
-# Generic configuration
+# Generic configuration. This node is read only from the base configuration.yaml
 config:
   interpolators: # Configuration keys interpolators
     environment: # Environment variables interpolator

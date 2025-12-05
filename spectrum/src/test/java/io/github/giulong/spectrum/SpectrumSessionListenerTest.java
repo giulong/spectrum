@@ -190,9 +190,6 @@ class SpectrumSessionListenerTest {
         when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION)).thenReturn("");
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn("defaultProfile");
 
-        // parseConfig
-        when(yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(config);
-
         // parseVars
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(Map.of("one", "one"));
 
@@ -213,9 +210,6 @@ class SpectrumSessionListenerTest {
         // parseProfile
         when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn("defaultProfile");
-
-        // parseConfig
-        when(yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(config);
 
         // parseVars
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(Map.of("one", "one"));
@@ -238,9 +232,6 @@ class SpectrumSessionListenerTest {
         // parseProfiles
         when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn("defaultProfile");
-
-        // parseConfig
-        when(yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(config);
 
         // parseVars
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(Map.of("one", "one"));
@@ -277,33 +268,27 @@ class SpectrumSessionListenerTest {
     @Test
     @DisplayName("parseConfig should parse the config node read from the configuration yaml files")
     void parseConfig() {
-        final String profileConfiguration = "profileConfiguration";
-
         System.setProperty("os.name", "Win");
 
         when(yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(config);
 
-        spectrumSessionListener.parseConfig(List.of(profileConfiguration));
+        spectrumSessionListener.parseConfig();
 
         verify(yamlUtils, never()).updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
         verify(yamlUtils).updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
-        verify(yamlUtils).updateWithClientNode(config, CONFIG_NODE, profileConfiguration);
     }
 
     @Test
     @DisplayName("parseConfig should parse the also the config node read from the internal configuration.default.unix.yaml")
     void parseConfigUnix() {
-        final String profileConfiguration = "profileConfiguration";
-
         System.setProperty("os.name", "nix");
 
         when(yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(config);
 
-        spectrumSessionListener.parseConfig(List.of(profileConfiguration));
+        spectrumSessionListener.parseConfig();
 
         verify(yamlUtils).updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
         verify(yamlUtils).updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
-        verify(yamlUtils).updateWithClientNode(config, CONFIG_NODE, profileConfiguration);
     }
 
     @DisplayName("parseVars should put in the VARS map all the variables read from the configuration yaml files")

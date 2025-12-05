@@ -42,7 +42,7 @@ public class Configuration {
 
     @Setter
     @JsonIgnore
-    @JsonPropertyDescription("Generic configuration")
+    @JsonPropertyDescription("Generic configuration. This node is read only from the base configuration.yaml")
     private Config config;
 
     @JsonPropertyDescription("Common vars to interpolate other String values in the configuration")

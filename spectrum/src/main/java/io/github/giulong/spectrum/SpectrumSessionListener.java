@@ -43,6 +43,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         final ProjectProperties projectProperties = yamlUtils.readInternal("properties.yaml", ProjectProperties.class);
         log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), projectProperties));
 
+        parseConfig();
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
 
@@ -66,13 +67,23 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         eventsDispatcher.sessionClosed();
     }
 
+    void parseConfig() {
+        final Config config = yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML);
+
+        if (isUnix()) {
+            yamlUtils.updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
+        }
+
+        yamlUtils.updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
+        configuration.setConfig(config);
+    }
+
     void parseConfiguration() {
         final List<String> profileConfigurations = parseProfiles()
                 .stream()
                 .map(profile -> String.format("configuration-%s", profile))
                 .toList();
 
-        parseConfig(profileConfigurations);
         parseVars(profileConfigurations);
 
         yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
@@ -94,19 +105,6 @@ public class SpectrumSessionListener implements LauncherSessionListener {
                 .split(","))
                 .filter(not(String::isBlank))
                 .toList();
-    }
-
-    void parseConfig(final List<String> profileConfigurations) {
-        final Config config = yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML);
-
-        if (isUnix()) {
-            yamlUtils.updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
-        }
-
-        yamlUtils.updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
-        profileConfigurations.forEach(p -> yamlUtils.updateWithClientNode(config, CONFIG_NODE, p));
-
-        configuration.setConfig(config);
     }
 
     void parseVars(final List<String> profileConfigurations) {
