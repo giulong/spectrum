@@ -3,8 +3,7 @@ config:
     environment: { }
     properties: { }
 
-application:
-  baseUrl: https://the-internet.herokuapp.com/
+# application.baseUrl set as system property in pom.xml
 
 drivers:
   waits:
@@ -23,7 +22,7 @@ video:
   frames:
     - autoAfter
     - manual
-  skipDuplicateFrames: false
+  # skipDuplicateFrames: false set as env variable in pom.xml
 
 extent:
   theme: DARK
