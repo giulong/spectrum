@@ -5,7 +5,8 @@ config:
       delimiter: _
     properties: { }
 
-# application.baseUrl set as system property in pom.xml
+application:
+  baseUrl: set as env var in pom.xml. Environment interpolator has a higher priority (see above)
 
 drivers:
   waits:

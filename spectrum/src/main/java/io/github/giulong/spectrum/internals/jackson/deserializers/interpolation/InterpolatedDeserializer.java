@@ -24,27 +24,25 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
     @SneakyThrows
     public String interpolate(final String value, final JsonParser jsonParser) {
         final Config config = configuration.getConfig();
-        log.trace("{} is deserializing {}: {}", getClass().getSimpleName(), jsonParser.currentName(), value);
+        final String currentName = jsonParser.currentName();
+        log.trace("{} is deserializing {}: {}", getClass().getSimpleName(), currentName, value);
 
         if (config != null) {
             final List<Interpolator> interpolators = Reflections.getFieldsValueOf(config.getInterpolators());
-            final List<String> values = interpolators
+            final String interpolatedValue = interpolators
                     .stream()
                     .filter(Interpolator::isEnabled)
-                    .sorted(comparing(Interpolator::getPriority))
+                    .sorted(comparing(Interpolator::getPriority).reversed())
                     .map(i -> i.findVariableFor(value, jsonParser))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
-                    .toList();
+                    .findFirst()
+                    .orElse(value);
 
-            if (!values.isEmpty()) {
-                final String interpolatedValue = values.getLast();
-                log.debug("Chosen interpolated value: {} -> {}", jsonParser.currentName(), interpolatedValue);
-                return interpolatedValue;
-            }
+            log.error("Chosen value: {} -> {}", currentName, interpolatedValue);
+            return interpolatedValue;
         }
 
-        log.debug("No value interpolated. Returning original value: {}", value);
         return value;
     }
 
