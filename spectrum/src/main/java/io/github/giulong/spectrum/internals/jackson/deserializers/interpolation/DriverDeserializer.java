@@ -10,9 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import io.github.giulong.spectrum.drivers.*;
 
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public class DriverDeserializer extends InterpolatedDeserializer<Driver<?, ?, ?>> {
 
@@ -24,9 +22,7 @@ public class DriverDeserializer extends InterpolatedDeserializer<Driver<?, ?, ?>
 
     @Override
     public Driver<?, ?, ?> deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
-        final String value = jsonParser.getValueAsString();
-        final String interpolatedValue = interpolate(value, jsonParser);
-        log.trace("Deserializing driver from value {} -> {}", value, interpolatedValue);
+        final String interpolatedValue = interpolate(jsonParser);
 
         return switch (interpolatedValue) {
             case "chrome" -> new Chrome();

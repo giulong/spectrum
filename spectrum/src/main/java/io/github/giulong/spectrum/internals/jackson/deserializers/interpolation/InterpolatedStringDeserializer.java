@@ -10,9 +10,7 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import io.github.giulong.spectrum.utils.FileUtils;
 
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public class InterpolatedStringDeserializer extends InterpolatedDeserializer<String> {
 
@@ -26,10 +24,6 @@ public class InterpolatedStringDeserializer extends InterpolatedDeserializer<Str
 
     @Override
     public String deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
-        final String value = jsonParser.getValueAsString();
-        log.trace("Deserializing String from value {}", value);
-
-        final String interpolatedValue = interpolate(value, jsonParser);
-        return fileUtils.interpolateTimestampFrom(interpolatedValue);
+        return fileUtils.interpolateTimestampFrom(interpolate(jsonParser));
     }
 }

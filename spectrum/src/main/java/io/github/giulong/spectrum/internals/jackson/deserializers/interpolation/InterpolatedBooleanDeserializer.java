@@ -8,9 +8,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public class InterpolatedBooleanDeserializer extends InterpolatedDeserializer<Boolean> {
 
@@ -22,9 +20,6 @@ public class InterpolatedBooleanDeserializer extends InterpolatedDeserializer<Bo
 
     @Override
     public Boolean deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
-        final String value = jsonParser.getValueAsString();
-        log.trace("Deserializing Boolean from value {}", value);
-
-        return Boolean.parseBoolean(interpolate(value, jsonParser));
+        return Boolean.parseBoolean(interpolate(jsonParser));
     }
 }

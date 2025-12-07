@@ -11,6 +11,7 @@ import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Config;
 import io.github.giulong.spectrum.utils.Reflections;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -18,8 +19,10 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
 
     private final Configuration configuration = Configuration.getInstance();
 
+    @SneakyThrows
     public String interpolate(final String value, final JsonParser jsonParser) {
         final Config config = configuration.getConfig();
+        log.trace("{} is deserializing {}: {}", getClass().getSimpleName(), jsonParser.currentName(), value);
 
         if (config != null) {
             final List<Interpolator> interpolators = Reflections.getFieldsValueOf(config.getInterpolators());
@@ -32,10 +35,18 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
                     .toList();
 
             if (!values.isEmpty()) {
-                return values.getLast();
+                final String interpolatedValue = values.getLast();
+                log.debug("Chosen interpolated value: {} -> {}", jsonParser.currentName(), interpolatedValue);
+                return interpolatedValue;
             }
         }
 
+        log.trace("No value interpolated. Returning original value: {}", value);
         return value;
+    }
+
+    @SneakyThrows
+    public String interpolate(final JsonParser jsonParser) {
+        return interpolate(jsonParser.getValueAsString(), jsonParser);
     }
 }
