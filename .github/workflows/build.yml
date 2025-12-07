@@ -103,7 +103,7 @@ jobs:
         shell: bash
         run: |
           export spectrum_video_skipDuplicateFrames=false
-          export spectrum_application_baseUrl='overridden by system property in pom.xml'
+          export spectrum_application_baseUrl='https://the-internet.herokuapp.com/'
           ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
           ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE ${{ matrix.directives }} -ntp -P ${{ matrix.profiles }}
 

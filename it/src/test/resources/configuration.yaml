@@ -1,6 +1,7 @@
 config:
   interpolators:
     environment:
+      priority: 10
       delimiter: _
     properties: { }
 

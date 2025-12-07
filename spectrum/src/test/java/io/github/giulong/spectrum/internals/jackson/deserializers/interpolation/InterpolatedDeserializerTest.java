@@ -79,7 +79,7 @@ class InterpolatedDeserializerTest {
     }
 
     @Test
-    @DisplayName("interpolate should return the last interpolated value of the interpolators which found the key")
+    @DisplayName("interpolate should return the last interpolated value of the interpolators which found the key, respecting their priorities")
     void interpolate() {
         final String interpolatedValue1 = "interpolatedValue1";
         final String interpolatedValue2 = "interpolatedValue2";
@@ -92,11 +92,14 @@ class InterpolatedDeserializerTest {
         when(interpolator3.isEnabled()).thenReturn(true);
         when(interpolator4.isEnabled()).thenReturn(true);
 
+        when(interpolator3.getPriority()).thenReturn(2);
+        when(interpolator4.getPriority()).thenReturn(1);
+
         when(interpolator2.findVariableFor(value, jsonParser)).thenReturn(Optional.empty());
         when(interpolator3.findVariableFor(value, jsonParser)).thenReturn(Optional.of(interpolatedValue1));
         when(interpolator4.findVariableFor(value, jsonParser)).thenReturn(Optional.of(interpolatedValue2));
 
-        assertEquals(interpolatedValue2, deserializer.interpolate(value, jsonParser));
+        assertEquals(interpolatedValue1, deserializer.interpolate(value, jsonParser));
 
         verifyNoMoreInteractions(interpolator1);
     }

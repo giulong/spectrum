@@ -1,5 +1,7 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation;
 
+import static java.util.Comparator.comparing;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +31,7 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
             final List<String> values = interpolators
                     .stream()
                     .filter(Interpolator::isEnabled)
+                    .sorted(comparing(Interpolator::getPriority))
                     .map(i -> i.findVariableFor(value, jsonParser))
                     .filter(Optional::isPresent)
                     .map(Optional::get)
@@ -41,7 +44,7 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
             }
         }
 
-        log.trace("No value interpolated. Returning original value: {}", value);
+        log.debug("No value interpolated. Returning original value: {}", value);
         return value;
     }
 

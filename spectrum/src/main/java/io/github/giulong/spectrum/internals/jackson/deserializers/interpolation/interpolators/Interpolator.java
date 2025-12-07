@@ -16,5 +16,9 @@ public abstract class Interpolator {
     @JsonPropertyDescription("Whether to enable this interpolator. Injected to true by default, so no need to explicitly set it")
     private boolean enabled;
 
+    @SuppressWarnings("unused")
+    @JsonPropertyDescription("Sets the order of evaluation of this interpolator among others. Higher priority wins.")
+    private int priority;
+
     public abstract Optional<String> findVariableFor(String value, JsonParser jsonParser);
 }

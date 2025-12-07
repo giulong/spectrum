@@ -56,10 +56,10 @@
                 <configuration>
                     <environmentVariables>
                         <spectrum_video_skipDuplicateFrames>false</spectrum_video_skipDuplicateFrames>
-                        <spectrum_application_baseUrl>overridden by the property below</spectrum_application_baseUrl>
+                        <spectrum_application_baseUrl>https://the-internet.herokuapp.com/</spectrum_application_baseUrl>
                     </environmentVariables>
                     <systemPropertyVariables>
-                        <spectrum.application.baseUrl>https://the-internet.herokuapp.com/</spectrum.application.baseUrl>
+                        <spectrum.application.baseUrl>overridden by the env variable above</spectrum.application.baseUrl>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>
