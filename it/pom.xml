@@ -55,8 +55,8 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <configuration>
                     <environmentVariables>
-                        <spectrum.video.skipDuplicateFrames>false</spectrum.video.skipDuplicateFrames>
-                        <spectrum.application.baseUrl>overridden by the property below</spectrum.application.baseUrl>
+                        <spectrum_video_skipDuplicateFrames>false</spectrum_video_skipDuplicateFrames>
+                        <spectrum_application_baseUrl>overridden by the property below</spectrum_application_baseUrl>
                     </environmentVariables>
                     <systemPropertyVariables>
                         <spectrum.application.baseUrl>https://the-internet.herokuapp.com/</spectrum.application.baseUrl>

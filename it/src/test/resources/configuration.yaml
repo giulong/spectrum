@@ -1,6 +1,7 @@
 config:
   interpolators:
-    environment: { }
+    environment:
+      delimiter: _
     properties: { }
 
 # application.baseUrl set as system property in pom.xml

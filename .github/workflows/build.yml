@@ -74,7 +74,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       VERSION: ${{ needs.build.outputs.version }}
-      spectrum.video.skipDuplicateFrames: false
     steps:
       - name: Free Disk Space
         if: ${{ matrix.os != 'windows-latest' }}
@@ -103,6 +102,8 @@ jobs:
       - name: Run browsers ITs
         shell: bash
         run: |
+          export spectrum_video_skipDuplicateFrames=false
+          export spectrum_application_baseUrl='overridden by system property in pom.xml'
           ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
           ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE ${{ matrix.directives }} -ntp -P ${{ matrix.profiles }}
 
