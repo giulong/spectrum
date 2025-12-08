@@ -846,6 +846,7 @@ config:
 ```
 
 This means every configuration key will be searched in env vars, with the `spectrum` prefix and words delimited by a dot.
+The name of the variable to resolve is the json path of the corresponding configuration key.
 For instance, you can inject the `application.baseUrl` setting an env variable named `spectrum.application.baseUrl`.
 
 To give you another example, you can use this config to inject env vars like `APPLICATION_BASEURL`:
@@ -903,6 +904,7 @@ config:
 ```
 
 This means every configuration key will be searched in system properties, with the `spectrum` prefix and words delimited by a dot.
+The name of the variable to resolve is the json path of the corresponding configuration key.
 For instance, you can inject the `application.baseUrl` setting the system property `-Dspectrum.application.baseUrl`.
 
 To give you another example, you can use this config to inject system properties like `-DAPPLICATION_BASEURL`:
