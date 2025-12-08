@@ -39,7 +39,7 @@ public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
                     .findFirst()
                     .orElse(value);
 
-            log.error("Chosen value: {} -> {}", currentName, interpolatedValue);
+            log.debug("Chosen value: {} -> {}", currentName, interpolatedValue);
             return interpolatedValue;
         }
 

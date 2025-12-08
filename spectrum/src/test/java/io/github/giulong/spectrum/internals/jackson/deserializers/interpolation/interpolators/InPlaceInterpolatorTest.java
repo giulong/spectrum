@@ -24,7 +24,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-class ConfigurationInterpolatorTest {
+class InPlaceInterpolatorTest {
 
     private static final String VAR_IN_ENV = "varInEnv";
 
@@ -34,7 +34,7 @@ class ConfigurationInterpolatorTest {
     private JsonParser jsonParser;
 
     @InjectMocks
-    private ConfigurationInterpolator interpolator;
+    private InPlaceInterpolator interpolator;
 
     @BeforeAll
     public static void beforeAll() {

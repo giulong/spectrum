@@ -9,7 +9,7 @@ config:
       priority: 1 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       prefix: spectrum # Variable prefix
       delimiter: . # Variable tokens' delimiter
-    configuration: # In-place configuration file interpolator
+    inPlace: # In-place configuration file interpolator
       priority: 2 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       enabled: true
 

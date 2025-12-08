@@ -16,8 +16,8 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.ConfigurationInterpolator;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.EnvironmentInterpolator;
+import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.InPlaceInterpolator;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.PropertiesInterpolator;
 import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
@@ -107,7 +107,7 @@ public class Configuration {
             private PropertiesInterpolator properties;
 
             @JsonPropertyDescription("In-place configuration file interpolator")
-            private ConfigurationInterpolator configuration;
+            private InPlaceInterpolator inPlace;
         }
     }
 
