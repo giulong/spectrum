@@ -1,12 +1,13 @@
 package io.github.giulong.spectrum.verify_macos;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.condition.OS.MAC;
+
 import io.github.giulong.spectrum.verify_commons.FailsafeReportsVerifier;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.condition.OS.MAC;
 
 @DisplayName("It macOS Module Verifier")
 @EnabledOnOs(MAC)

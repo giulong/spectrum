@@ -1,11 +1,33 @@
 package io.github.giulong.spectrum.utils.events.video;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.Map;
+import java.util.stream.Stream;
+
+import javax.imageio.ImageIO;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import org.jcodec.api.awt.AWTSequenceEncoder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,26 +40,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.*;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
-
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class VideoConsumerTest {
 
@@ -273,7 +275,7 @@ class VideoConsumerTest {
         reset(video);
         when(video.getWidth()).thenReturn(width);
 
-        if (width >= 1) {   // short-circuit
+        if (width >= 1) { // short-circuit
             when(video.getHeight()).thenReturn(height);
         }
         when(driver.manage()).thenReturn(options);
@@ -293,8 +295,7 @@ class VideoConsumerTest {
         return Stream.of(
                 arguments(0, 0),
                 arguments(1, 0),
-                arguments(0, 1)
-        );
+                arguments(0, 1));
     }
 
     @DisplayName("makeItEven should increment the provided int if it's odd")
@@ -307,8 +308,7 @@ class VideoConsumerTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(0, 0),
-                arguments(1, 2)
-        );
+                arguments(1, 2));
     }
 
     @Test

@@ -1,6 +1,13 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.JsResolver.JS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
 import io.github.giulong.spectrum.utils.js.Js;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,12 +19,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.JsResolver.JS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class JsResolverTest {
 

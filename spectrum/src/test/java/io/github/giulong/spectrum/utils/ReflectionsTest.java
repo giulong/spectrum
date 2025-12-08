@@ -1,19 +1,21 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.interfaces.Secured;
-import lombok.NoArgsConstructor;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
+import io.github.giulong.spectrum.interfaces.Secured;
+
+import lombok.NoArgsConstructor;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.*;
 
 class ReflectionsTest {
 
@@ -38,8 +40,18 @@ class ReflectionsTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(Dummy.class, DummyParent.class, List.of("fieldString", "secured")),
-                arguments(Dummy.class, Object.class, List.of("fieldString", "secured", "parentField"))
-        );
+                arguments(Dummy.class, Object.class, List.of("fieldString", "secured", "parentField")));
+    }
+
+    @Test
+    @DisplayName("getFieldsValueOf should return all the fields of the provided object of the provided type")
+    void getFieldsValueOf() {
+        final String fieldName = "fieldString";
+        final String secured = "secured";
+        final Dummy dummy = new Dummy(fieldName, secured, null);
+
+        final List<String> values = Reflections.getFieldsValueOf(dummy);
+        assertEquals(List.of(fieldName, secured), values);
     }
 
     @Test
@@ -93,8 +105,7 @@ class ReflectionsTest {
 
     static Stream<Arguments> getFieldValueExceptionValuesProvider() {
         return Stream.of(
-                arguments((Object) new Dummy[]{new Dummy("value")})
-        );
+                arguments((Object) new Dummy[]{new Dummy("value")}));
     }
 
     @Test

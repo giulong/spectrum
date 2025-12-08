@@ -1,7 +1,13 @@
 package io.github.giulong.spectrum.interfaces;
 
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.drivers.Chrome;
 import io.github.giulong.spectrum.utils.Configuration;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -9,11 +15,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.chrome.ChromeOptions;
-
-import java.util.stream.Stream;
-
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class BiDiDriverTest {
 
@@ -50,7 +51,6 @@ class BiDiDriverTest {
                 arguments(true, true, true),
                 arguments(true, false, true),
                 arguments(false, true, true),
-                arguments(false, false, false)
-        );
+                arguments(false, false, false));
     }
 }

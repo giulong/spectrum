@@ -1,14 +1,39 @@
 package io.github.giulong.spectrum;
 
+import static com.aventstack.extentreports.Status.*;
+import static com.aventstack.extentreports.Status.INFO;
+import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+import static org.openqa.selenium.OutputType.BYTES;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
+
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+
 import lombok.SneakyThrows;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -25,27 +50,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import static com.aventstack.extentreports.Status.INFO;
-import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
-import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
-import static org.openqa.selenium.OutputType.BYTES;
 
 class SpectrumEntityTest {
 
@@ -171,8 +175,7 @@ class SpectrumEntityTest {
                 "data",
                 "statefulExtentTest",
                 "testContext",
-                "jsWebElementProxyBuilder"
-        )));
+                "jsWebElementProxyBuilder")));
     }
 
     @Test
@@ -363,8 +366,7 @@ class SpectrumEntityTest {
     static Stream<Arguments> isPresentProvider() {
         return Stream.of(
                 arguments(List.of(), false),
-                arguments(List.of(mock(WebElement.class)), true)
-        );
+                arguments(List.of(mock(WebElement.class)), true));
     }
 
     @DisplayName("isNotPresent should return true if the element located by the provided By is not in the dom")
@@ -379,8 +381,7 @@ class SpectrumEntityTest {
     static Stream<Arguments> isNotPresentProvider() {
         return Stream.of(
                 arguments(List.of(), true),
-                arguments(List.of(mock(WebElement.class)), false)
-        );
+                arguments(List.of(mock(WebElement.class)), false));
     }
 
     @DisplayName("hasClass should check if the provided webElement has the provided css class")
@@ -397,8 +398,7 @@ class SpectrumEntityTest {
                 arguments(null, false),
                 arguments("", false),
                 arguments("cssClass", true),
-                arguments("one cssClass another", true)
-        );
+                arguments("one cssClass another", true));
     }
 
     @DisplayName("hasClasses should check if the provided webElement has all the provided css class")
@@ -415,8 +415,7 @@ class SpectrumEntityTest {
                 arguments(null, false),
                 arguments("", false),
                 arguments("cssClass", false),
-                arguments("one cssClass another", true)
-        );
+                arguments("one cssClass another", true));
     }
 
     private static final class DummySpectrumEntity<T> extends SpectrumEntity<DummySpectrumEntity<T>, T> {

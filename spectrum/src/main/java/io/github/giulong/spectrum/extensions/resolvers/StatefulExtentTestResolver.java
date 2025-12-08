@@ -1,21 +1,24 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
 import com.aventstack.extentreports.ExtentTest;
+
+import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
+import io.github.giulong.spectrum.utils.ExtentReporter;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.utils.TestData;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.ExtentReporter;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.support.TypeBasedParameterResolver;
-
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 public class StatefulExtentTestResolver extends TypeBasedParameterResolver<StatefulExtentTest> {

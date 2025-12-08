@@ -1,15 +1,16 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.utils.Reflections;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.mockito.InjectMocks;
+import static java.util.stream.Collectors.toMap;
+import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Field;
 import java.util.Map;
 
-import static java.util.stream.Collectors.toMap;
-import static org.mockito.Mockito.mock;
+import io.github.giulong.spectrum.utils.Reflections;
+
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.InjectMocks;
 
 public class SpectrumUnitTestExtension implements BeforeEachCallback {
 

@@ -1,10 +1,8 @@
 package io.github.giulong.spectrum.it_testbook;
 
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.reporters.FileReporter;
-import lombok.SneakyThrows;
-import org.junit.platform.launcher.LauncherSession;
-import org.junit.platform.launcher.LauncherSessionListener;
+import static java.util.Comparator.comparingLong;
+import static java.util.function.Predicate.not;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -13,9 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Comparator.comparingLong;
-import static java.util.function.Predicate.not;
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.reporters.FileReporter;
+
+import lombok.SneakyThrows;
+
+import org.junit.platform.launcher.LauncherSession;
+import org.junit.platform.launcher.LauncherSessionListener;
 
 @SuppressWarnings("unused")
 public class TestBookSessionListener implements LauncherSessionListener {
@@ -174,7 +176,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private void createExtentFiles(final List<String> fileNames, final Path directory) {
         for (String fileName : fileNames) {
             assertTrue(Files.createFile(directory.resolve(fileUtils.removeExtensionFrom(fileName)).resolve(fileName)).toFile().exists());
-            Thread.sleep(1000);   // just to be sure files have different creation dates
+            Thread.sleep(1000); // just to be sure files have different creation dates
         }
     }
 
@@ -182,7 +184,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private void createFiles(final List<String> fileNames, final Path directory) {
         for (String fileName : fileNames) {
             assertTrue(Files.createFile(directory.resolve(fileName)).toFile().exists());
-            Thread.sleep(1000);   // just to be sure files have different creation dates
+            Thread.sleep(1000); // just to be sure files have different creation dates
         }
     }
 
@@ -190,7 +192,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private void createDirectories(final List<String> directoryNames, final Path parentDirectory) {
         for (String fileName : directoryNames) {
             assertTrue(Files.createDirectories(parentDirectory.resolve(fileName)).toFile().exists());
-            Thread.sleep(1000);   // just to be sure files have different creation dates
+            Thread.sleep(1000); // just to be sure files have different creation dates
         }
     }
 

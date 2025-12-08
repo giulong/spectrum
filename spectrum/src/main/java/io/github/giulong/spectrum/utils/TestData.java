@@ -1,17 +1,19 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.exceptions.TestFailedException;
-import io.github.giulong.spectrum.exceptions.VisualRegressionException;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-import org.jcodec.api.awt.AWTSequenceEncoder;
-
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import io.github.giulong.spectrum.exceptions.TestFailedException;
+import io.github.giulong.spectrum.exceptions.VisualRegressionException;
+
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
+import org.jcodec.api.awt.AWTSequenceEncoder;
 
 @Slf4j
 @Getter

@@ -1,8 +1,17 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.ExtentReportsResolver.EXTENT_REPORTS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
+import java.util.function.Function;
+
 import com.aventstack.extentreports.ExtentReports;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.ExtentReporter;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -11,13 +20,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.util.function.Function;
-
-import static io.github.giulong.spectrum.extensions.resolvers.ExtentReportsResolver.EXTENT_REPORTS;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class ExtentReportsResolverTest {
 

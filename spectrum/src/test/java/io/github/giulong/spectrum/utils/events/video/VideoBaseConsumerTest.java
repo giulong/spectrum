@@ -1,11 +1,22 @@
 package io.github.giulong.spectrum.utils.events.video;
 
+import static io.github.giulong.spectrum.enums.Result.DISABLED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
+
+import java.nio.file.Path;
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,16 +24,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.nio.file.Path;
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.enums.Result.DISABLED;
-import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.when;
 
 class VideoBaseConsumerTest {
 
@@ -61,8 +62,7 @@ class VideoBaseConsumerTest {
                 arguments(DISABLED, true, false),
                 arguments(SUCCESSFUL, true, false),
                 arguments(DISABLED, false, false),
-                arguments(SUCCESSFUL, false, true)
-        );
+                arguments(SUCCESSFUL, false, true));
     }
 
     @Test

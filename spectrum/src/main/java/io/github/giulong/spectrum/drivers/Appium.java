@@ -1,17 +1,19 @@
 package io.github.giulong.spectrum.drivers;
 
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.Map;
+
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.github.giulong.spectrum.interfaces.BiDiDriver;
 import io.github.giulong.spectrum.utils.Configuration;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
-
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.Map;
 
 @Slf4j
 public abstract class Appium<T extends MutableCapabilities, U extends AppiumDriver> extends Driver<T, AppiumDriverLocalService, AppiumServiceBuilder> implements BiDiDriver<T> {

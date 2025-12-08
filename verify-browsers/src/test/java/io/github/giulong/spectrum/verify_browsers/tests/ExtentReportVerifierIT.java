@@ -1,11 +1,8 @@
 package io.github.giulong.spectrum.verify_browsers.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.verify_browsers.data.Data;
-import io.github.giulong.spectrum.verify_browsers.pages.ExtentReportPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.By;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -13,9 +10,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.verify_browsers.data.Data;
+import io.github.giulong.spectrum.verify_browsers.pages.ExtentReportPage;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 
 class ExtentReportVerifierIT extends SpectrumTest<Data> {
 

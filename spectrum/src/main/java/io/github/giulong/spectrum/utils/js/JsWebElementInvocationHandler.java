@@ -1,18 +1,20 @@
 package io.github.giulong.spectrum.utils.js;
 
-import io.github.giulong.spectrum.enums.LocatorType;
-import lombok.Builder;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
-import org.openqa.selenium.*;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import io.github.giulong.spectrum.enums.LocatorType;
+
+import lombok.Builder;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import org.jetbrains.annotations.NotNull;
+import org.openqa.selenium.*;
 
 @Slf4j
 @Builder

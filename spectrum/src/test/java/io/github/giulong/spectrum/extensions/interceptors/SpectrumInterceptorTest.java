@@ -1,26 +1,5 @@
 package io.github.giulong.spectrum.extensions.interceptors;
 
-import com.aventstack.extentreports.ExtentTest;
-import io.github.giulong.spectrum.MockSingleton;
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import io.github.giulong.spectrum.utils.video.Video;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.DynamicTestInvocationContext;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.InvocationInterceptor;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
-import java.nio.file.Path;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-
 import static io.github.giulong.spectrum.enums.Result.FAILED;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -31,6 +10,29 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
+
+import java.nio.file.Path;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import com.aventstack.extentreports.ExtentTest;
+
+import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.DynamicTestInvocationContext;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.InvocationInterceptor;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 class SpectrumInterceptorTest {
 
@@ -153,8 +155,7 @@ class SpectrumInterceptorTest {
         return Stream.of(
                 arguments(true, true),
                 arguments(true, false),
-                arguments(false, false)
-        );
+                arguments(false, false));
     }
 
     @Test

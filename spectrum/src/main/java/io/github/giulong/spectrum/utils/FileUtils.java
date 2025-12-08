@@ -1,8 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.Comparator.reverseOrder;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
 import java.io.InputStream;
@@ -19,8 +18,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static java.util.Comparator.reverseOrder;
-import static lombok.AccessLevel.PRIVATE;
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
@@ -31,8 +31,8 @@ public final class FileUtils {
     private static final String DEFAULT_TIMESTAMP_PATTERN = "dd-MM-yyyy_HH-mm-ss";
     private static final String TIMESTAMP_TO_REPLACE = "\\$\\{timestamp:?(?<pattern>.*)}";
     private static final Pattern TIMESTAMP_PATTERN = Pattern.compile(".*\\$\\{timestamp:(?<pattern>.*)}.*");
-    private static final int[] ILLEGAL_CHARS =
-            {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 47, 58, 60, 62, 63, 92, 124};
+    private static final int[] ILLEGAL_CHARS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 34, 42, 47,
+            58, 60, 62, 63, 92, 124};
 
     public static FileUtils getInstance() {
         return INSTANCE;
@@ -166,10 +166,10 @@ public final class FileUtils {
     @SneakyThrows
     public boolean compare(final Path path1, final Path path2) {
         log.info("""
-                Checking if these files are the same:
-                {}
-                {}
-                """, path1, path2);
+                 Checking if these files are the same:
+                 {}
+                 {}
+                 """, path1, path2);
 
         return compare(Files.readAllBytes(path1), Files.readAllBytes(path2));
     }

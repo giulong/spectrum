@@ -1,19 +1,20 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.interfaces.SessionHook;
-import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
-import io.github.giulong.spectrum.types.ProjectProperties;
-import lombok.Generated;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
-import static lombok.AccessLevel.PRIVATE;
+import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
+import io.github.giulong.spectrum.types.ProjectProperties;
+
+import lombok.Generated;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)

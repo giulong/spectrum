@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.utils;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mockConstruction;
+
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.MockedConstruction;
 import org.mockito.Spy;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mockConstruction;
 
 class TestDataTest {
 

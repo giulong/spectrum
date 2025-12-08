@@ -1,8 +1,20 @@
 package io.github.giulong.spectrum.extensions.resolvers.bidi;
 
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.lang.reflect.Parameter;
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import lombok.Getter;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,16 +27,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.HasBiDi;
-
-import java.lang.reflect.Parameter;
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class BiDiTypeBasedParameterResolverTest {
 
@@ -75,8 +77,7 @@ class BiDiTypeBasedParameterResolverTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(String.class, true),
-                arguments(Object.class, false)
-        );
+                arguments(Object.class, false));
     }
 
     @Test

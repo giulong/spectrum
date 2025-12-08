@@ -1,13 +1,15 @@
 package io.github.giulong.spectrum.pojos.testbook;
 
+import static io.github.giulong.spectrum.enums.Result.NOT_RUN;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.github.giulong.spectrum.enums.Result;
+
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-
-import static io.github.giulong.spectrum.enums.Result.NOT_RUN;
 
 @Getter
 @Builder

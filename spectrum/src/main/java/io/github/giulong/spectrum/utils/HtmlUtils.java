@@ -1,9 +1,7 @@
 package io.github.giulong.spectrum.utils;
 
-import io.github.giulong.spectrum.interfaces.SessionHook;
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.regex.Pattern.DOTALL;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,8 +10,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.regex.Pattern.DOTALL;
-import static lombok.AccessLevel.PRIVATE;
+import io.github.giulong.spectrum.interfaces.SessionHook;
+
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)

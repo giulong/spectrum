@@ -1,12 +1,21 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
+import static com.aventstack.extentreports.Status.INFO;
+import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static org.mockito.Mockito.*;
+
+import java.nio.file.Path;
+import java.util.Map;
+
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.model.Media;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,13 +23,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import java.nio.file.Path;
-import java.util.Map;
-
-import static com.aventstack.extentreports.Status.INFO;
-import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static org.mockito.Mockito.*;
 
 class ExtentScreenshotConsumerTest {
 

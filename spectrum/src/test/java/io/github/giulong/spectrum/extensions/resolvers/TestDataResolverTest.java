@@ -1,10 +1,21 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.TestData;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,16 +25,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Optional;
-
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class TestDataResolverTest {
 

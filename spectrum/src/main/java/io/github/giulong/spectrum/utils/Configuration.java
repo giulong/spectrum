@@ -1,22 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
-import com.fasterxml.jackson.annotation.JacksonInject;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.github.giulong.spectrum.drivers.Driver;
-import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.utils.environments.Environment;
-import io.github.giulong.spectrum.utils.events.EventsConsumer;
-import io.github.giulong.spectrum.utils.testbook.TestBook;
-import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
-import io.github.giulong.spectrum.utils.video.Video;
-import lombok.Generated;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
-import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
 import java.net.URL;
@@ -24,7 +8,30 @@ import java.time.Duration;
 import java.util.*;
 import java.util.logging.Level;
 
-import static lombok.AccessLevel.PRIVATE;
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
+import io.github.giulong.spectrum.drivers.Driver;
+import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.EnvironmentInterpolator;
+import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.InPlaceInterpolator;
+import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.PropertiesInterpolator;
+import io.github.giulong.spectrum.utils.environments.Environment;
+import io.github.giulong.spectrum.utils.events.EventsConsumer;
+import io.github.giulong.spectrum.utils.testbook.TestBook;
+import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import lombok.Generated;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 
 @SuppressWarnings("unused")
 @Getter
@@ -32,6 +39,11 @@ import static lombok.AccessLevel.PRIVATE;
 public class Configuration {
 
     private static final Configuration INSTANCE = new Configuration();
+
+    @Setter
+    @JsonIgnore
+    @JsonPropertyDescription("Generic configuration. This node is read only from the base configuration.yaml")
+    private Config config;
 
     @JsonPropertyDescription("Common vars to interpolate other String values in the configuration")
     private Map<String, Object> vars;
@@ -78,6 +90,28 @@ public class Configuration {
 
     public static Configuration getInstance() {
         return INSTANCE;
+    }
+
+    @Getter
+    @Generated
+    public static class Config {
+
+        @JsonPropertyDescription("Configuration keys interpolators")
+        private Interpolators interpolators;
+
+        @Getter
+        @Generated
+        public static class Interpolators {
+
+            @JsonPropertyDescription("Environment variables interpolator")
+            private EnvironmentInterpolator environment;
+
+            @JsonPropertyDescription("Properties interpolator")
+            private PropertiesInterpolator properties;
+
+            @JsonPropertyDescription("In-place configuration file interpolator")
+            private InPlaceInterpolator inPlace;
+        }
     }
 
     @Getter

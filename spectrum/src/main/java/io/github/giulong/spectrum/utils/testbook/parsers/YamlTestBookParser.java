@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.utils.testbook.parsers;
 
+import java.util.List;
+
 import io.github.giulong.spectrum.pojos.testbook.TestBookTest;
 import io.github.giulong.spectrum.pojos.testbook.TestBookYamlData;
 import io.github.giulong.spectrum.utils.YamlUtils;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class YamlTestBookParser extends TestBookParser {

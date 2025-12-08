@@ -13,10 +13,12 @@ client would. So, we build the framework in a dedicated module, and then we incl
 | [it-bidi](it-bidi)                 | Runs a bunch of tests with the `webSocketUrl` capability                      |
 | [it-testbook](it-testbook)         | Runs a bunch of tests with a testbook                                         |
 | [it-macos](it-macos)               | Runs a bunch of tests specific to macOS (Safari)                              |
+| [it-windows](it-windows)           | Runs a bunch of tests on Windows (useful for GH actions to reduce flakiness)  |
 | [it-appium](it-appium)             | Runs a bunch of tests with Appium                                             |
 | [verify-commons](verify-commons)   | Contains common classes used in other verify modules                          |
 | [verify-browsers](verify-browsers) | Verifies results of the `it`, `it-testbook`, `it-grid`, and `it-bidi` modules |
 | [verify-macos](verify-macos)       | Verifies results of the `it-macos` module                                     |
+| [verify-windows](verify-windows)   | Verifies results of the `it-windows` module                                   |
 | [verify-appium](verify-appium)     | Verifies results of the `it-appium` module                                    |
 | [cleanup](cleanup)                 | Cleans each module after the execution                                        |
 
@@ -79,8 +81,10 @@ Where:
   on [Maven Central](https://central.sonatype.com/artifact/io.github.giulong/spectrum).
 * the `-DbrowsersTests` property is a shorthand to activate all the profiles needed to run tests on all the browsers. It's equivalent to
   running with these active profiles: `-P chrome,firefox,edge`.
-* the `-DmacosTests` property is a shorthand to activate all the profiles needed to run tests on macOS. It's equivalent to
+* the `-DmacosTests` property is a shorthand to activate all the profiles needed to run tests specific to Safari. It's equivalent to
   running with these active profiles: `-P safari`.
+* the `-DwindowsTests` property is a shorthand to activate all the profiles needed to run tests on Windows in GitHub build action. It's equivalent to
+  running with these active profiles: `-P windows`. NOTE: this is not needed in local: it's meant to just run fewer tests on windows workers in CI builds.
 * the `-DappiumTests` property is a shorthand to activate all the profiles needed to run tests on Appium. It's equivalent to
   running with these active profiles: `-P uiAutomator2`.
 * the `-fae` option is [Maven's](https://maven.apache.org/ref/3.6.3/maven-embedder/cli.html) shorthand for `--fail-at-end`, needed to always run the `cleanup` module.

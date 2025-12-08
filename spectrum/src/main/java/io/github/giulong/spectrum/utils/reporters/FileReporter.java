@@ -1,18 +1,6 @@
 package io.github.giulong.spectrum.utils.reporters;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
-import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
-import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FixedSizeQueue;
-import io.github.giulong.spectrum.utils.MetadataManager;
-import io.github.giulong.spectrum.utils.Retention;
-import lombok.Generated;
-import lombok.Getter;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.function.Predicate.not;
 
 import java.awt.*;
 import java.io.File;
@@ -20,7 +8,21 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.function.Predicate.not;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
+import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
+import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
+import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
+import io.github.giulong.spectrum.utils.FileUtils;
+import io.github.giulong.spectrum.utils.FixedSizeQueue;
+import io.github.giulong.spectrum.utils.MetadataManager;
+import io.github.giulong.spectrum.utils.Retention;
+
+import lombok.Generated;
+import lombok.Getter;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter

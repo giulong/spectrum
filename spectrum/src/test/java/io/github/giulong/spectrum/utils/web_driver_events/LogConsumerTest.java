@@ -1,12 +1,12 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import static org.mockito.Mockito.when;
+import static org.slf4j.event.Level.INFO;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.mockito.Mockito.when;
-import static org.slf4j.event.Level.INFO;
 
 class LogConsumerTest {
 

@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers.bidi;
 
 import lombok.Getter;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.module.LogInspector;
 

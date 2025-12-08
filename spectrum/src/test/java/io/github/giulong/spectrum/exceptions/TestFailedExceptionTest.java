@@ -1,8 +1,14 @@
 package io.github.giulong.spectrum.exceptions;
 
+import static com.aventstack.extentreports.markuputils.ExtentColor.RED;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+
 import io.github.giulong.spectrum.SpectrumTest;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,14 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 
-import static com.aventstack.extentreports.markuputils.ExtentColor.RED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
-
 class TestFailedExceptionTest {
 
     private final String reportDetails = "reportDetails";
-    
+
     private MockedStatic<MarkupHelper> markupHelperMockedStatic;
 
     @Mock
@@ -33,7 +35,7 @@ class TestFailedExceptionTest {
 
     @InjectMocks
     private TestFailedException testFailedException;
-    
+
     @BeforeEach
     void beforeEach() {
         markupHelperMockedStatic = mockStatic(MarkupHelper.class);
@@ -57,13 +59,13 @@ class TestFailedExceptionTest {
 
         verify(spectrumTest).screenshotFail(reportDetails);
     }
-    
+
     @Test
     @DisplayName("getReportDetails should return the failed markup")
     void getReportDetails() {
         when(MarkupHelper.createLabel("TEST FAILED", RED)).thenReturn(markup);
         when(markup.getMarkup()).thenReturn(reportDetails);
-        
+
         assertEquals(reportDetails, testFailedException.getReportDetails());
     }
 }

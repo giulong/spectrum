@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

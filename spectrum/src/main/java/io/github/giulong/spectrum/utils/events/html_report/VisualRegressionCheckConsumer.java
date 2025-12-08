@@ -1,15 +1,17 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import io.github.giulong.spectrum.pojos.events.Event;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import static com.aventstack.extentreports.Status.FAIL;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.aventstack.extentreports.Status.FAIL;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
+import io.github.giulong.spectrum.pojos.events.Event;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @JsonView(Internal.class)

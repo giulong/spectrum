@@ -1,24 +1,25 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
-import io.github.giulong.spectrum.MockSingleton;
-import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import io.github.giulong.spectrum.utils.video.Video;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.openqa.selenium.TakesScreenshot;
-
-import java.util.Map;
-
 import static io.github.giulong.spectrum.enums.Frame.AUTO;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
+
+import java.util.Map;
+
+import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.openqa.selenium.TakesScreenshot;
 
 class VideoAutoScreenshotProducerTest {
 

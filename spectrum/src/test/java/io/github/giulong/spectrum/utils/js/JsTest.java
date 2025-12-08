@@ -1,8 +1,15 @@
 package io.github.giulong.spectrum.utils.js;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Arrays;
+import java.util.List;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import io.github.giulong.spectrum.utils.StringUtils;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -10,12 +17,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.openqa.selenium.*;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class JsTest {
 
@@ -285,8 +286,7 @@ class JsTest {
         List<Object> dimensions = Arrays.asList(200, 100);
         when(webDriver.executeScript(
                 "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.width, rectangle.height];",
-                webElement
-        )).thenReturn(dimensions);
+                webElement)).thenReturn(dimensions);
 
         Dimension result = js.getSize(webElement);
 
@@ -301,8 +301,7 @@ class JsTest {
         List<Number> rectangleValues = Arrays.asList(50, 60, 200, 100);
         when(webDriver.executeScript(
                 "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.x, rectangle.y, rectangle.width, rectangle.height];",
-                webElement
-        )).thenReturn(rectangleValues);
+                webElement)).thenReturn(rectangleValues);
 
         Rectangle result = js.getRect(webElement);
 
@@ -319,8 +318,7 @@ class JsTest {
         List<Object> pointValues = Arrays.asList(50, 60);
         when(webDriver.executeScript(
                 "var rectangle = arguments[0].getBoundingClientRect(); return [rectangle.x, rectangle.y];",
-                webElement
-        )).thenReturn(pointValues);
+                webElement)).thenReturn(pointValues);
 
         Point result = js.getLocation(webElement);
 

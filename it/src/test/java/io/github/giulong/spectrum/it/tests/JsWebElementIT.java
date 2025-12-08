@@ -1,20 +1,21 @@
 package io.github.giulong.spectrum.it.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
+import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
+
+import java.util.Objects;
+
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.enums.LocatorType;
 import io.github.giulong.spectrum.it.pages.JsCheckboxPage;
 import io.github.giulong.spectrum.it.pages.JsLandingPage;
 import io.github.giulong.spectrum.it.pages.JsLoginPage;
 import io.github.giulong.spectrum.it.pages.JsShadowDomPage;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.*;
-
-import java.util.Objects;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.openqa.selenium.support.ui.ExpectedConditions.urlToBe;
-import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
 
 @DisplayName("JsWebElement")
 class JsWebElementIT extends SpectrumTest<Void> {

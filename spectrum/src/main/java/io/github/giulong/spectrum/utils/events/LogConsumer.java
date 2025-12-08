@@ -1,16 +1,19 @@
 package io.github.giulong.spectrum.utils.events;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.event.Level;
+import static org.slf4j.event.Level.INFO;
 
 import java.util.Map;
 
-import static org.slf4j.event.Level.INFO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+import org.slf4j.event.Level;
 
 @Slf4j
 @Getter

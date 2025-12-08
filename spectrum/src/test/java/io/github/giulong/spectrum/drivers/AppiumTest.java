@@ -1,22 +1,23 @@
 package io.github.giulong.spectrum.drivers;
 
-import io.appium.java_client.service.local.AppiumServiceBuilder;
-import io.github.giulong.spectrum.MockSingleton;
-import io.github.giulong.spectrum.utils.Configuration;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedConstruction;
+import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
 
-import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.utils.Configuration;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 
 class AppiumTest {
 

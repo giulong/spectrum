@@ -1,10 +1,26 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static io.github.giulong.spectrum.extensions.resolvers.DataResolver.DATA;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
+
+import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.TestYaml;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.YamlUtils;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -16,21 +32,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.lang.reflect.Parameter;
-import java.lang.reflect.Type;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static io.github.giulong.spectrum.extensions.resolvers.DataResolver.DATA;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
 
 class DataResolverTest {
 
@@ -85,8 +86,7 @@ class DataResolverTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("Data", true),
-                arguments("not-good", false)
-        );
+                arguments("not-good", false));
     }
 
     @DisplayName("resolveParameter should load the data class from client side and deserialize the data.yaml on it")

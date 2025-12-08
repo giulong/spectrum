@@ -1,5 +1,13 @@
 package io.github.giulong.spectrum.utils.environments;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.slf4j.event.Level.INFO;
+
+import java.io.IOException;
+import java.net.*;
+import java.util.Map;
+
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
@@ -8,6 +16,7 @@ import io.github.giulong.spectrum.drivers.Appium;
 import io.github.giulong.spectrum.internals.AppiumLog;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,17 +26,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.*;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.LocalFileDetector;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.URL;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.slf4j.event.Level.INFO;
 
 class AppiumEnvironmentTest {
 

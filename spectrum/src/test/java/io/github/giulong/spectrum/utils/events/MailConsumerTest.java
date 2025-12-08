@@ -1,10 +1,16 @@
 package io.github.giulong.spectrum.utils.events;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Map;
+
 import io.github.giulong.spectrum.pojos.events.Attachment;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.Reflections;
-import jakarta.activation.FileDataSource;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,11 +23,7 @@ import org.simplejavamail.api.mailer.Mailer;
 import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.MailerBuilder;
 
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import jakarta.activation.FileDataSource;
 
 class MailConsumerTest {
 
@@ -113,7 +115,7 @@ class MailConsumerTest {
         when(attachment2.getFile()).thenReturn(file2);
 
         final MailConsumer mailConsumer = new MailConsumer();
-        assertEquals(List.of(), Reflections.getFieldValue("attachments", mailConsumer));  // to check the default is an empty list
+        assertEquals(List.of(), Reflections.getFieldValue("attachments", mailConsumer)); // to check the default is an empty list
         Reflections.setField("attachments", mailConsumer, List.of(attachment1, attachment2));
         mailConsumer.accept(event);
 

@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.tests_comparators;
 
 import com.aventstack.extentreports.model.Test;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -1,20 +1,22 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import io.github.giulong.spectrum.exceptions.VisualRegressionException;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.Configuration;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-
-import java.nio.file.Path;
-import java.time.Duration;
-
 import static com.aventstack.extentreports.Status.FAIL;
 import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION_MANUAL;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static org.openqa.selenium.OutputType.BYTES;
+
+import java.nio.file.Path;
+import java.time.Duration;
+
+import io.github.giulong.spectrum.exceptions.VisualRegressionException;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.Configuration;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 @Slf4j
 public abstract class VisualRegressionConsumer extends ScreenshotConsumer {

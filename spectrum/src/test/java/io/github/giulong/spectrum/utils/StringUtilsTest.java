@@ -1,10 +1,10 @@
 package io.github.giulong.spectrum.utils;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("StringUtils")
 public class StringUtilsTest {

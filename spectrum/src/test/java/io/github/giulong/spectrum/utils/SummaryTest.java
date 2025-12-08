@@ -1,10 +1,24 @@
 package io.github.giulong.spectrum.utils;
 
+import static io.github.giulong.spectrum.enums.Result.FAILED;
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.Reporter;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,19 +31,6 @@ import org.junit.platform.launcher.listeners.SummaryGeneratingListener;
 import org.junit.platform.launcher.listeners.TestExecutionSummary;
 import org.mockito.*;
 import org.mvel2.MVEL;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.enums.Result.FAILED;
-import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class SummaryTest {
 
@@ -184,7 +185,6 @@ class SummaryTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments(true, SUCCESSFUL),
-                arguments(false, FAILED)
-        );
+                arguments(false, FAILED));
     }
 }

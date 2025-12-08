@@ -1,27 +1,29 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.enums.Result;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.Reflections;
-import lombok.Getter;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Stream;
-
 import static io.github.giulong.spectrum.enums.Result.FAILED;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Stream;
+
+import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.Reflections;
+
+import lombok.Getter;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
 
 class EventsConsumerTest {
 
@@ -59,8 +61,7 @@ class EventsConsumerTest {
                 arguments(Set.of(TEST), null, false),
                 arguments(null, Set.of(TEST), false),
                 arguments(Set.of(SUITE, TEST), Set.of(TEST), true),
-                arguments(Set.of(TEST), Set.of(SUITE, TEST), true)
-        );
+                arguments(Set.of(TEST), Set.of(SUITE, TEST), true));
     }
 
     @DisplayName("primaryAndSecondaryIdMatch")
@@ -86,8 +87,7 @@ class EventsConsumerTest {
                 arguments("class", "test", "class", "test", true),
                 arguments("classAAA", "test", "class.*", "test", true),
                 arguments("class", "testAAA", "class", "test.*", true),
-                arguments("classAAA", "testAAA", "class.*", "test.*", true)
-        );
+                arguments("classAAA", "testAAA", "class.*", "test.*", true));
     }
 
     @DisplayName("justPrimaryIdMatches")
@@ -106,8 +106,7 @@ class EventsConsumerTest {
                 arguments("class", null, false),
                 arguments("class", "nope", false),
                 arguments("class", "class", true),
-                arguments("classAAA", "class.*", true)
-        );
+                arguments("classAAA", "class.*", true));
     }
 
     @DisplayName("reasonMatches")
@@ -126,8 +125,7 @@ class EventsConsumerTest {
                 arguments(AFTER, null, false),
                 arguments(AFTER, BEFORE, false),
                 arguments(AFTER, AFTER, true),
-                arguments("afterAAA", "after.*", true)
-        );
+                arguments("afterAAA", "after.*", true));
     }
 
     @DisplayName("resultMatches")
@@ -144,8 +142,7 @@ class EventsConsumerTest {
         return Stream.of(
                 arguments(null, FAILED, false),
                 arguments(SUCCESSFUL, FAILED, false),
-                arguments(SUCCESSFUL, SUCCESSFUL, true)
-        );
+                arguments(SUCCESSFUL, SUCCESSFUL, true));
     }
 
     @DisplayName("findMatchFor")
@@ -173,8 +170,7 @@ class EventsConsumerTest {
                 arguments(Event.builder().result(FAILED).primaryId("class").build(), Event.builder().result(FAILED).primaryId("nope").build(), false),
                 arguments(Event.builder().result(FAILED).primaryId("class").build(), Event.builder().result(FAILED).primaryId("class").build(), true),
                 arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(SUITE)).build(), false),
-                arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(TEST)).build(), true)
-        );
+                arguments(Event.builder().result(FAILED).tags(Set.of(TEST)).build(), Event.builder().result(FAILED).tags(Set.of(TEST)).build(), true));
     }
 
     @Test

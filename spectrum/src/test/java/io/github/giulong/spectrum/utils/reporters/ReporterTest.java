@@ -1,18 +1,20 @@
 package io.github.giulong.spectrum.utils.reporters;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.util.Map;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
+
 import lombok.Getter;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.when;
 
 class ReporterTest {
 

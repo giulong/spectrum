@@ -1,6 +1,13 @@
 package io.github.giulong.spectrum;
 
+import static java.util.function.Predicate.not;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.List;
+
 import com.aventstack.extentreports.ExtentReports;
+
 import io.github.giulong.spectrum.extensions.interceptors.SpectrumInterceptor;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.resolvers.bidi.BrowsingContextInspectorResolver;
@@ -14,9 +21,12 @@ import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
+
+import net.datafaker.Faker;
+
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import net.datafaker.Faker;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,12 +37,6 @@ import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.interactions.Actions;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.List;
-
-import static java.util.function.Predicate.not;
 
 @Slf4j
 public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Data>, Data> {
@@ -164,7 +168,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     @SneakyThrows
     SpectrumPage<?, Data> injectPageInto(final Field field) {
-        @SuppressWarnings("unchecked") final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) field.getType().getDeclaredConstructor().newInstance();
+        @SuppressWarnings("unchecked")
+        final SpectrumPage<?, Data> spectrumPage = (SpectrumPage<?, Data>) field.getType().getDeclaredConstructor().newInstance();
         Reflections.setField(field, this, spectrumPage);
 
         return spectrumPage;
@@ -188,7 +193,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         final Type type = Reflections.getGenericSuperclassOf(dataSpectrumPages.getFirst().getClass(), SpectrumPage.class).getActualTypeArguments()[1];
         final String typeName = type.getTypeName();
 
-        @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
+        @SuppressWarnings("unchecked")
+        final Class<Data> dataClass = (Class<Data>) type;
         final Data data = yamlUtils.readClient(String.format("%s/data.yaml", configuration.getData().getFolder()), dataClass);
 
         dataSpectrumPages

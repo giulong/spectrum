@@ -1,15 +1,17 @@
 package io.github.giulong.spectrum.utils.file_providers;
 
-import com.fasterxml.jackson.databind.InjectableValues;
-import io.github.giulong.spectrum.internals.jackson.views.Views;
-import io.github.giulong.spectrum.internals.jackson.views.Views.Client;
-import lombok.Builder;
-import lombok.extern.slf4j.Slf4j;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
+
+import com.fasterxml.jackson.databind.InjectableValues;
+
+import io.github.giulong.spectrum.internals.jackson.views.Views;
+import io.github.giulong.spectrum.internals.jackson.views.Views.Client;
+
+import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Builder
@@ -25,8 +27,7 @@ public final class ClientFileProvider implements FileProvider {
 
     @Override
     public InjectableValues getInjectableValues() {
-        return new InjectableValues
-                .Std()
+        return new InjectableValues.Std()
                 .addValue("enabledFromClient", true);
     }
 

@@ -1,8 +1,8 @@
 package io.github.giulong.spectrum.utils;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.PriorityQueue;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class FixedSizeQueue<E> extends PriorityQueue<E> {
@@ -27,7 +27,7 @@ public class FixedSizeQueue<E> extends PriorityQueue<E> {
         final int currentSize = size();
         log.debug("Shrinking queue. Current size: {}, max size: {}", currentSize, maxSize);
 
-        for (int i = 0; i < currentSize - maxSize; i++) {  // shrinking the queue to the proper size
+        for (int i = 0; i < currentSize - maxSize; i++) { // shrinking the queue to the proper size
             poll();
         }
 

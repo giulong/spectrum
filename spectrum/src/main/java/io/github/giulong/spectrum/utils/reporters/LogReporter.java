@@ -1,8 +1,10 @@
 package io.github.giulong.spectrum.utils.reporters;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
 import io.github.giulong.spectrum.interfaces.reports.CanReportSummary;
 import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
+
 import lombok.Generated;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;

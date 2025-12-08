@@ -1,16 +1,19 @@
 package io.github.giulong.spectrum;
 
-import io.github.giulong.spectrum.types.ProjectProperties;
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.platform.launcher.LauncherSession;
-import org.junit.platform.launcher.LauncherSessionListener;
-import org.slf4j.bridge.SLF4JBridgeHandler;
+import static java.util.function.Predicate.not;
 
 import java.util.*;
 
-import static java.util.function.Predicate.not;
+import io.github.giulong.spectrum.types.ProjectProperties;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.Configuration.Config;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.platform.launcher.LauncherSession;
+import org.junit.platform.launcher.LauncherSessionListener;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 @Slf4j
 public class SpectrumSessionListener implements LauncherSessionListener {
@@ -19,6 +22,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
     public static final String CONFIGURATION = "configuration";
     public static final String PROFILE_NODE = "/runtime/profiles";
+    public static final String CONFIG_NODE = "/config";
     public static final String VARS_NODE = "/vars";
 
     private final Vars vars = Vars.getInstance();
@@ -39,6 +43,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         final ProjectProperties projectProperties = yamlUtils.readInternal("properties.yaml", ProjectProperties.class);
         log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), projectProperties));
 
+        parseConfig();
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
 
@@ -62,14 +67,25 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         eventsDispatcher.sessionClosed();
     }
 
+    void parseConfig() {
+        final Config config = yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML);
+
+        if (isUnix()) {
+            yamlUtils.updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
+        }
+
+        yamlUtils.updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
+        configuration.setConfig(config);
+    }
+
     void parseConfiguration() {
         final List<String> profileConfigurations = parseProfiles()
                 .stream()
                 .map(profile -> String.format("configuration-%s", profile))
                 .toList();
 
-        parseVars(CONFIGURATION);
-        profileConfigurations.forEach(this::parseVars);
+        parseVars(profileConfigurations);
+
         yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
 
         if (isUnix()) {
@@ -84,23 +100,27 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     List<String> parseProfiles() {
         return Arrays.stream(Optional
-                        .ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION, String.class))
-                        .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML, String.class))
-                        .split(","))
+                .<String>ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION))
+                .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML))
+                .split(","))
                 .filter(not(String::isBlank))
                 .toList();
     }
 
-    @SuppressWarnings("unchecked")
-    void parseVars(final String profileConfiguration) {
-        vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML, Map.class));
+    void parseVars(final List<String> profileConfigurations) {
+        vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML));
 
         if (isUnix()) {
-            vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML, Map.class));
+            vars.putAll(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML));
         }
 
-        vars.putAll(Optional.ofNullable(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION, Map.class)).orElse(new HashMap<>()));
-        vars.putAll(Optional.ofNullable(yamlUtils.readClientNode(VARS_NODE, profileConfiguration, Map.class)).orElse(new HashMap<>()));
+        vars.putAll(Optional
+                .<Map<String, String>>ofNullable(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION))
+                .orElse(new HashMap<>()));
+
+        profileConfigurations.forEach(p -> vars.putAll(Optional
+                .<Map<String, String>>ofNullable(yamlUtils.readClientNode(VARS_NODE, p))
+                .orElse(new HashMap<>())));
     }
 
     boolean isUnix() {

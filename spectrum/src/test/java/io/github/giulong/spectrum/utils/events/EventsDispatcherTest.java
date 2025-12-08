@@ -1,10 +1,20 @@
 package io.github.giulong.spectrum.utils.events;
 
+import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Summary;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,15 +23,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
 
 class EventsDispatcherTest {
 

@@ -1,36 +1,5 @@
 package io.github.giulong.spectrum.utils;
 
-import com.aventstack.extentreports.ExtentReports;
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.markuputils.ExtentColor;
-import com.aventstack.extentreports.markuputils.Markup;
-import com.aventstack.extentreports.model.Report;
-import com.aventstack.extentreports.reporter.ExtentSparkReporter;
-import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
-import io.github.giulong.spectrum.MockSingleton;
-import io.github.giulong.spectrum.exceptions.VisualRegressionException;
-import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
-import io.github.giulong.spectrum.utils.video.Video;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.*;
-
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Stream;
-
 import static com.aventstack.extentreports.Status.*;
 import static com.aventstack.extentreports.markuputils.ExtentColor.*;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
@@ -41,6 +10,40 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Stream;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.markuputils.ExtentColor;
+import com.aventstack.extentreports.markuputils.Markup;
+import com.aventstack.extentreports.model.Report;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
+
+import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.exceptions.VisualRegressionException;
+import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import lombok.SneakyThrows;
+
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.*;
 
 class ExtentReporterTest {
 
@@ -532,8 +535,7 @@ class ExtentReporterTest {
         return Stream.of(
                 arguments(FAIL, RED),
                 arguments(SKIP, AMBER),
-                arguments(INFO, GREEN)
-        );
+                arguments(INFO, GREEN));
     }
 
     @DisplayName("logTestEnd should create the test in the report and delegate to finalizeTest")

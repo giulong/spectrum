@@ -1,15 +1,16 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.IOException;
 import java.time.Duration;
 
-import static lombok.AccessLevel.PRIVATE;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)

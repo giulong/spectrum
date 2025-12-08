@@ -2,9 +2,11 @@ package io.github.giulong.spectrum.it_testbook.pages;
 
 import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
-import io.github.giulong.spectrum.it_testbook.data.Data;
 import io.github.giulong.spectrum.interfaces.Secured;
+import io.github.giulong.spectrum.it_testbook.data.Data;
+
 import lombok.Getter;
+
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 

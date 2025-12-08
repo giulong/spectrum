@@ -11,7 +11,7 @@
 [![GitHub Discussions](https://img.shields.io/github/discussions/giulong/spectrum)](https://github.com/giulong/spectrum/discussions)
 
 <br />
-<img src="src/main/resources/images/spectrum-logo.png" alt="Spectrum logo">
+<img src="docs/assets/images/spectrum-logo.png" alt="Spectrum logo">
 
 <br/>
 <br/>
@@ -74,14 +74,14 @@ https://github.com/giulong/spectrum/assets/27963644/fecee8f5-f6dc-4b47-81a3-514e
 > `-Dspectrum.driver=firefox`, `-Dspectrum.driver=edge` or `-Dspectrum.driver=safari`
 
 Here's an overview of the project created by the archetype, along with the generated report and video:<br/><br/>
-<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it.png" alt="login-form"/>
-&nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/login-form-it-extent-report.png" alt="report"/>
+<img style="width: 49%; vertical-align: top;" src="docs/assets/images/login-form-it.png" alt="login-form"/>
+&nbsp;<img style="width: 49%; vertical-align: top;" src="docs/assets/images/login-form-it-extent-report.png" alt="report"/>
 
 https://github.com/giulong/spectrum/assets/27963644/df6b801e-91ca-415b-b510-a45b7392de20
 
 You can also configure Spectrum to produce additional reports, such as summary and coverage:<br/><br/>
-<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-summary.png" alt="summary"/>
-&nbsp;<img style="width: 49%; vertical-align: top;" src="src/main/resources/images/html-testbook.png" alt="html testbook"/>
+<img style="width: 49%; vertical-align: top;" src="docs/assets/images/readme-html-summary.png" alt="summary"/>
+&nbsp;<img style="width: 49%; vertical-align: top;" src="docs/assets/images/readme-html-testbook.png" alt="html testbook"/>
 
 If you like Spectrum, please consider giving it a GitHub Star ⭐
 
@@ -95,7 +95,7 @@ To start without the archetype, it's as simple as following these steps:
    <dependency>
        <groupId>io.github.giulong</groupId>
        <artifactId>spectrum</artifactId>
-       <version>1.26.1</version>
+       <version>1.27.0</version>
        <scope>test</scope>
    </dependency>
    ```

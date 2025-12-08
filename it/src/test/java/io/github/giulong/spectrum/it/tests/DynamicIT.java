@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.it.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.github.giulong.spectrum.it.pages.DynamicControlsPage;
 import io.github.giulong.spectrum.it.pages.DynamicLoadingPage;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Dynamic elements")
 class DynamicIT extends BaseIT {

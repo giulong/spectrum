@@ -1,9 +1,6 @@
 package io.github.giulong.spectrum.verify_browsers.unit;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +9,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import io.github.giulong.spectrum.SpectrumTest;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 @Slf4j
 public class ItTestStepsVerifierTest extends SpectrumTest<Void> {

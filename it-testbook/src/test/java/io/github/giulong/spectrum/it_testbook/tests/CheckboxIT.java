@@ -1,13 +1,14 @@
 package io.github.giulong.spectrum.it_testbook.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it_testbook.pages.CheckboxPage;
 import io.github.giulong.spectrum.it_testbook.pages.LandingPage;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unused")
 @DisplayName("Checkbox Page")

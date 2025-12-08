@@ -1,8 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
-import lombok.SneakyThrows;
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
+import static java.util.Arrays.asList;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -11,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.asList;
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @UtilityClass
@@ -43,6 +43,19 @@ public final class Reflections {
         return fields;
     }
 
+    @SafeVarargs
+    public static <T> List<T> getFieldsValueOf(final Object object, final T... reified) {
+        final Class<?> clazz = object.getClass();
+        final Class<T> targetClass = getClassOf(reified);
+
+        return getFieldsOf(clazz, clazz.getSuperclass())
+                .stream()
+                .peek(f -> f.setAccessible(true))
+                .map(f -> getValueOf(f, object))
+                .map(targetClass::cast)
+                .toList();
+    }
+
     @SneakyThrows
     public static Field getField(final String fieldName, final Object object) {
         log.trace("Getting field {}.{}", object.getClass().getSimpleName(), fieldName);
@@ -61,10 +74,6 @@ public final class Reflections {
 
     @SafeVarargs
     public static <T> T getFieldValue(final String fieldName, final Object object, final T... reified) {
-        if (reified == null || reified.length > 0) {
-            throw new IllegalArgumentException("Do not pass arguments as last parameter");
-        }
-
         final Object value = getValueOf(getField(fieldName, object), object);
         return getClassOf(reified).cast(value);
     }
@@ -112,9 +121,14 @@ public final class Reflections {
                 .toList();
     }
 
+    @SafeVarargs
     @SuppressWarnings("unchecked")
-    public static <T> Class<T> getClassOf(final T[] array) {
-        return (Class<T>) array.getClass().getComponentType();
+    public static <T> Class<T> getClassOf(final T... reified) {
+        if (reified == null || reified.length > 0) {
+            throw new IllegalArgumentException("Do not pass arguments as last parameter");
+        }
+
+        return (Class<T>) reified.getClass().getComponentType();
     }
 
     @SneakyThrows

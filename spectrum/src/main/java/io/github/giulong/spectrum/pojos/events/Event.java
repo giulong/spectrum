@@ -1,15 +1,18 @@
 package io.github.giulong.spectrum.pojos.events;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.github.giulong.spectrum.enums.Result;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
-import org.junit.jupiter.api.extension.ExtensionContext;
 
-import java.util.Map;
-import java.util.Set;
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 @Getter
 @Builder

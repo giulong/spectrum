@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
 
-import static lombok.AccessLevel.PRIVATE;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+
+import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class JsonUtils {

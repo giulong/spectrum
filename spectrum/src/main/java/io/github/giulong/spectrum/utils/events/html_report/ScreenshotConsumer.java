@@ -1,21 +1,24 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.model.Media;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.events.EventsConsumer;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.ExtensionContext;
-
-import java.nio.file.Path;
-import java.util.Map;
-
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
+import java.nio.file.Path;
+import java.util.Map;
+
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.model.Media;
+
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.events.EventsConsumer;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 @Slf4j
 public abstract class ScreenshotConsumer extends EventsConsumer {

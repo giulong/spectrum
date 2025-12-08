@@ -1,18 +1,12 @@
 package io.github.giulong.spectrum.utils.events.video;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.TestData;
-import io.github.giulong.spectrum.utils.video.Video;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.jcodec.api.awt.AWTSequenceEncoder;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebDriver;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
+import static java.awt.image.BufferedImage.TYPE_INT_RGB;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -20,12 +14,22 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
-import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
-import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import javax.imageio.ImageIO;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.TestData;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
+import org.jcodec.api.awt.AWTSequenceEncoder;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.WebDriver;
 
 @Slf4j
 @JsonView(Internal.class)

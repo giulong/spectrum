@@ -1,18 +1,20 @@
 package io.github.giulong.spectrum.utils.events;
 
-import io.github.giulong.spectrum.enums.Result;
-import io.github.giulong.spectrum.interfaces.SessionHook;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.Configuration;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.ExtensionContext;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static lombok.AccessLevel.PRIVATE;
+import io.github.giulong.spectrum.enums.Result;
+import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.Configuration;
+
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)

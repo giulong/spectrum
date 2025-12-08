@@ -1,15 +1,17 @@
 package io.github.giulong.spectrum.utils.events;
 
+import java.util.Map;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 import com.slack.api.Slack;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
+
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
+
 import lombok.Getter;
 import lombok.SneakyThrows;
-
-import java.util.Map;
 
 @Getter
 public class SlackConsumer extends EventsConsumer {

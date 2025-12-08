@@ -1,8 +1,19 @@
 package io.github.giulong.spectrum.extensions.watchers;
 
+import static io.github.giulong.spectrum.enums.Result.*;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,16 +22,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Stream;
-
-import static io.github.giulong.spectrum.enums.Result.*;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
 
 class EventsWatcherTest {
 
@@ -194,8 +195,7 @@ class EventsWatcherTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("testFactoryMethod", true),
-                arguments("testAfterEach", false)
-        );
+                arguments("testAfterEach", false));
     }
 
     @Test

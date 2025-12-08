@@ -1,9 +1,16 @@
 package io.github.giulong.spectrum.exceptions;
 
+import static com.aventstack.extentreports.markuputils.ExtentColor.RED;
+import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.markuputils.Markup;
 import com.aventstack.extentreports.markuputils.MarkupHelper;
+
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,11 +19,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import static com.aventstack.extentreports.markuputils.ExtentColor.RED;
-import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class VisualRegressionExceptionTest {
 

@@ -1,23 +1,26 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.TestData;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.events.EventsConsumer;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.ExtensionContext;
-
-import java.nio.file.Path;
-import java.util.Map;
-
 import static io.github.giulong.spectrum.enums.Result.DISABLED;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.TEST_STEP_BUILDER_CONSUMER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
+import java.nio.file.Path;
+import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.FileUtils;
+import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
+import io.github.giulong.spectrum.utils.TestData;
+import io.github.giulong.spectrum.utils.events.EventsConsumer;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 @Slf4j
 @Getter

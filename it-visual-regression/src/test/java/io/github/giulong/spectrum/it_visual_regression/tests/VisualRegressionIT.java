@@ -1,12 +1,6 @@
 package io.github.giulong.spectrum.it_visual_regression.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it_visual_regression.pages.CheckboxPage;
-import io.github.giulong.spectrum.it_visual_regression.pages.LandingPage;
-import io.github.giulong.spectrum.utils.FileUtils;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.openqa.selenium.WebElement;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +11,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.it_visual_regression.pages.CheckboxPage;
+import io.github.giulong.spectrum.it_visual_regression.pages.LandingPage;
+import io.github.giulong.spectrum.utils.FileUtils;
+
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.openqa.selenium.WebElement;
 
 @TestMethodOrder(OrderAnnotation.class)
 class VisualRegressionIT extends SpectrumTest<Void> {
@@ -52,7 +53,7 @@ class VisualRegressionIT extends SpectrumTest<Void> {
     @DisplayName("alwaysTheSame")
     void testFailedChecks() throws IOException {
         try (InputStream inputStream = VisualRegressionIT.class.getResourceAsStream("/no-video.png");
-             Stream<Path> stream = Files.walk(SNAPSHOTS_FOLDER)) {
+                Stream<Path> stream = Files.walk(SNAPSHOTS_FOLDER)) {
             final List<File> files = stream
                     .map(Path::toFile)
                     .filter(File::isFile)

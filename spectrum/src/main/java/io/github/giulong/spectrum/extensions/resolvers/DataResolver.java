@@ -1,19 +1,21 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
+import java.lang.reflect.Type;
+
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.YamlUtils;
+
 import lombok.extern.slf4j.Slf4j;
+
 import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolver;
-
-import java.lang.reflect.Type;
-
-import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 @Slf4j
 public class DataResolver<Data> implements ParameterResolver {
@@ -35,7 +37,8 @@ public class DataResolver<Data> implements ParameterResolver {
             return null;
         }
 
-        @SuppressWarnings("unchecked") final Class<Data> dataClass = (Class<Data>) type;
+        @SuppressWarnings("unchecked")
+        final Class<Data> dataClass = (Class<Data>) type;
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
 
         return rootStore.computeIfAbsent(DATA, e -> {

@@ -1,22 +1,24 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
-import io.github.giulong.spectrum.utils.Configuration;
-import net.datafaker.Faker;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.mockito.*;
-
-import java.util.Locale;
-import java.util.Random;
-import java.util.function.Function;
-
 import static io.github.giulong.spectrum.extensions.resolvers.FakerResolver.FAKER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+
+import java.util.Locale;
+import java.util.Random;
+import java.util.function.Function;
+
+import io.github.giulong.spectrum.utils.Configuration;
+
+import net.datafaker.Faker;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ParameterContext;
+import org.mockito.*;
 
 class FakerResolverTest {
 

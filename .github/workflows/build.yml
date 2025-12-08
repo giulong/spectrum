@@ -3,9 +3,11 @@ name: Build
 on:
   push:
     branches: [ "develop", "feature/**", "bugfix/**" ]
+    paths-ignore: [ '.mvn/**', 'mvnw', 'mvnw.cmd', '.run/**', 'docs/**', '.editorconfig', '.gitignore', '**.md' ]
   pull_request:
     branches: [ "develop" ]
     types: [ opened, reopened, edited ]
+    paths-ignore: [ '.mvn/**', 'mvnw', 'mvnw.cmd', '.run/**', 'docs/**', '.editorconfig', '.gitignore', '**.md' ]
 
 jobs:
   build:
@@ -66,8 +68,8 @@ jobs:
             directives: -DmacosTests
             moduleName: it-macos
           - os: windows-latest
-            profiles: browsers
-            directives: -DbrowsersTests
+            profiles: windows
+            directives: -DwindowsTests
             moduleName: it
     runs-on: ${{ matrix.os }}
     env:
@@ -100,6 +102,8 @@ jobs:
       - name: Run browsers ITs
         shell: bash
         run: |
+          export SPECTRUM_VIDEO_SKIPDUPLICATEFRAMES=false
+          export SPECTRUM_APPLICATION_BASEURL='https://the-internet.herokuapp.com/'
           ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
           ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE ${{ matrix.directives }} -ntp -P ${{ matrix.profiles }}
 

@@ -12,7 +12,6 @@
           <option name="goals">
             <list>
               <option value="install" />
-              <option value="-DskipTests" />
               <option value="-DskipSign" />
               <option value="-ntp" />
               <option value="-P" />

@@ -1,9 +1,10 @@
 package io.github.giulong.spectrum.drivers;
 
-import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.MutableCapabilities;
-
 import java.net.URL;
+
+import io.appium.java_client.AppiumDriver;
+
+import org.openqa.selenium.MutableCapabilities;
 
 public class AppiumGeneric extends Appium<MutableCapabilities, AppiumDriver> {
 

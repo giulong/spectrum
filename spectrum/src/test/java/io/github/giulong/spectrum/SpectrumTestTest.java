@@ -1,7 +1,15 @@
 package io.github.giulong.spectrum;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.time.Duration;
+import java.util.List;
+import java.util.function.Supplier;
+
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+
 import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
@@ -13,8 +21,11 @@ import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
 import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
-import lombok.Getter;
+
 import net.datafaker.Faker;
+
+import lombok.Getter;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,13 +38,6 @@ import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.interactions.Actions;
-
-import java.time.Duration;
-import java.util.List;
-import java.util.function.Supplier;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class SpectrumTestTest {
 

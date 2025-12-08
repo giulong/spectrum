@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.drivers;
 
+import java.net.URL;
+
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.options.WindowsOptions;
 import io.github.giulong.spectrum.utils.Configuration;
-import org.openqa.selenium.WebDriver;
 
-import java.net.URL;
+import org.openqa.selenium.WebDriver;
 
 public class Windows extends Appium<WindowsOptions, WindowsDriver> {
 

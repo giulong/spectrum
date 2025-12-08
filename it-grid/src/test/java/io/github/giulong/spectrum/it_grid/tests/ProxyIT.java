@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.it_grid.tests;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import io.github.giulong.spectrum.SpectrumTest;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriverException;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("Proxy Test")
 class ProxyIT extends SpectrumTest<Void> {

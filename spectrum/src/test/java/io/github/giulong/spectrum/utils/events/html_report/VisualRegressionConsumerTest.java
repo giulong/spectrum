@@ -1,27 +1,5 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.MediaEntityBuilder;
-import io.github.giulong.spectrum.MockSingleton;
-import io.github.giulong.spectrum.exceptions.VisualRegressionException;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.video.Video;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-import org.mockito.*;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.Map;
-
 import static com.aventstack.extentreports.Status.FAIL;
 import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION_MANUAL;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
@@ -32,6 +10,30 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
+
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.Map;
+
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
+
+import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.exceptions.VisualRegressionException;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.*;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 class VisualRegressionConsumerTest {
 
@@ -240,8 +242,8 @@ class VisualRegressionConsumerTest {
         Reflections.setField("htmlUtils", consumer, htmlUtils);
         Reflections.setField("frameNumber", consumer, frameNumber);
 
-        try (MockedConstruction<VisualRegressionException> mockedConstruction = mockConstruction(VisualRegressionException.class, (mock, extensionContext) ->
-                assertEquals(String.format("All visual regression checks failed. Tried %d checks for %s times", count, 1), extensionContext.arguments().getFirst()))) {
+        try (MockedConstruction<VisualRegressionException> mockedConstruction = mockConstruction(VisualRegressionException.class, (mock, extensionContext) -> assertEquals(String
+                .format("All visual regression checks failed. Tried %d checks for %s times", count, 1), extensionContext.arguments().getFirst()))) {
             when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture()))
                     .thenReturn(true)
                     .thenReturn(false);

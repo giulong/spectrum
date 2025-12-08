@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.pojos.events;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
 import lombok.Getter;
 
 @Getter

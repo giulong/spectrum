@@ -1,10 +1,11 @@
 package io.github.giulong.spectrum.verify_appium.unit;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import io.github.giulong.spectrum.verify_commons.FailsafeReportsVerifier;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DisplayName("It Appium Module Verifier")
 public class ItAppiumVerifierTest {

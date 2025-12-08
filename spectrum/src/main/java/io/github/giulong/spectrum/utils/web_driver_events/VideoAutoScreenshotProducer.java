@@ -1,17 +1,19 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
-import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import io.github.giulong.spectrum.utils.video.Video;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.openqa.selenium.TakesScreenshot;
+import static io.github.giulong.spectrum.enums.Frame.AUTO;
+import static org.openqa.selenium.OutputType.BYTES;
 
 import java.util.Map;
 
-import static io.github.giulong.spectrum.enums.Frame.AUTO;
-import static org.openqa.selenium.OutputType.BYTES;
+import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.openqa.selenium.TakesScreenshot;
 
 @Slf4j
 @SuperBuilder

@@ -1,18 +1,5 @@
 package io.github.giulong.spectrum.extensions.interceptors;
 
-import com.aventstack.extentreports.ExtentTest;
-import io.github.giulong.spectrum.utils.TestData;
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-import io.github.giulong.spectrum.utils.video.Video;
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.extension.DynamicTestInvocationContext;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.InvocationInterceptor;
-
-import java.nio.file.Path;
-import java.util.Set;
-
 import static io.github.giulong.spectrum.enums.Result.FAILED;
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
@@ -20,6 +7,22 @@ import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTest
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
+import java.nio.file.Path;
+import java.util.Set;
+
+import com.aventstack.extentreports.ExtentTest;
+
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.TestData;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import lombok.extern.slf4j.Slf4j;
+
+import org.junit.jupiter.api.extension.DynamicTestInvocationContext;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.InvocationInterceptor;
 
 @Slf4j
 public class SpectrumInterceptor implements InvocationInterceptor {

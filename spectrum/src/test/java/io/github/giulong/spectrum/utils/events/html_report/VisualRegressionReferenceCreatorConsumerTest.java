@@ -1,24 +1,5 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import com.aventstack.extentreports.ExtentTest;
-import io.github.giulong.spectrum.MockSingleton;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.video.Video;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.mockito.*;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.Map;
-
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -27,6 +8,27 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.Map;
+
+import com.aventstack.extentreports.ExtentTest;
+
+import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.video.Video;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.*;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 
 class VisualRegressionReferenceCreatorConsumerTest {
 

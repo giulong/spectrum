@@ -1,13 +1,14 @@
 package io.github.giulong.spectrum.it.tests;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.it.pages.LandingPage;
 import io.github.giulong.spectrum.it.pages.CheckboxPage;
+import io.github.giulong.spectrum.it.pages.LandingPage;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebElement;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Checkbox Page")
 class CheckboxIT extends SpectrumTest<Void> {

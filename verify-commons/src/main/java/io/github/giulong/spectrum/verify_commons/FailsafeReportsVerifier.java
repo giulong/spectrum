@@ -1,18 +1,19 @@
 package io.github.giulong.spectrum.verify_commons;
 
+import static lombok.AccessLevel.PRIVATE;
+import static org.slf4j.event.Level.ERROR;
+import static org.slf4j.event.Level.INFO;
+
+import java.nio.file.Path;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import java.nio.file.Path;
-
-import static lombok.AccessLevel.PRIVATE;
-import static org.slf4j.event.Level.ERROR;
-import static org.slf4j.event.Level.INFO;
 
 @NoArgsConstructor(access = PRIVATE)
 @Slf4j
@@ -70,15 +71,15 @@ public class FailsafeReportsVerifier {
         log
                 .atLevel(result ? INFO : ERROR)
                 .log("""
-                                 \s
-                                 Results for report '{}' are:
-                                 \s
-                                 {}
-                                 {}
-                                 {}
-                                 {}
-                                 {}
-                                """,
+                      \s
+                      Results for report '{}' are:
+                      \s
+                      {}
+                      {}
+                      {}
+                      {}
+                      {}
+                     """,
                         filePath,
                         header,
                         completedLine,

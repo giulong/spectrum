@@ -1,26 +1,28 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.model.Media;
-import io.github.giulong.spectrum.MockSingleton;
-import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.utils.*;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
-import java.nio.file.Path;
-import java.util.Map;
-
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import java.nio.file.Path;
+import java.util.Map;
+
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.model.Media;
+
+import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.*;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 class ScreenshotConsumerTest {
 

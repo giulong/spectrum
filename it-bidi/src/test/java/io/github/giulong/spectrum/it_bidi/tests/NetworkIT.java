@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.it_bidi.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.bidi.network.AddInterceptParameters;
-
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.openqa.selenium.bidi.network.InterceptPhase.BEFORE_REQUEST_SENT;
+
+import io.github.giulong.spectrum.SpectrumTest;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.bidi.network.AddInterceptParameters;
 
 public class NetworkIT extends SpectrumTest<Void> {
 

@@ -1,15 +1,12 @@
 package io.github.giulong.spectrum.utils;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
+import static java.lang.System.lineSeparator;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +18,16 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
-import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
-import static java.lang.System.lineSeparator;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.params.provider.Arguments.arguments;
-import static org.mockito.Mockito.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 
 class FileUtilsTest {
 
@@ -122,8 +122,7 @@ class FileUtilsTest {
                 arguments("fileName.html", "fileName.html"),
                 arguments("fileName-${timestamp}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
                 arguments("fileName-${timestamp:dd-MM-yyyy_HH-mm-ss}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}_[0-9]{2}-[0-9]{2}-[0-9]{2}.html"),
-                arguments("fileName-${timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html")
-        );
+                arguments("fileName-${timestamp:dd-MM-yyyy}.html", "fileName-[0-9]{2}-[0-9]{2}-[0-9]{4}.html"));
     }
 
     @DisplayName("getExtensionOf should return the extension of the provided fileName")
@@ -137,8 +136,7 @@ class FileUtilsTest {
         return Stream.of(
                 arguments("fileName.abc", "abc"),
                 arguments("fileName", "fileName"),
-                arguments("fileName.", "")
-        );
+                arguments("fileName.", ""));
     }
 
     @DisplayName("removeExtensionFrom should return the provided fileName without the extension")
@@ -152,8 +150,7 @@ class FileUtilsTest {
         return Stream.of(
                 arguments("fileName.abc", "fileName"),
                 arguments("fileName", "fileName"),
-                arguments("fileName.", "fileName")
-        );
+                arguments("fileName.", "fileName"));
     }
 
     @Test

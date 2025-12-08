@@ -1,28 +1,31 @@
 package io.github.giulong.spectrum.utils.tests_comparators;
 
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.model.Test;
-import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import static com.aventstack.extentreports.Status.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.aventstack.extentreports.Status.*;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.model.Test;
+import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
 public class StatusComparator implements TestsComparator {
 
     @JsonPropertyDescription("Weights of tests statuses. A lower weight means the test is shown before those with a higher one in the Extent report")
-    private final Map<Status, Integer> weights = new HashMap<>() {{
-        put(INFO, INFO.getLevel());
-        put(PASS, PASS.getLevel());
-        put(WARNING, WARNING.getLevel());
-        put(SKIP, SKIP.getLevel());
-        put(FAIL, FAIL.getLevel());
-    }};
+    private final Map<Status, Integer> weights = new HashMap<>() {
+        {
+            put(INFO, INFO.getLevel());
+            put(PASS, PASS.getLevel());
+            put(WARNING, WARNING.getLevel());
+            put(SKIP, SKIP.getLevel());
+            put(FAIL, FAIL.getLevel());
+        }
+    };
 
     @Override
     public int compare(final Test test1, final Test test2) {

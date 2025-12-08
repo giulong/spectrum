@@ -1,5 +1,20 @@
 package io.github.giulong.spectrum.utils;
 
+import static com.aventstack.extentreports.Status.INFO;
+import static com.aventstack.extentreports.Status.SKIP;
+import static com.aventstack.extentreports.markuputils.ExtentColor.*;
+import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
+import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.*;
+import static lombok.AccessLevel.PRIVATE;
+
+import java.awt.*;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
@@ -9,31 +24,19 @@ import com.aventstack.extentreports.model.Test;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+
 import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
 import io.github.giulong.spectrum.utils.video.Video;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.extension.ExtensionContext;
-
-import java.awt.*;
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.aventstack.extentreports.Status.INFO;
-import static com.aventstack.extentreports.Status.SKIP;
-import static com.aventstack.extentreports.markuputils.ExtentColor.*;
-import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
-import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.*;
-import static lombok.AccessLevel.PRIVATE;
 
 @Slf4j
 @Getter
@@ -140,27 +143,27 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
     public void logTestEnd(final ExtensionContext context, final Status status) {
         final TestContext testContext = contextManager.get(context);
         final ExtentTest currentNode = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, k -> {
-                    final Class<?> clazz = context.getRequiredTestClass();
-                    final String className = clazz.getSimpleName();
-                    final String methodName = context.getRequiredTestMethod().getName();
-                    final String classDisplayName = fileUtils.sanitize(getDisplayNameOf(clazz));
-                    final String displayName = fileUtils.sanitize(joinTestDisplayNamesIn(context));
-                    final String testId = buildTestIdFrom(className, displayName);
+            final Class<?> clazz = context.getRequiredTestClass();
+            final String className = clazz.getSimpleName();
+            final String methodName = context.getRequiredTestMethod().getName();
+            final String classDisplayName = fileUtils.sanitize(getDisplayNameOf(clazz));
+            final String displayName = fileUtils.sanitize(joinTestDisplayNamesIn(context));
+            final String testId = buildTestIdFrom(className, displayName);
 
-                    testContext.put(TEST_DATA, TestData
-                            .builder()
-                            .className(className)
-                            .methodName(methodName)
-                            .classDisplayName(classDisplayName)
-                            .displayName(displayName)
-                            .testId(testId)
-                            .build());
+            testContext.put(TEST_DATA, TestData
+                    .builder()
+                    .className(className)
+                    .methodName(methodName)
+                    .classDisplayName(classDisplayName)
+                    .displayName(displayName)
+                    .testId(testId)
+                    .build());
 
-                    return StatefulExtentTest
-                            .builder()
-                            .currentNode(createExtentTestFrom(context))
-                            .build();
-                }, StatefulExtentTest.class)
+            return StatefulExtentTest
+                    .builder()
+                    .currentNode(createExtentTestFrom(context))
+                    .build();
+        }, StatefulExtentTest.class)
                 .getCurrentNode();
 
         switch (status) {

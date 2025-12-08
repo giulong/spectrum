@@ -1,19 +1,20 @@
 package io.github.giulong.spectrum.verify_browsers.tests;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.verify_browsers.data.Data;
-import io.github.giulong.spectrum.verify_browsers.pages.VisualRegressionExtentReportPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebElement;
-
-import java.nio.file.Path;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.nio.file.Path;
+import java.util.List;
+
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.verify_browsers.data.Data;
+import io.github.giulong.spectrum.verify_browsers.pages.VisualRegressionExtentReportPage;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.WebElement;
 
 class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
 

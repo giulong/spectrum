@@ -1,7 +1,15 @@
 package io.github.giulong.spectrum.utils.events.video;
 
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+
+import java.nio.file.Path;
+import java.util.Map;
+
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.TestData;
+
 import org.jcodec.api.awt.AWTSequenceEncoder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,13 +19,6 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-
-import java.nio.file.Path;
-import java.util.Map;
-
-import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
-import static org.mockito.Mockito.*;
 
 class VideoInitConsumerTest {
 

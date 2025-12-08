@@ -1,10 +1,21 @@
 package io.github.giulong.spectrum.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.*;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.types.ProjectProperties;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,16 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
 
 class MetadataManagerTest {
 

@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
+import java.util.List;
+
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
-
-import java.util.List;
 
 @Slf4j
 @SuperBuilder

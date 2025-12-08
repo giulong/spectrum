@@ -1,5 +1,13 @@
+config:
+  interpolators:
+    environment:
+      priority: 10
+      delimiter: _
+      transformCase: upper
+    properties: { }
+
 application:
-  baseUrl: https://the-internet.herokuapp.com/
+  baseUrl: set as env var in pom.xml. Environment interpolator has a higher priority (see above)
 
 drivers:
   waits:
@@ -18,7 +26,7 @@ video:
   frames:
     - autoAfter
     - manual
-  skipDuplicateFrames: false
+  # skipDuplicateFrames: false set as env variable in pom.xml
 
 extent:
   theme: DARK

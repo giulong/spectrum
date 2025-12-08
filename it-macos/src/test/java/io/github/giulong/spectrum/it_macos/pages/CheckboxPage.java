@@ -1,15 +1,17 @@
 package io.github.giulong.spectrum.it_macos.pages;
 
-import io.github.giulong.spectrum.SpectrumPage;
-import io.github.giulong.spectrum.interfaces.Endpoint;
-import lombok.Getter;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.FindBys;
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 import java.util.List;
 
-import static org.openqa.selenium.support.ui.ExpectedConditions.*;
+import io.github.giulong.spectrum.SpectrumPage;
+import io.github.giulong.spectrum.interfaces.Endpoint;
+
+import lombok.Getter;
+
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.FindBys;
 
 @Getter
 @Endpoint("checkboxes")

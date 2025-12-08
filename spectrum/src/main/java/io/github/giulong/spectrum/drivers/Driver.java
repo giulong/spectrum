@@ -1,15 +1,17 @@
 package io.github.giulong.spectrum.drivers;
 
+import java.util.Map;
+
 import io.github.giulong.spectrum.utils.Configuration;
+
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.ThreadGuard;
-
-import java.util.Map;
 
 @Getter
 @Slf4j

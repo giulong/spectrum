@@ -1,10 +1,11 @@
 package io.github.giulong.spectrum.exceptions;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import org.junit.jupiter.api.extension.ExtensionContext;
-
 import static com.aventstack.extentreports.markuputils.ExtentColor.RED;
 import static com.aventstack.extentreports.markuputils.MarkupHelper.createLabel;
+
+import io.github.giulong.spectrum.SpectrumTest;
+
+import org.junit.jupiter.api.extension.ExtensionContext;
 
 public class TestFailedException extends RuntimeException {
 
