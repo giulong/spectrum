@@ -648,10 +648,12 @@ config:
       priority: 0 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       prefix: spectrum # Variable prefix
       delimiter: . # Variable tokens' delimiter
+      transformCase: none # Function to specify how to transform the original camelCase of the key to match the external variable to search
     properties: # Properties interpolator
       priority: 1 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       prefix: spectrum # Variable prefix
       delimiter: . # Variable tokens' delimiter
+      transformCase: none # Function to specify how to transform the original camelCase of the key to match the external variable to search
     inPlace: # In-place configuration file interpolator
       priority: 2 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       enabled: true
@@ -840,12 +842,13 @@ config:
       priority: 0
       prefix: spectrum
       delimiter: .
+      transformCase: none
 ```
 
 This means every configuration key will be searched in env vars, with the `spectrum` prefix and words delimited by a dot.
 For instance, you can inject the `application.baseUrl` setting an env variable named `spectrum.application.baseUrl`.
 
-To give you another example, you can use this config to inject env vars like `application_baseUrl`:
+To give you another example, you can use this config to inject env vars like `APPLICATION_BASEURL`:
 
 {% include copyCode.html %}
 
@@ -855,7 +858,16 @@ config:
     environment:
       prefix: ''
       delimiter: _
+      transformCase: upper
 ```
+
+Allowed values for the `transformCase` property are:
+
+| Value   | Description                                                                       | Example             |
+|---------|-----------------------------------------------------------------------------------|---------------------|
+| `none`  | searches a key with the same case of the property, which is `camelCase` (default) | application.baseUrl |
+| `lower` | searches a lowercase key                                                          | application.baseurl |
+| `upper` | searches a uppercase key                                                          | APPLICATION.BASEURL |
 
 > ⚠️ **Priority**<br/>
 > Pay attention to the priority: by default, the `inPlace` interpolator takes precedence over this one.
@@ -887,12 +899,13 @@ config:
       priority: 1
       prefix: spectrum
       delimiter: .
+      transformCase: none
 ```
 
 This means every configuration key will be searched in system properties, with the `spectrum` prefix and words delimited by a dot.
 For instance, you can inject the `application.baseUrl` setting the system property `-Dspectrum.application.baseUrl`.
 
-To give you another example, you can use this config to inject system properties like `-Dapplication_baseUrl`:
+To give you another example, you can use this config to inject system properties like `-DAPPLICATION_BASEURL`:
 
 {% include copyCode.html %}
 
@@ -902,7 +915,16 @@ config:
     properties:
       prefix: ''
       delimiter: _
+      transformCase: upper
 ```
+
+Allowed values for the `transformCase` property are:
+
+| Value   | Description                                                                       | Example             |
+|---------|-----------------------------------------------------------------------------------|---------------------|
+| `none`  | searches a key with the same case of the property, which is `camelCase` (default) | application.baseUrl |
+| `lower` | searches a lowercase key                                                          | application.baseurl |
+| `upper` | searches a uppercase key                                                          | APPLICATION.BASEURL |
 
 > ⚠️ **Priority**<br/>
 > Pay attention to the priority: by default, the `inPlace` interpolator takes precedence over this one.
