@@ -1,5 +1,8 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators;
 
+import static io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.ExternalInterpolator.TransformCase.LOWER;
+import static io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.ExternalInterpolator.TransformCase.NONE;
+import static io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.ExternalInterpolator.TransformCase.UPPER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -51,9 +54,11 @@ class ExternalInterpolatorTest {
     void beforeEach() {
         Reflections.setField("prefix", interpolator, "prefix");
         Reflections.setField("delimiter", interpolator, ".");
+        Reflections.setField("transformCase", interpolator, UPPER);
 
         Reflections.setField("prefix", interpolatorNotFound, "prefix");
         Reflections.setField("delimiter", interpolatorNotFound, ".");
+        Reflections.setField("transformCase", interpolatorNotFound, UPPER);
     }
 
     @Test
@@ -71,7 +76,7 @@ class ExternalInterpolatorTest {
         when(context.getParent()).thenReturn(null);
         when(jsonParser.getParsingContext()).thenReturn(context);
 
-        assertEquals(Optional.of("prefixFound"), interpolator.findVariableFor(value, jsonParser));
+        assertEquals(Optional.of("PREFIXFound"), interpolator.findVariableFor(value, jsonParser));
     }
 
     @Test
@@ -105,6 +110,27 @@ class ExternalInterpolatorTest {
         inOrder.verify(accumulator).add(parentCurrentName);
         inOrder.verify(accumulator).add(currentName);
         verifyNoMoreInteractions(grandParentContext);
+    }
+
+    @Test
+    @DisplayName("TransformCase none should return the original string provided")
+    void transformCaseNone() {
+        final String string = "string";
+        assertEquals(string, NONE.getFunction().apply(string));
+    }
+
+    @Test
+    @DisplayName("TransformCase lower should return the provided string lowercased")
+    void transformCaseLower() {
+        final String string = "string";
+        assertEquals(string.toLowerCase(), LOWER.getFunction().apply(string));
+    }
+
+    @Test
+    @DisplayName("TransformCase upper should return the provided string uppercased")
+    void transformCaseUpper() {
+        final String string = "string";
+        assertEquals(string.toUpperCase(), UPPER.getFunction().apply(string));
     }
 
     private static final class DummyExternalInterpolator extends ExternalInterpolator {

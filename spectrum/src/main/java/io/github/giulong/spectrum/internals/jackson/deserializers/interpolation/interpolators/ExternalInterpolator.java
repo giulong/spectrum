@@ -9,9 +9,12 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonStreamContext;
 
+import lombok.AllArgsConstructor;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +30,10 @@ public abstract class ExternalInterpolator extends Interpolator {
     @JsonPropertyDescription("Variable tokens' delimiter")
     private String delimiter;
 
+    @SuppressWarnings("unused")
+    @JsonPropertyDescription("Function to specify how to transform the original camelCase of the key to match the external variable to search")
+    private TransformCase transformCase;
+
     public abstract Function<String, String> getConsumer();
 
     @Override
@@ -40,11 +47,13 @@ public abstract class ExternalInterpolator extends Interpolator {
                 .stream()
                 .filter(Objects::nonNull)
                 .collect(joining(delimiter));
-        log.trace("{} is looking for {}", className, keyPath);
 
-        final String key = getConsumer().apply(keyPath);
+        final String transformedKeyPath = transformCase.getFunction().apply(keyPath);
+        log.trace("{} is looking for {}", className, transformedKeyPath);
+
+        final String key = getConsumer().apply(transformedKeyPath);
         if (key != null) {
-            log.debug("{} found {} = {}", className, keyPath, key);
+            log.debug("{} found {} = {}", className, transformedKeyPath, key);
             return Optional.of(key);
         }
 
@@ -57,6 +66,24 @@ public abstract class ExternalInterpolator extends Interpolator {
         if (parentContext != null) {
             getKeyPathTokens(accumulator, parentContext);
             accumulator.add(context.getCurrentName());
+        }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    enum TransformCase {
+
+        NONE("none", s -> s),
+        LOWER("lower", String::toLowerCase),
+        UPPER("upper", String::toUpperCase);
+
+        private final String value;
+        private final Function<String, String> function;
+
+        @JsonValue
+        @Generated
+        public String getValue() {
+            return value;
         }
     }
 }
