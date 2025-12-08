@@ -44,10 +44,7 @@ public class InPlaceInterpolator extends Interpolator {
                 }
             } else {
                 log.trace("Interpolated value for key '{}: {}' -> '{}'", currentName, value, interpolatedValue);
-
-                if (PATTERN.matcher(interpolatedValue).find()) {
-                    interpolatedValue = findVariableFor(interpolatedValue, jsonParser).orElse(value);
-                }
+                interpolatedValue = findVariableFor(interpolatedValue, jsonParser).orElse(interpolatedValue);
             }
         }
 
