@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="spectrum framework-only" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="spectrum framework-only no tests" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -12,6 +12,7 @@
           <option name="goals">
             <list>
               <option value="install" />
+              <option value="-DskipTests" />
               <option value="-DskipSign" />
               <option value="-ntp" />
               <option value="-P" />

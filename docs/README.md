@@ -622,8 +622,55 @@ runtime:
 
 ## Values interpolation
 
-Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml`  can be interpolated with a dollar-string
-in one of these two ways, depending on the type needed as result. Let's suppose we have the variable `key = 123`:
+Plain values (not objects nor arrays) in `configuration*.yaml` and `data*.yaml` can be interpolated, meaning their value can be injected
+instead of being hardcoded. This is quite useful if you want to keep the same configuration files, while being able to tweak it at runtime, based
+on the execution environment for instance.
+
+There are a few ways to interpolate configuration keys:
+
+* [In-place interpolation](#in-place-interpolation): directly in the `configuration.yaml`
+* [Environment variables interpolation](#environment-variables-interpolation): injecting values from the current env
+* [System properties interpolation](#system-properties-interpolation): injecting values passed as system properties
+
+> 💡 **Tip**<br/>
+> You can mix all the available options, for example having some keys interpolated in-place, and some others injected from env vars and system properties.
+
+Each interpolator can be configured in the base `configuration.yaml` under the `config` node. Here you can see the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+{% include copyCode.html %}
+
+```yaml
+# Generic configuration. This node is read only from the base configuration.yaml
+config:
+  interpolators: # Configuration keys interpolators
+    environment: # Environment variables interpolator
+      priority: 0 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
+      prefix: spectrum # Variable prefix
+      delimiter: . # Variable tokens' delimiter
+      transformCase: none # Function to specify how to transform the original camelCase of the key to match the external variable to search
+    properties: # Properties interpolator
+      priority: 1 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
+      prefix: spectrum # Variable prefix
+      delimiter: . # Variable tokens' delimiter
+      transformCase: none # Function to specify how to transform the original camelCase of the key to match the external variable to search
+    inPlace: # In-place configuration file interpolator
+      priority: 2 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
+      enabled: true
+```
+
+You can see that each interpolator has a `priority`. That's an int value that specifies the resolution order:
+when a key is resolved by more than one interpolator, the one with the highest priority is used to inject the interpolated value.
+The other keys are explained in the corresponding sections.
+
+> ⚠️ **Overriding the `config` node**<br/>
+> You can customize the `config` node in the base `configuration.yaml` only. Overriding it in any other `configuration-<PROFILE>.yaml`
+> simply won't have any effect. This is needed since the `config` node is a *meta*-configuration that specifies how to read all the other keys.
+
+### In-place Interpolation
+
+You can interpolate values directly in the `configuration*.yaml` and `data*.yaml` with a dollar-string in one of the following two ways,
+depending on the type needed as result. Let's suppose we have the variable `key = 123`:
 
 | Needed type | Interpolation key | Result | Behaviour if not found                                       |
 |-------------|-------------------|--------|--------------------------------------------------------------|
@@ -746,7 +793,7 @@ runtime:
   profiles: ${active-profiles:-local}
 ```
 
-These are the variables already available in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
+These variables are already available in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
 target="_blank"}.
 You can add your own and even override the default ones in your `configuration*.yaml`:
 
@@ -754,9 +801,136 @@ You can add your own and even override the default ones in your `configuration*.
 |----------------------|------------------------------|------------------------------|
 | spectrum.profiles    | local                        | local                        |
 | spectrum.driver      | chrome                       | chrome                       |
+| spectrum.environment | local                        | local                        |
 | downloadsFolder      | ${user.dir}\target\downloads | ${user.dir}/target/downloads |
 | summaryReportOutput  | target/spectrum/summary      | target/spectrum/summary      |
 | testBookReportOutput | target/spectrum/testbook     | target/spectrum/testbook     |
+
+The in-place interpolator is enabled by default with the highest priority. You can disable it or change its priority with this configuration snippet:
+
+{% include copyCode.html %}
+
+```yaml
+config:
+  interpolators:
+    inPlace:
+      priority: 123
+      enabled: false
+```
+
+### Environment Variables Interpolation
+
+You can **avoid specifying keys directly in the yaml files** and interpolate values taken from environment variables
+by providing this configuration snippet:
+
+{% include copyCode.html %}
+
+```yaml
+config:
+  interpolators:
+    environment: { }
+```
+
+Providing an empty object as above, you'll leverage on the internal defaults, which are the following:
+
+{% include copyCode.html %}
+
+```yaml
+config:
+  interpolators:
+    environment:
+      priority: 0
+      prefix: spectrum
+      delimiter: .
+      transformCase: none
+```
+
+This means every configuration key will be searched in env vars, with the `spectrum` prefix and words delimited by a dot.
+For instance, you can inject the `application.baseUrl` setting an env variable named `spectrum.application.baseUrl`.
+
+To give you another example, you can use this config to inject env vars like `APPLICATION_BASEURL`:
+
+{% include copyCode.html %}
+
+```yaml
+config:
+  interpolators:
+    environment:
+      prefix: ''
+      delimiter: _
+      transformCase: upper
+```
+
+Allowed values for the `transformCase` property are:
+
+| Value   | Description                                                                       | Example             |
+|---------|-----------------------------------------------------------------------------------|---------------------|
+| `none`  | searches a key with the same case of the property, which is `camelCase` (default) | application.baseUrl |
+| `lower` | searches a lowercase key                                                          | application.baseurl |
+| `upper` | searches a uppercase key                                                          | APPLICATION.BASEURL |
+
+> ⚠️ **Priority**<br/>
+> Pay attention to the priority: by default, the `inPlace` interpolator takes precedence over this one.
+> This means that if you provide the same key in the yaml file, the env var will be ignored. You have to options to inject the env var:
+> * delete the hardcoded key
+> * set a higher priority in the environment interpolator
+
+### System Properties Interpolation
+
+You can **avoid specifying keys directly in the yaml files** and interpolate values taken from system properties
+by providing this configuration snippet:
+
+{% include copyCode.html %}
+
+```yaml
+config:
+  interpolators:
+    properties: { }
+```
+
+Providing an empty object as above, you'll leverage on the internal defaults, which are the following:
+
+{% include copyCode.html %}
+
+```yaml
+config:
+  interpolators:
+    properties:
+      priority: 1
+      prefix: spectrum
+      delimiter: .
+      transformCase: none
+```
+
+This means every configuration key will be searched in system properties, with the `spectrum` prefix and words delimited by a dot.
+For instance, you can inject the `application.baseUrl` setting the system property `-Dspectrum.application.baseUrl`.
+
+To give you another example, you can use this config to inject system properties like `-DAPPLICATION_BASEURL`:
+
+{% include copyCode.html %}
+
+```yaml
+config:
+  interpolators:
+    properties:
+      prefix: ''
+      delimiter: _
+      transformCase: upper
+```
+
+Allowed values for the `transformCase` property are:
+
+| Value   | Description                                                                       | Example             |
+|---------|-----------------------------------------------------------------------------------|---------------------|
+| `none`  | searches a key with the same case of the property, which is `camelCase` (default) | application.baseUrl |
+| `lower` | searches a lowercase key                                                          | application.baseurl |
+| `upper` | searches a uppercase key                                                          | APPLICATION.BASEURL |
+
+> ⚠️ **Priority**<br/>
+> Pay attention to the priority: by default, the `inPlace` interpolator takes precedence over this one.
+> This means that if you provide the same key in the yaml file, the system property will be ignored. You have to options to inject the system property:
+> * delete the hardcoded key
+> * set a higher priority in the properties interpolator
 
 ---
 

@@ -102,6 +102,8 @@ jobs:
       - name: Run browsers ITs
         shell: bash
         run: |
+          export SPECTRUM_VIDEO_SKIPDUPLICATEFRAMES=false
+          export SPECTRUM_APPLICATION_BASEURL='https://the-internet.herokuapp.com/'
           ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
           ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE ${{ matrix.directives }} -ntp -P ${{ matrix.profiles }}
 

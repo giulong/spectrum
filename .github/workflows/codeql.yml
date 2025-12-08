@@ -3,6 +3,7 @@ name: CodeQL
 on:
   push:
     branches: [ "develop", "feature/**", "bugfix/**" ]
+    paths-ignore: [ '.mvn/**', 'mvnw', 'mvnw.cmd', '.run/**', 'docs/**', '.editorconfig', '.gitignore', '**.md' ]
 
 jobs:
   analyze:

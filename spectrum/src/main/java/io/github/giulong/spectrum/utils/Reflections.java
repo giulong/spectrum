@@ -43,6 +43,19 @@ public final class Reflections {
         return fields;
     }
 
+    @SafeVarargs
+    public static <T> List<T> getFieldsValueOf(final Object object, final T... reified) {
+        final Class<?> clazz = object.getClass();
+        final Class<T> targetClass = getClassOf(reified);
+
+        return getFieldsOf(clazz, clazz.getSuperclass())
+                .stream()
+                .peek(f -> f.setAccessible(true))
+                .map(f -> getValueOf(f, object))
+                .map(targetClass::cast)
+                .toList();
+    }
+
     @SneakyThrows
     public static Field getField(final String fieldName, final Object object) {
         log.trace("Getting field {}.{}", object.getClass().getSimpleName(), fieldName);
