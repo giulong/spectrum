@@ -820,7 +820,7 @@ config:
 
 ### Environment Variables Interpolation
 
-You can **avoid to specify keys directly in the yaml files** and interpolate values taken from environment variables
+You can **avoid specifying keys directly in the yaml files** and interpolate values taken from environment variables
 by providing this configuration snippet:
 
 {% include copyCode.html %}
@@ -877,7 +877,7 @@ Allowed values for the `transformCase` property are:
 
 ### System Properties Interpolation
 
-You can **avoid to specify keys directly in the yaml files** and interpolate values taken from system properties
+You can **avoid specifying keys directly in the yaml files** and interpolate values taken from system properties
 by providing this configuration snippet:
 
 {% include copyCode.html %}
