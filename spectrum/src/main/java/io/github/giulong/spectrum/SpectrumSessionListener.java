@@ -6,6 +6,7 @@ import java.util.*;
 
 import io.github.giulong.spectrum.types.ProjectProperties;
 import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.Configuration.Config;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
     public static final String CONFIGURATION = "configuration";
     public static final String PROFILE_NODE = "/runtime/profiles";
+    public static final String CONFIG_NODE = "/config";
     public static final String VARS_NODE = "/vars";
 
     private final Vars vars = Vars.getInstance();
@@ -41,6 +43,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         final ProjectProperties projectProperties = yamlUtils.readInternal("properties.yaml", ProjectProperties.class);
         log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), projectProperties));
 
+        parseConfig();
         parseConfiguration();
         session.getLauncher().registerTestExecutionListeners(configuration.getSummary().getSummaryGeneratingListener());
 
@@ -64,6 +67,17 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         eventsDispatcher.sessionClosed();
     }
 
+    void parseConfig() {
+        final Config config = yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML);
+
+        if (isUnix()) {
+            yamlUtils.updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
+        }
+
+        yamlUtils.updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
+        configuration.setConfig(config);
+    }
+
     void parseConfiguration() {
         final List<String> profileConfigurations = parseProfiles()
                 .stream()
@@ -71,6 +85,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
                 .toList();
 
         parseVars(profileConfigurations);
+
         yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
 
         if (isUnix()) {

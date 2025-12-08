@@ -59,7 +59,7 @@
 
     <profiles>
         <profile>
-            <id>windows</id>
+            <id>chrome</id>
             <activation>
                 <property>
                     <name>windowsTests</name>

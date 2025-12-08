@@ -53,6 +53,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
+                <configuration>
+                    <environmentVariables>
+                        <SPECTRUM_VIDEO_SKIPDUPLICATEFRAMES>false</SPECTRUM_VIDEO_SKIPDUPLICATEFRAMES>
+                        <SPECTRUM_APPLICATION_BASEURL>https://the-internet.herokuapp.com/</SPECTRUM_APPLICATION_BASEURL>
+                    </environmentVariables>
+                    <systemPropertyVariables>
+                        <spectrum.application.baseUrl>overridden by the env variable above</spectrum.application.baseUrl>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>

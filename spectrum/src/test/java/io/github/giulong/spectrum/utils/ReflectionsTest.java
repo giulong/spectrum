@@ -44,6 +44,17 @@ class ReflectionsTest {
     }
 
     @Test
+    @DisplayName("getFieldsValueOf should return all the fields of the provided object of the provided type")
+    void getFieldsValueOf() {
+        final String fieldName = "fieldString";
+        final String secured = "secured";
+        final Dummy dummy = new Dummy(fieldName, secured, null);
+
+        final List<String> values = Reflections.getFieldsValueOf(dummy);
+        assertEquals(List.of(fieldName, secured), values);
+    }
+
+    @Test
     @DisplayName("getField should return the field with the provided name on the provided object")
     void getField() throws NoSuchFieldException {
         final String fieldName = "fieldString";
