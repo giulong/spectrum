@@ -669,6 +669,9 @@ The other keys are explained in the corresponding sections.
 
 ### In-place Interpolation
 
+> ⚠️ **Interpolating data*.yaml**<br/>
+> The `in-place interpolation` is the only way to inject values into the `data*.yaml`, other interpolators won't work.
+
 You can interpolate values directly in the `configuration*.yaml` and `data*.yaml` with a dollar-string in one of the following two ways,
 depending on the type needed as result. Let's suppose we have the variable `key = 123`:
 
