@@ -3,7 +3,7 @@ config:
     environment:
       priority: 10
       delimiter: _
-      transformCase: upper
+      transformCase: UPPER
     properties: { }
 
 application:
