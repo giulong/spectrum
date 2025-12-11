@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import static com.fasterxml.jackson.databind.MapperFeature.PROPAGATE_TRANSIENT_MARKER;
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -45,6 +46,7 @@ public final class YamlUtils {
     private final ObjectMapper yamlMapper = YAMLMapper
             .builder()
             .defaultMergeable(true)
+            .configure(PROPAGATE_TRANSIENT_MARKER, true)
             .addModules(
                     new JavaTimeModule(),
                     buildModuleFor(Object.class, InterpolatedObjectDeserializer.getInstance()),

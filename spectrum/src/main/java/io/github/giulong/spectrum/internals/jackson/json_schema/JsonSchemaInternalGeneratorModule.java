@@ -37,7 +37,10 @@ public class JsonSchemaInternalGeneratorModule implements Module {
     protected SchemaGeneratorConfigBuilder commonSetupFor(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
         schemaGeneratorConfigBuilder
                 .with(new JacksonModule(SKIP_SUBTYPE_LOOKUP, FLATTENED_ENUMS_FROM_JSONVALUE))
-                .with(FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT, MAP_VALUES_AS_ADDITIONAL_PROPERTIES, NULLABLE_FIELDS_BY_DEFAULT);
+                .with(FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT,
+                        MAP_VALUES_AS_ADDITIONAL_PROPERTIES,
+                        TRANSIENT_FIELDS,
+                        NULLABLE_FIELDS_BY_DEFAULT);
 
         schemaGeneratorConfigBuilder
                 .forFields()
