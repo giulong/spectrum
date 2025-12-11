@@ -9,9 +9,9 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +44,8 @@ class GridEnvironmentTest {
     @Mock
     private Map<String, Object> capabilities;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -59,8 +60,6 @@ class GridEnvironmentTest {
     @BeforeEach
     void beforeEach() {
         remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
-
-        Reflections.setField("configuration", gridEnvironment, configuration);
     }
 
     @AfterEach

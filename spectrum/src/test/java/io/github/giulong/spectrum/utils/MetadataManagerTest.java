@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.types.ProjectProperties;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter;
@@ -46,7 +47,8 @@ class MetadataManagerTest {
     @Mock
     private FileReporter.TxtSummaryReporter summaryReporter2;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
     @Mock
@@ -55,16 +57,20 @@ class MetadataManagerTest {
     @Mock
     private Path filePath;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private JsonUtils jsonUtils;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -100,12 +106,6 @@ class MetadataManagerTest {
     @BeforeEach
     void beforeEach() {
         pathMockedStatic = mockStatic(Path.class);
-
-        Reflections.setField("yamlUtils", metadataManager, yamlUtils);
-        Reflections.setField("jsonUtils", metadataManager, jsonUtils);
-        Reflections.setField("fileUtils", metadataManager, fileUtils);
-        Reflections.setField("extentReporter", metadataManager, extentReporter);
-        Reflections.setField("configuration", metadataManager, configuration);
     }
 
     @AfterEach

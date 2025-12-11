@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class VideoInitConsumer extends VideoBaseConsumer {
         final TestData testData = event.getContext().getStore(GLOBAL).get(TEST_DATA, TestData.class);
         final Path videoPath = getVideoPathFrom(testData);
 
-        log.info("Generating video for test {}", videoPath.getFileName());
+        log.info("Generating video");
 
         testData.getEncoders().put(videoPath, createSequenceEncoder(videoPath.toFile(), 1));
     }

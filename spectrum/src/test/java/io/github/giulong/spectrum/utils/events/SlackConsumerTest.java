@@ -12,6 +12,7 @@ import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -32,7 +33,8 @@ class SlackConsumerTest {
     @Mock
     private Event event;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
@@ -54,8 +56,6 @@ class SlackConsumerTest {
     void beforeEach() {
         slackMockedStatic = mockStatic(Slack.class);
         chatPostMessageRequestMockedStatic = mockStatic(ChatPostMessageRequest.class);
-
-        Reflections.setField("freeMarkerWrapper", consumer, freeMarkerWrapper);
     }
 
     @AfterEach

@@ -5,8 +5,8 @@ import static io.github.giulong.spectrum.enums.Result.DISABLED;
 import java.nio.file.Path;
 
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 
 public abstract class VideoBaseConsumer extends EventsConsumer {

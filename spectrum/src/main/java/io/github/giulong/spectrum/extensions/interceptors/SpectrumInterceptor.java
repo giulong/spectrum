@@ -13,8 +13,8 @@ import java.util.Set;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 

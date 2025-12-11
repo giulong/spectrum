@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.environments.Environment;
@@ -30,7 +31,8 @@ class DriverTest {
 
     private MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -99,8 +101,6 @@ class DriverTest {
 
         threadGuardMockedStatic = mockStatic(ThreadGuard.class);
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
-
-        Reflections.setField("configuration", driver, configuration);
     }
 
     @AfterEach

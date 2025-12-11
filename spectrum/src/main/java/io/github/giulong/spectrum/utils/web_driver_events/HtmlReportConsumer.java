@@ -7,9 +7,9 @@ import static org.slf4j.event.Level.WARN;
 import com.aventstack.extentreports.ExtentTest;
 
 import io.github.giulong.spectrum.enums.Frame;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 
 import lombok.experimental.SuperBuilder;

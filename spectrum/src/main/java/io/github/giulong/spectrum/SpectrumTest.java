@@ -27,6 +27,7 @@ import net.datafaker.Faker;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -141,6 +142,11 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
         this.testContext = testContext;
 
         injectDataIn(injectPages());
+    }
+
+    @AfterEach
+    public void baseSpectrumAfterEach() {
+        testData.getTestFailedException().get();
     }
 
     List<? extends SpectrumPage<?, ?>> injectPages() {

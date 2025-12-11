@@ -18,12 +18,11 @@ import java.util.stream.Stream;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.DynamicTestInvocationContext;
@@ -42,7 +41,8 @@ class SpectrumInterceptorTest {
     private final String fileName = "fileName";
     private final Path dynamicVideoPath = Path.of(String.format("%s-%s.mp4", fileName, displayName));
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
@@ -78,16 +78,19 @@ class SpectrumInterceptorTest {
     @Mock
     private Video video;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
     private Path videoPath;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
-    @Mock
+    @MockSingleton
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
     @Mock
@@ -95,14 +98,6 @@ class SpectrumInterceptorTest {
 
     @InjectMocks
     private SpectrumInterceptor spectrumInterceptor;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("eventsDispatcher", spectrumInterceptor, eventsDispatcher);
-        Reflections.setField("extentReporter", spectrumInterceptor, extentReporter);
-        Reflections.setField("fileUtils", spectrumInterceptor, fileUtils);
-        Reflections.setField("contextManager", spectrumInterceptor, contextManager);
-    }
 
     private void commonStubs() {
         when(context.getStore(GLOBAL)).thenReturn(store);

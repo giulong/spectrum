@@ -25,10 +25,9 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 
-import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.interfaces.reports.CanProduceMetadata;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 
 import lombok.Getter;
@@ -143,7 +142,7 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
 
     public void logTestEnd(final ExtensionContext context, final Status status) {
         final TestContext testContext = contextManager.get(context);
-        final StatefulExtentTest statefulExtentTest = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, k -> {
+        final ExtentTest currentNode = testContext.computeIfAbsent(STATEFUL_EXTENT_TEST, k -> {
             final Class<?> clazz = context.getRequiredTestClass();
             final String className = clazz.getSimpleName();
             final String methodName = context.getRequiredTestMethod().getName();
@@ -164,20 +163,27 @@ public class ExtentReporter implements SessionHook, CanProduceMetadata {
                     .builder()
                     .currentNode(createExtentTestFrom(context))
                     .build();
-        }, StatefulExtentTest.class);
+        }, StatefulExtentTest.class)
+                .getCurrentNode();
 
         switch (status) {
             case SKIP -> {
                 final String disabledValue = context.getRequiredTestMethod().getAnnotation(Disabled.class).value();
                 final String reason = "".equals(disabledValue) ? "no reason" : disabledValue;
-                statefulExtentTest.getCurrentNode().skip(createLabel("Skipped: " + reason, getColorOf(SKIP)));
+                currentNode.skip(createLabel("Skipped: " + reason, getColorOf(SKIP)));
             }
             case FAIL -> {
-                final SpectrumTest<?> spectrumTest = (SpectrumTest<?>) context.getRequiredTestInstance();
-                statefulExtentTest.getCurrentNode().fail(context.getExecutionException().orElse(new RuntimeException("Test Failed with no exception")));
-                spectrumTest.screenshotFail(createLabel("TEST FAILED", RED).getMarkup());
+                final Throwable throwable = context
+                        .getExecutionException()
+                        .orElse(new TestFailedException("Test Failed with no exception"));
+
+                currentNode.fail(throwable);
+
+                if (throwable instanceof TestFailedException) {
+                    ((TestFailedException) throwable).showInReportFrom(context);
+                }
             }
-            default -> statefulExtentTest.getCurrentNode().log(status, createLabel("END TEST", getColorOf(status)));
+            default -> currentNode.log(status, createLabel("END TEST", getColorOf(status)));
         }
     }
 
