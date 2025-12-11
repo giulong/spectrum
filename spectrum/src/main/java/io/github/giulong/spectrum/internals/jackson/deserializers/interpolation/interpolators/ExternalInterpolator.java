@@ -9,12 +9,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonStreamContext;
 
 import lombok.AllArgsConstructor;
-import lombok.Generated;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -73,17 +71,10 @@ public abstract class ExternalInterpolator extends Interpolator {
     @AllArgsConstructor
     enum TransformCase {
 
-        NONE("none", s -> s),
-        LOWER("lower", String::toLowerCase),
-        UPPER("upper", String::toUpperCase);
+        NONE(s -> s),
+        LOWER(String::toLowerCase),
+        UPPER(String::toUpperCase);
 
-        private final String value;
         private final Function<String, String> function;
-
-        @JsonValue
-        @Generated
-        public String getValue() {
-            return value;
-        }
     }
 }

@@ -41,9 +41,8 @@ public class Configuration {
     private static final Configuration INSTANCE = new Configuration();
 
     @Setter
-    @JsonIgnore
     @JsonPropertyDescription("Generic configuration. This node is read only from the base configuration.yaml")
-    private Config config;
+    private transient Config config;
 
     @JsonPropertyDescription("Common vars to interpolate other String values in the configuration")
     private Map<String, Object> vars;

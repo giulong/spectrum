@@ -61,7 +61,7 @@ If you don't want to leverage the archetype, you can manually add the Spectrum d
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
-    <version>1.27.0</version>
+    <version>1.27.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -648,12 +648,12 @@ config:
       priority: 0 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       prefix: spectrum # Variable prefix
       delimiter: . # Variable tokens' delimiter
-      transformCase: none # Function to specify how to transform the original camelCase of the key to match the external variable to search
+      transformCase: NONE # Function to specify how to transform the original camelCase of the key to match the external variable to search
     properties: # Properties interpolator
       priority: 1 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       prefix: spectrum # Variable prefix
       delimiter: . # Variable tokens' delimiter
-      transformCase: none # Function to specify how to transform the original camelCase of the key to match the external variable to search
+      transformCase: NONE # Function to specify how to transform the original camelCase of the key to match the external variable to search
     inPlace: # In-place configuration file interpolator
       priority: 2 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       enabled: true
@@ -668,6 +668,9 @@ The other keys are explained in the corresponding sections.
 > simply won't have any effect. This is needed since the `config` node is a *meta*-configuration that specifies how to read all the other keys.
 
 ### In-place Interpolation
+
+> ⚠️ **Interpolating data*.yaml**<br/>
+> The `in-place interpolation` is the only way to inject values into the `data*.yaml`, other interpolators won't work.
 
 You can interpolate values directly in the `configuration*.yaml` and `data*.yaml` with a dollar-string in one of the following two ways,
 depending on the type needed as result. Let's suppose we have the variable `key = 123`:
@@ -842,7 +845,7 @@ config:
       priority: 0
       prefix: spectrum
       delimiter: .
-      transformCase: none
+      transformCase: NONE
 ```
 
 This means every configuration key will be searched in env vars, with the `spectrum` prefix and words delimited by a dot.
@@ -859,16 +862,16 @@ config:
     environment:
       prefix: ''
       delimiter: _
-      transformCase: upper
+      transformCase: UPPER
 ```
 
 Allowed values for the `transformCase` property are:
 
 | Value   | Description                                                                       | Example             |
 |---------|-----------------------------------------------------------------------------------|---------------------|
-| `none`  | searches a key with the same case of the property, which is `camelCase` (default) | application.baseUrl |
-| `lower` | searches a lowercase key                                                          | application.baseurl |
-| `upper` | searches a uppercase key                                                          | APPLICATION.BASEURL |
+| `NONE`  | searches a key with the same case of the property, which is `camelCase` (default) | application.baseUrl |
+| `LOWER` | searches a lowercase key                                                          | application.baseurl |
+| `UPPER` | searches a uppercase key                                                          | APPLICATION.BASEURL |
 
 > ⚠️ **Priority**<br/>
 > Pay attention to the priority: by default, the `inPlace` interpolator takes precedence over this one.
@@ -900,7 +903,7 @@ config:
       priority: 1
       prefix: spectrum
       delimiter: .
-      transformCase: none
+      transformCase: NONE
 ```
 
 This means every configuration key will be searched in system properties, with the `spectrum` prefix and words delimited by a dot.
@@ -917,16 +920,16 @@ config:
     properties:
       prefix: ''
       delimiter: _
-      transformCase: upper
+      transformCase: UPPER
 ```
 
 Allowed values for the `transformCase` property are:
 
 | Value   | Description                                                                       | Example             |
 |---------|-----------------------------------------------------------------------------------|---------------------|
-| `none`  | searches a key with the same case of the property, which is `camelCase` (default) | application.baseUrl |
-| `lower` | searches a lowercase key                                                          | application.baseurl |
-| `upper` | searches a uppercase key                                                          | APPLICATION.BASEURL |
+| `NONE`  | searches a key with the same case of the property, which is `camelCase` (default) | application.baseUrl |
+| `LOWER` | searches a lowercase key                                                          | application.baseurl |
+| `UPPER` | searches a uppercase key                                                          | APPLICATION.BASEURL |
 
 > ⚠️ **Priority**<br/>
 > Pay attention to the priority: by default, the `inPlace` interpolator takes precedence over this one.

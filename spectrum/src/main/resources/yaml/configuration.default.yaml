@@ -5,12 +5,12 @@ config:
       priority: 0 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       prefix: spectrum # Variable prefix
       delimiter: . # Variable tokens' delimiter
-      transformCase: none # Function to specify how to transform the original camelCase of the key to match the external variable to search
+      transformCase: NONE # Function to specify how to transform the original camelCase of the key to match the external variable to search
     properties: # Properties interpolator
       priority: 1 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       prefix: spectrum # Variable prefix
       delimiter: . # Variable tokens' delimiter
-      transformCase: none # Function to specify how to transform the original camelCase of the key to match the external variable to search
+      transformCase: NONE # Function to specify how to transform the original camelCase of the key to match the external variable to search
     inPlace: # In-place configuration file interpolator
       priority: 2 # Sets the order of evaluation of this interpolator among others. Higher priority wins.
       enabled: true
