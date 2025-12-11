@@ -12,6 +12,7 @@
           <option name="goals">
             <list>
               <option value="clean" />
+              <option value="spotless:apply" />
               <option value="install" />
               <option value="-DskipSign" />
               <option value="-DbrowsersTests" />
