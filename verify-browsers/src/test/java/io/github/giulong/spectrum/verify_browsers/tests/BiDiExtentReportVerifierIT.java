@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.verify_browsers.tests;
 
+import static io.github.giulong.spectrum.verify_commons.CommonExtentVerifier.assertVideoDuration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
@@ -34,7 +35,7 @@ class BiDiExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals(testLabels.get("noDisplayName"), extentReportPage.getNoDisplayName().getText());
         assertEquals(testLabels.get("noDisplayNameTestName"), extentReportPage.getNoDisplayNameTestName().getText());
 
-        assertEquals("5", extentReportPage.getVideoCheckboxItTestWithNoDisplayName().getDomProperty("duration"), "video duration should match");
+        assertVideoDuration(extentReportPage.getVideoCheckboxItTestWithNoDisplayName(), 5);
 
         final List<String> originalTests = extentReportPage
                 .getTestViewTestsDetails()

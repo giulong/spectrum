@@ -1,12 +1,12 @@
 package io.github.giulong.spectrum.verify_browsers.tests;
 
+import static io.github.giulong.spectrum.verify_commons.CommonExtentVerifier.assertVideoDuration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.nio.file.Path;
-import java.util.List;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.verify_browsers.data.Data;
@@ -14,7 +14,6 @@ import io.github.giulong.spectrum.verify_browsers.pages.VisualRegressionExtentRe
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.openqa.selenium.WebElement;
 
 class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
 
@@ -33,9 +32,9 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertFalse(extentReportPage.getScreenshotMessages().isEmpty(), "Screenshot messages should be displayed");
 
-        assertEquals("15", extentReportPage.getVideoFilesItUploads().getFirst().getDomProperty("duration"), "video duration should match");
-        assertEquals("15", extentReportPage.getVideoFilesItUploads().get(1).getDomProperty("duration"), "video duration should match");
-        assertEquals("6", extentReportPage.getVideoFilesItUploads().get(2).getDomProperty("duration"), "video duration should match");
+        assertVideoDuration(extentReportPage.getVideoFilesItUploads().getFirst(), 15);
+        assertVideoDuration(extentReportPage.getVideoFilesItUploads().get(1), 15);
+        assertVideoDuration(extentReportPage.getVideoFilesItUploads().get(2), 1);
 
         extentReportPage.getTestViewTests().get(2).click();
         assertThat(extentReportPage.getTextOf(extentReportPage.getVisualRegressionException()), containsString("There were 1 visual regressions"));
@@ -48,9 +47,5 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
                 .map(webElement -> webElement.getDomAttribute("status"))
                 .filter(status::equals)
                 .count();
-    }
-
-    private List<WebElement> visibleElementsOf(final List<WebElement> webElements) {
-        return webElements.stream().filter(WebElement::isDisplayed).toList();
     }
 }
