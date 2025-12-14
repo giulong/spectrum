@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static com.aventstack.extentreports.Status.FAIL;
-import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION_MANUAL;
+import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static org.openqa.selenium.OutputType.BYTES;
 
@@ -34,7 +34,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
         if (visualRegression.isEnabled()) {
             this.regressionPath = testData.getVisualRegression().getPath();
             this.referencePath = regressionPath.resolve(fileUtils.getScreenshotNameFrom(testData));
-            this.frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, VISUAL_REGRESSION_MANUAL);
+            this.frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, VISUAL_REGRESSION);
 
             return true;
         }

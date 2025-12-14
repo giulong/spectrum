@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static com.aventstack.extentreports.Status.FAIL;
-import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION_MANUAL;
+import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -156,7 +156,7 @@ class VisualRegressionConsumerTest {
         when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
         when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
         when(configuration.getVideo()).thenReturn(video);
-        when(video.getAndIncrementFrameNumberFor(testData, VISUAL_REGRESSION_MANUAL)).thenReturn(frameNumber);
+        when(video.getAndIncrementFrameNumberFor(testData, VISUAL_REGRESSION)).thenReturn(frameNumber);
         when(payload.get(SCREENSHOT)).thenReturn(screenshot);
 
         Reflections.setField("referencePath", consumer, null);

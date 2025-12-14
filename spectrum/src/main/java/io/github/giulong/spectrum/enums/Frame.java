@@ -11,7 +11,7 @@ public enum Frame {
     AUTO_BEFORE("autoBefore"),
     AUTO_AFTER("autoAfter"),
     MANUAL("manual"),
-    VISUAL_REGRESSION_MANUAL("visualRegressionManual");
+    VISUAL_REGRESSION("visualRegression");
 
     private final String value;
 

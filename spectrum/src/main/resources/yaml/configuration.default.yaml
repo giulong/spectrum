@@ -562,12 +562,12 @@ eventsConsumers:
   - visualRegressionCheck: # check the previously generated screenshot reference for visual regression
       failOnError: true # to enable fail fast effectively break the test immediately
       events:
-        - primaryId: (manual|visualRegressionManual|auto)
+        - primaryId: (manual|visualRegression|auto)
           reason: screenshot
   - visualRegressionReferenceCreator: # create the screenshot reference for visual regression
       failOnError: true # to enable failed checks break the test immediately
       events:
-        - primaryId: (manual|visualRegressionManual|auto)
+        - primaryId: (manual|visualRegression|auto)
           reason: screenshot
   - video: # add the screenshot to the video
       events:
