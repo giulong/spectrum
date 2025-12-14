@@ -71,6 +71,11 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
     }
 
     @Override
+    public boolean throwsExceptions() {
+        return true;
+    }
+
+    @Override
     @Generated
     public void beforeAnyCall(final Object target, final Method method, final Object[] args) {
         listenTo(AUTO_BEFORE, events.getBeforeAnyCall(), target, method, Arrays.toString(args));

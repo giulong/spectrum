@@ -495,4 +495,10 @@ class EventsWebDriverListenerTest {
         assertFalse(eventsWebDriverListener.isSecured(keysToSend));
         assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
     }
+
+    @Test
+    @DisplayName("EventsWebDriverListener should rethrow exceptions")
+    void throwsExceptions() {
+        assertTrue(eventsWebDriverListener.throwsExceptions());
+    }
 }

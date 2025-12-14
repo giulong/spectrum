@@ -17,9 +17,6 @@ public class LandingPage extends SpectrumPage<LandingPage, Void> {
     @FindBy(tagName = "h1")
     private WebElement title;
 
-    @FindBy(linkText = "A/B Testing")
-    private WebElement abTestLink;
-
     @FindBy(linkText = "Add/Remove Elements")
     private WebElement addRemoveElementsLink;
 
