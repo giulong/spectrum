@@ -113,10 +113,8 @@ class ScreenshotConsumerTest {
     @DisplayName("addScreenshotToReport should add the provided screenshot to the html report and to the screenshot map")
     void addScreenshotToReport() {
         final String tag = "tag";
-        final int frameNumber = 123;
 
         Reflections.setField("screenshot", consumer, screenshot);
-        Reflections.setField("frameNumber", consumer, frameNumber);
 
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 

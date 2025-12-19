@@ -34,10 +34,12 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertVideoDuration(extentReportPage.getVideoFilesItUploads().getFirst(), 15);
         assertVideoDuration(extentReportPage.getVideoFilesItUploads().get(1), 15);
-        assertVideoDuration(extentReportPage.getVideoFilesItUploads().get(2), 1);
+        assertVideoDuration(extentReportPage.getVideoFilesItUploads().get(2), 2);
 
         extentReportPage.getTestViewTests().get(2).click();
         assertThat(extentReportPage.getTextOf(extentReportPage.getVisualRegressionException()), containsString("There were 1 visual regressions"));
+        assertEquals("visualregressionit-alwaysthesame", extentReportPage.getVisualRegression().getDomAttribute("data-test-id"));
+        assertEquals("2", extentReportPage.getVisualRegression().getDomAttribute("data-frame"));
     }
 
     private long countTestsWithStatus(final String status) {

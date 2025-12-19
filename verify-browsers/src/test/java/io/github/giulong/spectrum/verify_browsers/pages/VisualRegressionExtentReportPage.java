@@ -30,6 +30,9 @@ public class VisualRegressionExtentReportPage extends SpectrumPage<VisualRegress
     @FindBy(css = "textarea[class=code-block]")
     private List<WebElement> visualRegressionException;
 
+    @FindBy(className = "visual-regression")
+    private WebElement visualRegression;
+
     public String getTextOf(final List<WebElement> webElements) {
         // Extent triplicates elements and show/hide them when navigating the sections of the report
         return webElements.get(1).getText();

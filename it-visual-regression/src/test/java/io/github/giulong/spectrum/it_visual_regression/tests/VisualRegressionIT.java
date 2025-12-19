@@ -29,7 +29,10 @@ class VisualRegressionIT extends SpectrumTest<Void> {
     private static final Path SNAPSHOTS_FOLDER = Path.of(configuration.getVisualRegression().getSnapshots().getFolder()).toAbsolutePath();
     private static final FileUtils FILE_UTILS = FileUtils.getInstance();
 
+    @SuppressWarnings("unused")
     private LandingPage landingPage;
+
+    @SuppressWarnings("unused")
     private CheckboxPage checkboxPage;
 
     @BeforeAll
@@ -58,13 +61,12 @@ class VisualRegressionIT extends SpectrumTest<Void> {
         log.info("Snapshot folder is: {}", SNAPSHOTS_FOLDER);
         try (InputStream inputStream = VisualRegressionIT.class.getResourceAsStream("/no-video.png");
                 Stream<Path> paths = Files.walk(SNAPSHOTS_FOLDER)) {
-            final Path secondScreenshot = paths
+            final Path screenshotToReplace = paths
                     .filter(p -> p.getFileName().toString().equals("screenshot-2.png"))
                     .findFirst()
                     .orElseThrow();
 
-            FILE_UTILS.delete(secondScreenshot);
-            FILE_UTILS.write(secondScreenshot, Objects.requireNonNull(inputStream).readAllBytes());
+            FILE_UTILS.write(screenshotToReplace, Objects.requireNonNull(inputStream).readAllBytes());
         }
 
         log.error("THIS IS EXPECTED TO FAIL");

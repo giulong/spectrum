@@ -38,7 +38,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
 
         testData.registerFailedVisualRegression();
         final Path failedScreenshotPath = regressionPath.resolve(fileUtils.getFailedScreenshotNameFrom(testData));
-        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, Files.readAllBytes(referencePath), screenshot);
+        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, Files.readAllBytes(referencePath), screenshot);
 
         addScreenshotToReport(failedScreenshotPath, FAIL, visualRegressionTag, null);
 

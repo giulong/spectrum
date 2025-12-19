@@ -21,8 +21,8 @@ public class ExtentScreenshotConsumer extends ScreenshotConsumer {
     @Override
     public void accept(final Event event) {
         log.debug("Adding screenshot to the extent report");
-        this.frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
 
+        final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
         final Path path = fileUtils.createTempFile("screenshot", ".png");
         final Map<String, Object> payload = event.getPayload();
         final String message = (String) payload.get("message");

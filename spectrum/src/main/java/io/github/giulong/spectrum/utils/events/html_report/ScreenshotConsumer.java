@@ -32,7 +32,6 @@ public abstract class ScreenshotConsumer extends EventsConsumer {
     protected TestData testData;
     protected ExtentTest currentNode;
     protected byte[] screenshot;
-    protected int frameNumber;
 
     @Override
     protected boolean shouldAccept(final Event event) {

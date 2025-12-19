@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static com.aventstack.extentreports.Status.FAIL;
-import static io.github.giulong.spectrum.enums.Frame.VISUAL_REGRESSION;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -22,7 +21,6 @@ import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
-import io.github.giulong.spectrum.utils.video.Video;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -78,9 +76,6 @@ class VisualRegressionConsumerTest {
 
     @Mock
     private Configuration.VisualRegression.Snapshots snapshots;
-
-    @Mock
-    private Video video;
 
     @Mock
     private Map<String, Object> payload;
@@ -145,7 +140,6 @@ class VisualRegressionConsumerTest {
     @DisplayName("shouldAccept should set the reference path when visual regression is enabled")
     void shouldAcceptTrue() {
         final String screenshotName = "screenshotName";
-        final int frameNumber = 123;
 
         superShouldAcceptStubs();
 
@@ -155,8 +149,6 @@ class VisualRegressionConsumerTest {
         when(visualRegression.getPath()).thenReturn(regressionPath);
         when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
         when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
-        when(configuration.getVideo()).thenReturn(video);
-        when(video.getAndIncrementFrameNumberFor(testData, VISUAL_REGRESSION)).thenReturn(frameNumber);
         when(payload.get(SCREENSHOT)).thenReturn(screenshot);
 
         Reflections.setField("referencePath", consumer, null);
@@ -167,7 +159,6 @@ class VisualRegressionConsumerTest {
         assertEquals(testData, Reflections.getFieldValue("testData", consumer));
         assertEquals(currentNode, Reflections.getFieldValue("currentNode", consumer));
         assertEquals(screenshot, Reflections.getFieldValue("screenshot", consumer));
-        assertEquals(frameNumber, (int) Reflections.getFieldValue("frameNumber", consumer));
     }
 
     @DisplayName("shouldOverrideSnapshots should check if snapshots override is configured")
@@ -207,12 +198,10 @@ class VisualRegressionConsumerTest {
     @DisplayName("runChecks should perform additional checks and retry")
     void runChecksRetry() {
         final String visualRegressionTag = "visualRegressionTag";
-        final int frameNumber = 123;
 
         runChecksStubs(2);
 
         Reflections.setField("htmlUtils", consumer, htmlUtils);
-        Reflections.setField("frameNumber", consumer, frameNumber);
 
         when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture()))
                 .thenReturn(false)
@@ -240,7 +229,6 @@ class VisualRegressionConsumerTest {
         runChecksStubs(1);
 
         Reflections.setField("htmlUtils", consumer, htmlUtils);
-        Reflections.setField("frameNumber", consumer, frameNumber);
 
         try (MockedConstruction<VisualRegressionException> mockedConstruction = mockConstruction(VisualRegressionException.class, (mock, extensionContext) -> assertEquals(String
                 .format("All visual regression checks failed. Tried %d checks for %s times", count, 1), extensionContext.arguments().getFirst()))) {
@@ -248,6 +236,7 @@ class VisualRegressionConsumerTest {
                     .thenReturn(true)
                     .thenReturn(false);
 
+            when(testData.getFrameNumber()).thenReturn(frameNumber);
             when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, screenshot, screenshot3)).thenReturn(visualRegressionTag);
 
             // addScreenshot

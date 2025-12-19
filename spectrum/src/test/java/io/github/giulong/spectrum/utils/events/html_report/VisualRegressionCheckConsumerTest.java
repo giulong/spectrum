@@ -228,11 +228,11 @@ class VisualRegressionCheckConsumerTest {
         when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
         when(Files.readAllBytes(referencePath)).thenReturn(checksum);
+        when(testData.getFrameNumber()).thenReturn(frameNumber);
         when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);
-        Reflections.setField("frameNumber", consumer, frameNumber);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 
         consumer.accept(event);
@@ -262,11 +262,11 @@ class VisualRegressionCheckConsumerTest {
         when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
         when(Files.readAllBytes(referencePath)).thenReturn(checksum);
+        when(testData.getFrameNumber()).thenReturn(frameNumber);
         when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);
-        Reflections.setField("frameNumber", consumer, frameNumber);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 
         when(visualRegressionConfiguration.isFailFast()).thenReturn(true);

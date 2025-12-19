@@ -12,6 +12,7 @@ video:
   frames:
     - autoBefore
     - manual
+    - visualRegression
 
 drivers:
   chrome:
