@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.aventstack.extentreports.ExtentReports;
 
+import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.extensions.interceptors.SpectrumInterceptor;
 import io.github.giulong.spectrum.extensions.resolvers.*;
 import io.github.giulong.spectrum.extensions.resolvers.bidi.BrowsingContextInspectorResolver;
@@ -16,7 +17,10 @@ import io.github.giulong.spectrum.extensions.resolvers.bidi.LogInspectorResolver
 import io.github.giulong.spectrum.extensions.resolvers.bidi.NetworkResolver;
 import io.github.giulong.spectrum.extensions.watchers.EventsWatcher;
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.types.*;
+import io.github.giulong.spectrum.types.DownloadWait;
+import io.github.giulong.spectrum.types.ImplicitWait;
+import io.github.giulong.spectrum.types.PageLoadWait;
+import io.github.giulong.spectrum.types.ScriptWait;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
@@ -146,7 +150,13 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
 
     @AfterEach
     public void baseSpectrumAfterEach() {
-        testData.getTestFailedException().get();
+        log.debug("Executing after each");
+
+        final TestFailedException testFailedException = testData.getTestFailedException();
+        if (testFailedException != null) {
+            log.debug("Test is marked as failed. Throwing the TestFailedException");
+            throw testFailedException;
+        }
     }
 
     List<? extends SpectrumPage<?, ?>> injectPages() {

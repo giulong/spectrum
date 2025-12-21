@@ -1,11 +1,12 @@
 package io.github.giulong.spectrum;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
@@ -101,9 +102,6 @@ class SpectrumTestTest {
 
     @Mock
     private TestData testData;
-
-    @Mock
-    private Supplier<TestFailedException> testFailedExceptionSupplier;
 
     @Mock
     private TestFailedException testFailedException;
@@ -223,10 +221,19 @@ class SpectrumTestTest {
     @Test
     @DisplayName("baseSpectrumAfterEach should do nothing if testData is NOT marked as failed")
     void testBaseSpectrumAfterEach() {
-        when(testData.getTestFailedException()).thenReturn(testFailedExceptionSupplier);
-        when(testFailedExceptionSupplier.get()).thenReturn(testFailedException);
+        when(testData.getTestFailedException()).thenReturn(null);
 
-        spectrumTest.baseSpectrumAfterEach();
+        assertDoesNotThrow(() -> spectrumTest.baseSpectrumAfterEach());
+
+        verifyNoMoreInteractions(testData);
+    }
+
+    @Test
+    @DisplayName("baseSpectrumAfterEach should throw the TestFailedException if present")
+    void testBaseSpectrumAfterEachThrows() {
+        when(testData.getTestFailedException()).thenReturn(testFailedException);
+
+        assertThrows(TestFailedException.class, () -> spectrumTest.baseSpectrumAfterEach());
 
         verifyNoMoreInteractions(testData);
     }

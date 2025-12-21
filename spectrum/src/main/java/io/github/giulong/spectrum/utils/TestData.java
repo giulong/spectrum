@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.utils;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
@@ -27,12 +26,7 @@ public class TestData {
     private Path videoPath;
     private int screenshotNumber;
     private VisualRegression visualRegression;
-
-    @Builder.Default
-    private Supplier<TestFailedException> testFailedException = () -> {
-        log.debug("Test successful");
-        return null;
-    };
+    private TestFailedException testFailedException;
 
     @Builder.Default
     private Map<Path, AWTSequenceEncoder> encoders = new HashMap<>();
@@ -64,11 +58,8 @@ public class TestData {
     }
 
     public void registerFailedVisualRegression() {
-        if (visualRegression.count++ == 0) {
-            testFailedException = () -> {
-                throw new VisualRegressionException(String.format("There were %d visual regressions", visualRegression.count));
-            };
-        }
+        log.debug("Registering test failed exception");
+        testFailedException = new VisualRegressionException(String.format("There were %d visual regressions", ++visualRegression.count));
     }
 
     @Getter

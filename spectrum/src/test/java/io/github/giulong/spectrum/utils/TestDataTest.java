@@ -1,7 +1,10 @@
 package io.github.giulong.spectrum.utils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.mockConstruction;
+
+import java.util.List;
 
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 
@@ -44,11 +47,10 @@ class TestDataTest {
     }
 
     @Test
-    @DisplayName("registerFailedVisualRegression should set the testFailedException only on the first visual regression")
+    @DisplayName("registerFailedVisualRegression should set the testFailedException with the updated regressions count")
     void registerFailedVisualRegression() {
-        try (MockedConstruction<VisualRegressionException> ignored = mockConstruction(VisualRegressionException.class,
-                (mock, context) -> assertEquals(String.format("There were %d visual regressions", 2), context.arguments().getFirst()))) {
-            assertDoesNotThrow(() -> testData.getTestFailedException().get());
+        try (MockedConstruction<VisualRegressionException> mockedConstruction = mockConstruction(VisualRegressionException.class)) {
+            assertNull(testData.getTestFailedException());
 
             testData.registerFailedVisualRegression();  // first regression
             assertEquals(1, visualRegression.getCount());
@@ -56,7 +58,9 @@ class TestDataTest {
             testData.registerFailedVisualRegression();  // second regression
             assertEquals(2, visualRegression.getCount());
 
-            assertThrowsExactly(VisualRegressionException.class, () -> testData.getTestFailedException().get(), "There were " + 2 + " visual regressions");
+            final List<VisualRegressionException> constructed = mockedConstruction.constructed();
+            assertEquals(2, constructed.size());
+            assertEquals(constructed.getLast(), testData.getTestFailedException());
         }
     }
 }

@@ -15,12 +15,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import com.aventstack.extentreports.ExtentTest;
 
 import io.github.giulong.spectrum.MockSingleton;
-import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
@@ -92,9 +90,6 @@ class VisualRegressionCheckConsumerTest {
 
     @Mock
     private TestData testData;
-
-    @Mock
-    private Supplier<TestFailedException> testFailedExceptionSupplier;
 
     @Mock
     private VisualRegressionException visualRegressionException;
@@ -270,8 +265,7 @@ class VisualRegressionCheckConsumerTest {
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 
         when(visualRegressionConfiguration.isFailFast()).thenReturn(true);
-        when(testData.getTestFailedException()).thenReturn(testFailedExceptionSupplier);
-        when(testFailedExceptionSupplier.get()).thenReturn(visualRegressionException);
+        when(testData.getTestFailedException()).thenReturn(visualRegressionException);
         when(visualRegressionException.getMessage()).thenReturn(exceptionMessage);
 
         final VisualRegressionException exception = assertThrows(VisualRegressionException.class, () -> consumer.accept(event));
