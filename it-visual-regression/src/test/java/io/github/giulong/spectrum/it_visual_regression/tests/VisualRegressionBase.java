@@ -70,7 +70,7 @@ abstract class VisualRegressionBase extends SpectrumTest<Void> {
         try (Stream<Path> paths = Files.walk(folder)) {
             paths
                     .filter(p -> screenshotsToDelete.contains(p.getFileName().toString()))
-                    .forEach(p -> FILE_UTILS.write(p, FILE_UTILS.read("no-video.png")));
+                    .forEach(p -> FILE_UTILS.write(p, FILE_UTILS.readBytesOf("no-video.png")));
         }
     }
 }

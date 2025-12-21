@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -39,21 +40,29 @@ public final class FileUtils {
     }
 
     public String read(final String file) {
-        log.debug("Reading file {}", file);
-        final InputStream inputStream = FileUtils.class.getResourceAsStream(String.format("/%s", file));
+        return getInputStreamOf(file, inputStream -> {
+            if (inputStream == null) {
+                return "";
+            }
 
-        if (inputStream == null) {
-            log.warn("File {} not found.", file);
-            return "";
-        }
-
-        try (Scanner scanner = new Scanner(inputStream)) {
-            return scanner.useDelimiter("\\Z").next();
-        }
+            try (Scanner scanner = new Scanner(inputStream)) {
+                return scanner.useDelimiter("\\Z").next();
+            }
+        });
     }
 
     public String readTemplate(final String file) {
         return read(String.format("templates/%s", file));
+    }
+
+    public byte[] readBytesOf(final String file) {
+        return getInputStreamOf(file, inputStream -> {
+            if (inputStream == null) {
+                return new byte[]{};
+            }
+
+            return readAllBytesOf(inputStream);
+        });
     }
 
     public String interpolateTimestampFrom(final String value) {
@@ -177,5 +186,23 @@ public final class FileUtils {
     @SneakyThrows
     public boolean compare(final Path path, final byte[] bytes) {
         return compare(Files.readAllBytes(path), bytes);
+    }
+
+    @SneakyThrows
+    <T> T getInputStreamOf(final String file, final Function<InputStream, T> function) {
+        log.debug("Reading file {}", file);
+
+        try (InputStream inputStream = FileUtils.class.getResourceAsStream(String.format("/%s", file))) {
+            if (inputStream == null) {
+                log.debug("File {} not found.", file);
+            }
+
+            return function.apply(inputStream);
+        }
+    }
+
+    @SneakyThrows
+    byte[] readAllBytesOf(final InputStream inputStream) {
+        return inputStream.readAllBytes();
     }
 }
