@@ -1,12 +1,15 @@
 package io.github.giulong.spectrum;
 
-import static com.aventstack.extentreports.Status.*;
+import static com.aventstack.extentreports.Status.FAIL;
 import static com.aventstack.extentreports.Status.INFO;
+import static com.aventstack.extentreports.Status.WARNING;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
@@ -31,8 +34,6 @@ import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.TestContext;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
-
-import lombok.SneakyThrows;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,14 +135,28 @@ class SpectrumEntityTest {
         messageDigestMockedStatic.close();
     }
 
-    @SneakyThrows
-    private void addScreenshotToReportStubs() {
+    private void screenshotStubs() {
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
 
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
 
         when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(bytes);
+    }
+
+    private void screenshotWebElementStubs() {
+        when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
+        when(webElement.getScreenshotAs(BYTES)).thenReturn(bytes);
+    }
+
+    private void screenshotVerificationsFor(final String message, final Status status) {
+        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "message", message, "status", status, "takesScreenshot", driver));
+        verifyNoMoreInteractions(eventsDispatcher);
+    }
+
+    private void screenshotWebElementVerificationsFor(final WebElement webElement, final String message, final Status status) {
+        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "message", message, "status", status, "takesScreenshot", webElement));
+        verifyNoMoreInteractions(eventsDispatcher);
     }
 
     @Test
@@ -189,33 +204,81 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("screenshot should delegate to addScreenshotToReport")
     void screenshot() {
-        addScreenshotToReportStubs();
+        screenshotStubs();
 
         assertEquals(spectrumEntity, spectrumEntity.screenshot());
+
+        screenshotVerificationsFor("", INFO);
+    }
+
+    @Test
+    @DisplayName("screenshot of a WebElement should delegate to addScreenshotToReport")
+    void screenshotWebElement() {
+        screenshotWebElementStubs();
+
+        assertEquals(spectrumEntity, spectrumEntity.screenshot(webElement));
+
+        screenshotWebElementVerificationsFor(webElement, "", INFO);
     }
 
     @Test
     @DisplayName("infoWithScreenshot should delegate to addScreenshotToReport")
     void infoWithScreenshot() {
-        addScreenshotToReportStubs();
+        screenshotStubs();
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(msg));
+
+        screenshotVerificationsFor(msg, INFO);
+    }
+
+    @Test
+    @DisplayName("infoWithScreenshot of a WebElement should delegate to addScreenshotToReport")
+    void infoWithScreenshotWebElement() {
+        screenshotWebElementStubs();
+
+        assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(webElement, msg));
+
+        screenshotWebElementVerificationsFor(webElement, msg, INFO);
     }
 
     @Test
     @DisplayName("warningWithScreenshot should delegate to addScreenshotToReport")
     void warningWithScreenshot() {
-        addScreenshotToReportStubs();
+        screenshotStubs();
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(msg));
+
+        screenshotVerificationsFor(msg, WARNING);
+    }
+
+    @Test
+    @DisplayName("warningWithScreenshot of a WebElement should delegate to addScreenshotToReport")
+    void warningWithScreenshotWebElement() {
+        screenshotWebElementStubs();
+
+        assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(webElement, msg));
+
+        screenshotWebElementVerificationsFor(webElement, msg, WARNING);
     }
 
     @Test
     @DisplayName("failWithScreenshot should delegate to addScreenshotToReport")
     void failWithScreenshot() {
-        addScreenshotToReportStubs();
+        screenshotStubs();
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotFail(msg));
+
+        screenshotVerificationsFor(msg, FAIL);
+    }
+
+    @Test
+    @DisplayName("failWithScreenshot of a WebElement should delegate to addScreenshotToReport")
+    void failWithScreenshotWebElement() {
+        screenshotWebElementStubs();
+
+        assertEquals(spectrumEntity, spectrumEntity.screenshotFail(webElement, msg));
+
+        screenshotWebElementVerificationsFor(webElement, msg, FAIL);
     }
 
     @Test
@@ -223,12 +286,23 @@ class SpectrumEntityTest {
     void addScreenshotToReport() {
         final Status status = INFO;
 
-        addScreenshotToReportStubs();
+        screenshotStubs();
 
         spectrumEntity.addScreenshotToReport(msg, status);
 
-        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "message", msg, "status", status));
-        verifyNoMoreInteractions(eventsDispatcher);
+        screenshotVerificationsFor(msg, status);
+    }
+
+    @Test
+    @DisplayName("addScreenshotToReport should take a screenshot of the provided webElement")
+    void addScreenshotToReportWebElement() {
+        final Status status = INFO;
+
+        screenshotWebElementStubs();
+
+        spectrumEntity.addScreenshotToReport(webElement, msg, status);
+
+        screenshotWebElementVerificationsFor(webElement, msg, status);
     }
 
     @Test

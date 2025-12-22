@@ -1,6 +1,8 @@
 package io.github.giulong.spectrum;
 
-import static com.aventstack.extentreports.Status.*;
+import static com.aventstack.extentreports.Status.FAIL;
+import static com.aventstack.extentreports.Status.INFO;
+import static com.aventstack.extentreports.Status.WARNING;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
@@ -131,6 +133,18 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
+     * Adds a screenshot of the provided {@link WebElement} at INFO level
+     * to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T screenshot(final WebElement webElement) {
+        return addScreenshotToReport(webElement, "", INFO);
+    }
+
+    /**
      * Adds a screenshot with the provided message and INFO status to the current
      * test in the Extent Report
      *
@@ -143,7 +157,20 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
-     * Adds a screenshot status with the provided message and WARN to the current
+     * Adds a screenshot of the provided {@link WebElement} with the provided
+     * message and INFO status to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     * @param message the message to log
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T screenshotInfo(final WebElement webElement, final String message) {
+        return addScreenshotToReport(webElement, message, INFO);
+    }
+
+    /**
+     * Adds a screenshot with the provided message and WARN status to the current
      * test in the Extent Report
      *
      * @param message the message to log
@@ -152,6 +179,19 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      */
     public T screenshotWarning(final String message) {
         return addScreenshotToReport(message, WARNING);
+    }
+
+    /**
+     * Adds a screenshot of the provided {@link WebElement} with the provided
+     * message and WARN status to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     * @param message the message to log
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T screenshotWarning(final WebElement webElement, final String message) {
+        return addScreenshotToReport(webElement, message, WARNING);
     }
 
     /**
@@ -167,6 +207,19 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     }
 
     /**
+     * Adds a screenshot of the provided {@link WebElement} with the provided
+     * message and FAIL status to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     * @param message the message to log
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T screenshotFail(final WebElement webElement, final String message) {
+        return addScreenshotToReport(webElement, message, FAIL);
+    }
+
+    /**
      * Adds a screenshot with the provided message and the provided status to the
      * current test in the Extent Report
      *
@@ -177,9 +230,29 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      */
     public T addScreenshotToReport(final String message, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
-        final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(ORIGINAL_DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
+        final TakesScreenshot driver = (TakesScreenshot) context.getStore(GLOBAL).get(ORIGINAL_DRIVER, WebDriver.class);
+        final byte[] screenshot = driver.getScreenshotAs(BYTES);
 
-        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot, "message", message, "status", status));
+        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot, "message", message, "status", status, "takesScreenshot", driver));
+
+        return (T) this;
+    }
+
+    /**
+     * Adds a screenshot of the provided {@link WebElement} with the provided message
+     * and the provided status to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     * @param message the message to log
+     * @param status the log's status
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T addScreenshotToReport(final WebElement webElement, final String message, final Status status) {
+        final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
+        final byte[] screenshot = webElement.getScreenshotAs(BYTES);
+
+        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot, "message", message, "status", status, "takesScreenshot", webElement));
 
         return (T) this;
     }
