@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static com.aventstack.extentreports.Status.FAIL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
@@ -308,7 +307,7 @@ class VisualRegressionCheckConsumerTest {
         when(checks.getInterval()).thenReturn(interval);
         when(checks.getMaxRetries()).thenReturn(maxRetries);
         when(checks.getCount()).thenReturn(count);
-        when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
+        when(event.getPayload()).thenReturn(Map.of("takesScreenshot", driver));
         when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(screenshot2);
         when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture())).thenReturn(true);
     }

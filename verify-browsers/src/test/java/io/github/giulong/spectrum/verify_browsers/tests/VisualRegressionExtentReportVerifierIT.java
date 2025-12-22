@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.nio.file.Path;
+import java.util.List;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.verify_browsers.data.Data;
@@ -33,9 +34,15 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertFalse(extentReportPage.getScreenshotMessages().isEmpty(), "Screenshot messages should be displayed");
 
-        assertVideoDuration(extentReportPage.getVideoFilesItUploads().getFirst(), 15);
-        assertVideoDuration(extentReportPage.getVideoFilesItUploads().get(1), 15);
-        assertVideoDuration(extentReportPage.getVideoFilesItUploads().get(2), 2);
+        final List<WebElement> videosFailFast = extentReportPage.getVideosFailFast();
+        assertVideoDuration(videosFailFast.getFirst(), 16);
+        assertVideoDuration(videosFailFast.get(1), 16);
+        assertVideoDuration(videosFailFast.get(2), 2);
+
+        final List<WebElement> videosNotFailFast = extentReportPage.getVideosNotFailFast();
+        assertVideoDuration(videosNotFailFast.getFirst(), 16);
+        assertVideoDuration(videosNotFailFast.get(1), 16);
+        assertVideoDuration(videosNotFailFast.get(2), 16);
 
         assertEquals(4, extentReportPage.getVisualRegressions().size());
 

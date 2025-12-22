@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static com.aventstack.extentreports.Status.FAIL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
@@ -182,24 +181,24 @@ class VisualRegressionConsumerTest {
     }
 
     @Test
-    @DisplayName("runChecks should perform additional successful checks")
-    void runChecks() {
-        runChecksStubs(1);
+    @DisplayName("runChecksOn should perform additional successful checks")
+    void runChecksOn() {
+        runChecksOnStubs(1);
 
         when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture())).thenReturn(true);
 
-        consumer.runChecks();
+        consumer.runChecksOn(event);
 
         assertArrayEquals(screenshot2, byteArrayArgumentCaptor.getAllValues().getFirst());
         assertArrayEquals(screenshot3, byteArrayArgumentCaptor.getAllValues().get(1));
     }
 
     @Test
-    @DisplayName("runChecks should perform additional checks and retry")
-    void runChecksRetry() {
+    @DisplayName("runChecksOn should perform additional checks and retry")
+    void runChecksOnRetry() {
         final String visualRegressionTag = "visualRegressionTag";
 
-        runChecksStubs(2);
+        runChecksOnStubs(2);
 
         Reflections.setField("htmlUtils", consumer, htmlUtils);
 
@@ -207,7 +206,7 @@ class VisualRegressionConsumerTest {
                 .thenReturn(false)
                 .thenReturn(true);
 
-        consumer.runChecks();
+        consumer.runChecksOn(event);
 
         assertArrayEquals(screenshot2, byteArrayArgumentCaptor.getValue());
         assertEquals(screenshot3, Reflections.getFieldValue("screenshot", consumer));
@@ -221,12 +220,12 @@ class VisualRegressionConsumerTest {
     }
 
     @Test
-    @DisplayName("runChecks should perform additional checks and throw a VisualRegressionCheckException when failed")
-    void runChecksFailed() {
+    @DisplayName("runChecksOn should perform additional checks and throw a VisualRegressionCheckException when failed")
+    void runChecksOnFailed() {
         final String visualRegressionTag = "visualRegressionTag";
         final int frameNumber = 123;
 
-        runChecksStubs(1);
+        runChecksOnStubs(1);
 
         Reflections.setField("htmlUtils", consumer, htmlUtils);
 
@@ -242,7 +241,7 @@ class VisualRegressionConsumerTest {
             // addScreenshot
             when(contextManager.getScreenshots()).thenReturn(screenshots);
 
-            final Exception exception = assertThrows(VisualRegressionException.class, () -> consumer.runChecks());
+            final Exception exception = assertThrows(VisualRegressionException.class, () -> consumer.runChecksOn(event));
 
             assertEquals(mockedConstruction.constructed().getFirst(), exception);
 
@@ -256,14 +255,14 @@ class VisualRegressionConsumerTest {
         }
     }
 
-    private void runChecksStubs(final int maxRetries) {
+    private void runChecksOnStubs(final int maxRetries) {
         Reflections.setField("screenshot", consumer, screenshot);
 
         when(visualRegressionConfiguration.getChecks()).thenReturn(checks);
         when(checks.getInterval()).thenReturn(interval);
         when(checks.getMaxRetries()).thenReturn(maxRetries);
         when(checks.getCount()).thenReturn(count);
-        when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
+        when(event.getPayload()).thenReturn(Map.of("takesScreenshot", driver));
 
         when(((TakesScreenshot) driver).getScreenshotAs(BYTES))
                 .thenReturn(screenshot2)

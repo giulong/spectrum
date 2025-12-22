@@ -55,7 +55,7 @@ class VideoAutoScreenshotProducerTest {
 
         videoAutoScreenshotProducer.accept(webDriverEvent);
 
-        verify(eventsDispatcher).fire(AUTO.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes));
+        verify(eventsDispatcher).fire(AUTO.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "takesScreenshot", driver));
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

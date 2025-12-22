@@ -36,6 +36,7 @@ abstract class VisualRegressionBase extends SpectrumTest<Void> {
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
+        screenshot(landingPage.getCheckboxLink());
         landingPage.getCheckboxLink().click();
         driver.navigate().back();
         screenshot();

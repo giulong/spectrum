@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static com.aventstack.extentreports.Status.FAIL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static org.openqa.selenium.OutputType.BYTES;
 
 import java.nio.file.Path;
@@ -15,7 +14,6 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
 
 @Slf4j
 public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
@@ -45,12 +43,12 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
     }
 
     @SneakyThrows
-    protected void runChecks() {
+    protected void runChecksOn(final Event event) {
+        final TakesScreenshot takesScreenshot = (TakesScreenshot) event.getPayload().get("takesScreenshot");
         final Configuration.VisualRegression.Checks checks = visualRegression.getChecks();
         final Duration interval = checks.getInterval();
         final int maxRetries = checks.getMaxRetries();
         final int count = checks.getCount();
-        final WebDriver driver = store.get(ORIGINAL_DRIVER, WebDriver.class);
         final String time = String.format("%d.%d", interval.toSecondsPart(), interval.toMillisPart());
 
         nextRetry:
@@ -60,7 +58,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
                 Thread.sleep(interval);
 
                 log.debug("Running additional screenshot check number {} of retry {}", j, i + 1);
-                final byte[] screenshotCheck = ((TakesScreenshot) driver).getScreenshotAs(BYTES);
+                final byte[] screenshotCheck = takesScreenshot.getScreenshotAs(BYTES);
 
                 if (!fileUtils.compare(screenshot, screenshotCheck)) {
                     if (i == maxRetries - 1 && j == count) {
@@ -70,7 +68,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
                         throw new VisualRegressionException(String.format("All visual regression checks failed. Tried %d checks for %s times", count, maxRetries));
                     }
 
-                    log.error("Additional screenshot check failed. Retrying...");
+                    log.warn("Additional screenshot check failed. Retrying...");
                     screenshot = screenshotCheck;
 
                     continue nextRetry;

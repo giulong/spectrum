@@ -22,7 +22,7 @@ public class VisualRegressionReferenceCreatorConsumer extends VisualRegressionCo
     public void accept(final Event event) {
         log.debug("Generating visual regression reference {}", referencePath);
 
-        runChecks();
+        runChecksOn(event);
         addScreenshot(referencePath);
     }
 }

@@ -1,10 +1,12 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
@@ -196,7 +198,7 @@ class VisualRegressionReferenceCreatorConsumerTest {
         when(checks.getInterval()).thenReturn(interval);
         when(checks.getMaxRetries()).thenReturn(maxRetries);
         when(checks.getCount()).thenReturn(count);
-        when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
+        when(event.getPayload()).thenReturn(Map.of("takesScreenshot", driver));
         when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(screenshot2);
         when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture())).thenReturn(true);
 

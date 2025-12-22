@@ -34,7 +34,7 @@ public class VideoAutoScreenshotProducer extends WebDriverEventConsumer {
         if (video.shouldRecord(frame)) {
             final byte[] screenshot = driver.getScreenshotAs(BYTES);
 
-            eventsDispatcher.fire(AUTO.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot));
+            eventsDispatcher.fire(AUTO.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot, "takesScreenshot", driver));
             log.trace("Recording frame {} for event '{}'", frame, webDriverEvent.getMessage());
 
             return;
