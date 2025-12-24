@@ -71,6 +71,7 @@
                 <module>it-windows</module>
                 <module>it-appium</module>
                 <module>it-visual-regression</module>
+                <module>it-visual-regression-fae</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>verify-macos</module>
@@ -96,6 +97,7 @@
                 <module>it-bidi</module>
                 <module>it-testbook</module>
                 <module>it-visual-regression</module>
+                <module>it-visual-regression-fae</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>cleanup</module>

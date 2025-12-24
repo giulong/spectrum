@@ -1,7 +1,4 @@
-package io.github.giulong.spectrum.it_visual_regression.tests;
-
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+package io.github.giulong.spectrum.it_visual_regression_fae.tests;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,9 +8,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.exceptions.VisualRegressionException;
-import io.github.giulong.spectrum.it_visual_regression.pages.CheckboxPage;
-import io.github.giulong.spectrum.it_visual_regression.pages.LandingPage;
+import io.github.giulong.spectrum.it_visual_regression_fae.pages.CheckboxPage;
+import io.github.giulong.spectrum.it_visual_regression_fae.pages.LandingPage;
 import io.github.giulong.spectrum.utils.FileUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,11 +17,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.events.WebDriverListenerException;
 
 @Slf4j
 @TestMethodOrder(OrderAnnotation.class)
-class VisualRegressionIT extends SpectrumTest<Void> {
+class VisualRegressionFailAtEndIT extends SpectrumTest<Void> {
 
     private static final String TEST_NAME = "alwaysTheSame";
     private static final FileUtils FILE_UTILS = FileUtils.getInstance();
@@ -38,7 +33,7 @@ class VisualRegressionIT extends SpectrumTest<Void> {
 
     private static final Path SNAPSHOTS_FOLDER = Path.of(
             configuration.getVisualRegression().getSnapshots().getFolder(),
-            VisualRegressionIT.class.getSimpleName(),
+            VisualRegressionFailAtEndIT.class.getSimpleName(),
             TEST_NAME)
             .toAbsolutePath();
 
@@ -68,11 +63,10 @@ class VisualRegressionIT extends SpectrumTest<Void> {
     @DisplayName(TEST_NAME)
     void testFailedChecks() throws IOException {
         extentTest.info("Failed checks");
-        replaceScreenshots("screenshot-2.png");
+        replaceScreenshots("screenshot-2.png", "screenshot-5.png", "screenshot-10.png");
 
         log.error("THIS IS EXPECTED TO FAIL");
-        final Exception exception = assertThrows(WebDriverListenerException.class, this::runActualTest);
-        assertInstanceOf(VisualRegressionException.class, exception.getCause().getCause());
+        runActualTest();
     }
 
     private void runActualTest() {
