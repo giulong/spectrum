@@ -51,7 +51,7 @@ public abstract class EventsConsumer implements Consumer<Event> {
     @JsonPropertyDescription("Set to true to fail the test on consumer's exceptions")
     private boolean failOnError;
 
-    public void match(final Event event) {
+    public synchronized void match(final Event event) {
         final String simpleName = getClass().getSimpleName();
         final Predicate<Event> matches = e -> findMatchFor(event, e);
         final Predicate<Event> isAccepted = e -> shouldAccept(event);
