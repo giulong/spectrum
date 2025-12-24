@@ -76,7 +76,6 @@
                                     <reportNameSuffix>chrome</reportNameSuffix>
                                     <systemPropertyVariables>
                                         <spectrum.driver>chrome</spectrum.driver>
-                                        <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
                                     </systemPropertyVariables>
                                     <summaryFile>target/failsafe-reports/failsafe-chrome.xml</summaryFile>
                                 </configuration>
