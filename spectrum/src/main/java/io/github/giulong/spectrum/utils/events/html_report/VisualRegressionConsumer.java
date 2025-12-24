@@ -68,7 +68,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
                         throw new VisualRegressionException(String.format("All visual regression checks failed. Tried %d checks for %s times", count, maxRetries));
                     }
 
-                    log.warn("Additional screenshot check failed. Retrying...");
+                    log.warn("Additional screenshot check number {} of retry {} failed. Retrying...", j, i + 1);
                     screenshot = screenshotCheck;
 
                     continue nextRetry;
