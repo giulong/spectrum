@@ -154,7 +154,7 @@ class SpectrumEntityTest {
         verifyNoMoreInteractions(eventsDispatcher);
     }
 
-    private void screenshotWebElementVerificationsFor(final WebElement webElement, final String message, final Status status) {
+    private void screenshotWebElementVerificationsFor(final String message, final Status status) {
         verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "message", message, "status", status, "takesScreenshot", webElement));
         verifyNoMoreInteractions(eventsDispatcher);
     }
@@ -218,7 +218,7 @@ class SpectrumEntityTest {
 
         assertEquals(spectrumEntity, spectrumEntity.screenshot(webElement));
 
-        screenshotWebElementVerificationsFor(webElement, "", INFO);
+        screenshotWebElementVerificationsFor("", INFO);
     }
 
     @Test
@@ -238,7 +238,7 @@ class SpectrumEntityTest {
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(webElement, msg));
 
-        screenshotWebElementVerificationsFor(webElement, msg, INFO);
+        screenshotWebElementVerificationsFor(msg, INFO);
     }
 
     @Test
@@ -258,7 +258,7 @@ class SpectrumEntityTest {
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(webElement, msg));
 
-        screenshotWebElementVerificationsFor(webElement, msg, WARNING);
+        screenshotWebElementVerificationsFor(msg, WARNING);
     }
 
     @Test
@@ -278,7 +278,7 @@ class SpectrumEntityTest {
 
         assertEquals(spectrumEntity, spectrumEntity.screenshotFail(webElement, msg));
 
-        screenshotWebElementVerificationsFor(webElement, msg, FAIL);
+        screenshotWebElementVerificationsFor(msg, FAIL);
     }
 
     @Test
@@ -302,7 +302,7 @@ class SpectrumEntityTest {
 
         spectrumEntity.addScreenshotToReport(webElement, msg, status);
 
-        screenshotWebElementVerificationsFor(webElement, msg, status);
+        screenshotWebElementVerificationsFor(msg, status);
     }
 
     @Test
