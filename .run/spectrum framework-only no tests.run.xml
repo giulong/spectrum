@@ -11,6 +11,7 @@
           </option>
           <option name="goals">
             <list>
+              <option value="spotless:apply" />
               <option value="install" />
               <option value="-DskipTests" />
               <option value="-DskipSign" />
