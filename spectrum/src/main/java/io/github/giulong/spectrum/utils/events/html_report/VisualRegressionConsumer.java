@@ -29,7 +29,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
         this.visualRegression = configuration.getVisualRegression();
 
         if (visualRegression.isEnabled()) {
-            this.regressionPath = testData.getVisualRegression().getPath();
+            this.regressionPath = testData.isDynamic() ? testData.getVisualRegression().getDynamicPath() : testData.getVisualRegression().getPath();
             this.referencePath = regressionPath.resolve(fileUtils.getScreenshotNameFrom(testData));
 
             return true;
@@ -39,7 +39,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
     }
 
     protected boolean shouldOverrideSnapshots() {
-        return configuration.getVisualRegression().getSnapshots().isOverride();
+        return visualRegression.getSnapshots().isOverride();
     }
 
     @SneakyThrows

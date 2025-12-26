@@ -20,6 +20,7 @@ import com.aventstack.extentreports.ExtentTest;
 
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.TestData.VisualRegression;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -40,6 +41,8 @@ class SpectrumInterceptorTest {
     private final String displayName = "displayName";
     private final String fileName = "fileName";
     private final Path dynamicVideoPath = Path.of(String.format("%s-%s.mp4", fileName, displayName));
+    private final Path visualRegressionPath = Path.of("visualRegressionPath");
+    private final Path dynamicVisualRegressionPath = visualRegressionPath.resolve(displayName);
 
     @MockSingleton
     @SuppressWarnings("unused")
@@ -96,6 +99,9 @@ class SpectrumInterceptorTest {
     @Mock
     private Video.ExtentTest videoExtentTest;
 
+    @Mock
+    private VisualRegression visualRegression;
+
     @InjectMocks
     private SpectrumInterceptor spectrumInterceptor;
 
@@ -107,6 +113,8 @@ class SpectrumInterceptorTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.getExtentTest()).thenReturn(videoExtentTest);
         when(testData.getVideoPath()).thenReturn(videoPath);
+        when(testData.getVisualRegression()).thenReturn(visualRegression);
+        when(visualRegression.getPath()).thenReturn(visualRegressionPath);
 
         when(context.getRoot()).thenReturn(rootContext);
         when(context.getDisplayName()).thenReturn(displayName);
@@ -120,12 +128,14 @@ class SpectrumInterceptorTest {
     @SuppressWarnings("checkstyle:IllegalThrows")
     private void commonVerifications() throws Throwable {
         verify(testData).setDynamic(true);
+        verify(testData).setScreenshotNumber(0);
         verify(testData).setFrameNumber(0);
         verify(testData).setDisplayName(displayName);
         verify(testData).setDynamicVideoPath(dynamicVideoPath);
         verify(statefulExtentTest).setDisplayName(displayName);
         verify(statefulExtentTest).createNode(displayName);
         verify(statefulExtentTest).closeNode();
+        verify(visualRegression).setDynamicPath(dynamicVisualRegressionPath);
 
         verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(DYNAMIC_TEST), context);
         verify(eventsDispatcher).fire(className, displayName, BEFORE_EXECUTION, null, Set.of(DYNAMIC_TEST), context);

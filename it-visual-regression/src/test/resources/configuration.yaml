@@ -13,6 +13,7 @@ video:
     - autoBefore
     - manual
     - visualRegression
+  skipDuplicateFrames: false
 
 drivers:
   chrome:
@@ -22,3 +23,5 @@ drivers:
 extent:
   theme: DARK
   fileName: report-${spectrum.driver:-chrome}.html
+  sort:
+    name: { }

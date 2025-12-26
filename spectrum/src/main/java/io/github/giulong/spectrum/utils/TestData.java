@@ -24,12 +24,14 @@ public class TestData {
     private String classDisplayName;
     private String testId;
     private Path videoPath;
-    private int screenshotNumber;
     private VisualRegression visualRegression;
     private TestFailedException testFailedException;
 
     @Builder.Default
     private Map<Path, AWTSequenceEncoder> encoders = new HashMap<>();
+
+    @Setter
+    private int screenshotNumber;
 
     @Setter
     private int frameNumber;
@@ -65,7 +67,11 @@ public class TestData {
     @Getter
     @Builder
     public static class VisualRegression {
+
         private Path path;
         private int count;
+
+        @Setter
+        private Path dynamicPath;
     }
 }

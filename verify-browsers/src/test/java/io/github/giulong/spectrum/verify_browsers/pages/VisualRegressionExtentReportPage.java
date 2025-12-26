@@ -36,8 +36,11 @@ public class VisualRegressionExtentReportPage extends SpectrumPage<VisualRegress
     @FindBy(className = "visual-regression")
     private List<WebElement> visualRegressions;
 
-    public String getTextOf(final List<WebElement> webElements) {
+    @FindBy(id = "video-testfactoryit-dynamictestswithcontainers()")
+    private WebElement videoTestFactoryItDynamicTestsWithContainers;
+
+    public String getTextInSecondContainerOf(final List<WebElement> webElements) {
         // Extent triplicates elements and show/hide them when navigating the sections of the report
-        return webElements.get(1).getText();
+        return webElements.get(2).getText();
     }
 }

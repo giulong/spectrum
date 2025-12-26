@@ -27,10 +27,10 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
     void report() {
         driver.get(String.format("file:///%s/it-visual-regression/target/spectrum/reports/report-chrome/report-chrome.html", Path.of(System.getProperty("user.dir")).getParent()));
 
-        assertEquals(3, extentReportPage.getTestViewTests().size(), "Total tests");
-        assertEquals(2, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(5, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(3, countTestsWithStatus("pass"), "Passed tests");
         assertEquals(0, countTestsWithStatus("skip"), "Skipped tests");
-        assertEquals(1, countTestsWithStatus("fail"), "Failed tests");
+        assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
         assertFalse(extentReportPage.getScreenshotMessages().isEmpty(), "Screenshot messages should be displayed");
 
@@ -39,10 +39,12 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
         assertVideoDuration(videos.get(1), 16);
         assertVideoDuration(videos.get(2), 2);
 
+        assertVideoDuration(extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers(), 8);
+
         assertEquals(1, extentReportPage.getVisualRegressions().size());
 
-        extentReportPage.getTestViewTests().get(2).click();
-        assertThat(extentReportPage.getTextOf(extentReportPage.getVisualRegressionException()), containsString("There were 1 visual regressions"));
+        extentReportPage.getTestViewTests().get(4).click();
+        assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 1 visual regressions"));
 
         final WebElement visualRegression = extentReportPage.getVisualRegressions().getFirst();
         assertEquals("visualregressionit-alwaysthesame", visualRegression.getDomAttribute("data-test-id"));
@@ -55,10 +57,10 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
         driver.get(String.format("file:///%s/it-visual-regression-fae/target/spectrum/reports/report-chrome/report-chrome.html", Path.of(System.getProperty("user.dir"))
                 .getParent()));
 
-        assertEquals(3, extentReportPage.getTestViewTests().size(), "Total tests");
-        assertEquals(2, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(5, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(3, countTestsWithStatus("pass"), "Passed tests");
         assertEquals(0, countTestsWithStatus("skip"), "Skipped tests");
-        assertEquals(1, countTestsWithStatus("fail"), "Failed tests");
+        assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
 
         assertFalse(extentReportPage.getScreenshotMessages().isEmpty(), "Screenshot messages should be displayed");
 
@@ -67,10 +69,12 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
         assertVideoDuration(videos.get(1), 16);
         assertVideoDuration(videos.get(2), 16);
 
+        assertVideoDuration(extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers(), 8);
+
         assertEquals(3, extentReportPage.getVisualRegressions().size());
 
-        extentReportPage.getTestViewTests().get(2).click();
-        assertThat(extentReportPage.getTextOf(extentReportPage.getVisualRegressionException()), containsString("There were 3 visual regressions"));
+        extentReportPage.getTestViewTests().get(4).click();
+        assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 3 visual regressions"));
 
         final WebElement visualRegression1 = extentReportPage.getVisualRegressions().getFirst();
         final WebElement visualRegression2 = extentReportPage.getVisualRegressions().get(1);

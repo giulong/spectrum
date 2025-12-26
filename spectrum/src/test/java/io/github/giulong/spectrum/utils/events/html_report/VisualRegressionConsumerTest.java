@@ -145,6 +145,7 @@ class VisualRegressionConsumerTest {
         when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
         when(testData.getVisualRegression()).thenReturn(visualRegression);
+        when(testData.isDynamic()).thenReturn(false);
         when(visualRegression.getPath()).thenReturn(regressionPath);
         when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
         when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
@@ -158,13 +159,42 @@ class VisualRegressionConsumerTest {
         assertEquals(testData, Reflections.getFieldValue("testData", consumer));
         assertEquals(currentNode, Reflections.getFieldValue("currentNode", consumer));
         assertEquals(screenshot, Reflections.getFieldValue("screenshot", consumer));
+
+        verify(visualRegression, never()).getDynamicPath();
+    }
+
+    @Test
+    @DisplayName("shouldAccept should set the reference path for the dynamic test when visual regression is enabled")
+    void shouldAcceptTrueDynamic() {
+        final String screenshotName = "screenshotName";
+
+        superShouldAcceptStubs();
+
+        when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
+        when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(testData.getVisualRegression()).thenReturn(visualRegression);
+        when(testData.isDynamic()).thenReturn(true);
+        when(visualRegression.getDynamicPath()).thenReturn(regressionPath);
+        when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
+        when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
+        when(payload.get(SCREENSHOT)).thenReturn(screenshot);
+
+        Reflections.setField("referencePath", consumer, null);
+        assertTrue(consumer.shouldAccept(event));
+        assertEquals(visualRegressionConfiguration, Reflections.getFieldValue("visualRegression", consumer));
+        assertEquals(referencePath, Reflections.getFieldValue("referencePath", consumer));
+        assertEquals(regressionPath, Reflections.getFieldValue("regressionPath", consumer));
+        assertEquals(testData, Reflections.getFieldValue("testData", consumer));
+        assertEquals(currentNode, Reflections.getFieldValue("currentNode", consumer));
+        assertEquals(screenshot, Reflections.getFieldValue("screenshot", consumer));
+
+        verify(visualRegression, never()).getPath();
     }
 
     @DisplayName("shouldOverrideSnapshots should check if snapshots override is configured")
     @ParameterizedTest(name = "with override {0} we expect {0}")
     @ValueSource(booleans = {true, false})
     void shouldOverrideSnapshots(final boolean expected) {
-        when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
         when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
         when(snapshots.isOverride()).thenReturn(expected);
 
