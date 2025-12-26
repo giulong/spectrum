@@ -12,7 +12,6 @@ video:
   frames:
     - autoBefore
     - manual
-    - visualRegression
   skipDuplicateFrames: false
 
 drivers:

@@ -10,8 +10,7 @@ public enum Frame {
     AUTO("auto"),
     AUTO_BEFORE("autoBefore"),
     AUTO_AFTER("autoAfter"),
-    MANUAL("manual"),
-    VISUAL_REGRESSION("visualRegression");
+    MANUAL("manual");
 
     private final String value;
 
