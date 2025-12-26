@@ -105,7 +105,7 @@ jobs:
           export SPECTRUM_VIDEO_SKIPDUPLICATEFRAMES=false
           export SPECTRUM_APPLICATION_BASEURL='https://the-internet.herokuapp.com/'
           ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
-          ./mvnw install -DskipSign -Dmaven.plugin.validation=NONE ${{ matrix.directives }} -ntp -P ${{ matrix.profiles }}
+          ./mvnw -T 1C install -DskipSign -Dmaven.plugin.validation=NONE ${{ matrix.directives }} -ntp -P ${{ matrix.profiles }}
 
       - name: Publish html report
         if: success() || failure()
@@ -185,7 +185,7 @@ jobs:
           disable-animations: true
           script: |
             ./mvnw install:install-file -ntp -Dfile=$GITHUB_WORKSPACE/spectrum-${{ env.VERSION }}.jar -DgroupId=io.github.giulong -DartifactId=spectrum -Dversion=${{ env.VERSION }} -Dpackaging=jar
-            ./mvnw install -DskipSign -Denforcer.skip -Dmaven.plugin.validation=NONE -DappiumTests -ntp -P appium
+            ./mvnw -T 1C install -DskipSign -Denforcer.skip -Dmaven.plugin.validation=NONE -DappiumTests -ntp -P appium
 
       - name: Publish html report
         if: success() || failure()

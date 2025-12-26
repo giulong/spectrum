@@ -1,9 +1,9 @@
 package io.github.giulong.spectrum.utils.events.video;
 
-import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 
 import lombok.SneakyThrows;

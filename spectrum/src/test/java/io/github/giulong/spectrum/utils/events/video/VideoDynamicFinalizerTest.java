@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

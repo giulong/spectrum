@@ -71,6 +71,11 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
     }
 
     @Override
+    public boolean throwsExceptions() {
+        return true;
+    }
+
+    @Override
     @Generated
     public void beforeAnyCall(final Object target, final Method method, final Object[] args) {
         listenTo(AUTO_BEFORE, events.getBeforeAnyCall(), target, method, Arrays.toString(args));
@@ -470,6 +475,18 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
     @Generated
     public void afterGetCssValue(final WebElement element, final String propertyName, final String result) {
         listenTo(AUTO_AFTER, events.getAfterGetCssValue(), element, propertyName, result);
+    }
+
+    @Override
+    @Generated
+    public <X> void beforeGetScreenshotAs(final WebDriver driver, final OutputType<X> target) {
+        listenTo(AUTO_BEFORE, events.getBeforeGetScreenshotAs(), driver, target);
+    }
+
+    @Override
+    @Generated
+    public <X> void afterGetScreenshotAs(final WebDriver driver, final OutputType<X> target, final X result) {
+        listenTo(AUTO_AFTER, events.getAfterGetScreenshotAs(), driver, target, result);
     }
 
     @Override

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum Frame {
 
+    AUTO("auto"),
     AUTO_BEFORE("autoBefore"),
     AUTO_AFTER("autoAfter"),
     MANUAL("manual");

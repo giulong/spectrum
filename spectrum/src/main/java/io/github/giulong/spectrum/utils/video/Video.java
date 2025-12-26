@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 
 import lombok.Generated;
 import lombok.Getter;
@@ -53,7 +53,7 @@ public class Video {
         log.trace("Current frame number: {}", frameNumber);
 
         if (shouldRecord(frame)) {
-            testData.setFrameNumber(frameNumber + 1);
+            testData.incrementFrameNumber();
             return frameNumber;
         }
 

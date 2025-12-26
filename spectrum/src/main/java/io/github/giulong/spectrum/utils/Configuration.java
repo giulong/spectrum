@@ -53,6 +53,9 @@ public class Configuration {
     @JsonPropertyDescription("Application under test")
     private Application application;
 
+    @JsonPropertyDescription("Visual Regression Testing configuration")
+    private VisualRegression visualRegression;
+
     @JsonPropertyDescription("Execution video recording")
     private Video video;
 
@@ -144,6 +147,9 @@ public class Configuration {
         @JsonPropertyDescription("Application's under test base url")
         private String baseUrl;
 
+        @JsonPropertyDescription("Path where to save screenshots. If not provided, screenshots are saved in the target folder.")
+        private String screenshotsFolder;
+
         @JsonPropertyDescription("Highlight the web elements the test interacts with. Useful to visually debug the execution")
         private Highlight highlight;
 
@@ -157,6 +163,50 @@ public class Configuration {
 
             @JsonPropertyDescription("Path to the js used to highlight. Relative to the resources folder")
             private String js;
+        }
+    }
+
+    @Getter
+    @Generated
+    public static class VisualRegression {
+
+        @JsonIgnore
+        @JacksonInject("enabledFromClient")
+        private boolean enabled;
+
+        @JsonPropertyDescription("Whether to fail immediately when the first visual regression is found, rather than running the entire test")
+        private boolean failFast;
+
+        @JsonPropertyDescription("Snapshots screenshots references configuration")
+        private Snapshots snapshots;
+
+        @JsonPropertyDescription("Checks configuration")
+        private Checks checks;
+
+        @Getter
+        @Generated
+        public static class Snapshots {
+
+            @JsonPropertyDescription("Where to save the screenshot references")
+            private String folder;
+
+            @JsonPropertyDescription("Whether to override the snapshots references already generated")
+            private boolean override;
+        }
+
+        @Getter
+        @Generated
+        public static class Checks {
+
+            @JsonPropertyDescription("Number of checks to perform before considering a snapshot valid")
+            private int count;
+
+            @JsonPropertyDescription("Interval between checks in seconds")
+            @JsonSchemaTypes(double.class)
+            private Duration interval;
+
+            @JsonPropertyDescription("Max retries before throwing an exception")
+            private int maxRetries;
         }
     }
 
@@ -255,19 +305,19 @@ public class Configuration {
         public static class Waits {
 
             @JsonPropertyDescription("Seconds Selenium waits before throwing a NoSuchElementException when an element isn't found")
-            @JsonSchemaTypes(int.class)
+            @JsonSchemaTypes(double.class)
             private Duration implicit;
 
             @JsonPropertyDescription("Seconds that Selenium waits before throwing an exception because the page wasn't fully loaded yet")
-            @JsonSchemaTypes(int.class)
+            @JsonSchemaTypes(double.class)
             private Duration pageLoadTimeout;
 
             @JsonPropertyDescription("Seconds that Selenium waits before throwing a ScriptTimeoutException")
-            @JsonSchemaTypes(int.class)
+            @JsonSchemaTypes(double.class)
             private Duration scriptTimeout;
 
             @JsonPropertyDescription("WebDriverWait injected in test classes/pages that you can use on file download")
-            @JsonSchemaTypes(int.class)
+            @JsonSchemaTypes(double.class)
             private Duration downloadTimeout;
 
             @JsonPropertyDescription("Auto-wait configuration")
@@ -281,8 +331,8 @@ public class Configuration {
                 private boolean enabled;
 
                 @JsonPropertyDescription("Timeout in seconds")
-                @JsonSchemaTypes(int.class)
-                public Duration timeout;
+                @JsonSchemaTypes(double.class)
+                private Duration timeout;
             }
         }
 
@@ -524,6 +574,8 @@ public class Configuration {
             private Event afterGetSize;
             private Event beforeGetCssValue;
             private Event afterGetCssValue;
+            private Event beforeGetScreenshotAs;
+            private Event afterGetScreenshotAs;
             private Event beforeAnyNavigationCall;
             private Event afterAnyNavigationCall;
             private Event beforeTo;
@@ -664,7 +716,7 @@ public class Configuration {
                 private int port;
 
                 @JsonPropertyDescription("Sets timeout in seconds")
-                @JsonSchemaTypes(int.class)
+                @JsonSchemaTypes(double.class)
                 private Duration timeout;
             }
         }

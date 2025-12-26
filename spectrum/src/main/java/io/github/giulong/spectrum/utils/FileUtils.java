@@ -9,10 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -26,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public final class FileUtils {
 
     private static final FileUtils INSTANCE = new FileUtils();
+    public static final String HASH_ALGORITHM = "SHA-256";
     private static final String DEFAULT_TIMESTAMP_PATTERN = "dd-MM-yyyy_HH-mm-ss";
     private static final String TIMESTAMP_TO_REPLACE = "\\$\\{timestamp:?(?<pattern>.*)}";
     private static final Pattern TIMESTAMP_PATTERN = Pattern.compile(".*\\$\\{timestamp:(?<pattern>.*)}.*");
@@ -37,21 +40,29 @@ public final class FileUtils {
     }
 
     public String read(final String file) {
-        log.debug("Reading file {}", file);
-        final InputStream inputStream = FileUtils.class.getResourceAsStream(String.format("/%s", file));
+        return getInputStreamOf(file, inputStream -> {
+            if (inputStream == null) {
+                return "";
+            }
 
-        if (inputStream == null) {
-            log.warn("File {} not found.", file);
-            return "";
-        }
-
-        try (Scanner scanner = new Scanner(inputStream)) {
-            return scanner.useDelimiter("\\Z").next();
-        }
+            try (Scanner scanner = new Scanner(inputStream)) {
+                return scanner.useDelimiter("\\Z").next();
+            }
+        });
     }
 
     public String readTemplate(final String file) {
         return read(String.format("templates/%s", file));
+    }
+
+    public byte[] readBytesOf(final String file) {
+        return getInputStreamOf(file, inputStream -> {
+            if (inputStream == null) {
+                return new byte[]{};
+            }
+
+            return readAllBytesOf(inputStream);
+        });
     }
 
     public String interpolateTimestampFrom(final String value) {
@@ -97,15 +108,19 @@ public final class FileUtils {
     }
 
     @SneakyThrows
-    public void write(final Path path, final String content) {
+    public void write(final Path path, final byte[] content) {
         final boolean foldersCreated = path.getParent().toFile().mkdirs();
         log.trace("Folders created? {}. Writing {} to file {}", foldersCreated, content, path);
 
-        Files.write(path, content.getBytes());
+        Files.write(path, content);
+    }
+
+    public void write(final Path path, final String content) {
+        write(path, content.getBytes());
     }
 
     public void write(final String path, final String content) {
-        write(Path.of(path), content);
+        write(Path.of(path), content.getBytes());
     }
 
     public String sanitize(final String name) {
@@ -137,8 +152,57 @@ public final class FileUtils {
         return path;
     }
 
+    public String getScreenshotNameFrom(final TestData testData) {
+        return String.format("screenshot-%d.png", testData.getScreenshotNumber());
+    }
+
+    public String getFailedScreenshotNameFrom(final TestData testData) {
+        return String.format("screenshot-%d-failed.png", testData.getScreenshotNumber());
+    }
+
     @SneakyThrows
-    public Path writeTempFile(final String prefix, final String suffix, final byte[] data) {
-        return Files.write(createTempFile(prefix, suffix), data);
+    public byte[] checksumOf(final byte[] bytes) {
+        final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(bytes);
+
+        log.trace("{} is '{}'", HASH_ALGORITHM, Arrays.toString(digest));
+        return digest;
+    }
+
+    public boolean compare(final byte[] bytes1, final byte[] bytes2) {
+        return Arrays.equals(checksumOf(bytes1), checksumOf(bytes2));
+    }
+
+    @SneakyThrows
+    public boolean compare(final Path path1, final Path path2) {
+        log.info("""
+                 Checking if these files are the same:
+                 {}
+                 {}
+                 """, path1, path2);
+
+        return compare(Files.readAllBytes(path1), Files.readAllBytes(path2));
+    }
+
+    @SneakyThrows
+    public boolean compare(final Path path, final byte[] bytes) {
+        return compare(Files.readAllBytes(path), bytes);
+    }
+
+    @SneakyThrows
+    <T> T getInputStreamOf(final String file, final Function<InputStream, T> function) {
+        log.debug("Reading file {}", file);
+
+        try (InputStream inputStream = FileUtils.class.getResourceAsStream(String.format("/%s", file))) {
+            if (inputStream == null) {
+                log.debug("File {} not found.", file);
+            }
+
+            return function.apply(inputStream);
+        }
+    }
+
+    @SneakyThrows
+    byte[] readAllBytesOf(final InputStream inputStream) {
+        return inputStream.readAllBytes();
     }
 }

@@ -23,6 +23,38 @@
             <artifactId>hamcrest</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- To instruct reactor to build this module after the ones below in parallel builds -->
+        <dependency>
+            <groupId>io.github.giulong</groupId>
+            <artifactId>it</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.giulong</groupId>
+            <artifactId>it-grid</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.giulong</groupId>
+            <artifactId>it-bidi</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.giulong</groupId>
+            <artifactId>it-testbook</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.giulong</groupId>
+            <artifactId>it-visual-regression</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.giulong</groupId>
+            <artifactId>it-visual-regression-fae</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 
     <build>
