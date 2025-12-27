@@ -74,7 +74,6 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
     }
 
     @Override
-    @SneakyThrows
     public void doOutputFrom(final String interpolatedTemplate) {
         fileUtils.write(output, interpolatedTemplate);
     }
