@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
+import static io.github.giulong.spectrum.enums.Frame.AUTO;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
@@ -36,6 +37,7 @@ class VisualRegressionReferenceCreatorConsumerTest {
 
     private final byte[] screenshot = new byte[]{1, 2, 3};
     private final byte[] screenshot2 = new byte[]{4};
+    private final String primaryId = "auto";
 
     private MockedStatic<Files> filesMockedStatic;
 
@@ -140,6 +142,8 @@ class VisualRegressionReferenceCreatorConsumerTest {
         superShouldAcceptStubs();
 
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(true);
         when(Files.notExists(referencePath)).thenReturn(false);
 
         when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
@@ -157,6 +161,8 @@ class VisualRegressionReferenceCreatorConsumerTest {
         superShouldAcceptStubs();
 
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(true);
         when(Files.notExists(referencePath)).thenReturn(true);
 
         assertTrue(consumer.shouldAccept(event));
@@ -171,6 +177,8 @@ class VisualRegressionReferenceCreatorConsumerTest {
         superShouldAcceptStubs();
 
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(true);
         when(Files.notExists(referencePath)).thenReturn(false);
 
         when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);

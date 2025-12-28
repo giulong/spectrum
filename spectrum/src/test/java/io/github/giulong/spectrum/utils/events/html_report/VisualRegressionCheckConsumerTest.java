@@ -1,6 +1,7 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static com.aventstack.extentreports.Status.FAIL;
+import static io.github.giulong.spectrum.enums.Frame.AUTO;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
@@ -38,6 +39,7 @@ class VisualRegressionCheckConsumerTest {
     private final byte[] checksum = new byte[]{4, 5, 6};
     private final byte[] screenshot2 = new byte[]{4};
     private final int frameNumber = 123;
+    private final String primaryId = "auto";
 
     private MockedStatic<Files> filesMockedStatic;
 
@@ -146,6 +148,8 @@ class VisualRegressionCheckConsumerTest {
         superShouldAcceptStubs();
 
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(true);
         when(Files.exists(referencePath)).thenReturn(false);
 
         assertFalse(consumer.shouldAccept(event));
@@ -160,6 +164,8 @@ class VisualRegressionCheckConsumerTest {
         superShouldAcceptStubs();
 
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(true);
         when(Files.exists(referencePath)).thenReturn(true);
 
         when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
@@ -177,6 +183,8 @@ class VisualRegressionCheckConsumerTest {
         superShouldAcceptStubs();
 
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(true);
         when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
         when(snapshots.isOverride()).thenReturn(false);
 

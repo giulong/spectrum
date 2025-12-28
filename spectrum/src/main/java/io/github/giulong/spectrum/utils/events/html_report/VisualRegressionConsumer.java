@@ -6,6 +6,7 @@ import static org.openqa.selenium.OutputType.BYTES;
 import java.nio.file.Path;
 import java.time.Duration;
 
+import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -28,7 +29,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
 
         this.visualRegression = configuration.getVisualRegression();
 
-        if (visualRegression.isEnabled()) {
+        if (visualRegression.isEnabled() && visualRegression.shouldCheck(Frame.from(event.getPrimaryId()))) {
             this.regressionPath = testData.isDynamic() ? testData.getVisualRegression().getDynamicPath() : testData.getVisualRegression().getPath();
             this.referencePath = regressionPath.resolve(fileUtils.getScreenshotNameFrom(testData));
 

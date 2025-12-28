@@ -4,6 +4,8 @@ application:
 visualRegression:
   snapshots:
     folder: target/visual-regression
+  frames:
+    - manual
   checks:
     count: 2
 

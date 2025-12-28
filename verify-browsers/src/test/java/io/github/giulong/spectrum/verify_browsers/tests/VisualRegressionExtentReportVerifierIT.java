@@ -71,23 +71,19 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertVideoDuration(extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers(), 8);
 
-        assertEquals(3, extentReportPage.getVisualRegressions().size());
+        assertEquals(2, extentReportPage.getVisualRegressions().size());
 
         extentReportPage.getTestViewTests().get(4).click();
-        assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 3 visual regressions"));
+        assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 2 visual regressions"));
 
         final WebElement visualRegression1 = extentReportPage.getVisualRegressions().getFirst();
         final WebElement visualRegression2 = extentReportPage.getVisualRegressions().get(1);
-        final WebElement visualRegression3 = extentReportPage.getVisualRegressions().get(2);
 
         assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression1.getDomAttribute("data-test-id"));
         assertEquals("2", visualRegression1.getDomAttribute("data-frame"));
 
         assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression2.getDomAttribute("data-test-id"));
         assertEquals("5", visualRegression2.getDomAttribute("data-frame"));
-
-        assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression3.getDomAttribute("data-test-id"));
-        assertEquals("10", visualRegression3.getDomAttribute("data-frame"));
     }
 
     private long countTestsWithStatus(final String status) {

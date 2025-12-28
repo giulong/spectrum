@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import io.github.giulong.spectrum.drivers.Driver;
+import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.EnvironmentInterpolator;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.InPlaceInterpolator;
@@ -167,7 +168,6 @@ public class Configuration {
     }
 
     @Getter
-    @Generated
     public static class VisualRegression {
 
         @JsonIgnore
@@ -177,11 +177,18 @@ public class Configuration {
         @JsonPropertyDescription("Whether to fail immediately when the first visual regression is found, rather than running the entire test")
         private boolean failFast;
 
+        @JsonPropertyDescription("Kind of frames to be considered. Empty by default")
+        private List<Frame> frames;
+
         @JsonPropertyDescription("Snapshots screenshots references configuration")
         private Snapshots snapshots;
 
         @JsonPropertyDescription("Checks configuration")
         private Checks checks;
+
+        public boolean shouldCheck(final Frame frame) {
+            return frames.contains(frame);
+        }
 
         @Getter
         @Generated
