@@ -1,7 +1,7 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static com.aventstack.extentreports.Status.FAIL;
-import static io.github.giulong.spectrum.enums.Frame.AUTO;
+import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
@@ -38,7 +38,7 @@ class VisualRegressionConsumerTest {
     private final byte[] screenshot = new byte[]{1, 2, 3};
     private final byte[] screenshot2 = new byte[]{4};
     private final byte[] screenshot3 = new byte[]{5};
-    private final String primaryId = "auto";
+    private final String primaryId = "autoBefore";
     private final int count = 2;
 
     private MockedStatic<MediaEntityBuilder> mediaEntityBuilderMockedStatic;
@@ -144,7 +144,7 @@ class VisualRegressionConsumerTest {
         when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
         when(event.getPrimaryId()).thenReturn(primaryId);
-        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(false);
+        when(visualRegressionConfiguration.shouldCheck(AUTO_BEFORE)).thenReturn(false);
 
         assertFalse(consumer.shouldAccept(event));
 
@@ -161,7 +161,7 @@ class VisualRegressionConsumerTest {
         when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
         when(event.getPrimaryId()).thenReturn(primaryId);
-        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(true);
+        when(visualRegressionConfiguration.shouldCheck(AUTO_BEFORE)).thenReturn(true);
 
         when(testData.getVisualRegression()).thenReturn(visualRegression);
         when(testData.isDynamic()).thenReturn(false);
@@ -192,7 +192,7 @@ class VisualRegressionConsumerTest {
         when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
         when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
         when(event.getPrimaryId()).thenReturn(primaryId);
-        when(visualRegressionConfiguration.shouldCheck(AUTO)).thenReturn(true);
+        when(visualRegressionConfiguration.shouldCheck(AUTO_BEFORE)).thenReturn(true);
 
         when(testData.getVisualRegression()).thenReturn(visualRegression);
         when(testData.isDynamic()).thenReturn(true);

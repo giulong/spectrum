@@ -1,10 +1,12 @@
 package io.github.giulong.spectrum.utils.web_driver_events;
 
-import static io.github.giulong.spectrum.enums.Frame.AUTO;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 import static org.openqa.selenium.OutputType.BYTES;
 
 import java.util.Map;
@@ -55,7 +57,7 @@ class VideoAutoScreenshotProducerTest {
 
         videoAutoScreenshotProducer.accept(webDriverEvent);
 
-        verify(eventsDispatcher).fire(AUTO.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "takesScreenshot", driver));
+        verify(eventsDispatcher).fire(AUTO_AFTER.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "takesScreenshot", driver));
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

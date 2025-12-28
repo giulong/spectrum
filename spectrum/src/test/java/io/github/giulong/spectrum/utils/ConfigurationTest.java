@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
-import static io.github.giulong.spectrum.enums.Frame.AUTO;
+import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -34,7 +34,7 @@ class ConfigurationTest {
         final Configuration configuration = Configuration.getInstance();
         final VisualRegression visualRegression = new VisualRegression();
 
-        Reflections.setField("frames", visualRegression, List.of(AUTO));
+        Reflections.setField("frames", visualRegression, List.of(AUTO_BEFORE));
         Reflections.setField("visualRegression", configuration, visualRegression);
 
         assertEquals(expected, Configuration.getInstance().getVisualRegression().shouldCheck(frame));
@@ -42,7 +42,7 @@ class ConfigurationTest {
 
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
-                arguments(AUTO, true),
+                arguments(AUTO_BEFORE, true),
                 arguments(MANUAL, false));
     }
 }
