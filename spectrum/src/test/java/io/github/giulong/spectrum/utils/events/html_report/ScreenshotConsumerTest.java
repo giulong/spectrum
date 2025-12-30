@@ -11,8 +11,6 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.model.Media;
 
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.pojos.events.Event;
@@ -54,16 +52,7 @@ class ScreenshotConsumerTest {
     private ContextManager contextManager;
 
     @Mock
-    private Status status;
-
-    @Mock
-    private Media media;
-
-    @Mock
     private Path referencePath;
-
-    @Mock
-    private Path regressionPath;
 
     @Mock
     private Map<String, byte[]> screenshots;
@@ -107,22 +96,6 @@ class ScreenshotConsumerTest {
 
         verify(screenshots).put(referencePath.toString(), screenshot);
         verify(fileUtils).write(referencePath, screenshot);
-    }
-
-    @Test
-    @DisplayName("addScreenshotToReport should add the provided screenshot to the html report and to the screenshot map")
-    void addScreenshotToReport() {
-        final String tag = "tag";
-
-        Reflections.setField("screenshot", consumer, screenshot);
-
-        when(contextManager.getScreenshots()).thenReturn(screenshots);
-
-        consumer.addScreenshotToReport(regressionPath, status, tag, media);
-
-        verify(currentNode).log(status, tag, media);
-        verify(screenshots).put(regressionPath.toString(), screenshot);
-        verify(fileUtils).write(regressionPath, screenshot);
     }
 
     private static final class DummyScreenshotConsumer extends ScreenshotConsumer {

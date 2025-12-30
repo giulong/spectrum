@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import static com.aventstack.extentreports.Status.FAIL;
 import static org.openqa.selenium.OutputType.BYTES;
 
 import java.nio.file.Path;
@@ -65,7 +64,8 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
                     if (i == maxRetries - 1 && j == count) {
                         final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, screenshot, screenshotCheck);
 
-                        addScreenshotToReport(referencePath, FAIL, visualRegressionTag, null);
+                        currentNode.fail(visualRegressionTag);
+                        addScreenshot(referencePath);
                         throw new VisualRegressionException(String.format("Unable to get a stable screenshot. Tried %d checks for %s times", count, maxRetries));
                     }
 

@@ -301,7 +301,7 @@ class VisualRegressionConsumerTest {
             assertArrayEquals(screenshot3, byteArrayArgumentCaptor.getAllValues().get(1));
 
             // addScreenshot
-            verify(currentNode).log(FAIL, visualRegressionTag, null);
+            verify(currentNode).fail(visualRegressionTag);
             verify(screenshots).put(referencePath.toString(), screenshot);
             verify(fileUtils).write(referencePath, screenshot);
         }

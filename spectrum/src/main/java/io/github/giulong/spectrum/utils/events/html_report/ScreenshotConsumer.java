@@ -9,8 +9,6 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import com.aventstack.extentreports.ExtentTest;
-import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.model.Media;
 
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
@@ -48,10 +46,5 @@ public abstract class ScreenshotConsumer extends EventsConsumer {
     protected void addScreenshot(final Path path) {
         contextManager.getScreenshots().put(path.toString(), screenshot);
         fileUtils.write(path, screenshot);
-    }
-
-    protected void addScreenshotToReport(final Path path, final Status status, final String tag, final Media media) {
-        currentNode.log(status, tag, media);
-        addScreenshot(path);
     }
 }
