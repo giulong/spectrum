@@ -17,5 +17,5 @@ import lombok.Getter;
         @JsonSubTypes.Type(value = HighlightDiff.class, name = "highlight"),
 })
 public abstract class ImageDiff {
-    public abstract Path buildBetween(final Path reference, final Path regression, final Path destination, final String diffName);
+    public abstract Path buildBetween(Path reference, Path regression, Path destination, String diffName);
 }
