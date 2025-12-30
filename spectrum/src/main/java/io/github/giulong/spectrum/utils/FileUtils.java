@@ -160,6 +160,10 @@ public final class FileUtils {
         return String.format("screenshot-%d-failed.png", testData.getScreenshotNumber());
     }
 
+    public String getScreenshotsDiffNameFrom(final TestData testData) {
+        return String.format("screenshot-%d-diff.png", testData.getScreenshotNumber());
+    }
+
     @SneakyThrows
     public byte[] checksumOf(final byte[] bytes) {
         final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(bytes);

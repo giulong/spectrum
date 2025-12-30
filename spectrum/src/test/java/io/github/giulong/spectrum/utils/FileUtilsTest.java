@@ -291,7 +291,7 @@ class FileUtilsTest {
     }
 
     @Test
-    @DisplayName("getScreenshotNameFrom should return the name for the provided frame and display name, with the 'failed' suffix")
+    @DisplayName("getScreenshotNameFrom should return the name for the provided testData")
     void getScreenshotNameFrom() {
         when(testData.getScreenshotNumber()).thenReturn(123);
 
@@ -299,11 +299,19 @@ class FileUtilsTest {
     }
 
     @Test
-    @DisplayName("getFailedScreenshotNameFrom should return the name for the provided frame and display name, with the 'failed' suffix")
+    @DisplayName("getFailedScreenshotNameFrom should return the name for the provided testData, with the 'failed' suffix")
     void getFailedScreenshotNameFrom() {
         when(testData.getScreenshotNumber()).thenReturn(123);
 
         assertEquals("screenshot-123-failed.png", fileUtils.getFailedScreenshotNameFrom(testData));
+    }
+
+    @Test
+    @DisplayName("getScreenshotsDiffNameFrom should return the name for the provided testData, with the 'diff' suffix")
+    void getScreenshotsDiffNameFrom() {
+        when(testData.getScreenshotNumber()).thenReturn(123);
+
+        assertEquals("screenshot-123-diff.png", fileUtils.getScreenshotsDiffNameFrom(testData));
     }
 
     @Test

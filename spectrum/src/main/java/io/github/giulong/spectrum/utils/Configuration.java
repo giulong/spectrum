@@ -25,6 +25,7 @@ import io.github.giulong.spectrum.utils.events.EventsConsumer;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
 import io.github.giulong.spectrum.utils.video.Video;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff;
 
 import lombok.Generated;
 import lombok.Getter;
@@ -185,6 +186,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Checks configuration")
         private Checks checks;
+
+        @JsonPropertyDescription("Screenshots diff configuration")
+        private ImageDiff diff;
 
         public boolean shouldCheck(final Frame frame) {
             return frames.contains(frame);

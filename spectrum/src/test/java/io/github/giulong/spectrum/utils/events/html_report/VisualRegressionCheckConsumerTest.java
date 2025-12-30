@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import static com.aventstack.extentreports.Status.FAIL;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
@@ -23,6 +22,7 @@ import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,8 +38,12 @@ class VisualRegressionCheckConsumerTest {
     private final byte[] screenshot = new byte[]{1, 2, 3};
     private final byte[] checksum = new byte[]{4, 5, 6};
     private final byte[] screenshot2 = new byte[]{4};
+    private final byte[] diffBytes = new byte[]{7};
     private final int frameNumber = 123;
     private final String primaryId = "autoBefore";
+    private final String failedScreenshotName = "failedScreenshotName";
+    private final String diffScreenshotName = "diffScreenshotName";
+    private final String visualRegressionTag = "visualRegressionTag";
 
     private MockedStatic<Files> filesMockedStatic;
 
@@ -64,6 +68,9 @@ class VisualRegressionCheckConsumerTest {
 
     @Mock
     private Path referencePath;
+
+    @Mock
+    private Path diffPath;
 
     @Mock
     private ExtentTest currentNode;
@@ -109,6 +116,9 @@ class VisualRegressionCheckConsumerTest {
 
     @Mock
     private Duration interval;
+
+    @Mock
+    private ImageDiff diff;
 
     @Mock(extraInterfaces = TakesScreenshot.class)
     private WebDriver driver;
@@ -220,8 +230,6 @@ class VisualRegressionCheckConsumerTest {
     @DisplayName("accept should register the regression when the screenshot taken does not match with its reference")
     void acceptVisualRegression() throws IOException {
         final Path failedScreenshotPath = mock();
-        final String failedScreenshotName = "failedScreenshotName";
-        final String visualRegressionTag = "visualRegressionTag";
 
         runChecksStubs();
 
@@ -229,22 +237,29 @@ class VisualRegressionCheckConsumerTest {
 
         when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
-        when(Files.readAllBytes(referencePath)).thenReturn(checksum);
-        when(testData.getFrameNumber()).thenReturn(frameNumber);
-        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
+
+        when(Files.readAllBytes(referencePath)).thenReturn(checksum);
+        when(testData.getFrameNumber()).thenReturn(frameNumber);
+
+        when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
+        when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
+        when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(diffPath);
+        when(Files.readAllBytes(diffPath)).thenReturn(diffBytes);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, diffBytes)).thenReturn(visualRegressionTag);
 
         consumer.accept(event);
 
         verify(testData).registerFailedVisualRegression();
 
         // addScreenshot
-        verify(currentNode).log(FAIL, visualRegressionTag, null);
         verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
         verify(fileUtils).write(failedScreenshotPath, screenshot);
+
+        verify(currentNode).fail(visualRegressionTag);
 
         runChecksAssertions();
     }
@@ -254,8 +269,6 @@ class VisualRegressionCheckConsumerTest {
     void acceptVisualRegressionFailFast() throws IOException {
         final String exceptionMessage = "exceptionMessage";
         final Path failedScreenshotPath = mock();
-        final String failedScreenshotName = "failedScreenshotName";
-        final String visualRegressionTag = "visualRegressionTag";
 
         runChecksStubs();
 
@@ -265,7 +278,7 @@ class VisualRegressionCheckConsumerTest {
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
         when(Files.readAllBytes(referencePath)).thenReturn(checksum);
         when(testData.getFrameNumber()).thenReturn(frameNumber);
-        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot)).thenReturn(visualRegressionTag);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, null)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);
@@ -275,6 +288,9 @@ class VisualRegressionCheckConsumerTest {
         when(testData.getTestFailedException()).thenReturn(visualRegressionException);
         when(visualRegressionException.getMessage()).thenReturn(exceptionMessage);
 
+        when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
+        when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
+
         final VisualRegressionException exception = assertThrows(VisualRegressionException.class, () -> consumer.accept(event));
         assertEquals(exceptionMessage, exception.getMessage());
 
@@ -282,9 +298,11 @@ class VisualRegressionCheckConsumerTest {
         verify(testData, never()).incrementScreenshotNumber();
 
         // addScreenshot
-        verify(currentNode).log(FAIL, visualRegressionTag, null);
         verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
         verify(fileUtils).write(failedScreenshotPath, screenshot);
+
+        verify(currentNode).fail(visualRegressionTag);
+        verify(diff).buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName);
 
         runChecksAssertions();
     }

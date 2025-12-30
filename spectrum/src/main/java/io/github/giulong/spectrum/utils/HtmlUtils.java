@@ -6,6 +6,7 @@ import static lombok.AccessLevel.PRIVATE;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,11 +64,22 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String buildVisualRegressionTagFor(final int number, final TestData testData, final byte[] referenceBytes, final byte[] regressionBytes) {
-        return freeMarkerWrapper.interpolate(this.visualRegressionTemplate, Map.of(
-                ID, testData.getTestId(),
-                "number", number,
-                "reference", ENCODER.encodeToString(referenceBytes),
-                "regression", ENCODER.encodeToString(regressionBytes)));
+        return buildVisualRegressionTagFor(number, testData, referenceBytes, regressionBytes, null);
+    }
+
+    public String buildVisualRegressionTagFor(final int number, final TestData testData, final byte[] referenceBytes, final byte[] regressionBytes, final byte[] diffBytes) {
+        final Map<String, Object> vars = new HashMap<>();
+
+        vars.put(ID, testData.getTestId());
+        vars.put("number", number);
+        vars.put("reference", ENCODER.encodeToString(referenceBytes));
+        vars.put("regression", ENCODER.encodeToString(regressionBytes));
+
+        if (diffBytes != null) {
+            vars.put("diff", ENCODER.encodeToString(diffBytes));
+        }
+
+        return freeMarkerWrapper.interpolate(this.visualRegressionTemplate, vars);
     }
 
     public String inlineImagesOf(final String html) {

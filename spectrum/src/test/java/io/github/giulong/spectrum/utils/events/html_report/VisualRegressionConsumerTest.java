@@ -282,7 +282,7 @@ class VisualRegressionConsumerTest {
         Reflections.setField("htmlUtils", consumer, htmlUtils);
 
         try (MockedConstruction<VisualRegressionException> mockedConstruction = mockConstruction(VisualRegressionException.class, (mock, extensionContext) -> assertEquals(String
-                .format("All visual regression checks failed. Tried %d checks for %s times", count, 1), extensionContext.arguments().getFirst()))) {
+                .format("Unable to get a stable screenshot. Tried %d checks for %s times", count, 1), extensionContext.arguments().getFirst()))) {
             when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture()))
                     .thenReturn(true)
                     .thenReturn(false);

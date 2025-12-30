@@ -4,6 +4,7 @@ import static com.fasterxml.jackson.databind.MapperFeature.PROPAGATE_TRANSIENT_M
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static lombok.AccessLevel.PRIVATE;
 
+import java.awt.*;
 import java.time.Duration;
 import java.util.Random;
 import java.util.function.BiConsumer;
@@ -59,6 +60,7 @@ public final class YamlUtils {
                     buildModuleFor(Environment.class, EnvironmentDeserializer.getInstance()),
                     buildModuleFor(Class.class, ClassDeserializer.getInstance()),
                     buildModuleFor(Random.class, RandomDeserializer.getInstance()),
+                    buildModuleFor(Color.class, ColorDeserializer.getInstance()),
                     buildDynamicModuleFor(LogTestBookReporter.class, "yaml/dynamic/testbook/logReporter.yaml"),
                     buildDynamicModuleFor(TxtTestBookReporter.class, "yaml/dynamic/testbook/txtReporter.yaml"),
                     buildDynamicModuleFor(HtmlTestBookReporter.class, "yaml/dynamic/testbook/htmlReporter.yaml"),

@@ -48,6 +48,8 @@ visualRegression:
     count: 0 # Number of checks to perform before considering a snapshot valid
     interval: .5 # Interval between checks in seconds
     maxRetries: 3 # Max retries before throwing an exception
+  diff: # Screenshots diff configuration
+    noOp: { } # No diff is shown by default. Just the snapshot reference and the regression side by side
 
 # TestBook (coverage)
 testBook:

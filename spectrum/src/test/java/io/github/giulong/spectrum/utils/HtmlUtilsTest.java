@@ -142,8 +142,8 @@ class HtmlUtilsTest {
     }
 
     @Test
-    @DisplayName("buildVisualRegressionTagFor should return the tag with the provided frame number and test id")
-    void buildVisualRegressionTagFor() {
+    @DisplayName("buildVisualRegressionTagFor should return the tag with the provided frame number, test id, reference, regression, and no diff")
+    void buildVisualRegressionTagForNull() {
         when(testData.getTestId()).thenReturn(testId);
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
@@ -153,6 +153,24 @@ class HtmlUtilsTest {
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
         final String result = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6});
+
+        verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
+        assertEquals(interpolatedTemplate, result);
+        assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
+    }
+
+    @Test
+    @DisplayName("buildVisualRegressionTagFor should return the tag with the provided frame number, test id, reference, regression, and diff")
+    void buildVisualRegressionTagFor() {
+        when(testData.getTestId()).thenReturn(testId);
+        final String interpolatedTemplate = "interpolatedTemplate";
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of("id", testId, "number", 123, "reference", "AQID", "regression", "BAUG", "diff", "Bw==");
+
+        Reflections.setField("visualRegressionTemplate", htmlUtils, source);
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
+
+        final String result = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6}, new byte[]{7});
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
         assertEquals(interpolatedTemplate, result);

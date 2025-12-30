@@ -1,7 +1,5 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
-import static com.aventstack.extentreports.Status.FAIL;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -38,9 +36,13 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
         testData.registerFailedVisualRegression();
 
         final Path failedScreenshotPath = regressionPath.resolve(fileUtils.getFailedScreenshotNameFrom(testData));
-        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, Files.readAllBytes(referencePath), screenshot);
+        addScreenshot(failedScreenshotPath);
 
-        addScreenshotToReport(failedScreenshotPath, FAIL, visualRegressionTag, null);
+        final Path diffPath = visualRegression.getDiff().buildBetween(referencePath, failedScreenshotPath, regressionPath, fileUtils.getScreenshotsDiffNameFrom(testData));
+        final byte[] diffBytes = diffPath != null ? Files.readAllBytes(diffPath) : null;
+        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, Files.readAllBytes(referencePath), screenshot, diffBytes);
+
+        currentNode.fail(visualRegressionTag);
 
         if (visualRegression.isFailFast()) {
             log.error("Failing fast due to first visual regression found!");

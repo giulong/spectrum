@@ -8,6 +8,9 @@ visualRegression:
     - manual
   checks:
     count: 2
+  diff:
+    highlight:
+      color: '#ff0000'
 
 video:
   frames:

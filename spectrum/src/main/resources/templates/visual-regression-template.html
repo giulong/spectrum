@@ -6,6 +6,9 @@
         <div class="col-md-3 text-center">
             <span class="badge white-text red">REGRESSION</span>
         </div>
+        <div class="col-md-3 text-center">
+            <span class="badge white-text red">DIFF</span>
+        </div>
     </div>
     <div class="row mb-3">
         <div class="col-md-3 text-center">
@@ -17,6 +20,16 @@
             <a href="data:image/png;base64,${regression}" data-featherlight="image">
                 <img src="data:image/png;base64,${regression}" alt="regression screenshot" class="regression-img"/>
             </a>
+        </div>
+        <div class="col-md-3 text-center">
+        <#if diff??>
+            <a href="data:image/png;base64,${diff}" data-featherlight="image">
+                <img src="data:image/png;base64,${diff}" alt="diff" class="diff-img"/>
+            </a>
+        <#else>
+            Images have different sizes.<br>
+            Cannot compare them.
+        </#if>
         </div>
     </div>
 </div>

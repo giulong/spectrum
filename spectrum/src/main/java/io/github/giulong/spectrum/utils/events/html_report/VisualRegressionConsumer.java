@@ -66,7 +66,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
                         final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, screenshot, screenshotCheck);
 
                         addScreenshotToReport(referencePath, FAIL, visualRegressionTag, null);
-                        throw new VisualRegressionException(String.format("All visual regression checks failed. Tried %d checks for %s times", count, maxRetries));
+                        throw new VisualRegressionException(String.format("Unable to get a stable screenshot. Tried %d checks for %s times", count, maxRetries));
                     }
 
                     log.warn("Additional screenshot check number {} of retry {} failed. Retrying...", j, i + 1);
