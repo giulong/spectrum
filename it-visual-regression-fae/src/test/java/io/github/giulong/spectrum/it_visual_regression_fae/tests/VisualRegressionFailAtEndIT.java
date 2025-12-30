@@ -1,5 +1,9 @@
 package io.github.giulong.spectrum.it_visual_regression_fae.tests;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,7 +67,7 @@ class VisualRegressionFailAtEndIT extends SpectrumTest<Void> {
     @DisplayName(TEST_NAME)
     void testFailedChecks() throws IOException {
         extentTest.info("Failed checks");
-        replaceScreenshots("screenshot-2.png", "screenshot-5.png", "screenshot-10.png");
+        replaceScreenshots("screenshot-2.png", "screenshot-5.png", "screenshot-13.png");
 
         log.error("THIS IS EXPECTED TO FAIL");
         runActualTest();
@@ -71,7 +75,7 @@ class VisualRegressionFailAtEndIT extends SpectrumTest<Void> {
 
     private void runActualTest() {
         driver.get(configuration.getApplication().getBaseUrl());
-        Assertions.assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
+        assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
         screenshot(landingPage.getCheckboxLink());
         landingPage.getCheckboxLink().click();
@@ -91,13 +95,17 @@ class VisualRegressionFailAtEndIT extends SpectrumTest<Void> {
         final WebElement firstCheckbox = checkboxPage.getCheckboxes().getFirst();
         final WebElement secondCheckbox = checkboxPage.getCheckboxes().get(1);
 
-        Assertions.assertFalse(firstCheckbox.isSelected());
-        Assertions.assertTrue(secondCheckbox.isSelected());
+        screenshot();
+        assertFalse(firstCheckbox.isSelected());
+        assertTrue(secondCheckbox.isSelected());
+
+        firstCheckbox.click();
+        assertTrue(firstCheckbox.isSelected());
+        screenshot();
 
         firstCheckbox.click();
         firstCheckbox.click();
-        firstCheckbox.click();
-        Assertions.assertTrue(firstCheckbox.isSelected());
+        assertTrue(firstCheckbox.isSelected());
 
         screenshotInfo("After checking the first checkbox");
     }
@@ -108,7 +116,7 @@ class VisualRegressionFailAtEndIT extends SpectrumTest<Void> {
         try (Stream<Path> paths = Files.walk(SNAPSHOTS_FOLDER)) {
             paths
                     .filter(p -> screenshotsToDelete.contains(p.getFileName().toString()))
-                    .forEach(p -> FILE_UTILS.write(p, FILE_UTILS.readBytesOf("no-video.png")));
+                    .forEach(p -> FILE_UTILS.write(p, FILE_UTILS.readBytesOf("failed-screenshot.png")));
         }
     }
 }

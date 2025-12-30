@@ -1,7 +1,6 @@
 package io.github.giulong.spectrum.it_visual_regression.tests;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -77,7 +76,7 @@ class VisualRegressionIT extends SpectrumTest<Void> {
 
     private void runActualTest() {
         driver.get(configuration.getApplication().getBaseUrl());
-        Assertions.assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
+        assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
 
         screenshot(landingPage.getCheckboxLink());
         landingPage.getCheckboxLink().click();
@@ -97,13 +96,13 @@ class VisualRegressionIT extends SpectrumTest<Void> {
         final WebElement firstCheckbox = checkboxPage.getCheckboxes().getFirst();
         final WebElement secondCheckbox = checkboxPage.getCheckboxes().get(1);
 
-        Assertions.assertFalse(firstCheckbox.isSelected());
-        Assertions.assertTrue(secondCheckbox.isSelected());
+        assertFalse(firstCheckbox.isSelected());
+        assertTrue(secondCheckbox.isSelected());
 
         firstCheckbox.click();
         firstCheckbox.click();
         firstCheckbox.click();
-        Assertions.assertTrue(firstCheckbox.isSelected());
+        assertTrue(firstCheckbox.isSelected());
 
         screenshotInfo("After checking the first checkbox");
     }

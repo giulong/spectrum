@@ -65,25 +65,29 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
         assertFalse(extentReportPage.getScreenshotMessages().isEmpty(), "Screenshot messages should be displayed");
 
         final List<WebElement> videos = extentReportPage.getVideosNotFailFast();
-        assertVideoDuration(videos.getFirst(), 16);
-        assertVideoDuration(videos.get(1), 16);
-        assertVideoDuration(videos.get(2), 16);
+        assertVideoDuration(videos.getFirst(), 18);
+        assertVideoDuration(videos.get(1), 18);
+        assertVideoDuration(videos.get(2), 18);
 
         assertVideoDuration(extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers(), 8);
 
-        assertEquals(2, extentReportPage.getVisualRegressions().size());
+        assertEquals(3, extentReportPage.getVisualRegressions().size());
 
         extentReportPage.getTestViewTests().get(4).click();
-        assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 2 visual regressions"));
+        assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 3 visual regressions"));
 
         final WebElement visualRegression1 = extentReportPage.getVisualRegressions().getFirst();
         final WebElement visualRegression2 = extentReportPage.getVisualRegressions().get(1);
+        final WebElement visualRegression3 = extentReportPage.getVisualRegressions().get(2);
 
         assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression1.getDomAttribute("data-test-id"));
         assertEquals("2", visualRegression1.getDomAttribute("data-frame"));
 
         assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression2.getDomAttribute("data-test-id"));
         assertEquals("5", visualRegression2.getDomAttribute("data-frame"));
+
+        assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression3.getDomAttribute("data-test-id"));
+        assertEquals("13", visualRegression3.getDomAttribute("data-frame"));
     }
 
     private long countTestsWithStatus(final String status) {
