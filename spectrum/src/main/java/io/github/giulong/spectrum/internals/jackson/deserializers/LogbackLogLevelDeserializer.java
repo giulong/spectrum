@@ -11,7 +11,9 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public class LogbackLogLevelDeserializer extends JsonDeserializer<Level> {
 
@@ -22,7 +24,10 @@ public class LogbackLogLevelDeserializer extends JsonDeserializer<Level> {
     }
 
     @Override
-    public Level deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        return Level.toLevel(jsonParser.getValueAsString());
+    public Level deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+        final String value = jsonParser.getValueAsString();
+        log.trace("Deserializing Logback Level from value {}", value);
+
+        return Level.toLevel(value);
     }
 }
