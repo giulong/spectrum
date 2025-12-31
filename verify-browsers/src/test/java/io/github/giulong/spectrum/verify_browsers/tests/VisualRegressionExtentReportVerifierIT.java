@@ -15,6 +15,7 @@ import io.github.giulong.spectrum.verify_browsers.pages.VisualRegressionExtentRe
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
@@ -76,18 +77,22 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
         extentReportPage.getTestViewTests().get(4).click();
         assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 3 visual regressions"));
 
-        final WebElement visualRegression1 = extentReportPage.getVisualRegressions().getFirst();
-        final WebElement visualRegression2 = extentReportPage.getVisualRegressions().get(1);
-        final WebElement visualRegression3 = extentReportPage.getVisualRegressions().get(2);
+        // Extent triplicates elements and show/hide them when navigating the sections of the report. So taking 3, 4, 5 instead of 0, 1, 2
+        final WebElement visualRegression1 = extentReportPage.getVisualRegressions().get(3);
+        final WebElement visualRegression2 = extentReportPage.getVisualRegressions().get(4);
+        final WebElement visualRegression3 = extentReportPage.getVisualRegressions().get(5);
 
         assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression1.getDomAttribute("data-test-id"));
         assertEquals("2", visualRegression1.getDomAttribute("data-frame"));
+        assertThat(visualRegression1.findElement(By.className("missing-diff")).getText(), containsString("Images have different sizes."));
 
         assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression2.getDomAttribute("data-test-id"));
         assertEquals("5", visualRegression2.getDomAttribute("data-frame"));
+        assertEquals("img", visualRegression2.findElement(By.className("diff-img")).getTagName());
 
         assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression3.getDomAttribute("data-test-id"));
         assertEquals("13", visualRegression3.getDomAttribute("data-frame"));
+        assertEquals("img", visualRegression3.findElement(By.className("diff-img")).getTagName());
     }
 
     private long countTestsWithStatus(final String status) {

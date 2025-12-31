@@ -27,8 +27,10 @@
                 <img src="data:image/png;base64,${diff}" alt="diff" class="diff-img"/>
             </a>
         <#else>
-            Images have different sizes.<br>
-            Cannot compare them.
+            <div class="missing-diff">
+                Images have different sizes.<br>
+                Cannot compare them.
+            </div>
         </#if>
         </div>
     </div>
