@@ -16,8 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class StatusComparator implements TestsComparator {
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Weights of tests statuses. A lower weight means the test is shown before those with a higher one in the Extent report")
-    private final Map<Status, Integer> weights = new HashMap<>() {
+    private Map<Status, Integer> weights = new HashMap<>() {
         {
             put(INFO, INFO.getLevel());
             put(PASS, PASS.getLevel());

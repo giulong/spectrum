@@ -19,8 +19,9 @@ public class SlackConsumer extends EventsConsumer {
     @JsonIgnore
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Template to be used when creating the message")
-    private final String template = "slack.json";
+    private String template = "slack.json";
 
     @SuppressWarnings("unused")
     @JsonPropertyDescription("Target channel where to send the message")
@@ -30,8 +31,9 @@ public class SlackConsumer extends EventsConsumer {
     @JsonPropertyDescription("Bot User OAuth Token")
     private String token;
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Notification text")
-    private final String text = "Spectrum notification";
+    private String text = "Spectrum notification";
 
     @Override
     @SneakyThrows

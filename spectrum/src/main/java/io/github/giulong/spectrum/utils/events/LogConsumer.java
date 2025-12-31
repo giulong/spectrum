@@ -22,11 +22,13 @@ public class LogConsumer extends EventsConsumer {
     @JsonIgnore
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Template to be used when creating the message")
-    private final String template = "log.txt";
+    private String template = "log.txt";
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Level at which the message is logged")
-    private final Level level = INFO;
+    private Level level = INFO;
 
     @Override
     public void accept(final Event event) {

@@ -29,8 +29,9 @@ public class MailConsumer extends EventsConsumer {
     @JsonIgnore
     private final Mailer mailer = MailerBuilder.buildMailer();
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Template to be used when creating the message")
-    private final String template = "mail.html";
+    private String template = "mail.html";
 
     @JsonPropertyDescription("List of attachments to add to the email")
     private final List<Attachment> attachments = new ArrayList<>();
