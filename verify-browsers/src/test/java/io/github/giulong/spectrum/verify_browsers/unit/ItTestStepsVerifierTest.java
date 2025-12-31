@@ -23,14 +23,15 @@ public class ItTestStepsVerifierTest extends SpectrumTest<Void> {
     @DisplayName("should check the produced test steps reports")
     public void testSteps() throws IOException {
         final Path projectRoot = Path.of(System.getProperty("user.dir")).getParent();
-        final Path reportsDir = Path.of(String.format("%s/it/target/spectrum/tests-steps", projectRoot));
+        final Path reportsDir = Path.of(String.format("%s/it/target/spectrum/tests-steps/chrome", projectRoot));
 
         try (Stream<Path> stream = Files.walk(reportsDir)) {
             final List<File> files = stream
                     .map(Path::toFile)
+                    .filter(File::isFile)
                     .peek(f -> log.info("Found '{}'", f))
                     .toList();
-            assertEquals(32, files.size());
+            assertEquals(27, files.size());
         }
     }
 }
