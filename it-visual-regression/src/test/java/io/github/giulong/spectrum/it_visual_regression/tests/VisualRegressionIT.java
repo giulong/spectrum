@@ -109,11 +109,12 @@ class VisualRegressionIT extends SpectrumTest<Void> {
 
     private void replaceScreenshots(final String... names) throws IOException {
         final List<String> screenshotsToDelete = Arrays.stream(names).toList();
+        final Path screenshotToUse = SNAPSHOTS_FOLDER.resolve("screenshot-16.png");
 
         try (Stream<Path> paths = Files.walk(SNAPSHOTS_FOLDER)) {
             paths
                     .filter(p -> screenshotsToDelete.contains(p.getFileName().toString()))
-                    .forEach(p -> FILE_UTILS.write(p, FILE_UTILS.readBytesOf("no-video.png")));
+                    .forEach(p -> FILE_UTILS.write(p, FILE_UTILS.readBytesOf(screenshotToUse)));
         }
     }
 }

@@ -110,20 +110,11 @@ class FileUtilsTest {
                 arguments("not-existing", ""));
     }
 
+    @Test
     @DisplayName("readBytesOf should return the correct result")
-    @ParameterizedTest(name = "reading file {0} we expect {1}")
-    @MethodSource("readBytesOfValuesProvider")
-    void readBytesOf(final String template, final String expected) {
-        final byte[] actual = fileUtils.readBytesOf(template);
-        assertEquals(expected, new String(actual));
-    }
-
-    static Stream<Arguments> readBytesOfValuesProvider() {
-        return Stream.of(
-                arguments("test.yaml", "key: value" + lineSeparator() + "objectKey:" + lineSeparator() +
-                        "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() +
-                        "  field: ignored" + lineSeparator()),
-                arguments("not-existing", ""));
+    void readBytesOf() throws IOException {
+        when(Files.readAllBytes(path)).thenReturn(bytes);
+        assertEquals(bytes, fileUtils.readBytesOf(path));
     }
 
     @DisplayName("interpolateTimestampFrom should replace the timestamp from the provided file name")

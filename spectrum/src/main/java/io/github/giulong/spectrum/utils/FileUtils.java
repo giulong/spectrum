@@ -55,14 +55,9 @@ public final class FileUtils {
         return read(String.format("templates/%s", file));
     }
 
-    public byte[] readBytesOf(final String file) {
-        return getInputStreamOf(file, inputStream -> {
-            if (inputStream == null) {
-                return new byte[]{};
-            }
-
-            return readAllBytesOf(inputStream);
-        });
+    @SneakyThrows
+    public byte[] readBytesOf(final Path path) {
+        return Files.readAllBytes(path);
     }
 
     public String interpolateTimestampFrom(final String value) {
@@ -203,10 +198,5 @@ public final class FileUtils {
 
             return function.apply(inputStream);
         }
-    }
-
-    @SneakyThrows
-    byte[] readAllBytesOf(final InputStream inputStream) {
-        return inputStream.readAllBytes();
     }
 }
