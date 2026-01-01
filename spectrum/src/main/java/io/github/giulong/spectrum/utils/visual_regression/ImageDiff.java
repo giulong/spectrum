@@ -17,8 +17,10 @@ import lombok.Getter;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = NoOpDiff.class, name = "noOp"),
         @JsonSubTypes.Type(value = HighlightDiff.class, name = "highlight"),
+        @JsonSubTypes.Type(value = OutlineDiff.class, name = "outline"),
 })
 public abstract class ImageDiff {
+
     public abstract Result buildBetween(Path reference, Path regression, Path destination, String diffName);
 
     @Getter
