@@ -61,7 +61,7 @@ If you don't want to leverage the archetype, you can manually add the Spectrum d
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
-    <version>1.27.1</version>
+    <version>1.27.2</version>
     <scope>test</scope>
 </dependency>
 ```

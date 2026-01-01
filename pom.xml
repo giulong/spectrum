@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.27.1</revision>
+        <revision>1.27.2</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
@@ -47,7 +47,7 @@
         <maven.install.skip>true</maven.install.skip>
 
         <junit.version>6.0.1</junit.version>
-        <mockito.version>5.20.0</mockito.version>
+        <mockito.version>5.21.0</mockito.version>
         <jackson.version>2.20.1</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
         <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
@@ -217,7 +217,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.21</version>
+                <version>1.5.23</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -340,7 +340,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>12.2.0</version>
+                            <version>12.3.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
