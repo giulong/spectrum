@@ -1,9 +1,11 @@
 package io.github.giulong.spectrum.utils.visual_regression;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verifyNoInteractions;
 
 import java.nio.file.Path;
+
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,11 +27,9 @@ class NoOpDiffTest {
     private NoOpDiff diff;
 
     @Test
-    @DisplayName("buildBetween should do nothing")
+    @DisplayName("buildBetween should do nothing and confirm the regression")
     void buildBetween() {
-        final String name = "name";
-
-        assertNull(diff.buildBetween(reference, regression, destination, name));
+        assertEquals(Result.builder().build(), diff.buildBetween(reference, regression, destination, "whatever"));
 
         verifyNoInteractions(reference);
         verifyNoInteractions(regression);

@@ -28,8 +28,12 @@ public class HighlightDiff extends ImageDiff {
     @JsonPropertyDescription("RGB color used to highlight changed pixels. Must be prefixed by a #, such as in '#ff0000'")
     private Color color;
 
+    @SuppressWarnings("unused")
+    @JsonPropertyDescription("Number of pixels under which differences are ignored")
+    private int threshold;
+
     @SneakyThrows
-    public Path buildBetween(final Path reference, final Path regression, final Path destination, final String name) {
+    public Result buildBetween(final Path reference, final Path regression, final Path destination, final String name) {
         log.debug("Building diff between {} and {}", reference, regression);
 
         final BufferedImage referenceImage = ImageIO.read(reference.toFile());
@@ -42,27 +46,42 @@ public class HighlightDiff extends ImageDiff {
         if (referenceWidth != regressionWidth || referenceHeight != regressionHeight) {
             log.warn("Snapshot reference is {}x{}, while current screenshot is {}x{}. They have different sizes. Cannot compare them.",
                     referenceWidth, referenceHeight, regressionWidth, regressionHeight);
-            return null;
+            return Result.builder().build();
         }
 
         final int[][] referencePixels = getPixelMatrixOf(referenceImage, referenceWidth, referenceHeight);
         final int[][] regressionPixels = getPixelMatrixOf(regressionImage, regressionWidth, regressionHeight);
         final int rgb = color.getRGB();
+        int count = 0;
 
         for (int i = 0; i < referencePixels.length; i++) {
             for (int j = 0; j < referencePixels[i].length; j++) {
                 if (referencePixels[i][j] != regressionPixels[i][j]) {
                     referenceImage.setRGB(j, i, rgb);
+                    count++;
                 }
             }
         }
 
+        log.debug("Images {} and {} differ by {} pixels", reference, regression, count);
+        if (count <= threshold) {
+            log.debug("Images {} and {} differ by {} pixels, below or equal to the threshold of {}", reference, regression, count, threshold);
+            return Result
+                    .builder()
+                    .regressionConfirmed(false)
+                    .build();
+        }
+
         final Path fullDestination = destination.resolve(name);
         final File destinationFile = fullDestination.toFile();
+
         log.debug("Writing diff between {} and {} at {}", reference, regression, destinationFile);
         ImageIO.write(referenceImage, fileUtils.getExtensionOf(name), destinationFile);
 
-        return fullDestination;
+        return Result
+                .builder()
+                .path(fullDestination)
+                .build();
     }
 
     int[][] getPixelMatrixOf(final BufferedImage image, final int width, final int height) {

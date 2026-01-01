@@ -1,6 +1,6 @@
 package io.github.giulong.spectrum.utils.visual_regression;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.awt.*;
@@ -15,6 +15,8 @@ import javax.imageio.ImageIO;
 
 import io.github.giulong.spectrum.MockSingleton;
 import io.github.giulong.spectrum.utils.FileUtils;
+import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -121,11 +123,13 @@ class HighlightDiffTest {
         when(destination.toFile()).thenReturn(destinationFile);
         when(fileUtils.getExtensionOf(name)).thenReturn(extension);
 
-        diff.buildBetween(reference, regression, destination, name);
+        assertEquals(Result.builder().path(destination).build(), diff.buildBetween(reference, regression, destination, name));
 
         imageIOMockedStatic.verify(() -> ImageIO.write(referenceImage, extension, destinationFile));
 
         verify(referenceImage).setRGB(0, 0, rgb);
+        verify(referenceImage).setRGB(2, 1, rgb);
+        verifyNoMoreInteractions(referenceImage);
     }
 
     @DisplayName("buildBetween should do nothing if reference and regression image have different sizes")
@@ -145,13 +149,55 @@ class HighlightDiffTest {
         when(regressionImage.getWidth()).thenReturn(regressionWidth);
         when(regressionImage.getHeight()).thenReturn(regressionHeight);
 
-        diff.buildBetween(reference, regression, destination, name);
+        assertEquals(Result.builder().build(), diff.buildBetween(reference, regression, destination, name));
 
         verifyNoMoreInteractions(referenceImage);
         verifyNoMoreInteractions(regressionImage);
         verifyNoInteractions(destination);
         verifyNoInteractions(color);
         verifyNoInteractions(fileUtils);
+    }
+
+    @Test
+    @DisplayName("buildBetween should return null and set regression not confirmed if the number of changed pixels is below the threshold")
+    void buildBetweenBelowThreshold() throws IOException {
+        final String name = "name";
+        final int rgb = 123;
+
+        // just 2 pixels are actually different
+        Reflections.setField("threshold", diff, 10);
+
+        when(color.getRGB()).thenReturn(rgb);
+
+        when(reference.toFile()).thenReturn(referenceFile);
+        when(ImageIO.read(referenceFile)).thenReturn(referenceImage);
+
+        when(regression.toFile()).thenReturn(regressionFile);
+        when(ImageIO.read(regressionFile)).thenReturn(regressionImage);
+
+        when(referenceImage.getWidth()).thenReturn(width);
+        when(referenceImage.getHeight()).thenReturn(height);
+        when(referenceImage.getAlphaRaster()).thenReturn(null);
+        when(referenceImage.getRaster()).thenReturn(raster);
+        when(raster.getDataBuffer()).thenReturn(dataBuffer);
+        when(dataBuffer.getData())
+                .thenReturn(pixelsRGB)
+                .thenReturn(pixelsRGB2);
+
+        // getPixelMatrixOf regression
+        when(regressionImage.getWidth()).thenReturn(width);
+        when(regressionImage.getHeight()).thenReturn(height);
+        when(regressionImage.getAlphaRaster()).thenReturn(null);
+        when(regressionImage.getRaster()).thenReturn(raster);
+
+        assertEquals(Result.builder().regressionConfirmed(false).build(), diff.buildBetween(reference, regression, destination, name));
+
+        verifyNoInteractions(destination);
+        verifyNoInteractions(fileUtils);
+
+        verify(referenceImage).setRGB(0, 0, rgb);
+        verify(referenceImage).setRGB(2, 1, rgb);
+        verifyNoMoreInteractions(referenceImage);
     }
 
     @Test

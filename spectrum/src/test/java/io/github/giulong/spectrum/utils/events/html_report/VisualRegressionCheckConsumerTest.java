@@ -23,6 +23,7 @@ import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -119,6 +120,9 @@ class VisualRegressionCheckConsumerTest {
 
     @Mock
     private ImageDiff diff;
+
+    @Mock
+    private Result result;
 
     @Mock(extraInterfaces = TakesScreenshot.class)
     private WebDriver driver;
@@ -247,7 +251,10 @@ class VisualRegressionCheckConsumerTest {
 
         when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
         when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
-        when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(diffPath);
+        when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(result);
+        when(result.isRegressionConfirmed()).thenReturn(true);
+        when(result.getPath()).thenReturn(diffPath);
+
         when(Files.readAllBytes(diffPath)).thenReturn(diffBytes);
         when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, diffBytes)).thenReturn(visualRegressionTag);
 
@@ -289,6 +296,9 @@ class VisualRegressionCheckConsumerTest {
         when(visualRegressionException.getMessage()).thenReturn(exceptionMessage);
 
         when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
+        when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(result);
+        when(result.isRegressionConfirmed()).thenReturn(true);
+
         when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
 
         final VisualRegressionException exception = assertThrows(VisualRegressionException.class, () -> consumer.accept(event));
@@ -302,7 +312,42 @@ class VisualRegressionCheckConsumerTest {
         verify(fileUtils).write(failedScreenshotPath, screenshot);
 
         verify(currentNode).fail(visualRegressionTag);
-        verify(diff).buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName);
+
+        runChecksAssertions();
+    }
+
+    @Test
+    @DisplayName("accept should return without registering the regression when the imageDiff does not confirm the regression")
+    void acceptVisualRegressionNotConfirmed() throws IOException {
+        final Path failedScreenshotPath = mock();
+
+        runChecksStubs();
+
+        when(fileUtils.compare(referencePath, screenshot)).thenReturn(false);
+
+        when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
+        when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
+
+        // addScreenshot
+        Reflections.setField("screenshot", consumer, screenshot);
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+
+        when(Files.readAllBytes(referencePath)).thenReturn(checksum);
+
+        when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
+        when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
+        when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(result);
+
+        consumer.accept(event);
+
+        verify(testData, never()).registerFailedVisualRegression();
+
+        // addScreenshot
+        verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
+        verify(fileUtils).write(failedScreenshotPath, screenshot);
+
+        verifyNoInteractions(htmlUtils);
+        verify(currentNode, never()).fail(visualRegressionTag);
 
         runChecksAssertions();
     }

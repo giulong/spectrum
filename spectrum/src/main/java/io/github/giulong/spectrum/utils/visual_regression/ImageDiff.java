@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
@@ -17,5 +19,16 @@ import lombok.Getter;
         @JsonSubTypes.Type(value = HighlightDiff.class, name = "highlight"),
 })
 public abstract class ImageDiff {
-    public abstract Path buildBetween(Path reference, Path regression, Path destination, String diffName);
+    public abstract Result buildBetween(Path reference, Path regression, Path destination, String diffName);
+
+    @Getter
+    @Builder
+    @EqualsAndHashCode
+    public static class Result {
+
+        private Path path;
+
+        @Builder.Default
+        private boolean regressionConfirmed = true;
+    }
 }

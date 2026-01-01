@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -32,16 +33,22 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
             return;
         }
 
-        log.error("Visual regression: screenshot not matching with its reference {}", referencePath);
-        testData.registerFailedVisualRegression();
-
         final Path failedScreenshotPath = regressionPath.resolve(fileUtils.getFailedScreenshotNameFrom(testData));
         addScreenshot(failedScreenshotPath);
 
-        final Path diffPath = visualRegression.getDiff().buildBetween(referencePath, failedScreenshotPath, regressionPath, fileUtils.getScreenshotsDiffNameFrom(testData));
+        final Result result = visualRegression.getDiff().buildBetween(referencePath, failedScreenshotPath, regressionPath, fileUtils.getScreenshotsDiffNameFrom(testData));
+
+        if (!result.isRegressionConfirmed()) {
+            log.debug("ImageDiff doesn't confirm the regression for {}. Returning.", referencePath);
+            return;
+        }
+
+        final Path diffPath = result.getPath();
         final byte[] diffBytes = diffPath != null ? Files.readAllBytes(diffPath) : null;
         final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, Files.readAllBytes(referencePath), screenshot, diffBytes);
 
+        log.error("Visual regression: screenshot not matching with its reference {}", referencePath);
+        testData.registerFailedVisualRegression();
         currentNode.fail(visualRegressionTag);
 
         if (visualRegression.isFailFast()) {
