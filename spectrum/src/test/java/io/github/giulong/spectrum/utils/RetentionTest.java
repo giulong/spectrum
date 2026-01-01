@@ -135,8 +135,8 @@ class RetentionTest {
 
     @BeforeEach
     void beforeEach() {
-        filesMockedStatic = mockStatic(Files.class);
-        localDateTimeMockedStatic = mockStatic(LocalDateTime.class);
+        filesMockedStatic = mockStatic();
+        localDateTimeMockedStatic = mockStatic();
     }
 
     @AfterEach

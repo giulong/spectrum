@@ -84,9 +84,9 @@ class FileReporterTest {
     void beforeEach() {
         Reflections.setField("output", fileReporter, OUTPUT);
 
-        pathMockedStatic = mockStatic(Path.class);
-        filesMockedStatic = mockStatic(Files.class);
-        desktopMockedStatic = mockStatic(Desktop.class);
+        pathMockedStatic = mockStatic();
+        filesMockedStatic = mockStatic();
+        desktopMockedStatic = mockStatic();
     }
 
     @AfterEach

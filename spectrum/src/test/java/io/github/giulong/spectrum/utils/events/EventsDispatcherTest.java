@@ -60,7 +60,7 @@ class EventsDispatcherTest {
 
     @BeforeEach
     void beforeEach() {
-        eventMockedStatic = mockStatic(Event.class);
+        eventMockedStatic = mockStatic();
     }
 
     @AfterEach

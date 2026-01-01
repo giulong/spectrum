@@ -75,8 +75,8 @@ class JsWebElementProxyBuilderResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        patternMockedStatic = mockStatic(Pattern.class);
-        jsWebElementProxyBuilderMockedStatic = mockStatic(JsWebElementProxyBuilder.class);
+        patternMockedStatic = mockStatic();
+        jsWebElementProxyBuilderMockedStatic = mockStatic();
     }
 
     @AfterEach

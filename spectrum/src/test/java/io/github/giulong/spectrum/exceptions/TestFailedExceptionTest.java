@@ -38,7 +38,7 @@ class TestFailedExceptionTest {
 
     @BeforeEach
     void beforeEach() {
-        markupHelperMockedStatic = mockStatic(MarkupHelper.class);
+        markupHelperMockedStatic = mockStatic();
     }
 
     @AfterEach

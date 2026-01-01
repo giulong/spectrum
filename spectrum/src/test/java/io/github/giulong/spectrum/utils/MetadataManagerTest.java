@@ -105,7 +105,7 @@ class MetadataManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        pathMockedStatic = mockStatic(Path.class);
+        pathMockedStatic = mockStatic();
     }
 
     @AfterEach

@@ -29,7 +29,7 @@ class CsvTestBookParserTest {
 
     @BeforeEach
     void beforeEach() {
-        fileUtilsMockedStatic = mockStatic(FileUtils.class);
+        fileUtilsMockedStatic = mockStatic();
     }
 
     @AfterEach

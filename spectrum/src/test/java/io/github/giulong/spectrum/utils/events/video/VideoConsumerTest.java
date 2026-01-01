@@ -112,9 +112,9 @@ class VideoConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        awtSequenceEncoderMockedStatic = mockStatic(AWTSequenceEncoder.class);
-        imageIOMockedStatic = mockStatic(ImageIO.class);
-        byteArrayInputStreamMockedStatic = mockStatic(ByteArrayInputStream.class);
+        awtSequenceEncoderMockedStatic = mockStatic();
+        imageIOMockedStatic = mockStatic();
+        byteArrayInputStreamMockedStatic = mockStatic();
     }
 
     @AfterEach

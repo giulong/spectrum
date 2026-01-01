@@ -87,7 +87,7 @@ class EventsWebDriverListenerTest {
     void beforeEach() {
         ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
 
-        webDriverEventMockedStatic = mockStatic(WebDriverEvent.class);
+        webDriverEventMockedStatic = mockStatic();
     }
 
     @AfterEach

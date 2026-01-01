@@ -78,8 +78,8 @@ class TestBookUnitTest {
 
     @BeforeEach
     void beforeEach() {
-        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
-        fileUtilsMockedStatic = mockStatic(FileUtils.class);
+        freeMarkerWrapperMockedStatic = mockStatic();
+        fileUtilsMockedStatic = mockStatic();
     }
 
     @AfterEach

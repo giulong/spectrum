@@ -135,7 +135,7 @@ class VisualRegressionCheckConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        filesMockedStatic = mockStatic(Files.class);
+        filesMockedStatic = mockStatic();
     }
 
     @AfterEach

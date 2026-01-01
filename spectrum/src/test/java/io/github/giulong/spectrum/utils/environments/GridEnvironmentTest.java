@@ -59,7 +59,7 @@ class GridEnvironmentTest {
 
     @BeforeEach
     void beforeEach() {
-        remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
+        remoteWebDriverMockedStatic = mockStatic();
     }
 
     @AfterEach

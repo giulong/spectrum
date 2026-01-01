@@ -95,9 +95,9 @@ class TestDataResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        testDataMockedStatic = mockStatic(TestData.class);
-        visualRegressionMockedStatic = mockStatic(TestData.VisualRegression.class);
-        pathMockedStatic = mockStatic(Path.class);
+        testDataMockedStatic = mockStatic();
+        visualRegressionMockedStatic = mockStatic();
+        pathMockedStatic = mockStatic();
     }
 
     @AfterEach

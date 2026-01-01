@@ -121,10 +121,10 @@ class SpectrumEntityTest {
 
     @BeforeEach
     void beforeEach() {
-        pathMockedStatic = mockStatic(Path.class);
-        filesMockedStatic = mockStatic(Files.class);
-        mediaEntityBuilderMockedStatic = mockStatic(MediaEntityBuilder.class);
-        messageDigestMockedStatic = mockStatic(MessageDigest.class);
+        pathMockedStatic = mockStatic();
+        filesMockedStatic = mockStatic();
+        mediaEntityBuilderMockedStatic = mockStatic();
+        messageDigestMockedStatic = mockStatic();
     }
 
     @AfterEach

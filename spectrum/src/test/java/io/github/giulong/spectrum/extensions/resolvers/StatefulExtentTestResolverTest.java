@@ -77,8 +77,8 @@ class StatefulExtentTestResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        extentReporterMockedStatic = mockStatic(ExtentReporter.class);
-        statefulExtentTestMockedStatic = mockStatic(StatefulExtentTest.class);
+        extentReporterMockedStatic = mockStatic();
+        statefulExtentTestMockedStatic = mockStatic();
     }
 
     @AfterEach

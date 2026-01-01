@@ -86,8 +86,8 @@ class AppiumEnvironmentTest {
 
     @BeforeEach
     void beforeEach() {
-        appiumDriverLocalServiceMockedStatic = mockStatic(AppiumDriverLocalService.class);
-        appiumLogMockedStatic = mockStatic(AppiumLog.class);
+        appiumDriverLocalServiceMockedStatic = mockStatic();
+        appiumLogMockedStatic = mockStatic();
 
         Reflections.setField("external", appiumEnvironment, false);
     }

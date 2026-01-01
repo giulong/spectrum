@@ -116,7 +116,7 @@ class VisualRegressionReferenceCreatorConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        filesMockedStatic = mockStatic(Files.class);
+        filesMockedStatic = mockStatic();
     }
 
     @AfterEach

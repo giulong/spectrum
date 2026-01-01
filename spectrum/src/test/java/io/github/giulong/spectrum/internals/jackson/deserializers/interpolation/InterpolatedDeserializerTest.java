@@ -62,7 +62,7 @@ class InterpolatedDeserializerTest {
 
     @BeforeEach
     void beforeEach() {
-        reflectionsMockedStatic = mockStatic(Reflections.class);
+        reflectionsMockedStatic = mockStatic();
     }
 
     @AfterEach

@@ -50,7 +50,7 @@ class VideoInitConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        awtSequenceEncoderMockedStatic = mockStatic(AWTSequenceEncoder.class);
+        awtSequenceEncoderMockedStatic = mockStatic();
     }
 
     @AfterEach

@@ -115,7 +115,7 @@ class VisualRegressionConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        mediaEntityBuilderMockedStatic = mockStatic(MediaEntityBuilder.class);
+        mediaEntityBuilderMockedStatic = mockStatic();
     }
 
     @AfterEach

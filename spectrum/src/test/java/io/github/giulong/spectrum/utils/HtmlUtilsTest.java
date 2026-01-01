@@ -61,8 +61,8 @@ class HtmlUtilsTest {
 
     @BeforeEach
     void beforeEach() {
-        pathMockedStatic = mockStatic(Path.class);
-        filesMockedStatic = mockStatic(Files.class);
+        pathMockedStatic = mockStatic();
+        filesMockedStatic = mockStatic();
     }
 
     @AfterEach

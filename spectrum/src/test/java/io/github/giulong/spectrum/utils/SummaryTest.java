@@ -71,7 +71,7 @@ class SummaryTest {
 
     @BeforeEach
     void beforeEach() {
-        mvelMockedStatic = mockStatic(MVEL.class);
+        mvelMockedStatic = mockStatic();
     }
 
     @AfterEach

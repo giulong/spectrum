@@ -61,7 +61,7 @@ class VideoFinalizerTest {
 
     @BeforeEach
     void beforeEach() {
-        imageIOMockedStatic = mockStatic(ImageIO.class);
+        imageIOMockedStatic = mockStatic();
     }
 
     @AfterEach

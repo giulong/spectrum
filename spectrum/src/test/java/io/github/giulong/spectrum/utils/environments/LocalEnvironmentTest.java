@@ -70,8 +70,8 @@ class LocalEnvironmentTest {
 
     @BeforeEach
     void beforeEach() {
-        remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
-        driverLogMockedStatic = mockStatic(DriverLog.class);
+        remoteWebDriverMockedStatic = mockStatic();
+        driverLogMockedStatic = mockStatic();
         DRIVER_SERVICE_THREAD_LOCAL.remove();
     }
 

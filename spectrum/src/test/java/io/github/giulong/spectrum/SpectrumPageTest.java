@@ -94,8 +94,8 @@ class SpectrumPageTest {
 
     @BeforeEach
     void beforeEach() {
-        pageFactoryMockedStatic = mockStatic(PageFactory.class);
-        jsWebElementListInvocationHandlerMockedStatic = mockStatic(JsWebElementListInvocationHandler.class);
+        pageFactoryMockedStatic = mockStatic();
+        jsWebElementListInvocationHandlerMockedStatic = mockStatic();
     }
 
     @AfterEach
@@ -196,7 +196,7 @@ class SpectrumPageTest {
     @Test
     @DisplayName("setJsWebElementProxy should set a JsWebElementListInvocationHandler instance on each List field annotated with @JsWebElement")
     void injectJsWebElementProxyIntoList() throws IllegalAccessException {
-        final MockedStatic<Proxy> proxyMockedStatic = mockStatic(Proxy.class);
+        final MockedStatic<Proxy> proxyMockedStatic = mockStatic();
         final WebElement proxy = mock();
 
         when(field.get(spectrumPage)).thenReturn(webElementList);

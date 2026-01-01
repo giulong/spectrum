@@ -99,7 +99,7 @@ class DriverTest {
     void beforeEach() {
         WEB_DRIVER_THREAD_LOCAL.remove();
 
-        threadGuardMockedStatic = mockStatic(ThreadGuard.class);
+        threadGuardMockedStatic = mockStatic();
         loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
     }
 

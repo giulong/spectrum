@@ -63,8 +63,8 @@ class FileUtilsTest {
 
     @BeforeEach
     void beforeEach() {
-        filesMockedStatic = mockStatic(Files.class);
-        messageDigestMockedStatic = mockStatic(MessageDigest.class);
+        filesMockedStatic = mockStatic();
+        messageDigestMockedStatic = mockStatic();
     }
 
     @AfterEach
@@ -232,7 +232,7 @@ class FileUtilsTest {
     @Test
     @DisplayName("write should write the provided content to a file in the provided string path, creating the parent folders if needed")
     void writeString() {
-        final MockedStatic<Path> pathMockedStatic = mockStatic(Path.class);
+        final MockedStatic<Path> pathMockedStatic = mockStatic();
         final String stringPath = "stringPath";
         final String content = "content";
 

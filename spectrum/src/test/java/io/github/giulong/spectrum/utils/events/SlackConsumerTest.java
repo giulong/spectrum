@@ -54,8 +54,8 @@ class SlackConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        slackMockedStatic = mockStatic(Slack.class);
-        chatPostMessageRequestMockedStatic = mockStatic(ChatPostMessageRequest.class);
+        slackMockedStatic = mockStatic();
+        chatPostMessageRequestMockedStatic = mockStatic();
     }
 
     @AfterEach

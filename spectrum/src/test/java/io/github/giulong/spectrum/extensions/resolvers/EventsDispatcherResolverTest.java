@@ -44,7 +44,7 @@ class EventsDispatcherResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        eventsDispatcherMockedStatic = mockStatic(EventsDispatcher.class);
+        eventsDispatcherMockedStatic = mockStatic();
     }
 
     @AfterEach

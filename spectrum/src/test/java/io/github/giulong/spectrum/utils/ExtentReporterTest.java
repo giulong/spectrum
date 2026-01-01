@@ -186,13 +186,13 @@ class ExtentReporterTest {
 
     @BeforeEach
     void beforeEach() {
-        testDataMockedStatic = mockStatic(TestData.class);
-        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
-        pathMockedStatic = mockStatic(Path.class);
-        filesMockedStatic = mockStatic(Files.class);
-        metadataManagerMockedStatic = mockStatic(MetadataManager.class);
-        desktopMockedStatic = mockStatic(Desktop.class);
-        extentSparkReporterConfigMockedStatic = mockStatic(ExtentSparkReporterConfig.class);
+        testDataMockedStatic = mockStatic();
+        freeMarkerWrapperMockedStatic = mockStatic();
+        pathMockedStatic = mockStatic();
+        filesMockedStatic = mockStatic();
+        metadataManagerMockedStatic = mockStatic();
+        desktopMockedStatic = mockStatic();
+        extentSparkReporterConfigMockedStatic = mockStatic();
     }
 
     @AfterEach

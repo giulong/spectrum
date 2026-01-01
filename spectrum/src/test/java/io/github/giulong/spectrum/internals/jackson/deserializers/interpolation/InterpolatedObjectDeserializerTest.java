@@ -65,7 +65,7 @@ class InterpolatedObjectDeserializerTest {
 
     @BeforeEach
     void beforeEach() {
-        interpolatedStringDeserializerMockedStatic = mockStatic(InterpolatedStringDeserializer.class);
+        interpolatedStringDeserializerMockedStatic = mockStatic();
     }
 
     @AfterEach

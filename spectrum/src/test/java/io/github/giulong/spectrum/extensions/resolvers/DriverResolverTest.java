@@ -179,14 +179,14 @@ class DriverResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        eventsListenerMockedStatic = mockStatic(EventsWebDriverListener.class);
-        autoWaitWebDriverListenerMockedStatic = mockStatic(AutoWaitWebDriverListener.class);
-        patternMockedStatic = mockStatic(Pattern.class);
-        logConsumerMockedStatic = mockStatic(LogConsumer.class);
-        htmlReportConsumerMockedStatic = mockStatic(HtmlReportConsumer.class);
-        videoAutoScreenshotConsumerMockedStatic = mockStatic(VideoAutoScreenshotProducer.class);
-        testStepBuilderConsumerMockedStatic = mockStatic(TestStepBuilderConsumer.class);
-        highlightElementConsumerMockedStatic = mockStatic(HighlightElementConsumer.class);
+        eventsListenerMockedStatic = mockStatic();
+        autoWaitWebDriverListenerMockedStatic = mockStatic();
+        patternMockedStatic = mockStatic();
+        logConsumerMockedStatic = mockStatic();
+        htmlReportConsumerMockedStatic = mockStatic();
+        videoAutoScreenshotConsumerMockedStatic = mockStatic();
+        testStepBuilderConsumerMockedStatic = mockStatic();
+        highlightElementConsumerMockedStatic = mockStatic();
     }
 
     @AfterEach

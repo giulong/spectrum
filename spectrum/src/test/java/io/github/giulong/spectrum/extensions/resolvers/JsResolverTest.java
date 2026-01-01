@@ -47,7 +47,7 @@ class JsResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        jsMockedStatic = mockStatic(Js.class);
+        jsMockedStatic = mockStatic();
     }
 
     @AfterEach

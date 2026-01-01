@@ -103,7 +103,7 @@ class SpectrumSessionListenerTest {
     @BeforeEach
     void beforeEach() {
         osName = System.getProperty("os.name");
-        slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
+        slf4JBridgeHandlerMockedStatic = mockStatic();
     }
 
     @AfterEach
