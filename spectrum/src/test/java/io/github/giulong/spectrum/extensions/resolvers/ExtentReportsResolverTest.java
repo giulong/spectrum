@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import com.aventstack.extentreports.ExtentReports;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.ExtentReporter;
 
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +23,7 @@ import org.mockito.Mock;
 
 class ExtentReportsResolverTest {
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 

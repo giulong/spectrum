@@ -10,7 +10,7 @@ import static org.mockito.Mockito.*;
 import java.util.*;
 import java.util.stream.Stream;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.reports.CanReportTestBook;
 import io.github.giulong.spectrum.pojos.testbook.QualityGate;
@@ -48,7 +48,7 @@ class TestBookUnitTest {
     @Mock
     private FreeMarkerWrapper freeMarkerWrapper;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 

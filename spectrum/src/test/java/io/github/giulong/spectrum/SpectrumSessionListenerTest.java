@@ -38,19 +38,19 @@ class SpectrumSessionListenerTest {
 
     private String osName;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
@@ -60,14 +60,14 @@ class SpectrumSessionListenerTest {
     @Mock
     private Launcher launcher;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
     @Mock
     private ProjectProperties projectProperties;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
@@ -89,11 +89,11 @@ class SpectrumSessionListenerTest {
     @Mock
     private SummaryGeneratingListener summaryGeneratingListener;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private MetadataManager metadataManager;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 

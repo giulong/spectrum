@@ -11,7 +11,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.stream.Stream;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
@@ -47,7 +47,7 @@ class DriverConsumerTest {
     @Mock
     private Network network;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

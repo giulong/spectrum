@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -23,7 +23,7 @@ import org.openqa.selenium.remote.service.DriverService;
 
 class FirefoxTest {
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

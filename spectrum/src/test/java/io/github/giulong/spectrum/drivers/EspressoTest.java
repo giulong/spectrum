@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import io.appium.java_client.android.options.EspressoOptions;
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -24,7 +24,7 @@ class EspressoTest {
     @Mock
     private EspressoOptions espressoOptions;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

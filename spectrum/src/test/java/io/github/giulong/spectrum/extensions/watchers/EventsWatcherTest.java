@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 
@@ -39,7 +39,7 @@ class EventsWatcherTest {
     @Mock
     private ExtensionContext parentContext;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 

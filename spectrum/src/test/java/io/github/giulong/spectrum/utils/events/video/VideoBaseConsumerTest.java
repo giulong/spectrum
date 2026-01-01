@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -27,7 +27,7 @@ import org.mockito.Mock;
 
 class VideoBaseConsumerTest {
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

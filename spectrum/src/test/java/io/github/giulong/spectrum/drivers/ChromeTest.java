@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -41,7 +41,7 @@ class ChromeTest {
     @Mock
     private Level performanceLevel;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

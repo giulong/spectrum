@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.List;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
 import io.github.giulong.spectrum.utils.StringUtils;
 
@@ -20,7 +20,7 @@ import org.openqa.selenium.*;
 
 class JsTest {
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private StringUtils stringUtils;
 

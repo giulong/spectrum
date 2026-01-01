@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.slf4j.event.Level.DEBUG;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.DriverLog;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -28,7 +28,7 @@ class LocalEnvironmentTest {
     private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
     private MockedStatic<DriverLog> driverLogMockedStatic;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

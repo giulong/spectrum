@@ -5,7 +5,7 @@ import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.T
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -24,11 +24,11 @@ class TestBookConsumerTest {
     @Mock
     private ExtensionContext context;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

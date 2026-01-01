@@ -12,7 +12,7 @@ import com.slack.api.methods.MethodsClient;
 import com.slack.api.methods.SlackApiException;
 import com.slack.api.methods.request.chat.ChatPostMessageRequest;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -33,7 +33,7 @@ class SlackConsumerTest {
     @Mock
     private Event event;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 

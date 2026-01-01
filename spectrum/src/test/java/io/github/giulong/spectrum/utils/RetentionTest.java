@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 
 import lombok.SneakyThrows;
 
@@ -86,11 +86,11 @@ class RetentionTest {
     @Mock
     private Instant instant5;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private MetadataManager metadataManager;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 

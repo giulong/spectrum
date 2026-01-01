@@ -14,7 +14,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ class HtmlUtilsTest {
 
     private final String testId = "testId";
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 
@@ -45,11 +45,11 @@ class HtmlUtilsTest {
     @Mock
     private TestData testData;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 

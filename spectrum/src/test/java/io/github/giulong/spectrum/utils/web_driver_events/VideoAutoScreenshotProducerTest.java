@@ -11,7 +11,7 @@ import static org.openqa.selenium.OutputType.BYTES;
 
 import java.util.Map;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -28,7 +28,7 @@ class VideoAutoScreenshotProducerTest {
     @Mock
     private TakesScreenshot driver;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 

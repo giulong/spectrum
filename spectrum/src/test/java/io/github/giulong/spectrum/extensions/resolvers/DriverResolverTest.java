@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.web_driver_listeners.AutoWaitWebDriverListener;
 import io.github.giulong.spectrum.internals.web_driver_listeners.EventsWebDriverListener;
@@ -48,11 +48,11 @@ class DriverResolverTest {
     private static MockedStatic<TestStepBuilderConsumer> testStepBuilderConsumerMockedStatic;
     private static MockedStatic<HighlightElementConsumer> highlightElementConsumerMockedStatic;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 

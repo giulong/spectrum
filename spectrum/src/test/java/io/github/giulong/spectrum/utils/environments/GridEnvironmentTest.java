@@ -9,7 +9,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.utils.Configuration;
 
@@ -44,7 +44,7 @@ class GridEnvironmentTest {
     @Mock
     private Map<String, Object> capabilities;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

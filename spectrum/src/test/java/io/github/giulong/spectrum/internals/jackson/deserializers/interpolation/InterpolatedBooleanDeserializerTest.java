@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.Interpolator;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Config;
@@ -35,7 +36,8 @@ class InterpolatedBooleanDeserializerTest {
 
     private MockedStatic<Reflections> reflectionsMockedStatic;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -58,8 +60,6 @@ class InterpolatedBooleanDeserializerTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", deserializer, configuration);
-
         reflectionsMockedStatic = mockStatic(Reflections.class);
     }
 

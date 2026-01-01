@@ -15,7 +15,7 @@ import java.lang.reflect.Type;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.TestYaml;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -59,7 +59,7 @@ class DataResolverTest {
     @Mock
     private Type type;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 

@@ -81,7 +81,7 @@ class SpectrumTestTest {
     @Mock
     private EventsDispatcher eventsDispatcher;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
@@ -130,7 +130,7 @@ class SpectrumTestTest {
     @Mock
     private List<WebElement> webElementList;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 

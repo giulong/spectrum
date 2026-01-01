@@ -16,7 +16,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
@@ -44,7 +44,7 @@ class ColorDiffTest {
 
     private MockedStatic<ImageIO> imageIOMockedStatic;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 

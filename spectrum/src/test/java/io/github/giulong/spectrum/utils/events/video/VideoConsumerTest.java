@@ -21,10 +21,9 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -91,13 +90,14 @@ class VideoConsumerTest {
     @Mock
     private Path videoPath;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private MessageDigest messageDigest;
 
     @Mock
     private Event event;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
@@ -112,8 +112,6 @@ class VideoConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("messageDigest", videoConsumer, messageDigest);
-
         awtSequenceEncoderMockedStatic = mockStatic(AWTSequenceEncoder.class);
         imageIOMockedStatic = mockStatic(ImageIO.class);
         byteArrayInputStreamMockedStatic = mockStatic(ByteArrayInputStream.class);

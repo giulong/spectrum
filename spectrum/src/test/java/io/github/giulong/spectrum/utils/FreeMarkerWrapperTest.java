@@ -11,7 +11,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,11 +28,11 @@ class FreeMarkerWrapperTest {
     @Mock
     private freemarker.template.Configuration configuration;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration spectrumConfiguration;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 

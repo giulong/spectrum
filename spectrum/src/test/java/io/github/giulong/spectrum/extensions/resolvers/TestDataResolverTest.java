@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.FileUtils;
@@ -43,11 +43,11 @@ class TestDataResolverTest {
     @Mock
     private Configuration.VisualRegression.Snapshots snapshots;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 

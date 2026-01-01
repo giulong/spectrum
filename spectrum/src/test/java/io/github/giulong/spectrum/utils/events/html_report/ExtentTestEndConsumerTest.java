@@ -1,11 +1,10 @@
 package io.github.giulong.spectrum.utils.events.html_report;
 
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.ExtentReporter;
 
@@ -17,7 +16,7 @@ import org.mockito.Mock;
 
 class ExtentTestEndConsumerTest {
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 

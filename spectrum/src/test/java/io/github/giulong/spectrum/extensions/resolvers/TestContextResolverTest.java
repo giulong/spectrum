@@ -4,7 +4,7 @@ import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolve
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.TestContext;
 
@@ -26,7 +26,7 @@ class TestContextResolverTest {
     @Mock
     private ExtensionContext.Store store;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 

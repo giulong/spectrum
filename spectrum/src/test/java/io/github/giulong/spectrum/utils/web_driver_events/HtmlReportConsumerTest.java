@@ -8,7 +8,7 @@ import static org.slf4j.event.Level.WARN;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.HtmlUtils;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
 import io.github.giulong.spectrum.utils.TestData;
@@ -31,7 +31,7 @@ class HtmlReportConsumerTest {
     @Mock
     private TestData testData;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 

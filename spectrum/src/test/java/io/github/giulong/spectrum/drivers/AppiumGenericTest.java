@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.Map;
 
 import io.appium.java_client.AppiumDriver;
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -26,7 +26,7 @@ class AppiumGenericTest {
     @Mock
     private MutableCapabilities mutableCapabilities;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

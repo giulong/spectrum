@@ -11,7 +11,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.model.Media;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -39,19 +39,19 @@ class ExtentScreenshotConsumerTest {
     @Mock
     private Event event;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 

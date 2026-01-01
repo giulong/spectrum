@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.pojos.events.TestStep;
@@ -46,11 +46,11 @@ class TestStepsConsumerTest {
     @Mock
     private TestData testData;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 

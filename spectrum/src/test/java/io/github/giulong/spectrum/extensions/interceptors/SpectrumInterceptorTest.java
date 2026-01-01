@@ -18,7 +18,7 @@ import java.util.stream.Stream;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.TestData.VisualRegression;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
@@ -44,7 +44,7 @@ class SpectrumInterceptorTest {
     private final Path visualRegressionPath = Path.of("visualRegressionPath");
     private final Path dynamicVisualRegressionPath = visualRegressionPath.resolve(displayName);
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 
@@ -81,18 +81,18 @@ class SpectrumInterceptorTest {
     @Mock
     private Video video;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
     private Path videoPath;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 

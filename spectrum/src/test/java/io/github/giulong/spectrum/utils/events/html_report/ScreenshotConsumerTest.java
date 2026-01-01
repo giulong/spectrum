@@ -12,7 +12,7 @@ import java.util.Map;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
 
@@ -26,7 +26,7 @@ class ScreenshotConsumerTest {
 
     private final byte[] screenshot = new byte[]{1, 2, 3};
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
@@ -39,15 +39,15 @@ class ScreenshotConsumerTest {
     @Mock
     private StatefulExtentTest statefulExtentTest;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 

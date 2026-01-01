@@ -65,7 +65,7 @@ class SpectrumEntityTest {
     @Mock
     private WebDriverWait downloadWait;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
@@ -81,7 +81,7 @@ class SpectrumEntityTest {
     @Mock
     private By by;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
@@ -97,7 +97,7 @@ class SpectrumEntityTest {
     @Mock
     private File file;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 

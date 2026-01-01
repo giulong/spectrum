@@ -11,14 +11,12 @@ import static org.mockito.Mockito.*;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -29,7 +27,7 @@ import org.mockito.Mock;
 
 class VideoDynamicConsumerTest {
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
@@ -48,7 +46,8 @@ class VideoDynamicConsumerTest {
     @Mock
     private Path dynamicVideoPath;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private MessageDigest messageDigest;
 
     @Mock
@@ -59,11 +58,6 @@ class VideoDynamicConsumerTest {
 
     @InjectMocks
     private VideoDynamicConsumer videoDynamicConsumer;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("messageDigest", videoDynamicConsumer, messageDigest);
-    }
 
     @Test
     @DisplayName("shouldAccept should return true only if the test is dynamic")

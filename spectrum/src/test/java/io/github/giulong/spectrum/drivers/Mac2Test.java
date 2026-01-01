@@ -9,7 +9,7 @@ import java.util.Map;
 
 import io.appium.java_client.mac.Mac2Driver;
 import io.appium.java_client.mac.options.Mac2Options;
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -25,7 +25,7 @@ class Mac2Test {
     @Mock
     private Mac2Options mac2Options;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

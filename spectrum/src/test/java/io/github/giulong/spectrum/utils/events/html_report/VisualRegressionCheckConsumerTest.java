@@ -17,7 +17,7 @@ import java.util.Map;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.*;
@@ -48,19 +48,19 @@ class VisualRegressionCheckConsumerTest {
 
     private MockedStatic<Files> filesMockedStatic;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 

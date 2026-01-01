@@ -12,13 +12,14 @@ import org.junit.jupiter.api.extension.BeforeEachCallback;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.mockito.InjectMocks;
 
+@SuppressWarnings("unused")
 public class SpectrumUnitTestExtension implements BeforeEachCallback {
 
     @Override
     public void beforeEach(final ExtensionContext context) throws Exception {
         final Object testInstance = context.getRequiredTestInstance();
         final Map<String, Object> mockSingletons = Reflections
-                .getAnnotatedFields(testInstance, MockSingleton.class)
+                .getAnnotatedFields(testInstance, MockFinal.class)
                 .stream()
                 .collect(toMap(Field::getName, f -> mock(f.getType())));
 

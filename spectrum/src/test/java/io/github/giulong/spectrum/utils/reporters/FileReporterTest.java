@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.*;
 
 import org.junit.jupiter.api.AfterEach;
@@ -29,7 +29,7 @@ class FileReporterTest {
     private MockedStatic<Files> filesMockedStatic;
     private MockedStatic<Desktop> desktopMockedStatic;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
@@ -63,14 +63,15 @@ class FileReporterTest {
     @Mock
     private File directory2;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private MetadataManager metadataManager;
 
     @Mock
     private FixedSizeQueue<File> fileFixedSizeQueue;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Retention retention;
 
     @Captor
@@ -82,7 +83,6 @@ class FileReporterTest {
     @BeforeEach
     void beforeEach() {
         Reflections.setField("output", fileReporter, OUTPUT);
-        Reflections.setField("retention", fileReporter, retention);
 
         pathMockedStatic = mockStatic(Path.class);
         filesMockedStatic = mockStatic(Files.class);

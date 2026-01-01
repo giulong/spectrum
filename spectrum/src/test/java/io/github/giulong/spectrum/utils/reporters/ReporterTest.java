@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 
@@ -18,7 +18,7 @@ import org.mockito.Mock;
 
 class ReporterTest {
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 

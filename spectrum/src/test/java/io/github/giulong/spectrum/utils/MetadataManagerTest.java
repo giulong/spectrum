@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.types.ProjectProperties;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter;
@@ -47,7 +47,7 @@ class MetadataManagerTest {
     @Mock
     private FileReporter.TxtSummaryReporter summaryReporter2;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
@@ -57,19 +57,19 @@ class MetadataManagerTest {
     @Mock
     private Path filePath;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private JsonUtils jsonUtils;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 

@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -37,11 +37,11 @@ class StatefulExtentTestResolverTest {
     @Mock
     private StatefulExtentTest.StatefulExtentTestBuilder statefulExtentTestBuilder;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 

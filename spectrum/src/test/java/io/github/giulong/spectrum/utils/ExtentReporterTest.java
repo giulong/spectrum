@@ -30,7 +30,7 @@ import com.aventstack.extentreports.model.Report;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -66,21 +66,21 @@ class ExtentReporterTest {
     @Mock
     private ExtentSparkReporterConfig.ExtentSparkReporterConfigBuilder<?, ?> extentSparkReporterConfigBuilder;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
     private TestContext testContext;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
     private ExtentSparkReporterConfig extentSparkReporterConfig;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
@@ -156,7 +156,7 @@ class ExtentReporterTest {
     @Mock
     private Report report;
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 

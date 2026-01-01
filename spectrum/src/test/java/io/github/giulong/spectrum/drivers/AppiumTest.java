@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.util.Map;
 
 import io.appium.java_client.service.local.AppiumServiceBuilder;
-import io.github.giulong.spectrum.MockSingleton;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +21,7 @@ import org.mockito.MockedConstruction;
 
 class AppiumTest {
 
-    @MockSingleton
+    @MockFinal
     @SuppressWarnings("unused")
     private Configuration configuration;
 
