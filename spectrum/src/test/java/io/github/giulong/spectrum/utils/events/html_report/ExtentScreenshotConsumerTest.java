@@ -13,6 +13,7 @@ import com.aventstack.extentreports.model.Media;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -65,7 +66,7 @@ class ExtentScreenshotConsumerTest {
     private Path path;
 
     @Mock
-    private Map<String, Object> payload;
+    private Payload payload;
 
     @Mock
     private Map<String, byte[]> screenshots;
@@ -99,8 +100,8 @@ class ExtentScreenshotConsumerTest {
         when(video.getAndIncrementFrameNumberFor(testData, MANUAL)).thenReturn(frameNumber);
         when(fileUtils.createTempFile("screenshot", ".png")).thenReturn(path);
         when(event.getPayload()).thenReturn(payload);
-        when(payload.get("message")).thenReturn(message);
-        when(payload.get("status")).thenReturn(INFO);
+        when(payload.getMessage()).thenReturn(message);
+        when(payload.getStatus()).thenReturn(INFO);
         when(htmlUtils.buildFrameTagFor(frameNumber, message, testData, "screenshot-message")).thenReturn(tag);
         when(MediaEntityBuilder.createScreenCaptureFromPath(path.toString())).thenReturn(mediaEntityBuilder);
         when(mediaEntityBuilder.build()).thenReturn(media);

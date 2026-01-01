@@ -13,13 +13,13 @@ import static org.openqa.selenium.OutputType.BYTES;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Map;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 
 import io.github.giulong.spectrum.interfaces.Shared;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
@@ -231,9 +231,15 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
     public T addScreenshotToReport(final String message, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
         final TakesScreenshot originalDriver = (TakesScreenshot) context.getStore(GLOBAL).get(ORIGINAL_DRIVER, WebDriver.class);
-        final byte[] screenshot = originalDriver.getScreenshotAs(BYTES);
+        final Payload payload = Payload
+                .builder()
+                .screenshot(originalDriver.getScreenshotAs(BYTES))
+                .message(message)
+                .status(status)
+                .takesScreenshot(originalDriver)
+                .build();
 
-        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot, "message", message, "status", status, "takesScreenshot", originalDriver));
+        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, payload);
 
         return (T) this;
     }
@@ -250,9 +256,15 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      */
     public T addScreenshotToReport(final WebElement webElement, final String message, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
-        final byte[] screenshot = webElement.getScreenshotAs(BYTES);
+        final Payload payload = Payload
+                .builder()
+                .screenshot(webElement.getScreenshotAs(BYTES))
+                .message(message)
+                .status(status)
+                .takesScreenshot(webElement)
+                .build();
 
-        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot, "message", message, "status", status, "takesScreenshot", webElement));
+        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, payload);
 
         return (T) this;
     }

@@ -9,10 +9,9 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static org.openqa.selenium.OutputType.BYTES;
 
-import java.util.Map;
-
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -57,7 +56,7 @@ class VideoAutoScreenshotProducerTest {
 
         videoAutoScreenshotProducer.accept(webDriverEvent);
 
-        verify(eventsDispatcher).fire(AUTO_AFTER.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "takesScreenshot", driver));
+        verify(eventsDispatcher).fire(AUTO_AFTER.getValue(), SCREENSHOT, context, Payload.builder().screenshot(bytes).takesScreenshot(driver).build());
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

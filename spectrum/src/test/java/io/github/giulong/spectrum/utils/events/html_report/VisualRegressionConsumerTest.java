@@ -4,7 +4,6 @@ import static com.aventstack.extentreports.Status.FAIL;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
@@ -20,6 +19,7 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.*;
 
 import org.junit.jupiter.api.AfterEach;
@@ -78,7 +78,7 @@ class VisualRegressionConsumerTest {
     private Configuration.VisualRegression.Snapshots snapshots;
 
     @Mock
-    private Map<String, Object> payload;
+    private Payload payload;
 
     @Mock
     private ExtensionContext context;
@@ -168,7 +168,7 @@ class VisualRegressionConsumerTest {
         when(visualRegression.getPath()).thenReturn(regressionPath);
         when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
         when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
-        when(payload.get(SCREENSHOT)).thenReturn(screenshot);
+        when(payload.getScreenshot()).thenReturn(screenshot);
 
         Reflections.setField("referencePath", consumer, null);
         assertTrue(consumer.shouldAccept(event));
@@ -199,7 +199,7 @@ class VisualRegressionConsumerTest {
         when(visualRegression.getDynamicPath()).thenReturn(regressionPath);
         when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
         when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
-        when(payload.get(SCREENSHOT)).thenReturn(screenshot);
+        when(payload.getScreenshot()).thenReturn(screenshot);
 
         Reflections.setField("referencePath", consumer, null);
         assertTrue(consumer.shouldAccept(event));
@@ -314,7 +314,8 @@ class VisualRegressionConsumerTest {
         when(checks.getInterval()).thenReturn(interval);
         when(checks.getMaxRetries()).thenReturn(maxRetries);
         when(checks.getCount()).thenReturn(count);
-        when(event.getPayload()).thenReturn(Map.of("takesScreenshot", driver));
+        when(event.getPayload()).thenReturn(payload);
+        when(payload.getTakesScreenshot()).thenReturn((TakesScreenshot) driver);
 
         when(((TakesScreenshot) driver).getScreenshotAs(BYTES))
                 .thenReturn(screenshot2)

@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -29,6 +28,7 @@ import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.Status;
 
 import io.github.giulong.spectrum.interfaces.Shared;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.Reflections;
@@ -150,12 +150,28 @@ class SpectrumEntityTest {
     }
 
     private void screenshotVerificationsFor(final String message, final Status status) {
-        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "message", message, "status", status, "takesScreenshot", driver));
+        final Payload payload = Payload
+                .builder()
+                .screenshot(bytes)
+                .message(message)
+                .status(status)
+                .takesScreenshot((TakesScreenshot) driver)
+                .build();
+
+        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, payload);
         verifyNoMoreInteractions(eventsDispatcher);
     }
 
     private void screenshotWebElementVerificationsFor(final String message, final Status status) {
-        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, bytes, "message", message, "status", status, "takesScreenshot", webElement));
+        final Payload payload = Payload
+                .builder()
+                .screenshot(bytes)
+                .message(message)
+                .status(status)
+                .takesScreenshot(webElement)
+                .build();
+
+        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, payload);
         verifyNoMoreInteractions(eventsDispatcher);
     }
 

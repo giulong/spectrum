@@ -2,11 +2,9 @@ package io.github.giulong.spectrum.utils.events.html_report;
 
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 import java.nio.file.Path;
-import java.util.Map;
 
 import com.aventstack.extentreports.ExtentTest;
 
@@ -33,12 +31,10 @@ public abstract class ScreenshotConsumer extends EventsConsumer {
 
     @Override
     protected boolean shouldAccept(final Event event) {
-        final Map<String, Object> payload = event.getPayload();
-
         this.store = event.getContext().getStore(GLOBAL);
         this.testData = store.get(TEST_DATA, TestData.class);
         this.currentNode = store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class).getCurrentNode();
-        this.screenshot = (byte[]) payload.get(SCREENSHOT);
+        this.screenshot = event.getPayload().getScreenshot();
 
         return true;
     }

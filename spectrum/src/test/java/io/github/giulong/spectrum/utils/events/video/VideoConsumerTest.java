@@ -2,9 +2,11 @@ package io.github.giulong.spectrum.utils.events.video;
 
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
@@ -23,6 +25,7 @@ import javax.imageio.ImageIO;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
@@ -102,7 +105,7 @@ class VideoConsumerTest {
     private Configuration configuration;
 
     @Mock
-    private Map<String, Object> payload;
+    private Payload payload;
 
     @Captor
     private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
@@ -145,7 +148,7 @@ class VideoConsumerTest {
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
         final byte[] newFrameDigest = new byte[]{7, 8, 9};
         when(testData.getLastFrameDigest()).thenReturn(lastFrameDigest);
-        when(payload.get(SCREENSHOT)).thenReturn(screenshotBytes);
+        when(payload.getScreenshot()).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(newFrameDigest);
 
         // chooseDimensionFor
@@ -190,7 +193,7 @@ class VideoConsumerTest {
         final byte[] lastFrameDigest = new byte[]{1, 2, 3};
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
         when(testData.getLastFrameDigest()).thenReturn(lastFrameDigest);
-        when(payload.get(SCREENSHOT)).thenReturn(screenshotBytes);
+        when(payload.getScreenshot()).thenReturn(screenshotBytes);
         when(messageDigest.digest(byteArrayArgumentCaptor.capture())).thenReturn(lastFrameDigest);
 
         videoConsumer.accept(event);
@@ -214,7 +217,7 @@ class VideoConsumerTest {
         when(video.isSkipDuplicateFrames()).thenReturn(false);
 
         final byte[] screenshotBytes = new byte[]{4, 5, 6};
-        when(payload.get(SCREENSHOT)).thenReturn(screenshotBytes);
+        when(payload.getScreenshot()).thenReturn(screenshotBytes);
 
         // chooseDimensionFor
         when(video.getWidth()).thenReturn(width);

@@ -2,9 +2,8 @@ package io.github.giulong.spectrum.utils.web_driver_events;
 
 import static org.openqa.selenium.OutputType.BYTES;
 
-import java.util.Map;
-
 import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -31,9 +30,13 @@ public class VideoAutoScreenshotProducer extends WebDriverEventConsumer {
         final Frame frame = webDriverEvent.getFrame();
 
         if (video.shouldRecord(frame)) {
-            final byte[] screenshot = driver.getScreenshotAs(BYTES);
+            final Payload payload = Payload
+                    .builder()
+                    .screenshot(driver.getScreenshotAs(BYTES))
+                    .takesScreenshot(driver)
+                    .build();
 
-            eventsDispatcher.fire(frame.getValue(), SCREENSHOT, context, Map.of(SCREENSHOT, screenshot, "takesScreenshot", driver));
+            eventsDispatcher.fire(frame.getValue(), SCREENSHOT, context, payload);
             log.trace("Recording frame {} for event '{}'", frame, webDriverEvent.getMessage());
 
             return;

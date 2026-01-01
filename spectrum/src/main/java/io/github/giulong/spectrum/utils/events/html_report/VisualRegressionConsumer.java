@@ -44,7 +44,7 @@ public abstract class VisualRegressionConsumer extends ScreenshotConsumer {
 
     @SneakyThrows
     protected void runChecksOn(final Event event) {
-        final TakesScreenshot takesScreenshot = (TakesScreenshot) event.getPayload().get("takesScreenshot");
+        final TakesScreenshot takesScreenshot = event.getPayload().getTakesScreenshot();
         final Configuration.VisualRegression.Checks checks = visualRegression.getChecks();
         final Duration interval = checks.getInterval();
         final int maxRetries = checks.getMaxRetries();

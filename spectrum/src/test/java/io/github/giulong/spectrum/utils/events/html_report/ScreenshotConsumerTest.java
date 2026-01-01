@@ -14,6 +14,7 @@ import com.aventstack.extentreports.ExtentTest;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -64,7 +65,7 @@ class ScreenshotConsumerTest {
     private Event event;
 
     @Mock
-    private Map<String, Object> payload;
+    private Payload payload;
 
     @Mock
     private TestData testData;

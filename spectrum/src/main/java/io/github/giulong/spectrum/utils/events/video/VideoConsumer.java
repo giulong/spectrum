@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.utils.events.video;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
-import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -48,7 +47,7 @@ public class VideoConsumer extends VideoBaseConsumer {
         final Video video = configuration.getVideo();
         final ExtensionContext.Store store = event.getContext().getStore(GLOBAL);
         final TestData testData = store.get(TEST_DATA, TestData.class);
-        final byte[] screenshot = (byte[]) event.getPayload().get(SCREENSHOT);
+        final byte[] screenshot = event.getPayload().getScreenshot();
 
         if (video.isSkipDuplicateFrames() && !isNewFrame(screenshot, testData)) {
             return;

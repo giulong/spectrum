@@ -2,13 +2,13 @@ package io.github.giulong.spectrum.utils.events;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.Configuration;
 
 import lombok.NoArgsConstructor;
@@ -57,7 +57,7 @@ public class EventsDispatcher implements SessionHook {
         fire(null, null, reason, result, tags, null);
     }
 
-    public void fire(final String primaryId, final String reason, final ExtensionContext context, final Map<String, Object> payload) {
+    public void fire(final String primaryId, final String reason, final ExtensionContext context, final Payload payload) {
         fire(primaryId, null, reason, null, null, context, payload);
     }
 
@@ -75,7 +75,7 @@ public class EventsDispatcher implements SessionHook {
     }
 
     public void fire(final String primaryId, final String secondaryId, final String reason, final Result result, final Set<String> tags,
-                     final ExtensionContext context, final Map<String, Object> payload) {
+                     final ExtensionContext context, final Payload payload) {
         final Event event = Event.builder()
                 .primaryId(primaryId)
                 .secondaryId(secondaryId)
@@ -83,7 +83,9 @@ public class EventsDispatcher implements SessionHook {
                 .result(result)
                 .tags(tags)
                 .context(context)
-                .payload(Optional.ofNullable(payload).orElseGet(Map::of))
+                .payload(Optional
+                        .ofNullable(payload)
+                        .orElseGet(() -> Payload.builder().build()))
                 .build();
 
         log.debug("Dispatching event {}", event);

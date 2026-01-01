@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.utils.events.html_report;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -21,6 +20,7 @@ import com.aventstack.extentreports.ExtentTest;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -79,7 +79,7 @@ class VisualRegressionReferenceCreatorConsumerTest {
     private Map<String, byte[]> screenshots;
 
     @Mock
-    private Map<String, Object> payload;
+    private Payload payload;
 
     @Mock
     private ExtensionContext context;
@@ -206,7 +206,8 @@ class VisualRegressionReferenceCreatorConsumerTest {
         when(checks.getInterval()).thenReturn(interval);
         when(checks.getMaxRetries()).thenReturn(maxRetries);
         when(checks.getCount()).thenReturn(count);
-        when(event.getPayload()).thenReturn(Map.of("takesScreenshot", driver));
+        when(event.getPayload()).thenReturn(payload);
+        when(payload.getTakesScreenshot()).thenReturn((TakesScreenshot) driver);
         when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(screenshot2);
         when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture())).thenReturn(true);
 
@@ -234,6 +235,6 @@ class VisualRegressionReferenceCreatorConsumerTest {
         when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
         when(statefulExtentTest.getCurrentNode()).thenReturn(currentNode);
         lenient().when(configuration.getVideo()).thenReturn(video);
-        when(payload.get(SCREENSHOT)).thenReturn(screenshot);
+        when(payload.getScreenshot()).thenReturn(screenshot);
     }
 }
