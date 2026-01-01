@@ -1,6 +1,9 @@
 package io.github.giulong.spectrum.it_visual_regression.tests;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.events.WebDriverListenerException;
 
 @Slf4j
 @TestMethodOrder(OrderAnnotation.class)
@@ -70,8 +72,8 @@ class VisualRegressionIT extends SpectrumTest<Void> {
         replaceScreenshots("screenshot-2.png");
 
         log.error("THIS IS EXPECTED TO FAIL");
-        final Exception exception = assertThrows(WebDriverListenerException.class, this::runActualTest);
-        assertInstanceOf(VisualRegressionException.class, exception.getCause().getCause());
+        final Exception exception = assertThrows(VisualRegressionException.class, this::runActualTest);
+        assertEquals("There were 1 visual regressions", exception.getMessage());
     }
 
     private void runActualTest() {
