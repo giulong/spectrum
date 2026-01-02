@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="spotless:apply" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="framework-only no tests" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings">
         <MavenGeneralSettings>
@@ -31,6 +31,12 @@
           <option name="goals">
             <list>
               <option value="spotless:apply" />
+              <option value="install" />
+              <option value="-DskipTests" />
+              <option value="-DskipSign" />
+              <option value="-ntp" />
+              <option value="-P" />
+              <option value="framework-only" />
             </list>
           </option>
           <option name="multimoduleDir" />

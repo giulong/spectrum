@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="spectrum framework-only" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="inject LauncherSessionListener" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings">
         <MavenGeneralSettings>
@@ -30,12 +30,9 @@
           </option>
           <option name="goals">
             <list>
-              <option value="spotless:apply" />
-              <option value="install" />
-              <option value="-DskipSign" />
-              <option value="-ntp" />
-              <option value="-P" />
-              <option value="framework-only" />
+              <option value="clean" />
+              <option value="-pl" />
+              <option value="spectrum,cleanup" />
             </list>
           </option>
           <option name="multimoduleDir" />

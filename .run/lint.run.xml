@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="spectrum full build" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="lint" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings">
         <MavenGeneralSettings>
@@ -30,17 +30,14 @@
           </option>
           <option name="goals">
             <list>
-              <option value="-T" />
-              <option value="1C" />
-              <option value="clean" />
+              <option value="checkstyle:checkstyle" />
               <option value="spotless:apply" />
-              <option value="install" />
+              <option value="-Dcheckstyle.config.location=checkstyle.xml" />
               <option value="-DskipSign" />
-              <option value="-DbrowsersTests" />
-              <option value="-DappiumTests" />
-              <option value="-DmacosTests" />
-              <option value="-fae" />
+              <option value="-DskipTests" />
               <option value="-ntp" />
+              <option value="-pl" />
+              <option value="spectrum" />
             </list>
           </option>
           <option name="multimoduleDir" />
