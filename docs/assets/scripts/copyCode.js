@@ -1,4 +1,4 @@
-const blockquotes = document.querySelectorAll('blockquote');
+const codeSnippets = document.querySelectorAll('div.highlighter-rouge')
 const buttonSnippet = `<span class="copy-header">
                          <button class="copy-button">
                              <span class="copy-text" style="display: none;">Copied!</span>
@@ -10,16 +10,10 @@ const buttonSnippet = `<span class="copy-header">
     const response = await fetch('https://api.github.com/repos/giulong/spectrum/contents/docs/json-schemas');
     const json = await response.json();
 
-    blockquotes.forEach((blockquote, index) => {
-        try {
-            blockquote.querySelectorAll('div.highlight').forEach(highlight => {
-                const wrapper = document.createElement('span');
-                wrapper.innerHTML = buttonSnippet;
-                highlight.prepend(wrapper);
-            });
-        } catch (error) {
-            console.error(error);
-        }
+    codeSnippets.forEach(codeSnippet => {
+        const wrapper = document.createElement('span');
+        wrapper.innerHTML = buttonSnippet;
+        codeSnippet.prepend(wrapper);
     });
 
     const copyHeaders = document.querySelectorAll('.copy-header');

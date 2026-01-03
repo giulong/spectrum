@@ -254,8 +254,13 @@ tbody tr:nth-child(odd) {
 
 blockquote {
     font-style: normal;
-    margin: 25px -20px -10px;
+    margin: 10px -20px -10px;
     padding: 1px 40px;
+}
+
+div.highlighter-rouge {
+    position: relative;
+    top: -20px;
 }
 
 blockquote pre.highlight {
@@ -268,13 +273,10 @@ blockquote div.highlighter-rouge {
 
 span.copy-header {
     display: block;
-    padding: 28px 16px 4px;
-    margin: 0 -20px -64px;
     text-align: right;
-}
-
-div.highlight span.copy-header {
-    margin: 0 0px -44px;
+    position: relative;
+    top: 42px;
+    right: 8px;
 }
 
 span.schema-copy-header {
@@ -282,8 +284,8 @@ span.schema-copy-header {
     text-align: center;
 }
 
-blockquote + p > span.copy-header {
-    padding: 6px 16px 4px;
+blockquote span.copy-header {
+    padding: 6px 16px 2px;
 }
 
 button.copy-button, button.schema-copy-button {

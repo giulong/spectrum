@@ -37,8 +37,6 @@ and **mobile and desktop applications** via [Appium](http://appium.io/docs/en/la
 You should leverage the latest published version of the [Spectrum Archetype](https://central.sonatype.com/artifact/io.github.giulong/spectrum-archetype){:target="_blank"}
 to create a new project either via your IDE or by running this from command line:
 
-{% include copyCode.html %}
-
 ```shell
 mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST
 ```
@@ -54,10 +52,7 @@ The project created contains a demo test you can immediately run.
 If you don't want to leverage the archetype, you can manually add the Spectrum dependency to your project.
 [Here](https://central.sonatype.com/artifact/io.github.giulong/spectrum){:target="_blank"} you can find the snippet for every build tool.
 
-{% include copyCode.html %}
-
 ```xml
-
 <dependency>
     <groupId>io.github.giulong</groupId>
     <artifactId>spectrum</artifactId>
@@ -67,8 +62,6 @@ If you don't want to leverage the archetype, you can manually add the Spectrum d
 ```
 
 Then, you need to create a **JUnit 6** test class extending `SpectrumTest`:
-
-{% include copyCode.html %}
 
 ```java
 import io.github.giulong.spectrum.SpectrumTest;
@@ -84,8 +77,6 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 ```
 
 As third and last step, you need create a basic `src/test/resources/configuration.yaml`:
-
-{% include copyCode.html %}
 
 ```yaml
 application:
@@ -153,8 +144,6 @@ Beyond having direct access to `driver`, `configuration`, `data`, and all the ot
 by extending `SpectrumTest` each `SpectrumPage` that you declare
 in your test class will automatically be initialised.
 
-{% include copyCode.html %}
-
 ```java
 import io.github.giulong.spectrum.SpectrumTest;
 import org.junit.jupiter.api.Test;
@@ -199,8 +188,6 @@ Each `SpectrumPage` takes two generics:
 
 For example, assuming you need no data, this would be the signature of a page class named `WebAppPage`:
 
-{% include copyCode.html %}
-
 ```java
 import io.github.giulong.spectrum.SpectrumPage;
 
@@ -220,8 +207,6 @@ By extending `SpectrumPage`, you inherit few service methods listed here:
 
   You can specify an endpoint for your pages by annotating them with the `@Endpoint` annotation:
 
-{% include copyCode.html %}
-
 ```java
 import io.github.giulong.spectrum.SpectrumPage;
 import io.github.giulong.spectrum.interfaces.Endpoint;
@@ -234,15 +219,11 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 
 Then, in your tests, you can leverage the `open` method. Spectrum will combine the AUT's base url from the `configuration*.yaml` with the endpoint:
 
-{% include copyCode.html %}
-
 ```yaml
 # configuration.yaml
 application:
   baseUrl: http://my-app.com
 ```
-
-{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -265,8 +246,6 @@ Moreover, `open` will internally call the `waitForPageLoading` method.
 
   For example, you could have a spinner shown by default when opening pages, and disappearing once the page is fully loaded.
   You should override the `waitForPageLoading` like this:
-
-{% include copyCode.html %}
 
 ```java
 import org.openqa.selenium.WebElement;
@@ -306,8 +285,6 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 
   This is a method to check if the caller page is loaded.
   It returns a boolean which is true if the current url is equal to the AUT's base url combined with the page's endpoint.
-
-{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -396,8 +373,6 @@ Spectrum lets you configure all the supported values in the same configuration f
 to be activated either via the same configuration or via runtime properties.
 Let's see a configuration snippet to have a clear picture:
 
-{% include copyCode.html %}
-
 ```yaml
 # All needed drivers' configurations
 drivers:
@@ -457,16 +432,12 @@ You can select the driver via the `runtime.driver` node. As you can see in the i
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
 its value leverages [interpolation](#values-interpolation) with the default set to `chrome`:
 
-{% include copyCode.html %}
-
 ```yaml
 runtime:
   driver: ${spectrum.driver:-chrome}
 ```
 
 This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
-
-{% include copyCode.html %}
 
 ```yaml
 runtime:
@@ -485,16 +456,12 @@ You can select the environment via the `runtime.environment` node. As you can se
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"},
 its value leverages [interpolation](#values-interpolation) with the default set to `local`:
 
-{% include copyCode.html %}
-
 ```yaml
 runtime:
   environment: ${spectrum.environment:-local}
 ```
 
 This means you can either change it directly in your `configuration*.yaml` by hardcoding it:
-
-{% include copyCode.html %}
 
 ```yaml
 runtime:
@@ -628,8 +595,6 @@ There are a few ways to interpolate configuration keys:
 Each interpolator can be configured in the base `configuration.yaml` under the `config` node. Here you can see the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 # Generic configuration. This node is read only from the base configuration.yaml
 config:
@@ -673,8 +638,6 @@ depending on the type needed as result. Let's suppose we have the variable `key 
 Let's clarify this with an example where you run behind a proxy. You could store the proxy port as a common variable,
 and then interpolate it in each driver's preferences with the proper type:
 
-{% include copyCode.html %}
-
 ```yaml
 vars:
   proxyHost: my-proxy.com
@@ -696,8 +659,6 @@ drivers:
 This is the full syntax for values interpolation, where '`:-`' is the separator
 between the name of the key to search for and the default value to use in case that key is not found:
 
-{% include copyCode.html %}
-
 ```yaml
 # String example
 object:
@@ -718,7 +679,6 @@ Spectrum will interpolate the dollar-string with the first value found in this l
 
 1. [vars node](#vars-node):
 
-   {% include copyCode.html %}
     ```yaml
     vars:
       key: value 
@@ -790,8 +750,6 @@ You can add your own and even override the default ones in your `configuration*.
 
 The in-place interpolator is enabled by default with the highest priority. You can disable it or change its priority with this configuration snippet:
 
-{% include copyCode.html %}
-
 ```yaml
 config:
   interpolators:
@@ -805,8 +763,6 @@ config:
 You can **avoid specifying keys directly in the yaml files** and interpolate values taken from environment variables
 by providing this configuration snippet:
 
-{% include copyCode.html %}
-
 ```yaml
 config:
   interpolators:
@@ -814,8 +770,6 @@ config:
 ```
 
 Providing an empty object as above, you'll leverage on the internal defaults, which are the following:
-
-{% include copyCode.html %}
 
 ```yaml
 config:
@@ -832,8 +786,6 @@ The name of the variable to resolve is the json path of the corresponding config
 For instance, you can inject the `application.baseUrl` setting an env variable named `spectrum.application.baseUrl`.
 
 To give you another example, you can use this config to inject env vars like `APPLICATION_BASEURL`:
-
-{% include copyCode.html %}
 
 ```yaml
 config:
@@ -863,8 +815,6 @@ Allowed values for the `transformCase` property are:
 You can **avoid specifying keys directly in the yaml files** and interpolate values taken from system properties
 by providing this configuration snippet:
 
-{% include copyCode.html %}
-
 ```yaml
 config:
   interpolators:
@@ -872,8 +822,6 @@ config:
 ```
 
 Providing an empty object as above, you'll leverage on the internal defaults, which are the following:
-
-{% include copyCode.html %}
 
 ```yaml
 config:
@@ -890,8 +838,6 @@ The name of the variable to resolve is the json path of the corresponding config
 For instance, you can inject the `application.baseUrl` setting the system property `-Dspectrum.application.baseUrl`.
 
 To give you another example, you can use this config to inject system properties like `-DAPPLICATION_BASEURL`:
-
-{% include copyCode.html %}
 
 ```yaml
 config:
@@ -939,8 +885,6 @@ See [https://www.selenium.dev/documentation/webdriver/browsers/chrome/](https://
 | capabilities | Map\<String, Object\>                                                                                  | Chrome's capabilities   |
 | service      | [Service](https://www.selenium.dev/documentation/webdriver/browsers/chrome/#service){:target="_blank"} | Chrome's driver service |
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   chrome:
@@ -968,8 +912,6 @@ drivers:
 As explained in [Start browser in a specified location](https://www.selenium.dev/documentation/webdriver/browsers/chrome/#start-browser-in-a-specified-location){:target="_blank"},
 you can provide the path to any Chromium based browser in Chrome's `binary` capability:
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   chrome:
@@ -989,8 +931,6 @@ See [https://www.selenium.dev/documentation/webdriver/browsers/firefox/](https:/
 | args        | List\<String\>                                                                                          | Firefox's args                                    |
 | preferences | Map\<String, Object\>                                                                                   | Firefox's preferences                             |
 | service     | [Service](https://www.selenium.dev/documentation/webdriver/browsers/firefox/#service){:target="_blank"} | Firefox's driver service                          |
-
-{% include copyCode.html %}
 
 ```yaml
 drivers:
@@ -1015,8 +955,6 @@ drivers:
 As explained in [Start browser in a specified location](https://www.selenium.dev/documentation/webdriver/browsers/firefox/#start-browser-in-a-specified-location){:target="_blank"},
 you can provide the path to any Geckodriver based browser in Firefox's `binary` parameter:
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   firefox:
@@ -1033,8 +971,6 @@ target="_blank"}
 | args         | List\<String\>                                                                                       | Edge's args           |
 | capabilities | Map\<String, Object\>                                                                                | Edge's capabilities   |
 | service      | [Service](https://www.selenium.dev/documentation/webdriver/browsers/edge/#service){:target="_blank"} | Edge's driver service |
-
-{% include copyCode.html %}
 
 ```yaml
 drivers:
@@ -1062,8 +998,6 @@ See [https://www.selenium.dev/documentation/webdriver/browsers/safari/](https://
 |-----------|--------------------------------------------------------------------------------------------------------|-------------------------|
 | service   | [Service](https://www.selenium.dev/documentation/webdriver/browsers/safari/#service){:target="_blank"} | Safari's driver service |
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   safari:
@@ -1079,8 +1013,6 @@ See [https://github.com/appium/appium-uiautomator2-driver#capabilities](https://
 |--------------|-----------------------|-------------------------------------|
 | capabilities | Map\<String, Object\> | Android UiAutomator2's capabilities |
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   uiAutomator2:
@@ -1094,8 +1026,6 @@ See [https://github.com/appium/appium-espresso-driver#capabilities](https://gith
 | Parameter    | Type                  | Description                     |
 |--------------|-----------------------|---------------------------------|
 | capabilities | Map\<String, Object\> | Android Espresso's capabilities |
-
-{% include copyCode.html %}
 
 ```yaml
 drivers:
@@ -1111,8 +1041,6 @@ See [https://github.com/appium/appium-xcuitest-driver](https://github.com/appium
 |--------------|-----------------------|-----------------------------|
 | capabilities | Map\<String, Object\> | iOS XCUITest's capabilities |
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   xcuiTest:
@@ -1126,8 +1054,6 @@ See [https://github.com/appium/appium-windows-driver](https://github.com/appium/
 | Parameter    | Type                  | Description           |
 |--------------|-----------------------|-----------------------|
 | capabilities | Map\<String, Object\> | Windows' capabilities |
-
-{% include copyCode.html %}
 
 ```yaml
 drivers:
@@ -1143,8 +1069,6 @@ See [https://github.com/appium/appium-mac2-driver](https://github.com/appium/app
 |--------------|-----------------------|---------------------|
 | capabilities | Map\<String, Object\> | Mac2's capabilities |
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   mac2:
@@ -1158,8 +1082,6 @@ See [https://appium.io/docs/en/latest/intro/drivers/](https://appium.io/docs/en/
 | Parameter    | Type                  | Description                   |
 |--------------|-----------------------|-------------------------------|
 | capabilities | Map\<String, Object\> | Appium generic's capabilities |
-
-{% include copyCode.html %}
 
 ```yaml
 drivers:
@@ -1179,8 +1101,6 @@ the `configuration.yaml`:
 As a reference, let's see the `environments` under the
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 environments:
   local: { }
@@ -1194,8 +1114,6 @@ environments:
 
 The local environment doesn't have any additional property, which means you need to configure it as an empty object
 like in the internal default you can see above:
-
-{% include copyCode.html %}
 
 ```yaml
 environments:
@@ -1212,8 +1130,6 @@ This is generally valid in yaml.
 ### Grid environment
 
 To run on a remote [grid](https://www.selenium.dev/documentation/grid/){:target="_blank"}, you just need to provide at least the grid url:
-
-{% include copyCode.html %}
 
 ```yaml
 environments:
@@ -1242,8 +1158,6 @@ Where the params are:
 
 Spectrum supports [Appium](http://appium.io/docs/en/latest/){:target="_blank"}.
 To run against an Appium server you need to configure the related environment like this:
-
-{% include copyCode.html %}
 
 ```yaml
 environments:
@@ -1281,8 +1195,6 @@ That said, all the parameters available for a Grid environment can be used in Ap
 
 If you don't need any particular configuration, it's enough to run with:
 
-{% include copyCode.html %}
-
 ```yaml
 runtime:
   environment: appium
@@ -1297,8 +1209,6 @@ You can see few working examples in the
 
 The `vars` node is a special one in the `configuration.yaml`. You can use it to define common vars once and refer to them in several nodes.
 `vars` is a `Map<String, String>`, so you can define all the keys you need, naming them how you want.
-
-{% include copyCode.html %}
 
 ```yaml
 vars:
@@ -1322,8 +1232,6 @@ test in the `it-grid` module. For completeness, let's report it here as well.
 
 The test is very simple. We're just checking that a domain in the proxy's bypass list is reachable, while others are not:
 
-{% include copyCode.html %}
-
 ```java
 
 @Test
@@ -1340,8 +1248,6 @@ where you can see how to configure a proxy server for every driver.
 
 Mind that this is just an example. Its only purpose is to show how to configure a proxy and prove it's working, leveraging the domain bypass list:
 there's no proxy actually running, so trying to reach any domain which is not bypassed would throw an exception.
-
-{% include copyCode.html %}
 
 ```yaml
 vars:
@@ -1381,8 +1287,6 @@ The **auto-wait** is enabled by default and runs expected conditions with a 30s 
 This is the `auto` node in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   waits:
@@ -1418,14 +1322,12 @@ By default, as you can see in the internal
 `BiDi` is disabled and `Chrome DevTools Protocol (CDP)` is enabled instead. To enable `BiDi`, you may choose one of these options in your `configuration.yaml`:
 
 1. With the `biDi` property for all drivers:
-   {% include copyCode.html %}
     ```yaml
     drivers:
       biDi: true
     ```
 
 2. With the `biDi` property for a single driver, if you need driver-specific configurations:
-   {% include copyCode.html %}
     ```yaml
     drivers:
       chrome:
@@ -1435,7 +1337,6 @@ By default, as you can see in the internal
     ```
 
 3. With the native Selenium capability for a single driver:
-   {% include copyCode.html %}
     ```yaml
     drivers:
       chrome:
@@ -1450,8 +1351,6 @@ You can find the examples provided in the [it-bidi]({{ site.repository_url }}/it
 ## Log Inspector
 
 Log inspector for console logs. [Selenium Docs](https://www.selenium.dev/documentation/webdriver/bidi/w3c/log/){:target="_blank"}. Example:
-
-{% include copyCode.html %}
 
 ```java
 
@@ -1476,8 +1375,6 @@ void testListenToJavascriptLog() {
 
 browsing context of the default window. [Selenium Docs](https://www.selenium.dev/documentation/webdriver/bidi/w3c/browsing_context/){:target="_blank"}. Example:
 
-{% include copyCode.html %}
-
 ```java
 
 @Test
@@ -1499,8 +1396,6 @@ void testGetTreeWithAChild() {
 
 Browsing context inspector of the default window. [Selenium Docs](https://www.selenium.dev/documentation/webdriver/bidi/w3c/browsing_context/){:target="_blank"}. Example:
 
-{% include copyCode.html %}
-
 ```java
 
 @Test
@@ -1519,8 +1414,6 @@ void canListenToWindowBrowsingContextCreatedEvent() {
 ## Network
 
 Instance to issue network commands and listen to network events. [Selenium Docs](https://www.selenium.dev/documentation/webdriver/bidi/w3c/network/){:target="_blank"}. Example:
-
-{% include copyCode.html %}
 
 ```java
 
@@ -1549,8 +1442,6 @@ You can check the
 [Js javadocs](https://javadoc.io/doc/io.github.giulong/spectrum/latest/io/github/giulong/spectrum/utils/Js.html){:target="_blank"} for details and the
 [JavascriptIT]({{ site.repository_url }}/it/src/test/java/io/github/giulong/spectrum/it/tests/JavascriptIT.java){:target="_blank"}
 test to see real examples of all the `js` methods in action. For completeness, we're reporting one here:
-
-{% include copyCode.html %}
 
 ```java
 
@@ -1594,8 +1485,6 @@ public void testInputFieldActions() {
 
 If you find yourself frequently running Javascript to interact with a particular web element,
 you should probably annotate it with `@JsWebElement` like this:
-
-{% include copyCode.html %}
 
 ```java
 // applied on a single WebElement
@@ -1644,8 +1533,6 @@ To avoid this, you just need to decorate the sensitive web elements with `@Secur
 with `[***]`. The replacement will only affect events' consumers such as logs and html report,
 of course the actual value will still be sent to or read from the web element.
 
-{% include copyCode.html %}
-
 ```java
 import io.github.giulong.spectrum.interfaces.Secured;
 
@@ -1665,8 +1552,6 @@ private WebElement password;
 
 For debugging purposes or in general to have a visual feedback, it might be useful to highlight the web elements your test interacts with. You just need to configure this:
 
-{% include copyCode.html %}
-
 ```yaml
 application:
   highlight: { }
@@ -1674,8 +1559,6 @@ application:
 
 This is the `highlight` node in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
-
-{% include copyCode.html %}
 
 ```yaml
 application:
@@ -1687,8 +1570,6 @@ The `js` property points to the javascript to apply to the web elements. No need
 don't need to customise it. This is the internal
 [highlight.js]({{ site.repository_url }}/spectrum/src/main/resources/js/highlight.js){:target="_blank"},
 that applies a 3px red border for 500ms to the web elements, as in the screenshot below:
-
-{% include copyCode.html %}
 
 ```js
 const border = arguments[0].style.border;
@@ -1706,8 +1587,6 @@ setTimeout(() => {
 ![highlight-web-element.png](assets/images/highlight-web-element.png)
 
 For instance, providing this custom `src/test/resources/highlight.js` that puts a red background without removing it, you can achieve the effect in the video below:
-
-{% include copyCode.html %}
 
 ```js
 arguments[0].style.borderRadius = '5px';
@@ -1772,8 +1651,6 @@ You can tweak each event in your `configuration.yaml`, by providing these:
 
 For example, you can set these:
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   events:
@@ -1794,8 +1671,6 @@ to see the defaults.
 
 The available values for the `level` property are: `ERROR`, `WARN`, `INFO`, `DEBUG`, `TRACE`. Let's check the default value of the click events:
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   events:
@@ -1808,8 +1683,6 @@ drivers:
 
 The configuration snippet above means that the `beforeClick` event is logged at `INFO` by default, while `afterClick` isn't logged at all.
 If you want to completely turn off the `beforeClick` event, you need to explicitly set it to null, which in yaml is done by not specifying any value:
-
-{% include copyCode.html %}
 
 ```yaml
 drivers:
@@ -1837,8 +1710,6 @@ and specifies how many milliseconds to wait before actually processing the relat
 
 As an example, you might want to add a 1 second sleep before each call like this:
 
-{% include copyCode.html %}
-
 ```yaml
 drivers:
   events:
@@ -1847,8 +1718,6 @@ drivers:
 ```
 
 Or a sleep only before clicking elements:
-
-{% include copyCode.html %}
 
 ```yaml
 drivers:
@@ -1927,8 +1796,6 @@ Upon a test failure, Spectrum adds a screenshot to the report automatically.
 You can also add logs to the report programmatically. Check the [SpectrumEntity Service Methods](#spectrumentity-service-methods) section for details.
 For example, to add a screenshot with a message at `INFO` level to the `dummyTest`:
 
-{% include copyCode.html %}
-
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -1943,8 +1810,6 @@ The html report, as well as any other file produced ([testbook](#testbook---cove
 can be automatically opened at the end of the execution. You simply need to set the `extent.openAtEnd` flag, and the file
 will be opened in the default application you set for that file extension. This means that unless you overrode the default,
 html files will be opened in the web browser.
-
-{% include copyCode.html %}
 
 ```yaml
 extent:
@@ -1986,8 +1851,6 @@ The available sorters are:
 * `noOp`: leaves the tests in the order of execution. This is the default, as you can see in the internal
   [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 extent:
   sort: # How to sort tests in the produced report
@@ -1996,8 +1859,6 @@ extent:
 
 * `name`: sorts tests alphabetically by their name
 
-{% include copyCode.html %}
-
 ```yaml
 extent:
   sort:
@@ -2005,8 +1866,6 @@ extent:
 ```
 
 * `status`: sorts tests by their status (passed, failed...). You can decide which to show first via the `weights` map.
-
-{% include copyCode.html %}
 
 ```yaml
 extent:
@@ -2036,8 +1895,6 @@ You can leverage the `extent.locatorRegex` property to extract the important bit
 out of it, **using the capturing group** (the one wrapped by parentheses).
 For example, for a field annotated like this:
 
-{% include copyCode.html %}
-
 ```java
 
 @FindBys({
@@ -2053,8 +1910,6 @@ this would be the full `toString()`:
 
 The regex in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"} is:
 
-{% include copyCode.html %}
-
 ```yaml
 locatorRegex: \s->\s([\w:\s\-.#]+)
 ```
@@ -2064,8 +1919,6 @@ which extracts just this (mind the capturing group above):
 ![extent locator](assets/images/extent-locator.jpg)
 
 For example, if you want to shrink it even more, you could add this as `extent.locatorRegex` in your `configuration.yaml`:
-
-{% include copyCode.html %}
 
 ```yaml
 locatorRegex: \s->[\w\s]+:\s([()^\w\s\-.#]+)
@@ -2183,8 +2036,6 @@ So, when configured, a `successful` number of report(s), if present, are retaine
 This is meant to have an evidence of the last successful run(s), even if there's a long recent history of failed ones.
 This snippet shows how to configure the example we just saw:
 
-{% include copyCode.html %}
-
 ```yaml
 retention:
   total: 10
@@ -2193,8 +2044,6 @@ retention:
 
 Additionally, you can configure a number of `days` after which reports will be deleted. A `successful` number of reports, if present, will still be kept,
 regardless of their age. Let's make another example. Say we configured this:
-
-{% include copyCode.html %}
 
 ```yaml
 retention:
@@ -2220,8 +2069,6 @@ In this scenario:
 As you can see, by default no report will be deleted, regardless of the execution status. As a further example,
 this is how you can configure it for the extent report and testbook.
 Mind how you can have just the retention parameters you need, it's not mandatory to use them all:
-
-{% include copyCode.html %}
 
 ```yaml
 extent:
@@ -2268,16 +2115,12 @@ You can add files to be uploaded in the folder specified in the `runtime.filesFo
 This is the default you can see in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 runtime:
   filesFolder: src/test/resources/files
 ```
 
 If you have these files in the configured folder:
-
-{% include copyCode.html %}
 
 ```text
 root
@@ -2290,8 +2133,6 @@ root
 ```
 
 and in the web page there's an input field with `type="file"`, you can leverage the `upload` method directly in any of your tests/pages like this:
-
-{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -2334,8 +2175,6 @@ Let's explain this with an example. Let's say that:
 
 You need to place the expected file in that folder:
 
-{% include copyCode.html %}
-
 ```text
 root
 └─ src
@@ -2346,8 +2185,6 @@ root
 ```
 
 Now you can leverage the `checkDownloadedFile(String)` method like this:
-
-{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -2364,8 +2201,6 @@ public class HelloWorldIT extends SpectrumTest<Void> {
 If the two files are the same their checksum will match, and that assertion will pass.
 In case you need to check a file with a different name, for example if the AUT generates files names dynamically,
 you can leverage the overloaded `checkDownloadedFile(String, String)` method, which takes the names of both the downloaded file and the one to check:
-
-{% include copyCode.html %}
 
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
@@ -2417,8 +2252,6 @@ We need to take three steps:
 
 * Create the yaml describing this scenario:
 
-{% include copyCode.html %}
-
 ```yaml
 # data.yaml
 users:
@@ -2431,8 +2264,6 @@ users:
 ```
 
 * Create the POJO mapping the yaml above:
-
-{% include copyCode.html %}
 
 ```java
 package your.package_name;
@@ -2459,8 +2290,6 @@ public class Data {
 
 * Declare the Data class as generic in the SpectrumTest(s) and/or SpectrumPage(s) that will use it:
 
-{% include copyCode.html %}
-
 ```java
 import io.github.giulong.spectrum.SpectrumTest;
 import org.junit.jupiter.api.Test;
@@ -2477,8 +2306,6 @@ public class SomeIT extends SpectrumTest<Data> { // <-- Mind the generic here
     }
 }
 ```
-
-{% include copyCode.html %}
 
 ```java
 import io.github.giulong.spectrum.SpectrumPage;
@@ -2514,8 +2341,6 @@ The `Data` generic must be specified only in classes actually using it. There's 
 [Datafaker](https://www.datafaker.net/documentation/getting-started/){:target="_blank"}
 is a popular library to generate fake data. You can leverage the injected `faker` instance in both pages and tests:
 
-{% include copyCode.html %}
-
 ```java
 
 @Test
@@ -2529,8 +2354,6 @@ void test() {
 
 You can provide a custom random seed and a locale in your `configuration*.yaml`, for example:
 
-{% include copyCode.html %}
-
 ```yaml
 faker:
   locale: it
@@ -2540,8 +2363,6 @@ faker:
 The default in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 is the following, meaning if you need no random seed and the english locale you can avoid configuring it explicitly:
-
-{% include copyCode.html %}
 
 ```yaml
 faker:
@@ -2583,8 +2404,6 @@ Let's see them in detail:
 
 Let's see what they mean with an example. Given the following test:
 
-{% include copyCode.html %}
-
 ```java
 public class HelloWorldIT extends SpectrumTest<Void> {
 
@@ -2601,8 +2420,6 @@ Spectrum will fire an event with:
 * `secondaryId` &rarr; "dummyTest()" (Yes, the method name ends with the parenthesis)
 
 If the `@DisplayName` is provided for either the class and/or the method, those will be used. Given:
-
-{% include copyCode.html %}
 
 ```java
 
@@ -2654,8 +2471,6 @@ in custom templates to access objects stored in it. For example, the default
 [slack.json template]({{ site.repository_url }}/spectrum/src/main/resources/templates/slack.json){:target="_blank"}
 uses it to print class and test names:
 
-{% include copyCode.html %}
-
 ```json
 "text": "*Name*\n*Class*: `${event.context.parent.get().displayName}`\n*Test*: `${event.context.displayName}`"
 ```
@@ -2692,8 +2507,6 @@ The other columns are the event's keys, with blank values being nulls.
 ## Custom Events
 
 Since `eventsDispatcher` is injected in every `SpectrumTest` and `SpectrumPage`, you can programmatically send custom events and listen to them:
-
-{% include copyCode.html %}
 
 ```java
 
@@ -2815,8 +2628,6 @@ the [docs](https://www.simplejavamail.org/configuration.html#section-config-prop
 
 For example, to send an email via GMail, you can use these properties by replacing placeholders with actual values:
 
-{% include copyCode.html %}
-
 ```properties
 simplejavamail.transportstrategy=SMTP_TLS
 simplejavamail.smtp.host=smtp.gmail.com
@@ -2861,8 +2672,6 @@ If you want to provide a custom template there are two ways:
 
 * provide a template with a custom name under `src/test/resources/templates`:
 
-{% include copyCode.html %}
-
 ```yaml
 eventsConsumers:
   - mail:
@@ -2884,8 +2693,6 @@ You can also specify a list of attachments, by providing:
 * the path to the file
 
 For example, it's useful to send the html report and/or testbook when the suite is complete:
-
-{% include copyCode.html %}
 
 ```yaml
 eventsConsumers:
@@ -2932,7 +2739,6 @@ A few steps are needed to configure your Slack Workspace to receive notification
     2. choose to create it **from an app manifest**<br/><br/>
        ![slack-manifest.png](assets/images/slack-manifest.png)
     3. Select your workspace, delete the default yaml manifest and copy this one:<br/><br/>
-       {% include copyCode.html %}
        ```yaml
        display_information:
          name: Spectrum
@@ -2969,7 +2775,6 @@ A few steps are needed to configure your Slack Workspace to receive notification
     3. copy the **Channel ID** from the details overlay:<br/><br/>
        ![slack-channel-id.png](assets/images/slack-channel-id.png)
 5. Configure the Slack consumer(s) in your `configuration*.yaml` by providing the **token** and the **Channel ID** from the previous steps:
-   {% include copyCode.html %}
    ```yaml
    eventsConsumers:
      - slack:
@@ -3015,8 +2820,6 @@ A few steps are needed to configure your Slack Workspace to receive notification
 You can leverage this consumer to have a minimalistic report with the list of web driver's events, along with the time at which they
 were fired and the time delta between each. To have one generated for each test, you need to declare this:
 
-{% include copyCode.html %}
-
 ```yaml
 eventsConsumers:
   - testSteps:
@@ -3047,8 +2850,6 @@ eventsConsumers:
 
 By default, a report like this will be produced:
 
-{% include copyCode.html %}
-
 ```text
 Time                       | Time taken | Message
 ----------------------------------------------------------------------------------------------------
@@ -3070,8 +2871,6 @@ Time                       | Time taken | Message
 ### Log Consumer
 
 You can leverage this consumer to log a message. For instance, to hook it on a custom event, you can declare this:
-
-{% include copyCode.html %}
 
 ```yaml
 eventsConsumers:
@@ -3101,8 +2900,6 @@ eventsConsumers:
 
 By default, a message like this is logged:
 
-{% include copyCode.html %}
-
 ```text
 Class Name: Checkbox Page
 Test Name : testWithNoDisplayName()
@@ -3118,8 +2915,6 @@ Tags      : test
 You can optionally have Spectrum generate an execution summary by providing one or more summary reporters.
 This is the default summary in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
-
-{% include copyCode.html %}
 
 ```yaml
 summary:
@@ -3147,8 +2942,6 @@ meaning you can write complex conditions using the variables briefly explained b
 
 As an example, this is how you can have a html summary:
 
-{% include copyCode.html %}
-
 ```yaml
 summary:
   reporters:
@@ -3162,8 +2955,6 @@ summary:
 > This section is very similar to the TestBook Reporters one, since they leverage the same objects 😉
 
 All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
-
-{% include copyCode.html %}
 
 ```yaml
 reporters:
@@ -3194,16 +2985,12 @@ For each reporter:
 This is the internal
 [logReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/summary/logReporter.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 log:
   template: summary.txt
 ```
 
 Here is the output produced by the default internal template, for tests of the `it-testbook` module:
-
-{% include copyCode.html %}
 
 ```text
 #############################################################################################################
@@ -3237,8 +3024,6 @@ Here is the output produced by the default internal template, for tests of the `
 This is the internal
 [txtReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/summary/txtReporter.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 txt:
   template: summary.txt
@@ -3256,8 +3041,6 @@ Or you can provide different templates to log a shorter report and send the full
 This is the internal
 [htmlReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/summary/htmlReporter.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 html:
   template: summary.html
@@ -3274,8 +3057,6 @@ This is what it looks like when opened in a browser:
 Beside the default template, these are already available, you just need to pick the corresponding template:
 
 * [summary-pies.html](assets/miscellanea/summary-pies.html){:target="_blank"} that leverages [Google Charts](https://developers.google.com/chart){:target="_blank"}
-
-{% include copyCode.html %}
 
 ```yaml
 html:
@@ -3324,8 +3105,6 @@ These are the testbook parameters you need to configure:
 ## Quality Gate
 
 The QG node has only one property, which is the boolean condition to be evaluated:
-
-{% include copyCode.html %}
 
 ```yaml
 qualityGate:
@@ -3410,8 +3189,6 @@ You can provide a txt file where each line is in this format:
 
 For example:
 
-{% include copyCode.html %}
-
 ```text
 test class::my test
 another class::another test
@@ -3427,8 +3204,6 @@ You can provide a csv file where each line is in this format:
 `<CLASS NAME>,<TEST NAME>,<WEIGHT>`
 
 For example:
-
-{% include copyCode.html %}
 
 ```text
 test class,my test
@@ -3447,8 +3222,6 @@ You can provide a yaml file where you have class names as keys in the root of th
 
 For example:
 
-{% include copyCode.html %}
-
 ```yaml
 test class:
   - name: my test
@@ -3465,8 +3238,6 @@ another class:
 > This section is very similar to the Summary Reporters one, since they leverage the same objects 😉
 
 All the reporters below have default values for their parameters, which means you can just configure them as empty objects like:
-
-{% include copyCode.html %}
 
 ```yaml
 reporters:
@@ -3512,16 +3283,12 @@ For each reporter:
 This is the internal
 [logReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/testbook/logReporter.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 log:
   template: testbook.txt
 ```
 
 Here is the output produced by the default internal template, for tests of the `it-testbook` module:
-
-{% include copyCode.html %}
 
 ```text
 ##########################################################################################################
@@ -3632,8 +3399,6 @@ UNMAPPED TESTS:
 This is the internal
 [txtReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/testbook/txtReporter.yaml){:target="_blank"}:
 
-{% include copyCode.html %}
-
 ```yaml
 txt:
   template: testbook.txt
@@ -3650,8 +3415,6 @@ Or you can provide different templates to log a shorter report and send the full
 
 This is the internal
 [htmlReporter.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/dynamic/testbook/htmlReporter.yaml){:target="_blank"}:
-
-{% include copyCode.html %}
 
 ```yaml
 html:
@@ -3670,8 +3433,6 @@ Beside the default template, these are already available, you just need to pick 
 
 * [testbook-pies.html](assets/miscellanea/testbook-pies.html){:target="_blank"} that leverages [Google Charts](https://developers.google.com/chart){:target="_blank"}
 
-{% include copyCode.html %}
-
 ```yaml
 html:
   template: testbook-pies.html
@@ -3684,8 +3445,6 @@ html:
 The one below is the testBook in the internal
 [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 As you can see, it has a quality gate already set, as well as a yaml parser but no reporters.
-
-{% include copyCode.html %}
 
 ```yaml
 # internal configuration.default.yaml
@@ -3700,8 +3459,6 @@ testBook:
 
 In your `configuration.yaml` you need to provide the reporters you want:
 
-{% include copyCode.html %}
-
 ```yaml
 testBook:
   reporters:
@@ -3711,8 +3468,6 @@ testBook:
 ```
 
 ## Full TestBook Examples
-
-{% include copyCode.html %}
 
 ```yaml
 testBook:
@@ -3729,8 +3484,6 @@ testBook:
         output: ${testBookReportOutput}/testbook.html # a html report will be produced at this path
 ```
 
-{% include copyCode.html %}
-
 ```yaml
 testBook:
   qualityGate:
@@ -3745,8 +3498,6 @@ testBook:
         template: my-custom-template.html # src/test/resources/templates/my-custom-template.html
         output: some/path/testbook.html # a html report will be produced at this path
 ```
-
-{% include copyCode.html %}
 
 ```yaml
 testBook:
@@ -3807,8 +3558,6 @@ Let's see how your project will look like. Few assumptions for this example:
 * you configured the yaml testbook parser, which will read the `testbook.yaml`
 * you configured both a html and a txt testbook reporters, which will produce `testbook.html` and `testbook.txt` reports
 * you configured the extent report to have a fixed name with: `extent.fileName: report.html`
-
-{% include copyCode.html %}
 
 ```text
 root
