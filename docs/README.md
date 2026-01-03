@@ -289,21 +289,18 @@ public class WebAppPage extends SpectrumPage<WebAppPage, Void> {
 }
 ```
 
-💡 **Tip**<br/>
-Both the `open` and `waitForPageLoading` methods return the instance calling them.
-This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface){:target="_blank"}, so that you can rely on method chaining.
-You should write your service methods with this in mind.
-Check [FilesIT]({{ site.repository_url }}/it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java){:target="_blank"} for an example:
-
-{% include copyCode.html %}
-
-```java
-uploadPage
-        .open()
-        .upload(uploadPage.getFileUpload(),FILE_TO_UPLOAD)
-        .getSubmit()
-        .click();
-```
+> 💡 **Tip**<br/>
+> Both the `open` and `waitForPageLoading` methods return the instance calling them.
+> This is meant to provide a [fluent API](https://en.wikipedia.org/wiki/Fluent_interface){:target="_blank"}, so that you can rely on method chaining.
+> You should write your service methods with this in mind.
+> Check [FilesIT]({{ site.repository_url }}/it-testbook/src/test/java/io/github/giulong/spectrum/it_testbook/tests/FilesIT.java){:target="_blank"} for an example:
+> ```java
+> uploadPage
+>         .open()
+>         .upload(uploadPage.getFileUpload(), FILE_TO_UPLOAD)
+>         .getSubmit()
+>         .click();
+> ```
 
 * `isLoaded()`:
 
@@ -537,10 +534,9 @@ Be sure to check it: each key is properly commented to clarify its purpose.
 You should also leverage the [Json Schema](#json-schema) to have autocompletion and fields' descriptions directly in your IDE.
 
 > ⚠️ **Running on *nix**<br/>
-> When running on *nix, the [configuration.default.unix.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.unix.yaml){:target="_blank"}
-> will be merged onto the base
-> one
-> to set filesystem-specific values such as path separators.
+> When running on *nix, the 
+> [configuration.default.unix.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.unix.yaml){:target="_blank"}
+> will be merged onto the base one to set filesystem-specific values such as path separators.
 
 To provide your own configuration and customise these values, you can create the `src/test/resources/configuration.yaml` file in your project.
 
@@ -578,23 +574,20 @@ which is a comma separated list of profile names you want to activate.
 
 > ⚠️ **Merging Lists**<br/>
 > Watch out that list-type nodes will not be overridden. Their values will be merged by appending elements! Let's clarify with an example:
-
-{% include copyCode.html %}
-
-```yaml
-# configuration.yaml
-anyList:
-  - baseValue
-
-# configuration-test.yaml
-anyList:
-  - valueForTest
-
-# merged configurations
-anyList:
-  - baseValue
-  - valueForTest
-```
+> ```yaml
+> # configuration.yaml
+> anyList:
+>   - baseValue
+> 
+> # configuration-test.yaml
+> anyList:
+>   - valueForTest
+> 
+> # merged configurations
+> anyList:
+>   - baseValue
+>   - valueForTest
+> ```
 
 > 💡 **Tip**<br/>
 > Working in a team where devs need different local configurations? You can *gitignore* a file like `configuration-personal.yaml`,
@@ -610,13 +603,10 @@ anyList:
 >
 > The very first node of the base `configuration.yaml` linked above sets the active profiles, instructing Spectrum to load the other two configurations,
 > and overriding the `application.baseUrl` accordingly:
-
-{% include copyCode.html %}
-
-```yaml
-runtime:
-  profiles: local,second
-```
+> ```yaml
+> runtime:
+>   profiles: local,second
+> ```
 
 ---
 
@@ -767,34 +757,23 @@ Both key name and default value might contain dots like in `${some.key:-default.
 > This trick is used in the internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}
 > to allow for variables to be read from outside.
 > For example, profiles are set like this:
-
-{% include copyCode.html %}
-
-```yaml
-# internal configuration.default.yaml
-runtime:
-  profiles: ${spectrum.profiles:-local}
-```
-
+> ```yaml
+> # internal configuration.default.yaml
+> runtime:
+>   profiles: ${spectrum.profiles:-local}
+> ```
 > This allows you to just run with `-Dspectrum.profiles=...` while having a default, but you can still explicitly set them in your `configuration.yaml`:
-
-{% include copyCode.html %}
-
-```yaml
-# your configuration.yaml
-runtime:
-  profiles: my-profile,another-one
-```
-
+> ```yaml
+> # your configuration.yaml
+> runtime:
+>   profiles: my-profile,another-one
+> ```
 > You can also choose to provide your own variable, which could be useful to create and leverage your own naming convention for env variables.
-
-{% include copyCode.html %}
-
-```yaml
-# your configuration.yaml
-runtime:
-  profiles: ${active-profiles:-local}
-```
+> ```yaml
+> # your configuration.yaml
+> runtime:
+>   profiles: ${active-profiles:-local}
+> ```
 
 These variables are already available in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:
 target="_blank"}.
@@ -1937,14 +1916,11 @@ You can see an example report here:
 > Spectrum will automatically load and apply them to the Extent Report. You can also customise the folder and name of the files above
 > by changing the `extent.css` and `extent.js` keys in your `configuration*.yaml`. This is indeed the default in the internal
 > [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
-
-{% include copyCode.html %}
-
-```yaml
-extent:
-  css: css/report.css # Path to the custom css to apply. Relative to the resources folder
-  js: js/report.js # Path to the custom js to apply. Relative to the resources folder
-```
+> ```yaml
+> extent:
+>   css: css/report.css # Path to the custom css to apply. Relative to the resources folder
+>   js: js/report.js # Path to the custom js to apply. Relative to the resources folder
+> ```
 
 Upon a test failure, Spectrum adds a screenshot to the report automatically.
 
@@ -2047,14 +2023,11 @@ extent:
 > ⚠️ **Default weights**<br/>
 > The weights shown in the snippet above are the default, meaning **passed** tests are shown before **skipped** ones,
 > which in turn are shown before those that **failed**. If this order is fine for you, there's no need to explicitly provide those weights. You can just write:
-
-{% include copyCode.html %}
-
-```yaml
-extent:
-  sort:
-    status: { }
-```
+> ```yaml
+> extent:
+>   sort:
+>     status: { }
+> ```
 
 ### Custom locators
 
@@ -2134,16 +2107,13 @@ You can specify which screenshots to be used as frames providing one or more of 
 > Screenshots are taken automatically (with `autoBefore` and `autoAfter`) according to the current log level
 > and the `drivers.events` settings. For example, if running with the default `INFO` log level and the configuration below,
 > no screenshot will be taken before clicking any element. It will when raising the log level at `DEBUG` or higher.
-
-{% include copyCode.html %}
-
-```yaml
-drivers:
-  events:
-    beforeClick:
-      level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
-      message: Clicking on %1$s
-```
+> ```yaml
+> drivers:
+>   events:
+>     beforeClick:
+>       level: DEBUG  # Screenshots for this event are taken only when running at `DEBUG` level or higher
+>       message: Clicking on %1$s
+> ```
 
 > 💡 **Tip**<br/>
 > Setting both `autoBefore` and `autoAfter` is likely to be useless. In this flow, screenshots at bullets 3 and 4 will be equal:
@@ -2169,19 +2139,16 @@ folder and attached to the Extent Report as well, where:
 > 💡 **Video Configuration Example**<br/>
 > Here's a quick example snippet. Remember you just need to provide fields with a value different from the corresponding one in the
 > internal [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
-
-{% include copyCode.html %}
-
-```yaml
-video:
-  frames:
-    - autoAfter
-    - manual
-  skipDuplicateFrames: false
-  extentTest:
-    width: 640  # we want a bigger video tag in the report
-    height: 480
-```
+> ```yaml
+> video:
+>   frames:
+>     - autoAfter
+>     - manual
+>   skipDuplicateFrames: false
+>   extentTest:
+>     width: 640  # we want a bigger video tag in the report
+>     height: 480
+> ```
 
 > ⚠️ **Video Frame Rate**<br/>
 > Since the execution video is made up of screenshots, for performance reason it has a fixed rate of 1 frame per second.
@@ -2664,16 +2631,13 @@ to all events tagged in a particular way, such as all the tests.
 > 💡 **Example**<br/>
 > Check the `eventsConsumers` in the [configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}.
 > Internal consumers need to take actions after each test is done, meaning they listen to events tagged with `test`:
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - extentTestEnd: # We need to add an entry to the Html Report once each test is done
-    events:
-      - reason: after
-        tags: [ test ]
-```
+> ```yaml
+> eventsConsumers:
+>   - extentTestEnd: # We need to add an entry to the Html Report once each test is done
+>     events:
+>       - reason: after
+>         tags: [ test ]
+> ```
 
 ## Reason
 
@@ -2715,18 +2679,15 @@ The other columns are the event's keys, with blank values being nulls.
 > 💡 **Tip**<br/>
 > If you're not sure about a particular event, when it's fired and what are the actual values of its keys,
 > you can always run with `-Dspectrum.log.level=TRACE` and look into logs. You'll find something like "Dispatching event ...":
-
-{% include copyCode.html %}
-
-```text
-18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
-18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
-18:00:05.081 T EventsConsumer            | reasonMatches: false
-18:00:05.081 T EventsConsumer            | resultMatches: false
-18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
-18:00:05.081 T EventsConsumer            | reasonMatches: false
-18:00:05.081 T EventsConsumer            | resultMatches: false
-```
+> ```text
+> 18:00:05.076 D EventsDispatcher          | Dispatching event Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
+> 18:00:05.081 T EventsConsumer            | ExtentTestConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
+> 18:00:05.081 T EventsConsumer            | reasonMatches: false
+> 18:00:05.081 T EventsConsumer            | resultMatches: false
+> 18:00:05.081 T EventsConsumer            | TestBookConsumer matchers for Event(primaryId=null, secondaryId=null, tags=[suite], reason=before, result=null)
+> 18:00:05.081 T EventsConsumer            | reasonMatches: false
+> 18:00:05.081 T EventsConsumer            | resultMatches: false
+> ```
 
 ## Custom Events
 
@@ -2800,50 +2761,41 @@ Let's now see how to configure few consumers:
 
 > 💡 **Example: reason and primaryId and secondaryId**<br/>
 > We want to send a Slack notification before and after a specific test, and an email just after:
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - slack:
-      events:
-        - primaryId: Class Name
-          secondaryId: test name
-          reason: before
-        - primaryId: Class Name
-          secondaryId: test name
-          reason: after
-  - mail:
-      events:
-        - primaryId: Class Name
-          secondaryId: test name
-          reason: after
-```
+> ```yaml
+> eventsConsumers:
+>   - slack:
+>       events:
+>         - primaryId: Class Name
+>           secondaryId: test name
+>           reason: before
+>         - primaryId: Class Name
+>           secondaryId: test name
+>           reason: after
+>   - mail:
+>       events:
+>         - primaryId: Class Name
+>           secondaryId: test name
+>           reason: after
+> ```
 
 > 💡 **Example: result and tags**<br/>
 > We want to send a mail notification if the whole suite fails:
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - mail:
-      events:
-        - result: FAILED
-          tags: [ suite ]
-```
+> ```yaml
+> eventsConsumers:
+>   - mail:
+>       events:
+>         - result: FAILED
+>           tags: [ suite ]
+> ```
 
 > 💡 **Example: custom event by primaryId and reason**<br/>
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - slack:
-      events:
-        - primaryId: primary.*  # every event which primaryId is starting with "primary" 
-          reason: custom-event
-```
+> ```yaml
+> eventsConsumers:
+>   - slack:
+>       events:
+>         - primaryId: primary.*  # every event which primaryId is starting with "primary" 
+>           reason: custom-event
+> ```
 
 > 💡 **Tip**<br/>
 > Consumers send notification using templates that leverage [FreeMarker](https://freemarker.apache.org/){:target="_blank"}.
@@ -2887,20 +2839,17 @@ Check Simple java Mail's docs to see all the [available properties](https://www.
 > The default [mail.html template]({{ site.repository_url }}/spectrum/src/main/resources/templates/mail.html){:target="_blank"}
 > can either be used to notify about single tests or the whole suite result,
 > as per the snippet below. You can use both or just the one you prefer.
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - mail:
-      events:
-        - reason: after
-          tags: [ test ]
-  - mail:
-      events:
-        - reason: after
-          tags: [ suite ]
-```
+> ```yaml
+> eventsConsumers:
+>   - mail:
+>       events:
+>         - reason: after
+>           tags: [ test ]
+>   - mail:
+>       events:
+>         - reason: after
+>           tags: [ suite ]
+> ```
 
 The default template is pretty basic, as you can see. The first is the test example,
 while the second is the suite result notification:
@@ -2955,26 +2904,23 @@ eventsConsumers:
 > Mind that, like in the snippet above, attachments are specified at consumer level.
 > This means for all the events of a specific consumer, all the attachments will be sent.
 > If you need to send different sets of attachments, provide different consumers:
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - mail:
-      events:
-        - reason: after
-          tags: [ suite ]
-      attachments:
-        - name: report
-          file: target/spectrum/reports/report.html
-  - mail:
-      events:
-        - reason: after
-          tags: [ class ]
-      attachments:
-        - name: attachment
-          file: path/to/attachment
-```
+> ```yaml
+> eventsConsumers:
+>   - mail:
+>       events:
+>         - reason: after
+>           tags: [ suite ]
+>       attachments:
+>         - name: report
+>           file: target/spectrum/reports/report.html
+>   - mail:
+>       events:
+>         - reason: after
+>           tags: [ class ]
+>       attachments:
+>         - name: attachment
+>           file: path/to/attachment
+> ```
 
 ### Slack Consumer
 
@@ -3040,31 +2986,25 @@ A few steps are needed to configure your Slack Workspace to receive notification
 > The default [slack.json template]({{ site.repository_url }}/spectrum/src/main/resources/templates/slack.json){:target="_blank"} is meant to be used to notify about each
 > test result,
 > as per the snippet below. It might not be correctly interpolated if used on other events.
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - slack:
-      events:
-        - reason: after
-          tags: [ test ]
-```
-
+> ```yaml
+> eventsConsumers:
+>   - slack:
+>       events:
+>         - reason: after
+>           tags: [ test ]
+> ```
+> 
 > If you want to provide a custom template there are two ways:
 > * provide a template with a custom name under `src/test/resources/templates`:
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - slack:
-      template: my-template.txt # The extension doesn't really matter.
-      events:
-        - reason: after
-          tags: [ test ]
-```
-
+>
+> ```yaml
+> eventsConsumers:
+>   - slack:
+>       template: my-template.txt # The extension doesn't really matter.
+>       events:
+>         - reason: after
+>           tags: [ test ]
+> ```
 > * simply create the file `src/test/resources/templates/slack.json`. This will override the internal default, so there's no need to explicitly provide the path.
 
 > 💡 **Tip**<br/>
@@ -3089,19 +3029,17 @@ eventsConsumers:
 > By default, the [test-steps.txt template]({{ site.repository_url }}/spectrum/src/main/resources/templates/test-steps.txt){:target="_blank"} is used.
 > If you want to provide a custom template there are two ways:
 > * provide a template with a custom name under `src/test/resources/templates`:
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - testSteps:
-      template: my-template.html # The report produced will match the template's extension.
-      output: target/spectrum/tests-steps # This is the default output path, no need to set it unless you want to change it.
-      events:
-        - reason: after
-          tags: [ test, dynamicTest ]
-```
-
+>
+> ```yaml
+> eventsConsumers:
+>   - testSteps:
+>       template: my-template.html # The report produced will match the template's extension.
+>       output: target/spectrum/tests-steps # This is the default output path, no need to set it unless you want to change it.
+>       events:
+>         - reason: after
+>           tags: [ test, dynamicTest ]
+> ```
+>
 > * simply create the file `src/test/resources/templates/test-steps.txt`. This will override the internal default, so there's no need to explicitly provide the path.
 >
 > The template is interpolated with [FreeMarker](https://freemarker.apache.org/){:target="_blank"}. All the steps recorded are exposed in the `steps` variable and each is mapped
@@ -3147,18 +3085,16 @@ eventsConsumers:
 > By default, the [log.txt template]({{ site.repository_url }}/spectrum/src/main/resources/templates/log.txt){:target="_blank"} is used.
 > If you want to provide a custom template there are two ways:
 > * provide a template with a custom name under `src/test/resources/templates`:
-
-{% include copyCode.html %}
-
-```yaml
-eventsConsumers:
-  - log:
-      template: my-template.txt
-      events:
-        - primaryId: primary.*
-          reason: custom-event
-```
-
+>
+> ```yaml
+> eventsConsumers:
+>   - log:
+>       template: my-template.txt
+>       events:
+>         - primaryId: primary.*
+>           reason: custom-event
+> ```
+> 
 > * simply create the file `src/test/resources/templates/log.txt`. This will override the internal default, so there's no need to explicitly provide the path.
 >
 > The template is interpolated with [FreeMarker](https://freemarker.apache.org/){:target="_blank"}. The event is exposed in the `event` variable.
@@ -3204,13 +3140,10 @@ meaning you can write complex conditions using the variables briefly explained b
 > 💡 **Tip**<br/>
 > Since the testBook's quality gate status is added to the vars used when evaluating the summary's condition,
 > you can indirectly bind those two by having this:
-
-{% include copyCode.html %}
-
-```yaml
-summary:
-  condition: ${qgStatus}
-```
+> ```yaml
+> summary:
+>   condition: ${qgStatus}
+> ```
 
 As an example, this is how you can have a html summary:
 
@@ -3831,7 +3764,7 @@ testBook:
 # Parallel Execution
 
 Spectrum tests can be run in parallel by leveraging
-[JUnit Parallel Execution](https://docs.junit.org/snapshot/user-guide/#writing-tests-parallel-execution){:target="_blank"}
+[JUnit Parallel Execution](https://docs.junit.org/snapshot/writing-tests/parallel-execution.html){:target="_blank"}
 
 ---
 

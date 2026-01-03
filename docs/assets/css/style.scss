@@ -255,7 +255,15 @@ tbody tr:nth-child(odd) {
 blockquote {
     font-style: normal;
     margin: 25px -20px -10px;
-    padding: 1px 20px 1px 40px;
+    padding: 1px 40px;
+}
+
+blockquote pre.highlight {
+    margin: 0 0 20px;
+}
+
+blockquote div.highlighter-rouge {
+    margin-top: -20px;
 }
 
 span.copy-header {
@@ -263,6 +271,10 @@ span.copy-header {
     padding: 28px 16px 4px;
     margin: 0 -20px -64px;
     text-align: right;
+}
+
+div.highlight span.copy-header {
+    margin: 0 0px -44px;
 }
 
 span.schema-copy-header {

@@ -1,9 +1,29 @@
-const copyHeaders = document.querySelectorAll('.copy-header');
-const copyButtons = document.querySelectorAll('.copy-button');
+const blockquotes = document.querySelectorAll('blockquote');
+const buttonSnippet = `<span class="copy-header">
+                         <button class="copy-button">
+                             <span class="copy-text" style="display: none;">Copied!</span>
+                             <img class="copy-icon" src="assets/images/copy.png" alt="copy"/>
+                         </button>
+                     </span>`;
 
 (async () => {
     const response = await fetch('https://api.github.com/repos/giulong/spectrum/contents/docs/json-schemas');
     const json = await response.json();
+
+    blockquotes.forEach((blockquote, index) => {
+        try {
+            blockquote.querySelectorAll('div.highlight').forEach(highlight => {
+                const wrapper = document.createElement('span');
+                wrapper.innerHTML = buttonSnippet;
+                highlight.prepend(wrapper);
+            });
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    const copyHeaders = document.querySelectorAll('.copy-header');
+    const copyButtons = document.querySelectorAll('.copy-button');
 
     copyButtons.forEach((copyButton, index) => {
         try {
