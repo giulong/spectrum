@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.util.Map;
 
 import com.aventstack.extentreports.ExtentTest;
+
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
@@ -22,6 +23,7 @@ import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

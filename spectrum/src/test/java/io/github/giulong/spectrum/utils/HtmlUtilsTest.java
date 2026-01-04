@@ -15,6 +15,7 @@ import java.util.Map;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
