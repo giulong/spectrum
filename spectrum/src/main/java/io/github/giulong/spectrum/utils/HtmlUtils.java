@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.giulong.spectrum.interfaces.SessionHook;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
 
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -64,19 +65,25 @@ public class HtmlUtils implements SessionHook {
     }
 
     public String buildVisualRegressionTagFor(final int number, final TestData testData, final byte[] referenceBytes, final byte[] regressionBytes) {
-        return buildVisualRegressionTagFor(number, testData, referenceBytes, regressionBytes, null);
+        return buildVisualRegressionTagFor(number, testData, referenceBytes, regressionBytes, Result.builder().shown(false).build());
     }
 
-    public String buildVisualRegressionTagFor(final int number, final TestData testData, final byte[] referenceBytes, final byte[] regressionBytes, final byte[] diffBytes) {
+    @SneakyThrows
+    public String buildVisualRegressionTagFor(final int number, final TestData testData, final byte[] referenceBytes, final byte[] regressionBytes, final Result result) {
         final Map<String, Object> vars = new HashMap<>();
 
         vars.put(ID, testData.getTestId());
         vars.put("number", number);
         vars.put("reference", ENCODER.encodeToString(referenceBytes));
         vars.put("regression", ENCODER.encodeToString(regressionBytes));
+        vars.put("shown", result.isShown());
 
-        if (diffBytes != null) {
-            vars.put("diff", ENCODER.encodeToString(diffBytes));
+        if (result.isShown()) {
+            final Path diffPath = result.getPath();
+
+            if (diffPath != null) {
+                vars.put("diff", ENCODER.encodeToString(Files.readAllBytes(diffPath)));
+            }
         }
 
         return freeMarkerWrapper.interpolate(this.visualRegressionTemplate, vars);

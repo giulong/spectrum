@@ -42,7 +42,11 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertVideoDuration(extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers(), 8);
 
-        assertEquals(1, extentReportPage.getVisualRegressions().size());
+        final List<WebElement> visualRegressions = extentReportPage.getVisualRegressions();
+        assertEquals(1, visualRegressions.size());
+
+        // to check there is no diff shown
+        assertEquals(0, visualRegressions.getFirst().findElements(By.className("missing-diff")).size());
 
         extentReportPage.getTestViewTests().get(4).click();
         assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 1 visual regressions"));
@@ -72,15 +76,16 @@ class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertVideoDuration(extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers(), 8);
 
-        assertEquals(3, extentReportPage.getVisualRegressions().size());
+        final List<WebElement> visualRegressions = extentReportPage.getVisualRegressions();
+        assertEquals(3, visualRegressions.size());
 
         extentReportPage.getTestViewTests().get(4).click();
         assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 3 visual regressions"));
 
         // Extent triplicates elements and show/hide them when navigating the sections of the report. So taking 3, 4, 5 instead of 0, 1, 2
-        final WebElement visualRegression1 = extentReportPage.getVisualRegressions().get(3);
-        final WebElement visualRegression2 = extentReportPage.getVisualRegressions().get(4);
-        final WebElement visualRegression3 = extentReportPage.getVisualRegressions().get(5);
+        final WebElement visualRegression1 = visualRegressions.get(3);
+        final WebElement visualRegression2 = visualRegressions.get(4);
+        final WebElement visualRegression3 = visualRegressions.get(5);
 
         assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression1.getDomAttribute("data-test-id"));
         assertEquals("2", visualRegression1.getDomAttribute("data-frame"));

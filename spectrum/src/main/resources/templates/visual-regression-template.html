@@ -6,9 +6,11 @@
         <div class="col-md-3 text-center">
             <span class="badge white-text red">REGRESSION</span>
         </div>
+        <#if shown>
         <div class="col-md-3 text-center">
             <span class="badge white-text red">DIFF</span>
         </div>
+        </#if>
     </div>
     <div class="row mb-3">
         <div class="col-md-3 text-center">
@@ -21,17 +23,19 @@
                 <img src="data:image/png;base64,${regression}" alt="regression screenshot" class="regression-img"/>
             </a>
         </div>
+        <#if shown>
         <div class="col-md-3 text-center">
-        <#if diff??>
-            <a href="data:image/png;base64,${diff}" data-featherlight="image">
-                <img src="data:image/png;base64,${diff}" alt="diff" class="diff-img"/>
-            </a>
-        <#else>
-            <div class="missing-diff">
-                Images have different sizes.<br>
-                Cannot compare them.
-            </div>
-        </#if>
+            <#if diff??>
+                <a href="data:image/png;base64,${diff}" data-featherlight="image">
+                    <img src="data:image/png;base64,${diff}" alt="diff" class="diff-img"/>
+                </a>
+            <#else>
+                <div class="missing-diff">
+                    Images have different sizes.<br>
+                    Cannot compare them.
+                </div>
+            </#if>
         </div>
+        </#if>
     </div>
 </div>

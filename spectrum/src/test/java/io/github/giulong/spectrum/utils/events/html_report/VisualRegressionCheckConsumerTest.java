@@ -39,7 +39,6 @@ class VisualRegressionCheckConsumerTest {
     private final byte[] screenshot = new byte[]{1, 2, 3};
     private final byte[] checksum = new byte[]{4, 5, 6};
     private final byte[] screenshot2 = new byte[]{4};
-    private final byte[] diffBytes = new byte[]{7};
     private final int frameNumber = 123;
     private final String primaryId = "autoBefore";
     private final String failedScreenshotName = "failedScreenshotName";
@@ -69,9 +68,6 @@ class VisualRegressionCheckConsumerTest {
 
     @Mock
     private Path referencePath;
-
-    @Mock
-    private Path diffPath;
 
     @Mock
     private ExtentTest currentNode;
@@ -253,10 +249,8 @@ class VisualRegressionCheckConsumerTest {
         when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
         when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(result);
         when(result.isRegressionConfirmed()).thenReturn(true);
-        when(result.getPath()).thenReturn(diffPath);
 
-        when(Files.readAllBytes(diffPath)).thenReturn(diffBytes);
-        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, diffBytes)).thenReturn(visualRegressionTag);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, result)).thenReturn(visualRegressionTag);
 
         consumer.accept(event);
 
@@ -285,7 +279,7 @@ class VisualRegressionCheckConsumerTest {
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
         when(Files.readAllBytes(referencePath)).thenReturn(checksum);
         when(testData.getFrameNumber()).thenReturn(frameNumber);
-        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, null)).thenReturn(visualRegressionTag);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, result)).thenReturn(visualRegressionTag);
 
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);

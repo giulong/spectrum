@@ -10,6 +10,6 @@ public class NoOpDiff extends ImageDiff {
     @Override
     public Result buildBetween(final Path reference, final Path regression, final Path destination, final String diffName) {
         log.debug("NoOp image diff");
-        return Result.builder().build();
+        return Result.builder().shown(false).build();
     }
 }

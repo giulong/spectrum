@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.giulong.spectrum.MockFinal;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +28,7 @@ class HtmlUtilsTest {
     private MockedStatic<Path> pathMockedStatic;
     private MockedStatic<Files> filesMockedStatic;
 
+    private final byte[] diffBytes = new byte[]{7};
     private final String testId = "testId";
 
     @MockFinal
@@ -52,6 +54,9 @@ class HtmlUtilsTest {
     @MockFinal
     @SuppressWarnings("unused")
     private FileUtils fileUtils;
+
+    @Mock
+    private Result result;
 
     @Captor
     private ArgumentCaptor<Map<String, Object>> freeMarkerVarsArgumentCaptor;
@@ -115,10 +120,10 @@ class HtmlUtilsTest {
         Reflections.setField("frameTemplate", htmlUtils, source);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
-        final String result = htmlUtils.buildFrameTagFor(123, "content", testData);
+        final String expected = htmlUtils.buildFrameTagFor(123, "content", testData);
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
-        assertEquals(interpolatedTemplate, result);
+        assertEquals(interpolatedTemplate, expected);
         assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
@@ -134,46 +139,94 @@ class HtmlUtilsTest {
         when(testData.getTestId()).thenReturn(testId);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
-        final String result = htmlUtils.buildFrameTagFor(123, "content", testData, "classes");
+        final String expected = htmlUtils.buildFrameTagFor(123, "content", testData, "classes");
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
-        assertEquals(interpolatedTemplate, result);
+        assertEquals(interpolatedTemplate, expected);
         assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
     @Test
     @DisplayName("buildVisualRegressionTagFor should return the tag with the provided frame number, test id, reference, regression, and no diff")
     void buildVisualRegressionTagForNull() {
-        when(testData.getTestId()).thenReturn(testId);
+        final boolean shown = false;
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
-        final Map<String, Object> expectedParams = Map.of("id", testId, "number", 123, "reference", "AQID", "regression", "BAUG");
+        final Map<String, Object> expectedParams = Map.of(
+                "id", testId,
+                "number", 123,
+                "reference", "AQID",
+                "shown", shown,
+                "regression", "BAUG");
 
         Reflections.setField("visualRegressionTemplate", htmlUtils, source);
+
+        when(testData.getTestId()).thenReturn(testId);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
-        final String result = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6});
+        final String expected = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6});
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
-        assertEquals(interpolatedTemplate, result);
+        assertEquals(interpolatedTemplate, expected);
         assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
     @Test
     @DisplayName("buildVisualRegressionTagFor should return the tag with the provided frame number, test id, reference, regression, and diff")
-    void buildVisualRegressionTagFor() {
-        when(testData.getTestId()).thenReturn(testId);
+    void buildVisualRegressionTagFor() throws IOException {
+        final boolean shown = true;
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
-        final Map<String, Object> expectedParams = Map.of("id", testId, "number", 123, "reference", "AQID", "regression", "BAUG", "diff", "Bw==");
+        final Map<String, Object> expectedParams = Map.of(
+                "id", testId,
+                "number", 123,
+                "reference", "AQID",
+                "regression", "BAUG",
+                "shown", shown,
+                "diff", "Bw==");
 
         Reflections.setField("visualRegressionTemplate", htmlUtils, source);
+
+        when(testData.getTestId()).thenReturn(testId);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
-        final String result = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6}, new byte[]{7});
+        when(result.isShown()).thenReturn(shown);
+        when(result.getPath()).thenReturn(path);
+        when(Files.readAllBytes(path)).thenReturn(diffBytes);
+
+        final String expected = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6}, result);
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
-        assertEquals(interpolatedTemplate, result);
+        assertEquals(interpolatedTemplate, expected);
+        assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
+    }
+
+    @Test
+    @DisplayName("buildVisualRegressionTagFor should return the tag with the provided frame number, test id, reference, regression, and no diff if the path is null")
+    void buildVisualRegressionTagForNoDiffPath() {
+        final boolean shown = true;
+        final String interpolatedTemplate = "interpolatedTemplate";
+        final String source = "source";
+        final Map<String, Object> expectedParams = Map.of(
+                "id", testId,
+                "number", 123,
+                "reference", "AQID",
+                "regression", "BAUG",
+                "shown", shown);
+
+        Reflections.setField("visualRegressionTemplate", htmlUtils, source);
+
+        when(testData.getTestId()).thenReturn(testId);
+        when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
+
+        when(result.isShown()).thenReturn(shown);
+        when(result.getPath()).thenReturn(null);
+
+        final String expected = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6}, result);
+
+        verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
+        filesMockedStatic.verify(() -> Files.readAllBytes(path), never());
+        assertEquals(interpolatedTemplate, expected);
         assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
@@ -262,10 +315,10 @@ class HtmlUtilsTest {
         when(mockPath.toString()).thenReturn(mockPathString);
 
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
-        final String result = htmlUtils.generateVideoTag(videoId, width, height, mockPath);
+        final String expected = htmlUtils.generateVideoTag(videoId, width, height, mockPath);
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
-        assertEquals(interpolatedTemplate, result);
+        assertEquals(interpolatedTemplate, expected);
         assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 
@@ -281,10 +334,10 @@ class HtmlUtilsTest {
         Reflections.setField("divTemplate", htmlUtils, source);
         when(freeMarkerWrapper.interpolate(source, expectedParams)).thenReturn(interpolatedTemplate);
 
-        final String result = htmlUtils.generateTestInfoDivs(id, classDisplayName, testDisplayName);
+        final String expected = htmlUtils.generateTestInfoDivs(id, classDisplayName, testDisplayName);
 
         verify(freeMarkerWrapper).interpolate(eq(source), freeMarkerVarsArgumentCaptor.capture());
-        assertEquals(interpolatedTemplate, result);
+        assertEquals(interpolatedTemplate, expected);
         assertEquals(expectedParams, freeMarkerVarsArgumentCaptor.getValue());
     }
 }

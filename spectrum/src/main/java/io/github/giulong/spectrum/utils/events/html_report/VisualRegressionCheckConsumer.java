@@ -43,9 +43,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
             return;
         }
 
-        final Path diffPath = result.getPath();
-        final byte[] diffBytes = diffPath != null ? Files.readAllBytes(diffPath) : null;
-        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, Files.readAllBytes(referencePath), screenshot, diffBytes);
+        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, Files.readAllBytes(referencePath), screenshot, result);
 
         log.error("Visual regression: screenshot not matching with its reference {}", referencePath);
         testData.registerFailedVisualRegression();

@@ -31,6 +31,9 @@ public abstract class ImageDiff {
         private Path path;
 
         @Builder.Default
+        private boolean shown = true;
+
+        @Builder.Default
         private boolean regressionConfirmed = true;
     }
 }

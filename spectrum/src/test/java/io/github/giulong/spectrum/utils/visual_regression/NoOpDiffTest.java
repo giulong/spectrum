@@ -29,7 +29,7 @@ class NoOpDiffTest {
     @Test
     @DisplayName("buildBetween should do nothing and confirm the regression")
     void buildBetween() {
-        assertEquals(Result.builder().build(), diff.buildBetween(reference, regression, destination, "whatever"));
+        assertEquals(Result.builder().shown(false).build(), diff.buildBetween(reference, regression, destination, "whatever"));
 
         verifyNoInteractions(reference);
         verifyNoInteractions(regression);
