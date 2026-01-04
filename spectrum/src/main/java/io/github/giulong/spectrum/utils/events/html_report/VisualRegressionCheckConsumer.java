@@ -9,7 +9,6 @@ import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -22,7 +21,6 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
     }
 
     @Override
-    @SneakyThrows
     public void accept(final Event event) {
         runChecksOn(event);
 
@@ -43,7 +41,7 @@ public class VisualRegressionCheckConsumer extends VisualRegressionConsumer {
             return;
         }
 
-        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, Files.readAllBytes(referencePath), screenshot, result);
+        final String visualRegressionTag = htmlUtils.buildVisualRegressionTagFor(testData.getFrameNumber(), testData, fileUtils.readBytesOf(referencePath), screenshot, result);
 
         log.error("Visual regression: screenshot not matching with its reference {}", referencePath);
         testData.registerFailedVisualRegression();

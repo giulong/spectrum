@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -16,7 +15,6 @@ import java.util.Map;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -173,7 +171,7 @@ class HtmlUtilsTest {
 
     @Test
     @DisplayName("buildVisualRegressionTagFor should return the tag with the provided frame number, test id, reference, regression, and diff")
-    void buildVisualRegressionTagFor() throws IOException {
+    void buildVisualRegressionTagFor() {
         final boolean shown = true;
         final String interpolatedTemplate = "interpolatedTemplate";
         final String source = "source";
@@ -192,7 +190,7 @@ class HtmlUtilsTest {
 
         when(result.isShown()).thenReturn(shown);
         when(result.getPath()).thenReturn(path);
-        when(Files.readAllBytes(path)).thenReturn(diffBytes);
+        when(fileUtils.readBytesOf(path)).thenReturn(diffBytes);
 
         final String expected = htmlUtils.buildVisualRegressionTagFor(123, testData, new byte[]{1, 2, 3}, new byte[]{4, 5, 6}, result);
 
@@ -232,11 +230,11 @@ class HtmlUtilsTest {
 
     @Test
     @DisplayName("inline should call both the inlineImagesOf and inlineVideosOf on the provided html and return the one with all of those replaced")
-    void inline() throws IOException {
+    void inline() {
         final String report = "abc<video src=\"src1\"/>def<div class=\"row mb-3\"><div class=\"col-md-3\"><img class=\"inline\" src=\"src2\"/></div></div>def";
 
         when(Path.of("src1")).thenReturn(path);
-        when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
+        when(fileUtils.readBytesOf(path)).thenReturn(new byte[]{1, 2, 3});
         final String source = "source";
         final Map<String, Object> expectedParams = Map.of("encoded", "BAUG");
 
@@ -287,13 +285,13 @@ class HtmlUtilsTest {
 
     @Test
     @DisplayName("inlineVideosOf should return the provided html with all the videos replaced with their own base64")
-    void inlineVideosOf() throws IOException {
+    void inlineVideosOf() {
         final String html = "abc<video src=\"src1\"/>def<video src=\"src2\"/>ghi";
 
         when(Path.of("src1")).thenReturn(path);
         when(Path.of("src2")).thenReturn(path2);
-        when(Files.readAllBytes(path)).thenReturn(new byte[]{1, 2, 3});
-        when(Files.readAllBytes(path2)).thenReturn(new byte[]{4, 5, 6});
+        when(fileUtils.readBytesOf(path)).thenReturn(new byte[]{1, 2, 3});
+        when(fileUtils.readBytesOf(path2)).thenReturn(new byte[]{4, 5, 6});
 
         final String actual = htmlUtils.inlineVideosOf(html);
 

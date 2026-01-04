@@ -172,7 +172,6 @@ public final class FileUtils {
         return Arrays.equals(checksumOf(bytes1), checksumOf(bytes2));
     }
 
-    @SneakyThrows
     public boolean compare(final Path path1, final Path path2) {
         log.info("""
                  Checking if these files are the same:
@@ -180,11 +179,10 @@ public final class FileUtils {
                  {}
                  """, path1, path2);
 
-        return compare(Files.readAllBytes(path1), Files.readAllBytes(path2));
+        return compare(readBytesOf(path1), readBytesOf(path2));
     }
 
-    @SneakyThrows
     public boolean compare(final Path path, final byte[] bytes) {
-        return compare(Files.readAllBytes(path), bytes);
+        return compare(readBytesOf(path), bytes);
     }
 }

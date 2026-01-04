@@ -8,14 +8,12 @@ import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Map;
 
 import com.aventstack.extentreports.ExtentTest;
-
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.pojos.events.Event;
@@ -24,7 +22,6 @@ import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -228,7 +225,7 @@ class VisualRegressionCheckConsumerTest {
 
     @Test
     @DisplayName("accept should register the regression when the screenshot taken does not match with its reference")
-    void acceptVisualRegression() throws IOException {
+    void acceptVisualRegression() {
         final Path failedScreenshotPath = mock();
 
         runChecksStubs();
@@ -242,7 +239,7 @@ class VisualRegressionCheckConsumerTest {
         Reflections.setField("screenshot", consumer, screenshot);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
 
-        when(Files.readAllBytes(referencePath)).thenReturn(checksum);
+        when(fileUtils.readBytesOf(referencePath)).thenReturn(checksum);
         when(testData.getFrameNumber()).thenReturn(frameNumber);
 
         when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
@@ -267,7 +264,7 @@ class VisualRegressionCheckConsumerTest {
 
     @Test
     @DisplayName("accept should register the regression when the screenshot taken does not match with its reference")
-    void acceptVisualRegressionFailFast() throws IOException {
+    void acceptVisualRegressionFailFast() {
         final String exceptionMessage = "exceptionMessage";
         final Path failedScreenshotPath = mock();
 
@@ -277,7 +274,7 @@ class VisualRegressionCheckConsumerTest {
 
         when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
         when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
-        when(Files.readAllBytes(referencePath)).thenReturn(checksum);
+        when(fileUtils.readBytesOf(referencePath)).thenReturn(checksum);
         when(testData.getFrameNumber()).thenReturn(frameNumber);
         when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, result)).thenReturn(visualRegressionTag);
 
@@ -312,7 +309,7 @@ class VisualRegressionCheckConsumerTest {
 
     @Test
     @DisplayName("accept should return without registering the regression when the imageDiff does not confirm the regression")
-    void acceptVisualRegressionNotConfirmed() throws IOException {
+    void acceptVisualRegressionNotConfirmed() {
         final Path failedScreenshotPath = mock();
 
         runChecksStubs();
@@ -325,8 +322,6 @@ class VisualRegressionCheckConsumerTest {
         // addScreenshot
         Reflections.setField("screenshot", consumer, screenshot);
         when(contextManager.getScreenshots()).thenReturn(screenshots);
-
-        when(Files.readAllBytes(referencePath)).thenReturn(checksum);
 
         when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
         when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
@@ -342,6 +337,7 @@ class VisualRegressionCheckConsumerTest {
 
         verifyNoInteractions(htmlUtils);
         verify(currentNode, never()).fail(visualRegressionTag);
+        verify(fileUtils, never()).readBytesOf(referencePath);
 
         runChecksAssertions();
     }

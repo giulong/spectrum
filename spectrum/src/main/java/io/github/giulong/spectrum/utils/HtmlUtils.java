@@ -3,7 +3,6 @@ package io.github.giulong.spectrum.utils;
 import static java.util.regex.Pattern.DOTALL;
 import static lombok.AccessLevel.PRIVATE;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import io.github.giulong.spectrum.interfaces.SessionHook;
 import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
 
 import lombok.NoArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -68,7 +66,6 @@ public class HtmlUtils implements SessionHook {
         return buildVisualRegressionTagFor(number, testData, referenceBytes, regressionBytes, Result.builder().shown(false).build());
     }
 
-    @SneakyThrows
     public String buildVisualRegressionTagFor(final int number, final TestData testData, final byte[] referenceBytes, final byte[] regressionBytes, final Result result) {
         final Map<String, Object> vars = new HashMap<>();
 
@@ -82,7 +79,7 @@ public class HtmlUtils implements SessionHook {
             final Path diffPath = result.getPath();
 
             if (diffPath != null) {
-                vars.put("diff", ENCODER.encodeToString(Files.readAllBytes(diffPath)));
+                vars.put("diff", ENCODER.encodeToString(fileUtils.readBytesOf(diffPath)));
             }
         }
 
@@ -108,14 +105,13 @@ public class HtmlUtils implements SessionHook {
         return inlineHtml;
     }
 
-    @SneakyThrows
     public String inlineVideosOf(final String html) {
         final Matcher matcher = VIDEO_SRC.matcher(html);
         String inlineHtml = html;
 
         while (matcher.find()) {
             final String src = matcher.group(SRC);
-            final byte[] bytes = Files.readAllBytes(Path.of(src));
+            final byte[] bytes = fileUtils.readBytesOf(Path.of(src));
             final String encoded = ENCODER.encodeToString(bytes);
             final String replacement = String.format("data:video/mp4;base64,%s", encoded);
 
