@@ -3512,6 +3512,208 @@ testBook:
 
 ---
 
+
+# Visual Regression Testing
+
+Spectrum supports **Visual Regression Testing**, comparing visual snapshots of the AUT to identify regressions. This is done in a two-steps process:
+
+1. During the first run, Spectrum takes screenshots that act as snapshot references.
+2. During the subsequent runs, Spectrum takes screenshots in the same moments, and compare them to the snapshots.
+
+If one or more screenshots don't match with their snapshot counterpart, a `VisualRegressionException` is thrown.
+
+> 💡 **Tip**<br/>
+> Visual regression works with both full-page and single webElements screenshots.
+
+This capability is disabled by default. This is the minimum piece of configuration you need to add to activate it:
+
+```yaml
+visualRegression:
+  frames:
+    - manual
+```
+
+With the snippet above, you're saying you want to compare just the screenshots you take manually.
+The available frames are the same used in the [Automatic Execution Video Generation](#automatic-execution-video-generation)
+(check both this and the [WebDriver Events Listener section](#webdriver-events-listener) for more info):
+
+| Frame      | Description                                                                                                                        |
+|------------|------------------------------------------------------------------------------------------------------------------------------------|
+| autoBefore | Screenshots taken **before** an event happening in the WebDriver                                                                   |
+| autoAfter  | Screenshots taken **after** an event happening in the WebDriver                                                                    |
+| manual     | Screenshots programmatically taken by you by invoking one of the [SpectrumEntity Service Methods](#spectrumentity-service-methods) |
+
+Let's now review all the other options available to configure this capability. This is the internal
+[configuration.default.yaml]({{ site.repository_url }}/spectrum/src/main/resources/yaml/configuration.default.yaml){:target="_blank"}:
+
+```yaml
+# Visual Regression Testing configuration
+visualRegression:
+  failFast: false # Whether to fail immediately when the first visual regression is found, rather than running the entire test
+  snapshots: # Snapshots screenshots references configuration
+    folder: src/test/resources/visual-regression # Where to save the screenshot references
+    override: false # Whether to override the snapshots references already generated
+  frames: [ ] # Kind of frames to be considered. Empty by default
+  checks: # Checks configuration
+    count: 0 # Number of checks to perform before considering a snapshot valid
+    interval: .5 # Interval between checks in seconds
+    maxRetries: 3 # Max retries before throwing an exception
+  diff: # Screenshots diff configuration
+    noOp: { } # No diff is shown by default. Just the snapshot reference and the regression side by side
+```
+
+## Fail Fast
+
+By default, even if a visual regression is found, the test will be completed. A `VisualRegressionException` with the total number of regressions
+is thrown at the end, and the test will be flagged as failed.
+
+Setting `failFast` to true, the `VisualRegressionException` will be thrown at the very first regression, and the test is immediately terminated.
+
+## Snapshots
+
+The `snapshots` node lets you specify where to save the screenshot references. By default, they're saved in the resources folder
+for them to be versioned. If you want to refresh the snapshots, you can manually delete the folder where they're stored, or leverage
+the `override` parameter.
+
+> 💡 **Tip**<br/>
+> If you run your suite with multiple drivers and in multiple environments, it's likely they have different viewport sizes, meaning
+> screenshots may not be cross-compatible. You can leverage [Values Interpolation](#values-interpolation) 
+> to save them in segregated folders:
+> 
+> ```yaml
+> visualRegression:
+>   snapshots:
+>     folder: src/test/resources/visual-regression/${ENVIRONMENT}/${spectrum.driver:-chrome}
+>     override: false
+> ```
+> 
+> The same suggestion is valid for the `override` parameter: instead of changing the value directly in the configuration, you should
+> interpolate it. You can also have different configurations dedicated to specific drivers/environments.
+
+## Checks
+
+The `checks` node lets you run additional checks when taking screenshots. By default, each screenshot is immediately considered
+valid, as soon as it's taken. There might be situations where elements in the page are still loading, and comparing such a screenshot
+with its snapshot could lead to flaky tests.
+
+To avoid such a situation, you can raise the `count` parameter. This way, Spectrum will take a corresponding number of screenshots
+and check if they are all equal. If they are, it means the page is not changing, and the screenshot is valid. You can use the `interval`
+and `maxRetries` parameters to tweak the checks behaviour.
+
+With the snippet below, upon taking a screenshot, Spectrum will take 2 more with 1 second interval between each, for a maximum of
+5 times. As soon as the check is satisfied, the execution will continue.
+
+```yaml
+visualRegression:
+  checks:
+    count: 2
+    interval: 1
+    maxRetries: 5
+```
+
+> ⚠️ **Performance**<br/>
+> Running additional checks slows the test, since the execution will pause while Spectrum takes additional
+> screenshots and sleeps according to the `interval` parameter.
+
+## Diff
+
+The `diff` node lets you specify how visual regressions are shown in the html report. Images are compared by their bytes hash,
+first of all. If they match it means the images are the same, and no additional calculation is performed.
+This means that **if a screenshot check is successful, no diff is calculated**. 
+
+For instance, let's say these are the snapshot reference and the corresponding visual regression, where the 
+first checkbox was expected to be checked:
+
+<img style="width: 49%; vertical-align: top;" src="assets/images/reference.png" alt="reference"/>
+&nbsp;<img style="width: 49%; vertical-align: top;" src="assets/images/regression.png" alt="regression"/>
+
+> ⚠️ **Performance**<br/>
+> Calculating the diff affects performance. The bigger the images to compare, the worse the performance.
+> Generally speaking, this shouldn't be an issue, though.
+
+### NoOp Diff
+
+By default, just the snapshot reference and the regression are shown side by side. You can click on them
+in the generated report to magnify them.
+
+![no-diff.png](assets/images/no-diff.png)
+
+With the other diffs kind, the diff will be shown as well:
+
+![no-diff.png](assets/images/color-diff.png)
+
+If the two images have different sizes, they can't be compared, and a corresponding message is shown:
+
+![no-diff.png](assets/images/different-size-diff.png)
+
+### Highlight Diff
+
+The `highlight` diff will highlight pixels that are different between the two images, with the provided RGB color.
+For instance, with this snippet you'll get the diff shown below.
+
+```yaml
+visualRegression:
+  diff:
+    highlight:
+      color: '#ff0000' # RGB color used to highlight changed pixels. Must be prefixed by a #
+```
+
+![no-diff.png](assets/images/diff.png)
+
+### Outline Diff
+
+The `outline` diff will show the outline of pixels that are different between the two images, with the provided RGB color.
+For instance, with this snippet you'll get the diff shown below.
+
+```yaml
+visualRegression:
+  diff:
+    outline:
+      color: '#ff0000' # RGB color used to highlight changed pixels. Must be prefixed by a #
+```
+
+![no-diff.png](assets/images/outline.png)
+
+## Full Visual Regression Testing Examples
+
+Example 1:
+* saving snapshots in the `target` folder
+* recording just manual frames
+* performing 2 additional checks (0.5s `interval` and 3 `maxRetries` by default)
+* highlighting diffs in red
+
+```yaml
+visualRegression:
+  snapshots:
+    folder: target/visual-regression
+  frames:
+    - manual
+  checks:
+    count: 2
+  diff:
+    highlight:
+      color: '#ff0000'
+```
+
+Example 2:
+* saving snapshots in the default `src/test/resources/visual-regression` folder
+* recording both `autoBefore` and `manual` frames
+* performing 2 additional checks (0.5s `interval` and 3 `maxRetries` by default)
+* no diffs shown
+* failing fast
+
+```yaml
+visualRegression:
+  frames:
+    - autoBefore
+    - manual
+  checks:
+    count: 2
+  failFast: true
+```
+
+---
+
 # Parallel Execution
 
 Spectrum tests can be run in parallel by leveraging
