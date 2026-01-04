@@ -46,7 +46,7 @@ class ConfigurationResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        configurationMockedStatic = mockStatic(Configuration.class);
+        configurationMockedStatic = mockStatic();
     }
 
     @AfterEach

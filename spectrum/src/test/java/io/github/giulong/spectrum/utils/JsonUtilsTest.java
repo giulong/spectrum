@@ -13,7 +13,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
-import org.junit.jupiter.api.BeforeEach;
+import io.github.giulong.spectrum.MockFinal;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,20 +25,16 @@ class JsonUtilsTest {
     @Mock
     private File file;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private JsonMapper jsonMapper;
 
-    @Mock
-    private ObjectWriter jsonWriter;
+    @MockFinal
+    @SuppressWarnings("unused")
+    private ObjectWriter writer;
 
     @InjectMocks
     private JsonUtils jsonUtils;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("jsonMapper", jsonUtils, jsonMapper);
-        Reflections.setField("writer", jsonUtils, jsonWriter);
-    }
 
     @Test
     @DisplayName("getInstance should return the singleton")
@@ -72,7 +69,7 @@ class JsonUtilsTest {
         final Object object = mock(Object.class);
         final String expected = "expected";
 
-        when(jsonWriter.writeValueAsString(object)).thenReturn(expected);
+        when(writer.writeValueAsString(object)).thenReturn(expected);
 
         assertEquals(expected, jsonUtils.write(object));
     }

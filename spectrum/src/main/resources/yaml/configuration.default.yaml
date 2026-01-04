@@ -33,8 +33,23 @@ runtime:
 # Application under test
 application:
   baseUrl: http://localhost:8080  # Application's under test base url
+  screenshotsFolder: null # Path where to save screenshots. If not provided, screenshots are saved in the target folder.
   highlight: # Highlight the web elements the test interacts with. Useful to visually debug the execution
     js: js/highlight.js # Path to the js used to highlight. Relative to the resources folder
+
+# Visual Regression Testing configuration
+visualRegression:
+  failFast: false # Whether to fail immediately when the first visual regression is found, rather than running the entire test
+  snapshots: # Snapshots screenshots references configuration
+    folder: src/test/resources/visual-regression # Where to save the screenshot references
+    override: false # Whether to override the snapshots references already generated
+  frames: [ ] # Kind of frames to be considered. Empty by default
+  checks: # Checks configuration
+    count: 0 # Number of checks to perform before considering a snapshot valid
+    interval: .5 # Interval between checks in seconds
+    maxRetries: 3 # Max retries before throwing an exception
+  diff: # Screenshots diff configuration
+    noOp: { } # No diff is shown by default. Just the snapshot reference and the regression side by side
 
 # TestBook (coverage)
 testBook:
@@ -354,6 +369,12 @@ drivers:
     afterGetCssValue:
       level: INFO
       message: Css property <code>%2$s</code> of element <code>%1$s</code> is <code>%3$s</code>
+    beforeGetScreenshotAs:
+      level: INFO
+      message: Getting screenshot as <code>%2$s</code>
+    afterGetScreenshotAs:
+      level: ERROR
+      message: Screenshot as <code>%2$s</code> resulted is <code>%3$s</code>
     beforeAnyNavigationCall:
       message: Calling navigation method <code>%2$s</code> with args <code>%3$s</code>
     afterAnyNavigationCall:
@@ -533,15 +554,33 @@ eventsConsumers:
       events:
         - reason: beforeExecution
           tags: [ dynamicTest ]
+  - genericScreenshot: # common operations on screenshots
+      events:
+        - primaryId: .*
+          reason: screenshot
+  - extentScreenshot: # add the screenshot to the Extent Report
+      events:
+        - primaryId: (manual)
+          reason: screenshot
   - video: # add the screenshot to the video
       events:
-        - primaryId: screenshot
+        - primaryId: (manual|autoBefore|autoAfter)
           reason: screenshot
   - videoDynamic: # add the screenshot to the dynamic video
       events:
-        - primaryId: screenshot
+        - primaryId: (manual|autoBefore|autoAfter)
           reason: screenshot
-  - extentTest: # add an entry to the Extent Report once each test is done
+  - visualRegressionCheck: # check the previously generated screenshot reference for visual regression
+      failOnError: true # to enable fail fast effectively break the test immediately
+      events:
+        - primaryId: (manual|autoBefore|autoAfter)
+          reason: screenshot
+  - visualRegressionReferenceCreator: # create the screenshot reference for visual regression
+      failOnError: true # to enable failed checks break the test immediately
+      events:
+        - primaryId: (manual|autoBefore|autoAfter)
+          reason: screenshot
+  - extentTestEnd: # add an entry to the Extent Report once each test is done
       events:
         - reason: after
           tags: [ test ]

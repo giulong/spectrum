@@ -1,0 +1,382 @@
+package io.github.giulong.spectrum.utils.events.html_report;
+
+import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
+import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.mockito.Mockito.*;
+import static org.openqa.selenium.OutputType.BYTES;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.Duration;
+import java.util.Map;
+
+import com.aventstack.extentreports.ExtentTest;
+
+import io.github.giulong.spectrum.MockFinal;
+import io.github.giulong.spectrum.exceptions.VisualRegressionException;
+import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
+import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.video.Video;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff;
+import io.github.giulong.spectrum.utils.visual_regression.ImageDiff.Result;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.mockito.*;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+
+class VisualRegressionCheckConsumerTest {
+
+    private final byte[] screenshot = new byte[]{1, 2, 3};
+    private final byte[] checksum = new byte[]{4, 5, 6};
+    private final byte[] screenshot2 = new byte[]{4};
+    private final int frameNumber = 123;
+    private final String primaryId = "autoBefore";
+    private final String failedScreenshotName = "failedScreenshotName";
+    private final String diffScreenshotName = "diffScreenshotName";
+    private final String visualRegressionTag = "visualRegressionTag";
+
+    private MockedStatic<Files> filesMockedStatic;
+
+    @MockFinal
+    @SuppressWarnings("unused")
+    private Configuration configuration;
+
+    @MockFinal
+    @SuppressWarnings("unused")
+    private FileUtils fileUtils;
+
+    @MockFinal
+    @SuppressWarnings("unused")
+    private HtmlUtils htmlUtils;
+
+    @MockFinal
+    @SuppressWarnings("unused")
+    private ContextManager contextManager;
+
+    @Mock
+    private Path regressionPath;
+
+    @Mock
+    private Path referencePath;
+
+    @Mock
+    private ExtentTest currentNode;
+
+    @Mock
+    private Event event;
+
+    @Mock
+    private Configuration.VisualRegression visualRegressionConfiguration;
+
+    @Mock
+    private Configuration.VisualRegression.Snapshots snapshots;
+
+    @Mock
+    private Map<String, byte[]> screenshots;
+
+    @Mock
+    private Payload payload;
+
+    @Mock
+    private ExtensionContext context;
+
+    @Mock
+    private ExtensionContext.Store store;
+
+    @Mock
+    private TestData testData;
+
+    @Mock
+    private VisualRegressionException visualRegressionException;
+
+    @Mock
+    private StatefulExtentTest statefulExtentTest;
+
+    @Mock
+    private Video video;
+
+    @Mock
+    private TestData.VisualRegression visualRegression;
+
+    @Mock
+    private Configuration.VisualRegression.Checks checks;
+
+    @Mock
+    private Duration interval;
+
+    @Mock
+    private ImageDiff diff;
+
+    @Mock
+    private Result result;
+
+    @Mock(extraInterfaces = TakesScreenshot.class)
+    private WebDriver driver;
+
+    @Captor
+    private ArgumentCaptor<byte[]> byteArrayArgumentCaptor;
+
+    @InjectMocks
+    private VisualRegressionCheckConsumer consumer;
+
+    @BeforeEach
+    void beforeEach() {
+        filesMockedStatic = mockStatic();
+    }
+
+    @AfterEach
+    void afterEach() {
+        filesMockedStatic.close();
+    }
+
+    @Test
+    @DisplayName("shouldAccept should return false if the super method does so")
+    void shouldAcceptFalseSuper() {
+        superShouldAcceptStubs();
+
+        when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
+        when(visualRegressionConfiguration.isEnabled()).thenReturn(false);
+
+        assertFalse(consumer.shouldAccept(event));
+
+        verifyNoMoreInteractions(event);
+    }
+
+    @Test
+    @DisplayName("shouldAccept should call the parent and return false if the references have not been generated yet")
+    void shouldAcceptFalse() {
+        superShouldAcceptStubs();
+
+        when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO_BEFORE)).thenReturn(true);
+        when(Files.exists(referencePath)).thenReturn(false);
+
+        assertFalse(consumer.shouldAccept(event));
+
+        // super
+        assertEquals(referencePath, Reflections.getFieldValue("referencePath", consumer));
+    }
+
+    @Test
+    @DisplayName("shouldAccept should call the parent and return false if snapshots should be overridden")
+    void shouldAcceptFalseOverride() {
+        superShouldAcceptStubs();
+
+        when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO_BEFORE)).thenReturn(true);
+        when(Files.exists(referencePath)).thenReturn(true);
+
+        when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
+        when(snapshots.isOverride()).thenReturn(true);
+
+        assertFalse(consumer.shouldAccept(event));
+
+        // super
+        assertEquals(referencePath, Reflections.getFieldValue("referencePath", consumer));
+    }
+
+    @Test
+    @DisplayName("shouldAccept should call the parent and return true if the references have already been generated and override is false")
+    void shouldAcceptTrue() {
+        superShouldAcceptStubs();
+
+        when(visualRegressionConfiguration.isEnabled()).thenReturn(true);
+        when(event.getPrimaryId()).thenReturn(primaryId);
+        when(visualRegressionConfiguration.shouldCheck(AUTO_BEFORE)).thenReturn(true);
+        when(visualRegressionConfiguration.getSnapshots()).thenReturn(snapshots);
+        when(snapshots.isOverride()).thenReturn(false);
+
+        when(Files.exists(referencePath)).thenReturn(true);
+
+        assertTrue(consumer.shouldAccept(event));
+
+        // super
+        assertEquals(referencePath, Reflections.getFieldValue("referencePath", consumer));
+    }
+
+    @Test
+    @DisplayName("accept should delegate to generateAndAddScreenshotFrom when the screenshot taken matches with its reference")
+    void accept() {
+        runChecksStubs();
+
+        when(fileUtils.compare(referencePath, screenshot)).thenReturn(true);
+
+        // addScreenshot
+        Reflections.setField("screenshot", consumer, screenshot);
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+
+        consumer.accept(event);
+
+        // addScreenshot
+        verify(screenshots).put(referencePath.toString(), screenshot);
+        verify(fileUtils).write(referencePath, screenshot);
+
+        runChecksAssertions();
+    }
+
+    @Test
+    @DisplayName("accept should register the regression when the screenshot taken does not match with its reference")
+    void acceptVisualRegression() {
+        final Path failedScreenshotPath = mock();
+
+        runChecksStubs();
+
+        when(fileUtils.compare(referencePath, screenshot)).thenReturn(false);
+
+        when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
+        when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
+
+        // addScreenshot
+        Reflections.setField("screenshot", consumer, screenshot);
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+
+        when(fileUtils.readBytesOf(referencePath)).thenReturn(checksum);
+        when(testData.getFrameNumber()).thenReturn(frameNumber);
+
+        when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
+        when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
+        when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(result);
+        when(result.isRegressionConfirmed()).thenReturn(true);
+
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, result)).thenReturn(visualRegressionTag);
+
+        consumer.accept(event);
+
+        verify(testData).registerFailedVisualRegression();
+
+        // addScreenshot
+        verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
+        verify(fileUtils).write(failedScreenshotPath, screenshot);
+
+        verify(currentNode).fail(visualRegressionTag);
+
+        runChecksAssertions();
+    }
+
+    @Test
+    @DisplayName("accept should register the regression when the screenshot taken does not match with its reference")
+    void acceptVisualRegressionFailFast() {
+        final String exceptionMessage = "exceptionMessage";
+        final Path failedScreenshotPath = mock();
+
+        runChecksStubs();
+
+        when(fileUtils.compare(referencePath, screenshot)).thenReturn(false);
+
+        when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
+        when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
+        when(fileUtils.readBytesOf(referencePath)).thenReturn(checksum);
+        when(testData.getFrameNumber()).thenReturn(frameNumber);
+        when(htmlUtils.buildVisualRegressionTagFor(frameNumber, testData, checksum, screenshot, result)).thenReturn(visualRegressionTag);
+
+        // addScreenshot
+        Reflections.setField("screenshot", consumer, screenshot);
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+
+        when(visualRegressionConfiguration.isFailFast()).thenReturn(true);
+        when(testData.getTestFailedException()).thenReturn(visualRegressionException);
+        when(visualRegressionException.getMessage()).thenReturn(exceptionMessage);
+
+        when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
+        when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(result);
+        when(result.isRegressionConfirmed()).thenReturn(true);
+
+        when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
+
+        final VisualRegressionException exception = assertThrows(VisualRegressionException.class, () -> consumer.accept(event));
+        assertEquals(exceptionMessage, exception.getMessage());
+
+        verify(testData).registerFailedVisualRegression();
+        verify(testData, never()).incrementScreenshotNumber();
+
+        // addScreenshot
+        verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
+        verify(fileUtils).write(failedScreenshotPath, screenshot);
+
+        verify(currentNode).fail(visualRegressionTag);
+
+        runChecksAssertions();
+    }
+
+    @Test
+    @DisplayName("accept should return without registering the regression when the imageDiff does not confirm the regression")
+    void acceptVisualRegressionNotConfirmed() {
+        final Path failedScreenshotPath = mock();
+
+        runChecksStubs();
+
+        when(fileUtils.compare(referencePath, screenshot)).thenReturn(false);
+
+        when(fileUtils.getFailedScreenshotNameFrom(testData)).thenReturn(failedScreenshotName);
+        when(regressionPath.resolve(failedScreenshotName)).thenReturn(failedScreenshotPath);
+
+        // addScreenshot
+        Reflections.setField("screenshot", consumer, screenshot);
+        when(contextManager.getScreenshots()).thenReturn(screenshots);
+
+        when(visualRegressionConfiguration.getDiff()).thenReturn(diff);
+        when(fileUtils.getScreenshotsDiffNameFrom(testData)).thenReturn(diffScreenshotName);
+        when(diff.buildBetween(referencePath, failedScreenshotPath, regressionPath, diffScreenshotName)).thenReturn(result);
+
+        consumer.accept(event);
+
+        verify(testData, never()).registerFailedVisualRegression();
+
+        // addScreenshot
+        verify(screenshots).put(failedScreenshotPath.toString(), screenshot);
+        verify(fileUtils).write(failedScreenshotPath, screenshot);
+
+        verifyNoInteractions(htmlUtils);
+        verify(currentNode, never()).fail(visualRegressionTag);
+        verify(fileUtils, never()).readBytesOf(referencePath);
+
+        runChecksAssertions();
+    }
+
+    private void superShouldAcceptStubs() {
+        final String screenshotName = "screenshotName";
+        when(configuration.getVisualRegression()).thenReturn(visualRegressionConfiguration);
+        when(event.getPayload()).thenReturn(payload);
+        when(event.getContext()).thenReturn(context);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        lenient().when(testData.getVisualRegression()).thenReturn(visualRegression);
+        lenient().when(visualRegression.getPath()).thenReturn(regressionPath);
+        lenient().when(fileUtils.getScreenshotNameFrom(testData)).thenReturn(screenshotName);
+        lenient().when(regressionPath.resolve(screenshotName)).thenReturn(referencePath);
+        when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
+        when(statefulExtentTest.getCurrentNode()).thenReturn(currentNode);
+        lenient().when(configuration.getVideo()).thenReturn(video);
+        when(payload.getScreenshot()).thenReturn(screenshot);
+    }
+
+    private void runChecksStubs() {
+        final int maxRetries = 1;
+        final int count = 2;
+
+        Reflections.setField("screenshot", consumer, screenshot);
+        when(visualRegressionConfiguration.getChecks()).thenReturn(checks);
+        when(checks.getInterval()).thenReturn(interval);
+        when(checks.getMaxRetries()).thenReturn(maxRetries);
+        when(checks.getCount()).thenReturn(count);
+        when(event.getPayload()).thenReturn(payload);
+        when(payload.getTakesScreenshot()).thenReturn((TakesScreenshot) driver);
+        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(screenshot2);
+        when(fileUtils.compare(eq(screenshot), byteArrayArgumentCaptor.capture())).thenReturn(true);
+    }
+
+    private void runChecksAssertions() {
+        assertArrayEquals(screenshot2, byteArrayArgumentCaptor.getAllValues().getFirst());
+    }
+}

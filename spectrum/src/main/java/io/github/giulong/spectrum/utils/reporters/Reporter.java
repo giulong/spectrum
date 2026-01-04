@@ -8,7 +8,7 @@ import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
 
 import lombok.Getter;
 
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 @Getter
 public abstract class Reporter implements CanReport {
@@ -17,7 +17,7 @@ public abstract class Reporter implements CanReport {
     private final FreeMarkerWrapper freeMarkerWrapper = FreeMarkerWrapper.getInstance();
 
     @Override
-    public void flush(@NotNull final Reportable reportable) {
+    public void flush(@NonNull final Reportable reportable) {
         doOutputFrom(freeMarkerWrapper.interpolateTemplate(getTemplate(), reportable.getVars()));
         open();
         cleanupOldReports();

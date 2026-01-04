@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Vars;
 
 import org.junit.jupiter.api.*;
@@ -51,7 +51,8 @@ class InterpolatedObjectDeserializerTest {
     @Mock
     private JsonNode jsonNode;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private YAMLMapper objectMapper;
 
     @InjectMocks
@@ -64,9 +65,7 @@ class InterpolatedObjectDeserializerTest {
 
     @BeforeEach
     void beforeEach() {
-        interpolatedStringDeserializerMockedStatic = mockStatic(InterpolatedStringDeserializer.class);
-
-        Reflections.setField("objectMapper", interpolatedObjectDeserializer, objectMapper);
+        interpolatedStringDeserializerMockedStatic = mockStatic();
     }
 
     @AfterEach

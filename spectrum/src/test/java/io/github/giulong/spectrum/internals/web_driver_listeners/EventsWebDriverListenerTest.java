@@ -87,7 +87,7 @@ class EventsWebDriverListenerTest {
     void beforeEach() {
         ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(ch.qos.logback.classic.Level.INFO);
 
-        webDriverEventMockedStatic = mockStatic(WebDriverEvent.class);
+        webDriverEventMockedStatic = mockStatic();
     }
 
     @AfterEach
@@ -494,5 +494,11 @@ class EventsWebDriverListenerTest {
 
         assertFalse(eventsWebDriverListener.isSecured(keysToSend));
         assertArrayEquals(new CharSequence[]{key, Keys.ADD, "ok"}, keysToSend);
+    }
+
+    @Test
+    @DisplayName("EventsWebDriverListener should rethrow exceptions")
+    void throwsExceptions() {
+        assertTrue(eventsWebDriverListener.throwsExceptions());
     }
 }

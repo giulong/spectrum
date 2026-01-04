@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.types.ProjectProperties;
 import io.github.giulong.spectrum.utils.reporters.FileReporter;
 import io.github.giulong.spectrum.utils.reporters.LogReporter;
@@ -46,7 +47,8 @@ class MetadataManagerTest {
     @Mock
     private FileReporter.TxtSummaryReporter summaryReporter2;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
     @Mock
@@ -55,16 +57,20 @@ class MetadataManagerTest {
     @Mock
     private Path filePath;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private JsonUtils jsonUtils;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -99,13 +105,7 @@ class MetadataManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        pathMockedStatic = mockStatic(Path.class);
-
-        Reflections.setField("yamlUtils", metadataManager, yamlUtils);
-        Reflections.setField("jsonUtils", metadataManager, jsonUtils);
-        Reflections.setField("fileUtils", metadataManager, fileUtils);
-        Reflections.setField("extentReporter", metadataManager, extentReporter);
-        Reflections.setField("configuration", metadataManager, configuration);
+        pathMockedStatic = mockStatic();
     }
 
     @AfterEach

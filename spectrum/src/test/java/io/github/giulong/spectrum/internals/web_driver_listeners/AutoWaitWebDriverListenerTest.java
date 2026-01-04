@@ -60,7 +60,7 @@ class AutoWaitWebDriverListenerTest {
 
     @BeforeEach
     void beforeEach() {
-        expectedConditionsMockedStatic = mockStatic(ExpectedConditions.class);
+        expectedConditionsMockedStatic = mockStatic();
     }
 
     @AfterEach

@@ -1,1 +1,2 @@
 org.mockito.junit.jupiter.MockitoExtension
+io.github.giulong.spectrum.SpectrumUnitTestExtension

@@ -6,11 +6,10 @@ import static org.mockito.Mockito.*;
 import java.util.Arrays;
 import java.util.List;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.interfaces.WebElementFinder;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.StringUtils;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,7 +20,8 @@ import org.openqa.selenium.*;
 
 class JsTest {
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private StringUtils stringUtils;
 
     @Mock
@@ -38,11 +38,6 @@ class JsTest {
 
     @InjectMocks
     private Js js;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("stringUtils", js, stringUtils);
-    }
 
     @Test
     @DisplayName("click should click with javascript on the provided webElement and return the Js instance")

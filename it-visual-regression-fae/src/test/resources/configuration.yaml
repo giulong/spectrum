@@ -1,0 +1,30 @@
+application:
+  baseUrl: https://the-internet.herokuapp.com/
+
+visualRegression:
+  snapshots:
+    folder: target/visual-regression
+  frames:
+    - manual
+  checks:
+    count: 2
+  diff:
+    highlight:
+      color: '#ff0000'
+
+video:
+  frames:
+    - autoBefore
+    - manual
+  skipDuplicateFrames: false
+
+drivers:
+  chrome:
+    args:
+      - --headless=new
+
+extent:
+  theme: DARK
+  fileName: report-${spectrum.driver:-chrome}.html
+  sort:
+    name: { }

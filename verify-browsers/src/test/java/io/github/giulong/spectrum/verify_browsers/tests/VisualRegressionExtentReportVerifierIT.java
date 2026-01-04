@@ -1,0 +1,111 @@
+package io.github.giulong.spectrum.verify_browsers.tests;
+
+import static io.github.giulong.spectrum.verify_commons.CommonExtentVerifier.assertVideoDuration;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
+import java.nio.file.Path;
+import java.util.List;
+
+import io.github.giulong.spectrum.SpectrumTest;
+import io.github.giulong.spectrum.verify_browsers.data.Data;
+import io.github.giulong.spectrum.verify_browsers.pages.VisualRegressionExtentReportPage;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+class VisualRegressionExtentReportVerifierIT extends SpectrumTest<Data> {
+
+    @SuppressWarnings("unused")
+    private VisualRegressionExtentReportPage extentReportPage;
+
+    @Test
+    @DisplayName("should check the visual regression report")
+    void report() {
+        driver.get(String.format("file:///%s/it-visual-regression/target/spectrum/reports/report-chrome/report-chrome.html", Path.of(System.getProperty("user.dir")).getParent()));
+
+        assertEquals(5, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(3, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(0, countTestsWithStatus("skip"), "Skipped tests");
+        assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
+
+        assertFalse(extentReportPage.getScreenshotMessages().isEmpty(), "Screenshot messages should be displayed");
+
+        final List<WebElement> videos = extentReportPage.getVideosFailFast();
+        assertVideoDuration(videos.getFirst(), 16);
+        assertVideoDuration(videos.get(1), 16);
+        assertVideoDuration(videos.get(2), 2);
+
+        assertVideoDuration(extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers(), 8);
+
+        final List<WebElement> visualRegressions = extentReportPage.getVisualRegressions();
+        assertEquals(1, visualRegressions.size());
+
+        // to check there is no diff shown
+        assertEquals(0, visualRegressions.getFirst().findElements(By.className("missing-diff")).size());
+
+        extentReportPage.getTestViewTests().get(4).click();
+        assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 1 visual regressions"));
+
+        final WebElement visualRegression = extentReportPage.getVisualRegressions().getFirst();
+        assertEquals("visualregressionit-alwaysthesame", visualRegression.getDomAttribute("data-test-id"));
+        assertEquals("2", visualRegression.getDomAttribute("data-frame"));
+    }
+
+    @Test
+    @DisplayName("should check the visual regression fae report")
+    void reportFailAtEnd() {
+        driver.get(String.format("file:///%s/it-visual-regression-fae/target/spectrum/reports/report-chrome/report-chrome.html", Path.of(System.getProperty("user.dir"))
+                .getParent()));
+
+        assertEquals(5, extentReportPage.getTestViewTests().size(), "Total tests");
+        assertEquals(3, countTestsWithStatus("pass"), "Passed tests");
+        assertEquals(0, countTestsWithStatus("skip"), "Skipped tests");
+        assertEquals(2, countTestsWithStatus("fail"), "Failed tests");
+
+        assertFalse(extentReportPage.getScreenshotMessages().isEmpty(), "Screenshot messages should be displayed");
+
+        final List<WebElement> videos = extentReportPage.getVideosNotFailFast();
+        assertVideoDuration(videos.getFirst(), 18);
+        assertVideoDuration(videos.get(1), 18);
+        assertVideoDuration(videos.get(2), 18);
+
+        assertVideoDuration(extentReportPage.getVideoTestFactoryItDynamicTestsWithContainers(), 8);
+
+        final List<WebElement> visualRegressions = extentReportPage.getVisualRegressions();
+        assertEquals(3, visualRegressions.size());
+
+        extentReportPage.getTestViewTests().get(4).click();
+        assertThat(extentReportPage.getTextInSecondContainerOf(extentReportPage.getVisualRegressionException()), containsString("There were 3 visual regressions"));
+
+        // Extent triplicates elements and show/hide them when navigating the sections of the report. So taking 3, 4, 5 instead of 0, 1, 2
+        final WebElement visualRegression1 = visualRegressions.get(3);
+        final WebElement visualRegression2 = visualRegressions.get(4);
+        final WebElement visualRegression3 = visualRegressions.get(5);
+
+        assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression1.getDomAttribute("data-test-id"));
+        assertEquals("2", visualRegression1.getDomAttribute("data-frame"));
+        assertThat(visualRegression1.findElement(By.className("missing-diff")).getText(), containsString("Images have different sizes."));
+
+        assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression2.getDomAttribute("data-test-id"));
+        assertEquals("5", visualRegression2.getDomAttribute("data-frame"));
+        assertEquals("img", visualRegression2.findElement(By.className("diff-img")).getTagName());
+
+        assertEquals("visualregressionfailatendit-alwaysthesame", visualRegression3.getDomAttribute("data-test-id"));
+        assertEquals("13", visualRegression3.getDomAttribute("data-frame"));
+        assertEquals("img", visualRegression3.findElement(By.className("diff-img")).getTagName());
+    }
+
+    private long countTestsWithStatus(final String status) {
+        return extentReportPage
+                .getTestViewTests()
+                .stream()
+                .map(webElement -> webElement.getDomAttribute("status"))
+                .filter(status::equals)
+                .count();
+    }
+}

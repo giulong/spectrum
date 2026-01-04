@@ -10,14 +10,13 @@ import static org.mockito.Mockito.when;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -28,7 +27,8 @@ import org.mockito.Mock;
 
 class VideoBaseConsumerTest {
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -45,11 +45,6 @@ class VideoBaseConsumerTest {
 
     @InjectMocks
     private DummyVideoBaseConsumer videoBaseConsumer;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", videoBaseConsumer, configuration);
-    }
 
     @DisplayName("shouldAccept should check if the test and the video are disabled")
     @ParameterizedTest(name = "with result {0} we expect {1}")

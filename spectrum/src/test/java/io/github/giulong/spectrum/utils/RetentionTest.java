@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import io.github.giulong.spectrum.MockFinal;
+
 import lombok.SneakyThrows;
 
 import org.junit.jupiter.api.AfterEach;
@@ -84,10 +86,12 @@ class RetentionTest {
     @Mock
     private Instant instant5;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private MetadataManager metadataManager;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -131,11 +135,8 @@ class RetentionTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("metadataManager", retention, metadataManager);
-        Reflections.setField("fileUtils", retention, fileUtils);
-
-        filesMockedStatic = mockStatic(Files.class);
-        localDateTimeMockedStatic = mockStatic(LocalDateTime.class);
+        filesMockedStatic = mockStatic();
+        localDateTimeMockedStatic = mockStatic();
     }
 
     @AfterEach

@@ -18,12 +18,12 @@ import java.util.stream.Stream;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.TestData.VisualRegression;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.DynamicTestInvocationContext;
@@ -41,8 +41,11 @@ class SpectrumInterceptorTest {
     private final String displayName = "displayName";
     private final String fileName = "fileName";
     private final Path dynamicVideoPath = Path.of(String.format("%s-%s.mp4", fileName, displayName));
+    private final Path visualRegressionPath = Path.of("visualRegressionPath");
+    private final Path dynamicVisualRegressionPath = visualRegressionPath.resolve(displayName);
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
@@ -78,31 +81,29 @@ class SpectrumInterceptorTest {
     @Mock
     private Video video;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
     private Path videoPath;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
     @Mock
     private Video.ExtentTest videoExtentTest;
 
+    @Mock
+    private VisualRegression visualRegression;
+
     @InjectMocks
     private SpectrumInterceptor spectrumInterceptor;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("eventsDispatcher", spectrumInterceptor, eventsDispatcher);
-        Reflections.setField("extentReporter", spectrumInterceptor, extentReporter);
-        Reflections.setField("fileUtils", spectrumInterceptor, fileUtils);
-        Reflections.setField("contextManager", spectrumInterceptor, contextManager);
-    }
 
     private void commonStubs() {
         when(context.getStore(GLOBAL)).thenReturn(store);
@@ -112,6 +113,8 @@ class SpectrumInterceptorTest {
         when(configuration.getVideo()).thenReturn(video);
         when(video.getExtentTest()).thenReturn(videoExtentTest);
         when(testData.getVideoPath()).thenReturn(videoPath);
+        when(testData.getVisualRegression()).thenReturn(visualRegression);
+        when(visualRegression.getPath()).thenReturn(visualRegressionPath);
 
         when(context.getRoot()).thenReturn(rootContext);
         when(context.getDisplayName()).thenReturn(displayName);
@@ -125,12 +128,14 @@ class SpectrumInterceptorTest {
     @SuppressWarnings("checkstyle:IllegalThrows")
     private void commonVerifications() throws Throwable {
         verify(testData).setDynamic(true);
+        verify(testData).setScreenshotNumber(0);
         verify(testData).setFrameNumber(0);
         verify(testData).setDisplayName(displayName);
         verify(testData).setDynamicVideoPath(dynamicVideoPath);
         verify(statefulExtentTest).setDisplayName(displayName);
         verify(statefulExtentTest).createNode(displayName);
         verify(statefulExtentTest).closeNode();
+        verify(visualRegression).setDynamicPath(dynamicVisualRegressionPath);
 
         verify(eventsDispatcher).fire(className, displayName, BEFORE, null, Set.of(DYNAMIC_TEST), context);
         verify(eventsDispatcher).fire(className, displayName, BEFORE_EXECUTION, null, Set.of(DYNAMIC_TEST), context);

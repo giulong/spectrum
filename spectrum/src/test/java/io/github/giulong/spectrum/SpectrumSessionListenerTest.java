@@ -38,16 +38,20 @@ class SpectrumSessionListenerTest {
 
     private String osName;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -56,13 +60,15 @@ class SpectrumSessionListenerTest {
     @Mock
     private Launcher launcher;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
 
     @Mock
     private ProjectProperties projectProperties;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
@@ -83,10 +89,12 @@ class SpectrumSessionListenerTest {
     @Mock
     private SummaryGeneratingListener summaryGeneratingListener;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private MetadataManager metadataManager;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 
     @InjectMocks
@@ -95,16 +103,7 @@ class SpectrumSessionListenerTest {
     @BeforeEach
     void beforeEach() {
         osName = System.getProperty("os.name");
-        slf4JBridgeHandlerMockedStatic = mockStatic(SLF4JBridgeHandler.class);
-
-        Reflections.setField("yamlUtils", spectrumSessionListener, yamlUtils);
-        Reflections.setField("fileUtils", spectrumSessionListener, fileUtils);
-        Reflections.setField("freeMarkerWrapper", spectrumSessionListener, freeMarkerWrapper);
-        Reflections.setField("extentReporter", spectrumSessionListener, extentReporter);
-        Reflections.setField("configuration", spectrumSessionListener, configuration);
-        Reflections.setField("eventsDispatcher", spectrumSessionListener, eventsDispatcher);
-        Reflections.setField("metadataManager", spectrumSessionListener, metadataManager);
-        Reflections.setField("htmlUtils", spectrumSessionListener, htmlUtils);
+        slf4JBridgeHandlerMockedStatic = mockStatic();
     }
 
     @AfterEach

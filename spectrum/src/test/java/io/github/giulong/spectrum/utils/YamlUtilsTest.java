@@ -79,6 +79,7 @@ class YamlUtilsTest {
                 "Environment",
                 "Class",
                 "Random",
+                "Color",
                 "LogTestBookReporter",
                 "TxtTestBookReporter",
                 "HtmlTestBookReporter",

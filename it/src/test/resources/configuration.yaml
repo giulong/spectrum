@@ -43,6 +43,7 @@ eventsConsumers:
           reason: .*condReas.*
   - testSteps:
       failOnError: true
+      output: target/spectrum/tests-steps/${spectrum.driver:-chrome}
       events:
         - reason: after
           tags: [ test, dynamicTest ]

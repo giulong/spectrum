@@ -9,6 +9,7 @@ import java.util.Map;
 
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.options.WindowsOptions;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -40,7 +41,8 @@ class WindowsTest {
     @Mock
     private Duration duration;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -60,7 +62,6 @@ class WindowsTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", windows, configuration);
         Reflections.setField("capabilities", windows, windowsOptions);
     }
 

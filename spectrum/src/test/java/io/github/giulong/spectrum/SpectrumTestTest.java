@@ -1,7 +1,9 @@
 package io.github.giulong.spectrum;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.List;
@@ -9,9 +11,13 @@ import java.util.List;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 
+import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
-import io.github.giulong.spectrum.types.*;
+import io.github.giulong.spectrum.types.DownloadWait;
+import io.github.giulong.spectrum.types.ImplicitWait;
+import io.github.giulong.spectrum.types.PageLoadWait;
+import io.github.giulong.spectrum.types.ScriptWait;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
@@ -75,7 +81,8 @@ class SpectrumTestTest {
     @Mock
     private EventsDispatcher eventsDispatcher;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -95,6 +102,9 @@ class SpectrumTestTest {
 
     @Mock
     private TestData testData;
+
+    @Mock
+    private TestFailedException testFailedException;
 
     @Mock
     private Js js;
@@ -120,7 +130,8 @@ class SpectrumTestTest {
     @Mock
     private List<WebElement> webElementList;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private YamlUtils yamlUtils;
 
     @InjectMocks
@@ -140,11 +151,6 @@ class SpectrumTestTest {
         spectrumTest.data = data;
         spectrumTest.testPage.jsWebElement = webElement;
         spectrumTest.testPage.jsWebElementList = webElementList;
-
-        Reflections.setField("yamlUtils", spectrumTest, yamlUtils);
-        Reflections.setField("yamlUtils", childTest, yamlUtils);
-        Reflections.setField("yamlUtils", childTestVoid, yamlUtils);
-        Reflections.setField("yamlUtils", fakeParentSpectrumTestVoid, yamlUtils);
     }
 
     @Test
@@ -166,8 +172,6 @@ class SpectrumTestTest {
     @Test
     @DisplayName("beforeEach should inject all the provided args resolved via JUnit, and call injectDataIn and injectPagesInto")
     void testBeforeEach() {
-        Reflections.setField("configuration", spectrumTest, configuration);
-
         // injectDataIn
         final String folder = "folder";
         when(configuration.getData()).thenReturn(dataConfiguration);
@@ -215,10 +219,28 @@ class SpectrumTestTest {
     }
 
     @Test
+    @DisplayName("baseSpectrumAfterEach should do nothing if testData is NOT marked as failed")
+    void testBaseSpectrumAfterEach() {
+        when(testData.getTestFailedException()).thenReturn(null);
+
+        assertDoesNotThrow(() -> spectrumTest.baseSpectrumAfterEach());
+
+        verifyNoMoreInteractions(testData);
+    }
+
+    @Test
+    @DisplayName("baseSpectrumAfterEach should throw the TestFailedException if present")
+    void testBaseSpectrumAfterEachThrows() {
+        when(testData.getTestFailedException()).thenReturn(testFailedException);
+
+        assertThrows(TestFailedException.class, () -> spectrumTest.baseSpectrumAfterEach());
+
+        verifyNoMoreInteractions(testData);
+    }
+
+    @Test
     @DisplayName("injectPages should init also init pages from super classes")
     void injectPages() {
-        Reflections.setField("configuration", spectrumTest, configuration);
-
         final long seconds = 123L;
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getWaits()).thenReturn(waits);
@@ -261,13 +283,11 @@ class SpectrumTestTest {
     }
 
     @Test
-    @DisplayName("injectDataInPages should inject the data field in pages when we have SpectrumTest<Void>")
+    @DisplayName("injectDataIn should inject the data field in pages when we have SpectrumTest<Void>")
     void injectDataIn() {
         final FakeSpectrumPage fakeSpectrumPage = mock(FakeSpectrumPage.class);
         final FakeSpectrumPageVoid fakeSpectrumPageVoid = mock(FakeSpectrumPageVoid.class);
         final String folder = "folder";
-
-        Reflections.setField("configuration", spectrumTest, configuration);
 
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(folder);

@@ -10,12 +10,11 @@ import static org.mockito.Mockito.*;
 import java.lang.reflect.Parameter;
 import java.util.stream.Stream;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 
 import lombok.Getter;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -30,7 +29,8 @@ import org.openqa.selenium.bidi.HasBiDi;
 
 class BiDiTypeBasedParameterResolverTest {
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -56,11 +56,6 @@ class BiDiTypeBasedParameterResolverTest {
 
     @InjectMocks
     private DummyBiDiTypeBasedParameterResolver biDiTypeBasedParameterResolver;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", biDiTypeBasedParameterResolver, configuration);
-    }
 
     @DisplayName("supportsParameter should check if the provided parameter type matches the concrete instance type")
     @ParameterizedTest(name = "with concrete type {0} we expect {1}")

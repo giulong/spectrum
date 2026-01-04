@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Map;
 
 import io.appium.java_client.AppiumDriver;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -25,7 +26,8 @@ class AppiumGenericTest {
     @Mock
     private MutableCapabilities mutableCapabilities;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -45,7 +47,6 @@ class AppiumGenericTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", appiumGeneric, configuration);
         Reflections.setField("capabilities", appiumGeneric, mutableCapabilities);
     }
 
