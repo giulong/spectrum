@@ -1,14 +1,15 @@
 package io.github.giulong.spectrum.drivers;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
 
 import java.util.logging.Level;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,8 +20,9 @@ import org.openqa.selenium.logging.LoggingPreferences;
 
 class ChromiumTest {
 
-    @Mock
-    private ChromeOptions chromeOptions;
+    @MockFinal
+    @SuppressWarnings("unused")
+    private ChromeOptions capabilities;
 
     @Mock
     private Configuration.Drivers.Logs logs;
@@ -37,11 +39,6 @@ class ChromiumTest {
     @InjectMocks
     private Chrome chrome;
 
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("capabilities", chrome, chromeOptions);
-    }
-
     @Test
     @DisplayName("setLoggingPreferencesFrom should set the LOGGING_PREFS in the capabilities")
     void setLoggingPreferencesFrom() {
@@ -51,9 +48,9 @@ class ChromiumTest {
 
         MockedConstruction<LoggingPreferences> mockedConstruction = mockConstruction(LoggingPreferences.class);
 
-        chrome.capabilities = chromeOptions;
+        chrome.capabilities = capabilities;
         chrome.setLoggingPreferencesFrom(logs);
-        verify(chromeOptions).setCapability(LOGGING_PREFS, mockedConstruction.constructed().getFirst());
+        verify(capabilities).setCapability(LOGGING_PREFS, mockedConstruction.constructed().getFirst());
 
         mockedConstruction.close();
     }

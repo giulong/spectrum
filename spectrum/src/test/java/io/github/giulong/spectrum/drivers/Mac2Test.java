@@ -9,6 +9,7 @@ import java.util.Map;
 
 import io.appium.java_client.mac.Mac2Driver;
 import io.appium.java_client.mac.options.Mac2Options;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -24,7 +25,8 @@ class Mac2Test {
     @Mock
     private Mac2Options mac2Options;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -44,7 +46,6 @@ class Mac2Test {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", mac2, configuration);
         Reflections.setField("capabilities", mac2, mac2Options);
     }
 

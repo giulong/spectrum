@@ -4,11 +4,10 @@ import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolve
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.ContextManager;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.TestContext;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -27,7 +26,8 @@ class TestContextResolverTest {
     @Mock
     private ExtensionContext.Store store;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
@@ -35,11 +35,6 @@ class TestContextResolverTest {
 
     @InjectMocks
     private TestContextResolver testContextResolver;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("contextManager", testContextResolver, contextManager);
-    }
 
     @Test
     @DisplayName("resolveParameter should return an instance of TestContext")

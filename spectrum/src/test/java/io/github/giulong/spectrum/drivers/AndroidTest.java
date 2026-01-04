@@ -8,10 +8,9 @@ import java.time.Duration;
 
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.options.UiAutomator2Options;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -39,16 +38,12 @@ class AndroidTest {
     @Mock
     private URL url;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private UiAutomator2Options capabilities;
 
     @InjectMocks
     private UiAutomator2 android;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("capabilities", android, capabilities);
-    }
 
     @Test
     @DisplayName("configureWaitsOf should configure just the implicitWait, since the others are not implemented")

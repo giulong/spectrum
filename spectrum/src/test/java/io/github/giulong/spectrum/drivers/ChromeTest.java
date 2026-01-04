@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -41,7 +41,8 @@ class ChromeTest {
     @Mock
     private Level performanceLevel;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -52,11 +53,6 @@ class ChromeTest {
 
     @InjectMocks
     private Chrome chrome;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", chrome, configuration);
-    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of ChromeDriverService.Builder()")

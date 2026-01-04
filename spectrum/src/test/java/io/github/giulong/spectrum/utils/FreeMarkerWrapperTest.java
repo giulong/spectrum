@@ -11,7 +11,8 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import org.junit.jupiter.api.BeforeEach;
+import io.github.giulong.spectrum.MockFinal;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -27,10 +28,12 @@ class FreeMarkerWrapperTest {
     @Mock
     private freemarker.template.Configuration configuration;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration spectrumConfiguration;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -38,12 +41,6 @@ class FreeMarkerWrapperTest {
 
     @InjectMocks
     private FreeMarkerWrapper freeMarkerWrapper;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("spectrumConfiguration", freeMarkerWrapper, spectrumConfiguration);
-        Reflections.setField("fileUtils", freeMarkerWrapper, fileUtils);
-    }
 
     @Test
     @DisplayName("getInstance should return the singleton")

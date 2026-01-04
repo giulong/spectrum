@@ -5,11 +5,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.slf4j.event.Level.DEBUG;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.DriverLog;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Logs;
-import io.github.giulong.spectrum.utils.Reflections;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +28,8 @@ class LocalEnvironmentTest {
     private MockedStatic<RemoteWebDriver> remoteWebDriverMockedStatic;
     private MockedStatic<DriverLog> driverLogMockedStatic;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -69,11 +70,9 @@ class LocalEnvironmentTest {
 
     @BeforeEach
     void beforeEach() {
-        remoteWebDriverMockedStatic = mockStatic(RemoteWebDriver.class);
-        driverLogMockedStatic = mockStatic(DriverLog.class);
+        remoteWebDriverMockedStatic = mockStatic();
+        driverLogMockedStatic = mockStatic();
         DRIVER_SERVICE_THREAD_LOCAL.remove();
-
-        Reflections.setField("configuration", localEnvironment, configuration);
     }
 
     @AfterEach

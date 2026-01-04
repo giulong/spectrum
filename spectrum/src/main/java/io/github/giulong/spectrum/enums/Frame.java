@@ -1,5 +1,7 @@
 package io.github.giulong.spectrum.enums;
 
+import java.util.Arrays;
+
 import com.fasterxml.jackson.annotation.JsonValue;
 
 import lombok.AllArgsConstructor;
@@ -12,6 +14,14 @@ public enum Frame {
     MANUAL("manual");
 
     private final String value;
+
+    public static Frame from(final String value) {
+        return Arrays
+                .stream(values())
+                .filter(f -> f.value.equals(value))
+                .findFirst()
+                .orElseThrow();
+    }
 
     @JsonValue
     public String getValue() {

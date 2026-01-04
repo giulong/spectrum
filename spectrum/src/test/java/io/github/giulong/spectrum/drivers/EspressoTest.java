@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import io.appium.java_client.android.options.EspressoOptions;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -23,7 +24,8 @@ class EspressoTest {
     @Mock
     private EspressoOptions espressoOptions;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -40,7 +42,6 @@ class EspressoTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", espresso, configuration);
         Reflections.setField("capabilities", espresso, espressoOptions);
     }
 

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import io.appium.java_client.android.options.UiAutomator2Options;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -23,7 +24,8 @@ class UiAutomator2Test {
     @Mock
     private UiAutomator2Options uiAutomator2Options;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -40,7 +42,6 @@ class UiAutomator2Test {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("configuration", uiAutomator2, configuration);
         Reflections.setField("capabilities", uiAutomator2, uiAutomator2Options);
     }
 

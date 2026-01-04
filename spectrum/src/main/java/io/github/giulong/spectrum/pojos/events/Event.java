@@ -1,18 +1,20 @@
 package io.github.giulong.spectrum.pojos.events;
 
-import java.util.Map;
 import java.util.Set;
 
+import com.aventstack.extentreports.Status;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.github.giulong.spectrum.enums.Result;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.jackson.Jacksonized;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.openqa.selenium.TakesScreenshot;
 
 @Getter
 @Builder
@@ -32,5 +34,15 @@ public class Event {
 
     @JsonIgnore
     @ToString.Exclude
-    private Map<String, Object> payload;
+    private Payload payload;
+
+    @Getter
+    @Builder
+    @EqualsAndHashCode
+    public static class Payload {
+        private String message;
+        private Status status;
+        private byte[] screenshot;
+        private TakesScreenshot takesScreenshot;
+    }
 }

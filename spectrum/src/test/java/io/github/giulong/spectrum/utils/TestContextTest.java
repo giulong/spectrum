@@ -7,7 +7,8 @@ import static org.mockito.Mockito.when;
 import java.util.Map;
 import java.util.function.Function;
 
-import org.junit.jupiter.api.BeforeEach;
+import io.github.giulong.spectrum.MockFinal;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -15,7 +16,8 @@ import org.mockito.Mock;
 
 class TestContextTest {
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Map<String, Object> store;
 
     @Mock
@@ -23,11 +25,6 @@ class TestContextTest {
 
     @InjectMocks
     private TestContext testContext;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("store", testContext, store);
-    }
 
     @Test
     @DisplayName("put should put the provided key-value pair in the internal store")

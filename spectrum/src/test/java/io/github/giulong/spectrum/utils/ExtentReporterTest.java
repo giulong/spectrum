@@ -30,8 +30,8 @@ import com.aventstack.extentreports.model.Report;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.ExtentSparkReporterConfig;
 
-import io.github.giulong.spectrum.SpectrumTest;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.MockFinal;
+import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 import io.github.giulong.spectrum.utils.tests_comparators.TestsComparator;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -66,19 +66,22 @@ class ExtentReporterTest {
     @Mock
     private ExtentSparkReporterConfig.ExtentSparkReporterConfigBuilder<?, ?> extentSparkReporterConfigBuilder;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
     @Mock
     private TestContext testContext;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
     private ExtentSparkReporterConfig extentSparkReporterConfig;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private FileUtils fileUtils;
 
     @Mock
@@ -133,6 +136,9 @@ class ExtentReporterTest {
     private RuntimeException exception;
 
     @Mock
+    private VisualRegressionException visualRegressionException;
+
+    @Mock
     private FixedSizeQueue<File> fileFixedSizeQueue;
 
     @Mock
@@ -148,12 +154,10 @@ class ExtentReporterTest {
     private Desktop desktop;
 
     @Mock
-    private SpectrumTest<?> spectrumTest;
-
-    @Mock
     private Report report;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 
     @Mock
@@ -182,18 +186,13 @@ class ExtentReporterTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("fileUtils", extentReporter, fileUtils);
-        Reflections.setField("configuration", extentReporter, configuration);
-        Reflections.setField("contextManager", extentReporter, contextManager);
-        Reflections.setField("htmlUtils", extentReporter, htmlUtils);
-
-        testDataMockedStatic = mockStatic(TestData.class);
-        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
-        pathMockedStatic = mockStatic(Path.class);
-        filesMockedStatic = mockStatic(Files.class);
-        metadataManagerMockedStatic = mockStatic(MetadataManager.class);
-        desktopMockedStatic = mockStatic(Desktop.class);
-        extentSparkReporterConfigMockedStatic = mockStatic(ExtentSparkReporterConfig.class);
+        testDataMockedStatic = mockStatic();
+        freeMarkerWrapperMockedStatic = mockStatic();
+        pathMockedStatic = mockStatic();
+        filesMockedStatic = mockStatic();
+        metadataManagerMockedStatic = mockStatic();
+        desktopMockedStatic = mockStatic();
+        extentSparkReporterConfigMockedStatic = mockStatic();
     }
 
     @AfterEach
@@ -565,7 +564,6 @@ class ExtentReporterTest {
         final String methodName = "logTestEndStubs";
 
         logTestEndStubs();
-        when(context.getRequiredTestInstance()).thenReturn(spectrumTest);
         when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
         when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
         when(context.getParent()).thenReturn(Optional.of(parentContext));
@@ -576,7 +574,6 @@ class ExtentReporterTest {
         statefulExtentTestArgumentCaptor.getValue().apply("value");
 
         verify(extentTest).fail(exception);
-        verify(spectrumTest).screenshotFail("<span class='badge white-text red'>TEST FAILED</span>");
     }
 
     @Test
@@ -595,6 +592,25 @@ class ExtentReporterTest {
         statefulExtentTestArgumentCaptor.getValue().apply("value");
         verify(extentTest).log(eq(PASS), markupArgumentCaptor.capture());
         assertEquals("<span class='badge white-text green'>END TEST</span>", markupArgumentCaptor.getValue().getMarkup());
+    }
+
+    @Test
+    @DisplayName("logTestEnd should fail with a specific message if Visual Regression is enabled and failed")
+    void logTestEndTestDataFailed() throws NoSuchMethodException {
+        final String methodName = "logTestEndStubs";
+
+        logTestEndStubs();
+        when(context.getRequiredTestMethod()).thenReturn(getClass().getDeclaredMethod(methodName));
+        when(testDataBuilder.methodName(methodName)).thenReturn(testDataBuilder);
+        when(context.getParent()).thenReturn(Optional.of(parentContext));
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
+
+        when(context.getExecutionException()).thenReturn(Optional.of(visualRegressionException));
+        when(extentTest.fail(visualRegressionException)).thenReturn(extentTest);
+
+        extentReporter.logTestEnd(context, FAIL);
+
+        statefulExtentTestArgumentCaptor.getValue().apply("value");
     }
 
     @Disabled

@@ -11,6 +11,7 @@ import java.util.Map;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.drivers.Appium;
 import io.github.giulong.spectrum.internals.AppiumLog;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -40,7 +41,8 @@ class AppiumEnvironmentTest {
     @Mock
     private AppiumDriverLocalService driverService;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -84,10 +86,9 @@ class AppiumEnvironmentTest {
 
     @BeforeEach
     void beforeEach() {
-        appiumDriverLocalServiceMockedStatic = mockStatic(AppiumDriverLocalService.class);
-        appiumLogMockedStatic = mockStatic(AppiumLog.class);
+        appiumDriverLocalServiceMockedStatic = mockStatic();
+        appiumLogMockedStatic = mockStatic();
 
-        Reflections.setField("configuration", appiumEnvironment, configuration);
         Reflections.setField("external", appiumEnvironment, false);
     }
 

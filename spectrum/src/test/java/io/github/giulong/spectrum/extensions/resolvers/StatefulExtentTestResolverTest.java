@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -37,10 +37,12 @@ class StatefulExtentTestResolverTest {
     @Mock
     private StatefulExtentTest.StatefulExtentTestBuilder statefulExtentTestBuilder;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private ContextManager contextManager;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private ExtentReporter extentReporter;
 
     @Mock
@@ -75,11 +77,8 @@ class StatefulExtentTestResolverTest {
 
     @BeforeEach
     void beforeEach() {
-        Reflections.setField("extentReporter", statefulExtentTestResolver, extentReporter);
-        Reflections.setField("contextManager", statefulExtentTestResolver, contextManager);
-
-        extentReporterMockedStatic = mockStatic(ExtentReporter.class);
-        statefulExtentTestMockedStatic = mockStatic(StatefulExtentTest.class);
+        extentReporterMockedStatic = mockStatic();
+        statefulExtentTestMockedStatic = mockStatic();
     }
 
     @AfterEach

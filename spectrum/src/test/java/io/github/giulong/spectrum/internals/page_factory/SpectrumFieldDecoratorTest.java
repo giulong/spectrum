@@ -83,7 +83,7 @@ class SpectrumFieldDecoratorTest {
             assertTrue((boolean) context.arguments().get(1));
         });
 
-        final MockedStatic<Proxy> proxyMockedStatic = mockStatic(Proxy.class);
+        final MockedStatic<Proxy> proxyMockedStatic = mockStatic();
         when(Proxy.newProxyInstance(eq(classLoader), classesArgumentCaptor.capture(), invocationHandlerArgumentCaptor.capture())).thenReturn(proxy);
 
         assertEquals(proxy, spectrumFieldDecorator.decorate(classLoader, field));
@@ -108,7 +108,7 @@ class SpectrumFieldDecoratorTest {
         final MockedConstruction<LocatingElementListHandler> mockedConstruction = mockConstruction(LocatingElementListHandler.class,
                 (mock, context) -> assertEquals(locator, context.arguments().getFirst()));
 
-        final MockedStatic<Proxy> proxyMockedStatic = mockStatic(Proxy.class);
+        final MockedStatic<Proxy> proxyMockedStatic = mockStatic();
         when(Proxy.newProxyInstance(eq(classLoader), classesArgumentCaptor.capture(), invocationHandlerArgumentCaptor.capture())).thenReturn(proxyList);
 
         assertEquals(proxyList, spectrumFieldDecorator.decorate(classLoader, field));

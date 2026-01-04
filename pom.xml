@@ -70,6 +70,8 @@
                 <module>it-macos</module>
                 <module>it-windows</module>
                 <module>it-appium</module>
+                <module>it-visual-regression</module>
+                <module>it-visual-regression-fae</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>verify-macos</module>
@@ -94,6 +96,8 @@
                 <module>it-grid</module>
                 <module>it-bidi</module>
                 <module>it-testbook</module>
+                <module>it-visual-regression</module>
+                <module>it-visual-regression-fae</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>cleanup</module>
@@ -137,6 +141,12 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>1.18.42</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jspecify</groupId>
+                <artifactId>jspecify</artifactId>
+                <version>1.0.0</version>
             </dependency>
 
             <dependency>
@@ -207,7 +217,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.22</version>
+                <version>1.5.23</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -399,8 +409,7 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.14.1</version>
                     <configuration>
-                        <source>21</source>
-                        <target>21</target>
+                        <release>21</release>
                         <encoding>UTF-8</encoding>
                         <compilerArgument>-Xlint:unchecked</compilerArgument>
                         <proc>full</proc>

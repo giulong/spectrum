@@ -1,18 +1,22 @@
 package io.github.giulong.spectrum.utils.events;
 
 import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.SUITE;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.enums.Result;
 import io.github.giulong.spectrum.pojos.events.Event;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.Summary;
 
 import org.junit.jupiter.api.AfterEach;
@@ -30,14 +34,15 @@ class EventsDispatcherTest {
 
     private MockedStatic<Event> eventMockedStatic;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
     private Summary summary;
 
     @Mock
-    private Map<String, Object> payload;
+    private Payload payload;
 
     @Mock
     private ExtensionContext extensionContext;
@@ -59,8 +64,7 @@ class EventsDispatcherTest {
 
     @BeforeEach
     void beforeEach() {
-        eventMockedStatic = mockStatic(Event.class);
-        Reflections.setField("configuration", eventsDispatcher, configuration);
+        eventMockedStatic = mockStatic();
     }
 
     @AfterEach
@@ -87,7 +91,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
-        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Payload.builder().build())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.sessionOpened();
@@ -109,7 +113,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(result)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
-        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Payload.builder().build())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.sessionClosed();
@@ -130,7 +134,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
-        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Payload.builder().build())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(reason, tags);
@@ -155,7 +159,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(result)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
-        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Payload.builder().build())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(reason, tags, result);
@@ -201,7 +205,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(null)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
-        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Payload.builder().build())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(primaryId, reason);
@@ -225,7 +229,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(null)).thenReturn(eventBuilder);
         when(eventBuilder.tags(null)).thenReturn(eventBuilder);
         when(eventBuilder.context(null)).thenReturn(eventBuilder);
-        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Payload.builder().build())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(primaryId, secondaryId, reason);
@@ -252,7 +256,7 @@ class EventsDispatcherTest {
         when(eventBuilder.result(result)).thenReturn(eventBuilder);
         when(eventBuilder.tags(tags)).thenReturn(eventBuilder);
         when(eventBuilder.context(extensionContext)).thenReturn(eventBuilder);
-        when(eventBuilder.payload(Map.of())).thenReturn(eventBuilder);
+        when(eventBuilder.payload(Payload.builder().build())).thenReturn(eventBuilder);
         when(eventBuilder.build()).thenReturn(event);
 
         eventsDispatcher.fire(className, testName, reason, result, tags, extensionContext);

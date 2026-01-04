@@ -12,9 +12,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.events.EventsConsumer;
 
 import lombok.Getter;
@@ -32,11 +32,13 @@ public class TestStepsConsumer extends EventsConsumer {
     @JsonIgnore
     private final FileUtils fileUtils = FileUtils.getInstance();
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Path to the template to be used, relative to src/test/resources/template. The report produced will match the template's extension")
-    private final String template = "test-steps.txt";
+    private String template = "test-steps.txt";
 
+    @SuppressWarnings("FieldMayBeFinal")
     @JsonPropertyDescription("Where to produce the output, relative to the root of the project")
-    private final String output = "target/spectrum/tests-steps";
+    private String output = "target/spectrum/tests-steps";
 
     @Override
     protected boolean shouldAccept(final Event event) {

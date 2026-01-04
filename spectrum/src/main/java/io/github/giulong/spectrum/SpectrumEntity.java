@@ -1,27 +1,25 @@
 package io.github.giulong.spectrum;
 
-import static com.aventstack.extentreports.MediaEntityBuilder.createScreenCaptureFromPath;
-import static com.aventstack.extentreports.Status.*;
+import static com.aventstack.extentreports.Status.FAIL;
+import static com.aventstack.extentreports.Status.INFO;
+import static com.aventstack.extentreports.Status.WARNING;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.DRIVER;
+import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.openqa.selenium.OutputType.BYTES;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.MessageDigest;
 import java.util.Arrays;
-import java.util.Map;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
-import com.aventstack.extentreports.model.Media;
 
 import io.github.giulong.spectrum.interfaces.Shared;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.js.Js;
@@ -29,7 +27,6 @@ import io.github.giulong.spectrum.utils.js.JsWebElementProxyBuilder;
 
 import net.datafaker.Faker;
 
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -45,13 +42,10 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 @Slf4j
+@SuppressWarnings("unchecked")
 public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
-    public static final String HASH_ALGORITHM = "SHA-256";
-
-    private final ContextManager contextManager = ContextManager.getInstance();
     private final FileUtils fileUtils = FileUtils.getInstance();
-    private final HtmlUtils htmlUtils = HtmlUtils.getInstance();
 
     @Shared
     protected static Configuration configuration;
@@ -123,7 +117,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      *
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T hover(final WebElement webElement) {
         actions.moveToElement(webElement).perform();
 
@@ -135,93 +128,155 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      *
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T screenshot() {
-        addScreenshotToReport(null, INFO);
+        return addScreenshotToReport("", INFO);
+    }
 
-        return (T) this;
+    /**
+     * Adds a screenshot of the provided {@link WebElement} at INFO level
+     * to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T screenshot(final WebElement webElement) {
+        return addScreenshotToReport(webElement, "", INFO);
     }
 
     /**
      * Adds a screenshot with the provided message and INFO status to the current
      * test in the Extent Report
      *
-     * @param msg the message to log
+     * @param message the message to log
      *
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
-    public T screenshotInfo(final String msg) {
-        addScreenshotToReport(msg, INFO);
-
-        return (T) this;
+    public T screenshotInfo(final String message) {
+        return addScreenshotToReport(message, INFO);
     }
 
     /**
-     * Adds a screenshot status with the provided message and WARN to the current
-     * test in the Extent Report
+     * Adds a screenshot of the provided {@link WebElement} with the provided
+     * message and INFO status to the current test in the Extent Report
      *
-     * @param msg the message to log
+     * @param webElement the {@link WebElement} to take the screenshot of
+     * @param message the message to log
      *
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
-    public T screenshotWarning(final String msg) {
-        addScreenshotToReport(msg, WARNING);
+    public T screenshotInfo(final WebElement webElement, final String message) {
+        return addScreenshotToReport(webElement, message, INFO);
+    }
 
-        return (T) this;
+    /**
+     * Adds a screenshot with the provided message and WARN status to the current
+     * test in the Extent Report
+     *
+     * @param message the message to log
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T screenshotWarning(final String message) {
+        return addScreenshotToReport(message, WARNING);
+    }
+
+    /**
+     * Adds a screenshot of the provided {@link WebElement} with the provided
+     * message and WARN status to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     * @param message the message to log
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T screenshotWarning(final WebElement webElement, final String message) {
+        return addScreenshotToReport(webElement, message, WARNING);
     }
 
     /**
      * Adds a screenshot with the provided message and FAIL status to the current
      * test in the Extent Report
      *
-     * @param msg the message to log
+     * @param message the message to log
      *
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
-    public T screenshotFail(final String msg) {
-        addScreenshotToReport(msg, FAIL);
+    public T screenshotFail(final String message) {
+        return addScreenshotToReport(message, FAIL);
+    }
 
-        return (T) this;
+    /**
+     * Adds a screenshot of the provided {@link WebElement} with the provided
+     * message and FAIL status to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     * @param message the message to log
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T screenshotFail(final WebElement webElement, final String message) {
+        return addScreenshotToReport(webElement, message, FAIL);
     }
 
     /**
      * Adds a screenshot with the provided message and the provided status to the
      * current test in the Extent Report
      *
-     * @param msg the message to log
+     * @param message the message to log
      * @param status the log's status
+     *
+     * @return the calling SpectrumEntity instance
      */
-    public void addScreenshotToReport(final String msg, final Status status) {
+    public T addScreenshotToReport(final String message, final Status status) {
         final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
-        final byte[] screenshot = ((TakesScreenshot) context.getStore(GLOBAL).get(DRIVER, WebDriver.class)).getScreenshotAs(BYTES);
+        final TakesScreenshot originalDriver = (TakesScreenshot) context.getStore(GLOBAL).get(ORIGINAL_DRIVER, WebDriver.class);
+        final Payload payload = Payload
+                .builder()
+                .screenshot(originalDriver.getScreenshotAs(BYTES))
+                .message(message)
+                .status(status)
+                .takesScreenshot(originalDriver)
+                .build();
 
-        eventsDispatcher.fire(SCREENSHOT, SCREENSHOT, context, Map.of(SCREENSHOT, screenshot));
+        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, payload);
 
-        final Path path = fileUtils.writeTempFile("screenshot", ".png", screenshot);
-        final Media media = createScreenCaptureFromPath(path.toString()).build();
-
-        contextManager.getScreenshots().put(path, screenshot);
-
-        if (msg == null) {
-            statefulExtentTest.getCurrentNode().log(status, (String) null, media);
-            return;
-        }
-
-        final int frameNumber = configuration.getVideo().getAndIncrementFrameNumberFor(testData, MANUAL);
-        final String tag = htmlUtils.buildFrameTagFor(frameNumber, msg, testData, "screenshot-message");
-
-        statefulExtentTest.getCurrentNode().log(status, tag, media);
+        return (T) this;
     }
 
     /**
-     * Deletes the download folder (its path is provided in the
-     * {@code configuration*.yaml})
+     * Adds a screenshot of the provided {@link WebElement} with the provided message
+     * and the provided status to the current test in the Extent Report
+     *
+     * @param webElement the {@link WebElement} to take the screenshot of
+     * @param message the message to log
+     * @param status the log's status
+     *
+     * @return the calling SpectrumEntity instance
      */
-    public void deleteDownloadsFolder() {
+    public T addScreenshotToReport(final WebElement webElement, final String message, final Status status) {
+        final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
+        final Payload payload = Payload
+                .builder()
+                .screenshot(webElement.getScreenshotAs(BYTES))
+                .message(message)
+                .status(status)
+                .takesScreenshot(webElement)
+                .build();
+
+        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, payload);
+
+        return (T) this;
+    }
+
+    /**
+     * Deletes the download folder (its path is provided in the {@code configuration*.yaml})
+     *
+     * @return the calling SpectrumEntity instance
+     */
+    public T deleteDownloadsFolder() {
         fileUtils.deleteContentOf(Path.of(configuration.getRuntime().getDownloadsFolder()));
+        return (T) this;
     }
 
     /**
@@ -232,7 +287,6 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      *
      * @return the calling SpectrumEntity instance
      */
-    @SuppressWarnings("unchecked")
     public T waitForDownloadOf(final Path path) {
         downloadWait.until(webDriver -> {
             log.trace("Checking for download completion of file '{}'", path);
@@ -258,12 +312,7 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
         waitForDownloadOf(downloadedFile);
 
-        log.info("""
-                 Checking if these files are the same:
-                 {}
-                 {}
-                 """, downloadedFile, fileToCheck);
-        return Arrays.equals(sha256Of(downloadedFile), sha256Of(fileToCheck));
+        return fileUtils.compare(downloadedFile, fileToCheck);
     }
 
     /**
@@ -367,13 +416,5 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
         return Arrays
                 .stream(classes)
                 .allMatch(c -> hasClass(webElement, c));
-    }
-
-    @SneakyThrows
-    static byte[] sha256Of(final Path file) {
-        final byte[] digest = MessageDigest.getInstance(HASH_ALGORITHM).digest(Files.readAllBytes(file));
-
-        log.trace("{} of file '{}' is '{}'", HASH_ALGORITHM, file, Arrays.toString(digest));
-        return digest;
     }
 }

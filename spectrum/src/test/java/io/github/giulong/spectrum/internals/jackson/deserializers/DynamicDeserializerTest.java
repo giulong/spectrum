@@ -42,7 +42,7 @@ class DynamicDeserializerTest {
 
     @BeforeEach
     void beforeEach() {
-        yamlUtilsMockedStatic = mockStatic(YamlUtils.class);
+        yamlUtilsMockedStatic = mockStatic();
     }
 
     @AfterEach

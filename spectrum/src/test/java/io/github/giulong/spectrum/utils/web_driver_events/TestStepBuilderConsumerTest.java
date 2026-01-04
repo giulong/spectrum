@@ -55,9 +55,9 @@ class TestStepBuilderConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        localDateTimeMockedStatic = mockStatic(LocalDateTime.class);
-        durationMockedStatic = mockStatic(Duration.class);
-        testStepMockedStatic = mockStatic(TestStep.class);
+        localDateTimeMockedStatic = mockStatic();
+        durationMockedStatic = mockStatic();
+        testStepMockedStatic = mockStatic();
     }
 
     @AfterEach

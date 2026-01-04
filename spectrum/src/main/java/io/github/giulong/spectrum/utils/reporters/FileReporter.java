@@ -66,15 +66,14 @@ public abstract class FileReporter extends Reporter implements CanProduceMetadat
 
         final List<File> files = Arrays
                 .stream(folderContent)
-                .filter(not(File::isDirectory))
-                .filter(file -> file.getName().endsWith(extension))
+                .filter(not(File::isDirectory)
+                        .and(file -> file.getName().endsWith(extension)))
                 .toList();
 
         retention.deleteArtifactsFrom(files, this);
     }
 
     @Override
-    @SneakyThrows
     public void doOutputFrom(final String interpolatedTemplate) {
         fileUtils.write(output, interpolatedTemplate);
     }

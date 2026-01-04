@@ -54,8 +54,8 @@ class JsWebElementProxyBuilderTest {
 
     @BeforeEach
     void beforeEach() {
-        proxyMockedStatic = mockStatic(Proxy.class);
-        jsWebElementInvocationHandlerMockedStatic = mockStatic(JsWebElementInvocationHandler.class);
+        proxyMockedStatic = mockStatic();
+        jsWebElementInvocationHandlerMockedStatic = mockStatic();
     }
 
     @AfterEach

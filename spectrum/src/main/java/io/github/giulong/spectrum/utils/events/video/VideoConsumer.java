@@ -1,9 +1,8 @@
 package io.github.giulong.spectrum.utils.events.video;
 
-import static io.github.giulong.spectrum.SpectrumEntity.HASH_ALGORITHM;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.web_driver_events.ScreenshotConsumer.SCREENSHOT;
+import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -20,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 
 import lombok.SneakyThrows;
@@ -48,7 +47,7 @@ public class VideoConsumer extends VideoBaseConsumer {
         final Video video = configuration.getVideo();
         final ExtensionContext.Store store = event.getContext().getStore(GLOBAL);
         final TestData testData = store.get(TEST_DATA, TestData.class);
-        final byte[] screenshot = (byte[]) event.getPayload().get(SCREENSHOT);
+        final byte[] screenshot = event.getPayload().getScreenshot();
 
         if (video.isSkipDuplicateFrames() && !isNewFrame(screenshot, testData)) {
             return;

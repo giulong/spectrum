@@ -5,13 +5,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.FreeMarkerWrapper;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.testbook.TestBook;
 
 import lombok.Getter;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,7 +18,8 @@ import org.mockito.Mock;
 
 class ReporterTest {
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private FreeMarkerWrapper freeMarkerWrapper;
 
     @Mock
@@ -27,11 +27,6 @@ class ReporterTest {
 
     @InjectMocks
     private DummyReporter reporter;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("freeMarkerWrapper", reporter, freeMarkerWrapper);
-    }
 
     @Test
     @DisplayName("flush should call the doOutputFrom method with the template interpolated with the testbook vars")

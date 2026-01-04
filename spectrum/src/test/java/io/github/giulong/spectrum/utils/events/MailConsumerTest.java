@@ -57,9 +57,9 @@ class MailConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        freeMarkerWrapperMockedStatic = mockStatic(FreeMarkerWrapper.class);
-        mailerBuilderMockedStatic = mockStatic(MailerBuilder.class);
-        emailBuilderMockedStatic = mockStatic(EmailBuilder.class);
+        freeMarkerWrapperMockedStatic = mockStatic();
+        mailerBuilderMockedStatic = mockStatic();
+        emailBuilderMockedStatic = mockStatic();
     }
 
     @AfterEach

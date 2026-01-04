@@ -8,7 +8,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 
 import org.jcodec.api.awt.AWTSequenceEncoder;
 import org.junit.jupiter.api.AfterEach;
@@ -50,7 +50,7 @@ class VideoInitConsumerTest {
 
     @BeforeEach
     void beforeEach() {
-        awtSequenceEncoderMockedStatic = mockStatic(AWTSequenceEncoder.class);
+        awtSequenceEncoderMockedStatic = mockStatic();
     }
 
     @AfterEach

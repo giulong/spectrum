@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import static io.github.giulong.spectrum.utils.FileUtils.HASH_ALGORITHM;
 import static java.lang.System.lineSeparator;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
@@ -13,6 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterEach;
@@ -28,7 +31,11 @@ import org.mockito.MockedStatic;
 
 class FileUtilsTest {
 
+    private final byte[] bytes = new byte[]{1, 2, 3};
+    private final byte[] digest = new byte[]{4, 5, 6};
+
     private static MockedStatic<Files> filesMockedStatic;
+    private MockedStatic<MessageDigest> messageDigestMockedStatic;
 
     @Mock
     private BasicFileAttributes basicFileAttributes;
@@ -37,10 +44,16 @@ class FileUtilsTest {
     private FileTime creationTime;
 
     @Mock
+    private MessageDigest messageDigest;
+
+    @Mock
     private Path path;
 
     @Mock
     private Path parentPath;
+
+    @Mock
+    private TestData testData;
 
     @Mock
     private File file;
@@ -50,12 +63,14 @@ class FileUtilsTest {
 
     @BeforeEach
     void beforeEach() {
-        filesMockedStatic = mockStatic(Files.class);
+        filesMockedStatic = mockStatic();
+        messageDigestMockedStatic = mockStatic();
     }
 
     @AfterEach
     void afterEach() {
         filesMockedStatic.close();
+        messageDigestMockedStatic.close();
     }
 
     @Test
@@ -93,6 +108,13 @@ class FileUtilsTest {
                         "  objectField: objectValue" + lineSeparator() + "internalKey:" + lineSeparator() +
                         "  field: ignored"),
                 arguments("not-existing", ""));
+    }
+
+    @Test
+    @DisplayName("readBytesOf should return the correct result")
+    void readBytesOf() throws IOException {
+        when(Files.readAllBytes(path)).thenReturn(bytes);
+        assertEquals(bytes, fileUtils.readBytesOf(path));
     }
 
     @DisplayName("interpolateTimestampFrom should replace the timestamp from the provided file name")
@@ -210,7 +232,7 @@ class FileUtilsTest {
     @Test
     @DisplayName("write should write the provided content to a file in the provided string path, creating the parent folders if needed")
     void writeString() {
-        final MockedStatic<Path> pathMockedStatic = mockStatic(Path.class);
+        final MockedStatic<Path> pathMockedStatic = mockStatic();
         final String stringPath = "stringPath";
         final String content = "content";
 
@@ -260,18 +282,80 @@ class FileUtilsTest {
     }
 
     @Test
-    @DisplayName("writeTempFile should create a temp file with the provided prefix, suffix, and content and delete it on exit")
-    void writeTempFile() throws IOException {
-        final String prefix = "prefix";
-        final String suffix = "suffix";
-        final byte[] data = new byte[]{1, 2, 3};
+    @DisplayName("getScreenshotNameFrom should return the name for the provided testData")
+    void getScreenshotNameFrom() {
+        when(testData.getScreenshotNumber()).thenReturn(123);
 
-        when(Files.createTempFile(prefix, suffix)).thenReturn(path);
-        when(path.toFile()).thenReturn(file);
-        when(Files.write(path, data)).thenReturn(path);
+        assertEquals("screenshot-123.png", fileUtils.getScreenshotNameFrom(testData));
+    }
 
-        assertEquals(path, fileUtils.writeTempFile(prefix, suffix, data));
+    @Test
+    @DisplayName("getFailedScreenshotNameFrom should return the name for the provided testData, with the 'failed' suffix")
+    void getFailedScreenshotNameFrom() {
+        when(testData.getScreenshotNumber()).thenReturn(123);
 
-        verify(file).deleteOnExit();
+        assertEquals("screenshot-123-failed.png", fileUtils.getFailedScreenshotNameFrom(testData));
+    }
+
+    @Test
+    @DisplayName("getScreenshotsDiffNameFrom should return the name for the provided testData, with the 'diff' suffix")
+    void getScreenshotsDiffNameFrom() {
+        when(testData.getScreenshotNumber()).thenReturn(123);
+
+        assertEquals("screenshot-123-diff.png", fileUtils.getScreenshotsDiffNameFrom(testData));
+    }
+
+    @Test
+    @DisplayName("checksumOf should return the byte array of the sha digest of the provided file")
+    void checksumOfBytes() throws NoSuchAlgorithmException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(messageDigest.digest(bytes)).thenReturn(digest);
+
+        assertArrayEquals(digest, fileUtils.checksumOf(bytes));
+    }
+
+    @ParameterizedTest(name = "with digest arrays {0} and {1} we expect {2}")
+    @DisplayName("compare should check if the two provided byte arrays are the same")
+    @MethodSource("compareValuesProvider")
+    void compare(final byte[] digest1, final byte[] digest2, final boolean expected) throws NoSuchAlgorithmException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(messageDigest.digest(bytes))
+                .thenReturn(digest1)
+                .thenReturn(digest2);
+
+        assertEquals(expected, fileUtils.compare(bytes, bytes));
+    }
+
+    static Stream<Arguments> compareValuesProvider() {
+        return Stream.of(
+                arguments(new byte[]{1}, new byte[]{1}, true),
+                arguments(new byte[]{1}, new byte[]{2}, false)
+        );
+    }
+
+    @ParameterizedTest(name = "with digest arrays {0} and {1} we expect {2}")
+    @DisplayName("compare should check if the files at the two provided paths are the same")
+    @MethodSource("compareValuesProvider")
+    void comparePaths(final byte[] digest1, final byte[] digest2, final boolean expected) throws NoSuchAlgorithmException, IOException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(Files.readAllBytes(path)).thenReturn(bytes);
+        when(messageDigest.digest(bytes))
+                .thenReturn(digest1)
+                .thenReturn(digest2);
+
+        assertEquals(expected, fileUtils.compare(path, path));
+    }
+
+    @ParameterizedTest(name = "with digest arrays {0} and {1} we expect {2}")
+    @DisplayName("compare should check if the file at the provided path and the provided byte array are the same")
+    @MethodSource("compareValuesProvider")
+    void compareMixed(final byte[] digest1, final byte[] digest2, final boolean expected) throws NoSuchAlgorithmException, IOException {
+        when(MessageDigest.getInstance(HASH_ALGORITHM)).thenReturn(messageDigest);
+        when(Files.readAllBytes(path)).thenReturn(bytes);
+        when(messageDigest.digest(bytes))
+                .thenReturn(digest1)
+                .thenReturn(digest2);
+
+        assertEquals(expected, fileUtils.compare(path, bytes));
     }
 }

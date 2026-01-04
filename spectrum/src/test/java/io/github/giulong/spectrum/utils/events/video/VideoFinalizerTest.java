@@ -15,7 +15,7 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 import io.github.giulong.spectrum.pojos.events.Event;
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.utils.TestData;
 
 import org.jcodec.api.awt.AWTSequenceEncoder;
 import org.junit.jupiter.api.AfterEach;
@@ -61,7 +61,7 @@ class VideoFinalizerTest {
 
     @BeforeEach
     void beforeEach() {
-        imageIOMockedStatic = mockStatic(ImageIO.class);
+        imageIOMockedStatic = mockStatic();
     }
 
     @AfterEach

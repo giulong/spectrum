@@ -7,10 +7,10 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,7 +23,8 @@ import org.openqa.selenium.remote.service.DriverService;
 
 class FirefoxTest {
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private Configuration configuration;
 
     @Mock
@@ -40,11 +41,6 @@ class FirefoxTest {
 
     @InjectMocks
     private Firefox firefox;
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("configuration", firefox, configuration);
-    }
 
     @Test
     @DisplayName("getDriverServiceBuilder should return a new instance of GeckoDriverService.Builder()")

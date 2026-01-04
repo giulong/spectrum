@@ -8,13 +8,12 @@ import static org.slf4j.event.Level.WARN;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.types.TestData;
+import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.HtmlUtils;
-import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.StatefulExtentTest;
+import io.github.giulong.spectrum.utils.TestData;
 import io.github.giulong.spectrum.utils.video.Video;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,7 +31,8 @@ class HtmlReportConsumerTest {
     @Mock
     private TestData testData;
 
-    @Mock
+    @MockFinal
+    @SuppressWarnings("unused")
     private HtmlUtils htmlUtils;
 
     @Mock
@@ -49,11 +49,6 @@ class HtmlReportConsumerTest {
 
     @InjectMocks
     private HtmlReportConsumer htmlReportConsumer = new HtmlReportConsumer(HtmlReportConsumer.builder());
-
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("htmlUtils", htmlReportConsumer, htmlUtils);
-    }
 
     private void stubsFor(final Level level) {
         when(statefulExtentTest.getCurrentNode()).thenReturn(currentNode);

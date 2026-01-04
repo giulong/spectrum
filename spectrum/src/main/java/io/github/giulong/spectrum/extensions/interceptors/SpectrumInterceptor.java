@@ -5,7 +5,10 @@ import static io.github.giulong.spectrum.enums.Result.SUCCESSFUL;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
-import static io.github.giulong.spectrum.utils.events.EventsDispatcher.*;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.AFTER;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.BEFORE_EXECUTION;
+import static io.github.giulong.spectrum.utils.events.EventsDispatcher.DYNAMIC_TEST;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 import java.nio.file.Path;
@@ -13,8 +16,8 @@ import java.util.Set;
 
 import com.aventstack.extentreports.ExtentTest;
 
-import io.github.giulong.spectrum.types.TestData;
 import io.github.giulong.spectrum.utils.*;
+import io.github.giulong.spectrum.utils.TestData.VisualRegression;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.video.Video;
 
@@ -47,11 +50,14 @@ public class SpectrumInterceptor implements InvocationInterceptor {
         final Path dynamicVideoPath = Path.of(String.format("%s-%s.mp4", fileUtils.removeExtensionFrom(testData.getVideoPath().toString()), testName));
         final ExtentTest currentNode = statefulExtentTest.createNode(testName);
         final Set<String> tags = Set.of(DYNAMIC_TEST);
+        final VisualRegression visualRegression = testData.getVisualRegression();
 
         testData.setDynamic(true);
+        testData.setScreenshotNumber(0);
         testData.setFrameNumber(0);
         testData.setDisplayName(testName);
         testData.setDynamicVideoPath(dynamicVideoPath);
+        visualRegression.setDynamicPath(visualRegression.getPath().resolve(testName));
         statefulExtentTest.setDisplayName(testName);
         contextManager.initWithParentFor(context);
 
