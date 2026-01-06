@@ -347,10 +347,15 @@ so you can directly use them in your tests/pages.
 
 * `T hover(WebElement)`: hovers on the provided WebElement, leveraging the `actions` field
 * `T screenshot()`: adds a screenshot at INFO level to the current test in the Extent Report
+* `T screenshot(WebElement)`: adds a screenshot of the provided WebElement at INFO level to the current test in the Extent Report
 * `T screenshotInfo(String)`: adds a screenshot with the provided message and INFO status to the current test in the Extent Report
+* `T screenshotInfo(WebElement, String)`: adds a screenshot of the provided WebElement  with the provided message and INFO status to the current test in the Extent Report
 * `T screenshotWarning(String)`: adds a screenshot status with the provided message and WARN to the current test in the Extent Report
+* `T screenshotWarning(WebElement, String)`: adds a screenshot of the provided WebElement  status with the provided message and WARN to the current test in the Extent Report
 * `T screenshotFail(String)`: adds a screenshot with the provided message and FAIL status to the current test in the Extent Report
+* `T screenshotFail(WebElement, String)`: adds a screenshot of the provided WebElement  with the provided message and FAIL status to the current test in the Extent Report
 * `Media addScreenshotToReport(String, Status)`: adds a screenshot with the provided message and the provided status to the current test in the Extent Report
+* `Media addScreenshotToReport(WebElement, String, Status)`: adds a screenshot of the provided WebElement  with the provided message and the provided status to the current test in the Extent Report
 * `void deleteDownloadsFolder()`: deletes the download folder (its path is provided in the `configuration*.yaml`)
 * `T waitForDownloadOf(Path)`: leverages the configurable `downloadWait` to check fluently if the file at the provided path is fully downloaded
 * `boolean checkDownloadedFile(String, String)`: leverages the `waitForDownloadOf` method and then compares checksum of the two files provided. Check
