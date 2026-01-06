@@ -1,6 +1,9 @@
 package io.github.giulong.spectrum.it.tests;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.openqa.selenium.OutputType.BYTES;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it.pages.CheckboxPage;
@@ -24,6 +27,9 @@ class CheckboxIT extends SpectrumTest<Void> {
         // Open the base url of the application under test
         driver.get(configuration.getApplication().getBaseUrl());
         assertEquals("Welcome to the-internet", landingPage.getTitle().getText());
+
+        // Taking a screenshot with the native Selenium API to prove it's the same as using the helper methods
+        takesScreenshot.getScreenshotAs(BYTES);
 
         extentTest.info("Custom step that should not be highlighted on video playback");
         landingPage.getCheckboxLink().click();

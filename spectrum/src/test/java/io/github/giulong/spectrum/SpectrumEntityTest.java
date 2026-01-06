@@ -4,13 +4,11 @@ import static com.aventstack.extentreports.Status.FAIL;
 import static com.aventstack.extentreports.Status.INFO;
 import static com.aventstack.extentreports.Status.WARNING;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
 import static org.openqa.selenium.OutputType.BYTES;
@@ -29,10 +27,7 @@ import com.aventstack.extentreports.Status;
 
 import io.github.giulong.spectrum.interfaces.Shared;
 import io.github.giulong.spectrum.pojos.events.Event.Payload;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.Reflections;
-import io.github.giulong.spectrum.utils.TestContext;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 
 import org.junit.jupiter.api.AfterEach;
@@ -97,6 +92,9 @@ class SpectrumEntityTest {
     @Mock
     private File file;
 
+    @Mock
+    private TestData testData;
+
     @MockFinal
     @SuppressWarnings("unused")
     private EventsDispatcher eventsDispatcher;
@@ -108,10 +106,10 @@ class SpectrumEntityTest {
     private ExtensionContext context;
 
     @Mock
-    private ExtensionContext.Store store;
-
-    @Mock(extraInterfaces = TakesScreenshot.class)
     private WebDriver driver;
+
+    @Mock
+    private TakesScreenshot takesScreenshot;
 
     @Captor
     private ArgumentCaptor<Function<WebDriver, Boolean>> functionArgumentCaptor;
@@ -135,31 +133,16 @@ class SpectrumEntityTest {
         messageDigestMockedStatic.close();
     }
 
-    private void screenshotStubs() {
-        when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
-
-        when(context.getStore(GLOBAL)).thenReturn(store);
-        when(store.get(ORIGINAL_DRIVER, WebDriver.class)).thenReturn(driver);
-
-        when(((TakesScreenshot) driver).getScreenshotAs(BYTES)).thenReturn(bytes);
-    }
-
     private void screenshotWebElementStubs() {
         when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
         when(webElement.getScreenshotAs(BYTES)).thenReturn(bytes);
     }
 
     private void screenshotVerificationsFor(final String message, final Status status) {
-        final Payload payload = Payload
-                .builder()
-                .screenshot(bytes)
-                .message(message)
-                .status(status)
-                .takesScreenshot((TakesScreenshot) driver)
-                .build();
+        verify(testData).buildScreenshotFor(MANUAL, message, status);
+        verify(takesScreenshot).getScreenshotAs(BYTES);
 
-        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, payload);
-        verifyNoMoreInteractions(eventsDispatcher);
+        verifyNoInteractions(eventsDispatcher);
     }
 
     private void screenshotWebElementVerificationsFor(final String message, final Status status) {
@@ -222,8 +205,6 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("screenshot should delegate to addScreenshotToReport")
     void screenshot() {
-        screenshotStubs();
-
         assertEquals(spectrumEntity, spectrumEntity.screenshot());
 
         screenshotVerificationsFor("", INFO);
@@ -242,8 +223,6 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("infoWithScreenshot should delegate to addScreenshotToReport")
     void infoWithScreenshot() {
-        screenshotStubs();
-
         assertEquals(spectrumEntity, spectrumEntity.screenshotInfo(msg));
 
         screenshotVerificationsFor(msg, INFO);
@@ -262,8 +241,6 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("warningWithScreenshot should delegate to addScreenshotToReport")
     void warningWithScreenshot() {
-        screenshotStubs();
-
         assertEquals(spectrumEntity, spectrumEntity.screenshotWarning(msg));
 
         screenshotVerificationsFor(msg, WARNING);
@@ -282,8 +259,6 @@ class SpectrumEntityTest {
     @Test
     @DisplayName("failWithScreenshot should delegate to addScreenshotToReport")
     void failWithScreenshot() {
-        screenshotStubs();
-
         assertEquals(spectrumEntity, spectrumEntity.screenshotFail(msg));
 
         screenshotVerificationsFor(msg, FAIL);
@@ -303,8 +278,6 @@ class SpectrumEntityTest {
     @DisplayName("addScreenshotToReport should fall back to taking a screenshot of the visible page if an exception is thrown")
     void addScreenshotToReport() {
         final Status status = INFO;
-
-        screenshotStubs();
 
         spectrumEntity.addScreenshotToReport(msg, status);
 

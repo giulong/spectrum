@@ -1,5 +1,7 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+
 import io.github.giulong.spectrum.utils.ContextManager;
 import io.github.giulong.spectrum.utils.TestContext;
 
@@ -23,6 +25,7 @@ public class TestContextResolver extends TypeBasedParameterResolver<TestContext>
         log.debug("Resolving {}", TEST_CONTEXT);
 
         final TestContext testContext = contextManager.initFor(context);
+        context.getStore(GLOBAL).put(TEST_CONTEXT, testContext);
         testContext.put(EXTENSION_CONTEXT, context);
 
         return testContext;

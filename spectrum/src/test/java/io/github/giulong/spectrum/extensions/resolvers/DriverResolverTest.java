@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.*;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.TEST_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,6 +92,9 @@ class DriverResolverTest {
 
     @Mock
     private Configuration.Drivers.Events events;
+
+    @Mock
+    private TestContext testContext;
 
     @SuppressWarnings("rawtypes")
     @Mock
@@ -229,6 +233,7 @@ class DriverResolverTest {
 
         when(store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class)).thenReturn(statefulExtentTest);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(store.get(TEST_CONTEXT, TestContext.class)).thenReturn(testContext);
         when(configuration.getVideo()).thenReturn(video);
 
         when(LogConsumer.builder()).thenReturn(logConsumerBuilder);
@@ -266,6 +271,7 @@ class DriverResolverTest {
         when(eventsWebDriverListenerBuilder.locatorPattern(pattern)).thenReturn(eventsWebDriverListenerBuilder);
         when(eventsWebDriverListenerBuilder.events(events)).thenReturn(eventsWebDriverListenerBuilder);
         when(eventsWebDriverListenerBuilder.consumers(consumersArgumentCaptor.capture())).thenReturn(eventsWebDriverListenerBuilder);
+        when(eventsWebDriverListenerBuilder.testContext(testContext)).thenReturn(eventsWebDriverListenerBuilder);
         when(eventsWebDriverListenerBuilder.build()).thenReturn(eventsWebDriverListener);
     }
 

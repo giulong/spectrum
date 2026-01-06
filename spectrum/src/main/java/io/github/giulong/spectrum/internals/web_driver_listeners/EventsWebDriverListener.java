@@ -1,7 +1,13 @@
 package io.github.giulong.spectrum.internals.web_driver_listeners;
 
+import static com.aventstack.extentreports.Status.INFO;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
+import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -12,8 +18,13 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.giulong.spectrum.enums.Frame;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Events;
+import io.github.giulong.spectrum.utils.TestContext;
+import io.github.giulong.spectrum.utils.TestData;
+import io.github.giulong.spectrum.utils.TestData.Screenshot;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
 
@@ -22,6 +33,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
+import org.junit.jupiter.api.extension.ExtensionContext;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Sequence;
 import org.slf4j.event.Level;
@@ -32,8 +44,11 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
 
     private static final Pattern SECURED_PATTERN = Pattern.compile("@Secured@(?<key>.*)@Secured@");
 
+    private final EventsDispatcher eventsDispatcher = EventsDispatcher.getInstance();
+
     private Events events;
     private List<WebDriverEventConsumer> consumers;
+    private TestContext testContext;
 
     List<String> parse(final Object[] args) {
         return Arrays
@@ -484,8 +499,29 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
     }
 
     @Override
-    @Generated
     public <X> void afterGetScreenshotAs(final WebDriver driver, final OutputType<X> target, final X result) {
+        if (result instanceof byte[]) {
+            final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
+            final Screenshot screenshot = Optional
+                    .ofNullable(context.getStore(GLOBAL).get(TEST_DATA, TestData.class).getScreenshot())
+                    .orElseGet(() -> Screenshot
+                            .builder()
+                            .frame(MANUAL)
+                            .message("")
+                            .status(INFO)
+                            .build());
+
+            final Payload payload = Payload
+                    .builder()
+                    .screenshot((byte[]) result)
+                    .message(screenshot.getMessage())
+                    .status(screenshot.getStatus())
+                    .takesScreenshot((TakesScreenshot) driver)
+                    .build();
+
+            eventsDispatcher.fire(screenshot.getFrame().getValue(), SCREENSHOT, context, payload);
+        }
+
         listenTo(AUTO_AFTER, events.getAfterGetScreenshotAs(), driver, target, result);
     }
 

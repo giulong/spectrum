@@ -4,10 +4,8 @@ import static com.aventstack.extentreports.Status.FAIL;
 import static com.aventstack.extentreports.Status.INFO;
 import static com.aventstack.extentreports.Status.WARNING;
 import static io.github.giulong.spectrum.enums.Frame.MANUAL;
-import static io.github.giulong.spectrum.extensions.resolvers.DriverResolver.ORIGINAL_DRIVER;
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
 import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
-import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.openqa.selenium.OutputType.BYTES;
 
 import java.nio.file.Files;
@@ -232,17 +230,8 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
      * @return the calling SpectrumEntity instance
      */
     public T addScreenshotToReport(final String message, final Status status) {
-        final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
-        final TakesScreenshot originalDriver = (TakesScreenshot) context.getStore(GLOBAL).get(ORIGINAL_DRIVER, WebDriver.class);
-        final Payload payload = Payload
-                .builder()
-                .screenshot(originalDriver.getScreenshotAs(BYTES))
-                .message(message)
-                .status(status)
-                .takesScreenshot(originalDriver)
-                .build();
-
-        eventsDispatcher.fire(MANUAL.getValue(), SCREENSHOT, context, payload);
+        testData.buildScreenshotFor(MANUAL, message, status);
+        takesScreenshot.getScreenshotAs(BYTES);
 
         return (T) this;
     }

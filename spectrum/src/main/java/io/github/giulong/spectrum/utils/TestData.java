@@ -4,6 +4,9 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.aventstack.extentreports.Status;
+
+import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.exceptions.VisualRegressionException;
 
@@ -26,6 +29,7 @@ public class TestData {
     private Path videoPath;
     private VisualRegression visualRegression;
     private TestFailedException testFailedException;
+    private Screenshot screenshot;
 
     @Builder.Default
     private Map<Path, AWTSequenceEncoder> encoders = new HashMap<>();
@@ -64,6 +68,15 @@ public class TestData {
         testFailedException = new VisualRegressionException(String.format("There were %d visual regressions", ++visualRegression.count));
     }
 
+    public void buildScreenshotFor(final Frame frame, final String message, final Status status) {
+        screenshot = Screenshot
+                .builder()
+                .frame(frame)
+                .message(message)
+                .status(status)
+                .build();
+    }
+
     @Getter
     @Builder
     public static class VisualRegression {
@@ -73,5 +86,13 @@ public class TestData {
 
         @Setter
         private Path dynamicPath;
+    }
+
+    @Getter
+    @Builder
+    public static class Screenshot {
+        private Frame frame;
+        private String message;
+        private Status status;
     }
 }
