@@ -32,6 +32,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
@@ -45,8 +47,8 @@ class SpectrumTestTest {
     @Mock
     private TestContext testContext;
 
-    @Mock
-    private WebDriver webDriver;
+    @Mock(extraInterfaces = {TakesScreenshot.class, JavascriptExecutor.class})
+    private WebDriver driver;
 
     @Mock
     private FakeData data;
@@ -185,29 +187,33 @@ class SpectrumTestTest {
         when(auto.getTimeout()).thenReturn(timeout);
         when(timeout.toSeconds()).thenReturn(seconds);
 
+        when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
+
         assertNull(childTestVoid.childTestPage);
         assertNull(childTestVoid.getParentTestPage());
 
-        childTestVoid.beforeEach(testContext, testData, statefulExtentTest, webDriver, implicitWait, pageLoadWait, scriptWait, downloadWait,
+        childTestVoid.beforeEach(testContext, testData, statefulExtentTest, driver, implicitWait, pageLoadWait, scriptWait, downloadWait,
                 actions, js, jsWebElementProxyBuilder, logInspector, browsingContext, browsingContextInspector, network, null);
 
-        assertEquals(webDriver, spectrumTest.driver);
-        assertEquals(implicitWait, spectrumTest.implicitWait);
-        assertEquals(pageLoadWait, spectrumTest.pageLoadWait);
-        assertEquals(scriptWait, spectrumTest.scriptWait);
-        assertEquals(downloadWait, spectrumTest.downloadWait);
-        assertEquals(statefulExtentTest, spectrumTest.statefulExtentTest);
-        assertEquals(extentTest, spectrumTest.extentTest);
-        assertEquals(actions, spectrumTest.actions);
-        assertEquals(testData, spectrumTest.testData);
-        assertEquals(js, spectrumTest.js);
-        assertEquals(logInspector, spectrumTest.logInspector);
-        assertEquals(browsingContext, spectrumTest.browsingContext);
-        assertEquals(browsingContextInspector, spectrumTest.browsingContextInspector);
-        assertEquals(network, spectrumTest.network);
-        assertEquals(jsWebElementProxyBuilder, spectrumTest.jsWebElementProxyBuilder);
-        assertEquals(data, spectrumTest.data);
-        assertEquals(testContext, spectrumTest.testContext);
+        assertEquals(driver, childTestVoid.driver);
+        assertEquals(driver, childTestVoid.takesScreenshot);
+        assertEquals(driver, childTestVoid.javascriptExecutor);
+        assertEquals(implicitWait, childTestVoid.implicitWait);
+        assertEquals(pageLoadWait, childTestVoid.pageLoadWait);
+        assertEquals(scriptWait, childTestVoid.scriptWait);
+        assertEquals(downloadWait, childTestVoid.downloadWait);
+        assertEquals(statefulExtentTest, childTestVoid.statefulExtentTest);
+        assertEquals(extentTest, childTestVoid.extentTest);
+        assertEquals(actions, childTestVoid.actions);
+        assertEquals(testData, childTestVoid.testData);
+        assertEquals(js, childTestVoid.js);
+        assertEquals(logInspector, childTestVoid.logInspector);
+        assertEquals(browsingContext, childTestVoid.browsingContext);
+        assertEquals(browsingContextInspector, childTestVoid.browsingContextInspector);
+        assertEquals(network, childTestVoid.network);
+        assertEquals(jsWebElementProxyBuilder, childTestVoid.jsWebElementProxyBuilder);
+        assertNull(childTestVoid.data);
+        assertEquals(testContext, childTestVoid.testContext);
 
         // injectPages
         assertNull(childTestVoid.toSkip);

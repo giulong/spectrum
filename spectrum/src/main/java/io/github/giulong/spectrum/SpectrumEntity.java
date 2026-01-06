@@ -30,10 +30,7 @@ import net.datafaker.Faker;
 import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.extension.ExtensionContext;
-import org.openqa.selenium.By;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.LogInspector;
@@ -70,6 +67,12 @@ public abstract class SpectrumEntity<T extends SpectrumEntity<T, Data>, Data> {
 
     @Shared
     protected WebDriver driver;
+
+    @Shared
+    protected TakesScreenshot takesScreenshot;
+
+    @Shared
+    protected JavascriptExecutor javascriptExecutor;
 
     @Shared
     protected WebDriverWait implicitWait;
