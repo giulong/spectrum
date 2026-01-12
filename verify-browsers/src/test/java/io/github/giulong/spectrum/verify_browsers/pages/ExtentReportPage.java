@@ -279,6 +279,9 @@ public class ExtentReportPage extends SpectrumPage<ExtentReportPage, Void> {
     @FindBy(css = "div[data-test-id='checkboxit-testwithnodisplayname()'][data-frame='4']")
     private List<WebElement> noDisplayNameFrame4;
 
+    @FindBy(css = "div[data-test-id='checkboxit-testwithnodisplayname()'][data-frame='5']")
+    private List<WebElement> noDisplayNameFrame5;
+
     @FindBy(css = "div[data-test-id='dynamicit-navigation-to-prove-auto-wait-helps-a-lot'][data-frame='0']")
     private List<WebElement> dynamicFrame0;
 

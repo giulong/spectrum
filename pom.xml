@@ -46,7 +46,7 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <junit.version>6.0.1</junit.version>
+        <junit.version>6.0.2</junit.version>
         <mockito.version>5.21.0</mockito.version>
         <jackson.version>2.20.1</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
@@ -217,7 +217,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.23</version>
+                <version>1.5.24</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -340,7 +340,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>12.3.0</version>
+                            <version>13.0.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>

@@ -1,7 +1,9 @@
 package io.github.giulong.spectrum.extensions.resolvers;
 
 import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.TEST_CONTEXT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 import static org.mockito.Mockito.*;
 
 import io.github.giulong.spectrum.MockFinal;
@@ -40,11 +42,13 @@ class TestContextResolverTest {
     @DisplayName("resolveParameter should return an instance of TestContext")
     void resolveParameter() {
         when(contextManager.initFor(context)).thenReturn(testContext);
+        when(context.getStore(GLOBAL)).thenReturn(store);
 
         final TestContext actual = testContextResolver.resolveParameter(parameterContext, context);
 
         assertEquals(testContext, actual);
         verify(testContext).put(EXTENSION_CONTEXT, context);
-        verifyNoInteractions(store);
+        verify(store).put(TEST_CONTEXT, testContext);
+        verifyNoInteractions(parameterContext);
     }
 }

@@ -2,21 +2,45 @@ package io.github.giulong.spectrum.internals.web_driver_listeners;
 
 import static io.github.giulong.spectrum.enums.Frame.AUTO_AFTER;
 import static io.github.giulong.spectrum.enums.Frame.AUTO_BEFORE;
-import static org.junit.jupiter.api.Assertions.*;
+import static io.github.giulong.spectrum.enums.Frame.MANUAL;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.EXTENSION_CONTEXT;
+import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
+import static io.github.giulong.spectrum.utils.web_driver_events.VideoAutoScreenshotProducer.SCREENSHOT;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
+import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.*;
-import static org.slf4j.event.Level.*;
+import static org.openqa.selenium.OutputType.BASE64;
+import static org.openqa.selenium.OutputType.BYTES;
+import static org.openqa.selenium.OutputType.FILE;
+import static org.slf4j.event.Level.DEBUG;
+import static org.slf4j.event.Level.INFO;
+import static org.slf4j.event.Level.TRACE;
+import static org.slf4j.event.Level.WARN;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
+import com.aventstack.extentreports.Status;
+
+import io.github.giulong.spectrum.MockFinal;
+import io.github.giulong.spectrum.pojos.events.Event.Payload;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Drivers.Event;
 import io.github.giulong.spectrum.utils.Reflections;
+import io.github.giulong.spectrum.utils.TestContext;
+import io.github.giulong.spectrum.utils.TestData;
+import io.github.giulong.spectrum.utils.TestData.Screenshot;
+import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEvent;
 import io.github.giulong.spectrum.utils.web_driver_events.WebDriverEventConsumer;
 
@@ -24,13 +48,16 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ExtensionContext.Store;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.slf4j.LoggerFactory;
 
 class EventsWebDriverListenerTest {
@@ -40,6 +67,24 @@ class EventsWebDriverListenerTest {
     private final String arg = "arg";
     private final String message = "message <div>%s</div>";
     private final long wait = 1L;
+
+    @Mock(extraInterfaces = TakesScreenshot.class)
+    private WebDriver driver;
+
+    @Mock
+    private TestContext testContext;
+
+    @Mock
+    private ExtensionContext context;
+
+    @Mock
+    private TestData testData;
+
+    @Mock
+    private Screenshot screenshot;
+
+    @Mock
+    private Store store;
 
     @Mock
     private Event event;
@@ -79,6 +124,10 @@ class EventsWebDriverListenerTest {
 
     @Mock
     private Configuration.Drivers.Events events;
+
+    @MockFinal
+    @SuppressWarnings("unused")
+    private EventsDispatcher eventsDispatcher;
 
     @InjectMocks
     private EventsWebDriverListener eventsWebDriverListener = new EventsWebDriverListener(EventsWebDriverListener.builder());
@@ -473,6 +522,119 @@ class EventsWebDriverListenerTest {
 
         verify(consumer1).accept(webDriverEvent);
         verify(consumer2).accept(webDriverEvent);
+    }
+
+    @Test
+    @DisplayName("afterGetScreenshotAs should dispatch an event when the screenshot is in bytes")
+    void afterGetScreenshotAsBytes() {
+        final String message = "message";
+        final Status status = Status.INFO;
+        final byte[] result = new byte[]{1, 2, 3};
+        final Payload payload = Payload
+                .builder()
+                .screenshot(result)
+                .message(message)
+                .status(status)
+                .takesScreenshot((TakesScreenshot) driver)
+                .build();
+
+        when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(testData.getScreenshot()).thenReturn(screenshot);
+        when(screenshot.getMessage()).thenReturn(message);
+        when(screenshot.getStatus()).thenReturn(status);
+        when(screenshot.getFrame()).thenReturn(MANUAL);
+
+        when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.frame(AUTO_AFTER)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.args(List.of(driver, BYTES, result))).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.message(message)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
+
+        when(events.getAfterGetScreenshotAs()).thenReturn(event);
+
+        // listenTo
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
+        when(event.getMessage()).thenReturn(message);
+        when(event.getLevel()).thenReturn(INFO);
+        when(event.getWait()).thenReturn(wait);
+
+        eventsWebDriverListener.afterGetScreenshotAs(driver, BYTES, result);
+
+        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, payload);
+    }
+
+    @Test
+    @DisplayName("afterGetScreenshotAs should dispatch an event when the screenshot is in bytes, building a default screenshot if none is found in testData")
+    void afterGetScreenshotAsBytesNoScreenshot() {
+        final String message = "";
+        final Status status = Status.INFO;
+        final byte[] result = new byte[]{1, 2, 3};
+        final Payload payload = Payload
+                .builder()
+                .screenshot(result)
+                .message(message)
+                .status(status)
+                .takesScreenshot((TakesScreenshot) driver)
+                .build();
+
+        when(testContext.get(EXTENSION_CONTEXT, ExtensionContext.class)).thenReturn(context);
+        when(context.getStore(GLOBAL)).thenReturn(store);
+        when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
+        when(testData.getScreenshot()).thenReturn(null);
+
+        when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.frame(AUTO_AFTER)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.args(List.of(driver, BYTES, result))).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.message(message)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
+
+        when(events.getAfterGetScreenshotAs()).thenReturn(event);
+
+        // listenTo
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
+        when(event.getMessage()).thenReturn(message);
+        when(event.getLevel()).thenReturn(INFO);
+        when(event.getWait()).thenReturn(wait);
+
+        eventsWebDriverListener.afterGetScreenshotAs(driver, BYTES, result);
+
+        verify(eventsDispatcher).fire(MANUAL.getValue(), SCREENSHOT, context, payload);
+    }
+
+    @DisplayName("afterGetScreenshotAs should just delegates to listenTo when the screenshot is not in bytes")
+    @ParameterizedTest(name = "with output type {0}")
+    @MethodSource("valuesProvider")
+    void afterGetScreenshotAs(final OutputType<Object> outputType) {
+        final Object result = mock();
+
+        when(WebDriverEvent.builder()).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.frame(AUTO_AFTER)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.args(List.of(driver, outputType, result))).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.message("message <div>driver</div>")).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
+
+        when(events.getAfterGetScreenshotAs()).thenReturn(event);
+
+        // listenTo
+        ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
+        when(event.getMessage()).thenReturn(message);
+        when(event.getLevel()).thenReturn(INFO);
+        when(event.getWait()).thenReturn(wait);
+
+        eventsWebDriverListener.afterGetScreenshotAs(driver, outputType, result);
+
+        verifyNoInteractions(eventsDispatcher);
+    }
+
+    static Stream<Arguments> valuesProvider() {
+        return Stream.of(
+                arguments(BASE64),
+                arguments(FILE));
     }
 
     @Test

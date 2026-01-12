@@ -35,6 +35,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.RegisterExtension;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext;
 import org.openqa.selenium.bidi.module.BrowsingContextInspector;
@@ -128,6 +130,8 @@ public abstract class SpectrumTest<Data> extends SpectrumEntity<SpectrumTest<Dat
                     final Actions actions, final Js js, final JsWebElementProxyBuilder jsWebElementProxyBuilder, final LogInspector logInspector,
                     final BrowsingContext browsingContext, final BrowsingContextInspector browsingContextInspector, final Network network, final Data data) {
         this.driver = driver;
+        this.takesScreenshot = (TakesScreenshot) driver;
+        this.javascriptExecutor = (JavascriptExecutor) driver;
         this.implicitWait = implicitWait;
         this.pageLoadWait = pageLoadWait;
         this.scriptWait = scriptWait;

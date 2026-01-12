@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.extensions.resolvers;
 
 import static io.github.giulong.spectrum.extensions.resolvers.ConfigurationResolver.CONFIGURATION;
 import static io.github.giulong.spectrum.extensions.resolvers.StatefulExtentTestResolver.STATEFUL_EXTENT_TEST;
+import static io.github.giulong.spectrum.extensions.resolvers.TestContextResolver.TEST_CONTEXT;
 import static io.github.giulong.spectrum.extensions.resolvers.TestDataResolver.TEST_DATA;
 import static org.junit.jupiter.api.extension.ExtensionContext.Namespace.GLOBAL;
 
@@ -11,11 +12,7 @@ import java.util.regex.Pattern;
 
 import io.github.giulong.spectrum.internals.web_driver_listeners.AutoWaitWebDriverListener;
 import io.github.giulong.spectrum.internals.web_driver_listeners.EventsWebDriverListener;
-import io.github.giulong.spectrum.utils.Configuration;
-import io.github.giulong.spectrum.utils.ContextManager;
-import io.github.giulong.spectrum.utils.FileUtils;
-import io.github.giulong.spectrum.utils.StatefulExtentTest;
-import io.github.giulong.spectrum.utils.TestData;
+import io.github.giulong.spectrum.utils.*;
 import io.github.giulong.spectrum.utils.video.Video;
 import io.github.giulong.spectrum.utils.web_driver_events.*;
 
@@ -57,6 +54,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final Configuration.Drivers.Waits.AutoWait autoWait = drivers.getWaits().getAuto();
         final StatefulExtentTest statefulExtentTest = store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class);
         final TestData testData = store.get(TEST_DATA, TestData.class);
+        final TestContext testContext = store.get(TEST_CONTEXT, TestContext.class);
         final Configuration.Application.Highlight highlight = configuration.getApplication().getHighlight();
         final Pattern locatorPattern = Pattern.compile(configuration.getExtent().getLocatorRegex());
         final Video video = configuration.getVideo();
@@ -110,6 +108,7 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
                 .locatorPattern(locatorPattern)
                 .events(events)
                 .consumers(consumers)
+                .testContext(testContext)
                 .build());
 
         final WebDriver decoratedDriver = new EventFiringDecorator<>(webDriverListeners.toArray(new WebDriverListener[0])).decorate(driver);

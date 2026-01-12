@@ -86,7 +86,7 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertVideoDuration(extentReportPage.getVideoNavigationItTestToShowNavigationAndProducedVideo(), 15);
 
-        assertVideoDuration(extentReportPage.getVideoCheckboxItTestWithNoDisplayName(), 5);
+        assertVideoDuration(extentReportPage.getVideoCheckboxItTestWithNoDisplayName(), 6);
 
         assertVideoDuration(extentReportPage.getVideoDemoItSendingCustomEvents(), 1);
         assertVideoDuration(extentReportPage.getVideoDemoItThisOneShouldFailForDemonstrationPurposes(), 1);
@@ -120,10 +120,11 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         // video data frames of Checkbox page testWithNoDisplayName()
         assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame0()));
-        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? false", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame1()));
-        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame2()));
+        assertEquals("", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame1()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? false", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame2()));
         assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame3()));
-        assertEquals("After checking the first checkbox", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame4()));
+        assertEquals("Element css selector: #checkboxes -> tag name: input is selected? true", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame4()));
+        assertEquals("After checking the first checkbox", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame5()));
 
         // video data frames of Dynamic elements navigation to prove auto-wait helps a lot
         extentReportPage.getDynamicItNavigationToProveAutoWaitHelpsALot().click();

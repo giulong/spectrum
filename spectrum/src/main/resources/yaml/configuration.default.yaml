@@ -370,10 +370,10 @@ drivers:
       level: INFO
       message: Css property <code>%2$s</code> of element <code>%1$s</code> is <code>%3$s</code>
     beforeGetScreenshotAs:
-      level: INFO
+      level: DEBUG
       message: Getting screenshot as <code>%2$s</code>
     afterGetScreenshotAs:
-      level: ERROR
+      level: DEBUG
       message: Screenshot as <code>%2$s</code> resulted is <code>%3$s</code>
     beforeAnyNavigationCall:
       message: Calling navigation method <code>%2$s</code> with args <code>%3$s</code>
