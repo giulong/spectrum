@@ -530,6 +530,11 @@ drivers:
     afterAlert:
       message: After alert <code>%1$s</code> <code>%2$s</code>
 
+  # The ElementLocatorFactory to be used across Drivers
+  locatorFactory:
+    ajax:
+      timeout: 30
+
 # Data models
 data:
   folder: data  # sub-folder under src/test/resources where to find your data*.yaml

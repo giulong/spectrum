@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.interfaces.LocatorFactory;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.EnvironmentInterpolator;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.InPlaceInterpolator;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.PropertiesInterpolator;
@@ -310,6 +311,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Events fired by the driver, automatically logged and added to the report according to the log level set when running the suite")
         private Events events;
+
+        @JsonPropertyDescription("An instance of ElementLocatorFactory to be used across Drivers")
+        private LocatorFactory locatorFactory;
 
         @Getter
         @Generated
