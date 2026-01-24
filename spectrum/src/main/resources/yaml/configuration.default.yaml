@@ -119,6 +119,11 @@ drivers:
       enabled: true # Whether to enable the auto-wait
       timeout: 30 # Timeout in seconds
 
+  # The ElementLocatorFactory to be used across Drivers
+  locatorFactory:
+    ajax:
+      timeout: 30
+
   # Chrome capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/chrome/
   chrome:
     biDi: false # Whether to enable the BiDi protocol instead of CDP
