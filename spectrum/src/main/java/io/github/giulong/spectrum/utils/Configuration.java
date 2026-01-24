@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import static com.fasterxml.jackson.annotation.OptBoolean.TRUE;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
@@ -161,7 +162,7 @@ public class Configuration {
         public static class Highlight {
 
             @JsonIgnore
-            @JacksonInject("enabledFromClient")
+            @JacksonInject(value = "enabledFromClient", optional = TRUE)
             private boolean enabled;
 
             @JsonPropertyDescription("Path to the js used to highlight. Relative to the resources folder")
@@ -173,7 +174,7 @@ public class Configuration {
     public static class VisualRegression {
 
         @JsonIgnore
-        @JacksonInject("enabledFromClient")
+        @JacksonInject(value = "enabledFromClient", optional = TRUE)
         private boolean enabled;
 
         @JsonPropertyDescription("Whether to fail immediately when the first visual regression is found, rather than running the entire test")
