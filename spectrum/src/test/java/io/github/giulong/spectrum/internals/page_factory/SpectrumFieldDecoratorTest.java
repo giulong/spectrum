@@ -56,6 +56,9 @@ class SpectrumFieldDecoratorTest {
     void decorateNull() {
         final ClassLoader classLoader = mock();
 
+        when(factory.createLocator(field)).thenReturn(locator);
+        doReturn(String.class).when(field).getType();
+
         assertNull(spectrumFieldDecorator.decorate(classLoader, field));
     }
 
