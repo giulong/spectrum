@@ -60,14 +60,9 @@ class FreeMarkerWrapperTest {
         when(freeMarker.getLocale()).thenReturn(US);
         when(freeMarker.getNumberFormat()).thenReturn(numberFormat);
 
-        MockedConstruction<Version> versionMockedConstruction = mockConstruction(Version.class, context -> {
-            assertEquals(version, context.arguments().getFirst());
-            return withSettings();
-        });
-        MockedConstruction<freemarker.template.Configuration> configurationMockedConstruction = mockConstruction(freemarker.template.Configuration.class, context -> {
-            assertEquals(versionMockedConstruction.constructed().getFirst(), context.arguments().getFirst());
-            return withSettings();
-        });
+        MockedConstruction<Version> versionMockedConstruction = mockConstruction((mock, context) -> assertEquals(version, context.arguments().getFirst()));
+        MockedConstruction<freemarker.template.Configuration> configurationMockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(versionMockedConstruction.constructed().getFirst(), context.arguments().getFirst()));
 
         freeMarkerWrapper.sessionOpened();
         assertEquals(Reflections.getFieldValue("configuration", freeMarkerWrapper), configurationMockedConstruction.constructed().getFirst());
@@ -82,17 +77,13 @@ class FreeMarkerWrapperTest {
         final String source = "source";
         final Map<String, Object> vars = Map.of("one", "value");
 
-        MockedConstruction<StringReader> stringReaderMockedConstruction = mockConstruction(StringReader.class, context -> {
-            assertEquals(source, context.arguments().getFirst());
-            return withSettings();
-        });
-        MockedConstruction<Template> templateMockedConstruction = mockConstruction(Template.class, context -> {
+        MockedConstruction<StringReader> stringReaderMockedConstruction = mockConstruction((mock, context) -> assertEquals(source, context.arguments().getFirst()));
+        MockedConstruction<Template> templateMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals("freemarker", context.arguments().getFirst());
             assertEquals(stringReaderMockedConstruction.constructed().getFirst(), context.arguments().get(1));
             assertEquals(configuration, context.arguments().get(2));
-            return withSettings();
         });
-        MockedConstruction<StringWriter> stringWriterMockedConstruction = mockConstruction(StringWriter.class, context -> withSettings());
+        MockedConstruction<StringWriter> stringWriterMockedConstruction = mockConstruction();
 
         final String actual = freeMarkerWrapper.interpolate(source, vars);
 
@@ -113,17 +104,13 @@ class FreeMarkerWrapperTest {
         final String source = "source";
         final Map<String, Object> vars = Map.of("one", "value");
 
-        MockedConstruction<StringReader> stringReaderMockedConstruction = mockConstruction(StringReader.class, context -> {
-            assertEquals(source, context.arguments().getFirst());
-            return withSettings();
-        });
-        MockedConstruction<Template> templateMockedConstruction = mockConstruction(Template.class, context -> {
+        MockedConstruction<StringReader> stringReaderMockedConstruction = mockConstruction((mock, context) -> assertEquals(source, context.arguments().getFirst()));
+        MockedConstruction<Template> templateMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals("freemarker", context.arguments().getFirst());
             assertEquals(stringReaderMockedConstruction.constructed().getFirst(), context.arguments().get(1));
             assertEquals(configuration, context.arguments().get(2));
-            return withSettings();
         });
-        MockedConstruction<StringWriter> stringWriterMockedConstruction = mockConstruction(StringWriter.class, context -> withSettings());
+        MockedConstruction<StringWriter> stringWriterMockedConstruction = mockConstruction();
         when(fileUtils.readTemplate(templateName)).thenReturn(source);
 
         final String actual = freeMarkerWrapper.interpolateTemplate(templateName, vars);

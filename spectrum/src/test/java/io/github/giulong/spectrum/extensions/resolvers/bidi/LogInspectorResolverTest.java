@@ -22,7 +22,7 @@ class LogInspectorResolverTest {
     @Test
     @DisplayName("resolveParameterFor should return an instance of LogInspector for the provided WebDriver")
     void resolveParameterFor() {
-        final MockedConstruction<LogInspector> mockedConstruction = mockConstruction(LogInspector.class,
+        final MockedConstruction<LogInspector> mockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(webDriver, context.arguments().getFirst()));
 
         final LogInspector actual = logInspectorResolver.resolveParameterFor(webDriver);

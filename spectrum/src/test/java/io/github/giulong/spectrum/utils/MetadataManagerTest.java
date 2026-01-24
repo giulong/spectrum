@@ -212,7 +212,7 @@ class MetadataManagerTest {
         final Map<String, FixedSizeQueue<File>> localReports = new HashMap<>(Map.of());
 
         //noinspection rawtypes
-        MockedConstruction<FixedSizeQueue> fixedSizeQueueMockedConstruction = mockConstruction(FixedSizeQueue.class);
+        MockedConstruction<FixedSizeQueue> fixedSizeQueueMockedConstruction = mockConstruction();
 
         when(metadata.getExecution()).thenReturn(execution);
         when(execution.getSuccessful()).thenReturn(successful);

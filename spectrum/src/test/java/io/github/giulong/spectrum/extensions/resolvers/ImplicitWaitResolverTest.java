@@ -67,7 +67,7 @@ class ImplicitWaitResolverTest {
         when(drivers.getWaits()).thenReturn(waits);
         when(waits.getImplicit()).thenReturn(duration);
 
-        MockedConstruction<ImplicitWait> mockedConstruction = mockConstruction(ImplicitWait.class, (mock, context) -> {
+        MockedConstruction<ImplicitWait> mockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(webDriver, context.arguments().getFirst());
             assertEquals(duration, context.arguments().get(1));
         });

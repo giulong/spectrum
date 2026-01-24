@@ -31,7 +31,7 @@ class AppiumLogTest {
 
     @BeforeEach
     void beforeEach() {
-        stringBufferMockedConstruction = mockConstruction(StringBuffer.class);
+        stringBufferMockedConstruction = mockConstruction();
         Reflections.setField("stringBuffer", appiumLog, new StringBuffer(LOG_MESSAGE));
     }
 

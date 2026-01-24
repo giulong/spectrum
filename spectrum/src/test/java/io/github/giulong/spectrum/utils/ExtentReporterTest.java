@@ -280,9 +280,9 @@ class ExtentReporterTest {
         doReturn(extentSparkReporterConfigBuilder).when(extentSparkReporterConfigBuilder).js(internalJs + js);
         doReturn(extentSparkReporterConfig).when(extentSparkReporterConfigBuilder).build();
 
-        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction(ExtentReports.class);
+        MockedConstruction<ExtentReports> extentReportsMockedConstruction = mockConstruction();
 
-        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction(ExtentSparkReporter.class, (mock, executionContext) -> {
+        MockedConstruction<ExtentSparkReporter> extentSparkReporterMockedConstruction = mockConstruction((mock, executionContext) -> {
             assertEquals(absolutePathToStringReplaced, executionContext.arguments().getFirst());
             when(mock.config(extentSparkReporterConfig)).thenReturn(mock);
         });

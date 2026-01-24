@@ -46,7 +46,7 @@ class ChromiumTest {
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);
 
-        MockedConstruction<LoggingPreferences> mockedConstruction = mockConstruction(LoggingPreferences.class);
+        MockedConstruction<LoggingPreferences> mockedConstruction = mockConstruction();
 
         chrome.capabilities = capabilities;
         chrome.setLoggingPreferencesFrom(logs);

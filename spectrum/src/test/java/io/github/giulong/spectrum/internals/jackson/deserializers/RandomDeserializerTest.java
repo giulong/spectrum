@@ -41,7 +41,7 @@ class RandomDeserializerTest {
         long value = 42L;
         when(jsonParser.getValueAsLong()).thenReturn(value);
 
-        final MockedConstruction<Random> mockedConstruction = mockConstruction(Random.class, (mock, context) -> assertEquals(value, context.arguments().getFirst()));
+        final MockedConstruction<Random> mockedConstruction = mockConstruction((mock, context) -> assertEquals(value, context.arguments().getFirst()));
 
         final Random actual = randomDeserializer.deserialize(jsonParser, deserializationContext);
         final Random expected = mockedConstruction.constructed().getFirst();

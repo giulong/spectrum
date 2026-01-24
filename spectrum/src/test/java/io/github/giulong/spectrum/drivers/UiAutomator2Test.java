@@ -53,7 +53,7 @@ class UiAutomator2Test {
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class,
+        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
@@ -78,7 +78,7 @@ class UiAutomator2Test {
     void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(UiAutomator2Options.class,
+        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);

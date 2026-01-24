@@ -66,7 +66,7 @@ class PageLoadWaitResolverTest {
         when(drivers.getWaits()).thenReturn(waits);
         when(waits.getPageLoadTimeout()).thenReturn(duration);
 
-        MockedConstruction<PageLoadWait> mockedConstruction = mockConstruction(PageLoadWait.class, (mock, context) -> {
+        MockedConstruction<PageLoadWait> mockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(webDriver, context.arguments().getFirst());
             assertEquals(duration, context.arguments().get(1));
         });

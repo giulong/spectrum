@@ -70,7 +70,7 @@ class EdgeTest {
         when(service.isVerbose()).thenReturn(true);
         when(service.getAllowedListIps()).thenReturn(allowedListIps);
 
-        MockedConstruction<EdgeDriverService.Builder> edgeDriverServiceMockedConstruction = mockConstruction(EdgeDriverService.Builder.class, (mock, context) -> {
+        MockedConstruction<EdgeDriverService.Builder> edgeDriverServiceMockedConstruction = mockConstruction((mock, context) -> {
             when(mock.withBuildCheckDisabled(true)).thenReturn(mock);
             when(mock.withAppendLog(true)).thenReturn(mock);
             when(mock.withReadableTimestamp(true)).thenReturn(mock);
@@ -106,9 +106,9 @@ class EdgeTest {
         when(driversConfig.isBiDi()).thenReturn(false);
         lenient().when(edgeConfig.isBiDi()).thenReturn(true);
 
-        MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(EdgeOptions.class,
+        MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(
                 (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
-        MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
+        MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction();
 
         edge.buildCapabilities();
         final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().getFirst();

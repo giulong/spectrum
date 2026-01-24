@@ -78,7 +78,7 @@ class MailConsumerTest {
         final String file1 = "file1";
         final String file2 = "file2";
 
-        MockedConstruction<FileDataSource> fileDataSourceMockedConstruction = mockConstruction(FileDataSource.class, (mock, context) -> {
+        MockedConstruction<FileDataSource> fileDataSourceMockedConstruction = mockConstruction((mock, context) -> {
             if (context.getCount() == 1) {
                 assertEquals(file1, context.arguments().getFirst());
             }
@@ -87,7 +87,7 @@ class MailConsumerTest {
             }
         });
 
-        MockedConstruction<AttachmentResource> attachmentResourceMockedConstruction = mockConstruction(AttachmentResource.class, (mock, context) -> {
+        MockedConstruction<AttachmentResource> attachmentResourceMockedConstruction = mockConstruction((mock, context) -> {
             if (context.getCount() == 1) {
                 assertEquals(name1, context.arguments().getFirst());
                 assertEquals(fileDataSourceMockedConstruction.constructed().getFirst(), context.arguments().get(1));

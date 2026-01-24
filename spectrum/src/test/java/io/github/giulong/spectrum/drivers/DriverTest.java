@@ -100,7 +100,7 @@ class DriverTest {
         WEB_DRIVER_THREAD_LOCAL.remove();
 
         threadGuardMockedStatic = mockStatic();
-        loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
+        loggingPreferencesMockedConstruction = mockConstruction();
     }
 
     @AfterEach
@@ -115,7 +115,7 @@ class DriverTest {
         Reflections.setField("capabilities", driver, driverOptions);
         when(driverOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(driverOptions);
 
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
+        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(gridCapabilities, context.arguments().getFirst());
         });
 
@@ -142,9 +142,8 @@ class DriverTest {
         when(chromeConfig.getCapabilities()).thenReturn(Map.of());
         when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of());
 
-        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class, (mock, context) -> {
-            when(mock.addArguments(arguments)).thenReturn(mock);
-        });
+        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(
+                (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
 
         when(waits.getImplicit()).thenReturn(implicitDuration);
         when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);

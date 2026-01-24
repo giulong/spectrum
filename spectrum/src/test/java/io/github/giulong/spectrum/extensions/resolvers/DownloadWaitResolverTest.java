@@ -66,7 +66,7 @@ class DownloadWaitResolverTest {
         when(driversConfiguration.getWaits()).thenReturn(waits);
         when(waits.getDownloadTimeout()).thenReturn(duration);
 
-        MockedConstruction<DownloadWait> mockedConstruction = mockConstruction(DownloadWait.class, (mock, context) -> {
+        MockedConstruction<DownloadWait> mockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(webDriver, context.arguments().getFirst());
             assertEquals(duration, context.arguments().get(1));
         });

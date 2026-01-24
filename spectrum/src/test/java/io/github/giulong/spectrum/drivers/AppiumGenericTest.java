@@ -53,7 +53,7 @@ class AppiumGenericTest {
     @Test
     @DisplayName("buildCapabilities should build a new instance of capabilities and set the capabilities from the yaml on it")
     void buildCapabilitiesAbsoluteAppPath() {
-        MockedConstruction<MutableCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(MutableCapabilities.class,
+        MockedConstruction<MutableCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
@@ -71,7 +71,7 @@ class AppiumGenericTest {
     @Test
     @DisplayName("buildDriverFor should return a new instance of AppiumDriver for the provided url and the instance capabilities")
     void buildDriverFor() {
-        MockedConstruction<AppiumDriver> appiumDriverMockedConstruction = mockConstruction(AppiumDriver.class, (mock, context) -> {
+        MockedConstruction<AppiumDriver> appiumDriverMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(mutableCapabilities, context.arguments().get(1));
         });

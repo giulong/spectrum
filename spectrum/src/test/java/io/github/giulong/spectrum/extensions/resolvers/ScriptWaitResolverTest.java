@@ -66,7 +66,7 @@ class ScriptWaitResolverTest {
         when(drivers.getWaits()).thenReturn(waits);
         when(waits.getScriptTimeout()).thenReturn(duration);
 
-        MockedConstruction<ScriptWait> mockedConstruction = mockConstruction(ScriptWait.class, (mock, context) -> {
+        MockedConstruction<ScriptWait> mockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(webDriver, context.arguments().getFirst());
             assertEquals(duration, context.arguments().get(1));
         });
