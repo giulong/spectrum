@@ -276,6 +276,9 @@ public class Configuration {
         @JsonPropertyDescription("Driver's fluent waits")
         private Waits waits;
 
+        @JsonPropertyDescription("An instance of ElementLocatorFactory to be used across Drivers")
+        private LocatorFactory locatorFactory;
+
         @JsonPropertyDescription("Chrome capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/chrome/")
         private Chrome chrome;
 
@@ -311,9 +314,6 @@ public class Configuration {
 
         @JsonPropertyDescription("Events fired by the driver, automatically logged and added to the report according to the log level set when running the suite")
         private Events events;
-
-        @JsonPropertyDescription("An instance of ElementLocatorFactory to be used across Drivers")
-        private LocatorFactory locatorFactory;
 
         @Getter
         @Generated

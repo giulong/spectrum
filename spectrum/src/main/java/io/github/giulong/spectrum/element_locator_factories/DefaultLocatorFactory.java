@@ -10,6 +10,7 @@ import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 
 @Slf4j
 public class DefaultLocatorFactory implements LocatorFactory {
+
     @Override
     public ElementLocatorFactory buildFor(final WebDriver driver) {
         log.debug("Configuring DefaultElementLocatorFactory");

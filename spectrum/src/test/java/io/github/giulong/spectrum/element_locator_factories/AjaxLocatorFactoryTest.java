@@ -1,36 +1,41 @@
 package io.github.giulong.spectrum.element_locator_factories;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockConstruction;
 
-import java.lang.reflect.Field;
 import java.time.Duration;
+
+import io.github.giulong.spectrum.utils.Reflections;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedConstruction;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 
 class AjaxLocatorFactoryTest {
 
+    @Mock
+    private WebDriver driver;
+
+    @InjectMocks
+    private AjaxLocatorFactory locatorFactory;
+
     @Test
     @DisplayName("buildFor should return a new instance of AjaxElementLocatorFactory")
-    void testBuildFor() throws NoSuchFieldException, IllegalAccessException {
-        final AjaxLocatorFactory ajaxLocatorFactory = new AjaxLocatorFactory();
-        final WebDriver driver = mock(WebDriver.class);
-        final int timeoutSeconds = 10;
-        final Duration timeout = Duration.ofSeconds(timeoutSeconds);
+    void testBuildFor() {
+        final Duration timeout = Duration.ofSeconds(10);
+        Reflections.setField("timeout", locatorFactory, timeout);
 
-        Field timeoutField = AjaxLocatorFactory.class.getDeclaredField("timeout");
-        timeoutField.setAccessible(true);
-        timeoutField.set(ajaxLocatorFactory, timeout);
+        try (MockedConstruction<AjaxElementLocatorFactory> construction = mockConstruction()) {
+            final ElementLocatorFactory actual = locatorFactory.buildFor(driver);
+            final ElementLocatorFactory expected = construction.constructed().getFirst();
 
-        ElementLocatorFactory actualFactory = ajaxLocatorFactory.buildFor(driver);
-
-        assertInstanceOf(AjaxElementLocatorFactory.class, actualFactory);
-
-        assertEquals(timeout, ajaxLocatorFactory.getTimeout());
+            assertEquals(expected, actual);
+            assertEquals(timeout, locatorFactory.getTimeout());
+        }
     }
 }

@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.time.Duration;
 import java.util.List;
 
 import com.aventstack.extentreports.ExtentReports;
@@ -93,15 +92,6 @@ class SpectrumTestTest {
     private Configuration.Drivers drivers;
 
     @Mock
-    private Configuration.Drivers.Waits waits;
-
-    @Mock
-    private Configuration.Drivers.Waits.AutoWait auto;
-
-    @Mock
-    private Duration timeout;
-
-    @Mock
     private ExtentReports extentReports;
 
     @Mock
@@ -178,8 +168,8 @@ class SpectrumTestTest {
     void testBeforeEach() {
         // injectDataIn
         final String folder = "folder";
-        final LocatorFactory locatorFactory = mock(LocatorFactory.class);
-        final ElementLocatorFactory elementLocatorFactory = mock(ElementLocatorFactory.class);
+        final LocatorFactory locatorFactory = mock();
+        final ElementLocatorFactory elementLocatorFactory = mock();
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(folder);
         when(yamlUtils.readClient(folder + "/data.yaml", FakeData.class)).thenReturn(data);
@@ -246,8 +236,8 @@ class SpectrumTestTest {
     @Test
     @DisplayName("injectPages should init also init pages from super classes")
     void injectPages() {
-        final LocatorFactory locatorFactory = mock(LocatorFactory.class);
-        final ElementLocatorFactory elementLocatorFactory = mock(ElementLocatorFactory.class);
+        final LocatorFactory locatorFactory = mock();
+        final ElementLocatorFactory elementLocatorFactory = mock();
         when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.getLocatorFactory()).thenReturn(locatorFactory);
         when(locatorFactory.buildFor(driver)).thenReturn(elementLocatorFactory);

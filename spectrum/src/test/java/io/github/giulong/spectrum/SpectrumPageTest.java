@@ -7,7 +7,6 @@ import static org.mockito.Mockito.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
-import java.time.Duration;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -62,15 +61,6 @@ class SpectrumPageTest {
 
     @Mock
     private Configuration.Drivers drivers;
-
-    @Mock
-    private Configuration.Drivers.Waits waits;
-
-    @Mock
-    private Configuration.Drivers.Waits.AutoWait auto;
-
-    @Mock
-    private Duration timeout;
 
     @Mock
     private Configuration.Application application;
@@ -150,8 +140,8 @@ class SpectrumPageTest {
     @DisplayName("init should set the endpoint, init the web elements, add the secured web elements, set the js web elements, and return the page instance")
     void init() {
         final WebElement proxy = mock();
-        final LocatorFactory locatorFactory = mock(LocatorFactory.class);
-        final ElementLocatorFactory elementLocatorFactory = mock(ElementLocatorFactory.class);
+        final LocatorFactory locatorFactory = mock();
+        final ElementLocatorFactory elementLocatorFactory = mock();
 
         when(jsWebElementProxyBuilder.buildFor(webElementArgumentCaptor.capture())).thenReturn(proxy);
         when(JsWebElementListInvocationHandler.builder()).thenReturn(jsWebElementListInvocationHandlerBuilder);
@@ -160,9 +150,8 @@ class SpectrumPageTest {
         when(drivers.getLocatorFactory()).thenReturn(locatorFactory);
         when(locatorFactory.buildFor(webDriver)).thenReturn(elementLocatorFactory);
 
-        final MockedConstruction<SpectrumFieldDecorator> decoratorMockedConstruction = mockConstruction(SpectrumFieldDecorator.class, (mock, context) -> {
-            assertEquals(elementLocatorFactory, context.arguments().getFirst());
-        });
+        final MockedConstruction<SpectrumFieldDecorator> decoratorMockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(elementLocatorFactory, context.arguments().getFirst()));
 
         assertEquals(spectrumPage, spectrumPage.init());
 
