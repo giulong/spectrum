@@ -70,7 +70,7 @@ class ChromeTest {
         when(service.isVerbose()).thenReturn(true);
         when(service.getAllowedListIps()).thenReturn(allowedListIps);
 
-        MockedConstruction<ChromeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(ChromeDriverService.Builder.class, (mock, context) -> {
+        MockedConstruction<ChromeDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction((mock, context) -> {
             when(mock.withBuildCheckDisabled(true)).thenReturn(mock);
             when(mock.withAppendLog(true)).thenReturn(mock);
             when(mock.withReadableTimestamp(true)).thenReturn(mock);
@@ -106,9 +106,9 @@ class ChromeTest {
         when(driversConfig.isBiDi()).thenReturn(false);
         lenient().when(chromeConfig.isBiDi()).thenReturn(true);
 
-        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(ChromeOptions.class,
+        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(
                 (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
-        MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction(LoggingPreferences.class);
+        MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction();
 
         chrome.buildCapabilities();
         final ChromeOptions chromeOptions = chromeOptionsMockedConstruction.constructed().getFirst();

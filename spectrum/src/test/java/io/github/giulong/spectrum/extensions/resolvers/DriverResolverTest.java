@@ -296,7 +296,7 @@ class DriverResolverTest {
         when(autoWait.isEnabled()).thenReturn(false);
 
         //noinspection rawtypes
-        final MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, executionContext) -> {
+        final MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction((mock, executionContext) -> {
             assertArrayEquals(List.of(eventsWebDriverListener).toArray(), (WebDriverListener[]) executionContext.arguments().getFirst());
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
@@ -321,13 +321,13 @@ class DriverResolverTest {
         when(autoWaitWebDriverListenerBuilder.locatorPattern(pattern)).thenReturn(autoWaitWebDriverListenerBuilder);
         when(autoWaitWebDriverListenerBuilder.build()).thenReturn(autoWaitWebDriverListener);
 
-        final MockedConstruction<Actions> actionsMockedConstruction = mockConstruction(Actions.class, (mock, executionContext) -> {
+        final MockedConstruction<Actions> actionsMockedConstruction = mockConstruction((mock, executionContext) -> {
             assertEquals(webDriver, executionContext.arguments().getFirst());
 
             when(autoWaitWebDriverListenerBuilder.actions(mock)).thenReturn(autoWaitWebDriverListenerBuilder);
         });
 
-        final MockedConstruction<WebDriverWait> webDriverWaitMockedConstruction = mockConstruction(WebDriverWait.class, (mock, executionContext) -> {
+        final MockedConstruction<WebDriverWait> webDriverWaitMockedConstruction = mockConstruction((mock, executionContext) -> {
             assertEquals(webDriver, executionContext.arguments().getFirst());
             assertEquals(autoWaitTimeout, executionContext.arguments().get(1));
 
@@ -335,7 +335,7 @@ class DriverResolverTest {
         });
 
         //noinspection rawtypes
-        final MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction(EventFiringDecorator.class, (mock, executionContext) -> {
+        final MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction((mock, executionContext) -> {
             assertArrayEquals(List.of(autoWaitWebDriverListener, eventsWebDriverListener).toArray(), (WebDriverListener[]) executionContext.arguments().getFirst());
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);

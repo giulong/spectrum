@@ -52,7 +52,7 @@ class EspressoTest {
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(EspressoOptions.class,
+        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
@@ -76,7 +76,7 @@ class EspressoTest {
     void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(EspressoOptions.class,
+        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);

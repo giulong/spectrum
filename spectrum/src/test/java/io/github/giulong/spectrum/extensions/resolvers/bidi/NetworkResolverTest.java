@@ -22,7 +22,7 @@ class NetworkResolverTest {
     @Test
     @DisplayName("resolveParameterFor should return an instance of Network for the provided WebDriver")
     void resolveParameterFor() {
-        final MockedConstruction<Network> mockedConstruction = mockConstruction(Network.class,
+        final MockedConstruction<Network> mockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(webDriver, context.arguments().getFirst()));
 
         final Network actual = networkResolver.resolveParameterFor(webDriver);

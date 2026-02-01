@@ -5,7 +5,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import java.time.Duration;
 import java.util.List;
 
 import com.aventstack.extentreports.ExtentReports;
@@ -14,6 +13,7 @@ import com.aventstack.extentreports.ExtentTest;
 import io.github.giulong.spectrum.exceptions.TestFailedException;
 import io.github.giulong.spectrum.interfaces.Endpoint;
 import io.github.giulong.spectrum.interfaces.JsWebElement;
+import io.github.giulong.spectrum.interfaces.LocatorFactory;
 import io.github.giulong.spectrum.types.DownloadWait;
 import io.github.giulong.spectrum.types.ImplicitWait;
 import io.github.giulong.spectrum.types.PageLoadWait;
@@ -41,6 +41,7 @@ import org.openqa.selenium.bidi.module.BrowsingContextInspector;
 import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 
 class SpectrumTestTest {
 
@@ -89,15 +90,6 @@ class SpectrumTestTest {
 
     @Mock
     private Configuration.Drivers drivers;
-
-    @Mock
-    private Configuration.Drivers.Waits waits;
-
-    @Mock
-    private Configuration.Drivers.Waits.AutoWait auto;
-
-    @Mock
-    private Duration timeout;
 
     @Mock
     private ExtentReports extentReports;
@@ -176,17 +168,14 @@ class SpectrumTestTest {
     void testBeforeEach() {
         // injectDataIn
         final String folder = "folder";
+        final LocatorFactory locatorFactory = mock();
+        final ElementLocatorFactory elementLocatorFactory = mock();
         when(configuration.getData()).thenReturn(dataConfiguration);
         when(dataConfiguration.getFolder()).thenReturn(folder);
         when(yamlUtils.readClient(folder + "/data.yaml", FakeData.class)).thenReturn(data);
-
-        final long seconds = 123L;
         when(configuration.getDrivers()).thenReturn(drivers);
-        when(drivers.getWaits()).thenReturn(waits);
-        when(waits.getAuto()).thenReturn(auto);
-        when(auto.getTimeout()).thenReturn(timeout);
-        when(timeout.toSeconds()).thenReturn(seconds);
-
+        when(drivers.getLocatorFactory()).thenReturn(locatorFactory);
+        when(locatorFactory.buildFor(driver)).thenReturn(elementLocatorFactory);
         when(statefulExtentTest.getCurrentNode()).thenReturn(extentTest);
 
         assertNull(childTestVoid.childTestPage);
@@ -247,12 +236,11 @@ class SpectrumTestTest {
     @Test
     @DisplayName("injectPages should init also init pages from super classes")
     void injectPages() {
-        final long seconds = 123L;
+        final LocatorFactory locatorFactory = mock();
+        final ElementLocatorFactory elementLocatorFactory = mock();
         when(configuration.getDrivers()).thenReturn(drivers);
-        when(drivers.getWaits()).thenReturn(waits);
-        when(waits.getAuto()).thenReturn(auto);
-        when(auto.getTimeout()).thenReturn(timeout);
-        when(timeout.toSeconds()).thenReturn(seconds);
+        when(drivers.getLocatorFactory()).thenReturn(locatorFactory);
+        when(locatorFactory.buildFor(driver)).thenReturn(elementLocatorFactory);
 
         assertNull(childTest.childTestPage);
         assertNull(childTest.getParentTestPage());

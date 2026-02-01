@@ -81,7 +81,7 @@ class WindowsTest {
     @Test
     @DisplayName("buildCapabilities should build a new instance of windowsOptions and set the capabilities from the yaml on it")
     void buildCapabilitiesAbsoluteAppPath() {
-        MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(WindowsOptions.class,
+        MockedConstruction<WindowsOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
@@ -99,7 +99,7 @@ class WindowsTest {
     @Test
     @DisplayName("buildDriverFor should return a new instance of WindowsDriver for the provided url and the instance capabilities")
     void buildDriverFor() {
-        MockedConstruction<WindowsDriver> windowsDriverMockedConstruction = mockConstruction(WindowsDriver.class, (mock, context) -> {
+        MockedConstruction<WindowsDriver> windowsDriverMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(windowsOptions, context.arguments().get(1));
         });

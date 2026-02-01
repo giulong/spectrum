@@ -1,5 +1,6 @@
 package io.github.giulong.spectrum.utils;
 
+import static com.fasterxml.jackson.annotation.OptBoolean.TRUE;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.enums.Frame;
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
+import io.github.giulong.spectrum.interfaces.LocatorFactory;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.EnvironmentInterpolator;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.InPlaceInterpolator;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.PropertiesInterpolator;
@@ -160,7 +162,7 @@ public class Configuration {
         public static class Highlight {
 
             @JsonIgnore
-            @JacksonInject("enabledFromClient")
+            @JacksonInject(value = "enabledFromClient", optional = TRUE)
             private boolean enabled;
 
             @JsonPropertyDescription("Path to the js used to highlight. Relative to the resources folder")
@@ -172,7 +174,7 @@ public class Configuration {
     public static class VisualRegression {
 
         @JsonIgnore
-        @JacksonInject("enabledFromClient")
+        @JacksonInject(value = "enabledFromClient", optional = TRUE)
         private boolean enabled;
 
         @JsonPropertyDescription("Whether to fail immediately when the first visual regression is found, rather than running the entire test")
@@ -274,6 +276,9 @@ public class Configuration {
 
         @JsonPropertyDescription("Driver's fluent waits")
         private Waits waits;
+
+        @JsonPropertyDescription("An instance of ElementLocatorFactory to be used across Drivers")
+        private LocatorFactory locatorFactory;
 
         @JsonPropertyDescription("Chrome capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/chrome/")
         private Chrome chrome;

@@ -62,7 +62,7 @@ class FakerResolverTest {
         when(faker.getLocale()).thenReturn(locale);
         when(faker.getRandom()).thenReturn(random);
 
-        final MockedConstruction<Faker> mockedConstruction = mockConstruction(Faker.class, (mock, context) -> {
+        final MockedConstruction<Faker> mockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(locale, context.arguments().getFirst());
             assertEquals(random, context.arguments().get(1));
         });

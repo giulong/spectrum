@@ -56,7 +56,7 @@ class ContextManagerTest {
     void initForContext() {
         final String uniqueId = "uniqueId";
         final Map<String, TestContext> testContexts = new HashMap<>();
-        final MockedConstruction<TestContext> testContextMockedConstruction = mockConstruction(TestContext.class);
+        final MockedConstruction<TestContext> testContextMockedConstruction = mockConstruction();
 
         Reflections.setField("testContexts", contextManager, testContexts);
         when(context.getUniqueId()).thenReturn(uniqueId);
@@ -123,7 +123,7 @@ class ContextManagerTest {
     void getNew() {
         final String uniqueId = "uniqueId";
         final Map<String, TestContext> testContexts = new HashMap<>();
-        final MockedConstruction<TestContext> testContextMockedConstruction = mockConstruction(TestContext.class);
+        final MockedConstruction<TestContext> testContextMockedConstruction = mockConstruction();
 
         when(context.getUniqueId()).thenReturn(uniqueId);
 

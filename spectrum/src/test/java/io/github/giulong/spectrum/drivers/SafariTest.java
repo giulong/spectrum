@@ -46,7 +46,7 @@ class SafariTest {
         when(safariConfig.getService()).thenReturn(service);
         when(service.isLogging()).thenReturn(logging);
 
-        MockedConstruction<SafariDriverService.Builder> safariDriverServiceMockedConstruction = mockConstruction(SafariDriverService.Builder.class,
+        MockedConstruction<SafariDriverService.Builder> safariDriverServiceMockedConstruction = mockConstruction(
                 (mock, context) -> when(mock.withLogging(logging)).thenReturn(mock));
 
         final DriverService.Builder<SafariDriverService, SafariDriverService.Builder> driverServiceBuilder = safari.getDriverServiceBuilder();
@@ -58,7 +58,7 @@ class SafariTest {
     @Test
     @DisplayName("buildCapabilitiesFrom should build an instance of Safari based on the provided configuration")
     void buildCapabilitiesFrom() {
-        MockedConstruction<SafariOptions> safariOptionsMockedConstruction = mockConstruction(SafariOptions.class);
+        MockedConstruction<SafariOptions> safariOptionsMockedConstruction = mockConstruction();
 
         safari.buildCapabilities();
 

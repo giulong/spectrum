@@ -155,14 +155,14 @@ class VideoConsumerTest {
         when(video.getWidth()).thenReturn(width);
         when(video.getHeight()).thenReturn(height);
 
-        final MockedConstruction<ByteArrayInputStream> byteArrayInputStreamMockedConstruction = mockConstruction(ByteArrayInputStream.class, (mock, executionContext) -> {
+        final MockedConstruction<ByteArrayInputStream> byteArrayInputStreamMockedConstruction = mockConstruction((mock, executionContext) -> {
             assertEquals(screenshotBytes, executionContext.arguments().getFirst());
 
             imageIOMockedStatic.when(() -> ImageIO.read(mock)).thenReturn(bufferedImage);
         });
 
         // resize
-        final MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, executionContext) -> {
+        final MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction((mock, executionContext) -> {
             assertEquals(width + 1, executionContext.arguments().getFirst());
             assertEquals(height + 1, executionContext.arguments().get(1));
             assertEquals(TYPE_INT_RGB, executionContext.arguments().get(2));
@@ -223,14 +223,14 @@ class VideoConsumerTest {
         when(video.getWidth()).thenReturn(width);
         when(video.getHeight()).thenReturn(height);
 
-        final MockedConstruction<ByteArrayInputStream> byteArrayInputStreamMockedConstruction = mockConstruction(ByteArrayInputStream.class, (mock, executionContext) -> {
+        final MockedConstruction<ByteArrayInputStream> byteArrayInputStreamMockedConstruction = mockConstruction((mock, executionContext) -> {
             assertEquals(screenshotBytes, executionContext.arguments().getFirst());
 
             imageIOMockedStatic.when(() -> ImageIO.read(mock)).thenReturn(bufferedImage);
         });
 
         // resize
-        final MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, executionContext) -> {
+        final MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction((mock, executionContext) -> {
             assertEquals(width + 1, executionContext.arguments().getFirst());
             assertEquals(height + 1, executionContext.arguments().get(1));
             assertEquals(TYPE_INT_RGB, executionContext.arguments().get(2));
@@ -352,7 +352,7 @@ class VideoConsumerTest {
         final int width = 6;
         final int height = 100;
 
-        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction(BufferedImage.class, (mock, executionContext) -> {
+        MockedConstruction<BufferedImage> bufferedImageMockedConstruction = mockConstruction((mock, executionContext) -> {
             assertEquals(EVEN_WIDTH, executionContext.arguments().getFirst());
             assertEquals(EVEN_HEIGHT, executionContext.arguments().get(1));
             assertEquals(TYPE_INT_RGB, executionContext.arguments().get(2));

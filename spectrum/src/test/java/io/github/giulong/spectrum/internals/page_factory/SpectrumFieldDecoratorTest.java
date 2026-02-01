@@ -56,6 +56,9 @@ class SpectrumFieldDecoratorTest {
     void decorateNull() {
         final ClassLoader classLoader = mock();
 
+        when(factory.createLocator(field)).thenReturn(locator);
+        doReturn(String.class).when(field).getType();
+
         assertNull(spectrumFieldDecorator.decorate(classLoader, field));
     }
 
@@ -78,7 +81,7 @@ class SpectrumFieldDecoratorTest {
         doReturn(WebElement.class).when(field).getType();
         when(field.isAnnotationPresent(Secured.class)).thenReturn(true);
 
-        final MockedConstruction<SpectrumLocatingElementHandler> mockedConstruction = mockConstruction(SpectrumLocatingElementHandler.class, (mock, context) -> {
+        final MockedConstruction<SpectrumLocatingElementHandler> mockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(locator, context.arguments().getFirst());
             assertTrue((boolean) context.arguments().get(1));
         });
@@ -105,7 +108,7 @@ class SpectrumFieldDecoratorTest {
         when(parameterizedType.getActualTypeArguments()).thenReturn(new Type[]{WebElement.class});
         when(field.getAnnotation(FindBy.class)).thenReturn(findBy);
 
-        final MockedConstruction<LocatingElementListHandler> mockedConstruction = mockConstruction(LocatingElementListHandler.class,
+        final MockedConstruction<LocatingElementListHandler> mockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(locator, context.arguments().getFirst()));
 
         final MockedStatic<Proxy> proxyMockedStatic = mockStatic();

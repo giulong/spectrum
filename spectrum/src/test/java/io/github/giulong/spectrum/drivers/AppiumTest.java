@@ -56,7 +56,7 @@ class AppiumTest {
         when(service.getPort()).thenReturn(port);
         when(service.getTimeout()).thenReturn(timeout);
 
-        MockedConstruction<AppiumServiceBuilder> appiumServiceBuilderMockedConstruction = mockConstruction(AppiumServiceBuilder.class, (mock, context) -> {
+        MockedConstruction<AppiumServiceBuilder> appiumServiceBuilderMockedConstruction = mockConstruction((mock, context) -> {
             when(mock.withIPAddress(ipAddress)).thenReturn(mock);
             when(mock.usingPort(port)).thenReturn(mock);
             when(mock.withTimeout(timeout)).thenReturn(mock);

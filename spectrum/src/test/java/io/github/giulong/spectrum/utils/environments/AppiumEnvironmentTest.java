@@ -105,8 +105,8 @@ class AppiumEnvironmentTest {
         final int port = 123;
 
         // isRunningOn
-        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction(ServerSocket.class);
-        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction(InetSocketAddress.class, (mock, context) -> {
+        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction();
+        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(InetAddress.getByName(ipAddress), context.arguments().getFirst());
             assertEquals(port, context.arguments().get(1));
         });
@@ -132,9 +132,8 @@ class AppiumEnvironmentTest {
         when(appiumLogBuilder.level(INFO)).thenReturn(appiumLogBuilder);
         when(appiumLogBuilder.build()).thenReturn(appiumLog);
 
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         appiumEnvironment.sessionOpened();
 
@@ -157,8 +156,8 @@ class AppiumEnvironmentTest {
         final int port = 123;
 
         // isRunningOn
-        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction(ServerSocket.class);
-        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction(InetSocketAddress.class, (mock, context) -> {
+        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction();
+        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(InetAddress.getByName(ipAddress), context.arguments().getFirst());
             assertEquals(port, context.arguments().get(1));
         });
@@ -177,9 +176,8 @@ class AppiumEnvironmentTest {
         when(builder.withCapabilities(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(builder);
         when(AppiumDriverLocalService.buildService(builder)).thenReturn(driverService);
 
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(DesiredCapabilities.class, (mock, context) -> {
-            assertEquals(capabilities, context.arguments().getFirst());
-        });
+        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         appiumEnvironment.sessionOpened();
 
@@ -295,8 +293,8 @@ class AppiumEnvironmentTest {
     @ValueSource(strings = {"localhost", "127.0.0.1", "0.0.0.0"})
     void isRunningAtFalse(final String ipAddress) throws IOException {
         final int port = 123;
-        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction(ServerSocket.class);
-        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction(InetSocketAddress.class, (mock, context) -> {
+        MockedConstruction<ServerSocket> serverSocketMockedConstruction = mockConstruction();
+        MockedConstruction<InetSocketAddress> inetSocketAddressMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(InetAddress.getByName("localhost"), context.arguments().getFirst());
             assertEquals(port, context.arguments().get(1));
         });

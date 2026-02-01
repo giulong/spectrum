@@ -1,5 +1,7 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators;
 
+import static com.fasterxml.jackson.annotation.OptBoolean.TRUE;
+
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
@@ -12,7 +14,7 @@ import lombok.Getter;
 public abstract class Interpolator {
 
     @SuppressWarnings("unused")
-    @JacksonInject("enabledFromClient")
+    @JacksonInject(value = "enabledFromClient", optional = TRUE)
     @JsonPropertyDescription("Whether to enable this interpolator. Injected to true by default, so no need to explicitly set it")
     private boolean enabled;
 

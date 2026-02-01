@@ -55,7 +55,7 @@ class FirefoxTest {
         when(service.isTruncatedLogs()).thenReturn(true);
         when(service.getProfileRoot()).thenReturn(profileRoot);
 
-        MockedConstruction<GeckoDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction(GeckoDriverService.Builder.class, (mock, context) -> {
+        MockedConstruction<GeckoDriverService.Builder> chromeDriverServiceMockedConstruction = mockConstruction((mock, context) -> {
             when(mock.withAllowHosts(allowHosts)).thenReturn(mock);
             when(mock.withLogLevel(FirefoxDriverLogLevel.TRACE)).thenReturn(mock);
             when(mock.withTruncatedLogs(true)).thenReturn(mock);
@@ -86,7 +86,7 @@ class FirefoxTest {
         when(driversConfig.isBiDi()).thenReturn(false);
         lenient().when(firefoxConfig.isBiDi()).thenReturn(true);
 
-        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class, (mock, context) -> {
+        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction((mock, context) -> {
             when(mock.addArguments(arguments)).thenReturn(mock);
             when(mock.setBinary(binary)).thenReturn(mock);
         });
@@ -120,7 +120,7 @@ class FirefoxTest {
         when(driversConfig.isBiDi()).thenReturn(false);
         lenient().when(firefoxConfig.isBiDi()).thenReturn(true);
 
-        final MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(FirefoxOptions.class,
+        final MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(
                 (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
 
         firefox.buildCapabilities();

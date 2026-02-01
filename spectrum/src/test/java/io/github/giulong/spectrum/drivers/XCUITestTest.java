@@ -58,7 +58,7 @@ class XCUITestTest {
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class,
+        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
@@ -83,7 +83,7 @@ class XCUITestTest {
     void buildCapabilitiesAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(XCUITestOptions.class,
+        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
 
         when(configuration.getDrivers()).thenReturn(drivers);
@@ -103,7 +103,7 @@ class XCUITestTest {
     @Test
     @DisplayName("buildDriverFor should return a new instance of IOSDriver for the provided url and the instance capabilities")
     void buildDriverFor() {
-        MockedConstruction<IOSDriver> iosDriverMockedConstruction = mockConstruction(IOSDriver.class, (mock, context) -> {
+        MockedConstruction<IOSDriver> iosDriverMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(xcuiTestOptions, context.arguments().get(1));
         });

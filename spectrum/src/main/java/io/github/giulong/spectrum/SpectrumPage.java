@@ -2,7 +2,6 @@ package io.github.giulong.spectrum;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Proxy;
-import java.time.Duration;
 import java.util.List;
 
 import io.github.giulong.spectrum.interfaces.Endpoint;
@@ -17,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
+import org.openqa.selenium.support.pagefactory.ElementLocatorFactory;
 
 @Slf4j
 @Getter
@@ -85,8 +84,8 @@ public abstract class SpectrumPage<T extends SpectrumPage<T, Data>, Data> extend
         log.debug("The endpoint of page '{}' is '{}'", className, endpointValue);
         Reflections.setField("endpoint", this, endpointValue);
 
-        final Duration autoWaitDuration = configuration.getDrivers().getWaits().getAuto().getTimeout();
-        PageFactory.initElements(new SpectrumFieldDecorator(new AjaxElementLocatorFactory(driver, (int) autoWaitDuration.toSeconds())), this);
+        final ElementLocatorFactory locatorFactory = configuration.getDrivers().getLocatorFactory().buildFor(driver);
+        PageFactory.initElements(new SpectrumFieldDecorator(locatorFactory), this);
 
         Reflections
                 .getAnnotatedFields(this, JsWebElement.class)

@@ -26,7 +26,7 @@ class BrowsingContextResolverTest {
         final String windowHandle = "windowHandle";
         when(webDriver.getWindowHandle()).thenReturn(windowHandle);
 
-        final MockedConstruction<BrowsingContext> mockedConstruction = mockConstruction(BrowsingContext.class, (mock, context) -> {
+        final MockedConstruction<BrowsingContext> mockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(webDriver, context.arguments().getFirst());
             assertEquals(windowHandle, context.arguments().get(1));
         });

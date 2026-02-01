@@ -22,7 +22,7 @@ class BrowsingContextInspectorResolverTest {
     @Test
     @DisplayName("resolveParameterFor should return an instance of BrowsingContextInspector for the provided WebDriver")
     void resolveParameterFor() {
-        final MockedConstruction<BrowsingContextInspector> mockedConstruction = mockConstruction(BrowsingContextInspector.class,
+        final MockedConstruction<BrowsingContextInspector> mockedConstruction = mockConstruction(
                 (mock, context) -> assertEquals(webDriver, context.arguments().getFirst()));
 
         final BrowsingContextInspector actual = browsingContextInspectorResolver.resolveParameterFor(webDriver);

@@ -74,7 +74,7 @@ class TestDataTest {
     @Test
     @DisplayName("registerFailedVisualRegression should set the testFailedException with the updated regressions count")
     void registerFailedVisualRegression() {
-        try (MockedConstruction<VisualRegressionException> mockedConstruction = mockConstruction(VisualRegressionException.class)) {
+        try (MockedConstruction<VisualRegressionException> mockedConstruction = mockConstruction()) {
             assertNull(testData.getTestFailedException());
 
             testData.registerFailedVisualRegression();  // first regression

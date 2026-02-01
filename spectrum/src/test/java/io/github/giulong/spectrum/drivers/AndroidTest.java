@@ -61,7 +61,7 @@ class AndroidTest {
     @Test
     @DisplayName("buildDriverFor should return a new instance of AndroidDriver for the provided url and the instance capabilities")
     void buildDriverFor() {
-        MockedConstruction<AndroidDriver> androidDriverMockedConstruction = mockConstruction(AndroidDriver.class, (mock, context) -> {
+        MockedConstruction<AndroidDriver> androidDriverMockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(capabilities, context.arguments().get(1));
         });

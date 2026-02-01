@@ -527,13 +527,13 @@ class EventsWebDriverListenerTest {
     @Test
     @DisplayName("afterGetScreenshotAs should dispatch an event when the screenshot is in bytes")
     void afterGetScreenshotAsBytes() {
-        final String message = "message";
+        final String simpleMessage = "simpleMessage";
         final Status status = Status.INFO;
         final byte[] result = new byte[]{1, 2, 3};
         final Payload payload = Payload
                 .builder()
                 .screenshot(result)
-                .message(message)
+                .message(simpleMessage)
                 .status(status)
                 .takesScreenshot((TakesScreenshot) driver)
                 .build();
@@ -542,7 +542,7 @@ class EventsWebDriverListenerTest {
         when(context.getStore(GLOBAL)).thenReturn(store);
         when(store.get(TEST_DATA, TestData.class)).thenReturn(testData);
         when(testData.getScreenshot()).thenReturn(screenshot);
-        when(screenshot.getMessage()).thenReturn(message);
+        when(screenshot.getMessage()).thenReturn(simpleMessage);
         when(screenshot.getStatus()).thenReturn(status);
         when(screenshot.getFrame()).thenReturn(MANUAL);
 
@@ -550,14 +550,14 @@ class EventsWebDriverListenerTest {
         when(webDriverEventBuilder.frame(AUTO_AFTER)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.args(List.of(driver, BYTES, result))).thenReturn(webDriverEventBuilder);
-        when(webDriverEventBuilder.message(message)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.message(simpleMessage)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
 
         when(events.getAfterGetScreenshotAs()).thenReturn(event);
 
         // listenTo
         ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
-        when(event.getMessage()).thenReturn(message);
+        when(event.getMessage()).thenReturn(simpleMessage);
         when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 
@@ -569,13 +569,13 @@ class EventsWebDriverListenerTest {
     @Test
     @DisplayName("afterGetScreenshotAs should dispatch an event when the screenshot is in bytes, building a default screenshot if none is found in testData")
     void afterGetScreenshotAsBytesNoScreenshot() {
-        final String message = "";
+        final String emptyMessage = "";
         final Status status = Status.INFO;
         final byte[] result = new byte[]{1, 2, 3};
         final Payload payload = Payload
                 .builder()
                 .screenshot(result)
-                .message(message)
+                .message(emptyMessage)
                 .status(status)
                 .takesScreenshot((TakesScreenshot) driver)
                 .build();
@@ -589,14 +589,14 @@ class EventsWebDriverListenerTest {
         when(webDriverEventBuilder.frame(AUTO_AFTER)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.level(INFO)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.args(List.of(driver, BYTES, result))).thenReturn(webDriverEventBuilder);
-        when(webDriverEventBuilder.message(message)).thenReturn(webDriverEventBuilder);
+        when(webDriverEventBuilder.message(emptyMessage)).thenReturn(webDriverEventBuilder);
         when(webDriverEventBuilder.build()).thenReturn(webDriverEvent);
 
         when(events.getAfterGetScreenshotAs()).thenReturn(event);
 
         // listenTo
         ((Logger) LoggerFactory.getLogger(EventsWebDriverListener.class)).setLevel(Level.INFO);
-        when(event.getMessage()).thenReturn(message);
+        when(event.getMessage()).thenReturn(emptyMessage);
         when(event.getLevel()).thenReturn(INFO);
         when(event.getWait()).thenReturn(wait);
 

@@ -31,7 +31,7 @@ class DriverLogTest {
 
     @BeforeEach
     void beforeEach() {
-        stringBufferMockedConstruction = mockConstruction(StringBuffer.class);
+        stringBufferMockedConstruction = mockConstruction();
         Reflections.setField("stringBuffer", driverLog, new StringBuffer(LOG_MESSAGE));
     }
 

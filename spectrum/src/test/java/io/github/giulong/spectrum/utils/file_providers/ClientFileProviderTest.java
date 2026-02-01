@@ -37,7 +37,7 @@ class ClientFileProviderTest {
     @Test
     @DisplayName("getInjectableValues should return the client injectables")
     void getInjectableValues() {
-        final MockedConstruction<InjectableValues.Std> mockedConstruction = mockConstruction(InjectableValues.Std.class,
+        final MockedConstruction<InjectableValues.Std> mockedConstruction = mockConstruction(
                 (mock, context) -> when(mock.addValue("enabledFromClient", true)).thenReturn(mock));
 
         final InjectableValues actual = fileProvider.getInjectableValues();
