@@ -33,7 +33,7 @@
     </licenses>
 
     <properties>
-        <revision>1.28.0</revision>
+        <revision>1.29.0</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <docs.folder>docs</docs.folder>
@@ -217,7 +217,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.26</version>
+                <version>1.5.27</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -340,7 +340,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>13.0.0</version>
+                            <version>13.1.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
@@ -382,7 +382,7 @@
                 <plugin>
                     <groupId>com.diffplug.spotless</groupId>
                     <artifactId>spotless-maven-plugin</artifactId>
-                    <version>3.2.0</version>
+                    <version>3.2.1</version>
                     <configuration>
                         <java>
                             <removeUnusedImports/>
@@ -407,7 +407,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.1</version>
+                    <version>3.15.0</version>
                     <configuration>
                         <release>21</release>
                         <encoding>UTF-8</encoding>

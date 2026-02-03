@@ -102,7 +102,7 @@ Starting without the archetype is as simple as following these steps:
    <dependency>
        <groupId>io.github.giulong</groupId>
        <artifactId>spectrum</artifactId>
-       <version>1.28.0</version>
+       <version>1.29.0</version>
        <scope>test</scope>
    </dependency>
    ```
