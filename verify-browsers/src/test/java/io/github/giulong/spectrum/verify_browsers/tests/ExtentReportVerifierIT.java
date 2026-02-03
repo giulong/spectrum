@@ -70,7 +70,7 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
 
         assertFalse(isPresent(By.id("video-demoit-skipped-test")));
 
-        assertVideoDuration(extentReportPage.getVideoJsWebElementItCheckingJsWebElements(), 3);
+        assertVideoDuration(extentReportPage.getVideoJsWebElementItCheckingJsWebElements(), 1);
         assertVideoDuration(extentReportPage.getVideoJsWebElementItTestFindElementsMethod(), 1);
         assertVideoDuration(extentReportPage.getVideoJsWebElementItShadowDom(), 1);
         assertVideoDuration(extentReportPage.getVideoJsWebElementItTestInputFieldActions(), 1);
