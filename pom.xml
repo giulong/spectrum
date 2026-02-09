@@ -217,7 +217,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.27</version>
+                <version>1.5.28</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -244,7 +244,7 @@
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.46.0</version>
+                <version>1.47.0</version>
             </dependency>
 
             <dependency>
@@ -340,7 +340,7 @@
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>13.1.0</version>
+                            <version>13.2.0</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
