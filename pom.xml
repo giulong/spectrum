@@ -50,7 +50,7 @@
         <mockito.version>5.21.0</mockito.version>
         <jackson.version>2.21.0</jackson.version>
         <simplejavamail.version>8.12.6</simplejavamail.version>
-        <jsonschemagenerator.version>4.38.0</jsonschemagenerator.version>
+        <jsonschemagenerator.version>5.0.0</jsonschemagenerator.version>
         <slf4j.version>2.0.17</slf4j.version>
         <selenium.version>4.40.0</selenium.version>
     </properties>
