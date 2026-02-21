@@ -45,6 +45,14 @@
         <maven.deploy.skip>false</maven.deploy.skip>
         <maven.install.skip>false</maven.install.skip>
         <skipSign>false</skipSign>
+
+        <dependency.maven-model.version>3.9.12</dependency.maven-model.version>
+
+        <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
+        <plugin.source.version>3.4.0</plugin.source.version>
+        <plugin.javadoc.version>3.12.0</plugin.javadoc.version>
+        <plugin.gpg.version>3.2.8</plugin.gpg.version>
+        <plugin.central-publishing.version>0.10.0</plugin.central-publishing.version>
     </properties>
 
     <dependencies>
@@ -163,7 +171,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>3.9.12</version>
+            <version>${dependency.maven-model.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -209,7 +217,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>@{argLine}
-                        -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+                        -javaagent:${settings.localRepository}/org/mockito/mockito-core/${dependency.mockito.version}/mockito-core-${dependency.mockito.version}.jar
                         --add-opens java.base/java.util=ALL-UNNAMED
                         --add-opens java.base/java.lang=ALL-UNNAMED
                         --add-opens java.base/sun.nio.fs=ALL-UNNAMED
@@ -220,7 +228,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.14</version>
+                <version>${plugin.jacoco.version}</version>
                 <configuration>
                     <excludes>
                         <exclude>io/github/giulong/spectrum/pojos/**/*</exclude>
@@ -320,7 +328,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>${plugin.source.version}</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -333,7 +341,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.12.0</version>
+                <version>${plugin.javadoc.version}</version>
                 <configuration>
                     <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
@@ -349,7 +357,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.8</version>
+                <version>${plugin.gpg.version}</version>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -368,7 +376,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.10.0</version>
+                <version>${plugin.central-publishing.version}</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
