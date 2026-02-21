@@ -42,3 +42,4 @@ docs/.jekyll-metadata
 docs/vendor
 docs/jacoco
 docs/apidocs
+docs/sbom

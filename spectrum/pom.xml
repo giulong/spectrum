@@ -252,7 +252,7 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.parent.basedir}/${jacoco.outputDirectory}</outputDirectory>
+                            <outputDirectory>${jacoco.outputDirectory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -319,8 +319,9 @@
                 <artifactId>cyclonedx-maven-plugin</artifactId>
                 <configuration>
                     <projectType>framework</projectType>
-                    <outputFormat>xml</outputFormat>
+                    <outputDirectory>${docs.folder}/sbom</outputDirectory>
                     <outputName>sbom</outputName>
+                    <outputFormat>xml</outputFormat>
                     <skipNotDeployed>false</skipNotDeployed>
                 </configuration>
                 <executions>

@@ -36,7 +36,7 @@
         <revision>1.29.3</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <docs.folder>docs</docs.folder>
+        <docs.folder>${maven.multiModuleProjectDirectory}/docs</docs.folder>
         <jacoco.outputDirectory>${docs.folder}/jacoco</jacoco.outputDirectory>
         <resourcesFolder>src/main/resources</resourcesFolder>
         <testResourcesFolder>src/test/resources</testResourcesFolder>
