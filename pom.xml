@@ -80,6 +80,7 @@
         <plugin.enforcer.version>3.6.2</plugin.enforcer.version>
         <plugin.flatten.version>1.7.3</plugin.flatten.version>
         <plugin.jsonschemagenerator.version>5.0.0</plugin.jsonschemagenerator.version>
+        <plugin.cyclonedx.version>2.9.1</plugin.cyclonedx.version>
     </properties>
 
     <profiles>
@@ -449,6 +450,11 @@
                     <configuration>
                         <propertiesEncoding>UTF-8</propertiesEncoding>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.cyclonedx</groupId>
+                    <artifactId>cyclonedx-maven-plugin</artifactId>
+                    <version>${plugin.cyclonedx.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
