@@ -74,7 +74,7 @@
         <plugin.compiler.version>3.15.0</plugin.compiler.version>
         <plugin.resources.version>3.4.0</plugin.resources.version>
         <plugin.surefire.version>3.5.4</plugin.surefire.version>
-        <plugin.failsafe.version>3.5.4</plugin.failsafe.version>
+        <plugin.failsafe.version>3.5.5</plugin.failsafe.version>
         <plugin.replacer.version>1.5.3</plugin.replacer.version>
         <plugin.jar.version>3.5.0</plugin.jar.version>
         <plugin.enforcer.version>3.6.2</plugin.enforcer.version>
