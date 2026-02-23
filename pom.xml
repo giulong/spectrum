@@ -50,7 +50,7 @@
         <dependency.mockito.version>5.21.0</dependency.mockito.version>
         <dependency.hamcrest.version>3.0</dependency.hamcrest.version>
         <dependency.systemlambda.version>1.2.1</dependency.systemlambda.version>
-        <dependency.jackson.version>2.21.0</dependency.jackson.version>
+        <dependency.jackson.version>2.21.1</dependency.jackson.version>
         <dependency.simplejavamail.version>8.12.6</dependency.simplejavamail.version>
         <dependency.jsonschemagenerator.version>5.0.0</dependency.jsonschemagenerator.version>
         <dependency.slf4j.version>2.0.17</dependency.slf4j.version>
