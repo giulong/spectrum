@@ -54,7 +54,7 @@
         <dependency.simplejavamail.version>8.12.6</dependency.simplejavamail.version>
         <dependency.jsonschemagenerator.version>5.0.0</dependency.jsonschemagenerator.version>
         <dependency.slf4j.version>2.0.17</dependency.slf4j.version>
-        <dependency.selenium.version>4.40.0</dependency.selenium.version>
+        <dependency.selenium.version>4.41.0</dependency.selenium.version>
         <dependency.lombok.version>1.18.42</dependency.lombok.version>
         <dependency.jspecify.version>1.0.0</dependency.jspecify.version>
         <dependency.appium.version>10.0.0</dependency.appium.version>
