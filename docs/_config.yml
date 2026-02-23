@@ -2,3 +2,4 @@ theme: jekyll-theme-modernist
 repository_url: https://github.com/giulong/spectrum/blob/main
 docs_url: https://giulong.github.io/spectrum
 json_schemas_endpoint: json-schemas/
+sboms_endpoint: sboms/

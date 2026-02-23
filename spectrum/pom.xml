@@ -319,9 +319,9 @@
                 <artifactId>cyclonedx-maven-plugin</artifactId>
                 <configuration>
                     <projectType>framework</projectType>
-                    <outputDirectory>${docs.folder}/sbom</outputDirectory>
+                    <outputDirectory>${docs.folder}/sboms/${revision}</outputDirectory>
                     <outputName>sbom</outputName>
-                    <outputFormat>xml</outputFormat>
+                    <outputFormat>all</outputFormat>
                     <skipNotDeployed>false</skipNotDeployed>
                 </configuration>
                 <executions>

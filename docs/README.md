@@ -3801,6 +3801,14 @@ root
 
 ---
 
+# SBOM
+
+Spectrum's Software Bill of Materials is available here:
+
+{% include sboms.html %}
+
+---
+
 # Bugs Report and Feature Requests
 
 Found a bug? Want to request a new feature? Just follow these links and provide the requested details:
