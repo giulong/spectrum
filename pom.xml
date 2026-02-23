@@ -36,7 +36,7 @@
         <revision>1.29.3</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <docs.folder>docs</docs.folder>
+        <docs.folder>${maven.multiModuleProjectDirectory}/docs</docs.folder>
         <jacoco.outputDirectory>${docs.folder}/jacoco</jacoco.outputDirectory>
         <resourcesFolder>src/main/resources</resourcesFolder>
         <testResourcesFolder>src/test/resources</testResourcesFolder>
@@ -46,13 +46,41 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <junit.version>6.0.3</junit.version>
-        <mockito.version>5.21.0</mockito.version>
-        <jackson.version>2.21.0</jackson.version>
-        <simplejavamail.version>8.12.6</simplejavamail.version>
-        <jsonschemagenerator.version>5.0.0</jsonschemagenerator.version>
-        <slf4j.version>2.0.17</slf4j.version>
-        <selenium.version>4.40.0</selenium.version>
+        <dependency.junit.version>6.0.3</dependency.junit.version>
+        <dependency.mockito.version>5.21.0</dependency.mockito.version>
+        <dependency.hamcrest.version>3.0</dependency.hamcrest.version>
+        <dependency.systemlambda.version>1.2.1</dependency.systemlambda.version>
+        <dependency.jackson.version>2.21.1</dependency.jackson.version>
+        <dependency.simplejavamail.version>8.12.6</dependency.simplejavamail.version>
+        <dependency.jsonschemagenerator.version>5.0.0</dependency.jsonschemagenerator.version>
+        <dependency.slf4j.version>2.0.17</dependency.slf4j.version>
+        <dependency.selenium.version>4.41.0</dependency.selenium.version>
+        <dependency.lombok.version>1.18.42</dependency.lombok.version>
+        <dependency.jspecify.version>1.0.0</dependency.jspecify.version>
+        <dependency.appium.version>10.0.0</dependency.appium.version>
+        <dependency.extent.version>5.1.2</dependency.extent.version>
+        <dependency.logback.version>1.5.32</dependency.logback.version>
+        <dependency.freemarker.version>2.3.34</dependency.freemarker.version>
+        <dependency.mvel.version>2.5.2.Final</dependency.mvel.version>
+        <dependency.slack.version>1.47.0</dependency.slack.version>
+        <dependency.jcodec.version>0.2.5</dependency.jcodec.version>
+        <dependency.datafaker.version>2.5.4</dependency.datafaker.version>
+
+        <plugin.clean.version>3.5.0</plugin.clean.version>
+        <plugin.checkstyle.version>3.6.0</plugin.checkstyle.version>
+        <plugin.puppycrawl.version>13.2.0</plugin.puppycrawl.version>
+        <plugin.sevntu.version>1.44.1</plugin.sevntu.version>
+        <plugin.spotless.version>3.2.1</plugin.spotless.version>
+        <plugin.compiler.version>3.15.0</plugin.compiler.version>
+        <plugin.resources.version>3.4.0</plugin.resources.version>
+        <plugin.surefire.version>3.5.5</plugin.surefire.version>
+        <plugin.failsafe.version>3.5.5</plugin.failsafe.version>
+        <plugin.replacer.version>1.5.3</plugin.replacer.version>
+        <plugin.jar.version>3.5.0</plugin.jar.version>
+        <plugin.enforcer.version>3.6.2</plugin.enforcer.version>
+        <plugin.flatten.version>1.7.3</plugin.flatten.version>
+        <plugin.jsonschemagenerator.version>5.0.0</plugin.jsonschemagenerator.version>
+        <plugin.cyclonedx.version>2.9.1</plugin.cyclonedx.version>
     </properties>
 
     <profiles>
@@ -140,167 +168,167 @@
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
-                <version>1.18.42</version>
+                <version>${dependency.lombok.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jspecify</groupId>
                 <artifactId>jspecify</artifactId>
-                <version>1.0.0</version>
+                <version>${dependency.jspecify.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-api</artifactId>
-                <version>${junit.version}</version>
+                <version>${dependency.junit.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit.version}</version>
+                <version>${dependency.junit.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-params</artifactId>
-                <version>${junit.version}</version>
+                <version>${dependency.junit.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-launcher</artifactId>
-                <version>${junit.version}</version>
+                <version>${dependency.junit.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${dependency.jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
-                <version>${jackson.version}</version>
+                <version>${dependency.jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
-                <version>${jackson.version}</version>
+                <version>${dependency.jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${jackson.version}</version>
+                <version>${dependency.jackson.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
-                <version>${selenium.version}</version>
+                <version>${dependency.selenium.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-grid</artifactId>
-                <version>${selenium.version}</version>
+                <version>${dependency.selenium.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>io.appium</groupId>
                 <artifactId>java-client</artifactId>
-                <version>10.0.0</version>
+                <version>${dependency.appium.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.aventstack</groupId>
                 <artifactId>extentreports</artifactId>
-                <version>5.1.2</version>
+                <version>${dependency.extent.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.5.32</version>
+                <version>${dependency.logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>${slf4j.version}</version>
+                <version>${dependency.slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
-                <version>${slf4j.version}</version>
+                <version>${dependency.slf4j.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.freemarker</groupId>
                 <artifactId>freemarker</artifactId>
-                <version>2.3.34</version>
+                <version>${dependency.freemarker.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.mvel</groupId>
                 <artifactId>mvel2</artifactId>
-                <version>2.5.2.Final</version>
+                <version>${dependency.mvel.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.slack.api</groupId>
                 <artifactId>slack-api-client</artifactId>
-                <version>1.47.0</version>
+                <version>${dependency.slack.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.simplejavamail</groupId>
                 <artifactId>simple-java-mail</artifactId>
-                <version>${simplejavamail.version}</version>
+                <version>${dependency.simplejavamail.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.simplejavamail</groupId>
                 <artifactId>authenticated-socks-module</artifactId>
-                <version>${simplejavamail.version}</version>
+                <version>${dependency.simplejavamail.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.jcodec</groupId>
                 <artifactId>jcodec-javase</artifactId>
-                <version>0.2.5</version>
+                <version>${dependency.jcodec.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>net.datafaker</groupId>
                 <artifactId>datafaker</artifactId>
-                <version>2.5.4</version>
+                <version>${dependency.datafaker.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>com.github.victools</groupId>
                 <artifactId>jsonschema-generator</artifactId>
-                <version>${jsonschemagenerator.version}</version>
+                <version>${dependency.jsonschemagenerator.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>com.github.victools</groupId>
                 <artifactId>jsonschema-module-jackson</artifactId>
-                <version>${jsonschemagenerator.version}</version>
+                <version>${dependency.jsonschemagenerator.version}</version>
                 <scope>provided</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
-                <version>${mockito.version}</version>
+                <version>${dependency.mockito.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest</artifactId>
-                <version>3.0</version>
+                <version>${dependency.hamcrest.version}</version>
                 <scope>test</scope>
             </dependency>
 
             <dependency>
                 <groupId>com.github.stefanbirkner</groupId>
                 <artifactId>system-lambda</artifactId>
-                <version>1.2.1</version>
+                <version>${dependency.systemlambda.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -330,22 +358,22 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>${plugin.clean.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>${plugin.checkstyle.version}</version>
                     <dependencies>
                         <dependency>
                             <groupId>com.puppycrawl.tools</groupId>
                             <artifactId>checkstyle</artifactId>
-                            <version>13.2.0</version>
+                            <version>${plugin.puppycrawl.version}</version>
                         </dependency>
                         <dependency>
                             <groupId>com.github.sevntu-checkstyle</groupId>
                             <artifactId>sevntu-checks</artifactId>
-                            <version>1.44.1</version>
+                            <version>${plugin.sevntu.version}</version>
                         </dependency>
                     </dependencies>
                     <configuration>
@@ -382,7 +410,7 @@
                 <plugin>
                     <groupId>com.diffplug.spotless</groupId>
                     <artifactId>spotless-maven-plugin</artifactId>
-                    <version>3.2.1</version>
+                    <version>${plugin.spotless.version}</version>
                     <configuration>
                         <java>
                             <removeUnusedImports/>
@@ -407,7 +435,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.15.0</version>
+                    <version>${plugin.compiler.version}</version>
                     <configuration>
                         <release>21</release>
                         <encoding>UTF-8</encoding>
@@ -418,20 +446,25 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>3.4.0</version>
+                    <version>${plugin.resources.version}</version>
                     <configuration>
                         <propertiesEncoding>UTF-8</propertiesEncoding>
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.cyclonedx</groupId>
+                    <artifactId>cyclonedx-maven-plugin</artifactId>
+                    <version>${plugin.cyclonedx.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>3.5.4</version>
+                    <version>${plugin.surefire.version}</version>
                     <configuration>
                         <argLine>
                             @{argLine}
                             -Dfile.encoding=UTF-8
-                            -javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+                            -javaagent:${settings.localRepository}/org/mockito/mockito-core/${dependency.mockito.version}/mockito-core-${dependency.mockito.version}.jar
                         </argLine>
                         <reportsDirectory>${reportsDirectory}</reportsDirectory>
                         <trimStackTrace>true</trimStackTrace>
@@ -443,7 +476,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>3.5.4</version>
+                    <version>${plugin.failsafe.version}</version>
                     <configuration>
                         <argLine>-Dfile.encoding=UTF-8</argLine>
                         <failIfNoTests>true</failIfNoTests>
@@ -459,18 +492,18 @@
                 <plugin>
                     <groupId>com.google.code.maven-replacer-plugin</groupId>
                     <artifactId>replacer</artifactId>
-                    <version>1.5.3</version>
+                    <version>${plugin.replacer.version}</version>
                     <inherited>false</inherited>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>${plugin.jar.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>com.github.victools</groupId>
                     <artifactId>jsonschema-maven-plugin</artifactId>
-                    <version>${jsonschemagenerator.version}</version>
+                    <version>${plugin.jsonschemagenerator.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -479,7 +512,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>${plugin.enforcer.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -531,7 +564,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.7.3</version>
+                <version>${plugin.flatten.version}</version>
                 <configuration>
                     <updatePomFile>true</updatePomFile>
                     <flattenMode>ossrh</flattenMode>

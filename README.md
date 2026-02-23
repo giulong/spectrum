@@ -18,6 +18,8 @@
 <div>
 <a href="https://giulong.github.io/spectrum/">Full Docs</a>
 ·
+<a href="https://giulong.github.io/spectrum/#sbom">SBOM</a>
+·
 <a href="https://github.com/giulong/spectrum/issues/new?template=bug_report.md">Report Bug</a>
 ·
 <a href="https://github.com/giulong/spectrum/issues/new?template=feature-request.md">Request Feature</a>

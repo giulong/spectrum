@@ -15,7 +15,7 @@ import com.github.victools.jsonschema.generator.FieldScope;
 import com.github.victools.jsonschema.generator.Module;
 import com.github.victools.jsonschema.generator.SchemaGenerator;
 import com.github.victools.jsonschema.generator.SchemaGeneratorConfigBuilder;
-import com.github.victools.jsonschema.module.jackson.JacksonModule;
+import com.github.victools.jsonschema.module.jackson.JacksonSchemaModule;
 import com.github.victools.jsonschema.module.jackson.JsonSubTypesResolver;
 
 import io.github.giulong.spectrum.interfaces.JsonSchemaTypes;
@@ -36,7 +36,7 @@ public class JsonSchemaInternalGeneratorModule implements Module {
 
     protected SchemaGeneratorConfigBuilder commonSetupFor(final SchemaGeneratorConfigBuilder schemaGeneratorConfigBuilder) {
         schemaGeneratorConfigBuilder
-                .with(new JacksonModule(SKIP_SUBTYPE_LOOKUP, FLATTENED_ENUMS_FROM_JSONVALUE))
+                .with(new JacksonSchemaModule(SKIP_SUBTYPE_LOOKUP, FLATTENED_ENUMS_FROM_JSONVALUE))
                 .with(FORBIDDEN_ADDITIONAL_PROPERTIES_BY_DEFAULT,
                         MAP_VALUES_AS_ADDITIONAL_PROPERTIES,
                         TRANSIENT_FIELDS,
