@@ -80,6 +80,8 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add .
+          git add -f docs/json-schemas
+          git add -f docs/sboms
           git commit -a -m "build: bumping Spectrum version to $NEW_VERSION"
           git tag v$NEW_VERSION
 
