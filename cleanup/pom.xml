@@ -256,6 +256,24 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Copy LauncherSessionListener to "it-generated" module's classes</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>../it-generated/target/classes/META-INF/services</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${spectrumResourcesFolder}</directory>
+                                    <includes>
+                                        <include>${launcherSessionListener}</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
