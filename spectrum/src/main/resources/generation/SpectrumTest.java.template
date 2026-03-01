@@ -1,0 +1,38 @@
+package ${packagePath?replace('\\', '.')?replace('/', '.')};
+
+import io.github.giulong.spectrum.SpectrumTest;
+
+import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+
+class ${className?replace(".java", "")} extends SpectrumTest<Void> {
+
+    @Test
+    void test() {
+<#list actions as action>
+<#assign data = action.data>
+<#switch action.type>
+    <#on "navigate">
+        <#if action?index gt 0>
+
+        </#if>
+        driver.get("${data?js_string}");
+    <#on "back">
+        <#if action?index gt 0>
+
+        </#if>
+        driver.navigate().back();
+    <#on "forward">
+        <#if action?index gt 0>
+
+        </#if>
+        driver.navigate().forward();
+    <#on "click">
+        driver.findElement(By.xpath("${data?js_string}")).click();
+    <#on "input">
+    <#assign json = data?eval>
+        driver.findElement(By.xpath("${json.path?js_string}")).sendKeys("${json.value}");
+</#switch>
+</#list>
+    }
+}
