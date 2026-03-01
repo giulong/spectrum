@@ -36,3 +36,4 @@ class ${className?replace(".java", "")} extends SpectrumTest<Void> {
 </#list>
     }
 }
+
