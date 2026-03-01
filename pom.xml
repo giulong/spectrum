@@ -100,6 +100,7 @@
                 <module>it-appium</module>
                 <module>it-visual-regression</module>
                 <module>it-visual-regression-fae</module>
+                <module>it-generated</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>verify-macos</module>
@@ -126,6 +127,7 @@
                 <module>it-testbook</module>
                 <module>it-visual-regression</module>
                 <module>it-visual-regression-fae</module>
+                <module>it-generated</module>
                 <module>verify-commons</module>
                 <module>verify-browsers</module>
                 <module>cleanup</module>
