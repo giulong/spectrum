@@ -46,7 +46,7 @@
         <maven.install.skip>false</maven.install.skip>
         <skipSign>false</skipSign>
 
-        <dependency.maven-model.version>3.9.12</dependency.maven-model.version>
+        <dependency.maven-model.version>3.9.13</dependency.maven-model.version>
 
         <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
         <plugin.source.version>3.4.0</plugin.source.version>
