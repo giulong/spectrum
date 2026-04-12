@@ -23,7 +23,6 @@ public class Server {
         httpServer.createContext("/", handler);
         httpServer.start();
 
-        System.setProperty("record_server_port", String.valueOf(httpServer.getAddress().getPort()));
         log.info("Accepting requests at {}", httpServer.getAddress());
         return this;
     }
