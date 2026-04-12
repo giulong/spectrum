@@ -128,8 +128,6 @@ class RecordingTest {
         actionHandlerMockedStatic.close();
         serverMockedStatic.close();
         httpServerMockedStatic.close();
-
-        System.getProperties().clear();
     }
 
     @Test
@@ -167,7 +165,6 @@ class RecordingTest {
         verify(server).start();
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Test
     @DisplayName("record should wrap the driver with a network interceptor and inject the js in every new page, intercepting navigation")
     void record() {
@@ -204,7 +201,6 @@ class RecordingTest {
         }
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Test
     @DisplayName("record should wrap the driver with a network interceptor and inject the js in every new page")
     void recordNoNavigation() {
@@ -226,7 +222,6 @@ class RecordingTest {
         }
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Test
     @DisplayName("record should wrap the driver with a network interceptor and inject the js in every new page, avoiding registering navigation for redirects")
     void recordNavigationRedirect() {
@@ -267,7 +262,6 @@ class RecordingTest {
         assertTrue(recording.isNavigation(responseDetails));
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Test
     @DisplayName("isNavigation should return false when the provided ResponseDetails has no navigation id")
     void isNavigationNoNavigationId() {
@@ -276,7 +270,6 @@ class RecordingTest {
         assertFalse(recording.isNavigation(responseDetails));
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Test
     @DisplayName("isNavigation should return false when the provided ResponseDetails is not a GET request")
     void isNavigationNoGet() {
@@ -287,7 +280,6 @@ class RecordingTest {
         assertFalse(recording.isNavigation(responseDetails));
     }
 
-    @SuppressWarnings("DataFlowIssue")
     @Test
     @DisplayName("isNavigation should return false when the provided ResponseDetails mime type is not text/html")
     void isNavigationWrongMime() {
@@ -420,7 +412,6 @@ class RecordingTest {
         runnable.getFirst().run();
     }
 
-    @SuppressWarnings("DataFlowIssue")
     private void navigationTrueStubs() {
         when(responseDetails.getNavigationId()).thenReturn(navigationId);
         when(responseDetails.getRequest()).thenReturn(requestData);
