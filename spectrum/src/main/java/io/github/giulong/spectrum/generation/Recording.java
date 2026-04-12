@@ -7,6 +7,7 @@ import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +38,9 @@ import org.openqa.selenium.chrome.ChromeOptions;
 @Getter
 @Builder
 public class Recording {
+
+    @Getter
+    private static Recording instance;
 
     private final FileUtils fileUtils = FileUtils.getInstance();
     private final Pattern fqdnPattern = Pattern.compile("^(?<package>[\\w$.]*\\.)(?<class>[\\w$.]+\\.java)$");
@@ -159,12 +163,29 @@ public class Recording {
     }
 
     @SneakyThrows
-    public static void main(final String[] args) {
-        final List<Action> actions = new ArrayList<>();
-        final ChromeOptions options = new ChromeOptions().addArguments("--disable-web-security");
+    public static void main(final String[] ignored) {
+        final List<String> driverArguments = new ArrayList<>();
+
+        driverArguments.add("--disable-web-security");
+        Optional.ofNullable(System.getProperty("args"))
+                .map(args -> args.split(","))
+                .map(List::of)
+                .ifPresent(driverArguments::addAll);
+
+        final ChromeOptions options = new ChromeOptions().addArguments(driverArguments);
         options.setCapability("webSocketUrl", true);
 
-        Recording
+        Optional.ofNullable(System.getProperty("capabilities"))
+                .map(capabilities -> capabilities.split(","))
+                .map(List::of)
+                .ifPresent(capabilities -> capabilities
+                        .stream()
+                        .map(c -> c.split("="))
+                        .forEach(c -> options.setCapability(c[0], c[1])));
+
+        final List<Action> actions = new ArrayList<>();
+
+        instance = Recording
                 .builder()
                 .actions(actions)
                 .server(Server
@@ -174,7 +195,9 @@ public class Recording {
                         .httpServer(HttpServer.create(new InetSocketAddress(0), 0))
                         .build())
                 .driver(new ChromeDriver(options))
-                .build()
+                .build();
+
+        instance
                 .parseProperties()
                 .setup()
                 .record()

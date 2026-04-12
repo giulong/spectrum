@@ -128,6 +128,9 @@ class RecordingTest {
         actionHandlerMockedStatic.close();
         serverMockedStatic.close();
         httpServerMockedStatic.close();
+
+        System.clearProperty("args");
+        System.clearProperty("capabilities");
     }
 
     @Test
@@ -342,13 +345,23 @@ class RecordingTest {
     @Test
     @DisplayName("main create a Recording instance and act as the entry point to the record and playback feature")
     void mainTest() {
+        final String args = "--headless=new,arg2";
+        final String capabilities = "cap1=value1,cap2=value2";
+        final List<String> driverArguments = new ArrayList<>();
+
+        System.setProperty("args", args);
+        System.setProperty("capabilities", capabilities);
+
+        driverArguments.add("--disable-web-security");
+        driverArguments.addAll(List.of(args.split(",")));
+
         try (MockedStatic<Recording> recordingMockedStatic = mockStatic();
                 MockedConstruction<InetSocketAddress> ignored = mockConstruction((mock, context) -> {
                     assertEquals(0, context.arguments().getFirst());
                     when(HttpServer.create(mock, 0)).thenReturn(httpServer);
                 });
-                MockedConstruction<ChromeOptions> optionsMockedConstruction = mockConstruction((mock, context) -> when(mock.addArguments("--disable-web-security")).thenReturn(
-                        mock));
+                MockedConstruction<ChromeOptions> optionsMockedConstruction = mockConstruction(
+                        (mock, context) -> when(mock.addArguments(driverArguments)).thenReturn(mock));
                 MockedConstruction<ChromeDriver> ignored2 = mockConstruction((mock, context) -> {
                     assertEquals(optionsMockedConstruction.constructed().getFirst(), context.arguments().getFirst());
                     when(recordingBuilder.driver(mock)).thenReturn(recordingBuilder);
@@ -383,6 +396,8 @@ class RecordingTest {
             final ChromeOptions actualOptions = optionsMockedConstruction.constructed().getFirst();
 
             verify(actualOptions).setCapability("webSocketUrl", true);
+            verify(actualOptions).setCapability("cap1", "value1");
+            verify(actualOptions).setCapability("cap2", "value2");
             verify(recordingMock).generate();
         }
     }
