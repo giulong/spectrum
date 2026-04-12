@@ -48,6 +48,7 @@ public class Recording {
     private String fqdn;
     private Path packagePath;
     private String className;
+    private boolean driverClosed;
 
     Recording parseProperties() {
         log.debug("Parse properties");
@@ -90,12 +91,7 @@ public class Recording {
             network.addIntercept(new AddInterceptParameters(RESPONSE_STARTED));
             network.onResponseCompleted(r -> {
                 if (isNavigation(r)) {
-                    final String url = r.getResponseData().getUrl();
-                    if (r.getRedirectCount() == 0) {
-                        server.addNavigationTo(url);
-                    }
-
-                    log.debug("Injecting interceptor.js into page '{}'", url);
+                    log.debug("Injecting interceptor.js into page '{}'", r.getResponseData().getUrl());
                     js.executeScript(scriptKey, port);
                 }
             });
@@ -119,6 +115,7 @@ public class Recording {
                     Thread.sleep(1000);
                 } catch (final InterruptedException | WebDriverException ignored) {
                     log.debug("Driver is closed");
+                    driverClosed = true;
                     Thread.currentThread().interrupt();
                 }
             } while (!Thread.interrupted());
@@ -138,7 +135,7 @@ public class Recording {
         return this;
     }
 
-    void generate() {
+    Recording generate() {
         log.debug("Generate");
 
         SpectrumTestGenerator
@@ -149,6 +146,16 @@ public class Recording {
                 .className(className)
                 .build()
                 .generate();
+
+        return this;
+    }
+
+    void afterAll() {
+        log.debug("After all");
+
+        if (!driverClosed) {
+            driver.quit();
+        }
     }
 
     @SneakyThrows
@@ -163,10 +170,7 @@ public class Recording {
                 .server(Server
                         .builder()
                         .actions(actions)
-                        .handler(ActionHandler
-                                .builder()
-                                .actions(actions)
-                                .build())
+                        .handler(new ActionHandler(actions))
                         .httpServer(HttpServer.create(new InetSocketAddress(0), 0))
                         .build())
                 .driver(new ChromeDriver(options))
@@ -175,6 +179,7 @@ public class Recording {
                 .setup()
                 .record()
                 .tearDown()
-                .generate();
+                .generate()
+                .afterAll();
     }
 }

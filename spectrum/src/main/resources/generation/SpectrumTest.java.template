@@ -10,28 +10,23 @@ class ${className?replace(".java", "")} extends SpectrumTest<Void> {
     @Test
     void test() {
 <#list actions as action>
-<#assign data = action.data>
 <#switch action.type>
     <#on "navigate">
         <#if action?index gt 0>
 
         </#if>
-        driver.get("${data?js_string}");
-    <#on "back">
-        <#if action?index gt 0>
+        driver.get("${action.url?js_string}");
+    <#on "traverse">
 
-        </#if>
+        <#if action.status.name()?matches("BACK|UNKNOWN")>
         driver.navigate().back();
-    <#on "forward">
-        <#if action?index gt 0>
-
-        </#if>
+        <#else>
         driver.navigate().forward();
+        </#if>
     <#on "click">
-        driver.findElement(By.xpath("${data?js_string}")).click();
+        driver.findElement(By.xpath("${action.path?js_string}")).click();
     <#on "input">
-    <#assign json = data?eval>
-        driver.findElement(By.xpath("${json.path?js_string}")).sendKeys("${json.value}");
+        driver.findElement(By.xpath("${action.path?js_string}")).sendKeys("${action.path.value}");
 </#switch>
 </#list>
     }

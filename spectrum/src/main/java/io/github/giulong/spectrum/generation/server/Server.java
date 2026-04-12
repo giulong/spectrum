@@ -23,21 +23,9 @@ public class Server {
         httpServer.createContext("/", handler);
         httpServer.start();
 
-        log.info("Server is accepting requests at {}", httpServer.getAddress());
+        System.setProperty("record_server_port", String.valueOf(httpServer.getAddress().getPort()));
+        log.info("Accepting requests at {}", httpServer.getAddress());
         return this;
-    }
-
-    public void addNavigationTo(final String url) {
-        log.info("Adding navigate to {}", url);
-        actions.add(Action.builder().type("navigate").data(url).build());
-        handler.addNavigationTo(url);
-
-        final Action lastNavigate = handler.getLastNavigate();
-
-        if (url.equals(lastNavigate.getData())) {
-            log.error("Removing {} since it happened interacting with the page", lastNavigate);
-            handler.removeLastNavigation();
-        }
     }
 
     public void stop() {
