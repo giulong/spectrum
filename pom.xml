@@ -48,6 +48,7 @@
 
         <dependency.junit.version>6.0.3</dependency.junit.version>
         <dependency.mockito.version>5.23.0</dependency.mockito.version>
+        <dependency.objenesis.version>3.5</dependency.objenesis.version>
         <dependency.hamcrest.version>3.0</dependency.hamcrest.version>
         <dependency.systemlambda.version>1.2.1</dependency.systemlambda.version>
         <dependency.jackson.version>2.21.2</dependency.jackson.version>
@@ -317,6 +318,12 @@
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-junit-jupiter</artifactId>
                 <version>${dependency.mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.objenesis</groupId>
+                <artifactId>objenesis</artifactId>
+                <version>${dependency.objenesis.version}</version>
                 <scope>test</scope>
             </dependency>
 
