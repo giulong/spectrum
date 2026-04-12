@@ -41,6 +41,7 @@ class RecordingTest {
 
     private final String fqdnProperty = "fqdn";
     private final String navigationId = "navigationId";
+    private final String className = "className";
 
     private MockedStatic<SpectrumTestGenerator> spectrumTestGeneratorMockedStatic;
     private MockedStatic<ActionHandler> actionHandlerMockedStatic;
@@ -66,9 +67,6 @@ class RecordingTest {
     private Recording recordingMock;
 
     @Mock
-    private ActionHandler.ActionHandlerBuilder actionHandlerBuilder;
-
-    @Mock
     private Server.ServerBuilder serverBuilder;
 
     @Mock
@@ -76,9 +74,6 @@ class RecordingTest {
 
     @Mock
     private HttpServer httpServer;
-
-    @Mock
-    private ActionHandler handler;
 
     @Mock
     private SpectrumTestGenerator spectrumTestGenerator;
@@ -113,8 +108,11 @@ class RecordingTest {
     @Captor
     private ArgumentCaptor<Consumer<ResponseDetails>> responseDetailsArgumentCaptor;
 
+    @Captor
+    private ArgumentCaptor<ActionHandler> actionHandlerArgumentCaptor;
+
     @InjectMocks
-    private Recording recording;
+    private Recording recording = new Recording(actions, server, driver, destination, "fqdn", packagePath, className, false);
 
     @BeforeEach
     void beforeEach() {
@@ -175,10 +173,12 @@ class RecordingTest {
     void record() {
         final String url = "url";
         final int port = 123;
+        final boolean actualDriverClosedBefore = Reflections.getFieldValue("driverClosed", recording);
+
+        assertFalse(actualDriverClosedBefore);
 
         Reflections.setField("fileUtils", recording, fileUtils);
 
-        when(responseDetails.getRedirectCount()).thenReturn(0L);
         when(responseDetails.getResponseData()).thenReturn(responseData);
         when(responseData.getUrl()).thenReturn(url);
 
@@ -197,8 +197,10 @@ class RecordingTest {
 
             recordVerificationsFor(networkMockedConstruction, runnable);
 
-            verify(server).addNavigationTo(url);
             verify((JavascriptExecutor) driver).executeScript(scriptKey, port);
+
+            final boolean actualDriverClosedAfter = Reflections.getFieldValue("driverClosed", recording);
+            assertTrue(actualDriverClosedAfter);
         }
     }
 
@@ -206,7 +208,6 @@ class RecordingTest {
     @Test
     @DisplayName("record should wrap the driver with a network interceptor and inject the js in every new page")
     void recordNoNavigation() {
-        final String url = "url";
         final int port = 123;
 
         recordStubsFor();
@@ -221,7 +222,6 @@ class RecordingTest {
 
             recordVerificationsFor(networkMockedConstruction, runnable);
 
-            verify(server, never()).addNavigationTo(url);
             verify((JavascriptExecutor) driver, never()).executeScript(scriptKey, port);
         }
     }
@@ -230,13 +230,11 @@ class RecordingTest {
     @Test
     @DisplayName("record should wrap the driver with a network interceptor and inject the js in every new page, avoiding registering navigation for redirects")
     void recordNavigationRedirect() {
-        final String url = "url";
         final int port = 123;
 
         navigationTrueStubs();
         recordStubsFor();
 
-        when(responseDetails.getRedirectCount()).thenReturn(123L);
         when(driver.getCurrentUrl()).thenThrow(new WebDriverException());
 
         final List<Runnable> runnable = new ArrayList<>();
@@ -247,7 +245,6 @@ class RecordingTest {
 
             recordVerificationsFor(networkMockedConstruction, runnable);
 
-            verify(server, never()).addNavigationTo(url);
             verify((JavascriptExecutor) driver).executeScript(scriptKey, port);
         }
     }
@@ -314,8 +311,6 @@ class RecordingTest {
     @Test
     @DisplayName("generate should delegate to the SpectrumTestGenerator")
     void generate() {
-        final String className = "className";
-
         Reflections.setField("className", recording, className);
         Reflections.setField("destination", recording, destination);
         Reflections.setField("packagePath", recording, packagePath);
@@ -333,6 +328,26 @@ class RecordingTest {
     }
 
     @Test
+    @DisplayName("afterAll should quit the driver if it's not closed already")
+    void afterAllQuit() {
+        Reflections.setField("driverClosed", recording, false);
+
+        recording.afterAll();
+
+        verify(driver).quit();
+    }
+
+    @Test
+    @DisplayName("afterAll should avoid quitting an already closed driver")
+    void afterAllAvoidQuit() {
+        Reflections.setField("driverClosed", recording, true);
+
+        recording.afterAll();
+
+        verify(driver, never()).quit();
+    }
+
+    @Test
     @DisplayName("main create a Recording instance and act as the entry point to the record and playback feature")
     void mainTest() {
         try (MockedStatic<Recording> recordingMockedStatic = mockStatic();
@@ -340,21 +355,17 @@ class RecordingTest {
                     assertEquals(0, context.arguments().getFirst());
                     when(HttpServer.create(mock, 0)).thenReturn(httpServer);
                 });
-
                 MockedConstruction<ChromeOptions> optionsMockedConstruction = mockConstruction((mock, context) -> when(mock.addArguments("--disable-web-security")).thenReturn(
                         mock));
                 MockedConstruction<ChromeDriver> ignored2 = mockConstruction((mock, context) -> {
                     assertEquals(optionsMockedConstruction.constructed().getFirst(), context.arguments().getFirst());
                     when(recordingBuilder.driver(mock)).thenReturn(recordingBuilder);
-                })) {
-
-            when(ActionHandler.builder()).thenReturn(actionHandlerBuilder);
-            when(actionHandlerBuilder.actions(actionsArgumentCaptor.capture())).thenReturn(actionHandlerBuilder);
-            when(actionHandlerBuilder.build()).thenReturn(handler);
+                });
+                MockedConstruction<ActionHandler> ignored3 = mockConstruction((mock, context) -> assertEquals(actionsArgumentCaptor.getValue(), context.arguments().getFirst()))) {
 
             when(Server.builder()).thenReturn(serverBuilder);
             when(serverBuilder.actions(actionsArgumentCaptor.capture())).thenReturn(serverBuilder);
-            when(serverBuilder.handler(handler)).thenReturn(serverBuilder);
+            when(serverBuilder.handler(actionHandlerArgumentCaptor.capture())).thenReturn(serverBuilder);
             when(serverBuilder.httpServer(httpServer)).thenReturn(serverBuilder);
             when(serverBuilder.build()).thenReturn(server);
 
@@ -368,14 +379,14 @@ class RecordingTest {
             when(recordingMock.setup()).thenReturn(recordingMock);
             when(recordingMock.record()).thenReturn(recordingMock);
             when(recordingMock.tearDown()).thenReturn(recordingMock);
+            when(recordingMock.generate()).thenReturn(recordingMock);
 
             Recording.main(null);
 
             final List<List<Action>> actualActions = actionsArgumentCaptor.getAllValues();
-            assertEquals(3, actualActions.size());
+            assertEquals(2, actualActions.size());
             assertEquals(List.of(), actualActions.getFirst());
             assertEquals(List.of(), actualActions.get(1));
-            assertEquals(List.of(), actualActions.get(2));
 
             final ChromeOptions actualOptions = optionsMockedConstruction.constructed().getFirst();
 

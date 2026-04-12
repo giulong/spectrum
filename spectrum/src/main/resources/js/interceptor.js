@@ -2,37 +2,33 @@ const url = `http://localhost:${arguments[0]}/`;
 const options = { capture: true, passive: true };
 const allNodes = document.getElementsByTagName('*');
 
-function post(type, data) {
-    var action = buildActionFor(type, data);
-
+function post(payload) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, false);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    xhr.send(action);
+    xhr.send(JSON.stringify(payload));
 }
 
-function buildActionFor(type, data) {
-    return JSON.stringify({
-        "type": type,
-        "data": data
-    });
-}
+post({ "type": "navigate", "url": location.href });
 
 navigation.addEventListener('navigate', e => {
-    if ("traverse" === e.navigationType) {
-        post('traverse', e.destination.url);
-    } else {
-        post('navigate', e.destination.url);
+    switch (true) {
+        case e.navigationType === "traverse" && !e.sourceElement:
+            post({ "type": "traverse", "url": e.destination.url });
+            break;
+        case e.navigationType === "push" && !!e.sourceElement:
+            post({ "type": "elementNavigate", "url": e.destination.url });
+            break;
     }
 }, options);
 
 addEventListener('change', e => {
     if (e.target.type === 'text') {
-        post('input', JSON.stringify({ "path": buildXPathOf(e.target), "value": e.target.value }));
+        post({ "type": "input", "path": buildXPathOf(e.target), "value": e.target.value });
     }
 }, options);
 
-addEventListener('click', e => post('click', buildXPathOf(e.target)), options);
+addEventListener('click', e => post({ "type": "click", "path": buildXPathOf(e.target) }), options);
 
 function buildXPathOf(element) {
     for (segments = []; element && element.nodeType == 1; element = element.parentNode) {
