@@ -7,12 +7,12 @@ import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.sun.net.httpserver.HttpServer;
 
+import io.github.giulong.spectrum.generation.driver_builders.DriverBuilder;
 import io.github.giulong.spectrum.generation.generators.SpectrumTestGenerator;
 import io.github.giulong.spectrum.generation.server.ActionHandler;
 import io.github.giulong.spectrum.generation.server.Server;
@@ -31,8 +31,6 @@ import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.ResponseDetails;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 @Slf4j
 @Getter
@@ -129,7 +127,7 @@ public class Recording {
     boolean isNavigation(final ResponseDetails details) {
         return details.getNavigationId() != null
                 && "GET".equals(details.getRequest().getMethod())
-                && "text/html".equals(details.getResponseData().getMimeType());
+                && "text/html".equals(details.getResponseData().getMimeType().split(";")[0]);
     }
 
     Recording tearDown() {
@@ -164,26 +162,10 @@ public class Recording {
 
     @SneakyThrows
     public static void main(final String[] ignored) {
-        final List<String> driverArguments = new ArrayList<>();
-
-        driverArguments.add("--disable-web-security");
-        Optional.ofNullable(System.getProperty("args"))
-                .map(args -> args.split(","))
-                .map(List::of)
-                .ifPresent(driverArguments::addAll);
-
-        final ChromeOptions options = new ChromeOptions().addArguments(driverArguments);
-        options.setCapability("webSocketUrl", true);
-
-        Optional.ofNullable(System.getProperty("capabilities"))
-                .map(capabilities -> capabilities.split(","))
-                .map(List::of)
-                .ifPresent(capabilities -> capabilities
-                        .stream()
-                        .map(c -> c.split("="))
-                        .forEach(c -> options.setCapability(c[0], c[1])));
-
         final List<Action> actions = new ArrayList<>();
+        final WebDriver webDriver = DriverBuilder
+                .getFor(System.getProperty("driver", "chrome"))
+                .buildFrom(System.getProperty("args"), System.getProperty("capabilities"));
 
         instance = Recording
                 .builder()
@@ -194,7 +176,7 @@ public class Recording {
                         .handler(new ActionHandler(actions))
                         .httpServer(HttpServer.create(new InetSocketAddress(0), 0))
                         .build())
-                .driver(new ChromeDriver(options))
+                .driver(webDriver)
                 .build();
 
         instance
