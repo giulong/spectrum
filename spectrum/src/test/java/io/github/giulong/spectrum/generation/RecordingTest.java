@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 
 import com.sun.net.httpserver.HttpServer;
 
+import io.github.giulong.spectrum.generation.driver_builders.DriverBuilder;
 import io.github.giulong.spectrum.generation.generators.SpectrumTestGenerator;
 import io.github.giulong.spectrum.generation.server.ActionHandler;
 import io.github.giulong.spectrum.generation.server.Server;
@@ -47,9 +48,13 @@ class RecordingTest {
     private MockedStatic<ActionHandler> actionHandlerMockedStatic;
     private MockedStatic<Server> serverMockedStatic;
     private MockedStatic<HttpServer> httpServerMockedStatic;
+    private MockedStatic<DriverBuilder<?>> driverBuilderMockedStatic;
 
     @Mock
     private ScriptKey scriptKey;
+
+    @Mock
+    private DriverBuilder<?> driverBuilder;
 
     @Mock(extraInterfaces = JavascriptExecutor.class)
     private WebDriver driver;
@@ -120,6 +125,7 @@ class RecordingTest {
         actionHandlerMockedStatic = mockStatic();
         serverMockedStatic = mockStatic();
         httpServerMockedStatic = mockStatic();
+        driverBuilderMockedStatic = mockStatic();
     }
 
     @AfterEach
@@ -128,7 +134,9 @@ class RecordingTest {
         actionHandlerMockedStatic.close();
         serverMockedStatic.close();
         httpServerMockedStatic.close();
+        driverBuilderMockedStatic.close();
 
+        System.clearProperty("driver");
         System.clearProperty("args");
         System.clearProperty("capabilities");
     }
@@ -182,7 +190,7 @@ class RecordingTest {
         when(responseDetails.getResponseData()).thenReturn(responseData);
         when(responseData.getUrl()).thenReturn(url);
 
-        navigationTrueStubs();
+        navigationTrueStubsForMime("text/html");
         recordStubsFor();
 
         when(driver.getCurrentUrl())
@@ -230,7 +238,7 @@ class RecordingTest {
     void recordNavigationRedirect() {
         final int port = 123;
 
-        navigationTrueStubs();
+        navigationTrueStubsForMime("text/html");
         recordStubsFor();
 
         when(driver.getCurrentUrl()).thenThrow(new WebDriverException());
@@ -260,7 +268,7 @@ class RecordingTest {
     @Test
     @DisplayName("isNavigation should return true when the provided ResponseDetails is a GET with mime text/html")
     void isNavigationTrue() {
-        navigationTrueStubs();
+        navigationTrueStubsForMime("text/html;something");
 
         assertTrue(recording.isNavigation(responseDetails));
     }
@@ -343,10 +351,23 @@ class RecordingTest {
     }
 
     @Test
+    @DisplayName("main create a Recording instance with Chrome by default and act as the entry point to the record and playback feature")
+    void mainTestDefault() {
+        actualMainTestFor("chrome");
+    }
+
+    @Test
     @DisplayName("main create a Recording instance and act as the entry point to the record and playback feature")
     void mainTest() {
-        final String args = "--headless=new,arg2";
-        final String capabilities = "cap1=value1,cap2=value2";
+        final String driverName = "driverName";
+        System.setProperty("driver", driverName);
+
+        actualMainTestFor(driverName);
+    }
+
+    void actualMainTestFor(final String driverArg) {
+        final String args = "args";
+        final String capabilities = "capabilities";
         final List<String> driverArguments = new ArrayList<>();
 
         System.setProperty("args", args);
@@ -368,6 +389,9 @@ class RecordingTest {
                 });
                 MockedConstruction<ActionHandler> ignored3 = mockConstruction((mock, context) -> assertEquals(actionsArgumentCaptor.getValue(), context.arguments().getFirst()))) {
 
+            driverBuilderMockedStatic.when(() -> DriverBuilder.getFor(driverArg)).thenReturn(driverBuilder);
+            doReturn(driver).when(driverBuilder).buildFrom(args, capabilities);
+
             when(Server.builder()).thenReturn(serverBuilder);
             when(serverBuilder.actions(actionsArgumentCaptor.capture())).thenReturn(serverBuilder);
             when(serverBuilder.handler(actionHandlerArgumentCaptor.capture())).thenReturn(serverBuilder);
@@ -378,6 +402,7 @@ class RecordingTest {
             when(Recording.builder()).thenReturn(recordingBuilder);
             when(recordingBuilder.actions(actionsArgumentCaptor.capture())).thenReturn(recordingBuilder);
             when(recordingBuilder.server(server)).thenReturn(recordingBuilder);
+            when(recordingBuilder.driver(driver)).thenReturn(recordingBuilder);
             when(recordingBuilder.build()).thenReturn(recordingMock);
 
             when(recordingMock.parseProperties()).thenReturn(recordingMock);
@@ -393,11 +418,6 @@ class RecordingTest {
             assertEquals(List.of(), actualActions.getFirst());
             assertEquals(List.of(), actualActions.get(1));
 
-            final ChromeOptions actualOptions = optionsMockedConstruction.constructed().getFirst();
-
-            verify(actualOptions).setCapability("webSocketUrl", true);
-            verify(actualOptions).setCapability("cap1", "value1");
-            verify(actualOptions).setCapability("cap2", "value2");
             verify(recordingMock).generate();
         }
     }
@@ -427,11 +447,11 @@ class RecordingTest {
         runnable.getFirst().run();
     }
 
-    private void navigationTrueStubs() {
+    private void navigationTrueStubsForMime(final String mime) {
         when(responseDetails.getNavigationId()).thenReturn(navigationId);
         when(responseDetails.getRequest()).thenReturn(requestData);
         when(requestData.getMethod()).thenReturn("GET");
         when(responseDetails.getResponseData()).thenReturn(responseData);
-        when(responseData.getMimeType()).thenReturn("text/html");
+        when(responseData.getMimeType()).thenReturn(mime);
     }
 }
