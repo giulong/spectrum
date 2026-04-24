@@ -1,7 +1,5 @@
 package io.github.giulong.spectrum.generation;
 
-import static org.openqa.selenium.bidi.network.InterceptPhase.RESPONSE_STARTED;
-
 import java.io.File;
 import java.net.InetSocketAddress;
 import java.nio.file.Path;
@@ -29,7 +27,6 @@ import org.openqa.selenium.ScriptKey;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.module.Network;
-import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.ResponseDetails;
 
 @Slf4j
@@ -90,7 +87,6 @@ public class Recording {
         final int port = server.getHttpServer().getAddress().getPort();
 
         try (Network network = new Network(driver)) {
-            network.addIntercept(new AddInterceptParameters(RESPONSE_STARTED));
             network.onResponseCompleted(r -> {
                 if (isNavigation(r)) {
                     log.debug("Injecting interceptor.js into page '{}'", r.getResponseData().getUrl());

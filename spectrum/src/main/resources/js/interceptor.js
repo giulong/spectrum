@@ -5,11 +5,17 @@ const allNodes = document.getElementsByTagName('*');
 function post(payload) {
     var xhr = new XMLHttpRequest();
     xhr.open("POST", url, false);
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.setRequestHeader("Content-Type", "text/plain;charset=UTF-8");
     xhr.send(JSON.stringify(payload));
 }
 
-post({ "type": "navigate", "url": location.href });
+if (window.navigator.userAgent.indexOf("Firefox") > -1) {
+    addEventListener('load', e => {
+        post({ "type": "navigate", "url": location.href });
+    }, options);
+} else {
+    post({ "type": "navigate", "url": location.href });
+}
 
 navigation.addEventListener('navigate', e => {
     switch (true) {
