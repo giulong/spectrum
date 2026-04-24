@@ -13,6 +13,7 @@ public abstract class DriverBuilder<T extends WebDriver> {
         final DriverBuilder<?> driverBuilder = switch (name.toLowerCase()) {
             case "chrome" -> new ChromeBuilder();
             case "edge" -> new EdgeBuilder();
+            case "firefox" -> new FirefoxBuilder();
             default -> throw new IllegalArgumentException("Value '" + name + "' is not a valid driver!");
         };
 

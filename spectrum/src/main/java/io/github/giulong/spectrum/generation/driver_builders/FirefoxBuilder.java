@@ -4,26 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chromium.ChromiumOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
-public abstract class ChromiumBuilder<T extends WebDriver, U extends ChromiumOptions<U>> extends DriverBuilder<T> {
-
-    protected abstract U getOptions();
-
-    protected abstract T getDriver(U options);
+public class FirefoxBuilder extends DriverBuilder<FirefoxDriver> {
 
     @Override
-    public T buildFrom(final String argsProperty, final String capabilitiesProperty) {
+    public FirefoxDriver buildFrom(final String argsProperty, final String capabilitiesProperty) {
         final List<String> driverArguments = new ArrayList<>();
 
-        driverArguments.add("--disable-web-security");
         Optional.ofNullable(argsProperty)
                 .map(args -> args.split(","))
                 .map(List::of)
                 .ifPresent(driverArguments::addAll);
 
-        final U options = getOptions()
+        final FirefoxOptions options = new FirefoxOptions()
                 .addArguments(driverArguments)
                 .enableBiDi();
 
@@ -35,6 +30,6 @@ public abstract class ChromiumBuilder<T extends WebDriver, U extends ChromiumOpt
                         .map(c -> c.split("="))
                         .forEach(c -> options.setCapability(c[0], c[1])));
 
-        return getDriver(options);
+        return new FirefoxDriver(options);
     }
 }

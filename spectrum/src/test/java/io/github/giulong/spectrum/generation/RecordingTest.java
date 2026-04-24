@@ -1,8 +1,10 @@
 package io.github.giulong.spectrum.generation;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.openqa.selenium.bidi.network.InterceptPhase.RESPONSE_STARTED;
 
 import java.io.File;
 import java.net.InetSocketAddress;
@@ -31,7 +33,6 @@ import org.openqa.selenium.ScriptKey;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.bidi.module.Network;
-import org.openqa.selenium.bidi.network.AddInterceptParameters;
 import org.openqa.selenium.bidi.network.RequestData;
 import org.openqa.selenium.bidi.network.ResponseData;
 import org.openqa.selenium.bidi.network.ResponseDetails;
@@ -106,9 +107,6 @@ class RecordingTest {
 
     @Captor
     private ArgumentCaptor<List<Action>> actionsArgumentCaptor;
-
-    @Captor
-    private ArgumentCaptor<AddInterceptParameters> addInterceptParametersArgumentCaptor;
 
     @Captor
     private ArgumentCaptor<Consumer<ResponseDetails>> responseDetailsArgumentCaptor;
@@ -260,7 +258,7 @@ class RecordingTest {
     void recordDriverClosed() {
         recordStubsFor();
 
-        try (MockedConstruction<Network> ignored = mockConstruction((mock, context) -> when(mock.addIntercept(any())).thenThrow(new WebDriverException()))) {
+        try (MockedConstruction<Network> ignored = mockConstruction((mock, context) -> doThrow(new WebDriverException()).when(mock).onResponseCompleted(any()))) {
             assertEquals(recording, recording.record());
         }
     }
@@ -434,13 +432,9 @@ class RecordingTest {
         when(((JavascriptExecutor) driver).pin(interceptorJs)).thenReturn(scriptKey);
     }
 
-    @SuppressWarnings("unchecked")
     private void recordVerificationsFor(final MockedConstruction<Network> networkMockedConstruction, final List<Runnable> runnable) {
         final Network constructedNetwork = networkMockedConstruction.constructed().getFirst();
-        verify(constructedNetwork).addIntercept(addInterceptParametersArgumentCaptor.capture());
         verify(constructedNetwork).onResponseCompleted(responseDetailsArgumentCaptor.capture());
-
-        assertIterableEquals(List.of(RESPONSE_STARTED.toString()), (List<AddInterceptParameters>) addInterceptParametersArgumentCaptor.getValue().toMap().get("phases"));
 
         responseDetailsArgumentCaptor.getValue().accept(responseDetails);
 

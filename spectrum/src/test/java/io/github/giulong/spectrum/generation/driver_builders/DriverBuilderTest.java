@@ -25,7 +25,8 @@ class DriverBuilderTest {
     static Stream<Arguments> valuesProvider() {
         return Stream.of(
                 arguments("chrome", ChromeBuilder.class),
-                arguments("edge", EdgeBuilder.class)
+                arguments("edge", EdgeBuilder.class),
+                arguments("firefox", FirefoxBuilder.class)
         );
     }
 
