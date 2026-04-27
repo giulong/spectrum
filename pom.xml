@@ -62,7 +62,7 @@
         <dependency.logback.version>1.5.32</dependency.logback.version>
         <dependency.freemarker.version>2.3.34</dependency.freemarker.version>
         <dependency.mvel.version>2.5.2.Final</dependency.mvel.version>
-        <dependency.slack.version>1.48.0</dependency.slack.version>
+        <dependency.slack.version>1.48.1</dependency.slack.version>
         <dependency.jcodec.version>0.2.5</dependency.jcodec.version>
         <dependency.datafaker.version>2.5.4</dependency.datafaker.version>
 
