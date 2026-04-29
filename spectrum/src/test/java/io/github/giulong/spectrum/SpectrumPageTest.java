@@ -203,7 +203,7 @@ class SpectrumPageTest {
         proxyMockedStatic.close();
     }
 
-    private static class DummySpectrumPage<T> extends SpectrumPage<DummySpectrumPage<T>, T> {
+    private static final class DummySpectrumPage<T> extends SpectrumPage<DummySpectrumPage<T>, T> {
 
         @SuppressWarnings("unused")
         private WebElement webElement;
