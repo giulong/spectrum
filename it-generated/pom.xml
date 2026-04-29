@@ -19,6 +19,13 @@
             <version>${revision}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- To instruct reactor to build this module after the ones below in parallel builds -->
+        <dependency>
+            <groupId>io.github.giulong</groupId>
+            <artifactId>it</artifactId>
+            <version>${revision}</version>
+        </dependency>
     </dependencies>
 
     <build>

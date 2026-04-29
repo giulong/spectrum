@@ -15,6 +15,7 @@ drivers:
   chrome:
     args:
       - --headless=new
+      - --disable-web-security
   firefox:
     args:
       - -headless
@@ -22,6 +23,7 @@ drivers:
     args:
       - --headless=new
       - --no-sandbox
+      - --disable-web-security
 
 video:
   frames:
