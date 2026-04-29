@@ -57,7 +57,7 @@ class SpectrumPageTest {
     private JsWebElementProxyBuilder jsWebElementProxyBuilder;
 
     @Mock
-    private static Configuration configuration;
+    private Configuration configuration;
 
     @Mock
     private Configuration.Drivers drivers;
@@ -85,6 +85,8 @@ class SpectrumPageTest {
 
     @BeforeEach
     void beforeEach() {
+        Reflections.setField("configuration", spectrumPage, configuration);
+
         pageFactoryMockedStatic = mockStatic();
         jsWebElementListInvocationHandlerMockedStatic = mockStatic();
     }
@@ -121,7 +123,6 @@ class SpectrumPageTest {
     void isLoaded(final String baseUrl, final String endpoint, final String currentUrl, final boolean expected) {
         Reflections.setField("endpoint", spectrumPage, endpoint);
 
-        //noinspection DataFlowIssue
         when(webDriver.getCurrentUrl()).thenReturn(currentUrl);
         when(configuration.getApplication()).thenReturn(application);
         when(application.getBaseUrl()).thenReturn(baseUrl);
@@ -214,9 +215,5 @@ class SpectrumPageTest {
         @Secured
         @SuppressWarnings("unused")
         private WebElement securedWebElement;
-
-        DummySpectrumPage() {
-            configuration = SpectrumPageTest.configuration;
-        }
     }
 }
