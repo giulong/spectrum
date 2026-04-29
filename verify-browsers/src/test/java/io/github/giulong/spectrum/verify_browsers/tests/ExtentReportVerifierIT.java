@@ -3,7 +3,9 @@ package io.github.giulong.spectrum.verify_browsers.tests;
 import static io.github.giulong.spectrum.verify_commons.CommonExtentVerifier.assertVideoDuration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import java.nio.file.Path;
@@ -16,10 +18,8 @@ import java.util.stream.Stream;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.verify_browsers.data.Data;
 import io.github.giulong.spectrum.verify_browsers.pages.ExtentReportPage;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.openqa.selenium.By;
 
@@ -166,6 +166,14 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals("After checking the checkbox number 1", extentReportPage.getTextOf(extentReportPage.getDynamicContainersFrame2()));
         assertEquals("Text of tag name: h1 is 'Welcome to the-internet'", extentReportPage.getTextInSecondContainerOf(extentReportPage.getDynamicContainersFrame0()));
         assertEquals("Before checking the checkbox number 2", extentReportPage.getTextInSecondContainerOf(extentReportPage.getDynamicContainersFrame1()));
+
+        assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("src")), matchesPattern(VIDEO_PATTERN));
+        extentReportPage
+                .getInlineImages()
+                .stream()
+                .map(inlineImage -> inlineImage.getDomProperty("src"))
+                .map(Objects::requireNonNull)
+                .forEach(src -> assertThat(src, matchesPattern(IMAGE_PATTERN)));
     }
 
     @TestFactory
@@ -176,18 +184,6 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
                         "reports/report-firefox/report-firefox.html",
                         "reports/report-edge/report-edge.html")
                 .map(report -> dynamicTest(report, () -> commonChecksFor(report)));
-    }
-
-    @Test
-    @DisplayName("should check the custom event video and inline images")
-    void checkVideoAndImages() {
-        assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("src")), matchesPattern(VIDEO_PATTERN));
-        extentReportPage
-                .getInlineImages()
-                .stream()
-                .map(inlineImage -> inlineImage.getDomProperty("src"))
-                .map(Objects::requireNonNull)
-                .forEach(src -> assertThat(src, matchesPattern(IMAGE_PATTERN)));
     }
 
     private long countTestsWithStatus(final String status) {
