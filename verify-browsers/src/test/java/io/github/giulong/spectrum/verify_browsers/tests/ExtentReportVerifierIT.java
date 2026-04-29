@@ -4,19 +4,23 @@ import static io.github.giulong.spectrum.verify_commons.CommonExtentVerifier.ass
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.verify_browsers.data.Data;
 import io.github.giulong.spectrum.verify_browsers.pages.ExtentReportPage;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.openqa.selenium.By;
 
 class ExtentReportVerifierIT extends SpectrumTest<Data> {
@@ -31,7 +35,7 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
     private void commonChecksFor(final String url) {
         final Map<String, String> testLabels = data.getExtentReport().getTestLabels();
 
-        driver.get(url);
+        driver.get(BASE_PATH + url);
 
         assertEquals(29, extentReportPage.getTestViewTests().size(), "Total tests");
         assertEquals(26, countTestsWithStatus("pass"), "Passed tests");
@@ -164,13 +168,19 @@ class ExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals("Before checking the checkbox number 2", extentReportPage.getTextInSecondContainerOf(extentReportPage.getDynamicContainersFrame1()));
     }
 
-    @Test
+    @TestFactory
     @DisplayName("should check the report")
-    void report() {
-        commonChecksFor(BASE_PATH + "reports/report-chrome/report-chrome.html");
-        commonChecksFor(BASE_PATH + "reports/report-firefox/report-firefox.html");
-        commonChecksFor(BASE_PATH + "reports/report-edge/report-edge.html");
+    Stream<DynamicNode> report() {
+        return Stream
+                .of("reports/report-chrome/report-chrome.html",
+                        "reports/report-firefox/report-firefox.html",
+                        "reports/report-edge/report-edge.html")
+                .map(report -> dynamicTest(report, () -> commonChecksFor(report)));
+    }
 
+    @Test
+    @DisplayName("should check the custom event video and inline images")
+    void checkVideoAndImages() {
         assertThat(Objects.requireNonNull(extentReportPage.getVideoDemoItSendingCustomEvents().getDomProperty("src")), matchesPattern(VIDEO_PATTERN));
         extentReportPage
                 .getInlineImages()

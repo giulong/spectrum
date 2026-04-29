@@ -2,18 +2,21 @@ package io.github.giulong.spectrum.verify_browsers.tests;
 
 import static io.github.giulong.spectrum.verify_commons.CommonExtentVerifier.assertVideoDuration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.verify_browsers.data.Data;
 import io.github.giulong.spectrum.verify_browsers.pages.BiDiExtentReportPage;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.TestFactory;
 
 class BiDiExtentReportVerifierIT extends SpectrumTest<Data> {
 
@@ -54,12 +57,14 @@ class BiDiExtentReportVerifierIT extends SpectrumTest<Data> {
         assertEquals("After checking the first checkbox", extentReportPage.getTextOf(extentReportPage.getNoDisplayNameFrame4()));
     }
 
-    @Test
+    @TestFactory
     @DisplayName("should check the report")
-    void report() {
-        commonChecksFor("reports/report-chrome/report-chrome.html");
-        commonChecksFor("reports/report-firefox/report-firefox.html");
-        commonChecksFor("reports/report-edge/report-edge.html");
+    Stream<DynamicNode> report() {
+        return Stream
+                .of("reports/report-chrome/report-chrome.html",
+                        "reports/report-firefox/report-firefox.html",
+                        "reports/report-edge/report-edge.html")
+                .map(report -> dynamicTest(report, () -> commonChecksFor(report)));
     }
 
     private long countTestsWithStatus(final String status) {
