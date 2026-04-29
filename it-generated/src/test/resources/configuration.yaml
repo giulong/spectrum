@@ -1,0 +1,21 @@
+drivers:
+  chrome:
+    args:
+      - --headless=new
+  firefox:
+    args:
+      - -headless
+  edge:
+    args:
+      - --headless=new
+
+video:
+  frames:
+    - autoBefore
+    - manual
+
+extent:
+  theme: DARK
+  fileName: report-${spectrum.driver:-chrome}.html
+  sort:
+    name: { }

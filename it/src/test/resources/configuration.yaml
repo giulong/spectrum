@@ -15,12 +15,14 @@ drivers:
   chrome:
     args:
       - --headless=new
+      - --disable-web-security
   firefox:
     args:
       - -headless
   edge:
     args:
       - --headless=new
+      - --disable-web-security
 
 video:
   frames:

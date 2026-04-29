@@ -63,6 +63,8 @@ extentReport:
     faker5TestName: expressions should generate random numbers with 5 increments
     dynamic: Dynamic elements
     dynamicTestName: navigation to prove auto-wait helps a lot
+    generatedIt: GeneratedIT
+    generatedItTestName: test()
 
 summary:
   title: Execution Summary

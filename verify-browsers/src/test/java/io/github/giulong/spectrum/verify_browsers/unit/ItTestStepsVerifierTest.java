@@ -31,7 +31,7 @@ public class ItTestStepsVerifierTest extends SpectrumTest<Void> {
                     .filter(File::isFile)
                     .peek(f -> log.info("Found '{}'", f))
                     .toList();
-            assertEquals(27, files.size());
+            assertEquals(28, files.size());
         }
     }
 }
