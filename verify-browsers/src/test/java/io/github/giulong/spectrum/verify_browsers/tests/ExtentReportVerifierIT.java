@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.verify_browsers.data.Data;
 import io.github.giulong.spectrum.verify_browsers.pages.ExtentReportPage;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.TestFactory;
