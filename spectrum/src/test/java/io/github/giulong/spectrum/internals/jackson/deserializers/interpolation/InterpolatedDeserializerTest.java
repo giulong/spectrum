@@ -8,9 +8,6 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.Interpolator;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -25,6 +22,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 
 class InterpolatedDeserializerTest {
 

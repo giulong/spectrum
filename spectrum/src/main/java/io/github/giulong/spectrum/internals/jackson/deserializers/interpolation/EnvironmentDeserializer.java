@@ -2,17 +2,15 @@ package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-
 import io.github.giulong.spectrum.utils.environments.AppiumEnvironment;
 import io.github.giulong.spectrum.utils.environments.Environment;
 import io.github.giulong.spectrum.utils.environments.GridEnvironment;
 import io.github.giulong.spectrum.utils.environments.LocalEnvironment;
 
 import lombok.NoArgsConstructor;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 
 @NoArgsConstructor(access = PRIVATE)
 public class EnvironmentDeserializer extends InterpolatedDeserializer<Environment> {
@@ -24,7 +22,7 @@ public class EnvironmentDeserializer extends InterpolatedDeserializer<Environmen
     }
 
     @Override
-    public Environment deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+    public Environment deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) {
         final String interpolatedValue = interpolate(jsonParser);
 
         return switch (interpolatedValue) {

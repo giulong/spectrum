@@ -3,10 +3,6 @@ package io.github.giulong.spectrum.utils.file_providers;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-
 import io.github.giulong.spectrum.internals.jackson.views.Views;
 
 import lombok.AllArgsConstructor;
@@ -15,6 +11,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import tools.jackson.databind.InjectableValues;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectReader;
 
 class FileProviderTest {
 
@@ -33,8 +33,7 @@ class FileProviderTest {
     @Test
     @DisplayName("augment should return the reader augmented with views and injectable values from the provided mapper")
     void augment() {
-        when(mapper.setInjectableValues(std)).thenReturn(mapper);
-        when(mapper.reader()).thenReturn(reader);
+        when(mapper.reader(std)).thenReturn(reader);
         when(reader.withView(Views.Client.class)).thenReturn(reader);
 
         assertEquals(reader, fileProvider.augment(mapper));

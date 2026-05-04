@@ -2,19 +2,18 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.io.IOException;
 import java.time.Duration;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
+
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
-public class DurationDeserializer extends JsonDeserializer<Duration> {
+public class DurationDeserializer extends ValueDeserializer<Duration> {
 
     private static final DurationDeserializer INSTANCE = new DurationDeserializer();
 
@@ -23,7 +22,7 @@ public class DurationDeserializer extends JsonDeserializer<Duration> {
     }
 
     @Override
-    public Duration deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+    public Duration deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) {
         final double value = jsonParser.getValueAsDouble();
         log.trace("Deserializing duration from value {}", value);
 

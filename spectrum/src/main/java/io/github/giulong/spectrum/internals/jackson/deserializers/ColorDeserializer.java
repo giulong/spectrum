@@ -3,18 +3,17 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 import static lombok.AccessLevel.PRIVATE;
 
 import java.awt.*;
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
+
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
-public class ColorDeserializer extends JsonDeserializer<Color> {
+public class ColorDeserializer extends ValueDeserializer<Color> {
 
     private static final ColorDeserializer INSTANCE = new ColorDeserializer();
 
@@ -23,7 +22,7 @@ public class ColorDeserializer extends JsonDeserializer<Color> {
     }
 
     @Override
-    public Color deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+    public Color deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) {
         final String value = jsonParser.getValueAsString();
         log.trace("Deserializing color from value {}", value);
 

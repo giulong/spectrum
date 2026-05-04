@@ -4,12 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-
 import io.github.giulong.spectrum.utils.Reflections;
 import io.github.giulong.spectrum.utils.YamlUtils;
 
@@ -20,6 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
 
 class DynamicDeserializerTest {
 
@@ -52,7 +50,7 @@ class DynamicDeserializerTest {
 
     @Test
     @DisplayName("deserialize should return the class loaded from the provided string fqdn literal")
-    void deserialize() throws IOException {
+    void deserialize() {
         final String expected = "expected";
         final String configFile = "configFile";
         Reflections.setField("configFile", dynamicDeserializer, configFile);

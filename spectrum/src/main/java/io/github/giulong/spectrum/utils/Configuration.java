@@ -12,8 +12,6 @@ import java.util.logging.Level;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.enums.Frame;
@@ -36,6 +34,9 @@ import lombok.Setter;
 
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+
+import tools.jackson.databind.annotation.JsonSerialize;
+import tools.jackson.databind.ser.std.ToStringSerializer;
 
 @SuppressWarnings("unused")
 @Getter

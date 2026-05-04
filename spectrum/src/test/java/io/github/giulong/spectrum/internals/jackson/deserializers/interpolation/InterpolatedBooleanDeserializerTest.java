@@ -6,13 +6,9 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.Interpolator;
@@ -31,6 +27,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 
 class InterpolatedBooleanDeserializerTest {
 
@@ -78,7 +77,7 @@ class InterpolatedBooleanDeserializerTest {
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    void deserialize(final String value, final boolean expected) throws IOException {
+    void deserialize(final String value, final boolean expected) {
         interpolateStubsFor(value);
 
         when(jsonParser.getValueAsString()).thenReturn(value);

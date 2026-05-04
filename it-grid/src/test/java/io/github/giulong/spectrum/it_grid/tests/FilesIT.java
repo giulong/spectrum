@@ -19,8 +19,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import io.github.giulong.spectrum.SpectrumTest;
 import io.github.giulong.spectrum.it_grid.pages.DownloadPage;
 import io.github.giulong.spectrum.it_grid.pages.UploadPage;
@@ -31,6 +29,8 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.TimeoutException;
+
+import tools.jackson.databind.ObjectMapper;
 
 @DisplayName("Files Test")
 @SuppressWarnings("unused")

@@ -1,8 +1,10 @@
 package io.github.giulong.spectrum.utils;
 
-import static com.fasterxml.jackson.databind.MapperFeature.PROPAGATE_TRANSIENT_MARKER;
-import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static lombok.AccessLevel.PRIVATE;
+import static tools.jackson.databind.MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS;
+import static tools.jackson.databind.MapperFeature.DEFAULT_VIEW_INCLUSION;
+import static tools.jackson.databind.MapperFeature.PROPAGATE_TRANSIENT_MARKER;
+import static tools.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 
 import java.awt.*;
 import java.time.Duration;
@@ -10,11 +12,6 @@ import java.util.Random;
 import java.util.function.BiConsumer;
 
 import ch.qos.logback.classic.Level;
-
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.internals.jackson.deserializers.*;
@@ -34,6 +31,10 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import tools.jackson.databind.*;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.dataformat.yaml.YAMLMapper;
+
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
 public final class YamlUtils {
@@ -47,9 +48,8 @@ public final class YamlUtils {
     private final ObjectMapper yamlMapper = YAMLMapper
             .builder()
             .defaultMergeable(true)
-            .configure(PROPAGATE_TRANSIENT_MARKER, true)
+            .enable(PROPAGATE_TRANSIENT_MARKER, DEFAULT_VIEW_INCLUSION, ACCEPT_CASE_INSENSITIVE_ENUMS)
             .addModules(
-                    new JavaTimeModule(),
                     buildModuleFor(Object.class, InterpolatedObjectDeserializer.getInstance()),
                     buildModuleFor(String.class, InterpolatedStringDeserializer.getInstance()),
                     buildModuleFor(boolean.class, InterpolatedBooleanDeserializer.getInstance()),
@@ -73,7 +73,6 @@ public final class YamlUtils {
             .builder()
             .defaultMergeable(true)
             .addModules(
-                    new JavaTimeModule(),
                     buildModuleFor(Object.class, InterpolatedObjectDeserializer.getInstance()),
                     buildModuleFor(String.class, InterpolatedStringDeserializer.getInstance()),
                     buildModuleFor(boolean.class, InterpolatedBooleanDeserializer.getInstance()),
@@ -84,8 +83,7 @@ public final class YamlUtils {
 
     private final ObjectWriter writer = YAMLMapper
             .builder()
-            .configure(FAIL_ON_EMPTY_BEANS, false)
-            .addModules(new JavaTimeModule())
+            .disable(FAIL_ON_EMPTY_BEANS)
             .build()
             .writerWithDefaultPrettyPrinter();
 
@@ -144,8 +142,8 @@ public final class YamlUtils {
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    SimpleModule buildModuleFor(final Class<?> clazz, final JsonDeserializer jsonDeserializer) {
-        return new SimpleModule(clazz.getSimpleName()).addDeserializer(clazz, jsonDeserializer);
+    SimpleModule buildModuleFor(final Class<?> clazz, final ValueDeserializer valueDeserializer) {
+        return new SimpleModule(clazz.getName()).addDeserializer(clazz, valueDeserializer);
     }
 
     SimpleModule buildDynamicModuleFor(final Class<?> clazz, final String file) {
@@ -158,13 +156,8 @@ public final class YamlUtils {
     }
 
     @SneakyThrows
-    <T> T read(final ObjectReader reader, final String file) {
-        return reader.readValue(classLoader.getResourceAsStream(file));
-    }
-
-    @SneakyThrows
     <T> T read(final ObjectReader reader, final String file, final Class<T> clazz) {
-        return reader.readValue(classLoader.getResourceAsStream(file), clazz);
+        return reader.forType(clazz).readValue(classLoader.getResourceAsStream(file));
     }
 
     <T> T read(final FileProvider fileProvider, final String file, final Class<T> clazz) {
@@ -198,7 +191,7 @@ public final class YamlUtils {
     }
 
     <T> void updateWithFile(final T t, final String file, final FileProvider fileProvider) {
-        updateAndAccept(t, file, fileProvider, (fileFound, reader) -> read(reader, fileFound));
+        updateAndAccept(t, file, fileProvider, (fileFound, reader) -> read(reader, fileFound, t.getClass()));
     }
 
     <T> void updateAndAccept(final T t, final String file, final FileProvider fileProvider, final BiConsumer<String, ObjectReader> callback) {

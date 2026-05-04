@@ -2,20 +2,18 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.io.IOException;
-
 import ch.qos.logback.classic.Level;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.ValueDeserializer;
+
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
-public class LogbackLogLevelDeserializer extends JsonDeserializer<Level> {
+public class LogbackLogLevelDeserializer extends ValueDeserializer<Level> {
 
     private static final LogbackLogLevelDeserializer INSTANCE = new LogbackLogLevelDeserializer();
 
@@ -24,7 +22,7 @@ public class LogbackLogLevelDeserializer extends JsonDeserializer<Level> {
     }
 
     @Override
-    public Level deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+    public Level deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) {
         final String value = jsonParser.getValueAsString();
         log.trace("Deserializing Logback Level from value {}", value);
 

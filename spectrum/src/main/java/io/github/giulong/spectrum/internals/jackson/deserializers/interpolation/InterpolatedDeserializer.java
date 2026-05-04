@@ -5,9 +5,6 @@ import static java.util.Comparator.comparing;
 import java.util.List;
 import java.util.Optional;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.Interpolator;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Configuration.Config;
@@ -16,8 +13,11 @@ import io.github.giulong.spectrum.utils.Reflections;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.ValueDeserializer;
+
 @Slf4j
-public abstract class InterpolatedDeserializer<T> extends JsonDeserializer<T> {
+public abstract class InterpolatedDeserializer<T> extends ValueDeserializer<T> {
 
     private final Configuration configuration = Configuration.getInstance();
 

@@ -5,11 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import com.fasterxml.jackson.core.JsonParser;
 
 import io.github.giulong.spectrum.utils.Vars;
 
@@ -23,6 +20,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import tools.jackson.core.JsonParser;
 
 class InPlaceInterpolatorTest {
 
@@ -49,7 +48,7 @@ class InPlaceInterpolatorTest {
     @DisplayName("findVariableFor should find the right value and return an optional containing it")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    void deserialize(final String value, final String expected) throws IOException {
+    void deserialize(final String value, final String expected) {
         when(jsonParser.currentName()).thenReturn(currentName);
 
         assertEquals(Optional.of(expected), interpolator.findVariableFor(value, jsonParser));
@@ -77,7 +76,7 @@ class InPlaceInterpolatorTest {
     @DisplayName("findVariableFor should return an empty optional if no value to interpolate is found")
     @ParameterizedTest(name = "with value {0}")
     @ValueSource(strings = {"value", "${not.set}", "${notSet}"})
-    void deserializeNotMatching(final String value) throws IOException {
+    void deserializeNotMatching(final String value) {
         when(jsonParser.currentName()).thenReturn(currentName);
 
         assertEquals(Optional.empty(), interpolator.findVariableFor(value, jsonParser));

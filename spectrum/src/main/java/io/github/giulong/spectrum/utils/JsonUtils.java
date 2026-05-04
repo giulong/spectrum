@@ -4,12 +4,12 @@ import static lombok.AccessLevel.PRIVATE;
 
 import java.io.File;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectWriter;
+import tools.jackson.databind.json.JsonMapper;
 
 @NoArgsConstructor(access = PRIVATE)
 public final class JsonUtils {
@@ -18,8 +18,8 @@ public final class JsonUtils {
 
     private final ObjectMapper jsonMapper = JsonMapper
             .builder()
-            .build()
-            .setDefaultMergeable(true);
+            .defaultMergeable(true)
+            .build();
 
     private final ObjectWriter writer = jsonMapper
             .writerWithDefaultPrettyPrinter();

@@ -6,13 +6,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.drivers.*;
@@ -32,6 +28,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 
 class DriverDeserializerTest {
 
@@ -79,7 +78,7 @@ class DriverDeserializerTest {
     @DisplayName("deserialize should delegate to the parent method passing the string value")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    void deserialize(final String value, final Driver<?, ?, ?> expected) throws IOException {
+    void deserialize(final String value, final Driver<?, ?, ?> expected) {
         interpolateStubsFor(value);
 
         when(jsonParser.getValueAsString()).thenReturn(value);
@@ -89,7 +88,7 @@ class DriverDeserializerTest {
 
     @Test
     @DisplayName("deserialize should throw an exception if the provided key is not a valid driver name")
-    void deserializeNotExisting() throws IOException {
+    void deserializeNotExisting() {
         final String notValidDriver = "notValidDriver";
 
         interpolateStubsFor(notValidDriver);

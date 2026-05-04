@@ -1,12 +1,12 @@
 package io.github.giulong.spectrum.utils.file_providers;
 
-import com.fasterxml.jackson.databind.InjectableValues;
-
 import io.github.giulong.spectrum.internals.jackson.views.Views;
 import io.github.giulong.spectrum.internals.jackson.views.Views.Internal;
 
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+
+import tools.jackson.databind.InjectableValues;
 
 @Slf4j
 @Builder

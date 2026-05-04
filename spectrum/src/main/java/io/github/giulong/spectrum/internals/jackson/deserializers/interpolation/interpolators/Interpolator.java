@@ -6,9 +6,10 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.core.JsonParser;
 
 import lombok.Getter;
+
+import tools.jackson.core.JsonParser;
 
 @Getter
 public abstract class Interpolator {

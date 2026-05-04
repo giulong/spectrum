@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonStreamContext;
-
 import io.github.giulong.spectrum.utils.Reflections;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +21,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.TokenStreamContext;
 
 class ExternalInterpolatorTest {
 
@@ -36,13 +36,13 @@ class ExternalInterpolatorTest {
     private List<String> accumulator;
 
     @Mock
-    private JsonStreamContext context;
+    private TokenStreamContext context;
 
     @Mock
-    private JsonStreamContext parentContext;
+    private TokenStreamContext parentContext;
 
     @Mock
-    private JsonStreamContext grandParentContext;
+    private TokenStreamContext grandParentContext;
 
     @InjectMocks
     private DummyExternalInterpolator interpolator;
@@ -65,7 +65,7 @@ class ExternalInterpolatorTest {
     @DisplayName("findVariableFor should return an empty optional if no variable is found")
     void findVariableForEmpty() {
         when(context.getParent()).thenReturn(null);
-        when(jsonParser.getParsingContext()).thenReturn(context);
+        when(jsonParser.streamReadContext()).thenReturn(context);
 
         assertEquals(Optional.empty(), interpolatorNotFound.findVariableFor(value, jsonParser));
     }
@@ -74,7 +74,7 @@ class ExternalInterpolatorTest {
     @DisplayName("findVariableFor should return an optional containing the variable found")
     void findVariableFor() {
         when(context.getParent()).thenReturn(null);
-        when(jsonParser.getParsingContext()).thenReturn(context);
+        when(jsonParser.streamReadContext()).thenReturn(context);
 
         assertEquals(Optional.of("PREFIXFound"), interpolator.findVariableFor(value, jsonParser));
     }
@@ -100,8 +100,8 @@ class ExternalInterpolatorTest {
         when(parentContext.getParent()).thenReturn(grandParentContext);
         when(grandParentContext.getParent()).thenReturn(null);
 
-        when(context.getCurrentName()).thenReturn(currentName);
-        when(parentContext.getCurrentName()).thenReturn(parentCurrentName);
+        when(context.currentName()).thenReturn(currentName);
+        when(parentContext.currentName()).thenReturn(parentCurrentName);
 
         final InOrder inOrder = inOrder(accumulator);
 
