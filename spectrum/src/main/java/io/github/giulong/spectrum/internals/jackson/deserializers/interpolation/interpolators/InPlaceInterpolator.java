@@ -4,12 +4,12 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.fasterxml.jackson.core.JsonParser;
-
 import io.github.giulong.spectrum.utils.Vars;
 
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
+import tools.jackson.core.JsonParser;
 
 @Slf4j
 public class InPlaceInterpolator extends Interpolator {

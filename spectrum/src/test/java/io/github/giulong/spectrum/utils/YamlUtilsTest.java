@@ -1,21 +1,18 @@
 package io.github.giulong.spectrum.utils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static java.util.stream.Collectors.toSet;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Set;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import io.github.giulong.spectrum.TestYaml;
 import io.github.giulong.spectrum.utils.file_providers.FileProvider;
@@ -28,6 +25,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import tools.jackson.databind.*;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 class YamlUtilsTest {
 
@@ -68,34 +68,48 @@ class YamlUtilsTest {
     @Test
     @DisplayName("on construction, all the dynamic deserializers should be registered on the yamlMapper, while not on the dynamicConfYamlMapper")
     void construction() {
-        assertEquals(Set.of(
-                "jackson-datatype-jsr310",
-                "Object",
-                "String",
-                "boolean",
-                "Level",
-                "Duration",
-                "Driver",
-                "Environment",
-                "Class",
-                "Random",
-                "Color",
-                "LogTestBookReporter",
-                "TxtTestBookReporter",
-                "HtmlTestBookReporter",
-                "LogSummaryReporter",
-                "TxtSummaryReporter",
-                "HtmlSummaryReporter"),
-                ((YAMLMapper) Reflections.getFieldValue("yamlMapper", yamlUtils)).getRegisteredModuleIds());
+        final Set<String> deserializersNames = ((YAMLMapper) Reflections.getFieldValue("yamlMapper", yamlUtils))
+                .registeredModules()
+                .stream()
+                .map(JacksonModule::getRegistrationId)
+                .map(Object::toString)
+                .collect(toSet());
+
+        final Set<String> dynamicDeserializersNames = ((YAMLMapper) Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils))
+                .registeredModules()
+                .stream()
+                .map(JacksonModule::getRegistrationId)
+                .map(Object::toString)
+                .collect(toSet());
 
         assertEquals(Set.of(
-                "jackson-datatype-jsr310",
-                "Object",
-                "String",
+                "java.lang.Object",
+                "java.lang.String",
                 "boolean",
-                "Level",
-                "Duration"),
-                ((YAMLMapper) Reflections.getFieldValue("dynamicConfYamlMapper", yamlUtils)).getRegisteredModuleIds());
+                "java.util.logging.Level",
+                "ch.qos.logback.classic.Level",
+                "java.time.Duration",
+                "io.github.giulong.spectrum.drivers.Driver",
+                "io.github.giulong.spectrum.utils.environments.Environment",
+                "java.lang.Class",
+                "java.util.Random",
+                "java.awt.Color",
+                "io.github.giulong.spectrum.utils.reporters.LogReporter$LogTestBookReporter",
+                "io.github.giulong.spectrum.utils.reporters.FileReporter$TxtTestBookReporter",
+                "io.github.giulong.spectrum.utils.reporters.FileReporter$HtmlTestBookReporter",
+                "io.github.giulong.spectrum.utils.reporters.LogReporter$LogSummaryReporter",
+                "io.github.giulong.spectrum.utils.reporters.FileReporter$TxtSummaryReporter",
+                "io.github.giulong.spectrum.utils.reporters.FileReporter$HtmlSummaryReporter"),
+                deserializersNames);
+
+        assertEquals(Set.of(
+                "java.lang.Object",
+                "java.lang.String",
+                "boolean",
+                "java.util.logging.Level",
+                "ch.qos.logback.classic.Level",
+                "java.time.Duration"),
+                dynamicDeserializersNames);
 
         assertFalse(((ObjectWriter) Reflections.getFieldValue("writer", yamlUtils)).isEnabled(SerializationFeature.FAIL_ON_EMPTY_BEANS));
     }
@@ -143,7 +157,7 @@ class YamlUtilsTest {
     @DisplayName("readNode for client-side files should just delegate to the readNode method")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    void readClientNode(final String file) throws IOException {
+    void readClientNode(final String file) {
         final Class<TestYaml.ObjectKey> clazz = TestYaml.ObjectKey.class;
         final String node = "/objectKey";
 
@@ -167,12 +181,13 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("readDynamicDeserializable should read the internal dynamic deserializable configuration provided, and merge the jsonNode provided on the created instance")
-    void readDynamicDeserializable() throws IOException {
+    void readDynamicDeserializable() {
         final Class<TestYaml> clazz = TestYaml.class;
         Reflections.setField("dynamicConfYamlMapper", yamlUtils, yamlMapper);
 
         when(yamlMapper.reader()).thenReturn(reader);
-        when(reader.readValue(any(InputStream.class), eq(clazz))).thenReturn(testYaml);
+        when(reader.forType(clazz)).thenReturn(reader);
+        when(reader.readValue(any(InputStream.class))).thenReturn(testYaml);
         when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
         when(reader.readValue(jsonNode)).thenReturn(testYaml);
 
@@ -181,7 +196,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("updateNode should update the provided object with the content of the node at the provided file")
-    void updateNode() throws IOException {
+    void updateNode() {
         final String file = "test.yaml";
         final String node = "node";
 
@@ -201,12 +216,13 @@ class YamlUtilsTest {
     @DisplayName("updateWithFile should update the provided instance with the file provided, reading only public fields")
     @ParameterizedTest(name = "with file {0}")
     @ValueSource(strings = {"test.yaml", "test.yml", "configurations/test.yaml"})
-    void updateWithFile(final String file) throws IOException {
+    void updateWithFile(final String file) {
         Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
         Reflections.setField("clientFileProvider", yamlUtils, fileProvider);
 
         when(fileProvider.find(file)).thenReturn(file);
         when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.forType(TestYaml.class)).thenReturn(reader);
         when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
         when(reader.readValue(inputStreamArgumentCaptor.capture())).thenReturn(testYaml);
 
@@ -228,7 +244,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("updateWithInternalFile should update the provided instance with the internal file provided")
-    void updateWithInternalFile() throws IOException {
+    void updateWithInternalFile() {
         final String file = "test.yaml";
 
         Reflections.setField("yamlMapper", yamlUtils, yamlMapper);
@@ -236,6 +252,7 @@ class YamlUtilsTest {
 
         when(fileProvider.find(file)).thenReturn(file);
         when(fileProvider.augment(yamlMapper)).thenReturn(reader);
+        when(reader.forType(TestYaml.class)).thenReturn(reader);
         when(reader.withValueToUpdate(testYaml)).thenReturn(reader);
         when(reader.readValue(any(InputStream.class))).thenReturn(testYaml);
 
@@ -244,7 +261,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("updateWithInternalNode should update the provided instance with the node of the internal file provided")
-    void updateWithInternalNode() throws IOException {
+    void updateWithInternalNode() {
         final String file = "test.yaml";
         final String node = "node";
 
@@ -263,7 +280,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("updateWithClientNode should update the provided instance with the node of the client file provided")
-    void updateWithClientNode() throws IOException {
+    void updateWithClientNode() {
         final String file = "test.yaml";
         final String node = "node";
 
@@ -282,7 +299,7 @@ class YamlUtilsTest {
 
     @Test
     @DisplayName("write should just call the writeValueAsString of the provided object, printing internal fields as well")
-    void write() throws JsonProcessingException {
+    void write() {
         final String string = "string";
 
         Reflections.setField("writer", yamlUtils, writer);

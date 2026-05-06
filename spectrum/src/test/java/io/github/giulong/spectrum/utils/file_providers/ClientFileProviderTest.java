@@ -11,8 +11,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Stream;
 
-import com.fasterxml.jackson.databind.InjectableValues;
-
 import io.github.giulong.spectrum.internals.jackson.views.Views;
 
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +20,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.MockedConstruction;
+
+import tools.jackson.databind.InjectableValues;
 
 class ClientFileProviderTest {
 

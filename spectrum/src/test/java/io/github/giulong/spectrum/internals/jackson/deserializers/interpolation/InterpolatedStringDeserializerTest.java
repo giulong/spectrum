@@ -7,12 +7,8 @@ import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.internals.jackson.deserializers.interpolation.interpolators.Interpolator;
@@ -28,6 +24,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 
 class InterpolatedStringDeserializerTest {
 
@@ -74,7 +73,7 @@ class InterpolatedStringDeserializerTest {
 
     @Test
     @DisplayName("deserialize should delegate to the parent method passing the string value, interpolating the timestamp")
-    void deserializeTimestamp() throws IOException {
+    void deserializeTimestamp() {
         final String value = "value-${timestamp}";
 
         when(jsonParser.getValueAsString()).thenReturn(value);

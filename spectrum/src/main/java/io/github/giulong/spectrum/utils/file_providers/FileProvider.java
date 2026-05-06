@@ -1,16 +1,15 @@
 package io.github.giulong.spectrum.utils.file_providers;
 
-import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-
 import io.github.giulong.spectrum.internals.jackson.views.Views;
+
+import tools.jackson.databind.InjectableValues;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectReader;
 
 public interface FileProvider {
     default ObjectReader augment(final ObjectMapper mapper) {
         return mapper
-                .setInjectableValues(getInjectableValues())
-                .reader()
+                .reader(getInjectableValues())
                 .withView(getViews());
     }
 

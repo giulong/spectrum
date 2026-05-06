@@ -3,19 +3,10 @@ package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation
 import static java.util.stream.Collectors.toMap;
 import static lombok.AccessLevel.PRIVATE;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import io.github.giulong.spectrum.utils.Vars;
 
@@ -23,9 +14,17 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ValueDeserializer;
+import tools.jackson.databind.node.JsonNodeType;
+import tools.jackson.dataformat.yaml.YAMLMapper;
+
 @Slf4j
 @NoArgsConstructor(access = PRIVATE)
-public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
+public class InterpolatedObjectDeserializer extends ValueDeserializer<Object> {
 
     private static final InterpolatedObjectDeserializer INSTANCE = new InterpolatedObjectDeserializer();
     private static final Pattern INT_PATTERN = Pattern.compile("(?<placeholder>\\$<(?<varName>[\\w.]+)(:-(?<defaultValue>[\\w~\\s-.:/\\\\=]*))?>)");
@@ -39,7 +38,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
     }
 
     @Override
-    public Object deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+    public Object deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) {
         final JsonNode jsonNode = jsonParser.readValueAsTree();
         final String currentName = jsonParser.currentName();
         final JsonNodeType jsonNodeType = jsonNode.getNodeType();
@@ -49,7 +48,7 @@ public class InterpolatedObjectDeserializer extends JsonDeserializer<Object> {
         return switch (jsonNodeType) {
             case NUMBER -> jsonNode.numberValue();
             case BOOLEAN -> jsonNode.booleanValue();
-            case STRING -> traverse(jsonNode.textValue(), jsonParser);
+            case STRING -> traverse(jsonNode.stringValue(), jsonParser);
             case OBJECT -> traverse(objectMapper.convertValue(jsonNode, Map.class), jsonParser);
             case ARRAY -> traverse(objectMapper.convertValue(jsonNode, List.class), jsonParser);
             default -> traverse(jsonNode, jsonParser);

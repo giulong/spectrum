@@ -1,6 +1,5 @@
 package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation;
 
-import static com.fasterxml.jackson.databind.node.JsonNodeType.*;
 import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -8,17 +7,11 @@ import static org.junit.jupiter.params.provider.Arguments.arguments;
 import static org.junit.jupiter.params.provider.EnumSource.Mode.EXCLUDE;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
+import static tools.jackson.databind.node.JsonNodeType.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.JsonNodeType;
-import com.fasterxml.jackson.dataformat.yaml.YAMLMapper;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Vars;
@@ -32,6 +25,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.JsonNodeType;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 
 class InterpolatedObjectDeserializerTest {
 
@@ -87,7 +86,7 @@ class InterpolatedObjectDeserializerTest {
 
     @Test
     @DisplayName("deserialize should delegate to the interpolatedStringDeserializer when the value is a string")
-    void deserializeStrings() throws IOException {
+    void deserializeStrings() {
         final String value = "value";
         final String expected = "expected";
         final String currentName = "currentName";
@@ -95,7 +94,7 @@ class InterpolatedObjectDeserializerTest {
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(jsonParser.currentName()).thenReturn(currentName);
         when(jsonNode.getNodeType()).thenReturn(STRING);
-        when(jsonNode.textValue()).thenReturn(value);
+        when(jsonNode.stringValue()).thenReturn(value);
         when(InterpolatedStringDeserializer.getInstance()).thenReturn(interpolatedStringDeserializer);
         when(interpolatedStringDeserializer.interpolate(value, jsonParser)).thenReturn(expected);
 
@@ -105,7 +104,7 @@ class InterpolatedObjectDeserializerTest {
     @DisplayName("deserialize should return the numberValue when the value is a number")
     @ParameterizedTest(name = "with value {0}")
     @ValueSource(doubles = {123, 123.5, -123, -123.5})
-    void deserializeNumbers(final Number expected) throws IOException {
+    void deserializeNumbers(final Number expected) {
         final String currentName = "currentName";
 
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
@@ -119,7 +118,7 @@ class InterpolatedObjectDeserializerTest {
     @DisplayName("deserialize should return the booleanValue when the value is a boolean")
     @ParameterizedTest(name = "with value {0}")
     @ValueSource(booleans = {true, false})
-    void deserializeBooleans(final boolean expected) throws IOException {
+    void deserializeBooleans(final boolean expected) {
         final String currentName = "currentName";
 
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
@@ -132,7 +131,7 @@ class InterpolatedObjectDeserializerTest {
 
     @Test
     @DisplayName("deserialize should traverse the map and interpolate each entry")
-    void deserializeMap() throws IOException {
+    void deserializeMap() {
         final String value = "value";
         final String interpolatedValue = "interpolatedValue";
         final int number = 123;
@@ -155,7 +154,7 @@ class InterpolatedObjectDeserializerTest {
 
     @Test
     @DisplayName("deserialize should traverse the map and interpolate nested maps and lists")
-    void deserializeMapWithNestedMapsAndLists() throws IOException {
+    void deserializeMapWithNestedMapsAndLists() {
         final String value = "value";
         final String interpolatedValue = "interpolatedValue";
         final String number = "$<not.set:-123>";
@@ -184,7 +183,7 @@ class InterpolatedObjectDeserializerTest {
 
     @Test
     @DisplayName("deserialize should traverse the list and interpolate each entry")
-    void deserializeList() throws IOException {
+    void deserializeList() {
         final String value = "value";
         final String interpolatedValue = "interpolatedValue";
         final int number = 123;
@@ -205,7 +204,7 @@ class InterpolatedObjectDeserializerTest {
 
     @Test
     @DisplayName("deserialize should traverse the list and interpolate nested maps and lists")
-    void deserializeListWithNestedMapsAndLists() throws IOException {
+    void deserializeListWithNestedMapsAndLists() {
         final String value = "value";
         final String interpolatedValue = "interpolatedValue";
         final String number = "$<not.set:-123>";
@@ -233,7 +232,7 @@ class InterpolatedObjectDeserializerTest {
     @DisplayName("deserialize should return the jsonNode when the value is not string, number, object, array")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @EnumSource(value = JsonNodeType.class, mode = EXCLUDE, names = {"STRING", "NUMBER", "OBJECT", "ARRAY", "BOOLEAN"})
-    void deserializeDefault(final JsonNodeType jsonNodeType) throws IOException {
+    void deserializeDefault(final JsonNodeType jsonNodeType) {
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(jsonParser.currentName()).thenReturn("currentName");
         when(jsonNode.getNodeType()).thenReturn(jsonNodeType);
@@ -244,13 +243,13 @@ class InterpolatedObjectDeserializerTest {
     @DisplayName("deserialize should apply the INT_PATTERN when deserializing numbers from strings")
     @ParameterizedTest(name = "with value {0} we expect {1}")
     @MethodSource("valuesProvider")
-    void deserializeStringNumbers(final String value, final int expected) throws IOException {
+    void deserializeStringNumbers(final String value, final int expected) {
         final String currentName = "currentName";
 
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(jsonParser.currentName()).thenReturn(currentName);
         when(jsonNode.getNodeType()).thenReturn(STRING);
-        when(jsonNode.textValue()).thenReturn(value);
+        when(jsonNode.stringValue()).thenReturn(value);
 
         assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext));
     }
@@ -278,7 +277,7 @@ class InterpolatedObjectDeserializerTest {
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(jsonParser.currentName()).thenReturn(currentName);
         when(jsonNode.getNodeType()).thenReturn(STRING);
-        when(jsonNode.textValue()).thenReturn(value);
+        when(jsonNode.stringValue()).thenReturn(value);
 
         // We set the "systemProperty" env var with a random value just to check the precedence: system property wins
         withEnvironmentVariable("systemProperty", "SOME VALUE")
@@ -297,7 +296,7 @@ class InterpolatedObjectDeserializerTest {
         when(jsonParser.readValueAsTree()).thenReturn(jsonNode);
         when(jsonParser.currentName()).thenReturn(currentName);
         when(jsonNode.getNodeType()).thenReturn(STRING);
-        when(jsonNode.textValue()).thenReturn(value);
+        when(jsonNode.stringValue()).thenReturn(value);
 
         withEnvironmentVariable("envVar", String.valueOf(expected))
                 .execute(() -> assertEquals(expected, interpolatedObjectDeserializer.deserialize(jsonParser, deserializationContext)));

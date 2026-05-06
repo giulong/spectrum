@@ -46,7 +46,7 @@
         <maven.install.skip>false</maven.install.skip>
         <skipSign>false</skipSign>
 
-        <dependency.maven-model.version>3.9.14</dependency.maven-model.version>
+        <dependency.maven-model.version>3.9.15</dependency.maven-model.version>
 
         <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
         <plugin.source.version>3.4.0</plugin.source.version>
@@ -84,16 +84,12 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <groupId>tools.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
 
         <dependency>
@@ -318,6 +314,7 @@
                 <groupId>org.cyclonedx</groupId>
                 <artifactId>cyclonedx-maven-plugin</artifactId>
                 <configuration>
+                    <skip>true</skip>
                     <projectType>framework</projectType>
                     <outputDirectory>${docs.folder}/sboms/${revision}</outputDirectory>
                     <outputName>sbom</outputName>

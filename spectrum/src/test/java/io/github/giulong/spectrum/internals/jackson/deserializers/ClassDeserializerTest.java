@@ -3,15 +3,13 @@ package io.github.giulong.spectrum.internals.jackson.deserializers;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 
 class ClassDeserializerTest {
 
@@ -33,7 +31,7 @@ class ClassDeserializerTest {
 
     @Test
     @DisplayName("deserialize should return the class loaded from the provided string fqdn literal")
-    void deserialize() throws IOException {
+    void deserialize() {
         final String value = "java.lang.String";
         when(jsonParser.getValueAsString()).thenReturn(value);
 
@@ -42,7 +40,7 @@ class ClassDeserializerTest {
 
     @Test
     @DisplayName("deserialize should throw an exception if the provided value is not a valid fqdn literal")
-    void deserializeThrows() throws IOException {
+    void deserializeThrows() {
         final String value = "invalid";
         when(jsonParser.getValueAsString()).thenReturn(value);
 

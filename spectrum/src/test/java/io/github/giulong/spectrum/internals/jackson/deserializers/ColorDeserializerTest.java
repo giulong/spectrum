@@ -5,15 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.Mockito.when;
 
 import java.awt.*;
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 
 class ColorDeserializerTest {
 
@@ -35,7 +34,7 @@ class ColorDeserializerTest {
 
     @Test
     @DisplayName("deserialize should return the duration in seconds from the provided string")
-    void deserialize() throws IOException {
+    void deserialize() {
         String value = "#ff0000";
         when(jsonParser.getValueAsString()).thenReturn(value);
 

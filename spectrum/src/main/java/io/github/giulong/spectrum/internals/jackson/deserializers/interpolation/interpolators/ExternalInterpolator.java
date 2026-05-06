@@ -9,12 +9,13 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonStreamContext;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.TokenStreamContext;
 
 @Slf4j
 @Getter
@@ -39,7 +40,7 @@ public abstract class ExternalInterpolator extends Interpolator {
         final String className = getClass().getSimpleName();
         final List<String> keyPathTokens = new ArrayList<>();
         keyPathTokens.add(prefix);
-        getKeyPathTokens(keyPathTokens, jsonParser.getParsingContext());
+        getKeyPathTokens(keyPathTokens, jsonParser.streamReadContext());
 
         final String keyPath = keyPathTokens
                 .stream()
@@ -58,12 +59,12 @@ public abstract class ExternalInterpolator extends Interpolator {
         return Optional.empty();
     }
 
-    void getKeyPathTokens(final List<String> accumulator, final JsonStreamContext context) {
-        final JsonStreamContext parentContext = context.getParent();
+    void getKeyPathTokens(final List<String> accumulator, final TokenStreamContext context) {
+        final TokenStreamContext parentContext = context.getParent();
 
         if (parentContext != null) {
             getKeyPathTokens(accumulator, parentContext);
-            accumulator.add(context.getCurrentName());
+            accumulator.add(context.currentName());
         }
     }
 

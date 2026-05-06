@@ -2,12 +2,10 @@ package io.github.giulong.spectrum.internals.jackson.deserializers.interpolation
 
 import static lombok.AccessLevel.PRIVATE;
 
-import java.io.IOException;
-
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationContext;
-
 import lombok.NoArgsConstructor;
+
+import tools.jackson.core.JsonParser;
+import tools.jackson.databind.DeserializationContext;
 
 @NoArgsConstructor(access = PRIVATE)
 public class InterpolatedBooleanDeserializer extends InterpolatedDeserializer<Boolean> {
@@ -19,7 +17,7 @@ public class InterpolatedBooleanDeserializer extends InterpolatedDeserializer<Bo
     }
 
     @Override
-    public Boolean deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) throws IOException {
+    public Boolean deserialize(final JsonParser jsonParser, final DeserializationContext deserializationContext) {
         return Boolean.parseBoolean(interpolate(jsonParser));
     }
 }
