@@ -16,6 +16,7 @@ import io.github.giulong.spectrum.utils.reporters.FileReporter;
 
 import lombok.SneakyThrows;
 
+import org.jspecify.annotations.NonNull;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 
@@ -48,7 +49,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     private int txtSummarySuccessfulRetention;
 
     @Override
-    public void launcherSessionOpened(final LauncherSession session) {
+    public void launcherSessionOpened(final @NonNull LauncherSession session) {
         final Configuration configuration = yamlUtils.readInternal("configuration.yml", Configuration.class);
         final Configuration.Extent extent = configuration.getExtent();
         final FileReporter htmlTestBookReporter = getTestBookReporterFrom(configuration, "html");
@@ -102,7 +103,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
     }
 
     @Override
-    public void launcherSessionClosed(LauncherSession session) {
+    public void launcherSessionClosed(@NonNull final LauncherSession session) {
         final Map<String, FixedSizeQueue<File>> successfulReports = metadataManager.getMetadata().getExecution().getSuccessful().getReports();
 
         final List<File> remainingExtentReportsDirectories = getRemainingDirectoriesFrom(extentReportsDirectory.toFile().listFiles());
@@ -223,7 +224,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .getTestBook()
                 .getReporters()
                 .stream()
-                .filter(reporter -> reporter instanceof FileReporter)
+                .filter(FileReporter.class::isInstance)
                 .map(FileReporter.class::cast)
                 .filter(reporter -> FileUtils.getInstance().getExtensionOf(reporter.getTemplate()).equals(extension))
                 .findFirst()
@@ -235,7 +236,7 @@ public class TestBookSessionListener implements LauncherSessionListener {
                 .getSummary()
                 .getReporters()
                 .stream()
-                .filter(reporter -> reporter instanceof FileReporter)
+                .filter(FileReporter.class::isInstance)
                 .map(FileReporter.class::cast)
                 .filter(reporter -> FileUtils.getInstance().getExtensionOf(reporter.getTemplate()).equals(extension))
                 .findFirst()
