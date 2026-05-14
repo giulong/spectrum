@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Scanner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 
 import io.github.giulong.spectrum.generation.server.actions.Action;
@@ -29,6 +28,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedConstruction;
+
+import tools.jackson.databind.ObjectMapper;
 
 @Slf4j
 class ActionHandlerTest {

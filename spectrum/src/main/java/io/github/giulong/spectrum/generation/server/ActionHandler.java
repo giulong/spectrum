@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
@@ -15,6 +13,9 @@ import io.github.giulong.spectrum.generation.server.actions.NavigateAction;
 import io.github.giulong.spectrum.generation.server.actions.TraverseAction;
 
 import lombok.extern.slf4j.Slf4j;
+
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 @Slf4j
 public class ActionHandler implements HttpHandler {
