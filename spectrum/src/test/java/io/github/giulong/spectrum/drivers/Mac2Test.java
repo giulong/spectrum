@@ -2,6 +2,7 @@ package io.github.giulong.spectrum.drivers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.net.URL;
@@ -50,21 +51,30 @@ class Mac2Test {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of mac2Options and set the capabilities from the yaml on it")
-    void buildCapabilitiesAbsoluteAppPath() {
-        MockedConstruction<Mac2Options> desiredCapabilitiesMockedConstruction = mockConstruction(
-                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
+    @DisplayName("buildCapabilities should build a new instance of mac2Options")
+    void buildCapabilities() {
+        try (MockedConstruction<Mac2Options> mockedConstruction = mockConstruction()) {
+            assertEquals(mac2, mac2.buildCapabilities());
 
-        when(configuration.getDrivers()).thenReturn(drivers);
+            final Mac2Options actual = Reflections.getFieldValue("capabilities", mac2);
+            assertEquals(mockedConstruction.constructed().getFirst(), actual);
+        }
+    }
+
+    @Test
+    @DisplayName("mergeCapabilitiesWith should merge a new instance of mac2Options and set the capabilities from the yaml on it")
+    void mergeCapabilitiesWith() {
+        Reflections.setField("capabilities", mac2, mac2Options);
+
         when(drivers.getMac2()).thenReturn(mac2Configuration);
         when(mac2Configuration.getCapabilities()).thenReturn(capabilities);
 
-        mac2.buildCapabilities();
+        try (MockedConstruction<Mac2Options> mockedConstruction = mockConstruction((mock, context) -> assertEquals(capabilities, context.arguments().getFirst()))) {
 
-        final Mac2Options actual = Reflections.getFieldValue("capabilities", mac2);
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+            assertEquals(mac2, mac2.mergeCapabilitiesWith(drivers));
 
-        desiredCapabilitiesMockedConstruction.close();
+            verify(mac2Options).merge(mockedConstruction.constructed().getFirst());
+        }
     }
 
     @Test

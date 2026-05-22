@@ -3,6 +3,7 @@ package io.github.giulong.spectrum.drivers;
 import java.util.Map;
 
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Configuration.Drivers;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -25,22 +26,26 @@ public abstract class Driver<T extends MutableCapabilities, U extends DriverServ
 
     public abstract DriverService.Builder<U, V> getDriverServiceBuilder();
 
-    abstract void buildCapabilities();
+    public abstract Driver<T, U, V> buildCapabilities();
+
+    public abstract Driver<T, U, V> mergeCapabilitiesWith(Drivers drivers);
 
     @SuppressWarnings("unchecked")
     public T mergeGridCapabilitiesFrom(final Map<String, Object> gridCapabilities) {
         return (T) capabilities.merge(new DesiredCapabilities(gridCapabilities));
     }
 
-    public synchronized WebDriver build() {
-        buildCapabilities();
-
+    public WebDriver build() {
         final WebDriver webDriver = configuration.getRuntime().getEnvironment().setupFor(this);
 
         configureWaitsOf(webDriver, configuration.getDrivers().getWaits());
-
-        WEB_DRIVER_THREAD_LOCAL.set(ThreadGuard.protect(webDriver));
         log.debug("Capabilities: {}", capabilities.toJson());
+
+        return webDriver;
+    }
+
+    public synchronized WebDriver buildInThreadLocal() {
+        WEB_DRIVER_THREAD_LOCAL.set(ThreadGuard.protect(build()));
 
         return WEB_DRIVER_THREAD_LOCAL.get();
     }

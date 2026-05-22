@@ -2,12 +2,14 @@ package io.github.giulong.spectrum.drivers;
 
 import static io.github.giulong.spectrum.drivers.Driver.WEB_DRIVER_THREAD_LOCAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
@@ -37,21 +39,6 @@ class DriverTest {
 
     @Mock
     private Configuration.Drivers driversConfig;
-
-    @Mock
-    private Configuration.Drivers.Chrome chromeConfig;
-
-    @Mock
-    private Level browserLevel;
-
-    @Mock
-    private Level driverLevel;
-
-    @Mock
-    private Level performanceLevel;
-
-    @Mock
-    private Configuration.Drivers.Logs logs;
 
     @Mock
     private WebDriver webDriver;
@@ -115,58 +102,76 @@ class DriverTest {
         Reflections.setField("capabilities", driver, driverOptions);
         when(driverOptions.merge(desiredCapabilitiesArgumentCaptor.capture())).thenReturn(driverOptions);
 
-        MockedConstruction<DesiredCapabilities> desiredCapabilitiesMockedConstruction = mockConstruction((mock, context) -> {
-            assertEquals(gridCapabilities, context.arguments().getFirst());
-        });
+        try (MockedConstruction<DesiredCapabilities> mockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(gridCapabilities, context.arguments().getFirst()))) {
 
-        final ChromeOptions actual = driver.mergeGridCapabilitiesFrom(gridCapabilities);
-        verify(driverOptions).merge(desiredCapabilitiesMockedConstruction.constructed().getFirst());
-        assertEquals(actual, driverOptions);
+            final ChromeOptions actual = driver.mergeGridCapabilitiesFrom(gridCapabilities);
+            verify(driverOptions).merge(mockedConstruction.constructed().getFirst());
+            assertEquals(actual, driverOptions);
 
-        desiredCapabilitiesMockedConstruction.close();
-        Reflections.setField("capabilities", driver, null);
+        }
     }
 
     @Test
     @DisplayName("build should return the instance of the requested driver")
     void build() {
+        Reflections.setField("capabilities", driver, driverOptions);
+
         // buildCapabilitiesFrom stubs
         final List<String> arguments = List.of("args");
         when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.getChrome()).thenReturn(chromeConfig);
-        when(chromeConfig.getArgs()).thenReturn(arguments);
-        when(driversConfig.getLogs()).thenReturn(logs);
-        when(logs.getBrowser()).thenReturn(browserLevel);
-        when(logs.getDriver()).thenReturn(driverLevel);
-        when(logs.getPerformance()).thenReturn(performanceLevel);
-        when(chromeConfig.getCapabilities()).thenReturn(Map.of());
-        when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of());
 
-        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(
-                (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
+        try (MockedConstruction<ChromeOptions> ignored = mockConstruction((mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock))) {
+            when(waits.getImplicit()).thenReturn(implicitDuration);
+            when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);
+            when(waits.getScriptTimeout()).thenReturn(scriptDuration);
+            when(configuration.getRuntime()).thenReturn(runtime);
+            when(runtime.getEnvironment()).thenReturn(environment);
+            when(webDriver.manage()).thenReturn(options);
+            when(options.timeouts()).thenReturn(timeouts);
+            when(driversConfig.getWaits()).thenReturn(waits);
+            when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
+            when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
+            when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
+            when(environment.setupFor(driver)).thenReturn(webDriver);
 
-        when(waits.getImplicit()).thenReturn(implicitDuration);
-        when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);
-        when(waits.getScriptTimeout()).thenReturn(scriptDuration);
-        when(configuration.getRuntime()).thenReturn(runtime);
-        when(runtime.getEnvironment()).thenReturn(environment);
-        when(webDriver.manage()).thenReturn(options);
-        when(options.timeouts()).thenReturn(timeouts);
-        when(driversConfig.getWaits()).thenReturn(waits);
-        when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
-        when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
-        when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
-        when(environment.setupFor(driver)).thenReturn(webDriver);
+            when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
 
-        when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
+            assertEquals(webDriver, driver.build());
+        }
+    }
 
-        final WebDriver actual = driver.build();
-        final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
+    @Test
+    @DisplayName("buildInThreadLocal should return the instance of the requested driver")
+    void buildInThreadLocal() {
+        Reflections.setField("capabilities", driver, driverOptions);
 
-        assertEquals(protectedWebDriver, threadLocalWebDriver);
-        assertEquals(protectedWebDriver, actual);
+        // buildCapabilitiesFrom stubs
+        final List<String> arguments = List.of("args");
+        when(configuration.getDrivers()).thenReturn(driversConfig);
 
-        chromeOptionsMockedConstruction.close();
+        try (MockedConstruction<ChromeOptions> ignored = mockConstruction((mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock))) {
+            when(waits.getImplicit()).thenReturn(implicitDuration);
+            when(waits.getPageLoadTimeout()).thenReturn(pageLoadDuration);
+            when(waits.getScriptTimeout()).thenReturn(scriptDuration);
+            when(configuration.getRuntime()).thenReturn(runtime);
+            when(runtime.getEnvironment()).thenReturn(environment);
+            when(webDriver.manage()).thenReturn(options);
+            when(options.timeouts()).thenReturn(timeouts);
+            when(driversConfig.getWaits()).thenReturn(waits);
+            when(timeouts.implicitlyWait(implicitDuration)).thenReturn(timeouts);
+            when(timeouts.pageLoadTimeout(pageLoadDuration)).thenReturn(timeouts);
+            when(timeouts.scriptTimeout(scriptDuration)).thenReturn(timeouts);
+            when(environment.setupFor(driver)).thenReturn(webDriver);
+
+            when(ThreadGuard.protect(webDriver)).thenReturn(protectedWebDriver);
+
+            final WebDriver actual = driver.buildInThreadLocal();
+            final WebDriver threadLocalWebDriver = WEB_DRIVER_THREAD_LOCAL.get();
+
+            assertEquals(protectedWebDriver, threadLocalWebDriver);
+            assertEquals(protectedWebDriver, actual);
+        }
     }
 
     @Test

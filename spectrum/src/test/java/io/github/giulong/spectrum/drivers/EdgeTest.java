@@ -27,7 +27,7 @@ import org.openqa.selenium.remote.service.DriverService;
 class EdgeTest {
 
     @Mock
-    private Configuration.Drivers driversConfig;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Configuration.Drivers.Edge edgeConfig;
@@ -51,6 +51,9 @@ class EdgeTest {
     @Mock
     private Configuration.Drivers.Chrome.Service service;
 
+    @Mock
+    private EdgeOptions capabilities;
+
     @InjectMocks
     private Edge edge;
 
@@ -59,8 +62,8 @@ class EdgeTest {
     void getDriverServiceBuilder() {
         final String allowedListIps = "allowedListIps";
 
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.getEdge()).thenReturn(edgeConfig);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getEdge()).thenReturn(edgeConfig);
         when(edgeConfig.getService()).thenReturn(service);
         when(service.isBuildCheckDisabled()).thenReturn(true);
         when(service.isAppendLog()).thenReturn(true);
@@ -87,13 +90,26 @@ class EdgeTest {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build an instance of Chrome based on the provided configuration")
+    @DisplayName("buildCapabilities should build an instance of EdgeOptions")
     void buildCapabilities() {
+        try (MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction()) {
+            assertEquals(edge, edge.buildCapabilities());
+
+            final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().getFirst();
+
+            assertEquals(edgeOptions, Reflections.getFieldValue("capabilities", edge));
+        }
+    }
+
+    @Test
+    @DisplayName("mergeCapabilitiesWith should merge the provided configuration")
+    void mergeCapabilitiesWith() {
         final List<String> arguments = List.of("args");
 
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.getEdge()).thenReturn(edgeConfig);
-        when(driversConfig.getLogs()).thenReturn(logs);
+        Reflections.setField("capabilities", edge, capabilities);
+
+        when(drivers.getEdge()).thenReturn(edgeConfig);
+        when(drivers.getLogs()).thenReturn(logs);
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);
@@ -102,30 +118,25 @@ class EdgeTest {
         when(edgeConfig.getExperimentalOptions()).thenReturn(Map.of("experimental", "value2"));
 
         // activateBiDi
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.isBiDi()).thenReturn(false);
-        lenient().when(edgeConfig.isBiDi()).thenReturn(true);
+        when(drivers.isBiDi()).thenReturn(false);
+        when(edgeConfig.isBiDi()).thenReturn(true);
 
-        MockedConstruction<EdgeOptions> edgeOptionsMockedConstruction = mockConstruction(
-                (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
-        MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction();
+        try (MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction()) {
 
-        edge.buildCapabilities();
-        final EdgeOptions edgeOptions = edgeOptionsMockedConstruction.constructed().getFirst();
-        final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().getFirst();
+            assertEquals(edge, edge.mergeCapabilitiesWith(drivers));
 
-        verify(loggingPreferences).enable(BROWSER, browserLevel);
-        verify(loggingPreferences).enable(DRIVER, driverLevel);
-        verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
-        verify(edgeOptions).setCapability(LOGGING_PREFS, loggingPreferences);
+            final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().getFirst();
 
-        verify(edgeOptions).setCapability("capability", (Object) "value1");
-        verify(edgeOptions).setExperimentalOption("experimental", "value2");
-        verify(edgeOptions).setCapability("webSocketUrl", true);
+            verify(loggingPreferences).enable(BROWSER, browserLevel);
+            verify(loggingPreferences).enable(DRIVER, driverLevel);
+            verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
+            verify(capabilities).setCapability(LOGGING_PREFS, loggingPreferences);
 
-        assertEquals(edgeOptions, Reflections.getFieldValue("capabilities", edge));
+            verify(capabilities).setCapability("capability", (Object) "value1");
+            verify(capabilities).setExperimentalOption("experimental", "value2");
+            verify(capabilities).setCapability("webSocketUrl", true);
 
-        edgeOptionsMockedConstruction.close();
-        loggingPreferencesMockedConstruction.close();
+            assertEquals(capabilities, Reflections.getFieldValue("capabilities", edge));
+        }
     }
 }

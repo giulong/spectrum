@@ -93,6 +93,51 @@ extent:
   sort: # How to sort tests in the produced report
     noOp: { } # By default, no sort is applied
 
+# Recording configuration
+recording:
+  destination: ${spectrum.recording.destination:-src/test/java}
+  fqdn: ${spectrum.recording.fqdn:-it_generated.GeneratedIT.java}
+  drivers:
+    biDi: true
+    logs: { }
+
+    chrome:
+      args:
+        - --disable-web-security
+      capabilities: { }
+      experimentalOptions: { }
+
+    firefox:
+      args: [ ]
+      preferences: { }
+      capabilities: { }
+
+    edge:
+      args:
+        - --disable-web-security
+      capabilities: { }
+      experimentalOptions: { }
+
+    safari: { }
+
+    uiAutomator2:
+      capabilities: { }
+
+    espresso:
+      capabilities: { }
+
+    xcuiTest:
+      capabilities: { }
+
+    windows:
+      capabilities: { }
+
+    mac2:
+      capabilities: { }
+
+    appiumGeneric:
+      capabilities: { }
+
 # Environments configuration
 environments:
   local: { } # The default local environment. No properties available here

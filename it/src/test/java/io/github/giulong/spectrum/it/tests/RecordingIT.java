@@ -13,8 +13,6 @@ import io.github.giulong.spectrum.utils.FileUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.ScriptKey;
@@ -31,24 +29,10 @@ class RecordingIT extends SpectrumTest<Void> {
     @SuppressWarnings("unused")
     private CheckboxPage checkboxPage;
 
-    @BeforeEach
-    void beforeEach() {
-        System.setProperty("destination", "../it-generated/src/test/java");
-        System.setProperty("fqdn", "io.github.giulong.spectrum.it_generated.tests.GeneratedIT.java");
-        System.setProperty("args", "--headless=new");
-    }
-
-    @AfterEach
-    void afterEach() {
-        System.clearProperty("destination");
-        System.clearProperty("fqdn");
-        System.clearProperty("args");
-    }
-
     @Test
     void record() {
         try (ExecutorService service = newSingleThreadExecutor()) {
-            service.submit(() -> Recording.main(null));
+            service.submit(() -> Recording.main(new String[]{"argProvidedJustToSkipConfigurationLoading"}));
 
             final ScriptKey scriptKey = javascriptExecutor.pin(fileUtils.read("js/interceptor.js"));
             final int port = getRecordingServerPort();

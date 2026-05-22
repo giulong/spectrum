@@ -2,7 +2,9 @@ package io.github.giulong.spectrum.drivers;
 
 import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.net.URL;
 import java.nio.file.Path;
@@ -14,7 +16,6 @@ import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -45,71 +46,74 @@ class XCUITestTest {
     @InjectMocks
     private XCUITest xcuiTest;
 
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
+    @Test
+    @DisplayName("buildCapabilities should build a new instance of XCUITestOptions")
+    void buildCapabilities() {
+        try (MockedConstruction<XCUITestOptions> mockedConstruction = mockConstruction()) {
+            assertEquals(xcuiTest, xcuiTest.buildCapabilities());
+
+            final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest);
+            assertEquals(mockedConstruction.constructed().getFirst(), actual);
+        }
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of xcuiTestOptions " +
+    @DisplayName("mergeCapabilitiesWith should build a new instance of xcuiTestOptions " +
             "and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
-    void buildCapabilities() {
+    void mergeCapabilitiesWith() {
         final Path path = Path.of("relative", "path");
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
-                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
+        Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
 
-        when(configuration.getDrivers()).thenReturn(drivers);
-        when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
-        when(xcuiTestConfiguration.getCapabilities()).thenReturn(capabilities);
+        try (MockedConstruction<XCUITestOptions> mockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()))) {
 
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
+            when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
+            when(xcuiTestConfiguration.getCapabilities()).thenReturn(capabilities);
 
-        xcuiTest.buildCapabilities();
+            when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
-        final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest);
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+            xcuiTest.mergeCapabilitiesWith(drivers);
 
-        verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
-
-        desiredCapabilitiesMockedConstruction.close();
+            verify(xcuiTestOptions).merge(mockedConstruction.constructed().getFirst());
+            verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
+        }
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options " +
+    @DisplayName("mergeCapabilitiesWith should build a new instance of UiAutomator2Options " +
             "and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
-    void buildCapabilitiesAbsoluteAppPath() {
+    void mergeCapabilitiesWithAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<XCUITestOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
-                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
+        Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
 
-        when(configuration.getDrivers()).thenReturn(drivers);
-        when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
-        when(xcuiTestConfiguration.getCapabilities()).thenReturn(capabilities);
+        try (MockedConstruction<XCUITestOptions> mockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()))) {
 
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
+            when(drivers.getXcuiTest()).thenReturn(xcuiTestConfiguration);
+            when(xcuiTestConfiguration.getCapabilities()).thenReturn(capabilities);
 
-        xcuiTest.buildCapabilities();
+            when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
-        final XCUITestOptions actual = Reflections.getFieldValue("capabilities", xcuiTest);
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+            assertEquals(xcuiTest, xcuiTest.mergeCapabilitiesWith(drivers));
 
-        desiredCapabilitiesMockedConstruction.close();
+            verify(xcuiTestOptions).merge(mockedConstruction.constructed().getFirst());
+        }
     }
 
     @Test
     @DisplayName("buildDriverFor should return a new instance of IOSDriver for the provided url and the instance capabilities")
     void buildDriverFor() {
-        MockedConstruction<IOSDriver> iosDriverMockedConstruction = mockConstruction((mock, context) -> {
+        Reflections.setField("capabilities", xcuiTest, xcuiTestOptions);
+
+        try (MockedConstruction<IOSDriver> mockedConstruction = mockConstruction((mock, context) -> {
             assertEquals(url, context.arguments().getFirst());
             assertEquals(xcuiTestOptions, context.arguments().get(1));
-        });
-
-        assertEquals(xcuiTest.buildDriverFor(url), iosDriverMockedConstruction.constructed().getFirst());
-
-        iosDriverMockedConstruction.close();
+        })) {
+            assertEquals(xcuiTest.buildDriverFor(url), mockedConstruction.constructed().getFirst());
+        }
     }
 }

@@ -48,8 +48,8 @@ public class DriverResolver extends TypeBasedParameterResolver<WebDriver> {
         final ExtensionContext.Store store = context.getStore(GLOBAL);
         final ExtensionContext.Store rootStore = context.getRoot().getStore(GLOBAL);
         final Configuration configuration = rootStore.get(CONFIGURATION, Configuration.class);
-        final WebDriver driver = configuration.getRuntime().getDriver().build();
         final Configuration.Drivers drivers = configuration.getDrivers();
+        final WebDriver driver = configuration.getRuntime().getDriver().buildCapabilities().mergeCapabilitiesWith(drivers).buildInThreadLocal();
         final Configuration.Drivers.Events events = drivers.getEvents();
         final Configuration.Drivers.Waits.AutoWait autoWait = drivers.getWaits().getAuto();
         final StatefulExtentTest statefulExtentTest = store.get(STATEFUL_EXTENT_TEST, StatefulExtentTest.class);

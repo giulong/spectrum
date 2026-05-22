@@ -70,6 +70,9 @@ public class Configuration {
     @JsonPropertyDescription("Extent Report configuration")
     private Extent extent;
 
+    @JsonPropertyDescription("Recording configuration")
+    private Recording recording;
+
     @JsonPropertyDescription("Environments configuration")
     private Environments environments;
 
@@ -677,6 +680,19 @@ public class Configuration {
             @JsonPropertyDescription("Milliseconds to wait before listening to this event")
             private long wait;
         }
+    }
+
+    @Getter
+    @Generated
+    public static class Recording {
+
+        @JsonPropertyDescription("Folder in which to generate the test classes. Default is 'src/test/java'")
+        private String destination;
+
+        @JsonPropertyDescription("Fully Qualified Domain Name of the class to generate")
+        private String fqdn;
+
+        private Drivers drivers;
     }
 
     @Getter

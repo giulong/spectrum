@@ -1,8 +1,10 @@
 package io.github.giulong.spectrum.drivers;
 
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Configuration.Drivers;
 
 import org.openqa.selenium.edge.EdgeDriverService;
+import org.openqa.selenium.edge.EdgeDriverService.Builder;
 import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -23,15 +25,23 @@ public class Edge extends Chromium<EdgeOptions, EdgeDriverService, EdgeDriverSer
     }
 
     @Override
-    void buildCapabilities() {
-        final Configuration.Drivers drivers = configuration.getDrivers();
+    public Edge buildCapabilities() {
+        capabilities = new EdgeOptions();
+
+        return this;
+    }
+
+    @Override
+    public Driver<EdgeOptions, EdgeDriverService, Builder> mergeCapabilitiesWith(final Drivers drivers) {
         final Configuration.Drivers.Edge edge = drivers.getEdge();
 
-        capabilities = new EdgeOptions().addArguments(edge.getArgs());
+        capabilities.addArguments(edge.getArgs());
 
         edge.getCapabilities().forEach(capabilities::setCapability);
         edge.getExperimentalOptions().forEach(capabilities::setExperimentalOption);
         setLoggingPreferencesFrom(drivers.getLogs());
-        activateBiDi(capabilities, configuration, edge);
+        activateBiDi(capabilities, drivers, edge);
+
+        return this;
     }
 }

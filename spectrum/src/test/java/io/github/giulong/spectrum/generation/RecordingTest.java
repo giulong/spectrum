@@ -15,11 +15,14 @@ import java.util.function.Consumer;
 
 import com.sun.net.httpserver.HttpServer;
 
-import io.github.giulong.spectrum.generation.driver_builders.DriverBuilder;
+import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.generation.generators.SpectrumTestGenerator;
 import io.github.giulong.spectrum.generation.server.ActionHandler;
 import io.github.giulong.spectrum.generation.server.Server;
 import io.github.giulong.spectrum.generation.server.actions.Action;
+import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Configuration.Drivers;
+import io.github.giulong.spectrum.utils.Configuration.Runtime;
 import io.github.giulong.spectrum.utils.FileUtils;
 import io.github.giulong.spectrum.utils.Reflections;
 
@@ -36,12 +39,9 @@ import org.openqa.selenium.bidi.module.Network;
 import org.openqa.selenium.bidi.network.RequestData;
 import org.openqa.selenium.bidi.network.ResponseData;
 import org.openqa.selenium.bidi.network.ResponseDetails;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 
 class RecordingTest {
 
-    private final String fqdnProperty = "fqdn";
     private final String navigationId = "navigationId";
     private final String className = "className";
 
@@ -49,13 +49,27 @@ class RecordingTest {
     private MockedStatic<ActionHandler> actionHandlerMockedStatic;
     private MockedStatic<Server> serverMockedStatic;
     private MockedStatic<HttpServer> httpServerMockedStatic;
-    private MockedStatic<DriverBuilder<?>> driverBuilderMockedStatic;
+
+    @Mock
+    private Configuration configuration;
+
+    @Mock
+    private Runtime runtime;
+
+    @Mock
+    private Driver<?, ?, ?> driverConfiguration;
+
+    @Mock
+    private Drivers drivers;
+
+    @Mock
+    private Drivers recordingDrivers;
+
+    @Mock
+    private Configuration.Recording recordingConfiguration;
 
     @Mock
     private ScriptKey scriptKey;
-
-    @Mock
-    private DriverBuilder<?> driverBuilder;
 
     @Mock(extraInterfaces = JavascriptExecutor.class)
     private WebDriver driver;
@@ -85,9 +99,6 @@ class RecordingTest {
     private SpectrumTestGenerator spectrumTestGenerator;
 
     @Mock
-    private Path destination;
-
-    @Mock
     private List<Action> actions;
 
     @Mock
@@ -115,7 +126,7 @@ class RecordingTest {
     private ArgumentCaptor<ActionHandler> actionHandlerArgumentCaptor;
 
     @InjectMocks
-    private Recording recording = new Recording(actions, server, driver, destination, "fqdn", packagePath, className, false);
+    private Recording recording = new Recording(actions, server, driver, packagePath, className, false);
 
     @BeforeEach
     void beforeEach() {
@@ -123,7 +134,6 @@ class RecordingTest {
         actionHandlerMockedStatic = mockStatic();
         serverMockedStatic = mockStatic();
         httpServerMockedStatic = mockStatic();
-        driverBuilderMockedStatic = mockStatic();
     }
 
     @AfterEach
@@ -132,11 +142,6 @@ class RecordingTest {
         actionHandlerMockedStatic.close();
         serverMockedStatic.close();
         httpServerMockedStatic.close();
-        driverBuilderMockedStatic.close();
-
-        System.clearProperty("driver");
-        System.clearProperty("args");
-        System.clearProperty("capabilities");
     }
 
     @Test
@@ -144,7 +149,10 @@ class RecordingTest {
     void parsePropertiesFqdnNotValid() {
         final String fqdn = "not valid";
 
-        System.setProperty(fqdnProperty, fqdn);
+        Reflections.setField("configuration", recording, configuration);
+
+        when(configuration.getRecording()).thenReturn(recordingConfiguration);
+        when(recordingConfiguration.getFqdn()).thenReturn(fqdn);
 
         final RuntimeException exception = assertThrows(IllegalArgumentException.class, () -> recording.parseProperties());
         assertEquals("Fqdn '" + fqdn + "' is not a valid fully qualified class name!", exception.getMessage());
@@ -154,16 +162,33 @@ class RecordingTest {
     @DisplayName("parseProperties should throw an exception if the provided fqdn is not valid")
     void parseProperties() {
         final String fqdn = "com.a.b.C.java";
-        final String destinationProperty = "destination";
 
-        System.setProperty(fqdnProperty, fqdn);
-        System.setProperty(destinationProperty, destinationProperty);
+        Reflections.setField("configuration", recording, configuration);
+
+        when(configuration.getRecording()).thenReturn(recordingConfiguration);
+        when(recordingConfiguration.getFqdn()).thenReturn(fqdn);
 
         assertEquals(recording, recording.parseProperties());
-        assertEquals(fqdn, recording.getFqdn());
-        assertEquals(Path.of(destinationProperty), recording.getDestination());
         assertEquals(Path.of("com.a.b".replace(".", File.separator)), recording.getPackagePath());
         assertEquals("C.java", recording.getClassName());
+    }
+
+    @Test
+    @DisplayName("buildDriver should build the driver with the recording capabilities")
+    void buildDriver() {
+        Reflections.setField("configuration", recording, configuration);
+
+        when(configuration.getRuntime()).thenReturn(runtime);
+        doReturn(driverConfiguration).when(runtime).getDriver();
+        doReturn(driverConfiguration).when(driverConfiguration).buildCapabilities();
+        doReturn(driverConfiguration).when(driverConfiguration).mergeCapabilitiesWith(drivers);
+        doReturn(driverConfiguration).when(driverConfiguration).mergeCapabilitiesWith(recordingDrivers);
+
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(configuration.getRecording()).thenReturn(recordingConfiguration);
+        when(recordingConfiguration.getDrivers()).thenReturn(recordingDrivers);
+
+        assertEquals(recording, recording.buildDriver());
     }
 
     @Test
@@ -176,7 +201,7 @@ class RecordingTest {
 
     @Test
     @DisplayName("record should wrap the driver with a network interceptor and inject the js in every new page, intercepting navigation")
-    void record() {
+    void recording() {
         final String url = "url";
         final int port = 123;
         final boolean actualDriverClosedBefore = Reflections.getFieldValue("driverClosed", recording);
@@ -184,6 +209,7 @@ class RecordingTest {
         assertFalse(actualDriverClosedBefore);
 
         Reflections.setField("fileUtils", recording, fileUtils);
+        Reflections.setField("configuration", recording, configuration);
 
         when(responseDetails.getResponseData()).thenReturn(responseData);
         when(responseData.getUrl()).thenReturn(url);
@@ -312,13 +338,16 @@ class RecordingTest {
     @Test
     @DisplayName("generate should delegate to the SpectrumTestGenerator")
     void generate() {
-        Reflections.setField("className", recording, className);
-        Reflections.setField("destination", recording, destination);
-        Reflections.setField("packagePath", recording, packagePath);
+        final String destination = "destination";
+
+        Reflections.setField("configuration", recording, configuration);
+
+        when(configuration.getRecording()).thenReturn(recordingConfiguration);
+        when(recordingConfiguration.getDestination()).thenReturn(destination);
 
         when(SpectrumTestGenerator.builder()).thenReturn(spectrumTestGeneratorBuilder);
         when(spectrumTestGeneratorBuilder.actions(actions)).thenReturn(spectrumTestGeneratorBuilder);
-        when(spectrumTestGeneratorBuilder.destination(destination)).thenReturn(spectrumTestGeneratorBuilder);
+        when(spectrumTestGeneratorBuilder.destination(Path.of(destination))).thenReturn(spectrumTestGeneratorBuilder);
         when(spectrumTestGeneratorBuilder.packagePath(packagePath)).thenReturn(spectrumTestGeneratorBuilder);
         when(spectrumTestGeneratorBuilder.className(className)).thenReturn(spectrumTestGeneratorBuilder);
         when(spectrumTestGeneratorBuilder.build()).thenReturn(spectrumTestGenerator);
@@ -349,46 +378,14 @@ class RecordingTest {
     }
 
     @Test
-    @DisplayName("main create a Recording instance with Chrome by default and act as the entry point to the record and playback feature")
-    void mainTestDefault() {
-        actualMainTestFor("chrome");
-    }
-
-    @Test
-    @DisplayName("main create a Recording instance and act as the entry point to the record and playback feature")
+    @DisplayName("main should create a Recording instance and act as the entry point to the record and playback feature")
     void mainTest() {
-        final String driverName = "driverName";
-        System.setProperty("driver", driverName);
-
-        actualMainTestFor(driverName);
-    }
-
-    void actualMainTestFor(final String driverArg) {
-        final String args = "args";
-        final String capabilities = "capabilities";
-        final List<String> driverArguments = new ArrayList<>();
-
-        System.setProperty("args", args);
-        System.setProperty("capabilities", capabilities);
-
-        driverArguments.add("--disable-web-security");
-        driverArguments.addAll(List.of(args.split(",")));
-
         try (MockedStatic<Recording> recordingMockedStatic = mockStatic();
                 MockedConstruction<InetSocketAddress> ignored = mockConstruction((mock, context) -> {
                     assertEquals(0, context.arguments().getFirst());
                     when(HttpServer.create(mock, 0)).thenReturn(httpServer);
                 });
-                MockedConstruction<ChromeOptions> optionsMockedConstruction = mockConstruction(
-                        (mock, context) -> when(mock.addArguments(driverArguments)).thenReturn(mock));
-                MockedConstruction<ChromeDriver> ignored2 = mockConstruction((mock, context) -> {
-                    assertEquals(optionsMockedConstruction.constructed().getFirst(), context.arguments().getFirst());
-                    when(recordingBuilder.driver(mock)).thenReturn(recordingBuilder);
-                });
-                MockedConstruction<ActionHandler> ignored3 = mockConstruction((mock, context) -> assertEquals(actionsArgumentCaptor.getValue(), context.arguments().getFirst()))) {
-
-            driverBuilderMockedStatic.when(() -> DriverBuilder.getFor(driverArg)).thenReturn(driverBuilder);
-            doReturn(driver).when(driverBuilder).buildFrom(args, capabilities);
+                MockedConstruction<ActionHandler> ignored2 = mockConstruction((mock, context) -> assertEquals(actionsArgumentCaptor.getValue(), context.arguments().getFirst()))) {
 
             when(Server.builder()).thenReturn(serverBuilder);
             when(serverBuilder.actions(actionsArgumentCaptor.capture())).thenReturn(serverBuilder);
@@ -400,10 +397,10 @@ class RecordingTest {
             when(Recording.builder()).thenReturn(recordingBuilder);
             when(recordingBuilder.actions(actionsArgumentCaptor.capture())).thenReturn(recordingBuilder);
             when(recordingBuilder.server(server)).thenReturn(recordingBuilder);
-            when(recordingBuilder.driver(driver)).thenReturn(recordingBuilder);
             when(recordingBuilder.build()).thenReturn(recordingMock);
 
             when(recordingMock.parseProperties()).thenReturn(recordingMock);
+            when(recordingMock.buildDriver()).thenReturn(recordingMock);
             when(recordingMock.setup()).thenReturn(recordingMock);
             when(recordingMock.record()).thenReturn(recordingMock);
             when(recordingMock.tearDown()).thenReturn(recordingMock);

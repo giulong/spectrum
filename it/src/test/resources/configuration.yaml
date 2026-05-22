@@ -9,6 +9,10 @@ config:
 application:
   baseUrl: set as env var in pom.xml. Environment interpolator has a higher priority (see above)
 
+recording:
+  destination: ../it-generated/src/test/java
+  fqdn: io.github.giulong.spectrum.it_generated.tests.GeneratedIT.java
+
 drivers:
   waits:
     downloadTimeout: 5

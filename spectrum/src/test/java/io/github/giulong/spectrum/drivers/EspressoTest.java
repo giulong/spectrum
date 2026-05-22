@@ -2,7 +2,9 @@ package io.github.giulong.spectrum.drivers;
 
 import static io.github.giulong.spectrum.drivers.Appium.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -46,50 +48,58 @@ class EspressoTest {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of espresso and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
+    @DisplayName("buildCapabilities should build a new instance of EspressoOptions")
     void buildCapabilities() {
+        try (MockedConstruction<EspressoOptions> mockedConstruction = mockConstruction()) {
+            assertEquals(espresso, espresso.buildCapabilities());
+
+            final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso);
+            assertEquals(mockedConstruction.constructed().getFirst(), actual);
+        }
+    }
+
+    @Test
+    @DisplayName("mergeCapabilitiesWith should merge a new instance of espresso and set the provided capabilities, when a relative path is provided as 'app' capability")
+    void mergeCapabilitiesWith() {
         final Path path = Path.of("relative", "path");
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
-                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
+        Reflections.setField("capabilities", espresso, espressoOptions);
 
-        when(configuration.getDrivers()).thenReturn(drivers);
-        when(drivers.getEspresso()).thenReturn(espressoConfiguration);
-        when(espressoConfiguration.getCapabilities()).thenReturn(capabilities);
+        try (MockedConstruction<EspressoOptions> mockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()))) {
 
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
+            when(drivers.getEspresso()).thenReturn(espressoConfiguration);
+            when(espressoConfiguration.getCapabilities()).thenReturn(capabilities);
 
-        espresso.buildCapabilities();
+            when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
-        final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso);
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+            assertEquals(espresso, espresso.mergeCapabilitiesWith(drivers));
 
-        verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
-
-        desiredCapabilitiesMockedConstruction.close();
+            verify(espressoOptions).merge(mockedConstruction.constructed().getFirst());
+            verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
+        }
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of espresso and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
-    void buildCapabilitiesAbsoluteAppPath() {
+    @DisplayName("mergeCapabilitiesWith should merge a new instance of espresso and set the provided capabilities, when an absolute path is provided as 'app' capability")
+    void mergeCapabilitiesWithAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<EspressoOptions> desiredCapabilitiesMockedConstruction = mockConstruction(
-                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
+        Reflections.setField("capabilities", espresso, espressoOptions);
 
-        when(configuration.getDrivers()).thenReturn(drivers);
-        when(drivers.getEspresso()).thenReturn(espressoConfiguration);
-        when(espressoConfiguration.getCapabilities()).thenReturn(capabilities);
+        try (MockedConstruction<EspressoOptions> mockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()))) {
 
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
+            when(drivers.getEspresso()).thenReturn(espressoConfiguration);
+            when(espressoConfiguration.getCapabilities()).thenReturn(capabilities);
 
-        espresso.buildCapabilities();
+            when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
-        final EspressoOptions actual = Reflections.getFieldValue("capabilities", espresso);
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+            assertEquals(espresso, espresso.mergeCapabilitiesWith(drivers));
 
-        desiredCapabilitiesMockedConstruction.close();
+            verify(espressoOptions).merge(mockedConstruction.constructed().getFirst());
+        }
     }
 }

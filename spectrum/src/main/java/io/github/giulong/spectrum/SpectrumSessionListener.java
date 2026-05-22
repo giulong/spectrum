@@ -11,6 +11,7 @@ import io.github.giulong.spectrum.utils.events.EventsDispatcher;
 
 import lombok.extern.slf4j.Slf4j;
 
+import org.jspecify.annotations.NonNull;
 import org.junit.platform.launcher.LauncherSession;
 import org.junit.platform.launcher.LauncherSessionListener;
 import org.slf4j.bridge.SLF4JBridgeHandler;
@@ -20,7 +21,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     public static final String DEFAULT_CONFIGURATION_YAML = "yaml/configuration.default.yaml";
     public static final String DEFAULT_CONFIGURATION_UNIX_YAML = "yaml/configuration.default.unix.yaml";
-    public static final String CONFIGURATION = "configuration";
+    public static final String CONFIGURATION_NAME = "configuration";
     public static final String PROFILE_NODE = "/runtime/profiles";
     public static final String CONFIG_NODE = "/config";
     public static final String VARS_NODE = "/vars";
@@ -58,7 +59,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
     }
 
     @Override
-    public void launcherSessionClosed(final LauncherSession session) {
+    public void launcherSessionClosed(@NonNull final LauncherSession session) {
         configuration.getRuntime().getEnvironment().sessionClosed();
         configuration.getTestBook().sessionClosed();
         configuration.getSummary().sessionClosed();
@@ -67,18 +68,20 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         eventsDispatcher.sessionClosed();
     }
 
-    void parseConfig() {
+    public SpectrumSessionListener parseConfig() {
         final Config config = yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML);
 
         if (isUnix()) {
             yamlUtils.updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
         }
 
-        yamlUtils.updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
+        yamlUtils.updateWithClientNode(config, CONFIG_NODE, CONFIGURATION_NAME);
         configuration.setConfig(config);
+
+        return this;
     }
 
-    void parseConfiguration() {
+    public void parseConfiguration() {
         final List<String> profileConfigurations = parseProfiles()
                 .stream()
                 .map(profile -> String.format("configuration-%s", profile))
@@ -92,7 +95,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
             yamlUtils.updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
         }
 
-        yamlUtils.updateWithClientFile(configuration, CONFIGURATION);
+        yamlUtils.updateWithClientFile(configuration, CONFIGURATION_NAME);
         profileConfigurations.forEach(pc -> yamlUtils.updateWithClientFile(configuration, pc));
 
         log.trace("Configuration:\n{}", yamlUtils.write(configuration));
@@ -100,7 +103,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     List<String> parseProfiles() {
         return Arrays.stream(Optional
-                .<String>ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION))
+                .<String>ofNullable(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION_NAME))
                 .orElse(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML))
                 .split(","))
                 .filter(not(String::isBlank))
@@ -115,7 +118,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         }
 
         vars.putAll(Optional
-                .<Map<String, String>>ofNullable(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION))
+                .<Map<String, String>>ofNullable(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION_NAME))
                 .orElse(new HashMap<>()));
 
         profileConfigurations.forEach(p -> vars.putAll(Optional

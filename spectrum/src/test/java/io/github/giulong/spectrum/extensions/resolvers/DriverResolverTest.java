@@ -217,7 +217,9 @@ class DriverResolverTest {
         when(rootStore.get(CONFIGURATION, Configuration.class)).thenReturn(configuration);
         when(configuration.getRuntime()).thenReturn(runtime);
         doReturn(driver).when(runtime).getDriver();
-        when(driver.build()).thenReturn(webDriver);
+        doReturn(driver).when(driver).buildCapabilities();
+        doReturn(driver).when(driver).mergeCapabilitiesWith(driversConfiguration);
+        when(driver.buildInThreadLocal()).thenReturn(webDriver);
         when(configuration.getDrivers()).thenReturn(driversConfiguration);
         when(driversConfiguration.getEvents()).thenReturn(events);
         when(configuration.getExtent()).thenReturn(extentConfiguration);
@@ -290,29 +292,26 @@ class DriverResolverTest {
 
     @Test
     @DisplayName("resolveParameter should return the instance of the webDriver decorated with the default event listener")
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     void resolveParameter() {
         stubs();
         when(autoWait.isEnabled()).thenReturn(false);
 
-        //noinspection rawtypes
-        final MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction((mock, executionContext) -> {
+        try (MockedConstruction<EventFiringDecorator> ignored = mockConstruction((mock, executionContext) -> {
             assertArrayEquals(List.of(eventsWebDriverListener).toArray(), (WebDriverListener[]) executionContext.arguments().getFirst());
 
             when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
             when(((Decorated<WebDriver>) decoratedWebDriver).getOriginal()).thenReturn(webDriver);
-        });
-
-        final WebDriver actual = driverResolver.resolveParameter(parameterContext, context);
-        verificationsFor(actual);
-        verify(autoWait, never()).getTimeout();
-
-        mockedConstruction.close();
+        })) {
+            final WebDriver actual = driverResolver.resolveParameter(parameterContext, context);
+            verificationsFor(actual);
+            verify(autoWait, never()).getTimeout();
+        }
     }
 
     @Test
     @DisplayName("resolveParameter should return the instance of the webDriver decorated with the default event listener")
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     void resolveParameterAutoWait() {
         stubs();
         when(autoWait.isEnabled()).thenReturn(true);
@@ -321,32 +320,26 @@ class DriverResolverTest {
         when(autoWaitWebDriverListenerBuilder.locatorPattern(pattern)).thenReturn(autoWaitWebDriverListenerBuilder);
         when(autoWaitWebDriverListenerBuilder.build()).thenReturn(autoWaitWebDriverListener);
 
-        final MockedConstruction<Actions> actionsMockedConstruction = mockConstruction((mock, executionContext) -> {
+        try (MockedConstruction<Actions> ignored = mockConstruction((mock, executionContext) -> {
             assertEquals(webDriver, executionContext.arguments().getFirst());
 
             when(autoWaitWebDriverListenerBuilder.actions(mock)).thenReturn(autoWaitWebDriverListenerBuilder);
         });
+                MockedConstruction<WebDriverWait> ignored2 = mockConstruction((mock, executionContext) -> {
+                    assertEquals(webDriver, executionContext.arguments().getFirst());
+                    assertEquals(autoWaitTimeout, executionContext.arguments().get(1));
 
-        final MockedConstruction<WebDriverWait> webDriverWaitMockedConstruction = mockConstruction((mock, executionContext) -> {
-            assertEquals(webDriver, executionContext.arguments().getFirst());
-            assertEquals(autoWaitTimeout, executionContext.arguments().get(1));
+                    when(autoWaitWebDriverListenerBuilder.webDriverWait(mock)).thenReturn(autoWaitWebDriverListenerBuilder);
+                });
+                MockedConstruction<EventFiringDecorator> ignored3 = mockConstruction((mock, executionContext) -> {
+                    assertArrayEquals(List.of(autoWaitWebDriverListener, eventsWebDriverListener).toArray(), (WebDriverListener[]) executionContext.arguments().getFirst());
 
-            when(autoWaitWebDriverListenerBuilder.webDriverWait(mock)).thenReturn(autoWaitWebDriverListenerBuilder);
-        });
+                    when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
+                    when(((Decorated<WebDriver>) decoratedWebDriver).getOriginal()).thenReturn(webDriver);
+                });) {
 
-        //noinspection rawtypes
-        final MockedConstruction<EventFiringDecorator> mockedConstruction = mockConstruction((mock, executionContext) -> {
-            assertArrayEquals(List.of(autoWaitWebDriverListener, eventsWebDriverListener).toArray(), (WebDriverListener[]) executionContext.arguments().getFirst());
-
-            when(mock.decorate(webDriver)).thenReturn(decoratedWebDriver);
-            when(((Decorated<WebDriver>) decoratedWebDriver).getOriginal()).thenReturn(webDriver);
-        });
-
-        final WebDriver actual = driverResolver.resolveParameter(parameterContext, context);
-        verificationsFor(actual);
-
-        actionsMockedConstruction.close();
-        mockedConstruction.close();
-        webDriverWaitMockedConstruction.close();
+            final WebDriver actual = driverResolver.resolveParameter(parameterContext, context);
+            verificationsFor(actual);
+        }
     }
 }

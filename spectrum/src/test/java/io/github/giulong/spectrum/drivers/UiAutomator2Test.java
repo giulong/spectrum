@@ -2,7 +2,9 @@ package io.github.giulong.spectrum.drivers;
 
 import static io.github.giulong.spectrum.drivers.Android.APP_CAPABILITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -12,7 +14,6 @@ import io.github.giulong.spectrum.MockFinal;
 import io.github.giulong.spectrum.utils.Configuration;
 import io.github.giulong.spectrum.utils.Reflections;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,58 +41,59 @@ class UiAutomator2Test {
     @InjectMocks
     private UiAutomator2 uiAutomator2;
 
-    @BeforeEach
-    void beforeEach() {
-        Reflections.setField("capabilities", uiAutomator2, uiAutomator2Options);
+    @Test
+    @DisplayName("buildCapabilities should do nothing")
+    void buildCapabilities() {
+        assertEquals(uiAutomator2, uiAutomator2.buildCapabilities());
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options " +
+    @DisplayName("mergeCapabilitiesWith should build a new instance of UiAutomator2Options " +
             "and set the capabilities from the yaml on it, when a relative path is provided as 'app' capability")
-    void buildCapabilities() {
+    void mergeCapabilitiesWith() {
         final Path path = Path.of("relative", "path");
         final String appPath = path.toString();
         final String appAbsolutePath = path.toAbsolutePath().toString();
 
-        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(
-                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
+        Reflections.setField("capabilities", uiAutomator2, uiAutomator2Options);
 
-        when(configuration.getDrivers()).thenReturn(drivers);
-        when(drivers.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
-        when(uiAutomator2Configuration.getCapabilities()).thenReturn(capabilities);
+        try (MockedConstruction<UiAutomator2Options> mockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()))) {
 
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
+            when(drivers.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
+            when(uiAutomator2Configuration.getCapabilities()).thenReturn(capabilities);
 
-        uiAutomator2.buildCapabilities();
+            when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
-        final UiAutomator2Options actual = Reflections.getFieldValue("capabilities", uiAutomator2);
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+            assertEquals(uiAutomator2, uiAutomator2.mergeCapabilitiesWith(drivers));
 
-        verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
+            final UiAutomator2Options actual = Reflections.getFieldValue("capabilities", uiAutomator2);
+            assertEquals(mockedConstruction.constructed().getFirst(), actual);
 
-        desiredCapabilitiesMockedConstruction.close();
+            verify(capabilities).put(APP_CAPABILITY, appAbsolutePath);
+        }
     }
 
     @Test
-    @DisplayName("buildCapabilities should build a new instance of UiAutomator2Options " +
+    @DisplayName("mergeCapabilitiesWith should build a new instance of UiAutomator2Options " +
             "and set the capabilities from the yaml on it, when an absolute path is provided as 'app' capability")
-    void buildCapabilitiesAbsoluteAppPath() {
+    void mergeCapabilitiesWithAbsoluteAppPath() {
         final String appPath = Path.of("absolute", "path").toAbsolutePath().toString();
 
-        MockedConstruction<UiAutomator2Options> desiredCapabilitiesMockedConstruction = mockConstruction(
-                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()));
+        Reflections.setField("capabilities", uiAutomator2, uiAutomator2Options);
 
-        when(configuration.getDrivers()).thenReturn(drivers);
-        when(drivers.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
-        when(uiAutomator2Configuration.getCapabilities()).thenReturn(capabilities);
+        try (MockedConstruction<UiAutomator2Options> mockedConstruction = mockConstruction(
+                (mock, context) -> assertEquals(capabilities, context.arguments().getFirst()))) {
 
-        when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
+            when(drivers.getUiAutomator2()).thenReturn(uiAutomator2Configuration);
+            when(uiAutomator2Configuration.getCapabilities()).thenReturn(capabilities);
 
-        uiAutomator2.buildCapabilities();
+            when(capabilities.get(APP_CAPABILITY)).thenReturn(appPath);
 
-        final UiAutomator2Options actual = Reflections.getFieldValue("capabilities", uiAutomator2);
-        assertEquals(desiredCapabilitiesMockedConstruction.constructed().getFirst(), actual);
+            assertEquals(uiAutomator2, uiAutomator2.mergeCapabilitiesWith(drivers));
 
-        desiredCapabilitiesMockedConstruction.close();
+            final UiAutomator2Options actual = Reflections.getFieldValue("capabilities", uiAutomator2);
+            assertEquals(mockedConstruction.constructed().getFirst(), actual);
+        }
     }
 }

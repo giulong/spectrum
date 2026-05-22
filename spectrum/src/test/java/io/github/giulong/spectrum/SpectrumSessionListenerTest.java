@@ -130,7 +130,7 @@ class SpectrumSessionListenerTest {
         // parseConfig
         when(yamlUtils.readInternalNode(CONFIG_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(config);
 
-        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION)).thenReturn(profile);
+        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION_NAME)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn("defaultProfile");
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(Map.of("one", "one"));
 
@@ -147,7 +147,7 @@ class SpectrumSessionListenerTest {
         slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::install);
 
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
-        verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION);
+        verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION_NAME);
         verify(yamlUtils).updateWithClientFile(configuration, profileConfiguration);
 
         verify(launcher).registerTestExecutionListeners(summaryGeneratingListener);
@@ -186,7 +186,7 @@ class SpectrumSessionListenerTest {
         System.setProperty("os.name", "Win");
 
         // parseProfile
-        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION)).thenReturn("");
+        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION_NAME)).thenReturn("");
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn("defaultProfile");
 
         // parseVars
@@ -195,7 +195,7 @@ class SpectrumSessionListenerTest {
         spectrumSessionListener.parseConfiguration();
 
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
-        verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION);
+        verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION_NAME);
     }
 
     @Test
@@ -207,7 +207,7 @@ class SpectrumSessionListenerTest {
         System.setProperty("os.name", "Win");
 
         // parseProfile
-        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION)).thenReturn(profile);
+        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION_NAME)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn("defaultProfile");
 
         // parseVars
@@ -216,7 +216,7 @@ class SpectrumSessionListenerTest {
         spectrumSessionListener.parseConfiguration();
 
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
-        verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION);
+        verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION_NAME);
         verify(yamlUtils).updateWithClientFile(configuration, profileConfiguration);
     }
 
@@ -229,7 +229,7 @@ class SpectrumSessionListenerTest {
         System.setProperty("os.name", "nix");
 
         // parseProfiles
-        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION)).thenReturn(profile);
+        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION_NAME)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn("defaultProfile");
 
         // parseVars
@@ -240,7 +240,7 @@ class SpectrumSessionListenerTest {
 
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_YAML);
         verify(yamlUtils).updateWithInternalFile(configuration, DEFAULT_CONFIGURATION_UNIX_YAML);
-        verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION);
+        verify(yamlUtils).updateWithClientFile(configuration, CONFIGURATION_NAME);
         verify(yamlUtils).updateWithClientFile(configuration, profileConfiguration);
     }
 
@@ -248,7 +248,7 @@ class SpectrumSessionListenerTest {
     @ParameterizedTest(name = "with profile {0} and default profile {1} we expect {2}")
     @MethodSource("profilesValuesProvider")
     void parseProfiles(final String profile, final String defaultProfile, final List<String> expected) {
-        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION)).thenReturn(profile);
+        when(yamlUtils.readClientNode(PROFILE_NODE, CONFIGURATION_NAME)).thenReturn(profile);
         when(yamlUtils.readInternalNode(PROFILE_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(defaultProfile);
 
         assertEquals(expected, spectrumSessionListener.parseProfiles());
@@ -274,7 +274,7 @@ class SpectrumSessionListenerTest {
         spectrumSessionListener.parseConfig();
 
         verify(yamlUtils, never()).updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
-        verify(yamlUtils).updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
+        verify(yamlUtils).updateWithClientNode(config, CONFIG_NODE, CONFIGURATION_NAME);
     }
 
     @Test
@@ -287,7 +287,7 @@ class SpectrumSessionListenerTest {
         spectrumSessionListener.parseConfig();
 
         verify(yamlUtils).updateWithInternalNode(config, CONFIG_NODE, DEFAULT_CONFIGURATION_UNIX_YAML);
-        verify(yamlUtils).updateWithClientNode(config, CONFIG_NODE, CONFIGURATION);
+        verify(yamlUtils).updateWithClientNode(config, CONFIG_NODE, CONFIGURATION_NAME);
     }
 
     @DisplayName("parseVars should put in the VARS map all the variables read from the configuration yaml files")
@@ -299,7 +299,7 @@ class SpectrumSessionListenerTest {
         System.setProperty("os.name", "Win");
 
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(defaultVars);
-        when(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION)).thenReturn(vars);
+        when(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION_NAME)).thenReturn(vars);
         when(yamlUtils.readClientNode(VARS_NODE, profileConfiguration)).thenReturn(envVars);
 
         spectrumSessionListener.parseVars(List.of(profileConfiguration));
@@ -318,7 +318,7 @@ class SpectrumSessionListenerTest {
 
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_YAML)).thenReturn(defaultVars);
         when(yamlUtils.readInternalNode(VARS_NODE, DEFAULT_CONFIGURATION_UNIX_YAML)).thenReturn(defaultVars);
-        when(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION)).thenReturn(vars);
+        when(yamlUtils.readClientNode(VARS_NODE, CONFIGURATION_NAME)).thenReturn(vars);
         when(yamlUtils.readClientNode(VARS_NODE, profileConfiguration)).thenReturn(envVars);
 
         spectrumSessionListener.parseVars(List.of(profileConfiguration));

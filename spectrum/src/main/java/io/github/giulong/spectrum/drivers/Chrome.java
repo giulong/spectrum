@@ -1,8 +1,10 @@
 package io.github.giulong.spectrum.drivers;
 
 import io.github.giulong.spectrum.utils.Configuration;
+import io.github.giulong.spectrum.utils.Configuration.Drivers;
 
 import org.openqa.selenium.chrome.ChromeDriverService;
+import org.openqa.selenium.chrome.ChromeDriverService.Builder;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.service.DriverService;
 
@@ -23,15 +25,23 @@ public class Chrome extends Chromium<ChromeOptions, ChromeDriverService, ChromeD
     }
 
     @Override
-    void buildCapabilities() {
-        final Configuration.Drivers driversConfiguration = configuration.getDrivers();
-        final Configuration.Drivers.Chrome chrome = driversConfiguration.getChrome();
+    public Chrome buildCapabilities() {
+        capabilities = new ChromeOptions();
 
-        capabilities = new ChromeOptions().addArguments(chrome.getArgs());
+        return this;
+    }
+
+    @Override
+    public Driver<ChromeOptions, ChromeDriverService, Builder> mergeCapabilitiesWith(final Drivers drivers) {
+        final Configuration.Drivers.Chrome chrome = drivers.getChrome();
+
+        capabilities.addArguments(chrome.getArgs());
 
         chrome.getCapabilities().forEach(capabilities::setCapability);
         chrome.getExperimentalOptions().forEach(capabilities::setExperimentalOption);
-        setLoggingPreferencesFrom(driversConfiguration.getLogs());
-        activateBiDi(capabilities, configuration, chrome);
+        setLoggingPreferencesFrom(drivers.getLogs());
+        activateBiDi(capabilities, drivers, chrome);
+
+        return this;
     }
 }

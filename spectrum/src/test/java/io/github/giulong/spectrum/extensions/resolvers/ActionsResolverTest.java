@@ -38,12 +38,11 @@ class ActionsResolverTest {
         when(extensionContext.getStore(GLOBAL)).thenReturn(store);
         when(store.get(DRIVER, WebDriver.class)).thenReturn(webDriver);
 
-        MockedConstruction<Actions> mockedConstruction = mockConstruction();
-        Actions actual = actionsResolver.resolveParameter(parameterContext, extensionContext);
-        Actions actions = mockedConstruction.constructed().getFirst();
-        verify(store).put(ActionsResolver.ACTIONS, actions);
-        assertEquals(actions, actual);
-
-        mockedConstruction.close();
+        try (MockedConstruction<Actions> mockedConstruction = mockConstruction()) {
+            Actions actual = actionsResolver.resolveParameter(parameterContext, extensionContext);
+            Actions actions = mockedConstruction.constructed().getFirst();
+            verify(store).put(ActionsResolver.ACTIONS, actions);
+            assertEquals(actions, actual);
+        }
     }
 }

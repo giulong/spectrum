@@ -1,7 +1,11 @@
 package io.github.giulong.spectrum.drivers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.List;
@@ -28,7 +32,7 @@ class FirefoxTest {
     private Configuration configuration;
 
     @Mock
-    private Configuration.Drivers driversConfig;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Configuration.Drivers.Firefox firefoxConfig;
@@ -47,8 +51,8 @@ class FirefoxTest {
     void getDriverServiceBuilder() {
         final String allowHosts = "allowHosts";
 
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getService()).thenReturn(service);
         when(service.getAllowHosts()).thenReturn(allowHosts);
         when(service.getLogLevel()).thenReturn(FirefoxDriverLogLevel.TRACE);
@@ -69,70 +73,78 @@ class FirefoxTest {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build an instance of Firefox based on the provided configuration")
+    @DisplayName("buildCapabilities should build an instance of Firefox")
     void buildCapabilities() {
+        try (MockedConstruction<FirefoxOptions> mockedConstruction = mockConstruction()) {
+            assertEquals(firefox, firefox.buildCapabilities());
+
+            final FirefoxOptions actual = Reflections.getFieldValue("capabilities", firefox);
+            assertEquals(mockedConstruction.constructed().getFirst(), actual);
+        }
+    }
+
+    @Test
+    @DisplayName("mergeCapabilitiesWith should merge an instance of Firefox based on the provided configuration")
+    void mergeCapabilitiesWith() {
         final List<String> arguments = List.of("args");
         final String binary = "binary";
 
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
+        when(drivers.getFirefox()).thenReturn(firefoxConfig);
         when(firefoxConfig.getBinary()).thenReturn(binary);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
         when(firefoxConfig.getPreferences()).thenReturn(Map.of("preference", "value1"));
         when(firefoxConfig.getCapabilities()).thenReturn(Map.of("capability", "value2"));
 
         // activateBiDi
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.isBiDi()).thenReturn(false);
-        lenient().when(firefoxConfig.isBiDi()).thenReturn(true);
+        when(drivers.isBiDi()).thenReturn(false);
+        when(firefoxConfig.isBiDi()).thenReturn(true);
 
-        MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction((mock, context) -> {
+        try (MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction((mock, context) -> {
             when(mock.addArguments(arguments)).thenReturn(mock);
             when(mock.setBinary(binary)).thenReturn(mock);
-        });
+        })) {
 
-        firefox.buildCapabilities();
+            assertEquals(firefox, firefox.mergeCapabilitiesWith(drivers));
 
-        final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
-        verify(firefoxOptions).addPreference("preference", "value1");
-        verify(firefoxOptions).setBinary(binary);
-        verify(firefoxOptions).setCapability("capability", (Object) "value2");
-        verify(firefoxOptions).setCapability("webSocketUrl", true);
+            final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
+            verify(firefoxOptions).addPreference("preference", "value1");
+            verify(firefoxOptions).setBinary(binary);
+            verify(firefoxOptions).setCapability("capability", (Object) "value2");
+            verify(firefoxOptions).setCapability("webSocketUrl", true);
 
-        assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
-
-        firefoxOptionsMockedConstruction.close();
+            assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
+        }
     }
 
     @Test
-    @DisplayName("buildCapabilities should build an instance of Firefox based on the provided configuration")
-    void buildCapabilitiesNoBinary() {
+    @DisplayName("mergeCapabilitiesWith should merge an instance of Firefox based on the provided configuration with no binary")
+    void mergeCapabilitiesWithNoBinary() {
         final List<String> arguments = List.of("args");
+        final String binary = "binary";
 
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.getFirefox()).thenReturn(firefoxConfig);
+        when(drivers.getFirefox()).thenReturn(firefoxConfig);
+        when(firefoxConfig.getBinary()).thenReturn(null);
         when(firefoxConfig.getArgs()).thenReturn(arguments);
         when(firefoxConfig.getPreferences()).thenReturn(Map.of("preference", "value1"));
         when(firefoxConfig.getCapabilities()).thenReturn(Map.of("capability", "value2"));
 
         // activateBiDi
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.isBiDi()).thenReturn(false);
-        lenient().when(firefoxConfig.isBiDi()).thenReturn(true);
+        when(drivers.isBiDi()).thenReturn(false);
+        when(firefoxConfig.isBiDi()).thenReturn(true);
 
-        final MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction(
-                (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
+        try (MockedConstruction<FirefoxOptions> firefoxOptionsMockedConstruction = mockConstruction((mock, context) -> {
+            when(mock.addArguments(arguments)).thenReturn(mock);
+            when(mock.setBinary(binary)).thenReturn(mock);
+        })) {
+            assertEquals(firefox, firefox.mergeCapabilitiesWith(drivers));
 
-        firefox.buildCapabilities();
+            final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
+            verify(firefoxOptions).addPreference("preference", "value1");
+            verify(firefoxOptions, never()).setBinary(anyString());
+            verify(firefoxOptions).setCapability("capability", (Object) "value2");
+            verify(firefoxOptions).setCapability("webSocketUrl", true);
 
-        final FirefoxOptions firefoxOptions = firefoxOptionsMockedConstruction.constructed().getFirst();
-        verify(firefoxOptions).addPreference("preference", "value1");
-        verify(firefoxOptions, never()).setBinary(anyString());
-        verify(firefoxOptions).setCapability("capability", (Object) "value2");
-        verify(firefoxOptions).setCapability("webSocketUrl", true);
-
-        assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
-
-        firefoxOptionsMockedConstruction.close();
+            assertEquals(firefoxOptions, Reflections.getFieldValue("capabilities", firefox));
+        }
     }
 }

@@ -1,9 +1,13 @@
 package io.github.giulong.spectrum.drivers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.openqa.selenium.chrome.ChromeOptions.LOGGING_PREFS;
-import static org.openqa.selenium.logging.LogType.*;
+import static org.openqa.selenium.logging.LogType.BROWSER;
+import static org.openqa.selenium.logging.LogType.DRIVER;
+import static org.openqa.selenium.logging.LogType.PERFORMANCE;
 
 import java.util.List;
 import java.util.Map;
@@ -27,7 +31,7 @@ import org.openqa.selenium.remote.service.DriverService;
 class ChromeTest {
 
     @Mock
-    private Configuration.Drivers driversConfig;
+    private Configuration.Drivers drivers;
 
     @Mock
     private Configuration.Drivers.Chrome chromeConfig;
@@ -51,6 +55,9 @@ class ChromeTest {
     @Mock
     private Configuration.Drivers.Chrome.Service service;
 
+    @Mock
+    private ChromeOptions capabilities;
+
     @InjectMocks
     private Chrome chrome;
 
@@ -59,8 +66,8 @@ class ChromeTest {
     void getDriverServiceBuilder() {
         final String allowedListIps = "allowedListIps";
 
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.getChrome()).thenReturn(chromeConfig);
+        when(configuration.getDrivers()).thenReturn(drivers);
+        when(drivers.getChrome()).thenReturn(chromeConfig);
         when(chromeConfig.getService()).thenReturn(service);
         when(service.isBuildCheckDisabled()).thenReturn(true);
         when(service.isAppendLog()).thenReturn(true);
@@ -87,46 +94,53 @@ class ChromeTest {
     }
 
     @Test
-    @DisplayName("buildCapabilities should build an instance of Chrome based on the provided configuration")
+    @DisplayName("buildCapabilities should build an instance of ChromeOptions")
     void buildCapabilities() {
+        try (MockedConstruction<ChromeOptions> edgeOptionsMockedConstruction = mockConstruction()) {
+            assertEquals(chrome, chrome.buildCapabilities());
+
+            final ChromeOptions chromeOptions = edgeOptionsMockedConstruction.constructed().getFirst();
+
+            assertEquals(chromeOptions, Reflections.getFieldValue("capabilities", chrome));
+        }
+    }
+
+    @Test
+    @DisplayName("mergeCapabilitiesWith should merge the provided configuration")
+    void mergeCapabilitiesWith() {
         final List<String> arguments = List.of("args");
 
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.getChrome()).thenReturn(chromeConfig);
-        when(driversConfig.getLogs()).thenReturn(logs);
-        when(chromeConfig.getArgs()).thenReturn(arguments);
+        Reflections.setField("capabilities", chrome, capabilities);
+
+        when(drivers.getChrome()).thenReturn(chromeConfig);
+        when(drivers.getLogs()).thenReturn(logs);
         when(logs.getBrowser()).thenReturn(browserLevel);
         when(logs.getDriver()).thenReturn(driverLevel);
         when(logs.getPerformance()).thenReturn(performanceLevel);
+        when(chromeConfig.getArgs()).thenReturn(arguments);
         when(chromeConfig.getCapabilities()).thenReturn(Map.of("capability", "value1"));
         when(chromeConfig.getExperimentalOptions()).thenReturn(Map.of("experimental", "value2"));
 
         // activateBiDi
-        when(configuration.getDrivers()).thenReturn(driversConfig);
-        when(driversConfig.isBiDi()).thenReturn(false);
-        lenient().when(chromeConfig.isBiDi()).thenReturn(true);
+        when(drivers.isBiDi()).thenReturn(false);
+        when(chromeConfig.isBiDi()).thenReturn(true);
 
-        MockedConstruction<ChromeOptions> chromeOptionsMockedConstruction = mockConstruction(
-                (mock, context) -> when(mock.addArguments(arguments)).thenReturn(mock));
-        MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction();
+        try (MockedConstruction<LoggingPreferences> loggingPreferencesMockedConstruction = mockConstruction()) {
 
-        chrome.buildCapabilities();
-        final ChromeOptions chromeOptions = chromeOptionsMockedConstruction.constructed().getFirst();
-        verify(chromeOptions).addArguments(arguments);
+            assertEquals(chrome, chrome.mergeCapabilitiesWith(drivers));
 
-        final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().getFirst();
-        verify(loggingPreferences).enable(BROWSER, browserLevel);
-        verify(loggingPreferences).enable(DRIVER, driverLevel);
-        verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
-        verify(chromeOptions).setCapability(LOGGING_PREFS, loggingPreferences);
+            final LoggingPreferences loggingPreferences = loggingPreferencesMockedConstruction.constructed().getFirst();
 
-        verify(chromeOptions).setCapability("capability", (Object) "value1");
-        verify(chromeOptions).setExperimentalOption("experimental", "value2");
-        verify(chromeOptions).setCapability("webSocketUrl", true);
+            verify(loggingPreferences).enable(BROWSER, browserLevel);
+            verify(loggingPreferences).enable(DRIVER, driverLevel);
+            verify(loggingPreferences).enable(PERFORMANCE, performanceLevel);
+            verify(capabilities).setCapability(LOGGING_PREFS, loggingPreferences);
 
-        assertEquals(chromeOptions, Reflections.getFieldValue("capabilities", chrome));
+            verify(capabilities).setCapability("capability", (Object) "value1");
+            verify(capabilities).setExperimentalOption("experimental", "value2");
+            verify(capabilities).setCapability("webSocketUrl", true);
 
-        chromeOptionsMockedConstruction.close();
-        loggingPreferencesMockedConstruction.close();
+            assertEquals(capabilities, Reflections.getFieldValue("capabilities", chrome));
+        }
     }
 }

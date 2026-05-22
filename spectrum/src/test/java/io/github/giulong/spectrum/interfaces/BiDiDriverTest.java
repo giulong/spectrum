@@ -22,9 +22,6 @@ class BiDiDriverTest {
     private ChromeOptions capabilities;
 
     @Mock
-    private Configuration configuration;
-
-    @Mock
     private Configuration.Drivers.Chrome biDiDriverConfiguration;
 
     @Mock
@@ -37,11 +34,10 @@ class BiDiDriverTest {
     @ParameterizedTest(name = "with all drivers bidi {0} and specific driver bidi {1} we expect {2}")
     @MethodSource("valuesProvider")
     void activateBiDi(final boolean allDriversBiDi, final boolean driverBiDi, final boolean expected) {
-        when(configuration.getDrivers()).thenReturn(drivers);
         when(drivers.isBiDi()).thenReturn(allDriversBiDi);
         lenient().when(biDiDriverConfiguration.isBiDi()).thenReturn(driverBiDi);
 
-        chrome.activateBiDi(capabilities, configuration, biDiDriverConfiguration);
+        chrome.activateBiDi(capabilities, drivers, biDiDriverConfiguration);
 
         verify(capabilities).setCapability("webSocketUrl", expected);
     }
