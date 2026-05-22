@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 
 import com.sun.net.httpserver.HttpServer;
 
+import io.github.giulong.spectrum.SpectrumSessionListener;
 import io.github.giulong.spectrum.drivers.Driver;
 import io.github.giulong.spectrum.generation.generators.SpectrumTestGenerator;
 import io.github.giulong.spectrum.generation.server.ActionHandler;
@@ -381,6 +382,10 @@ class RecordingTest {
     @DisplayName("main should create a Recording instance and act as the entry point to the record and playback feature")
     void mainTest() {
         try (MockedStatic<Recording> recordingMockedStatic = mockStatic();
+                MockedConstruction<SpectrumSessionListener> spectrumSessionListenerMockedConstruction = mockConstruction((mock, context) -> {
+                    when(mock.redirectJulToSlf4j()).thenReturn(mock);
+                    when(mock.parseConfig()).thenReturn(mock);
+                });
                 MockedConstruction<InetSocketAddress> ignored = mockConstruction((mock, context) -> {
                     assertEquals(0, context.arguments().getFirst());
                     when(HttpServer.create(mock, 0)).thenReturn(httpServer);
@@ -407,6 +412,9 @@ class RecordingTest {
             when(recordingMock.generate()).thenReturn(recordingMock);
 
             Recording.main(null);
+
+            final SpectrumSessionListener constructedSpectrumSessionListener = spectrumSessionListenerMockedConstruction.constructed().getFirst();
+            verify(constructedSpectrumSessionListener).parseConfiguration();
 
             final List<List<Action>> actualActions = actionsArgumentCaptor.getAllValues();
             assertEquals(2, actualActions.size());

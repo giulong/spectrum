@@ -38,8 +38,7 @@ public class SpectrumSessionListener implements LauncherSessionListener {
 
     @Override
     public void launcherSessionOpened(final LauncherSession session) {
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        SLF4JBridgeHandler.install();
+        redirectJulToSlf4j();
 
         final ProjectProperties projectProperties = yamlUtils.readInternal("properties.yaml", ProjectProperties.class);
         log.info(freeMarkerWrapper.interpolate(fileUtils.read("banner.txt"), projectProperties));
@@ -66,6 +65,13 @@ public class SpectrumSessionListener implements LauncherSessionListener {
         metadataManager.sessionClosed();
         extentReporter.sessionClosed();
         eventsDispatcher.sessionClosed();
+    }
+
+    public SpectrumSessionListener redirectJulToSlf4j() {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
+        return this;
     }
 
     public SpectrumSessionListener parseConfig() {

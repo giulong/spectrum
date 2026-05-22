@@ -103,6 +103,7 @@ class SpectrumSessionListenerTest {
     @BeforeEach
     void beforeEach() {
         osName = System.getProperty("os.name");
+        Vars.getInstance().clear();
         slf4JBridgeHandlerMockedStatic = mockStatic();
     }
 
@@ -143,6 +144,7 @@ class SpectrumSessionListenerTest {
 
         spectrumSessionListener.launcherSessionOpened(launcherSession);
 
+        // redirectJulToSlf4j
         slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::removeHandlersForRootLogger);
         slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::install);
 
@@ -178,6 +180,15 @@ class SpectrumSessionListenerTest {
         inOrder.verify(metadataManager).sessionClosed();
         inOrder.verify(extentReporter).sessionClosed();
         inOrder.verify(eventsDispatcher).sessionClosed();
+    }
+
+    @Test
+    @DisplayName("redirectJulToSlf4j should call the Slf4j bridge handler")
+    void redirectJulToSlf4j() {
+        assertEquals(spectrumSessionListener, spectrumSessionListener.redirectJulToSlf4j());
+
+        slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::removeHandlersForRootLogger);
+        slf4JBridgeHandlerMockedStatic.verify(SLF4JBridgeHandler::install);
     }
 
     @Test

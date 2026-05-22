@@ -168,7 +168,10 @@ public class Recording {
         final List<Action> actions = new ArrayList<>();
 
         if (args == null || args.length == 0) {
-            new SpectrumSessionListener().parseConfig().parseConfiguration();
+            new SpectrumSessionListener()
+                    .redirectJulToSlf4j()
+                    .parseConfig()
+                    .parseConfiguration();
         }
 
         instance = Recording
