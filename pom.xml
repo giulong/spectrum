@@ -46,7 +46,7 @@
         <jar.skipIfEmpty>true</jar.skipIfEmpty>
         <maven.install.skip>true</maven.install.skip>
 
-        <dependency.junit.version>6.0.3</dependency.junit.version>
+        <dependency.junit.version>6.1.0</dependency.junit.version>
         <dependency.mockito.version>5.23.0</dependency.mockito.version>
         <dependency.hamcrest.version>3.0</dependency.hamcrest.version>
         <dependency.systemlambda.version>1.2.1</dependency.systemlambda.version>
