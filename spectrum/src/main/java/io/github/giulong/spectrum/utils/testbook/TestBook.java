@@ -98,7 +98,7 @@ public class TestBook implements SessionHook, Reportable {
 
         reporters
                 .stream()
-                .filter(canReportTestBook -> canReportTestBook instanceof FileReporter)
+                .filter(FileReporter.class::isInstance)
                 .map(FileReporter.class::cast)
                 .map(FileReporter::getOutput)
                 .forEach(output -> {

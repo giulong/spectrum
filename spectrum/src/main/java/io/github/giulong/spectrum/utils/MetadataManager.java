@@ -54,14 +54,14 @@ public class MetadataManager implements SessionHook {
                     .getTestBook()
                     .getReporters()
                     .stream()
-                    .filter(canReportTestBook -> canReportTestBook instanceof CanProduceMetadata)
+                    .filter(CanProduceMetadata.class::isInstance)
                     .map(CanProduceMetadata.class::cast)
                     .forEach(CanProduceMetadata::produceMetadata);
 
             summary
                     .getReporters()
                     .stream()
-                    .filter(canReportSummary -> canReportSummary instanceof CanProduceMetadata)
+                    .filter(CanProduceMetadata.class::isInstance)
                     .map(CanProduceMetadata.class::cast)
                     .forEach(CanProduceMetadata::produceMetadata);
         }

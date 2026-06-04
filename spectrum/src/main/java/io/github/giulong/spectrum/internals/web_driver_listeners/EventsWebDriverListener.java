@@ -53,7 +53,7 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
     List<String> parse(final Object[] args) {
         return Arrays
                 .stream(args)
-                .map(arg -> arg instanceof WebElement ? extractSelectorFrom((WebElement) arg) : String.valueOf(arg))
+                .map(arg -> arg instanceof WebElement webElement ? extractSelectorFrom(webElement) : String.valueOf(arg))
                 .toList();
     }
 
@@ -500,7 +500,7 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
 
     @Override
     public <X> void afterGetScreenshotAs(final WebDriver driver, final OutputType<X> target, final X result) {
-        if (result instanceof byte[]) {
+        if (result instanceof byte[] bytes) {
             final ExtensionContext context = testContext.get(EXTENSION_CONTEXT, ExtensionContext.class);
             final Screenshot screenshot = Optional
                     .ofNullable(context.getStore(GLOBAL).get(TEST_DATA, TestData.class).getScreenshot())
@@ -513,7 +513,7 @@ public class EventsWebDriverListener extends SpectrumWebDriverListener {
 
             final Payload payload = Payload
                     .builder()
-                    .screenshot((byte[]) result)
+                    .screenshot(bytes)
                     .message(screenshot.getMessage())
                     .status(screenshot.getStatus())
                     .takesScreenshot((TakesScreenshot) driver)

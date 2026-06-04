@@ -283,7 +283,7 @@ public class Js {
     public Js sendKeys(final WebElement webElement, final CharSequence... keysToSend) {
         final String escapedKeysToSend = Arrays
                 .stream(keysToSend)
-                .map(key -> key instanceof String ? stringUtils.escape((String) key) : key)
+                .map(key -> key instanceof String s ? stringUtils.escape(s) : key)
                 .collect(joining());
 
         driver.executeScript(String.format("arguments[0].value='%s';", escapedKeysToSend), webElement);

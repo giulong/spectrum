@@ -55,7 +55,7 @@ public class Summary implements SessionHook, Reportable {
     public void sessionOpened() {
         reporters
                 .stream()
-                .filter(canReportSummary -> canReportSummary instanceof FileReporter)
+                .filter(FileReporter.class::isInstance)
                 .map(FileReporter.class::cast)
                 .map(FileReporter::getOutput)
                 .forEach(output -> {
