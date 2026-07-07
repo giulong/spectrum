@@ -21,6 +21,7 @@ drivers:
   edge:
     args:
       - --headless=new
+      - --no-sandbox
 
 video:
   frames:
