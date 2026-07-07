@@ -70,7 +70,7 @@ jobs:
           - os: windows-latest
             profiles: windows
             directives: -DwindowsTests
-            moduleName: it
+            moduleName: it-windows
     runs-on: ${{ matrix.os }}
     env:
       VERSION: ${{ needs.build.outputs.version }}

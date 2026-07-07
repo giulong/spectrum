@@ -467,7 +467,6 @@
                             -Dfile.encoding=UTF-8
                             -javaagent:${settings.localRepository}/org/mockito/mockito-core/${dependency.mockito.version}/mockito-core-${dependency.mockito.version}.jar
                         </argLine>
-                        <reportsDirectory>${reportsDirectory}</reportsDirectory>
                         <trimStackTrace>true</trimStackTrace>
                         <systemPropertyVariables>
                             <junit.jupiter.execution.parallel.enabled>false</junit.jupiter.execution.parallel.enabled>
