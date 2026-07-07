@@ -48,11 +48,11 @@
 
         <dependency.maven-model.version>3.9.16</dependency.maven-model.version>
 
-        <plugin.jacoco.version>0.8.14</plugin.jacoco.version>
+        <plugin.jacoco.version>0.8.15</plugin.jacoco.version>
         <plugin.source.version>3.4.0</plugin.source.version>
         <plugin.javadoc.version>3.12.0</plugin.javadoc.version>
         <plugin.gpg.version>3.2.8</plugin.gpg.version>
-        <plugin.central-publishing.version>0.10.0</plugin.central-publishing.version>
+        <plugin.central-publishing.version>0.11.0</plugin.central-publishing.version>
     </properties>
 
     <dependencies>

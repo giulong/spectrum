@@ -37,6 +37,7 @@ drivers:
   edge:
     args:
       - --headless=new
+      - --no-sandbox
       - --proxy-server=${proxyHost}:${proxyPort}
       - --proxy-bypass-list=${proxyBypass}
 
