@@ -595,10 +595,6 @@
                                     <token><![CDATA[<version>.*</version>]]></token>
                                     <value><![CDATA[<version>${revision}</version>]]></value>
                                 </replacement>
-                                <replacement>
-                                    <token>-DarchetypeVersion=.*</token>
-                                    <value>-DarchetypeVersion=${revision}</value>
-                                </replacement>
                             </replacements>
                         </configuration>
                     </execution>
@@ -614,10 +610,6 @@
                                 <replacement>
                                     <token><![CDATA[<version>.*</version>]]></token>
                                     <value><![CDATA[<version>${revision}</version>]]></value>
-                                </replacement>
-                                <replacement>
-                                    <token>-DarchetypeVersion=.*</token>
-                                    <value>-DarchetypeVersion=${revision}</value>
                                 </replacement>
                             </replacements>
                         </configuration>
