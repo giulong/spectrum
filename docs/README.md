@@ -38,7 +38,7 @@ You should leverage the latest published version of the [Spectrum Archetype](htt
 to create a new project either via your IDE or by running this from command line:
 
 ```shell
-mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=LATEST
+mvn archetype:generate -DarchetypeGroupId=io.github.giulong -DarchetypeArtifactId=spectrum-archetype -DarchetypeVersion=1.30.2
 ```
 
 > ⚠️ **Maven archetype:generate**<br/>
