@@ -237,8 +237,8 @@ public class Js {
                 "return [rectangle.x, rectangle.y, rectangle.width, rectangle.height];",
                 webElement);
 
-        final Point point = new Point((rectangle.get(0)).intValue(), (rectangle.get(1)).intValue());
-        final Dimension dimension = new Dimension((rectangle.get(2)).intValue(), (rectangle.get(3)).intValue());
+        final Point point = new Point(rectangle.get(0).intValue(), rectangle.get(1).intValue());
+        final Dimension dimension = new Dimension(rectangle.get(2).intValue(), rectangle.get(3).intValue());
 
         return new Rectangle(point, dimension);
     }
