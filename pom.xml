@@ -77,7 +77,7 @@
         <plugin.surefire.version>3.5.6</plugin.surefire.version>
         <plugin.failsafe.version>3.5.6</plugin.failsafe.version>
         <plugin.replacer.version>1.5.3</plugin.replacer.version>
-        <plugin.jar.version>3.5.0</plugin.jar.version>
+        <plugin.jar.version>3.5.1</plugin.jar.version>
         <plugin.enforcer.version>3.6.3</plugin.enforcer.version>
         <plugin.flatten.version>1.8.0</plugin.flatten.version>
         <plugin.jsonschemagenerator.version>5.0.0</plugin.jsonschemagenerator.version>
