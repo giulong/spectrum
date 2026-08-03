@@ -60,7 +60,7 @@
         <dependency.jspecify.version>1.0.0</dependency.jspecify.version>
         <dependency.appium.version>10.1.1</dependency.appium.version>
         <dependency.extent.version>5.1.2</dependency.extent.version>
-        <dependency.logback.version>1.6.0</dependency.logback.version>
+        <dependency.logback.version>1.6.1</dependency.logback.version>
         <dependency.freemarker.version>2.3.34</dependency.freemarker.version>
         <dependency.mvel.version>2.5.2.Final</dependency.mvel.version>
         <dependency.slack.version>1.49.0</dependency.slack.version>
