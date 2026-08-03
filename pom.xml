@@ -81,7 +81,7 @@
         <plugin.enforcer.version>3.6.3</plugin.enforcer.version>
         <plugin.flatten.version>1.8.0</plugin.flatten.version>
         <plugin.jsonschemagenerator.version>5.0.0</plugin.jsonschemagenerator.version>
-        <plugin.cyclonedx.version>2.9.2</plugin.cyclonedx.version>
+        <plugin.cyclonedx.version>2.9.3</plugin.cyclonedx.version>
     </properties>
 
     <profiles>
