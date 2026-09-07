@@ -54,7 +54,7 @@
         <dependency.jackson.annotation.version>2.22</dependency.jackson.annotation.version>
         <dependency.simplejavamail.version>9.3.2</dependency.simplejavamail.version>
         <dependency.jsonschemagenerator.version>5.0.0</dependency.jsonschemagenerator.version>
-        <dependency.slf4j.version>2.0.18</dependency.slf4j.version>
+        <dependency.slf4j.version>2.0.19</dependency.slf4j.version>
         <dependency.selenium.version>4.48.0</dependency.selenium.version>
         <dependency.lombok.version>1.18.48</dependency.lombok.version>
         <dependency.jspecify.version>1.0.1</dependency.jspecify.version>
