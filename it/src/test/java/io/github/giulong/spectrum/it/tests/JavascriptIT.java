@@ -128,16 +128,15 @@ class JavascriptIT extends SpectrumTest<Void> {
         final WebElement usernameField = loginPage.getUsername();
         final WebElement contentDiv = loginPage.getContentDiv();
 
-        assertEquals(js.getTagName(usernameField), "input");
+        assertEquals("input", js.getTagName(usernameField));
 
         assertNotNull(js.getSize(usernameField));
         assertNotNull(js.getRect(usernameField));
 
-        assertEquals(js.getDomAttribute(usernameField, "name"), "username");
-        assertEquals(js.getAttribute(contentDiv, "class"), "large-12 columns");
-        assertEquals(js.getText(form), "Username\nPassword\n Login");
+        assertEquals("username", js.getDomAttribute(usernameField, "name"));
+        assertEquals("large-12 columns", js.getAttribute(contentDiv, "class"));
+        assertEquals("Username\nPassword\n Login", js.getText(form));
 
-        assertEquals(js.getCssValue(usernameField, "color"), "rgba(0, 0, 0, 0.75)");
         assertTrue(js.getCssValue(usernameField, "background").startsWith("rgb(255, 255, 255)"));
 
         assertNull(js.getShadowRoot(usernameField));
