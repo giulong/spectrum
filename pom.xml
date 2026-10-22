@@ -58,7 +58,7 @@
         <dependency.selenium.version>4.49.0</dependency.selenium.version>
         <dependency.lombok.version>1.18.48</dependency.lombok.version>
         <dependency.jspecify.version>1.0.1</dependency.jspecify.version>
-        <dependency.appium.version>10.1.1</dependency.appium.version>
+        <dependency.appium.version>11.0.0</dependency.appium.version>
         <dependency.extent.version>5.1.2</dependency.extent.version>
         <dependency.logback.version>1.6.3</dependency.logback.version>
         <dependency.freemarker.version>2.3.35</dependency.freemarker.version>
