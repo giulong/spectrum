@@ -47,10 +47,10 @@
         <maven.install.skip>true</maven.install.skip>
 
         <dependency.junit.version>6.1.3</dependency.junit.version>
-        <dependency.mockito.version>5.23.0</dependency.mockito.version>
+        <dependency.mockito.version>5.24.0</dependency.mockito.version>
         <dependency.hamcrest.version>3.0</dependency.hamcrest.version>
         <dependency.systemlambda.version>1.2.1</dependency.systemlambda.version>
-        <dependency.jackson.version>3.2.2</dependency.jackson.version>
+        <dependency.jackson.version>3.2.3</dependency.jackson.version>
         <dependency.jackson.annotation.version>2.22</dependency.jackson.annotation.version>
         <dependency.simplejavamail.version>9.3.5</dependency.simplejavamail.version>
         <dependency.jsonschemagenerator.version>5.0.0</dependency.jsonschemagenerator.version>
@@ -60,7 +60,7 @@
         <dependency.jspecify.version>1.0.1</dependency.jspecify.version>
         <dependency.appium.version>10.1.1</dependency.appium.version>
         <dependency.extent.version>5.1.2</dependency.extent.version>
-        <dependency.logback.version>1.6.3</dependency.logback.version>
+        <dependency.logback.version>1.6.5</dependency.logback.version>
         <dependency.freemarker.version>2.3.35</dependency.freemarker.version>
         <dependency.mvel.version>2.5.4.Final</dependency.mvel.version>
         <dependency.slack.version>1.51.0</dependency.slack.version>
