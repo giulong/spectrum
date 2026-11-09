@@ -70,7 +70,7 @@
         <plugin.clean.version>3.5.0</plugin.clean.version>
         <plugin.checkstyle.version>3.6.0</plugin.checkstyle.version>
         <plugin.puppycrawl.version>14.3.0</plugin.puppycrawl.version>
-        <plugin.spotless.version>3.10.4</plugin.spotless.version>
+        <plugin.spotless.version>3.11.0</plugin.spotless.version>
         <plugin.compiler.version>3.16.0</plugin.compiler.version>
         <plugin.resources.version>3.5.0</plugin.resources.version>
         <plugin.surefire.version>3.6.0</plugin.surefire.version>
