@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 
 @Getter
+@Deprecated(forRemoval = true, since = "1.30.3")
 public class SlackConsumer extends EventsConsumer {
 
     @JsonIgnore

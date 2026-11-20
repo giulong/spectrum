@@ -21,6 +21,7 @@ import org.simplejavamail.mailer.MailerBuilder;
 import jakarta.activation.FileDataSource;
 
 @Getter
+@Deprecated(forRemoval = true, since = "1.30.3")
 public class MailConsumer extends EventsConsumer {
 
     @JsonIgnore
