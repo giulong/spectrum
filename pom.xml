@@ -60,25 +60,25 @@
         <dependency.jspecify.version>1.0.1</dependency.jspecify.version>
         <dependency.appium.version>10.1.1</dependency.appium.version>
         <dependency.extent.version>5.1.2</dependency.extent.version>
-        <dependency.logback.version>1.6.5</dependency.logback.version>
+        <dependency.logback.version>1.6.6</dependency.logback.version>
         <dependency.freemarker.version>2.3.35</dependency.freemarker.version>
-        <dependency.mvel.version>2.5.4.Final</dependency.mvel.version>
+        <dependency.mvel.version>2.6.0.Final</dependency.mvel.version>
         <dependency.slack.version>1.51.0</dependency.slack.version>
         <dependency.jcodec.version>0.2.5</dependency.jcodec.version>
         <dependency.datafaker.version>2.7.0</dependency.datafaker.version>
 
         <plugin.clean.version>3.5.0</plugin.clean.version>
         <plugin.checkstyle.version>3.6.0</plugin.checkstyle.version>
-        <plugin.puppycrawl.version>14.3.0</plugin.puppycrawl.version>
-        <plugin.spotless.version>3.10.4</plugin.spotless.version>
+        <plugin.puppycrawl.version>14.4.0</plugin.puppycrawl.version>
+        <plugin.spotless.version>3.11.0</plugin.spotless.version>
         <plugin.compiler.version>3.16.0</plugin.compiler.version>
         <plugin.resources.version>3.5.0</plugin.resources.version>
-        <plugin.surefire.version>3.6.0</plugin.surefire.version>
-        <plugin.failsafe.version>3.6.0</plugin.failsafe.version>
+        <plugin.surefire.version>3.6.1</plugin.surefire.version>
+        <plugin.failsafe.version>3.6.1</plugin.failsafe.version>
         <plugin.replacer.version>1.5.3</plugin.replacer.version>
         <plugin.jar.version>3.5.1</plugin.jar.version>
-        <plugin.enforcer.version>3.6.3</plugin.enforcer.version>
-        <plugin.flatten.version>1.8.0</plugin.flatten.version>
+        <plugin.enforcer.version>3.7.0</plugin.enforcer.version>
+        <plugin.flatten.version>1.9.0</plugin.flatten.version>
         <plugin.jsonschemagenerator.version>5.0.0</plugin.jsonschemagenerator.version>
         <plugin.cyclonedx.version>2.9.3</plugin.cyclonedx.version>
     </properties>
