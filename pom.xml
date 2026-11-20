@@ -50,7 +50,7 @@
         <dependency.mockito.version>5.24.0</dependency.mockito.version>
         <dependency.hamcrest.version>3.0</dependency.hamcrest.version>
         <dependency.systemlambda.version>1.2.1</dependency.systemlambda.version>
-        <dependency.jackson.version>3.2.3</dependency.jackson.version>
+        <dependency.jackson.version>3.3.0</dependency.jackson.version>
         <dependency.jackson.annotation.version>2.22</dependency.jackson.annotation.version>
         <dependency.simplejavamail.version>9.3.5</dependency.simplejavamail.version>
         <dependency.jsonschemagenerator.version>5.0.0</dependency.jsonschemagenerator.version>
@@ -73,7 +73,7 @@
         <plugin.spotless.version>3.10.4</plugin.spotless.version>
         <plugin.compiler.version>3.16.0</plugin.compiler.version>
         <plugin.resources.version>3.5.0</plugin.resources.version>
-        <plugin.surefire.version>3.6.0</plugin.surefire.version>
+        <plugin.surefire.version>3.6.1</plugin.surefire.version>
         <plugin.failsafe.version>3.6.0</plugin.failsafe.version>
         <plugin.replacer.version>1.5.3</plugin.replacer.version>
         <plugin.jar.version>3.5.1</plugin.jar.version>
