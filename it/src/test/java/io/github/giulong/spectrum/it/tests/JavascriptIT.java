@@ -90,8 +90,8 @@ class JavascriptIT extends SpectrumTest<Void> {
 
         assertEquals(1, js.findElements(mainContentDiv, LocatorType.LINK_TEXT, "Dropdown").size());
         assertEquals(1, js.findElements(LocatorType.LINK_TEXT, "Dropdown").size());
-        assertEquals(3, js.findElements(mainContentDiv, LocatorType.PARTIAL_LINK_TEXT, "File").size());
-        assertEquals(3, js.findElements(LocatorType.PARTIAL_LINK_TEXT, "File").size());
+        assertEquals(4, js.findElements(mainContentDiv, LocatorType.PARTIAL_LINK_TEXT, "File").size());
+        assertEquals(4, js.findElements(LocatorType.PARTIAL_LINK_TEXT, "File").size());
 
         js.click(landingPage.getFormLoginLink());
         loginPage.waitForPageLoading();

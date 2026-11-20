@@ -66,7 +66,7 @@ class JsWebElementIT extends SpectrumTest<Void> {
         final WebElement mainContentDiv = js.findElement(LocatorType.ID, "content");
 
         assertEquals(1, mainContentDiv.findElements(By.linkText("Dropdown")).size());
-        assertEquals(3, mainContentDiv.findElements(By.partialLinkText("File")).size());
+        assertEquals(4, mainContentDiv.findElements(By.partialLinkText("File")).size());
 
         jsLandingPage.getFormLoginLink().click();
         jsLoginPage.waitForPageLoading();
