@@ -34,6 +34,7 @@ import lombok.Setter;
 
 import org.openqa.selenium.chromium.ChromiumDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
+import org.openqa.selenium.ie.InternetExplorerDriverLogLevel;
 
 import tools.jackson.databind.annotation.JsonSerialize;
 import tools.jackson.databind.ser.std.ToStringSerializer;
@@ -290,6 +291,9 @@ public class Configuration {
         @JsonPropertyDescription("Edge capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/edge/")
         private Edge edge;
 
+        @JsonPropertyDescription("Internet Explorer capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/internet_explorer/")
+        private Ie ie;
+
         @JsonPropertyDescription("Safari capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/safari/")
         private Safari safari;
 
@@ -441,6 +445,31 @@ public class Configuration {
 
             @JsonPropertyDescription("Edge service options")
             private Chrome.Service service;
+        }
+
+        @Getter
+        @Generated
+        public static class Ie {
+
+            @JsonPropertyDescription("IE's args")
+            private List<String> args;
+
+            @JsonPropertyDescription("IE's capabilities")
+            private Map<String, Object> capabilities;
+
+            @JsonPropertyDescription("IE service options")
+            private Service service;
+
+            @Getter
+            @Generated
+            public static class Service {
+                private InternetExplorerDriverLogLevel logLevel;
+                private boolean silent;
+                private String host;
+
+                @JsonSchemaTypes(String.class)
+                private File extractPath;
+            }
         }
 
         @Getter
