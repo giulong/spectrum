@@ -103,6 +103,7 @@ class DriverDeserializerTest {
                 arguments("chrome", mock(Chrome.class)),
                 arguments("firefox", mock(Firefox.class)),
                 arguments("edge", mock(Edge.class)),
+                arguments("ie", mock(InternetExplorer.class)),
                 arguments("safari", mock(Safari.class)),
                 arguments("uiAutomator2", mock(UiAutomator2.class)),
                 arguments("espresso", mock(Espresso.class)),

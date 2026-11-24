@@ -180,6 +180,18 @@ drivers:
       verbose: false
       allowedListIps: ''
 
+  # Internet Explorer capabilities (IE mode via Edge). See: https://www.selenium.dev/documentation/webdriver/browsers/internet_explorer/
+  ie:
+    args: [ ]
+    capabilities:
+      prefs:
+        download.default_directory: ${downloadsFolder}
+    service:
+      logLevel: FATAL
+      silent: false
+      host: null
+      extractPath: null
+
   # Safari capabilities. See: https://www.selenium.dev/documentation/webdriver/browsers/safari/
   safari:
     service:

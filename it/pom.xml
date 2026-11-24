@@ -160,5 +160,39 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>ie</id>
+            <activation>
+                <property>
+                    <name>browsersTests</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>Internet Explorer IT</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                                <configuration>
+                                    <reportNameSuffix>ie</reportNameSuffix>
+                                    <includes>
+                                        <include>**/IECheckboxIT.java</include>
+                                    </includes>
+                                    <systemPropertyVariables>
+                                        <spectrum.driver>ie</spectrum.driver>
+                                    </systemPropertyVariables>
+                                    <summaryFile>target/failsafe-reports/failsafe-ie.xml</summaryFile>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
